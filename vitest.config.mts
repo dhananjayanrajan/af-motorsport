@@ -9,4 +9,9 @@ export default defineConfig({
     setupFiles: ['./vitest.setup.ts'],
     include: ['tests/int/**/*.int.spec.ts'],
   },
+  server: {
+    watch: {
+      ignored: ['**/node_modules/**', '**/dist/**']
+    }
+  }
 })

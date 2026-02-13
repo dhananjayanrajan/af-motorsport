@@ -1,0 +1,8 @@
+export const SKILL_SCALE = ['Narrow', 'Moderate', 'Broad', 'Comprehensive']
+export const SKILL_DEPTH = ['Basic', 'Intermediate', 'Advanced', 'Expert']
+export const SKILL_RARITY = ['Common', 'Uncommon', 'Rare', 'Unique']
+export const SKILL_METHOD_TYPE = ['Theoretical', 'Practical', 'Simulation', 'Field']
+export const SKILL_DEPENDENCY_TYPE = ['Prerequisite', 'Corequisite', 'Recommended']
+export const NATURE_COMPLEXITY = ['Low', 'Medium', 'High', 'Extreme']
+export const NATURE_VISIBILITY = ['Obvious', 'Subtle', 'Concealed', 'Latent']
+export const NATURE_IMPACT = ['Minor', 'Moderate', 'Major', 'Transformative']

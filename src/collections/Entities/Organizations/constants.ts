@@ -1,0 +1,5 @@
+export const ORG_PRESTIGE = ['Unknown', 'Emerging', 'Established', 'Prestigious', 'Iconic']
+export const ORG_RELIABILITY = ['Unproven', 'Developing', 'Reliable', 'Exceptional']
+export const ORG_INNOVATION = ['Conservative', 'Adaptive', 'Innovative', 'Revolutionary']
+export const ORG_BENEFIT_TYPE = ['Financial', 'Technical', 'Marketing', 'Operational']
+export const ORG_BENEFIT_IMPACT = ['Minor', 'Moderate', 'Significant', 'Strategic']

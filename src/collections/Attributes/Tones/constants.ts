@@ -1,0 +1,6 @@
+export const TONE_SCALE = ['Local', 'Regional', 'National', 'Global']
+export const TONE_DEPTH = ['Surface', 'Moderate', 'Deep', 'Profound']
+export const TONE_QUALITY = ['Positive', 'Neutral', 'Negative', 'Mixed']
+export const TONE_INTENSITY = ['Low', 'Medium', 'High', 'Extreme']
+export const TONE_MOOD = ['Optimistic', 'Somber', 'Energetic', 'Calm', 'Tense', 'Celebratory']
+export const TONE_QUALITY_SCALE = ['Minute', 'Moderate', 'Grand', 'Epic']

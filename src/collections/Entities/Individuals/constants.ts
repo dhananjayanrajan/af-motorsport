@@ -1,0 +1,7 @@
+export const INDIVIDUAL_GENDER = ['Male', 'Female', 'NonBinary', 'Undisclosed']
+export const INTEREST_LEVEL = ['Casual', 'Enthusiast', 'Expert', 'Professional']
+export const INFLUENCE_REACH = ['Local', 'Regional', 'National', 'Global']
+export const INFLUENCE_AUTHORITY = ['None', 'Low', 'Medium', 'High']
+export const INFLUENCE_NETWORK = ['Small', 'Moderate', 'Extensive', 'Vast']
+export const BENEFIT_TYPE = ['Access', 'Discount', 'Information', 'Collaboration']
+export const BENEFIT_IMPACT = ['Minor', 'Moderate', 'Significant', 'Strategic']

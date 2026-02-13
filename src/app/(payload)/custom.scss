@@ -8,3 +8,68 @@
   clip: rect(0, 0, 0, 0);
   border: 0;
 }
+
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 999;
+}
+
+.doc-controls {
+  position: sticky;
+  top: 56px;
+  z-index: 999;
+}
+
+.document-fields__sidebar-wrap,
+.tabs-field__tabs-wrap {
+  position: sticky;
+  top: 112px;
+  z-index: 1;
+}
+
+.tabs-field__tabs-wrap {
+  padding-top: var(--base);
+  margin-top: -40px;
+}
+
+.app-header,
+.tabs-field__tabs-wrap {
+  backdrop-filter: blur(20px);
+}
+
+.group-field__header {
+  padding-bottom: var(--base);
+}
+
+.field-type.radio-group,
+.field-type.radio-group li {
+  padding-top: calc(var(--base) / 2);
+  padding-bottom: calc(var(--base) / 2);
+}
+
+.field-type.group-field.group-field--within-group.group-field--within-tab.group-field--gutter {
+  border-left: 3px solid var(--theme-elevation-100);
+}
+
+.collapsible .field-type.row .row__fields:has(> :nth-child(1)) {
+  margin-bottom: calc(var(--base) / 8);
+}
+
+.collapsible .group-field {
+  margin-bottom: calc(var(--base));
+  margin-top: calc(var(--base));
+}
+
+.collapsible .group-field:last-of-type {
+  padding-bottom: calc(var(--base) / 8);
+  margin-bottom: 0;
+}
+
+.field-type.row {
+  margin-top: calc(var(--base) * 1.5);
+}
+
+.group-field__header {
+  padding-bottom: calc(var(--base) / 2);
+}

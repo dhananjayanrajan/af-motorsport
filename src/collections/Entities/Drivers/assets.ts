@@ -1,0 +1,56 @@
+import type { Field } from 'payload'
+import { dictionary } from './dictionary'
+import { relationshipFieldFactory } from '@/fields/factories/fields/relationshipField'
+
+export const assetsFields: Field[] = [
+  {
+    type: 'row',
+    fields: [
+      relationshipFieldFactory({
+        name: 'thumbnail',
+        relationTo: 'media',
+        dictionary: dictionary.tabs.assets.fields,
+        width: 2,
+        flags: [],
+      }),
+      relationshipFieldFactory({
+        name: 'cover',
+        relationTo: 'media',
+        dictionary: dictionary.tabs.assets.fields,
+        width: 2,
+        flags: [],
+      }),
+    ],
+  },
+  {
+    type: 'row',
+    fields: [
+      relationshipFieldFactory({
+        name: 'helmet',
+        relationTo: 'media',
+        dictionary: dictionary.tabs.assets.fields,
+        width: 2,
+        flags: [],
+      }),
+      relationshipFieldFactory({
+        name: 'suit',
+        relationTo: 'media',
+        dictionary: dictionary.tabs.assets.fields,
+        width: 2,
+        flags: [],
+      }),
+    ],
+  },
+  {
+    type: 'row',
+    fields: [
+      relationshipFieldFactory({
+        name: 'gallery',
+        relationTo: 'galleries',
+        dictionary: dictionary.tabs.assets.fields,
+        width: 1,
+        flags: ['hasMany'],
+      }),
+    ],
+  },
+]
