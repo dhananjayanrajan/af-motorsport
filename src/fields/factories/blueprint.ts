@@ -146,6 +146,7 @@ export const collectionFactory = (
       plural: hostLabels.hostPlural,
       ...config.labels,
     },
+    access: config.access,
     hooks: {
       beforeChange: [],
       afterRead: [],
@@ -165,7 +166,11 @@ export const collectionFactory = (
         type: 'tabs',
         tabs: [...tabs, createSeoTab()],
       },
-      ...createSidebarFields({ record: hostLabels.host, records: hostLabels.hostPlural }),
+      ...createSidebarFields({
+        record: hostLabels.host,
+        records: hostLabels.hostPlural,
+        useAsTitle: config.admin?.useAsTitle
+      }),
     ],
     timestamps: true,
     dbName: config.slug,

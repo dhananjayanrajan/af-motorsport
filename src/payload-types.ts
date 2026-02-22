@@ -139,7 +139,6 @@ export interface Config {
     search: Search;
     'payload-mcp-api-keys': PayloadMcpApiKey;
     'payload-kv': PayloadKv;
-    'payload-folders': FolderInterface;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -155,9 +154,6 @@ export interface Config {
     };
     products: {
       variants: 'variants';
-    };
-    'payload-folders': {
-      documentsAndFolders: 'payload-folders' | 'categories';
     };
   };
   collectionsSelect: {
@@ -227,7 +223,6 @@ export interface Config {
     search: SearchSelect<false> | SearchSelect<true>;
     'payload-mcp-api-keys': PayloadMcpApiKeysSelect<false> | PayloadMcpApiKeysSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
-    'payload-folders': PayloadFoldersSelect<false> | PayloadFoldersSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -235,12 +230,7 @@ export interface Config {
   db: {
     defaultIDType: number;
   };
-  fallbackLocale:
-    | ('false' | 'none' | 'null')
-    | false
-    | null
-    | ('en-US' | 'es-MX' | 'pt-PT')
-    | ('en-US' | 'es-MX' | 'pt-PT')[];
+  fallbackLocale: ('false' | 'none' | 'null') | false | null | ('en' | 'es' | 'pt') | ('en' | 'es' | 'pt')[];
   globals: {
     header: Header;
     footer: Footer;
@@ -259,7 +249,7 @@ export interface Config {
     announcements: AnnouncementsSelect<false> | AnnouncementsSelect<true>;
     questions: QuestionsSelect<false> | QuestionsSelect<true>;
   };
-  locale: 'en-US' | 'es-MX' | 'pt-PT';
+  locale: 'en' | 'es' | 'pt';
   user: User | PayloadMcpApiKey;
   jobs: {
     tasks: unknown;
@@ -554,7 +544,7 @@ export interface Series {
    * When enabled, the slug will auto-generate from the title field on save and autosave.
    */
   generateSlug?: boolean | null;
-  slug: string;
+  slug?: string | null;
   /**
    * Categories that are relevant to the record.
    */
@@ -567,75 +557,77 @@ export interface Series {
    * Controls who can see this record and under what conditions.
    */
   visibility?: {
-    /**
-     * Publish as live.
-     */
     check_publish?: boolean | null;
-    /**
-     * Highlights as featured.
-     */
     check_featured?: boolean | null;
-    /**
-     * Pins on the top.
-     */
     check_pinned?: boolean | null;
   };
   updatedAt: string;
   createdAt: string;
 }
 /**
- * Defines broad thematic groupings used to organize content into meaningful sections, helping users and administrators navigate and structure information logically.
- *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "categories".
  */
 export interface Category {
   id: number;
+  toggle?: ('simple' | 'advanced') | null;
   /**
-   * Identifiable record name/title.
+   * The category name.
    */
-  title?: string | null;
+  name: string;
   /**
-   * Short tagline or secondary description.
+   * Category types with label and value pairs
    */
-  subtitle?: string | null;
+  type?:
+    | {
+        /**
+         * Display label.
+         */
+        label: string;
+        /**
+         * Unique value.
+         */
+        value: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Identifying info.
+   */
+  basics?: {
+    /**
+     * Toggle the Basics section on or off.
+     */
+    enable?: boolean | null;
+    /**
+     * Category description.
+     */
+    description?: string | null;
+    visibility?: {
+      /**
+       * Toggle the Basics section on or off.
+       */
+      show?: boolean | null;
+    };
+  };
+  /**
+   * Extra data.
+   */
   details?: {
     /**
-     * Optional short summary to appear in lists & previews.
+     * Toggle the Details section on or off.
      */
-    summary?: string | null;
-  };
-  attributes?: {
+    enable?: boolean | null;
     /**
-     * Require questions visibility.
+     * Parent category.
      */
-    questions_visibility?: boolean | null;
-    /**
-     * Defines commonly asked or context-specific questions presented to inform, guide, or clarify user understanding.
-     */
-    questions?:
-      | {
-          /**
-           * Optional question to add more context to the record.
-           */
-          question?: string | null;
-          /**
-           * Provide a clear answer for the question.
-           */
-          answer?: string | null;
-          /**
-           * Media content related to the record. (Images, Videos, Audios, Documents, Files, etc.,)
-           */
-          media?: (number | Media)[] | null;
-          id?: string | null;
-        }[]
-      | null;
-  };
-  assets?: {
-    /**
-     * Small preview image used in lists and cards.
-     */
-    thumbnail?: (number | null) | Media;
+    parent?: (number | null) | Category;
+    visibility?: {
+      /**
+       * Toggle the Details section on or off.
+       */
+      show?: boolean | null;
+    };
   };
   seo?: {
     title?: string | null;
@@ -649,32 +641,25 @@ export interface Category {
    * When enabled, the slug will auto-generate from the title field on save and autosave.
    */
   generateSlug?: boolean | null;
-  slug: string;
+  slug?: string | null;
   /**
-   * Associated tags for this item
+   * Categories that are relevant to the record.
+   */
+  categories?: (number | Category)[] | null;
+  /**
+   * Associated tags for the record.
    */
   tags?: (number | Tag)[] | null;
   /**
-   * Controls who can see this record and under what conditions it becomes visible.
+   * Controls who can see this record and under what conditions.
    */
   visibility?: {
-    /**
-     * Publish as a live record.
-     */
     check_publish?: boolean | null;
-    /**
-     * Highlights as a featured record.
-     */
     check_featured?: boolean | null;
-    /**
-     * Pins the record on the top.
-     */
     check_pinned?: boolean | null;
   };
-  folder?: (number | null) | FolderInterface;
   updatedAt: string;
   createdAt: string;
-  deletedAt?: string | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -711,43 +696,72 @@ export interface Media {
   focalY?: number | null;
 }
 /**
- * Defines flexible keywords used to label content, enabling discovery, filtering, and contextual grouping without rigid structure.
- *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "tags".
  */
 export interface Tag {
   id: number;
+  toggle?: ('simple' | 'advanced') | null;
   /**
-   * Identifiable item name/title.
+   * Tag name.
    */
-  title?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "payload-folders".
- */
-export interface FolderInterface {
-  id: number;
   name: string;
-  folder?: (number | null) | FolderInterface;
-  documentsAndFolders?: {
-    docs?: (
-      | {
-          relationTo?: 'payload-folders';
-          value: number | FolderInterface;
-        }
-      | {
-          relationTo?: 'categories';
-          value: number | Category;
-        }
-    )[];
-    hasNextPage?: boolean;
-    totalDocs?: number;
+  /**
+   * Tag type.
+   */
+  type: number | Category;
+  /**
+   * Extra data.
+   */
+  details?: {
+    /**
+     * Toggle the Details section on or off.
+     */
+    enable?: boolean | null;
+    /**
+     * Tag description.
+     */
+    description?: string | null;
+    /**
+     * Usage context.
+     */
+    context?: string | null;
+    visibility?: {
+      /**
+       * Toggle the Details section on or off.
+       */
+      show?: boolean | null;
+    };
   };
-  folderType?: 'categories'[] | null;
+  seo?: {
+    title?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
+    description?: string | null;
+  };
+  /**
+   * When enabled, the slug will auto-generate from the title field on save and autosave.
+   */
+  generateSlug?: boolean | null;
+  slug?: string | null;
+  /**
+   * Categories that are relevant to the record.
+   */
+  categories?: (number | Category)[] | null;
+  /**
+   * Associated tags for the record.
+   */
+  tags?: (number | Tag)[] | null;
+  /**
+   * Controls who can see this record and under what conditions.
+   */
+  visibility?: {
+    check_publish?: boolean | null;
+    check_featured?: boolean | null;
+    check_pinned?: boolean | null;
+  };
   updatedAt: string;
   createdAt: string;
 }
@@ -950,7 +964,7 @@ export interface Narrative {
    * When enabled, the slug will auto-generate from the title field on save and autosave.
    */
   generateSlug?: boolean | null;
-  slug: string;
+  slug?: string | null;
   /**
    * Categories that are relevant to the record.
    */
@@ -963,17 +977,8 @@ export interface Narrative {
    * Controls who can see this record and under what conditions.
    */
   visibility?: {
-    /**
-     * Publish as live.
-     */
     check_publish?: boolean | null;
-    /**
-     * Highlights as featured.
-     */
     check_featured?: boolean | null;
-    /**
-     * Pins on the top.
-     */
     check_pinned?: boolean | null;
   };
   updatedAt: string;
@@ -1029,37 +1034,18 @@ export interface Tone {
      * Scope details.
      */
     scope?: {
-      list?:
-        | {
-            /**
-             * Scope significance.
-             */
-            significance?: string | null;
-            /**
-             * Scope scale.
-             */
-            scale?: ('Local' | 'Regional' | 'National' | 'Global') | null;
-            /**
-             * Scope depth.
-             */
-            depth?: ('Surface' | 'Moderate' | 'Deep' | 'Profound') | null;
-            settings?: {
-              /**
-               * Toggle the Scope entry on or off.
-               */
-              show?: boolean | null;
-              /**
-               * Toggle the Scope entry on or off.
-               */
-              featured?: boolean | null;
-              /**
-               * Toggle the Scope entry on or off.
-               */
-              pinned?: boolean | null;
-            };
-            id?: string | null;
-          }[]
-        | null;
+      /**
+       * Scope significance.
+       */
+      significance?: string | null;
+      /**
+       * Scope scale.
+       */
+      scale?: ('Local' | 'Regional' | 'National' | 'Global') | null;
+      /**
+       * Scope depth.
+       */
+      depth?: ('Surface' | 'Moderate' | 'Deep' | 'Profound') | null;
     };
     /**
      * Tonal qualities.
@@ -1104,7 +1090,7 @@ export interface Tone {
    * When enabled, the slug will auto-generate from the title field on save and autosave.
    */
   generateSlug?: boolean | null;
-  slug: string;
+  slug?: string | null;
   /**
    * Categories that are relevant to the record.
    */
@@ -1117,17 +1103,8 @@ export interface Tone {
    * Controls who can see this record and under what conditions.
    */
   visibility?: {
-    /**
-     * Publish as live.
-     */
     check_publish?: boolean | null;
-    /**
-     * Highlights as featured.
-     */
     check_featured?: boolean | null;
-    /**
-     * Pins on the top.
-     */
     check_pinned?: boolean | null;
   };
   updatedAt: string;
@@ -1226,109 +1203,52 @@ export interface Location {
      * Geographic features.
      */
     geography?: {
-      list?:
-        | {
-            /**
-             * Terrain type.
-             */
-            terrain?: string | null;
-            /**
-             * Climate zone.
-             */
-            climate?: ('Temperate' | 'Tropical' | 'Arid' | 'Continental' | 'Polar') | null;
-            /**
-             * Natural features.
-             */
-            features?: string | null;
-            settings?: {
-              /**
-               * Toggle the Geography entry on or off.
-               */
-              show?: boolean | null;
-              /**
-               * Toggle the Geography entry on or off.
-               */
-              featured?: boolean | null;
-              /**
-               * Toggle the Geography entry on or off.
-               */
-              pinned?: boolean | null;
-            };
-            id?: string | null;
-          }[]
-        | null;
+      /**
+       * Terrain type.
+       */
+      terrain?: string | null;
+      /**
+       * Climate zone.
+       */
+      climate?: ('Temperate' | 'Tropical' | 'Arid' | 'Continental' | 'Polar') | null;
+      /**
+       * Natural features.
+       */
+      features?: string | null;
     };
     /**
      * Infrastructure details.
      */
     infrastructure?: {
-      list?:
-        | {
-            /**
-             * Transport links.
-             */
-            transport?: string | null;
-            /**
-             * On-site facilities.
-             */
-            facilities?: string | null;
-            /**
-             * Visitor amenities.
-             */
-            amenities?: string | null;
-            settings?: {
-              /**
-               * Toggle the Infrastructure entry on or off.
-               */
-              show?: boolean | null;
-              /**
-               * Toggle the Infrastructure entry on or off.
-               */
-              featured?: boolean | null;
-              /**
-               * Toggle the Infrastructure entry on or off.
-               */
-              pinned?: boolean | null;
-            };
-            id?: string | null;
-          }[]
-        | null;
+      /**
+       * Transport links.
+       */
+      transport?: string | null;
+      /**
+       * On-site facilities.
+       */
+      facilities?: string | null;
+      /**
+       * Visitor amenities.
+       */
+      amenities?: string | null;
     };
     /**
      * Accessibility info.
      */
     accessibility?: {
-      list?:
-        | {
-            /**
-             * Main access route.
-             */
-            approach?: ('PublicRoad' | 'PrivateRoad' | 'Air' | 'Sea' | 'Rail') | null;
-            /**
-             * Access facilities.
-             */
-            facilities?: ('DisabledAccess' | 'VIPEntry' | 'ServiceEntry') | null;
-            /**
-             * Visitor capacity.
-             */
-            capacity?: ('Small' | 'Medium' | 'Large' | 'Massive') | null;
-            settings?: {
-              /**
-               * Toggle the Accessibility entry on or off.
-               */
-              show?: boolean | null;
-              /**
-               * Toggle the Accessibility entry on or off.
-               */
-              featured?: boolean | null;
-              /**
-               * Toggle the Accessibility entry on or off.
-               */
-              pinned?: boolean | null;
-            };
-            id?: string | null;
-          }[]
-        | null;
+      /**
+       * Main access route.
+       */
+      approach?: ('PublicRoad' | 'PrivateRoad' | 'Air' | 'Sea' | 'Rail') | null;
+      /**
+       * Access facilities.
+       */
+      facilities?: ('DisabledAccess' | 'VIPEntry' | 'ServiceEntry') | null;
+      /**
+       * Visitor capacity.
+       */
+      capacity?: ('Small' | 'Medium' | 'Large' | 'Massive') | null;
     };
     visibility?: {
       /**
@@ -1388,7 +1308,7 @@ export interface Location {
    * When enabled, the slug will auto-generate from the title field on save and autosave.
    */
   generateSlug?: boolean | null;
-  slug: string;
+  slug?: string | null;
   /**
    * Categories that are relevant to the record.
    */
@@ -1401,17 +1321,8 @@ export interface Location {
    * Controls who can see this record and under what conditions.
    */
   visibility?: {
-    /**
-     * Publish as live.
-     */
     check_publish?: boolean | null;
-    /**
-     * Highlights as featured.
-     */
     check_featured?: boolean | null;
-    /**
-     * Pins on the top.
-     */
     check_pinned?: boolean | null;
   };
   updatedAt: string;
@@ -1642,7 +1553,7 @@ export interface Organization {
    * When enabled, the slug will auto-generate from the title field on save and autosave.
    */
   generateSlug?: boolean | null;
-  slug: string;
+  slug?: string | null;
   /**
    * Categories that are relevant to the record.
    */
@@ -1655,17 +1566,8 @@ export interface Organization {
    * Controls who can see this record and under what conditions.
    */
   visibility?: {
-    /**
-     * Publish as live.
-     */
     check_publish?: boolean | null;
-    /**
-     * Highlights as featured.
-     */
     check_featured?: boolean | null;
-    /**
-     * Pins on the top.
-     */
     check_pinned?: boolean | null;
   };
   updatedAt: string;
@@ -1847,7 +1749,7 @@ export interface Channel {
    * When enabled, the slug will auto-generate from the title field on save and autosave.
    */
   generateSlug?: boolean | null;
-  slug: string;
+  slug?: string | null;
   /**
    * Categories that are relevant to the record.
    */
@@ -1860,17 +1762,8 @@ export interface Channel {
    * Controls who can see this record and under what conditions.
    */
   visibility?: {
-    /**
-     * Publish as live.
-     */
     check_publish?: boolean | null;
-    /**
-     * Highlights as featured.
-     */
     check_featured?: boolean | null;
-    /**
-     * Pins on the top.
-     */
     check_pinned?: boolean | null;
   };
   updatedAt: string;
@@ -1926,7 +1819,7 @@ export interface Gallery {
    * When enabled, the slug will auto-generate from the title field on save and autosave.
    */
   generateSlug?: boolean | null;
-  slug: string;
+  slug?: string | null;
   /**
    * Categories that are relevant to the record.
    */
@@ -1939,17 +1832,8 @@ export interface Gallery {
    * Controls who can see this record and under what conditions.
    */
   visibility?: {
-    /**
-     * Publish as live.
-     */
     check_publish?: boolean | null;
-    /**
-     * Highlights as featured.
-     */
     check_featured?: boolean | null;
-    /**
-     * Pins on the top.
-     */
     check_pinned?: boolean | null;
   };
   updatedAt: string;
@@ -2081,7 +1965,7 @@ export interface History {
    * When enabled, the slug will auto-generate from the title field on save and autosave.
    */
   generateSlug?: boolean | null;
-  slug: string;
+  slug?: string | null;
   /**
    * Categories that are relevant to the record.
    */
@@ -2094,17 +1978,8 @@ export interface History {
    * Controls who can see this record and under what conditions.
    */
   visibility?: {
-    /**
-     * Publish as live.
-     */
     check_publish?: boolean | null;
-    /**
-     * Highlights as featured.
-     */
     check_featured?: boolean | null;
-    /**
-     * Pins on the top.
-     */
     check_pinned?: boolean | null;
   };
   updatedAt: string;
@@ -2257,7 +2132,7 @@ export interface Story {
    * When enabled, the slug will auto-generate from the title field on save and autosave.
    */
   generateSlug?: boolean | null;
-  slug: string;
+  slug?: string | null;
   /**
    * Categories that are relevant to the record.
    */
@@ -2270,17 +2145,8 @@ export interface Story {
    * Controls who can see this record and under what conditions.
    */
   visibility?: {
-    /**
-     * Publish as live.
-     */
     check_publish?: boolean | null;
-    /**
-     * Highlights as featured.
-     */
     check_featured?: boolean | null;
-    /**
-     * Pins on the top.
-     */
     check_pinned?: boolean | null;
   };
   updatedAt: string;
@@ -2363,7 +2229,7 @@ export interface Playlist {
    * When enabled, the slug will auto-generate from the title field on save and autosave.
    */
   generateSlug?: boolean | null;
-  slug: string;
+  slug?: string | null;
   /**
    * Categories that are relevant to the record.
    */
@@ -2376,17 +2242,8 @@ export interface Playlist {
    * Controls who can see this record and under what conditions.
    */
   visibility?: {
-    /**
-     * Publish as live.
-     */
     check_publish?: boolean | null;
-    /**
-     * Highlights as featured.
-     */
     check_featured?: boolean | null;
-    /**
-     * Pins on the top.
-     */
     check_pinned?: boolean | null;
   };
   updatedAt: string;
@@ -2534,7 +2391,7 @@ export interface Highlight {
    * When enabled, the slug will auto-generate from the title field on save and autosave.
    */
   generateSlug?: boolean | null;
-  slug: string;
+  slug?: string | null;
   /**
    * Categories that are relevant to the record.
    */
@@ -2547,17 +2404,8 @@ export interface Highlight {
    * Controls who can see this record and under what conditions.
    */
   visibility?: {
-    /**
-     * Publish as live.
-     */
     check_publish?: boolean | null;
-    /**
-     * Highlights as featured.
-     */
     check_featured?: boolean | null;
-    /**
-     * Pins on the top.
-     */
     check_pinned?: boolean | null;
   };
   updatedAt: string;
@@ -2630,37 +2478,18 @@ export interface Specification {
      * Spec conditions.
      */
     conditions?: {
-      list?:
-        | {
-            /**
-             * Environment condition.
-             */
-            environment?: string | null;
-            /**
-             * Constraint details.
-             */
-            constraints?: string | null;
-            /**
-             * Compliance level.
-             */
-            compliance?: ('Mandatory' | 'Optional' | 'Recommended' | 'NotApplicable') | null;
-            settings?: {
-              /**
-               * Toggle the Conditions entry on or off.
-               */
-              show?: boolean | null;
-              /**
-               * Toggle the Conditions entry on or off.
-               */
-              featured?: boolean | null;
-              /**
-               * Toggle the Conditions entry on or off.
-               */
-              pinned?: boolean | null;
-            };
-            id?: string | null;
-          }[]
-        | null;
+      /**
+       * Environment condition.
+       */
+      environment?: string | null;
+      /**
+       * Constraint details.
+       */
+      constraints?: string | null;
+      /**
+       * Compliance level.
+       */
+      compliance?: ('Mandatory' | 'Optional' | 'Recommended' | 'NotApplicable') | null;
     };
     visibility?: {
       /**
@@ -2677,6 +2506,9 @@ export interface Specification {
      * Toggle the Metrics section on or off.
      */
     enable?: boolean | null;
+    /**
+     * Spec parameters.
+     */
     parameters?:
       | {
           /**
@@ -2702,37 +2534,18 @@ export interface Specification {
      * Measurement method.
      */
     measurement?: {
-      list?:
-        | {
-            /**
-             * Measurement method.
-             */
-            method?: string | null;
-            /**
-             * Measurement frequency.
-             */
-            frequency?: ('Once' | 'Periodic' | 'Continuous' | 'OnDemand') | null;
-            /**
-             * Measurement accuracy.
-             */
-            accuracy?: ('Low' | 'Medium' | 'High' | 'Precision') | null;
-            settings?: {
-              /**
-               * Toggle the Measurement entry on or off.
-               */
-              show?: boolean | null;
-              /**
-               * Toggle the Measurement entry on or off.
-               */
-              featured?: boolean | null;
-              /**
-               * Toggle the Measurement entry on or off.
-               */
-              pinned?: boolean | null;
-            };
-            id?: string | null;
-          }[]
-        | null;
+      /**
+       * Measurement method.
+       */
+      method?: string | null;
+      /**
+       * Measurement frequency.
+       */
+      frequency?: ('Once' | 'Periodic' | 'Continuous' | 'OnDemand') | null;
+      /**
+       * Measurement accuracy.
+       */
+      accuracy?: ('Low' | 'Medium' | 'High' | 'Precision') | null;
     };
     visibility?: {
       /**
@@ -2753,7 +2566,7 @@ export interface Specification {
    * When enabled, the slug will auto-generate from the title field on save and autosave.
    */
   generateSlug?: boolean | null;
-  slug: string;
+  slug?: string | null;
   /**
    * Categories that are relevant to the record.
    */
@@ -2766,17 +2579,8 @@ export interface Specification {
    * Controls who can see this record and under what conditions.
    */
   visibility?: {
-    /**
-     * Publish as live.
-     */
     check_publish?: boolean | null;
-    /**
-     * Highlights as featured.
-     */
     check_featured?: boolean | null;
-    /**
-     * Pins on the top.
-     */
     check_pinned?: boolean | null;
   };
   updatedAt: string;
@@ -3058,7 +2862,7 @@ export interface Driver {
    * When enabled, the slug will auto-generate from the title field on save and autosave.
    */
   generateSlug?: boolean | null;
-  slug: string;
+  slug?: string | null;
   /**
    * Categories that are relevant to the record.
    */
@@ -3071,17 +2875,8 @@ export interface Driver {
    * Controls who can see this record and under what conditions.
    */
   visibility?: {
-    /**
-     * Publish as live.
-     */
     check_publish?: boolean | null;
-    /**
-     * Highlights as featured.
-     */
     check_featured?: boolean | null;
-    /**
-     * Pins on the top.
-     */
     check_pinned?: boolean | null;
   };
   updatedAt: string;
@@ -3207,7 +3002,7 @@ export interface Journey {
    * When enabled, the slug will auto-generate from the title field on save and autosave.
    */
   generateSlug?: boolean | null;
-  slug: string;
+  slug?: string | null;
   /**
    * Categories that are relevant to the record.
    */
@@ -3220,17 +3015,8 @@ export interface Journey {
    * Controls who can see this record and under what conditions.
    */
   visibility?: {
-    /**
-     * Publish as live.
-     */
     check_publish?: boolean | null;
-    /**
-     * Highlights as featured.
-     */
     check_featured?: boolean | null;
-    /**
-     * Pins on the top.
-     */
     check_pinned?: boolean | null;
   };
   updatedAt: string;
@@ -3383,7 +3169,7 @@ export interface Decision {
    * When enabled, the slug will auto-generate from the title field on save and autosave.
    */
   generateSlug?: boolean | null;
-  slug: string;
+  slug?: string | null;
   /**
    * Categories that are relevant to the record.
    */
@@ -3396,17 +3182,8 @@ export interface Decision {
    * Controls who can see this record and under what conditions.
    */
   visibility?: {
-    /**
-     * Publish as live.
-     */
     check_publish?: boolean | null;
-    /**
-     * Highlights as featured.
-     */
     check_featured?: boolean | null;
-    /**
-     * Pins on the top.
-     */
     check_pinned?: boolean | null;
   };
   updatedAt: string;
@@ -3477,37 +3254,18 @@ export interface Feature {
      * Nature of the feature.
      */
     nature?: {
-      list?:
-        | {
-            /**
-             * Technical complexity.
-             */
-            complexity?: ('Low' | 'Medium' | 'High' | 'Extreme') | null;
-            /**
-             * Feature visibility.
-             */
-            visibility?: ('Visible' | 'Concealed' | 'Integrated' | 'Prominent') | null;
-            /**
-             * Feature impact.
-             */
-            impact?: ('Marginal' | 'Moderate' | 'Significant' | 'Critical') | null;
-            settings?: {
-              /**
-               * Toggle the Nature entry on or off.
-               */
-              show?: boolean | null;
-              /**
-               * Toggle the Nature entry on or off.
-               */
-              featured?: boolean | null;
-              /**
-               * Toggle the Nature entry on or off.
-               */
-              pinned?: boolean | null;
-            };
-            id?: string | null;
-          }[]
-        | null;
+      /**
+       * Technical complexity.
+       */
+      complexity?: ('Low' | 'Medium' | 'High' | 'Extreme') | null;
+      /**
+       * Feature visibility.
+       */
+      visibility?: ('Visible' | 'Concealed' | 'Integrated' | 'Prominent') | null;
+      /**
+       * Feature impact.
+       */
+      impact?: ('Marginal' | 'Moderate' | 'Significant' | 'Critical') | null;
     };
     visibility?: {
       /**
@@ -3547,7 +3305,7 @@ export interface Feature {
    * When enabled, the slug will auto-generate from the title field on save and autosave.
    */
   generateSlug?: boolean | null;
-  slug: string;
+  slug?: string | null;
   /**
    * Categories that are relevant to the record.
    */
@@ -3560,17 +3318,8 @@ export interface Feature {
    * Controls who can see this record and under what conditions.
    */
   visibility?: {
-    /**
-     * Publish as live.
-     */
     check_publish?: boolean | null;
-    /**
-     * Highlights as featured.
-     */
     check_featured?: boolean | null;
-    /**
-     * Pins on the top.
-     */
     check_pinned?: boolean | null;
   };
   updatedAt: string;
@@ -3680,7 +3429,7 @@ export interface Note {
    * When enabled, the slug will auto-generate from the title field on save and autosave.
    */
   generateSlug?: boolean | null;
-  slug: string;
+  slug?: string | null;
   /**
    * Categories that are relevant to the record.
    */
@@ -3693,17 +3442,8 @@ export interface Note {
    * Controls who can see this record and under what conditions.
    */
   visibility?: {
-    /**
-     * Publish as live.
-     */
     check_publish?: boolean | null;
-    /**
-     * Highlights as featured.
-     */
     check_featured?: boolean | null;
-    /**
-     * Pins on the top.
-     */
     check_pinned?: boolean | null;
   };
   updatedAt: string;
@@ -3763,7 +3503,7 @@ export interface Archive {
    * When enabled, the slug will auto-generate from the title field on save and autosave.
    */
   generateSlug?: boolean | null;
-  slug: string;
+  slug?: string | null;
   /**
    * Categories that are relevant to the record.
    */
@@ -3776,17 +3516,8 @@ export interface Archive {
    * Controls who can see this record and under what conditions.
    */
   visibility?: {
-    /**
-     * Publish as live.
-     */
     check_publish?: boolean | null;
-    /**
-     * Highlights as featured.
-     */
     check_featured?: boolean | null;
-    /**
-     * Pins on the top.
-     */
     check_pinned?: boolean | null;
   };
   updatedAt: string;
@@ -3911,7 +3642,7 @@ export interface Expectation {
    * When enabled, the slug will auto-generate from the title field on save and autosave.
    */
   generateSlug?: boolean | null;
-  slug: string;
+  slug?: string | null;
   /**
    * Categories that are relevant to the record.
    */
@@ -3924,17 +3655,8 @@ export interface Expectation {
    * Controls who can see this record and under what conditions.
    */
   visibility?: {
-    /**
-     * Publish as live.
-     */
     check_publish?: boolean | null;
-    /**
-     * Highlights as featured.
-     */
     check_featured?: boolean | null;
-    /**
-     * Pins on the top.
-     */
     check_pinned?: boolean | null;
   };
   updatedAt: string;
@@ -4084,7 +3806,7 @@ export interface Protocol {
    * When enabled, the slug will auto-generate from the title field on save and autosave.
    */
   generateSlug?: boolean | null;
-  slug: string;
+  slug?: string | null;
   /**
    * Categories that are relevant to the record.
    */
@@ -4097,17 +3819,8 @@ export interface Protocol {
    * Controls who can see this record and under what conditions.
    */
   visibility?: {
-    /**
-     * Publish as live.
-     */
     check_publish?: boolean | null;
-    /**
-     * Highlights as featured.
-     */
     check_featured?: boolean | null;
-    /**
-     * Pins on the top.
-     */
     check_pinned?: boolean | null;
   };
   updatedAt: string;
@@ -4201,7 +3914,7 @@ export interface Classification {
    * When enabled, the slug will auto-generate from the title field on save and autosave.
    */
   generateSlug?: boolean | null;
-  slug: string;
+  slug?: string | null;
   /**
    * Categories that are relevant to the record.
    */
@@ -4214,17 +3927,8 @@ export interface Classification {
    * Controls who can see this record and under what conditions.
    */
   visibility?: {
-    /**
-     * Publish as live.
-     */
     check_publish?: boolean | null;
-    /**
-     * Highlights as featured.
-     */
     check_featured?: boolean | null;
-    /**
-     * Pins on the top.
-     */
     check_pinned?: boolean | null;
   };
   updatedAt: string;
@@ -4346,7 +4050,7 @@ export interface Preference {
    * When enabled, the slug will auto-generate from the title field on save and autosave.
    */
   generateSlug?: boolean | null;
-  slug: string;
+  slug?: string | null;
   /**
    * Categories that are relevant to the record.
    */
@@ -4359,17 +4063,8 @@ export interface Preference {
    * Controls who can see this record and under what conditions.
    */
   visibility?: {
-    /**
-     * Publish as live.
-     */
     check_publish?: boolean | null;
-    /**
-     * Highlights as featured.
-     */
     check_featured?: boolean | null;
-    /**
-     * Pins on the top.
-     */
     check_pinned?: boolean | null;
   };
   updatedAt: string;
@@ -4467,7 +4162,7 @@ export interface Principle {
    * When enabled, the slug will auto-generate from the title field on save and autosave.
    */
   generateSlug?: boolean | null;
-  slug: string;
+  slug?: string | null;
   /**
    * Categories that are relevant to the record.
    */
@@ -4480,17 +4175,8 @@ export interface Principle {
    * Controls who can see this record and under what conditions.
    */
   visibility?: {
-    /**
-     * Publish as live.
-     */
     check_publish?: boolean | null;
-    /**
-     * Highlights as featured.
-     */
     check_featured?: boolean | null;
-    /**
-     * Pins on the top.
-     */
     check_pinned?: boolean | null;
   };
   updatedAt: string;
@@ -4737,7 +4423,7 @@ export interface Individual {
    * When enabled, the slug will auto-generate from the title field on save and autosave.
    */
   generateSlug?: boolean | null;
-  slug: string;
+  slug?: string | null;
   /**
    * Categories that are relevant to the record.
    */
@@ -4750,17 +4436,8 @@ export interface Individual {
    * Controls who can see this record and under what conditions.
    */
   visibility?: {
-    /**
-     * Publish as live.
-     */
     check_publish?: boolean | null;
-    /**
-     * Highlights as featured.
-     */
     check_featured?: boolean | null;
-    /**
-     * Pins on the top.
-     */
     check_pinned?: boolean | null;
   };
   updatedAt: string;
@@ -4796,7 +4473,7 @@ export interface Leader {
   /**
    * Identifying info.
    */
-  basics: {
+  basics?: {
     /**
      * Toggle the Basics section on or off.
      */
@@ -4804,7 +4481,7 @@ export interface Leader {
     /**
      * Identification data
      */
-    identifier: {
+    identifier?: {
       /**
        * Enter text value.
        */
@@ -5034,7 +4711,7 @@ export interface Leader {
    * When enabled, the slug will auto-generate from the title field on save and autosave.
    */
   generateSlug?: boolean | null;
-  slug: string;
+  slug?: string | null;
   /**
    * Categories that are relevant to the record.
    */
@@ -5047,17 +4724,8 @@ export interface Leader {
    * Controls who can see this record and under what conditions.
    */
   visibility?: {
-    /**
-     * Publish as live.
-     */
     check_publish?: boolean | null;
-    /**
-     * Highlights as featured.
-     */
     check_featured?: boolean | null;
-    /**
-     * Pins on the top.
-     */
     check_pinned?: boolean | null;
   };
   updatedAt: string;
@@ -5233,7 +4901,7 @@ export interface Experience {
    * When enabled, the slug will auto-generate from the title field on save and autosave.
    */
   generateSlug?: boolean | null;
-  slug: string;
+  slug?: string | null;
   /**
    * Categories that are relevant to the record.
    */
@@ -5246,17 +4914,8 @@ export interface Experience {
    * Controls who can see this record and under what conditions.
    */
   visibility?: {
-    /**
-     * Publish as live.
-     */
     check_publish?: boolean | null;
-    /**
-     * Highlights as featured.
-     */
     check_featured?: boolean | null;
-    /**
-     * Pins on the top.
-     */
     check_pinned?: boolean | null;
   };
   updatedAt: string;
@@ -5293,41 +4952,22 @@ export interface Skill {
      * Skill scope.
      */
     scope?: {
-      list?:
-        | {
-            /**
-             * Skill significance.
-             */
-            significance?: string | null;
-            /**
-             * Skill scale.
-             */
-            scale?: ('Narrow' | 'Moderate' | 'Broad' | 'Comprehensive') | null;
-            /**
-             * Skill depth.
-             */
-            depth?: ('Basic' | 'Intermediate' | 'Advanced' | 'Expert') | null;
-            /**
-             * Skill rarity.
-             */
-            rarity?: ('Common' | 'Uncommon' | 'Rare' | 'Unique') | null;
-            settings?: {
-              /**
-               * Toggle the Scope entry on or off.
-               */
-              show?: boolean | null;
-              /**
-               * Toggle the Scope entry on or off.
-               */
-              featured?: boolean | null;
-              /**
-               * Toggle the Scope entry on or off.
-               */
-              pinned?: boolean | null;
-            };
-            id?: string | null;
-          }[]
-        | null;
+      /**
+       * Skill significance.
+       */
+      significance?: string | null;
+      /**
+       * Skill scale.
+       */
+      scale?: ('Narrow' | 'Moderate' | 'Broad' | 'Comprehensive') | null;
+      /**
+       * Skill depth.
+       */
+      depth?: ('Basic' | 'Intermediate' | 'Advanced' | 'Expert') | null;
+      /**
+       * Skill rarity.
+       */
+      rarity?: ('Common' | 'Uncommon' | 'Rare' | 'Unique') | null;
     };
     visibility?: {
       /**
@@ -5411,37 +5051,18 @@ export interface Skill {
      * Skill nature.
      */
     nature?: {
-      list?:
-        | {
-            /**
-             * Skill complexity.
-             */
-            complexity?: ('Low' | 'Medium' | 'High' | 'Extreme') | null;
-            /**
-             * Skill visibility.
-             */
-            visibility?: ('Obvious' | 'Subtle' | 'Concealed' | 'Latent') | null;
-            /**
-             * Skill impact.
-             */
-            impact?: ('Minor' | 'Moderate' | 'Major' | 'Transformative') | null;
-            settings?: {
-              /**
-               * Toggle the Nature entry on or off.
-               */
-              show?: boolean | null;
-              /**
-               * Toggle the Nature entry on or off.
-               */
-              featured?: boolean | null;
-              /**
-               * Toggle the Nature entry on or off.
-               */
-              pinned?: boolean | null;
-            };
-            id?: string | null;
-          }[]
-        | null;
+      /**
+       * Skill complexity.
+       */
+      complexity?: ('Low' | 'Medium' | 'High' | 'Extreme') | null;
+      /**
+       * Skill visibility.
+       */
+      visibility?: ('Obvious' | 'Subtle' | 'Concealed' | 'Latent') | null;
+      /**
+       * Skill impact.
+       */
+      impact?: ('Minor' | 'Moderate' | 'Major' | 'Transformative') | null;
     };
     visibility?: {
       /**
@@ -5489,7 +5110,7 @@ export interface Skill {
    * When enabled, the slug will auto-generate from the title field on save and autosave.
    */
   generateSlug?: boolean | null;
-  slug: string;
+  slug?: string | null;
   /**
    * Categories that are relevant to the record.
    */
@@ -5502,17 +5123,8 @@ export interface Skill {
    * Controls who can see this record and under what conditions.
    */
   visibility?: {
-    /**
-     * Publish as live.
-     */
     check_publish?: boolean | null;
-    /**
-     * Highlights as featured.
-     */
     check_featured?: boolean | null;
-    /**
-     * Pins on the top.
-     */
     check_pinned?: boolean | null;
   };
   updatedAt: string;
@@ -5684,7 +5296,7 @@ export interface Training {
    * When enabled, the slug will auto-generate from the title field on save and autosave.
    */
   generateSlug?: boolean | null;
-  slug: string;
+  slug?: string | null;
   /**
    * Categories that are relevant to the record.
    */
@@ -5697,17 +5309,8 @@ export interface Training {
    * Controls who can see this record and under what conditions.
    */
   visibility?: {
-    /**
-     * Publish as live.
-     */
     check_publish?: boolean | null;
-    /**
-     * Highlights as featured.
-     */
     check_featured?: boolean | null;
-    /**
-     * Pins on the top.
-     */
     check_pinned?: boolean | null;
   };
   updatedAt: string;
@@ -5981,7 +5584,7 @@ export interface Member {
    * When enabled, the slug will auto-generate from the title field on save and autosave.
    */
   generateSlug?: boolean | null;
-  slug: string;
+  slug?: string | null;
   /**
    * Categories that are relevant to the record.
    */
@@ -5994,17 +5597,8 @@ export interface Member {
    * Controls who can see this record and under what conditions.
    */
   visibility?: {
-    /**
-     * Publish as live.
-     */
     check_publish?: boolean | null;
-    /**
-     * Highlights as featured.
-     */
     check_featured?: boolean | null;
-    /**
-     * Pins on the top.
-     */
     check_pinned?: boolean | null;
   };
   updatedAt: string;
@@ -6047,7 +5641,7 @@ export interface Duty {
   /**
    * Extra data.
    */
-  details: {
+  details?: {
     /**
      * Toggle the Details section on or off.
      */
@@ -6055,7 +5649,7 @@ export interface Duty {
     /**
      * Detailed duties and authority.
      */
-    obligation: {
+    obligation?: {
       /**
        * Enter text value.
        */
@@ -6115,7 +5709,7 @@ export interface Duty {
    * When enabled, the slug will auto-generate from the title field on save and autosave.
    */
   generateSlug?: boolean | null;
-  slug: string;
+  slug?: string | null;
   /**
    * Categories that are relevant to the record.
    */
@@ -6128,17 +5722,8 @@ export interface Duty {
    * Controls who can see this record and under what conditions.
    */
   visibility?: {
-    /**
-     * Publish as live.
-     */
     check_publish?: boolean | null;
-    /**
-     * Highlights as featured.
-     */
     check_featured?: boolean | null;
-    /**
-     * Pins on the top.
-     */
     check_pinned?: boolean | null;
   };
   updatedAt: string;
@@ -6289,7 +5874,7 @@ export interface Impact {
    * When enabled, the slug will auto-generate from the title field on save and autosave.
    */
   generateSlug?: boolean | null;
-  slug: string;
+  slug?: string | null;
   /**
    * Categories that are relevant to the record.
    */
@@ -6302,17 +5887,8 @@ export interface Impact {
    * Controls who can see this record and under what conditions.
    */
   visibility?: {
-    /**
-     * Publish as live.
-     */
     check_publish?: boolean | null;
-    /**
-     * Highlights as featured.
-     */
     check_featured?: boolean | null;
-    /**
-     * Pins on the top.
-     */
     check_pinned?: boolean | null;
   };
   updatedAt: string;
@@ -6517,7 +6093,7 @@ export interface Car {
    * When enabled, the slug will auto-generate from the title field on save and autosave.
    */
   generateSlug?: boolean | null;
-  slug: string;
+  slug?: string | null;
   /**
    * Categories that are relevant to the record.
    */
@@ -6530,17 +6106,8 @@ export interface Car {
    * Controls who can see this record and under what conditions.
    */
   visibility?: {
-    /**
-     * Publish as live.
-     */
     check_publish?: boolean | null;
-    /**
-     * Highlights as featured.
-     */
     check_featured?: boolean | null;
-    /**
-     * Pins on the top.
-     */
     check_pinned?: boolean | null;
   };
   updatedAt: string;
@@ -6596,7 +6163,7 @@ export interface Visualization {
    * When enabled, the slug will auto-generate from the title field on save and autosave.
    */
   generateSlug?: boolean | null;
-  slug: string;
+  slug?: string | null;
   /**
    * Categories that are relevant to the record.
    */
@@ -6609,17 +6176,8 @@ export interface Visualization {
    * Controls who can see this record and under what conditions.
    */
   visibility?: {
-    /**
-     * Publish as live.
-     */
     check_publish?: boolean | null;
-    /**
-     * Highlights as featured.
-     */
     check_featured?: boolean | null;
-    /**
-     * Pins on the top.
-     */
     check_pinned?: boolean | null;
   };
   updatedAt: string;
@@ -6888,7 +6446,7 @@ export interface Kit {
    * When enabled, the slug will auto-generate from the title field on save and autosave.
    */
   generateSlug?: boolean | null;
-  slug: string;
+  slug?: string | null;
   /**
    * Categories that are relevant to the record.
    */
@@ -6901,17 +6459,8 @@ export interface Kit {
    * Controls who can see this record and under what conditions.
    */
   visibility?: {
-    /**
-     * Publish as live.
-     */
     check_publish?: boolean | null;
-    /**
-     * Highlights as featured.
-     */
     check_featured?: boolean | null;
-    /**
-     * Pins on the top.
-     */
     check_pinned?: boolean | null;
   };
   updatedAt: string;
@@ -7040,7 +6589,7 @@ export interface Award {
    * When enabled, the slug will auto-generate from the title field on save and autosave.
    */
   generateSlug?: boolean | null;
-  slug: string;
+  slug?: string | null;
   /**
    * Categories that are relevant to the record.
    */
@@ -7053,17 +6602,8 @@ export interface Award {
    * Controls who can see this record and under what conditions.
    */
   visibility?: {
-    /**
-     * Publish as live.
-     */
     check_publish?: boolean | null;
-    /**
-     * Highlights as featured.
-     */
     check_featured?: boolean | null;
-    /**
-     * Pins on the top.
-     */
     check_pinned?: boolean | null;
   };
   updatedAt: string;
@@ -7248,7 +6788,7 @@ export interface Strategy {
    * When enabled, the slug will auto-generate from the title field on save and autosave.
    */
   generateSlug?: boolean | null;
-  slug: string;
+  slug?: string | null;
   /**
    * Categories that are relevant to the record.
    */
@@ -7261,17 +6801,8 @@ export interface Strategy {
    * Controls who can see this record and under what conditions.
    */
   visibility?: {
-    /**
-     * Publish as live.
-     */
     check_publish?: boolean | null;
-    /**
-     * Highlights as featured.
-     */
     check_featured?: boolean | null;
-    /**
-     * Pins on the top.
-     */
     check_pinned?: boolean | null;
   };
   updatedAt: string;
@@ -7431,7 +6962,7 @@ export interface Incident {
    * When enabled, the slug will auto-generate from the title field on save and autosave.
    */
   generateSlug?: boolean | null;
-  slug: string;
+  slug?: string | null;
   /**
    * Categories that are relevant to the record.
    */
@@ -7444,17 +6975,8 @@ export interface Incident {
    * Controls who can see this record and under what conditions.
    */
   visibility?: {
-    /**
-     * Publish as live.
-     */
     check_publish?: boolean | null;
-    /**
-     * Highlights as featured.
-     */
     check_featured?: boolean | null;
-    /**
-     * Pins on the top.
-     */
     check_pinned?: boolean | null;
   };
   updatedAt: string;
@@ -7558,37 +7080,18 @@ export interface Result {
      * Achievement details.
      */
     achievement?: {
-      list?:
-        | {
-            /**
-             * Enter text value.
-             */
-            gap?: string | null;
-            /**
-             * Enter text value.
-             */
-            interval?: string | null;
-            /**
-             * Enter text value.
-             */
-            status?: string | null;
-            settings?: {
-              /**
-               * Toggle the Achievement entry on or off.
-               */
-              show?: boolean | null;
-              /**
-               * Toggle the Achievement entry on or off.
-               */
-              featured?: boolean | null;
-              /**
-               * Toggle the Achievement entry on or off.
-               */
-              pinned?: boolean | null;
-            };
-            id?: string | null;
-          }[]
-        | null;
+      /**
+       * Enter text value.
+       */
+      gap?: string | null;
+      /**
+       * Enter text value.
+       */
+      interval?: string | null;
+      /**
+       * Enter text value.
+       */
+      status?: string | null;
     };
     visibility?: {
       /**
@@ -7609,41 +7112,22 @@ export interface Result {
      * Performance stats.
      */
     performance?: {
-      list?:
-        | {
-            /**
-             * Enter numeric value.
-             */
-            laps?: number | null;
-            /**
-             * Enter text value.
-             */
-            time?: string | null;
-            /**
-             * Enter text value.
-             */
-            speed?: string | null;
-            /**
-             * Enter text value.
-             */
-            distance?: string | null;
-            settings?: {
-              /**
-               * Toggle the Performance entry on or off.
-               */
-              show?: boolean | null;
-              /**
-               * Toggle the Performance entry on or off.
-               */
-              featured?: boolean | null;
-              /**
-               * Toggle the Performance entry on or off.
-               */
-              pinned?: boolean | null;
-            };
-            id?: string | null;
-          }[]
-        | null;
+      /**
+       * Enter numeric value.
+       */
+      laps?: number | null;
+      /**
+       * Enter text value.
+       */
+      time?: string | null;
+      /**
+       * Enter text value.
+       */
+      speed?: string | null;
+      /**
+       * Enter text value.
+       */
+      distance?: string | null;
     };
     /**
      * Session stoppages.
@@ -7726,7 +7210,7 @@ export interface Result {
    * When enabled, the slug will auto-generate from the title field on save and autosave.
    */
   generateSlug?: boolean | null;
-  slug: string;
+  slug?: string | null;
   /**
    * Categories that are relevant to the record.
    */
@@ -7739,17 +7223,8 @@ export interface Result {
    * Controls who can see this record and under what conditions.
    */
   visibility?: {
-    /**
-     * Publish as live.
-     */
     check_publish?: boolean | null;
-    /**
-     * Highlights as featured.
-     */
     check_featured?: boolean | null;
-    /**
-     * Pins on the top.
-     */
     check_pinned?: boolean | null;
   };
   updatedAt: string;
@@ -7785,7 +7260,7 @@ export interface Entry {
     /**
      * Entry identifiers.
      */
-    identifiers: {
+    identifiers?: {
       /**
        * Enter text value.
        */
@@ -7871,37 +7346,18 @@ export interface Entry {
      * Eligibility info.
      */
     eligibility?: {
-      list?:
-        | {
-            /**
-             * Enter text value.
-             */
-            license?: string | null;
-            /**
-             * Enter text value.
-             */
-            waiver?: string | null;
-            /**
-             * Enter text value.
-             */
-            restriction?: string | null;
-            settings?: {
-              /**
-               * Toggle the Eligibility entry on or off.
-               */
-              show?: boolean | null;
-              /**
-               * Toggle the Eligibility entry on or off.
-               */
-              featured?: boolean | null;
-              /**
-               * Toggle the Eligibility entry on or off.
-               */
-              pinned?: boolean | null;
-            };
-            id?: string | null;
-          }[]
-        | null;
+      /**
+       * Enter text value.
+       */
+      license?: string | null;
+      /**
+       * Enter text value.
+       */
+      waiver?: string | null;
+      /**
+       * Enter text value.
+       */
+      restriction?: string | null;
     };
     /**
      * Select related document(s).
@@ -8036,7 +7492,7 @@ export interface Entry {
    * When enabled, the slug will auto-generate from the title field on save and autosave.
    */
   generateSlug?: boolean | null;
-  slug: string;
+  slug?: string | null;
   /**
    * Categories that are relevant to the record.
    */
@@ -8049,17 +7505,8 @@ export interface Entry {
    * Controls who can see this record and under what conditions.
    */
   visibility?: {
-    /**
-     * Publish as live.
-     */
     check_publish?: boolean | null;
-    /**
-     * Highlights as featured.
-     */
     check_featured?: boolean | null;
-    /**
-     * Pins on the top.
-     */
     check_pinned?: boolean | null;
   };
   updatedAt: string;
@@ -8360,7 +7807,7 @@ export interface Session {
    * When enabled, the slug will auto-generate from the title field on save and autosave.
    */
   generateSlug?: boolean | null;
-  slug: string;
+  slug?: string | null;
   /**
    * Categories that are relevant to the record.
    */
@@ -8373,17 +7820,8 @@ export interface Session {
    * Controls who can see this record and under what conditions.
    */
   visibility?: {
-    /**
-     * Publish as live.
-     */
     check_publish?: boolean | null;
-    /**
-     * Highlights as featured.
-     */
     check_featured?: boolean | null;
-    /**
-     * Pins on the top.
-     */
     check_pinned?: boolean | null;
   };
   updatedAt: string;
@@ -8612,7 +8050,7 @@ export interface Event {
    * When enabled, the slug will auto-generate from the title field on save and autosave.
    */
   generateSlug?: boolean | null;
-  slug: string;
+  slug?: string | null;
   /**
    * Categories that are relevant to the record.
    */
@@ -8625,17 +8063,8 @@ export interface Event {
    * Controls who can see this record and under what conditions.
    */
   visibility?: {
-    /**
-     * Publish as live.
-     */
     check_publish?: boolean | null;
-    /**
-     * Highlights as featured.
-     */
     check_featured?: boolean | null;
-    /**
-     * Pins on the top.
-     */
     check_pinned?: boolean | null;
   };
   updatedAt: string;
@@ -8739,37 +8168,18 @@ export interface Season {
      * Season estadísticas.
      */
     counts?: {
-      list?:
-        | {
-            /**
-             * Enter numeric value.
-             */
-            entries?: number | null;
-            /**
-             * Enter numeric value.
-             */
-            events?: number | null;
-            /**
-             * Enter numeric value.
-             */
-            races?: number | null;
-            settings?: {
-              /**
-               * Toggle the Count entry on or off.
-               */
-              show?: boolean | null;
-              /**
-               * Toggle the Count entry on or off.
-               */
-              featured?: boolean | null;
-              /**
-               * Toggle the Count entry on or off.
-               */
-              pinned?: boolean | null;
-            };
-            id?: string | null;
-          }[]
-        | null;
+      /**
+       * Enter numeric value.
+       */
+      entries?: number | null;
+      /**
+       * Enter numeric value.
+       */
+      events?: number | null;
+      /**
+       * Enter numeric value.
+       */
+      races?: number | null;
     };
     visibility?: {
       /**
@@ -8860,7 +8270,7 @@ export interface Season {
    * When enabled, the slug will auto-generate from the title field on save and autosave.
    */
   generateSlug?: boolean | null;
-  slug: string;
+  slug?: string | null;
   /**
    * Categories that are relevant to the record.
    */
@@ -8873,17 +8283,8 @@ export interface Season {
    * Controls who can see this record and under what conditions.
    */
   visibility?: {
-    /**
-     * Publish as live.
-     */
     check_publish?: boolean | null;
-    /**
-     * Highlights as featured.
-     */
     check_featured?: boolean | null;
-    /**
-     * Pins on the top.
-     */
     check_pinned?: boolean | null;
   };
   updatedAt: string;
@@ -8943,7 +8344,7 @@ export interface Schedule {
   /**
    * Extra data.
    */
-  details: {
+  details?: {
     /**
      * Toggle the Details section on or off.
      */
@@ -8951,7 +8352,7 @@ export interface Schedule {
     /**
      * Date and recurring type.
      */
-    chronology: {
+    chronology?: {
       /**
        * Select a date and/or time.
        */
@@ -9102,7 +8503,7 @@ export interface Schedule {
    * When enabled, the slug will auto-generate from the title field on save and autosave.
    */
   generateSlug?: boolean | null;
-  slug: string;
+  slug?: string | null;
   /**
    * Categories that are relevant to the record.
    */
@@ -9115,17 +8516,8 @@ export interface Schedule {
    * Controls who can see this record and under what conditions.
    */
   visibility?: {
-    /**
-     * Publish as live.
-     */
     check_publish?: boolean | null;
-    /**
-     * Highlights as featured.
-     */
     check_featured?: boolean | null;
-    /**
-     * Pins on the top.
-     */
     check_pinned?: boolean | null;
   };
   updatedAt: string;
@@ -9165,7 +8557,7 @@ export interface Meetup {
     /**
      * Select related document(s).
      */
-    location: number | Location;
+    location?: (number | null) | Location;
     visibility?: {
       /**
        * Toggle the Basics section on or off.
@@ -9341,7 +8733,7 @@ export interface Meetup {
    * When enabled, the slug will auto-generate from the title field on save and autosave.
    */
   generateSlug?: boolean | null;
-  slug: string;
+  slug?: string | null;
   /**
    * Categories that are relevant to the record.
    */
@@ -9354,17 +8746,8 @@ export interface Meetup {
    * Controls who can see this record and under what conditions.
    */
   visibility?: {
-    /**
-     * Publish as live.
-     */
     check_publish?: boolean | null;
-    /**
-     * Highlights as featured.
-     */
     check_featured?: boolean | null;
-    /**
-     * Pins on the top.
-     */
     check_pinned?: boolean | null;
   };
   updatedAt: string;
@@ -9552,7 +8935,7 @@ export interface Initiative {
    * When enabled, the slug will auto-generate from the title field on save and autosave.
    */
   generateSlug?: boolean | null;
-  slug: string;
+  slug?: string | null;
   /**
    * Categories that are relevant to the record.
    */
@@ -9565,17 +8948,8 @@ export interface Initiative {
    * Controls who can see this record and under what conditions.
    */
   visibility?: {
-    /**
-     * Publish as live.
-     */
     check_publish?: boolean | null;
-    /**
-     * Highlights as featured.
-     */
     check_featured?: boolean | null;
-    /**
-     * Pins on the top.
-     */
     check_pinned?: boolean | null;
   };
   updatedAt: string;
@@ -9747,7 +9121,7 @@ export interface Celebration {
    * When enabled, the slug will auto-generate from the title field on save and autosave.
    */
   generateSlug?: boolean | null;
-  slug: string;
+  slug?: string | null;
   /**
    * Categories that are relevant to the record.
    */
@@ -9760,17 +9134,8 @@ export interface Celebration {
    * Controls who can see this record and under what conditions.
    */
   visibility?: {
-    /**
-     * Publish as live.
-     */
     check_publish?: boolean | null;
-    /**
-     * Highlights as featured.
-     */
     check_featured?: boolean | null;
-    /**
-     * Pins on the top.
-     */
     check_pinned?: boolean | null;
   };
   updatedAt: string;
@@ -9857,37 +9222,18 @@ export interface Point {
      * Ranking update.
      */
     ranking?: {
-      list?:
-        | {
-            /**
-             * Enter numeric value.
-             */
-            before?: number | null;
-            /**
-             * Enter numeric value.
-             */
-            after?: number | null;
-            /**
-             * Enter numeric value.
-             */
-            delta?: number | null;
-            settings?: {
-              /**
-               * Toggle the Ranking entry on or off.
-               */
-              show?: boolean | null;
-              /**
-               * Toggle the Ranking entry on or off.
-               */
-              featured?: boolean | null;
-              /**
-               * Toggle the Ranking entry on or off.
-               */
-              pinned?: boolean | null;
-            };
-            id?: string | null;
-          }[]
-        | null;
+      /**
+       * Enter numeric value.
+       */
+      before?: number | null;
+      /**
+       * Enter numeric value.
+       */
+      after?: number | null;
+      /**
+       * Enter numeric value.
+       */
+      delta?: number | null;
     };
     /**
      * Point modifiers.
@@ -9959,7 +9305,7 @@ export interface Point {
    * When enabled, the slug will auto-generate from the title field on save and autosave.
    */
   generateSlug?: boolean | null;
-  slug: string;
+  slug?: string | null;
   /**
    * Categories that are relevant to the record.
    */
@@ -9972,17 +9318,8 @@ export interface Point {
    * Controls who can see this record and under what conditions.
    */
   visibility?: {
-    /**
-     * Publish as live.
-     */
     check_publish?: boolean | null;
-    /**
-     * Highlights as featured.
-     */
     check_featured?: boolean | null;
-    /**
-     * Pins on the top.
-     */
     check_pinned?: boolean | null;
   };
   updatedAt: string;
@@ -9997,7 +9334,7 @@ export interface Point {
 export interface User {
   id: number;
   name?: string | null;
-  roles?: ('admin' | 'customer')[] | null;
+  roles?: ('admin' | 'race_admin' | 'commercial' | 'content' | 'technical' | 'hr' | 'archive' | 'customer')[] | null;
   orders?: {
     docs?: (number | Order)[];
     hasNextPage?: boolean;
@@ -10314,7 +9651,7 @@ export interface Page {
    * When enabled, the slug will auto-generate from the title field on save and autosave.
    */
   generateSlug?: boolean | null;
-  slug: string;
+  slug?: string | null;
   /**
    * Categories that are relevant to the record.
    */
@@ -10327,17 +9664,8 @@ export interface Page {
    * Controls who can see this record and under what conditions.
    */
   visibility?: {
-    /**
-     * Publish as live.
-     */
     check_publish?: boolean | null;
-    /**
-     * Highlights as featured.
-     */
     check_featured?: boolean | null;
-    /**
-     * Pins on the top.
-     */
     check_pinned?: boolean | null;
   };
   updatedAt: string;
@@ -10707,7 +10035,7 @@ export interface Career {
    * When enabled, the slug will auto-generate from the title field on save and autosave.
    */
   generateSlug?: boolean | null;
-  slug: string;
+  slug?: string | null;
   /**
    * Categories that are relevant to the record.
    */
@@ -10720,17 +10048,8 @@ export interface Career {
    * Controls who can see this record and under what conditions.
    */
   visibility?: {
-    /**
-     * Publish as live.
-     */
     check_publish?: boolean | null;
-    /**
-     * Highlights as featured.
-     */
     check_featured?: boolean | null;
-    /**
-     * Pins on the top.
-     */
     check_pinned?: boolean | null;
   };
   updatedAt: string;
@@ -12121,10 +11440,6 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'payload-mcp-api-keys';
         value: number | PayloadMcpApiKey;
-      } | null)
-    | ({
-        relationTo: 'payload-folders';
-        value: number | FolderInterface;
       } | null);
   globalSlug?: string | null;
   user:
@@ -12351,21 +11666,9 @@ export interface SeasonsSelect<T extends boolean = true> {
         counts?:
           | T
           | {
-              list?:
-                | T
-                | {
-                    entries?: T;
-                    events?: T;
-                    races?: T;
-                    settings?:
-                      | T
-                      | {
-                          show?: T;
-                          featured?: T;
-                          pinned?: T;
-                        };
-                    id?: T;
-                  };
+              entries?: T;
+              events?: T;
+              races?: T;
             };
         visibility?:
           | T
@@ -12734,21 +12037,9 @@ export interface EntriesSelect<T extends boolean = true> {
         eligibility?:
           | T
           | {
-              list?:
-                | T
-                | {
-                    license?: T;
-                    waiver?: T;
-                    restriction?: T;
-                    settings?:
-                      | T
-                      | {
-                          show?: T;
-                          featured?: T;
-                          pinned?: T;
-                        };
-                    id?: T;
-                  };
+              license?: T;
+              waiver?: T;
+              restriction?: T;
             };
         preferences?: T;
         specifications?: T;
@@ -12878,21 +12169,9 @@ export interface ResultsSelect<T extends boolean = true> {
         achievement?:
           | T
           | {
-              list?:
-                | T
-                | {
-                    gap?: T;
-                    interval?: T;
-                    status?: T;
-                    settings?:
-                      | T
-                      | {
-                          show?: T;
-                          featured?: T;
-                          pinned?: T;
-                        };
-                    id?: T;
-                  };
+              gap?: T;
+              interval?: T;
+              status?: T;
             };
         visibility?:
           | T
@@ -12907,22 +12186,10 @@ export interface ResultsSelect<T extends boolean = true> {
         performance?:
           | T
           | {
-              list?:
-                | T
-                | {
-                    laps?: T;
-                    time?: T;
-                    speed?: T;
-                    distance?: T;
-                    settings?:
-                      | T
-                      | {
-                          show?: T;
-                          featured?: T;
-                          pinned?: T;
-                        };
-                    id?: T;
-                  };
+              laps?: T;
+              time?: T;
+              speed?: T;
+              distance?: T;
             };
         stoppages?:
           | T
@@ -13023,21 +12290,9 @@ export interface PointsSelect<T extends boolean = true> {
         ranking?:
           | T
           | {
-              list?:
-                | T
-                | {
-                    before?: T;
-                    after?: T;
-                    delta?: T;
-                    settings?:
-                      | T
-                      | {
-                          show?: T;
-                          featured?: T;
-                          pinned?: T;
-                        };
-                    id?: T;
-                  };
+              before?: T;
+              after?: T;
+              delta?: T;
             };
         modifiers?:
           | T
@@ -16078,30 +15333,36 @@ export interface ExperiencesSelect<T extends boolean = true> {
  * via the `definition` "categories_select".
  */
 export interface CategoriesSelect<T extends boolean = true> {
-  title?: T;
-  subtitle?: T;
+  toggle?: T;
+  name?: T;
+  type?:
+    | T
+    | {
+        label?: T;
+        value?: T;
+        id?: T;
+      };
+  basics?:
+    | T
+    | {
+        enable?: T;
+        description?: T;
+        visibility?:
+          | T
+          | {
+              show?: T;
+            };
+      };
   details?:
     | T
     | {
-        summary?: T;
-      };
-  attributes?:
-    | T
-    | {
-        questions_visibility?: T;
-        questions?:
+        enable?: T;
+        parent?: T;
+        visibility?:
           | T
           | {
-              question?: T;
-              answer?: T;
-              media?: T;
-              id?: T;
+              show?: T;
             };
-      };
-  assets?:
-    | T
-    | {
-        thumbnail?: T;
       };
   seo?:
     | T
@@ -16112,6 +15373,7 @@ export interface CategoriesSelect<T extends boolean = true> {
       };
   generateSlug?: T;
   slug?: T;
+  categories?: T;
   tags?: T;
   visibility?:
     | T
@@ -16120,17 +15382,47 @@ export interface CategoriesSelect<T extends boolean = true> {
         check_featured?: T;
         check_pinned?: T;
       };
-  folder?: T;
   updatedAt?: T;
   createdAt?: T;
-  deletedAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "tags_select".
  */
 export interface TagsSelect<T extends boolean = true> {
-  title?: T;
+  toggle?: T;
+  name?: T;
+  type?: T;
+  details?:
+    | T
+    | {
+        enable?: T;
+        description?: T;
+        context?: T;
+        visibility?:
+          | T
+          | {
+              show?: T;
+            };
+      };
+  seo?:
+    | T
+    | {
+        title?: T;
+        image?: T;
+        description?: T;
+      };
+  generateSlug?: T;
+  slug?: T;
+  categories?: T;
+  tags?: T;
+  visibility?:
+    | T
+    | {
+        check_publish?: T;
+        check_featured?: T;
+        check_pinned?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -16161,21 +15453,9 @@ export interface TonesSelect<T extends boolean = true> {
         scope?:
           | T
           | {
-              list?:
-                | T
-                | {
-                    significance?: T;
-                    scale?: T;
-                    depth?: T;
-                    settings?:
-                      | T
-                      | {
-                          show?: T;
-                          featured?: T;
-                          pinned?: T;
-                        };
-                    id?: T;
-                  };
+              significance?: T;
+              scale?: T;
+              depth?: T;
             };
         qualities?:
           | T
@@ -16250,21 +15530,9 @@ export interface FeaturesSelect<T extends boolean = true> {
         nature?:
           | T
           | {
-              list?:
-                | T
-                | {
-                    complexity?: T;
-                    visibility?: T;
-                    impact?: T;
-                    settings?:
-                      | T
-                      | {
-                          show?: T;
-                          featured?: T;
-                          pinned?: T;
-                        };
-                    id?: T;
-                  };
+              complexity?: T;
+              visibility?: T;
+              impact?: T;
             };
         visibility?:
           | T
@@ -16338,21 +15606,9 @@ export interface SpecificationsSelect<T extends boolean = true> {
         conditions?:
           | T
           | {
-              list?:
-                | T
-                | {
-                    environment?: T;
-                    constraints?: T;
-                    compliance?: T;
-                    settings?:
-                      | T
-                      | {
-                          show?: T;
-                          featured?: T;
-                          pinned?: T;
-                        };
-                    id?: T;
-                  };
+              environment?: T;
+              constraints?: T;
+              compliance?: T;
             };
         visibility?:
           | T
@@ -16376,21 +15632,9 @@ export interface SpecificationsSelect<T extends boolean = true> {
         measurement?:
           | T
           | {
-              list?:
-                | T
-                | {
-                    method?: T;
-                    frequency?: T;
-                    accuracy?: T;
-                    settings?:
-                      | T
-                      | {
-                          show?: T;
-                          featured?: T;
-                          pinned?: T;
-                        };
-                    id?: T;
-                  };
+              method?: T;
+              frequency?: T;
+              accuracy?: T;
             };
         visibility?:
           | T
@@ -16498,22 +15742,10 @@ export interface SkillsSelect<T extends boolean = true> {
         scope?:
           | T
           | {
-              list?:
-                | T
-                | {
-                    significance?: T;
-                    scale?: T;
-                    depth?: T;
-                    rarity?: T;
-                    settings?:
-                      | T
-                      | {
-                          show?: T;
-                          featured?: T;
-                          pinned?: T;
-                        };
-                    id?: T;
-                  };
+              significance?: T;
+              scale?: T;
+              depth?: T;
+              rarity?: T;
             };
         visibility?:
           | T
@@ -16556,21 +15788,9 @@ export interface SkillsSelect<T extends boolean = true> {
         nature?:
           | T
           | {
-              list?:
-                | T
-                | {
-                    complexity?: T;
-                    visibility?: T;
-                    impact?: T;
-                    settings?:
-                      | T
-                      | {
-                          show?: T;
-                          featured?: T;
-                          pinned?: T;
-                        };
-                    id?: T;
-                  };
+              complexity?: T;
+              visibility?: T;
+              impact?: T;
             };
         visibility?:
           | T
@@ -16905,59 +16125,23 @@ export interface LocationsSelect<T extends boolean = true> {
         geography?:
           | T
           | {
-              list?:
-                | T
-                | {
-                    terrain?: T;
-                    climate?: T;
-                    features?: T;
-                    settings?:
-                      | T
-                      | {
-                          show?: T;
-                          featured?: T;
-                          pinned?: T;
-                        };
-                    id?: T;
-                  };
+              terrain?: T;
+              climate?: T;
+              features?: T;
             };
         infrastructure?:
           | T
           | {
-              list?:
-                | T
-                | {
-                    transport?: T;
-                    facilities?: T;
-                    amenities?: T;
-                    settings?:
-                      | T
-                      | {
-                          show?: T;
-                          featured?: T;
-                          pinned?: T;
-                        };
-                    id?: T;
-                  };
+              transport?: T;
+              facilities?: T;
+              amenities?: T;
             };
         accessibility?:
           | T
           | {
-              list?:
-                | T
-                | {
-                    approach?: T;
-                    facilities?: T;
-                    capacity?: T;
-                    settings?:
-                      | T
-                      | {
-                          show?: T;
-                          featured?: T;
-                          pinned?: T;
-                        };
-                    id?: T;
-                  };
+              approach?: T;
+              facilities?: T;
+              capacity?: T;
             };
         visibility?:
           | T
@@ -17821,18 +17005,6 @@ export interface PayloadMcpApiKeysSelect<T extends boolean = true> {
 export interface PayloadKvSelect<T extends boolean = true> {
   key?: T;
   data?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "payload-folders_select".
- */
-export interface PayloadFoldersSelect<T extends boolean = true> {
-  name?: T;
-  folder?: T;
-  documentsAndFolders?: T;
-  folderType?: T;
-  updatedAt?: T;
-  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

@@ -12,142 +12,646 @@ import {
   index,
   uniqueIndex,
   foreignKey,
-  integer,
-  varchar,
   serial,
+  integer,
   boolean,
-  timestamp,
+  varchar,
+  type AnyPgColumn,
   numeric,
+  timestamp,
   jsonb,
   text,
-  type AnyPgColumn,
   pgEnum,
 } from '@payloadcms/db-postgres/drizzle/pg-core'
 import { sql, relations } from '@payloadcms/db-postgres/drizzle'
+import { geometryColumn } from '@payloadcms/db-postgres'
 export const enum__locales = pgEnum('enum__locales', ['en-US', 'es-MX', 'pt-PT'])
+export const enum_series_toggle = pgEnum('enum_series_toggle', ['simple', 'advanced'])
+export const enum_series_basics_status = pgEnum('enum_series_basics_status', [
+  'Active',
+  'Inactive',
+  'Defunct',
+  'Upcoming',
+  'Rebranded',
+  'Merged',
+  'Sanctioned',
+])
+export const enum_seasons_toggle = pgEnum('enum_seasons_toggle', ['simple', 'advanced'])
+export const enum_events_toggle = pgEnum('enum_events_toggle', ['simple', 'advanced'])
+export const enum_events_basics_status = pgEnum('enum_events_basics_status', [
+  'Scheduled',
+  'Confirmed',
+  'Completed',
+  'Cancelled',
+  'Postponed',
+  'Abandoned',
+  'Provisional',
+])
+export const enum_events_basics_access = pgEnum('enum_events_basics_access', [
+  'Public',
+  'Private',
+  'InviteOnly',
+  'MemberOnly',
+  'VIP',
+])
+export const enum_sessions_toggle = pgEnum('enum_sessions_toggle', ['simple', 'advanced'])
+export const enum_sessions_basics_status = pgEnum('enum_sessions_basics_status', [
+  'Scheduled',
+  'Confirmed',
+  'Completed',
+  'Cancelled',
+  'Postponed',
+  'Abandoned',
+  'Provisional',
+])
+export const enum_sessions_basics_access = pgEnum('enum_sessions_basics_access', [
+  'Public',
+  'Private',
+  'InviteOnly',
+  'MemberOnly',
+  'VIP',
+])
+export const enum_entries_toggle = pgEnum('enum_entries_toggle', ['simple', 'advanced'])
+export const enum_entries_basics_status = pgEnum('enum_entries_basics_status', [
+  'Entered',
+  'Confirmed',
+  'Withdrawn',
+  'Disqualified',
+  'DidNotStart',
+  'DidNotFinish',
+  'Classified',
+  'NotClassified',
+  'Provisional',
+  'Excluded',
+])
+export const enum_entries_traits_role = pgEnum('enum_entries_traits_role', [
+  'Primary',
+  'Reserve',
+  'Test',
+  'Development',
+  'Rookie',
+  'Veteran',
+  'Guest',
+])
+export const enum_results_toggle = pgEnum('enum_results_toggle', ['simple', 'advanced'])
+export const enum_results_basics_status = pgEnum('enum_results_basics_status', [
+  'Official',
+  'Provisional',
+  'Corrected',
+  'Historic',
+  'Estimated',
+  'Certified',
+  'Void',
+])
+export const enum_points_toggle = pgEnum('enum_points_toggle', ['simple', 'advanced'])
+export const enum_points_basics_scale = pgEnum('enum_points_basics_scale', [
+  'Standard',
+  'Inverse',
+  'Logarithmic',
+  'Custom',
+  'Multiplier',
+  'Fixed',
+])
+export const enum_drivers_toggle = pgEnum('enum_drivers_toggle', ['simple', 'advanced'])
+export const enum_drivers_basics_identity_gender = pgEnum('enum_drivers_basics_identity_gender', [
+  'Male',
+  'Female',
+  'NonBinary',
+  'Undisclosed',
+])
+export const enum_leaders_toggle = pgEnum('enum_leaders_toggle', ['simple', 'advanced'])
+export const enum_leaders_basics_identity_gender = pgEnum('enum_leaders_basics_identity_gender', [
+  'Male',
+  'Female',
+  'NonBinary',
+  'Undisclosed',
+])
+export const enum_members_toggle = pgEnum('enum_members_toggle', ['simple', 'advanced'])
+export const enum_members_basics_identity_gender = pgEnum('enum_members_basics_identity_gender', [
+  'Male',
+  'Female',
+  'NonBinary',
+  'Undisclosed',
+])
+export const enum_individuals_details_interests_level = pgEnum(
+  'enum_individuals_details_interests_level',
+  ['Casual', 'Enthusiast', 'Expert', 'Professional'],
+)
+export const enum_individuals_traits_benefits_type = pgEnum(
+  'enum_individuals_traits_benefits_type',
+  ['Access', 'Discount', 'Information', 'Collaboration'],
+)
+export const enum_individuals_traits_benefits_impact = pgEnum(
+  'enum_individuals_traits_benefits_impact',
+  ['Minor', 'Moderate', 'Significant', 'Strategic'],
+)
+export const enum_individuals_toggle = pgEnum('enum_individuals_toggle', ['simple', 'advanced'])
+export const enum_individuals_basics_identity_gender = pgEnum(
+  'enum_individuals_basics_identity_gender',
+  ['Male', 'Female', 'NonBinary', 'Undisclosed'],
+)
+export const enum_individuals_traits_influence_reach = pgEnum(
+  'enum_individuals_traits_influence_reach',
+  ['Local', 'Regional', 'National', 'Global'],
+)
+export const enum_individuals_traits_influence_authority = pgEnum(
+  'enum_individuals_traits_influence_authority',
+  ['None', 'Low', 'Medium', 'High'],
+)
+export const enum_individuals_traits_influence_network = pgEnum(
+  'enum_individuals_traits_influence_network',
+  ['Small', 'Moderate', 'Extensive', 'Vast'],
+)
+export const enum_organizations_traits_benefits_type = pgEnum(
+  'enum_organizations_traits_benefits_type',
+  ['Financial', 'Technical', 'Marketing', 'Operational'],
+)
+export const enum_organizations_traits_benefits_impact = pgEnum(
+  'enum_organizations_traits_benefits_impact',
+  ['Minor', 'Moderate', 'Significant', 'Strategic'],
+)
+export const enum_organizations_toggle = pgEnum('enum_organizations_toggle', ['simple', 'advanced'])
+export const enum_organizations_traits_reputation_prestige = pgEnum(
+  'enum_organizations_traits_reputation_prestige',
+  ['Unknown', 'Emerging', 'Established', 'Prestigious', 'Iconic'],
+)
+export const enum_organizations_traits_reputation_reliability = pgEnum(
+  'enum_organizations_traits_reputation_reliability',
+  ['Unproven', 'Developing', 'Reliable', 'Exceptional'],
+)
+export const enum_organizations_traits_reputation_innovation = pgEnum(
+  'enum_organizations_traits_reputation_innovation',
+  ['Conservative', 'Adaptive', 'Innovative', 'Revolutionary'],
+)
 export const enum_users_roles = pgEnum('enum_users_roles', ['admin', 'customer'])
-export const enum_pages_hero_links_link_type = pgEnum('enum_pages_hero_links_link_type', [
-  'reference',
-  'custom',
+export const enum_narratives_details_timeline_type = pgEnum(
+  'enum_narratives_details_timeline_type',
+  ['Event', 'Milestone', 'Decision', 'Incident'],
+)
+export const enum_narratives_toggle = pgEnum('enum_narratives_toggle', ['simple', 'advanced'])
+export const enum_narratives_details_scope_significance = pgEnum(
+  'enum_narratives_details_scope_significance',
+  ['Minor', 'Moderate', 'Major', 'Historic'],
+)
+export const enum_narratives_details_scope_scale = pgEnum('enum_narratives_details_scope_scale', [
+  'Individual',
+  'Team',
+  'Organization',
+  'Sport',
 ])
-export const enum_pages_hero_links_link_appearance = pgEnum(
-  'enum_pages_hero_links_link_appearance',
-  ['default', 'outline'],
-)
-export const enum_pages_blocks_cta_links_link_type = pgEnum(
-  'enum_pages_blocks_cta_links_link_type',
-  ['reference', 'custom'],
-)
-export const enum_pages_blocks_cta_links_link_appearance = pgEnum(
-  'enum_pages_blocks_cta_links_link_appearance',
-  ['default', 'outline'],
-)
-export const enum_pages_blocks_content_columns_size = pgEnum(
-  'enum_pages_blocks_content_columns_size',
-  ['oneThird', 'half', 'twoThirds', 'full'],
-)
-export const enum_pages_blocks_content_columns_link_type = pgEnum(
-  'enum_pages_blocks_content_columns_link_type',
-  ['reference', 'custom'],
-)
-export const enum_pages_blocks_content_columns_link_appearance = pgEnum(
-  'enum_pages_blocks_content_columns_link_appearance',
-  ['default', 'outline'],
-)
-export const enum_pages_blocks_archive_populate_by = pgEnum(
-  'enum_pages_blocks_archive_populate_by',
-  ['collection', 'selection'],
-)
-export const enum_pages_blocks_archive_relation_to = pgEnum(
-  'enum_pages_blocks_archive_relation_to',
-  ['products'],
-)
-export const enum_pages_blocks_carousel_populate_by = pgEnum(
-  'enum_pages_blocks_carousel_populate_by',
-  ['collection', 'selection'],
-)
-export const enum_pages_blocks_carousel_relation_to = pgEnum(
-  'enum_pages_blocks_carousel_relation_to',
-  ['products'],
-)
-export const enum_pages_blocks_banner_style = pgEnum('enum_pages_blocks_banner_style', [
-  'info',
-  'warning',
-  'error',
-  'success',
+export const enum_narratives_details_scope_depth = pgEnum('enum_narratives_details_scope_depth', [
+  'Surface',
+  'Detailed',
+  'Comprehensive',
+  'Exhaustive',
 ])
-export const enum_pages_hero_type = pgEnum('enum_pages_hero_type', [
-  'none',
-  'highImpact',
-  'mediumImpact',
-  'lowImpact',
+export const enum_stories_traits_interactions_dynamics = pgEnum(
+  'enum_stories_traits_interactions_dynamics',
+  ['Cooperative', 'Competitive', 'Adversarial', 'Mentorship'],
+)
+export const enum_stories_toggle = pgEnum('enum_stories_toggle', ['simple', 'advanced'])
+export const enum_histories_toggle = pgEnum('enum_histories_toggle', ['simple', 'advanced'])
+export const enum_histories_traits_legacy_impact = pgEnum('enum_histories_traits_legacy_impact', [
+  'Low',
+  'Medium',
+  'High',
+  'Monumental',
 ])
-export const enum_pages_status = pgEnum('enum_pages_status', ['draft', 'published'])
-export const enum__pages_v_version_hero_links_link_type = pgEnum(
-  'enum__pages_v_version_hero_links_link_type',
-  ['reference', 'custom'],
-)
-export const enum__pages_v_version_hero_links_link_appearance = pgEnum(
-  'enum__pages_v_version_hero_links_link_appearance',
-  ['default', 'outline'],
-)
-export const enum__pages_v_blocks_cta_links_link_type = pgEnum(
-  'enum__pages_v_blocks_cta_links_link_type',
-  ['reference', 'custom'],
-)
-export const enum__pages_v_blocks_cta_links_link_appearance = pgEnum(
-  'enum__pages_v_blocks_cta_links_link_appearance',
-  ['default', 'outline'],
-)
-export const enum__pages_v_blocks_content_columns_size = pgEnum(
-  'enum__pages_v_blocks_content_columns_size',
-  ['oneThird', 'half', 'twoThirds', 'full'],
-)
-export const enum__pages_v_blocks_content_columns_link_type = pgEnum(
-  'enum__pages_v_blocks_content_columns_link_type',
-  ['reference', 'custom'],
-)
-export const enum__pages_v_blocks_content_columns_link_appearance = pgEnum(
-  'enum__pages_v_blocks_content_columns_link_appearance',
-  ['default', 'outline'],
-)
-export const enum__pages_v_blocks_archive_populate_by = pgEnum(
-  'enum__pages_v_blocks_archive_populate_by',
-  ['collection', 'selection'],
-)
-export const enum__pages_v_blocks_archive_relation_to = pgEnum(
-  'enum__pages_v_blocks_archive_relation_to',
-  ['products'],
-)
-export const enum__pages_v_blocks_carousel_populate_by = pgEnum(
-  'enum__pages_v_blocks_carousel_populate_by',
-  ['collection', 'selection'],
-)
-export const enum__pages_v_blocks_carousel_relation_to = pgEnum(
-  'enum__pages_v_blocks_carousel_relation_to',
-  ['products'],
-)
-export const enum__pages_v_blocks_banner_style = pgEnum('enum__pages_v_blocks_banner_style', [
-  'info',
-  'warning',
-  'error',
-  'success',
+export const enum_histories_traits_legacy_memory = pgEnum('enum_histories_traits_legacy_memory', [
+  'Forgotten',
+  'Obscure',
+  'Celebrated',
+  'Legendary',
 ])
-export const enum__pages_v_version_hero_type = pgEnum('enum__pages_v_version_hero_type', [
-  'none',
-  'highImpact',
-  'mediumImpact',
-  'lowImpact',
+export const enum_journeys_traits_lessons_significance = pgEnum(
+  'enum_journeys_traits_lessons_significance',
+  ['Minor', 'Notable', 'Significant', 'LifeChanging'],
+)
+export const enum_journeys_traits_lessons_impact = pgEnum('enum_journeys_traits_lessons_impact', [
+  'Personal',
+  'Team',
+  'Organizational',
+  'Industry',
 ])
-export const enum__pages_v_version_status = pgEnum('enum__pages_v_version_status', [
-  'draft',
-  'published',
+export const enum_journeys_toggle = pgEnum('enum_journeys_toggle', ['simple', 'advanced'])
+export const enum_notes_traits_intentions_type = pgEnum('enum_notes_traits_intentions_type', [
+  'Inform',
+  'Persuade',
+  'Clarify',
+  'Critique',
+  'Praise',
 ])
-export const enum__pages_v_published_locale = pgEnum('enum__pages_v_published_locale', [
-  'en-US',
-  'es-MX',
-  'pt-PT',
+export const enum_notes_traits_intentions_impact = pgEnum('enum_notes_traits_intentions_impact', [
+  'Positive',
+  'Neutral',
+  'Negative',
 ])
+export const enum_notes_toggle = pgEnum('enum_notes_toggle', ['simple', 'advanced'])
+export const enum_pages_toggle = pgEnum('enum_pages_toggle', ['simple', 'advanced'])
+export const enum_cars_toggle = pgEnum('enum_cars_toggle', ['simple', 'advanced'])
+export const enum_cars_traits_status = pgEnum('enum_cars_traits_status', [
+  'Active',
+  'Retired',
+  'Development',
+  'Museum',
+  'Prototype',
+  'Concept',
+])
+export const enum_kits_traits_materials_type = pgEnum('enum_kits_traits_materials_type', [
+  'Cotton',
+  'Polyester',
+  'Nomex',
+  'Carbon',
+  'Leather',
+  'Synthetic',
+])
+export const enum_kits_toggle = pgEnum('enum_kits_toggle', ['simple', 'advanced'])
+export const enum_kits_basics_purpose_application = pgEnum('enum_kits_basics_purpose_application', [
+  'Track',
+  'Street',
+  'Show',
+  'Promotion',
+])
+export const enum_kits_details_functionality_performance = pgEnum(
+  'enum_kits_details_functionality_performance',
+  ['Standard', 'Enhanced', 'Maximum'],
+)
+export const enum_kits_details_functionality_durability = pgEnum(
+  'enum_kits_details_functionality_durability',
+  ['Low', 'Medium', 'High', 'Extreme'],
+)
+export const enum_kits_details_functionality_comfort = pgEnum(
+  'enum_kits_details_functionality_comfort',
+  ['Basic', 'Comfortable', 'Premium'],
+)
+export const enum_kits_traits_composition_construction = pgEnum(
+  'enum_kits_traits_composition_construction',
+  ['CutAndSew', 'Knitted', '3DPrinted', 'Molded'],
+)
+export const enum_kits_traits_composition_assembly = pgEnum(
+  'enum_kits_traits_composition_assembly',
+  ['Glued', 'Stitched', 'Welded', 'Bonded'],
+)
+export const enum_kits_traits_composition_finish = pgEnum('enum_kits_traits_composition_finish', [
+  'Matte',
+  'Glossy',
+  'Textured',
+  'Coated',
+])
+export const enum_kits_traits_appearance_branding = pgEnum('enum_kits_traits_appearance_branding', [
+  'Minimal',
+  'Prominent',
+  'Full',
+  'Heritage',
+])
+export const enum_kits_traits_appearance_style = pgEnum('enum_kits_traits_appearance_style', [
+  'Classic',
+  'Modern',
+  'Futuristic',
+  'Retro',
+])
+export const enum_galleries_toggle = pgEnum('enum_galleries_toggle', ['simple', 'advanced'])
+export const enum_playlists_toggle = pgEnum('enum_playlists_toggle', ['simple', 'advanced'])
+export const enum_playlists_traits_quality = pgEnum('enum_playlists_traits_quality', [
+  '4K',
+  'HD',
+  'SD',
+  'Raw',
+])
+export const enum_playlists_traits_format = pgEnum('enum_playlists_traits_format', [
+  'Wide',
+  'Vertical',
+  'Square',
+])
+export const enum_archives_toggle = pgEnum('enum_archives_toggle', ['simple', 'advanced'])
+export const enum_visualizations_toggle = pgEnum('enum_visualizations_toggle', [
+  'simple',
+  'advanced',
+])
+export const enum_schedules_traits_constraints_type = pgEnum(
+  'enum_schedules_traits_constraints_type',
+  ['Time', 'Resource', 'Weather', 'Regulation'],
+)
+export const enum_schedules_traits_constraints_impact = pgEnum(
+  'enum_schedules_traits_constraints_impact',
+  ['Low', 'Medium', 'High', 'Blocking'],
+)
+export const enum_schedules_toggle = pgEnum('enum_schedules_toggle', ['simple', 'advanced'])
+export const enum_schedules_basics_scope_significance = pgEnum(
+  'enum_schedules_basics_scope_significance',
+  ['Minor', 'Moderate', 'Major', 'Critical'],
+)
+export const enum_schedules_basics_scope_scale = pgEnum('enum_schedules_basics_scope_scale', [
+  'Individual',
+  'Team',
+  'Department',
+  'Organization',
+])
+export const enum_schedules_basics_scope_depth = pgEnum('enum_schedules_basics_scope_depth', [
+  'Overview',
+  'Detailed',
+  'Comprehensive',
+])
+export const enum_schedules_details_chronology_type = pgEnum(
+  'enum_schedules_details_chronology_type',
+  ['Single', 'Recurring', 'MultiDay'],
+)
+export const enum_trainings_toggle = pgEnum('enum_trainings_toggle', ['simple', 'advanced'])
+export const enum_trainings_traits_intensity = pgEnum('enum_trainings_traits_intensity', [
+  'Low',
+  'Medium',
+  'High',
+  'Extreme',
+])
+export const enum_trainings_traits_format = pgEnum('enum_trainings_traits_format', [
+  'Individual',
+  'Group',
+  'Lecture',
+  'HandsOn',
+  'Simulated',
+  'Remote',
+])
+export const enum_careers_toggle = pgEnum('enum_careers_toggle', ['simple', 'advanced'])
+export const enum_careers_traits_contract = pgEnum('enum_careers_traits_contract', [
+  'FullTime',
+  'PartTime',
+  'Reserve',
+  'Test',
+  'Loan',
+  'Guest',
+])
+export const enum_initiatives_toggle = pgEnum('enum_initiatives_toggle', ['simple', 'advanced'])
+export const enum_initiatives_traits_status = pgEnum('enum_initiatives_traits_status', [
+  'Proposed',
+  'Active',
+  'Paused',
+  'Completed',
+  'Archived',
+])
+export const enum_meetups_toggle = pgEnum('enum_meetups_toggle', ['simple', 'advanced'])
+export const enum_meetups_traits_format = pgEnum('enum_meetups_traits_format', [
+  'InPerson',
+  'Virtual',
+  'Hybrid',
+])
+export const enum_meetups_traits_access = pgEnum('enum_meetups_traits_access', [
+  'Public',
+  'InviteOnly',
+  'Private',
+  'Exclusive',
+])
+export const enum_celebrations_toggle = pgEnum('enum_celebrations_toggle', ['simple', 'advanced'])
+export const enum_celebrations_traits_prestige = pgEnum('enum_celebrations_traits_prestige', [
+  'Intimate',
+  'Notable',
+  'Prestigious',
+  'Iconic',
+])
+export const enum_celebrations_traits_exclusivity = pgEnum('enum_celebrations_traits_exclusivity', [
+  'Public',
+  'InviteOnly',
+  'Private',
+  'TeamOnly',
+])
+export const enum_protocols_toggle = pgEnum('enum_protocols_toggle', ['simple', 'advanced'])
+export const enum_duties_toggle = pgEnum('enum_duties_toggle', ['simple', 'advanced'])
+export const enum_expectations_toggle = pgEnum('enum_expectations_toggle', ['simple', 'advanced'])
+export const enum_expectations_traits_direction = pgEnum('enum_expectations_traits_direction', [
+  'Required',
+  'Anticipated',
+  'Committed',
+])
+export const enum_expectations_traits_priority = pgEnum('enum_expectations_traits_priority', [
+  'Critical',
+  'High',
+  'Medium',
+  'Low',
+])
+export const enum_expectations_traits_flexibility = pgEnum('enum_expectations_traits_flexibility', [
+  'Strict',
+  'Negotiable',
+  'Guideline',
+])
+export const enum_highlights_toggle = pgEnum('enum_highlights_toggle', ['simple', 'advanced'])
+export const enum_incidents_toggle = pgEnum('enum_incidents_toggle', ['simple', 'advanced'])
+export const enum_impacts_toggle = pgEnum('enum_impacts_toggle', ['simple', 'advanced'])
+export const enum_impacts_basics_scope_scale = pgEnum('enum_impacts_basics_scope_scale', [
+  'Local',
+  'Regional',
+  'National',
+  'Global',
+])
+export const enum_impacts_basics_scope_depth = pgEnum('enum_impacts_basics_scope_depth', [
+  'Surface',
+  'Moderate',
+  'Deep',
+  'Fundamental',
+])
+export const enum_impacts_traits_velocity = pgEnum('enum_impacts_traits_velocity', [
+  'Immediate',
+  'Rapid',
+  'Gradual',
+  'Delayed',
+])
+export const enum_impacts_traits_gravity = pgEnum('enum_impacts_traits_gravity', [
+  'Catastrophic',
+  'Severe',
+  'Moderate',
+  'Minor',
+  'Negligible',
+])
+export const enum_impacts_traits_permanence = pgEnum('enum_impacts_traits_permanence', [
+  'Permanent',
+  'LongTerm',
+  'Temporary',
+  'Reversible',
+])
+export const enum_decisions_toggle = pgEnum('enum_decisions_toggle', ['simple', 'advanced'])
+export const enum_strategies_traits_contingencies_probability = pgEnum(
+  'enum_strategies_traits_contingencies_probability',
+  ['Low', 'Medium', 'High', 'Certain'],
+)
+export const enum_strategies_traits_contingencies_impact = pgEnum(
+  'enum_strategies_traits_contingencies_impact',
+  ['Minor', 'Moderate', 'Major', 'Critical'],
+)
+export const enum_strategies_toggle = pgEnum('enum_strategies_toggle', ['simple', 'advanced'])
+export const enum_awards_toggle = pgEnum('enum_awards_toggle', ['simple', 'advanced'])
+export const enum_experiences_traits_skills_proficiency = pgEnum(
+  'enum_experiences_traits_skills_proficiency',
+  ['Beginner', 'Intermediate', 'Advanced', 'Expert'],
+)
+export const enum_experiences_toggle = pgEnum('enum_experiences_toggle', ['simple', 'advanced'])
+export const enum_tones_traits_scope_list_scale = pgEnum('enum_tones_traits_scope_list_scale', [
+  'Local',
+  'Regional',
+  'National',
+  'Global',
+])
+export const enum_tones_traits_scope_list_depth = pgEnum('enum_tones_traits_scope_list_depth', [
+  'Surface',
+  'Moderate',
+  'Deep',
+  'Profound',
+])
+export const enum_tones_traits_qualities_quality = pgEnum('enum_tones_traits_qualities_quality', [
+  'Positive',
+  'Neutral',
+  'Negative',
+  'Mixed',
+])
+export const enum_tones_traits_qualities_intensity = pgEnum(
+  'enum_tones_traits_qualities_intensity',
+  ['Low', 'Medium', 'High', 'Extreme'],
+)
+export const enum_tones_traits_qualities_mood = pgEnum('enum_tones_traits_qualities_mood', [
+  'Optimistic',
+  'Somber',
+  'Energetic',
+  'Calm',
+  'Tense',
+  'Celebratory',
+])
+export const enum_tones_traits_qualities_scale = pgEnum('enum_tones_traits_qualities_scale', [
+  'Minute',
+  'Moderate',
+  'Grand',
+  'Epic',
+])
+export const enum_tones_toggle = pgEnum('enum_tones_toggle', ['simple', 'advanced'])
+export const enum_features_traits_nature_list_complexity = pgEnum(
+  'enum_features_traits_nature_list_complexity',
+  ['Low', 'Medium', 'High', 'Extreme'],
+)
+export const enum_features_traits_nature_list_visibility = pgEnum(
+  'enum_features_traits_nature_list_visibility',
+  ['Visible', 'Concealed', 'Integrated', 'Prominent'],
+)
+export const enum_features_traits_nature_list_impact = pgEnum(
+  'enum_features_traits_nature_list_impact',
+  ['Marginal', 'Moderate', 'Significant', 'Critical'],
+)
+export const enum_features_toggle = pgEnum('enum_features_toggle', ['simple', 'advanced'])
+export const enum_specifications_details_conditions_list_compliance = pgEnum(
+  'enum_specifications_details_conditions_list_compliance',
+  ['Mandatory', 'Optional', 'Recommended', 'NotApplicable'],
+)
+export const enum_specifications_metrics_measurement_list_frequency = pgEnum(
+  'enum_specifications_metrics_measurement_list_frequency',
+  ['Once', 'Periodic', 'Continuous', 'OnDemand'],
+)
+export const enum_specifications_metrics_measurement_list_accuracy = pgEnum(
+  'enum_specifications_metrics_measurement_list_accuracy',
+  ['Low', 'Medium', 'High', 'Precision'],
+)
+export const enum_specifications_toggle = pgEnum('enum_specifications_toggle', [
+  'simple',
+  'advanced',
+])
+export const enum_classifications_toggle = pgEnum('enum_classifications_toggle', [
+  'simple',
+  'advanced',
+])
+export const enum_skills_basics_scope_list_scale = pgEnum('enum_skills_basics_scope_list_scale', [
+  'Narrow',
+  'Moderate',
+  'Broad',
+  'Comprehensive',
+])
+export const enum_skills_basics_scope_list_depth = pgEnum('enum_skills_basics_scope_list_depth', [
+  'Basic',
+  'Intermediate',
+  'Advanced',
+  'Expert',
+])
+export const enum_skills_basics_scope_list_rarity = pgEnum('enum_skills_basics_scope_list_rarity', [
+  'Common',
+  'Uncommon',
+  'Rare',
+  'Unique',
+])
+export const enum_skills_details_methods_type = pgEnum('enum_skills_details_methods_type', [
+  'Theoretical',
+  'Practical',
+  'Simulation',
+  'Field',
+])
+export const enum_skills_details_dependencies_type = pgEnum(
+  'enum_skills_details_dependencies_type',
+  ['Prerequisite', 'Corequisite', 'Recommended'],
+)
+export const enum_skills_traits_nature_list_complexity = pgEnum(
+  'enum_skills_traits_nature_list_complexity',
+  ['Low', 'Medium', 'High', 'Extreme'],
+)
+export const enum_skills_traits_nature_list_visibility = pgEnum(
+  'enum_skills_traits_nature_list_visibility',
+  ['Obvious', 'Subtle', 'Concealed', 'Latent'],
+)
+export const enum_skills_traits_nature_list_impact = pgEnum(
+  'enum_skills_traits_nature_list_impact',
+  ['Minor', 'Moderate', 'Major', 'Transformative'],
+)
+export const enum_skills_toggle = pgEnum('enum_skills_toggle', ['simple', 'advanced'])
+export const enum_principles_toggle = pgEnum('enum_principles_toggle', ['simple', 'advanced'])
+export const enum_preferences_traits_reasons_importance = pgEnum(
+  'enum_preferences_traits_reasons_importance',
+  ['Low', 'Medium', 'High', 'Critical'],
+)
+export const enum_preferences_toggle = pgEnum('enum_preferences_toggle', ['simple', 'advanced'])
+export const enum_channels_traits_usage_list_role = pgEnum('enum_channels_traits_usage_list_role', [
+  'Primary',
+  'Secondary',
+  'Backup',
+  'Test',
+])
+export const enum_channels_traits_usage_list_function = pgEnum(
+  'enum_channels_traits_usage_list_function',
+  ['Broadcast', 'Receive', 'Monitor', 'Control'],
+)
+export const enum_channels_traits_validity_list_status = pgEnum(
+  'enum_channels_traits_validity_list_status',
+  ['Active', 'Inactive', 'Pending', 'Deprecated'],
+)
+export const enum_channels_traits_validity_list_condition = pgEnum(
+  'enum_channels_traits_validity_list_condition',
+  ['Operational', 'Degraded', 'Failed', 'Maintenance'],
+)
+export const enum_channels_traits_validity_list_state = pgEnum(
+  'enum_channels_traits_validity_list_state',
+  ['Enabled', 'Disabled', 'Locked'],
+)
+export const enum_channels_toggle = pgEnum('enum_channels_toggle', ['simple', 'advanced'])
+export const enum_channels_basics_protocol_format = pgEnum('enum_channels_basics_protocol_format', [
+  'HTTP',
+  'HTTPS',
+  'FTP',
+  'SFTP',
+  'SMTP',
+  'Custom',
+])
+export const enum_channels_basics_protocol_scheme = pgEnum('enum_channels_basics_protocol_scheme', [
+  'Standard',
+  'Secure',
+  'Legacy',
+])
+export const enum_locations_traits_geography_list_climate = pgEnum(
+  'enum_locations_traits_geography_list_climate',
+  ['Temperate', 'Tropical', 'Arid', 'Continental', 'Polar'],
+)
+export const enum_locations_traits_accessibility_list_approach = pgEnum(
+  'enum_locations_traits_accessibility_list_approach',
+  ['PublicRoad', 'PrivateRoad', 'Air', 'Sea', 'Rail'],
+)
+export const enum_locations_traits_accessibility_list_facilities = pgEnum(
+  'enum_locations_traits_accessibility_list_facilities',
+  ['DisabledAccess', 'VIPEntry', 'ServiceEntry'],
+)
+export const enum_locations_traits_accessibility_list_capacity = pgEnum(
+  'enum_locations_traits_accessibility_list_capacity',
+  ['Small', 'Medium', 'Large', 'Massive'],
+)
+export const enum_locations_toggle = pgEnum('enum_locations_toggle', ['simple', 'advanced'])
 export const enum_forms_confirmation_type = pgEnum('enum_forms_confirmation_type', [
   'message',
   'redirect',
@@ -290,6 +794,6844 @@ export const enum_socials_socials_link_type = pgEnum('enum_socials_socials_link_
   'custom',
 ])
 
+export const series = pgTable(
+  'series',
+  {
+    id: serial('id').primaryKey(),
+    toggle: enum_series_toggle('toggle').default('advanced'),
+    type: integer('type_id')
+      .notNull()
+      .references(() => categories.id, {
+        onDelete: 'set null',
+      }),
+    basics_enable: boolean('basics_enable').default(true),
+    basics_identifiers_code: varchar('basics_identifiers_code').default(''),
+    basics_identifiers_abbreviation: varchar('basics_identifiers_abbreviation').default(''),
+    basics_status: enum_series_basics_status('basics_status').notNull(),
+    basics_visibility_show: boolean('basics_visibility_show').default(false),
+    details_enable: boolean('details_enable').default(true),
+    details_narrative: integer('details_narrative_id').references(() => narratives.id, {
+      onDelete: 'set null',
+    }),
+    details_history: integer('details_history_id').references(() => histories.id, {
+      onDelete: 'set null',
+    }),
+    details_organization: integer('details_organization_id').references(() => organizations.id, {
+      onDelete: 'set null',
+    }),
+    details_classification: integer('details_classification_id').references(
+      () => classifications.id,
+      {
+        onDelete: 'set null',
+      },
+    ),
+    details_features: integer('details_features_id').references(() => features.id, {
+      onDelete: 'set null',
+    }),
+    details_visibility_show: boolean('details_visibility_show').default(false),
+    traits_enable: boolean('traits_enable').default(true),
+    traits_heritage_predecessor: integer('traits_heritage_predecessor_id').references(
+      (): AnyPgColumn => series.id,
+      {
+        onDelete: 'set null',
+      },
+    ),
+    traits_heritage_successor: integer('traits_heritage_successor_id').references(
+      (): AnyPgColumn => series.id,
+      {
+        onDelete: 'set null',
+      },
+    ),
+    traits_specifications: integer('traits_specifications_id').references(() => specifications.id, {
+      onDelete: 'set null',
+    }),
+    traits_schedule: integer('traits_schedule_id')
+      .notNull()
+      .references(() => schedules.id, {
+        onDelete: 'set null',
+      }),
+    traits_visibility_show: boolean('traits_visibility_show').default(false),
+    metrics_enable: boolean('metrics_enable').default(true),
+    metrics_counts_seasons: numeric('metrics_counts_seasons', { mode: 'number' }).default(0),
+    metrics_counts_events: numeric('metrics_counts_events', { mode: 'number' }).default(0),
+    metrics_counts_participants: numeric('metrics_counts_participants', { mode: 'number' }).default(
+      0,
+    ),
+    metrics_visibility_show: boolean('metrics_visibility_show').default(false),
+    assets_enable: boolean('assets_enable').default(true),
+    assets_logo: integer('assets_logo_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    assets_cover: integer('assets_cover_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    assets_archive: integer('assets_archive_id').references(() => archives.id, {
+      onDelete: 'set null',
+    }),
+    assets_visibility_show: boolean('assets_visibility_show').default(false),
+    contexts_enable: boolean('contexts_enable').default(true),
+    contexts_locations: integer('contexts_locations_id').references(() => locations.id, {
+      onDelete: 'set null',
+    }),
+    contexts_notes: integer('contexts_notes_id').references(() => notes.id, {
+      onDelete: 'set null',
+    }),
+    contexts_visibility_show: boolean('contexts_visibility_show').default(false),
+    generateSlug: boolean('generate_slug').default(true),
+    slug: varchar('slug').notNull(),
+    visibility_check_publish: boolean('visibility_check_publish').default(false),
+    visibility_check_featured: boolean('visibility_check_featured').default(false),
+    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => [
+    index('series_type_idx').on(columns.type),
+    uniqueIndex('series_basics_identifiers_basics_identifiers_code_idx').on(
+      columns.basics_identifiers_code,
+    ),
+    index('series_details_details_narrative_idx').on(columns.details_narrative),
+    index('series_details_details_history_idx').on(columns.details_history),
+    index('series_details_details_organization_idx').on(columns.details_organization),
+    index('series_details_details_classification_idx').on(columns.details_classification),
+    index('series_details_details_features_idx').on(columns.details_features),
+    index('series_traits_heritage_traits_heritage_predecessor_idx').on(
+      columns.traits_heritage_predecessor,
+    ),
+    index('series_traits_heritage_traits_heritage_successor_idx').on(
+      columns.traits_heritage_successor,
+    ),
+    index('series_traits_traits_specifications_idx').on(columns.traits_specifications),
+    index('series_traits_traits_schedule_idx').on(columns.traits_schedule),
+    index('series_assets_assets_logo_idx').on(columns.assets_logo),
+    index('series_assets_assets_cover_idx').on(columns.assets_cover),
+    index('series_assets_assets_archive_idx').on(columns.assets_archive),
+    index('series_contexts_contexts_locations_idx').on(columns.contexts_locations),
+    index('series_contexts_contexts_notes_idx').on(columns.contexts_notes),
+    uniqueIndex('series_slug_idx').on(columns.slug),
+    index('series_updated_at_idx').on(columns.updatedAt),
+    index('series_created_at_idx').on(columns.createdAt),
+  ],
+)
+
+export const series_locales = pgTable(
+  'series_locales',
+  {
+    name: varchar('name').notNull().default(''),
+    alias: varchar('alias').default(''),
+    basics_description: varchar('basics_description').default(''),
+    basics_tagline: varchar('basics_tagline').default(''),
+    seo_title: varchar('seo_title'),
+    seo_image: integer('seo_image_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    seo_description: varchar('seo_description'),
+    id: serial('id').primaryKey(),
+    _locale: enum__locales('_locale').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+  },
+  (columns) => [
+    index('series_name_idx').on(columns.name, columns._locale),
+    index('series_seo_seo_image_idx').on(columns.seo_image, columns._locale),
+    uniqueIndex('series_locales_locale_parent_id_unique').on(columns._locale, columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [series.id],
+      name: 'series_locales_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const series_rels = pgTable(
+  'series_rels',
+  {
+    id: serial('id').primaryKey(),
+    order: integer('order'),
+    parent: integer('parent_id').notNull(),
+    path: varchar('path').notNull(),
+    organizationsID: integer('organizations_id'),
+    individualsID: integer('individuals_id'),
+    categoriesID: integer('categories_id'),
+    tagsID: integer('tags_id'),
+  },
+  (columns) => [
+    index('series_rels_order_idx').on(columns.order),
+    index('series_rels_parent_idx').on(columns.parent),
+    index('series_rels_path_idx').on(columns.path),
+    index('series_rels_organizations_id_idx').on(columns.organizationsID),
+    index('series_rels_individuals_id_idx').on(columns.individualsID),
+    index('series_rels_categories_id_idx').on(columns.categoriesID),
+    index('series_rels_tags_id_idx').on(columns.tagsID),
+    foreignKey({
+      columns: [columns['parent']],
+      foreignColumns: [series.id],
+      name: 'series_rels_parent_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['organizationsID']],
+      foreignColumns: [organizations.id],
+      name: 'series_rels_organizations_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['individualsID']],
+      foreignColumns: [individuals.id],
+      name: 'series_rels_individuals_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['categoriesID']],
+      foreignColumns: [categories.id],
+      name: 'series_rels_categories_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['tagsID']],
+      foreignColumns: [tags.id],
+      name: 'series_rels_tags_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const seasons_metrics_counts_list = pgTable(
+  'seasons_metrics_counts_list',
+  {
+    _order: integer('_order').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+    id: varchar('id').primaryKey(),
+    entries: numeric('entries', { mode: 'number' }).default(0),
+    events: numeric('events', { mode: 'number' }).default(0),
+    races: numeric('races', { mode: 'number' }).default(0),
+    settings_show: boolean('settings_show').default(true),
+    settings_featured: boolean('settings_featured').default(false),
+    settings_pinned: boolean('settings_pinned').default(false),
+  },
+  (columns) => [
+    index('seasons_metrics_counts_list_order_idx').on(columns._order),
+    index('seasons_metrics_counts_list_parent_id_idx').on(columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [seasons.id],
+      name: 'seasons_metrics_counts_list_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const seasons = pgTable(
+  'seasons',
+  {
+    id: serial('id').primaryKey(),
+    toggle: enum_seasons_toggle('toggle').default('advanced'),
+    series: integer('series_id')
+      .notNull()
+      .references(() => series.id, {
+        onDelete: 'set null',
+      }),
+    type: integer('type_id')
+      .notNull()
+      .references(() => categories.id, {
+        onDelete: 'set null',
+      }),
+    basics_enable: boolean('basics_enable').default(true),
+    basics_identifiers_code: varchar('basics_identifiers_code').default(''),
+    basics_identifiers_abbreviation: varchar('basics_identifiers_abbreviation').default(''),
+    basics_visibility_show: boolean('basics_visibility_show').default(false),
+    details_enable: boolean('details_enable').default(true),
+    details_narrative: integer('details_narrative_id').references(() => narratives.id, {
+      onDelete: 'set null',
+    }),
+    details_history: integer('details_history_id').references(() => histories.id, {
+      onDelete: 'set null',
+    }),
+    details_schedule: integer('details_schedule_id')
+      .notNull()
+      .references(() => schedules.id, {
+        onDelete: 'set null',
+      }),
+    details_classifications: integer('details_classifications_id').references(
+      () => classifications.id,
+      {
+        onDelete: 'set null',
+      },
+    ),
+    details_regulations: integer('details_regulations_id').references(() => protocols.id, {
+      onDelete: 'set null',
+    }),
+    details_visibility_show: boolean('details_visibility_show').default(false),
+    metrics_enable: boolean('metrics_enable').default(true),
+    metrics_visibility_show: boolean('metrics_visibility_show').default(false),
+    assets_enable: boolean('assets_enable').default(true),
+    assets_cover: integer('assets_cover_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    assets_gallery: integer('assets_gallery_id').references(() => galleries.id, {
+      onDelete: 'set null',
+    }),
+    assets_playlist: integer('assets_playlist_id').references(() => playlists.id, {
+      onDelete: 'set null',
+    }),
+    assets_archive: integer('assets_archive_id').references(() => archives.id, {
+      onDelete: 'set null',
+    }),
+    assets_visibility_show: boolean('assets_visibility_show').default(false),
+    contexts_enable: boolean('contexts_enable').default(true),
+    contexts_teams: integer('contexts_teams_id').references(() => organizations.id, {
+      onDelete: 'set null',
+    }),
+    contexts_participants: integer('contexts_participants_id').references(() => drivers.id, {
+      onDelete: 'set null',
+    }),
+    contexts_notes: integer('contexts_notes_id').references(() => notes.id, {
+      onDelete: 'set null',
+    }),
+    contexts_visibility_show: boolean('contexts_visibility_show').default(false),
+    generateSlug: boolean('generate_slug').default(true),
+    slug: varchar('slug').notNull(),
+    visibility_check_publish: boolean('visibility_check_publish').default(false),
+    visibility_check_featured: boolean('visibility_check_featured').default(false),
+    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => [
+    index('seasons_series_idx').on(columns.series),
+    index('seasons_type_idx').on(columns.type),
+    uniqueIndex('seasons_basics_identifiers_basics_identifiers_code_idx').on(
+      columns.basics_identifiers_code,
+    ),
+    index('seasons_details_details_narrative_idx').on(columns.details_narrative),
+    index('seasons_details_details_history_idx').on(columns.details_history),
+    index('seasons_details_details_schedule_idx').on(columns.details_schedule),
+    index('seasons_details_details_classifications_idx').on(columns.details_classifications),
+    index('seasons_details_details_regulations_idx').on(columns.details_regulations),
+    index('seasons_assets_assets_cover_idx').on(columns.assets_cover),
+    index('seasons_assets_assets_gallery_idx').on(columns.assets_gallery),
+    index('seasons_assets_assets_playlist_idx').on(columns.assets_playlist),
+    index('seasons_assets_assets_archive_idx').on(columns.assets_archive),
+    index('seasons_contexts_contexts_teams_idx').on(columns.contexts_teams),
+    index('seasons_contexts_contexts_participants_idx').on(columns.contexts_participants),
+    index('seasons_contexts_contexts_notes_idx').on(columns.contexts_notes),
+    uniqueIndex('seasons_slug_idx').on(columns.slug),
+    index('seasons_updated_at_idx').on(columns.updatedAt),
+    index('seasons_created_at_idx').on(columns.createdAt),
+  ],
+)
+
+export const seasons_locales = pgTable(
+  'seasons_locales',
+  {
+    name: varchar('name').notNull().default(''),
+    basics_description: varchar('basics_description').default(''),
+    seo_title: varchar('seo_title'),
+    seo_image: integer('seo_image_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    seo_description: varchar('seo_description'),
+    id: serial('id').primaryKey(),
+    _locale: enum__locales('_locale').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+  },
+  (columns) => [
+    index('seasons_name_idx').on(columns.name, columns._locale),
+    index('seasons_seo_seo_image_idx').on(columns.seo_image, columns._locale),
+    uniqueIndex('seasons_locales_locale_parent_id_unique').on(columns._locale, columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [seasons.id],
+      name: 'seasons_locales_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const seasons_rels = pgTable(
+  'seasons_rels',
+  {
+    id: serial('id').primaryKey(),
+    order: integer('order'),
+    parent: integer('parent_id').notNull(),
+    path: varchar('path').notNull(),
+    organizationsID: integer('organizations_id'),
+    individualsID: integer('individuals_id'),
+    categoriesID: integer('categories_id'),
+    tagsID: integer('tags_id'),
+  },
+  (columns) => [
+    index('seasons_rels_order_idx').on(columns.order),
+    index('seasons_rels_parent_idx').on(columns.parent),
+    index('seasons_rels_path_idx').on(columns.path),
+    index('seasons_rels_organizations_id_idx').on(columns.organizationsID),
+    index('seasons_rels_individuals_id_idx').on(columns.individualsID),
+    index('seasons_rels_categories_id_idx').on(columns.categoriesID),
+    index('seasons_rels_tags_id_idx').on(columns.tagsID),
+    foreignKey({
+      columns: [columns['parent']],
+      foreignColumns: [seasons.id],
+      name: 'seasons_rels_parent_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['organizationsID']],
+      foreignColumns: [organizations.id],
+      name: 'seasons_rels_organizations_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['individualsID']],
+      foreignColumns: [individuals.id],
+      name: 'seasons_rels_individuals_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['categoriesID']],
+      foreignColumns: [categories.id],
+      name: 'seasons_rels_categories_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['tagsID']],
+      foreignColumns: [tags.id],
+      name: 'seasons_rels_tags_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const events = pgTable(
+  'events',
+  {
+    id: serial('id').primaryKey(),
+    toggle: enum_events_toggle('toggle').default('advanced'),
+    type: integer('type_id')
+      .notNull()
+      .references(() => categories.id, {
+        onDelete: 'set null',
+      }),
+    basics_enable: boolean('basics_enable').default(true),
+    basics_identifiers_code: varchar('basics_identifiers_code').default(''),
+    basics_identifiers_round: varchar('basics_identifiers_round').default(''),
+    basics_status: enum_events_basics_status('basics_status').notNull(),
+    basics_access: enum_events_basics_access('basics_access').notNull(),
+    basics_visibility_show: boolean('basics_visibility_show').default(false),
+    details_enable: boolean('details_enable').default(true),
+    details_narrative: integer('details_narrative_id').references(() => narratives.id, {
+      onDelete: 'set null',
+    }),
+    details_story: integer('details_story_id').references(() => stories.id, {
+      onDelete: 'set null',
+    }),
+    details_season: integer('details_season_id')
+      .notNull()
+      .references(() => seasons.id, {
+        onDelete: 'set null',
+      }),
+    details_location: integer('details_location_id')
+      .notNull()
+      .references(() => locations.id, {
+        onDelete: 'set null',
+      }),
+    details_classification: integer('details_classification_id').references(
+      () => classifications.id,
+      {
+        onDelete: 'set null',
+      },
+    ),
+    details_features: integer('details_features_id').references(() => features.id, {
+      onDelete: 'set null',
+    }),
+    details_regulations: integer('details_regulations_id').references(() => protocols.id, {
+      onDelete: 'set null',
+    }),
+    details_visibility_show: boolean('details_visibility_show').default(false),
+    traits_enable: boolean('traits_enable').default(true),
+    traits_chronology_start: timestamp('traits_chronology_start', {
+      mode: 'string',
+      withTimezone: true,
+      precision: 3,
+    }).notNull(),
+    traits_chronology_end: timestamp('traits_chronology_end', {
+      mode: 'string',
+      withTimezone: true,
+      precision: 3,
+    }).notNull(),
+    traits_chronology_timezone: varchar('traits_chronology_timezone').notNull().default(''),
+    traits_format: integer('traits_format_id')
+      .notNull()
+      .references(() => categories.id, {
+        onDelete: 'set null',
+      }),
+    traits_visibility_show: boolean('traits_visibility_show').default(false),
+    metrics_enable: boolean('metrics_enable').default(true),
+    metrics_specifications: integer('metrics_specifications_id').references(
+      () => specifications.id,
+      {
+        onDelete: 'set null',
+      },
+    ),
+    metrics_visibility_show: boolean('metrics_visibility_show').default(false),
+    assets_enable: boolean('assets_enable').default(true),
+    assets_poster: integer('assets_poster_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    assets_cover: integer('assets_cover_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    assets_gallery: integer('assets_gallery_id').references(() => galleries.id, {
+      onDelete: 'set null',
+    }),
+    assets_playlist: integer('assets_playlist_id').references(() => playlists.id, {
+      onDelete: 'set null',
+    }),
+    assets_archive: integer('assets_archive_id').references(() => archives.id, {
+      onDelete: 'set null',
+    }),
+    assets_visibility_show: boolean('assets_visibility_show').default(false),
+    contexts_enable: boolean('contexts_enable').default(true),
+    contexts_highlights: integer('contexts_highlights_id').references(() => highlights.id, {
+      onDelete: 'set null',
+    }),
+    contexts_insights: integer('contexts_insights_id').references(() => notes.id, {
+      onDelete: 'set null',
+    }),
+    contexts_visibility_show: boolean('contexts_visibility_show').default(false),
+    generateSlug: boolean('generate_slug').default(true),
+    slug: varchar('slug').notNull(),
+    visibility_check_publish: boolean('visibility_check_publish').default(false),
+    visibility_check_featured: boolean('visibility_check_featured').default(false),
+    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => [
+    index('events_type_idx').on(columns.type),
+    uniqueIndex('events_basics_identifiers_basics_identifiers_code_idx').on(
+      columns.basics_identifiers_code,
+    ),
+    index('events_details_details_narrative_idx').on(columns.details_narrative),
+    index('events_details_details_story_idx').on(columns.details_story),
+    index('events_details_details_season_idx').on(columns.details_season),
+    index('events_details_details_location_idx').on(columns.details_location),
+    index('events_details_details_classification_idx').on(columns.details_classification),
+    index('events_details_details_features_idx').on(columns.details_features),
+    index('events_details_details_regulations_idx').on(columns.details_regulations),
+    index('events_traits_traits_format_idx').on(columns.traits_format),
+    index('events_metrics_metrics_specifications_idx').on(columns.metrics_specifications),
+    index('events_assets_assets_poster_idx').on(columns.assets_poster),
+    index('events_assets_assets_cover_idx').on(columns.assets_cover),
+    index('events_assets_assets_gallery_idx').on(columns.assets_gallery),
+    index('events_assets_assets_playlist_idx').on(columns.assets_playlist),
+    index('events_assets_assets_archive_idx').on(columns.assets_archive),
+    index('events_contexts_contexts_highlights_idx').on(columns.contexts_highlights),
+    index('events_contexts_contexts_insights_idx').on(columns.contexts_insights),
+    uniqueIndex('events_slug_idx').on(columns.slug),
+    index('events_updated_at_idx').on(columns.updatedAt),
+    index('events_created_at_idx').on(columns.createdAt),
+  ],
+)
+
+export const events_locales = pgTable(
+  'events_locales',
+  {
+    name: varchar('name').notNull().default(''),
+    basics_description: varchar('basics_description').default(''),
+    seo_title: varchar('seo_title'),
+    seo_image: integer('seo_image_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    seo_description: varchar('seo_description'),
+    id: serial('id').primaryKey(),
+    _locale: enum__locales('_locale').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+  },
+  (columns) => [
+    index('events_name_idx').on(columns.name, columns._locale),
+    index('events_seo_seo_image_idx').on(columns.seo_image, columns._locale),
+    uniqueIndex('events_locales_locale_parent_id_unique').on(columns._locale, columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [events.id],
+      name: 'events_locales_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const events_rels = pgTable(
+  'events_rels',
+  {
+    id: serial('id').primaryKey(),
+    order: integer('order'),
+    parent: integer('parent_id').notNull(),
+    path: varchar('path').notNull(),
+    categoriesID: integer('categories_id'),
+    tagsID: integer('tags_id'),
+  },
+  (columns) => [
+    index('events_rels_order_idx').on(columns.order),
+    index('events_rels_parent_idx').on(columns.parent),
+    index('events_rels_path_idx').on(columns.path),
+    index('events_rels_categories_id_idx').on(columns.categoriesID),
+    index('events_rels_tags_id_idx').on(columns.tagsID),
+    foreignKey({
+      columns: [columns['parent']],
+      foreignColumns: [events.id],
+      name: 'events_rels_parent_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['categoriesID']],
+      foreignColumns: [categories.id],
+      name: 'events_rels_categories_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['tagsID']],
+      foreignColumns: [tags.id],
+      name: 'events_rels_tags_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const sessions_traits_constraints = pgTable(
+  'sessions_traits_constraints',
+  {
+    _order: integer('_order').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+    id: varchar('id').primaryKey(),
+    type: integer('type_id').references(() => classifications.id, {
+      onDelete: 'set null',
+    }),
+    limit: varchar('limit').default(''),
+    unit: varchar('unit').default(''),
+  },
+  (columns) => [
+    index('sessions_traits_constraints_order_idx').on(columns._order),
+    index('sessions_traits_constraints_parent_id_idx').on(columns._parentID),
+    index('sessions_traits_constraints_type_idx').on(columns.type),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [sessions.id],
+      name: 'sessions_traits_constraints_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const sessions_traits_parameters = pgTable(
+  'sessions_traits_parameters',
+  {
+    _order: integer('_order').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+    id: varchar('id').primaryKey(),
+    parameter: integer('parameter_id').references(() => classifications.id, {
+      onDelete: 'set null',
+    }),
+    value: varchar('value').default(''),
+    unit: varchar('unit').default(''),
+  },
+  (columns) => [
+    index('sessions_traits_parameters_order_idx').on(columns._order),
+    index('sessions_traits_parameters_parent_id_idx').on(columns._parentID),
+    index('sessions_traits_parameters_parameter_idx').on(columns.parameter),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [sessions.id],
+      name: 'sessions_traits_parameters_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const sessions = pgTable(
+  'sessions',
+  {
+    id: serial('id').primaryKey(),
+    toggle: enum_sessions_toggle('toggle').default('advanced'),
+    code: varchar('code').default(''),
+    type: integer('type_id')
+      .notNull()
+      .references(() => categories.id, {
+        onDelete: 'set null',
+      }),
+    basics_enable: boolean('basics_enable').default(true),
+    basics_status: enum_sessions_basics_status('basics_status').notNull(),
+    basics_access: enum_sessions_basics_access('basics_access').notNull(),
+    basics_visibility_show: boolean('basics_visibility_show').default(false),
+    details_enable: boolean('details_enable').default(true),
+    details_narrative: integer('details_narrative_id').references(() => narratives.id, {
+      onDelete: 'set null',
+    }),
+    details_event: integer('details_event_id')
+      .notNull()
+      .references(() => events.id, {
+        onDelete: 'set null',
+      }),
+    details_format_segment: varchar('details_format_segment').default(''),
+    details_format_duration: numeric('details_format_duration', { mode: 'number' }).default(0),
+    details_format_interval: numeric('details_format_interval', { mode: 'number' }).default(0),
+    details_format_specification: varchar('details_format_specification').default(''),
+    details_classifications: integer('details_classifications_id').references(
+      () => classifications.id,
+      {
+        onDelete: 'set null',
+      },
+    ),
+    details_features: integer('details_features_id').references(() => features.id, {
+      onDelete: 'set null',
+    }),
+    details_protocols: integer('details_protocols_id').references(() => protocols.id, {
+      onDelete: 'set null',
+    }),
+    details_strategies: integer('details_strategies_id').references(() => strategies.id, {
+      onDelete: 'set null',
+    }),
+    details_visibility_show: boolean('details_visibility_show').default(false),
+    traits_enable: boolean('traits_enable').default(true),
+    traits_specifications: integer('traits_specifications_id').references(() => specifications.id, {
+      onDelete: 'set null',
+    }),
+    traits_visibility_show: boolean('traits_visibility_show').default(false),
+    metrics_enable: boolean('metrics_enable').default(true),
+    metrics_quantifiers_laps: numeric('metrics_quantifiers_laps', { mode: 'number' }).default(0),
+    metrics_quantifiers_distance: varchar('metrics_quantifiers_distance').default(''),
+    metrics_quantifiers_duration: varchar('metrics_quantifiers_duration').default(''),
+    metrics_visibility_show: boolean('metrics_visibility_show').default(false),
+    assets_enable: boolean('assets_enable').default(true),
+    assets_gallery: integer('assets_gallery_id').references(() => galleries.id, {
+      onDelete: 'set null',
+    }),
+    assets_playlist: integer('assets_playlist_id').references(() => playlists.id, {
+      onDelete: 'set null',
+    }),
+    assets_visibility_show: boolean('assets_visibility_show').default(false),
+    contexts_enable: boolean('contexts_enable').default(true),
+    contexts_highlights: integer('contexts_highlights_id').references(() => highlights.id, {
+      onDelete: 'set null',
+    }),
+    contexts_incidents: integer('contexts_incidents_id').references(() => incidents.id, {
+      onDelete: 'set null',
+    }),
+    contexts_participants: integer('contexts_participants_id').references(() => drivers.id, {
+      onDelete: 'set null',
+    }),
+    contexts_crews: integer('contexts_crews_id').references(() => members.id, {
+      onDelete: 'set null',
+    }),
+    contexts_insights: integer('contexts_insights_id').references(() => notes.id, {
+      onDelete: 'set null',
+    }),
+    contexts_visibility_show: boolean('contexts_visibility_show').default(false),
+    generateSlug: boolean('generate_slug').default(true),
+    slug: varchar('slug').notNull(),
+    visibility_check_publish: boolean('visibility_check_publish').default(false),
+    visibility_check_featured: boolean('visibility_check_featured').default(false),
+    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => [
+    uniqueIndex('sessions_code_idx').on(columns.code),
+    index('sessions_type_idx').on(columns.type),
+    index('sessions_details_details_narrative_idx').on(columns.details_narrative),
+    index('sessions_details_details_event_idx').on(columns.details_event),
+    index('sessions_details_details_classifications_idx').on(columns.details_classifications),
+    index('sessions_details_details_features_idx').on(columns.details_features),
+    index('sessions_details_details_protocols_idx').on(columns.details_protocols),
+    index('sessions_details_details_strategies_idx').on(columns.details_strategies),
+    index('sessions_traits_traits_specifications_idx').on(columns.traits_specifications),
+    index('sessions_assets_assets_gallery_idx').on(columns.assets_gallery),
+    index('sessions_assets_assets_playlist_idx').on(columns.assets_playlist),
+    index('sessions_contexts_contexts_highlights_idx').on(columns.contexts_highlights),
+    index('sessions_contexts_contexts_incidents_idx').on(columns.contexts_incidents),
+    index('sessions_contexts_contexts_participants_idx').on(columns.contexts_participants),
+    index('sessions_contexts_contexts_crews_idx').on(columns.contexts_crews),
+    index('sessions_contexts_contexts_insights_idx').on(columns.contexts_insights),
+    uniqueIndex('sessions_slug_idx').on(columns.slug),
+    index('sessions_updated_at_idx').on(columns.updatedAt),
+    index('sessions_created_at_idx').on(columns.createdAt),
+  ],
+)
+
+export const sessions_locales = pgTable(
+  'sessions_locales',
+  {
+    name: varchar('name').notNull().default(''),
+    alias: varchar('alias').default(''),
+    basics_description: varchar('basics_description').default(''),
+    seo_title: varchar('seo_title'),
+    seo_image: integer('seo_image_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    seo_description: varchar('seo_description'),
+    id: serial('id').primaryKey(),
+    _locale: enum__locales('_locale').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+  },
+  (columns) => [
+    index('sessions_name_idx').on(columns.name, columns._locale),
+    index('sessions_seo_seo_image_idx').on(columns.seo_image, columns._locale),
+    uniqueIndex('sessions_locales_locale_parent_id_unique').on(columns._locale, columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [sessions.id],
+      name: 'sessions_locales_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const sessions_rels = pgTable(
+  'sessions_rels',
+  {
+    id: serial('id').primaryKey(),
+    order: integer('order'),
+    parent: integer('parent_id').notNull(),
+    path: varchar('path').notNull(),
+    organizationsID: integer('organizations_id'),
+    individualsID: integer('individuals_id'),
+    categoriesID: integer('categories_id'),
+    tagsID: integer('tags_id'),
+  },
+  (columns) => [
+    index('sessions_rels_order_idx').on(columns.order),
+    index('sessions_rels_parent_idx').on(columns.parent),
+    index('sessions_rels_path_idx').on(columns.path),
+    index('sessions_rels_organizations_id_idx').on(columns.organizationsID),
+    index('sessions_rels_individuals_id_idx').on(columns.individualsID),
+    index('sessions_rels_categories_id_idx').on(columns.categoriesID),
+    index('sessions_rels_tags_id_idx').on(columns.tagsID),
+    foreignKey({
+      columns: [columns['parent']],
+      foreignColumns: [sessions.id],
+      name: 'sessions_rels_parent_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['organizationsID']],
+      foreignColumns: [organizations.id],
+      name: 'sessions_rels_organizations_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['individualsID']],
+      foreignColumns: [individuals.id],
+      name: 'sessions_rels_individuals_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['categoriesID']],
+      foreignColumns: [categories.id],
+      name: 'sessions_rels_categories_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['tagsID']],
+      foreignColumns: [tags.id],
+      name: 'sessions_rels_tags_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const entries_traits_eligibility_list = pgTable(
+  'entries_traits_eligibility_list',
+  {
+    _order: integer('_order').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+    id: varchar('id').primaryKey(),
+    license: varchar('license').default(''),
+    waiver: varchar('waiver').default(''),
+    restriction: varchar('restriction').default(''),
+    settings_show: boolean('settings_show').default(true),
+    settings_featured: boolean('settings_featured').default(false),
+    settings_pinned: boolean('settings_pinned').default(false),
+  },
+  (columns) => [
+    index('entries_traits_eligibility_list_order_idx').on(columns._order),
+    index('entries_traits_eligibility_list_parent_id_idx').on(columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [entries.id],
+      name: 'entries_traits_eligibility_list_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const entries_metrics_parameters = pgTable(
+  'entries_metrics_parameters',
+  {
+    _order: integer('_order').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+    id: varchar('id').primaryKey(),
+    parameter: integer('parameter_id').references(() => classifications.id, {
+      onDelete: 'set null',
+    }),
+    value: varchar('value').default(''),
+    unit: varchar('unit').default(''),
+  },
+  (columns) => [
+    index('entries_metrics_parameters_order_idx').on(columns._order),
+    index('entries_metrics_parameters_parent_id_idx').on(columns._parentID),
+    index('entries_metrics_parameters_parameter_idx').on(columns.parameter),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [entries.id],
+      name: 'entries_metrics_parameters_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const entries = pgTable(
+  'entries',
+  {
+    id: serial('id').primaryKey(),
+    toggle: enum_entries_toggle('toggle').default('advanced'),
+    type: integer('type_id')
+      .notNull()
+      .references(() => categories.id, {
+        onDelete: 'set null',
+      }),
+    basics_enable: boolean('basics_enable').default(true),
+    basics_identifiers_number: varchar('basics_identifiers_number').notNull().default(''),
+    basics_identifiers_plate: varchar('basics_identifiers_plate').default(''),
+    basics_status: enum_entries_basics_status('basics_status').notNull(),
+    basics_visibility_show: boolean('basics_visibility_show').default(false),
+    details_enable: boolean('details_enable').default(true),
+    details_narrative: integer('details_narrative_id').references(() => narratives.id, {
+      onDelete: 'set null',
+    }),
+    details_session: integer('details_session_id')
+      .notNull()
+      .references(() => sessions.id, {
+        onDelete: 'set null',
+      }),
+    details_drivers: integer('details_drivers_id')
+      .notNull()
+      .references(() => drivers.id, {
+        onDelete: 'set null',
+      }),
+    details_crew: integer('details_crew_id').references(() => members.id, {
+      onDelete: 'set null',
+    }),
+    details_car: integer('details_car_id')
+      .notNull()
+      .references(() => cars.id, {
+        onDelete: 'set null',
+      }),
+    details_classification: integer('details_classification_id').references(
+      () => classifications.id,
+      {
+        onDelete: 'set null',
+      },
+    ),
+    details_visibility_show: boolean('details_visibility_show').default(false),
+    traits_enable: boolean('traits_enable').default(true),
+    traits_role: enum_entries_traits_role('traits_role'),
+    traits_preferences: integer('traits_preferences_id').references(() => preferences.id, {
+      onDelete: 'set null',
+    }),
+    traits_specifications: integer('traits_specifications_id').references(() => specifications.id, {
+      onDelete: 'set null',
+    }),
+    traits_visibility_show: boolean('traits_visibility_show').default(false),
+    metrics_enable: boolean('metrics_enable').default(true),
+    metrics_positions_grid: numeric('metrics_positions_grid', { mode: 'number' }).default(0),
+    metrics_positions_start: numeric('metrics_positions_start', { mode: 'number' }).default(0),
+    metrics_positions_finish: numeric('metrics_positions_finish', { mode: 'number' }).default(0),
+    metrics_positions_laps: numeric('metrics_positions_laps', { mode: 'number' }).default(0),
+    metrics_visibility_show: boolean('metrics_visibility_show').default(false),
+    assets_enable: boolean('assets_enable').default(true),
+    assets_thumbnail: integer('assets_thumbnail_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    assets_livery: integer('assets_livery_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    assets_gallery: integer('assets_gallery_id').references(() => galleries.id, {
+      onDelete: 'set null',
+    }),
+    assets_playlist: integer('assets_playlist_id').references(() => playlists.id, {
+      onDelete: 'set null',
+    }),
+    assets_visibility_show: boolean('assets_visibility_show').default(false),
+    contexts_enable: boolean('contexts_enable').default(true),
+    contexts_notes: integer('contexts_notes_id').references(() => notes.id, {
+      onDelete: 'set null',
+    }),
+    contexts_visibility_show: boolean('contexts_visibility_show').default(false),
+    generateSlug: boolean('generate_slug').default(true),
+    slug: varchar('slug').notNull(),
+    visibility_check_publish: boolean('visibility_check_publish').default(false),
+    visibility_check_featured: boolean('visibility_check_featured').default(false),
+    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => [
+    index('entries_type_idx').on(columns.type),
+    index('entries_basics_identifiers_basics_identifiers_number_idx').on(
+      columns.basics_identifiers_number,
+    ),
+    index('entries_details_details_narrative_idx').on(columns.details_narrative),
+    index('entries_details_details_session_idx').on(columns.details_session),
+    index('entries_details_details_drivers_idx').on(columns.details_drivers),
+    index('entries_details_details_crew_idx').on(columns.details_crew),
+    index('entries_details_details_car_idx').on(columns.details_car),
+    index('entries_details_details_classification_idx').on(columns.details_classification),
+    index('entries_traits_traits_preferences_idx').on(columns.traits_preferences),
+    index('entries_traits_traits_specifications_idx').on(columns.traits_specifications),
+    index('entries_assets_assets_thumbnail_idx').on(columns.assets_thumbnail),
+    index('entries_assets_assets_livery_idx').on(columns.assets_livery),
+    index('entries_assets_assets_gallery_idx').on(columns.assets_gallery),
+    index('entries_assets_assets_playlist_idx').on(columns.assets_playlist),
+    index('entries_contexts_contexts_notes_idx').on(columns.contexts_notes),
+    uniqueIndex('entries_slug_idx').on(columns.slug),
+    index('entries_updated_at_idx').on(columns.updatedAt),
+    index('entries_created_at_idx').on(columns.createdAt),
+  ],
+)
+
+export const entries_locales = pgTable(
+  'entries_locales',
+  {
+    name: varchar('name').notNull().default(''),
+    basics_description: varchar('basics_description').default(''),
+    seo_title: varchar('seo_title'),
+    seo_image: integer('seo_image_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    seo_description: varchar('seo_description'),
+    id: serial('id').primaryKey(),
+    _locale: enum__locales('_locale').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+  },
+  (columns) => [
+    index('entries_name_idx').on(columns.name, columns._locale),
+    index('entries_seo_seo_image_idx').on(columns.seo_image, columns._locale),
+    uniqueIndex('entries_locales_locale_parent_id_unique').on(columns._locale, columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [entries.id],
+      name: 'entries_locales_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const entries_rels = pgTable(
+  'entries_rels',
+  {
+    id: serial('id').primaryKey(),
+    order: integer('order'),
+    parent: integer('parent_id').notNull(),
+    path: varchar('path').notNull(),
+    categoriesID: integer('categories_id'),
+    tagsID: integer('tags_id'),
+  },
+  (columns) => [
+    index('entries_rels_order_idx').on(columns.order),
+    index('entries_rels_parent_idx').on(columns.parent),
+    index('entries_rels_path_idx').on(columns.path),
+    index('entries_rels_categories_id_idx').on(columns.categoriesID),
+    index('entries_rels_tags_id_idx').on(columns.tagsID),
+    foreignKey({
+      columns: [columns['parent']],
+      foreignColumns: [entries.id],
+      name: 'entries_rels_parent_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['categoriesID']],
+      foreignColumns: [categories.id],
+      name: 'entries_rels_categories_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['tagsID']],
+      foreignColumns: [tags.id],
+      name: 'entries_rels_tags_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const results_traits_achievement_list = pgTable(
+  'results_traits_achievement_list',
+  {
+    _order: integer('_order').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+    id: varchar('id').primaryKey(),
+    gap: varchar('gap').default(''),
+    interval: varchar('interval').default(''),
+    status: varchar('status').default(''),
+    settings_show: boolean('settings_show').default(true),
+    settings_featured: boolean('settings_featured').default(false),
+    settings_pinned: boolean('settings_pinned').default(false),
+  },
+  (columns) => [
+    index('results_traits_achievement_list_order_idx').on(columns._order),
+    index('results_traits_achievement_list_parent_id_idx').on(columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [results.id],
+      name: 'results_traits_achievement_list_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const results_metrics_performance_list = pgTable(
+  'results_metrics_performance_list',
+  {
+    _order: integer('_order').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+    id: varchar('id').primaryKey(),
+    laps: numeric('laps', { mode: 'number' }).default(0),
+    time: varchar('time').default(''),
+    speed: varchar('speed').default(''),
+    distance: varchar('distance').default(''),
+    settings_show: boolean('settings_show').default(true),
+    settings_featured: boolean('settings_featured').default(false),
+    settings_pinned: boolean('settings_pinned').default(false),
+  },
+  (columns) => [
+    index('results_metrics_performance_list_order_idx').on(columns._order),
+    index('results_metrics_performance_list_parent_id_idx').on(columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [results.id],
+      name: 'results_metrics_performance_list_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const results_metrics_stoppages = pgTable(
+  'results_metrics_stoppages',
+  {
+    _order: integer('_order').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+    id: varchar('id').primaryKey(),
+    reason: varchar('reason').default(''),
+    duration: varchar('duration').default(''),
+    lap: numeric('lap', { mode: 'number' }).default(0),
+  },
+  (columns) => [
+    index('results_metrics_stoppages_order_idx').on(columns._order),
+    index('results_metrics_stoppages_parent_id_idx').on(columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [results.id],
+      name: 'results_metrics_stoppages_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const results = pgTable(
+  'results',
+  {
+    id: serial('id').primaryKey(),
+    toggle: enum_results_toggle('toggle').default('advanced'),
+    type: integer('type_id')
+      .notNull()
+      .references(() => categories.id, {
+        onDelete: 'set null',
+      }),
+    basics_enable: boolean('basics_enable').default(true),
+    basics_status: enum_results_basics_status('basics_status').notNull(),
+    basics_visibility_show: boolean('basics_visibility_show').default(false),
+    details_enable: boolean('details_enable').default(true),
+    details_narrative: integer('details_narrative_id').references(() => narratives.id, {
+      onDelete: 'set null',
+    }),
+    details_classification: integer('details_classification_id').references(
+      () => classifications.id,
+      {
+        onDelete: 'set null',
+      },
+    ),
+    details_highlights: integer('details_highlights_id').references(() => highlights.id, {
+      onDelete: 'set null',
+    }),
+    details_incidents: integer('details_incidents_id').references(() => incidents.id, {
+      onDelete: 'set null',
+    }),
+    details_visibility_show: boolean('details_visibility_show').default(false),
+    traits_enable: boolean('traits_enable').default(true),
+    traits_position_overall: numeric('traits_position_overall', { mode: 'number' })
+      .notNull()
+      .default(0),
+    traits_position_class: numeric('traits_position_class', { mode: 'number' }).default(0),
+    traits_position_order: numeric('traits_position_order', { mode: 'number' }).default(0),
+    traits_visibility_show: boolean('traits_visibility_show').default(false),
+    metrics_enable: boolean('metrics_enable').default(true),
+    metrics_visibility_show: boolean('metrics_visibility_show').default(false),
+    assets_enable: boolean('assets_enable').default(true),
+    assets_visualization: integer('assets_visualization_id').references(() => visualizations.id, {
+      onDelete: 'set null',
+    }),
+    assets_visibility_show: boolean('assets_visibility_show').default(false),
+    contexts_enable: boolean('contexts_enable').default(true),
+    contexts_entry: integer('contexts_entry_id')
+      .notNull()
+      .references(() => entries.id, {
+        onDelete: 'set null',
+      }),
+    contexts_notes: integer('contexts_notes_id').references(() => notes.id, {
+      onDelete: 'set null',
+    }),
+    contexts_visibility_show: boolean('contexts_visibility_show').default(false),
+    generateSlug: boolean('generate_slug').default(true),
+    slug: varchar('slug').notNull(),
+    visibility_check_publish: boolean('visibility_check_publish').default(false),
+    visibility_check_featured: boolean('visibility_check_featured').default(false),
+    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => [
+    index('results_type_idx').on(columns.type),
+    index('results_details_details_narrative_idx').on(columns.details_narrative),
+    index('results_details_details_classification_idx').on(columns.details_classification),
+    index('results_details_details_highlights_idx').on(columns.details_highlights),
+    index('results_details_details_incidents_idx').on(columns.details_incidents),
+    index('results_assets_assets_visualization_idx').on(columns.assets_visualization),
+    index('results_contexts_contexts_entry_idx').on(columns.contexts_entry),
+    index('results_contexts_contexts_notes_idx').on(columns.contexts_notes),
+    uniqueIndex('results_slug_idx').on(columns.slug),
+    index('results_updated_at_idx').on(columns.updatedAt),
+    index('results_created_at_idx').on(columns.createdAt),
+  ],
+)
+
+export const results_locales = pgTable(
+  'results_locales',
+  {
+    name: varchar('name').notNull().default(''),
+    basics_description: varchar('basics_description').default(''),
+    seo_title: varchar('seo_title'),
+    seo_image: integer('seo_image_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    seo_description: varchar('seo_description'),
+    id: serial('id').primaryKey(),
+    _locale: enum__locales('_locale').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+  },
+  (columns) => [
+    index('results_name_idx').on(columns.name, columns._locale),
+    index('results_seo_seo_image_idx').on(columns.seo_image, columns._locale),
+    uniqueIndex('results_locales_locale_parent_id_unique').on(columns._locale, columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [results.id],
+      name: 'results_locales_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const results_rels = pgTable(
+  'results_rels',
+  {
+    id: serial('id').primaryKey(),
+    order: integer('order'),
+    parent: integer('parent_id').notNull(),
+    path: varchar('path').notNull(),
+    categoriesID: integer('categories_id'),
+    tagsID: integer('tags_id'),
+  },
+  (columns) => [
+    index('results_rels_order_idx').on(columns.order),
+    index('results_rels_parent_idx').on(columns.parent),
+    index('results_rels_path_idx').on(columns.path),
+    index('results_rels_categories_id_idx').on(columns.categoriesID),
+    index('results_rels_tags_id_idx').on(columns.tagsID),
+    foreignKey({
+      columns: [columns['parent']],
+      foreignColumns: [results.id],
+      name: 'results_rels_parent_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['categoriesID']],
+      foreignColumns: [categories.id],
+      name: 'results_rels_categories_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['tagsID']],
+      foreignColumns: [tags.id],
+      name: 'results_rels_tags_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const points_traits_ranking_list = pgTable(
+  'points_traits_ranking_list',
+  {
+    _order: integer('_order').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+    id: varchar('id').primaryKey(),
+    before: numeric('before', { mode: 'number' }).default(0),
+    after: numeric('after', { mode: 'number' }).default(0),
+    delta: numeric('delta', { mode: 'number' }).default(0),
+    settings_show: boolean('settings_show').default(true),
+    settings_featured: boolean('settings_featured').default(false),
+    settings_pinned: boolean('settings_pinned').default(false),
+  },
+  (columns) => [
+    index('points_traits_ranking_list_order_idx').on(columns._order),
+    index('points_traits_ranking_list_parent_id_idx').on(columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [points.id],
+      name: 'points_traits_ranking_list_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const points_traits_modifiers = pgTable(
+  'points_traits_modifiers',
+  {
+    _order: integer('_order').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+    id: varchar('id').primaryKey(),
+    condition: varchar('condition').default(''),
+    adjustment: numeric('adjustment', { mode: 'number' }).default(0),
+    impact: varchar('impact').default(''),
+  },
+  (columns) => [
+    index('points_traits_modifiers_order_idx').on(columns._order),
+    index('points_traits_modifiers_parent_id_idx').on(columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [points.id],
+      name: 'points_traits_modifiers_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const points = pgTable(
+  'points',
+  {
+    id: serial('id').primaryKey(),
+    toggle: enum_points_toggle('toggle').default('advanced'),
+    type: integer('type_id')
+      .notNull()
+      .references(() => categories.id, {
+        onDelete: 'set null',
+      }),
+    basics_enable: boolean('basics_enable').default(true),
+    basics_value: numeric('basics_value', { mode: 'number' }).notNull().default(0),
+    basics_scale: enum_points_basics_scale('basics_scale'),
+    basics_visibility_show: boolean('basics_visibility_show').default(false),
+    details_enable: boolean('details_enable').default(true),
+    details_result: integer('details_result_id')
+      .notNull()
+      .references(() => results.id, {
+        onDelete: 'set null',
+      }),
+    details_classification: integer('details_classification_id').references(
+      () => classifications.id,
+      {
+        onDelete: 'set null',
+      },
+    ),
+    details_specification: integer('details_specification_id').references(() => specifications.id, {
+      onDelete: 'set null',
+    }),
+    details_visibility_show: boolean('details_visibility_show').default(false),
+    traits_enable: boolean('traits_enable').default(true),
+    traits_visibility_show: boolean('traits_visibility_show').default(false),
+    contexts_enable: boolean('contexts_enable').default(true),
+    contexts_authorities: integer('contexts_authorities_id').references(() => organizations.id, {
+      onDelete: 'set null',
+    }),
+    contexts_entries: integer('contexts_entries_id').references(() => entries.id, {
+      onDelete: 'set null',
+    }),
+    contexts_drivers: integer('contexts_drivers_id').references(() => drivers.id, {
+      onDelete: 'set null',
+    }),
+    contexts_insights: integer('contexts_insights_id').references(() => notes.id, {
+      onDelete: 'set null',
+    }),
+    contexts_visibility_show: boolean('contexts_visibility_show').default(false),
+    generateSlug: boolean('generate_slug').default(true),
+    slug: varchar('slug').notNull(),
+    visibility_check_publish: boolean('visibility_check_publish').default(false),
+    visibility_check_featured: boolean('visibility_check_featured').default(false),
+    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => [
+    index('points_type_idx').on(columns.type),
+    index('points_details_details_result_idx').on(columns.details_result),
+    index('points_details_details_classification_idx').on(columns.details_classification),
+    index('points_details_details_specification_idx').on(columns.details_specification),
+    index('points_contexts_contexts_authorities_idx').on(columns.contexts_authorities),
+    index('points_contexts_contexts_entries_idx').on(columns.contexts_entries),
+    index('points_contexts_contexts_drivers_idx').on(columns.contexts_drivers),
+    index('points_contexts_contexts_insights_idx').on(columns.contexts_insights),
+    uniqueIndex('points_slug_idx').on(columns.slug),
+    index('points_updated_at_idx').on(columns.updatedAt),
+    index('points_created_at_idx').on(columns.createdAt),
+  ],
+)
+
+export const points_locales = pgTable(
+  'points_locales',
+  {
+    name: varchar('name').notNull().default(''),
+    basics_description: varchar('basics_description').default(''),
+    seo_title: varchar('seo_title'),
+    seo_image: integer('seo_image_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    seo_description: varchar('seo_description'),
+    id: serial('id').primaryKey(),
+    _locale: enum__locales('_locale').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+  },
+  (columns) => [
+    index('points_name_idx').on(columns.name, columns._locale),
+    index('points_seo_seo_image_idx').on(columns.seo_image, columns._locale),
+    uniqueIndex('points_locales_locale_parent_id_unique').on(columns._locale, columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [points.id],
+      name: 'points_locales_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const points_rels = pgTable(
+  'points_rels',
+  {
+    id: serial('id').primaryKey(),
+    order: integer('order'),
+    parent: integer('parent_id').notNull(),
+    path: varchar('path').notNull(),
+    categoriesID: integer('categories_id'),
+    tagsID: integer('tags_id'),
+  },
+  (columns) => [
+    index('points_rels_order_idx').on(columns.order),
+    index('points_rels_parent_idx').on(columns.parent),
+    index('points_rels_path_idx').on(columns.path),
+    index('points_rels_categories_id_idx').on(columns.categoriesID),
+    index('points_rels_tags_id_idx').on(columns.tagsID),
+    foreignKey({
+      columns: [columns['parent']],
+      foreignColumns: [points.id],
+      name: 'points_rels_parent_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['categoriesID']],
+      foreignColumns: [categories.id],
+      name: 'points_rels_categories_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['tagsID']],
+      foreignColumns: [tags.id],
+      name: 'points_rels_tags_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const drivers = pgTable(
+  'drivers',
+  {
+    id: serial('id').primaryKey(),
+    toggle: enum_drivers_toggle('toggle').default('advanced'),
+    type: integer('type_id')
+      .notNull()
+      .references(() => categories.id, {
+        onDelete: 'set null',
+      }),
+    basics_enable: boolean('basics_enable').default(true),
+    basics_identifier_number: varchar('basics_identifier_number').default(''),
+    basics_identifier_competition: varchar('basics_identifier_competition').default(''),
+    basics_identifier_callsign: varchar('basics_identifier_callsign').default(''),
+    basics_identity_gender: enum_drivers_basics_identity_gender('basics_identity_gender'),
+    basics_identity_pronouns: varchar('basics_identity_pronouns').default(''),
+    basics_identity_age: varchar('basics_identity_age').default(''),
+    basics_identity_nationality: varchar('basics_identity_nationality').default(''),
+    basics_chronology_birth: timestamp('basics_chronology_birth', {
+      mode: 'string',
+      withTimezone: true,
+      precision: 3,
+    }),
+    basics_chronology_debut: timestamp('basics_chronology_debut', {
+      mode: 'string',
+      withTimezone: true,
+      precision: 3,
+    }),
+    basics_chronology_retirement: timestamp('basics_chronology_retirement', {
+      mode: 'string',
+      withTimezone: true,
+      precision: 3,
+    }),
+    basics_visibility_show: boolean('basics_visibility_show').default(false),
+    details_enable: boolean('details_enable').default(true),
+    details_narrative: integer('details_narrative_id').references(() => narratives.id, {
+      onDelete: 'set null',
+    }),
+    details_biography: integer('details_biography_id').references(() => histories.id, {
+      onDelete: 'set null',
+    }),
+    details_journeys: integer('details_journeys_id').references(() => journeys.id, {
+      onDelete: 'set null',
+    }),
+    details_visibility_show: boolean('details_visibility_show').default(false),
+    traits_enable: boolean('traits_enable').default(true),
+    traits_channels: integer('traits_channels_id').references(() => channels.id, {
+      onDelete: 'set null',
+    }),
+    traits_experiences: integer('traits_experiences_id').references(() => experiences.id, {
+      onDelete: 'set null',
+    }),
+    traits_skills: integer('traits_skills_id').references(() => skills.id, {
+      onDelete: 'set null',
+    }),
+    traits_trainings: integer('traits_trainings_id').references(() => trainings.id, {
+      onDelete: 'set null',
+    }),
+    traits_visibility_show: boolean('traits_visibility_show').default(false),
+    metrics_enable: boolean('metrics_enable').default(true),
+    metrics_results: integer('metrics_results_id').references(() => results.id, {
+      onDelete: 'set null',
+    }),
+    metrics_points: integer('metrics_points_id').references(() => points.id, {
+      onDelete: 'set null',
+    }),
+    metrics_awards: integer('metrics_awards_id').references(() => awards.id, {
+      onDelete: 'set null',
+    }),
+    metrics_visibility_show: boolean('metrics_visibility_show').default(false),
+    assets_enable: boolean('assets_enable').default(true),
+    assets_thumbnail: integer('assets_thumbnail_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    assets_cover: integer('assets_cover_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    assets_helmet: integer('assets_helmet_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    assets_suit: integer('assets_suit_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    assets_gallery: integer('assets_gallery_id').references(() => galleries.id, {
+      onDelete: 'set null',
+    }),
+    assets_visibility_show: boolean('assets_visibility_show').default(false),
+    contexts_enable: boolean('contexts_enable').default(true),
+    contexts_teammates: integer('contexts_teammates_id').references((): AnyPgColumn => drivers.id, {
+      onDelete: 'set null',
+    }),
+    contexts_cars: integer('contexts_cars_id').references(() => cars.id, {
+      onDelete: 'set null',
+    }),
+    contexts_kits: integer('contexts_kits_id').references(() => kits.id, {
+      onDelete: 'set null',
+    }),
+    contexts_visibility_show: boolean('contexts_visibility_show').default(false),
+    generateSlug: boolean('generate_slug').default(true),
+    slug: varchar('slug').notNull(),
+    visibility_check_publish: boolean('visibility_check_publish').default(false),
+    visibility_check_featured: boolean('visibility_check_featured').default(false),
+    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => [
+    index('drivers_type_idx').on(columns.type),
+    index('drivers_basics_identifier_basics_identifier_number_idx').on(
+      columns.basics_identifier_number,
+    ),
+    index('drivers_basics_identity_basics_identity_nationality_idx').on(
+      columns.basics_identity_nationality,
+    ),
+    index('drivers_details_details_narrative_idx').on(columns.details_narrative),
+    index('drivers_details_details_biography_idx').on(columns.details_biography),
+    index('drivers_details_details_journeys_idx').on(columns.details_journeys),
+    index('drivers_traits_traits_channels_idx').on(columns.traits_channels),
+    index('drivers_traits_traits_experiences_idx').on(columns.traits_experiences),
+    index('drivers_traits_traits_skills_idx').on(columns.traits_skills),
+    index('drivers_traits_traits_trainings_idx').on(columns.traits_trainings),
+    index('drivers_metrics_metrics_results_idx').on(columns.metrics_results),
+    index('drivers_metrics_metrics_points_idx').on(columns.metrics_points),
+    index('drivers_metrics_metrics_awards_idx').on(columns.metrics_awards),
+    index('drivers_assets_assets_thumbnail_idx').on(columns.assets_thumbnail),
+    index('drivers_assets_assets_cover_idx').on(columns.assets_cover),
+    index('drivers_assets_assets_helmet_idx').on(columns.assets_helmet),
+    index('drivers_assets_assets_suit_idx').on(columns.assets_suit),
+    index('drivers_assets_assets_gallery_idx').on(columns.assets_gallery),
+    index('drivers_contexts_contexts_teammates_idx').on(columns.contexts_teammates),
+    index('drivers_contexts_contexts_cars_idx').on(columns.contexts_cars),
+    index('drivers_contexts_contexts_kits_idx').on(columns.contexts_kits),
+    uniqueIndex('drivers_slug_idx').on(columns.slug),
+    index('drivers_updated_at_idx').on(columns.updatedAt),
+    index('drivers_created_at_idx').on(columns.createdAt),
+  ],
+)
+
+export const drivers_locales = pgTable(
+  'drivers_locales',
+  {
+    first: varchar('first').notNull().default(''),
+    middle: varchar('middle').default(''),
+    last: varchar('last').notNull().default(''),
+    alias: varchar('alias').default(''),
+    basics_description: varchar('basics_description').default(''),
+    basics_identifier_nickname: varchar('basics_identifier_nickname').default(''),
+    seo_title: varchar('seo_title'),
+    seo_image: integer('seo_image_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    seo_description: varchar('seo_description'),
+    id: serial('id').primaryKey(),
+    _locale: enum__locales('_locale').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+  },
+  (columns) => [
+    index('drivers_first_idx').on(columns.first, columns._locale),
+    index('drivers_last_idx').on(columns.last, columns._locale),
+    index('drivers_seo_seo_image_idx').on(columns.seo_image, columns._locale),
+    uniqueIndex('drivers_locales_locale_parent_id_unique').on(columns._locale, columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [drivers.id],
+      name: 'drivers_locales_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const drivers_rels = pgTable(
+  'drivers_rels',
+  {
+    id: serial('id').primaryKey(),
+    order: integer('order'),
+    parent: integer('parent_id').notNull(),
+    path: varchar('path').notNull(),
+    membersID: integer('members_id'),
+    leadersID: integer('leaders_id'),
+    categoriesID: integer('categories_id'),
+    tagsID: integer('tags_id'),
+  },
+  (columns) => [
+    index('drivers_rels_order_idx').on(columns.order),
+    index('drivers_rels_parent_idx').on(columns.parent),
+    index('drivers_rels_path_idx').on(columns.path),
+    index('drivers_rels_members_id_idx').on(columns.membersID),
+    index('drivers_rels_leaders_id_idx').on(columns.leadersID),
+    index('drivers_rels_categories_id_idx').on(columns.categoriesID),
+    index('drivers_rels_tags_id_idx').on(columns.tagsID),
+    foreignKey({
+      columns: [columns['parent']],
+      foreignColumns: [drivers.id],
+      name: 'drivers_rels_parent_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['membersID']],
+      foreignColumns: [members.id],
+      name: 'drivers_rels_members_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['leadersID']],
+      foreignColumns: [leaders.id],
+      name: 'drivers_rels_leaders_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['categoriesID']],
+      foreignColumns: [categories.id],
+      name: 'drivers_rels_categories_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['tagsID']],
+      foreignColumns: [tags.id],
+      name: 'drivers_rels_tags_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const leaders = pgTable(
+  'leaders',
+  {
+    id: serial('id').primaryKey(),
+    toggle: enum_leaders_toggle('toggle').default('advanced'),
+    type: integer('type_id')
+      .notNull()
+      .references(() => categories.id, {
+        onDelete: 'set null',
+      }),
+    basics_enable: boolean('basics_enable').default(true),
+    basics_identifier_designation: varchar('basics_identifier_designation').default(''),
+    basics_identifier_code: varchar('basics_identifier_code').default(''),
+    basics_identity_gender: enum_leaders_basics_identity_gender('basics_identity_gender'),
+    basics_identity_pronouns: varchar('basics_identity_pronouns').default(''),
+    basics_identity_age: varchar('basics_identity_age').default(''),
+    basics_identity_nationality: varchar('basics_identity_nationality').default(''),
+    basics_chronology_birth: timestamp('basics_chronology_birth', {
+      mode: 'string',
+      withTimezone: true,
+      precision: 3,
+    }),
+    basics_chronology_debut: timestamp('basics_chronology_debut', {
+      mode: 'string',
+      withTimezone: true,
+      precision: 3,
+    }),
+    basics_chronology_retirement: timestamp('basics_chronology_retirement', {
+      mode: 'string',
+      withTimezone: true,
+      precision: 3,
+    }),
+    basics_visibility_show: boolean('basics_visibility_show').default(false),
+    details_enable: boolean('details_enable').default(true),
+    details_narrative: integer('details_narrative_id').references(() => narratives.id, {
+      onDelete: 'set null',
+    }),
+    details_biography: integer('details_biography_id').references(() => histories.id, {
+      onDelete: 'set null',
+    }),
+    details_vision: integer('details_vision_id').references(() => principles.id, {
+      onDelete: 'set null',
+    }),
+    details_departments: integer('details_departments_id').references(() => classifications.id, {
+      onDelete: 'set null',
+    }),
+    details_visibility_show: boolean('details_visibility_show').default(false),
+    traits_enable: boolean('traits_enable').default(true),
+    traits_channels: integer('traits_channels_id').references(() => channels.id, {
+      onDelete: 'set null',
+    }),
+    traits_personalities: integer('traits_personalities_id').references(() => features.id, {
+      onDelete: 'set null',
+    }),
+    traits_achievements: integer('traits_achievements_id').references(() => experiences.id, {
+      onDelete: 'set null',
+    }),
+    traits_strategies: integer('traits_strategies_id').references(() => strategies.id, {
+      onDelete: 'set null',
+    }),
+    traits_visibility_show: boolean('traits_visibility_show').default(false),
+    metrics_enable: boolean('metrics_enable').default(true),
+    metrics_impacts: integer('metrics_impacts_id').references(() => impacts.id, {
+      onDelete: 'set null',
+    }),
+    metrics_awards: integer('metrics_awards_id').references(() => awards.id, {
+      onDelete: 'set null',
+    }),
+    metrics_visibility_show: boolean('metrics_visibility_show').default(false),
+    assets_enable: boolean('assets_enable').default(true),
+    assets_avatar: integer('assets_avatar_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    assets_cover: integer('assets_cover_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    assets_gallery: integer('assets_gallery_id').references(() => galleries.id, {
+      onDelete: 'set null',
+    }),
+    assets_visibility_show: boolean('assets_visibility_show').default(false),
+    contexts_enable: boolean('contexts_enable').default(true),
+    contexts_anecdotes: integer('contexts_anecdotes_id').references(() => notes.id, {
+      onDelete: 'set null',
+    }),
+    contexts_visibility_show: boolean('contexts_visibility_show').default(false),
+    generateSlug: boolean('generate_slug').default(true),
+    slug: varchar('slug').notNull(),
+    visibility_check_publish: boolean('visibility_check_publish').default(false),
+    visibility_check_featured: boolean('visibility_check_featured').default(false),
+    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => [
+    index('leaders_type_idx').on(columns.type),
+    index('leaders_basics_identity_basics_identity_nationality_idx').on(
+      columns.basics_identity_nationality,
+    ),
+    index('leaders_details_details_narrative_idx').on(columns.details_narrative),
+    index('leaders_details_details_biography_idx').on(columns.details_biography),
+    index('leaders_details_details_vision_idx').on(columns.details_vision),
+    index('leaders_details_details_departments_idx').on(columns.details_departments),
+    index('leaders_traits_traits_channels_idx').on(columns.traits_channels),
+    index('leaders_traits_traits_personalities_idx').on(columns.traits_personalities),
+    index('leaders_traits_traits_achievements_idx').on(columns.traits_achievements),
+    index('leaders_traits_traits_strategies_idx').on(columns.traits_strategies),
+    index('leaders_metrics_metrics_impacts_idx').on(columns.metrics_impacts),
+    index('leaders_metrics_metrics_awards_idx').on(columns.metrics_awards),
+    index('leaders_assets_assets_avatar_idx').on(columns.assets_avatar),
+    index('leaders_assets_assets_cover_idx').on(columns.assets_cover),
+    index('leaders_assets_assets_gallery_idx').on(columns.assets_gallery),
+    index('leaders_contexts_contexts_anecdotes_idx').on(columns.contexts_anecdotes),
+    uniqueIndex('leaders_slug_idx').on(columns.slug),
+    index('leaders_updated_at_idx').on(columns.updatedAt),
+    index('leaders_created_at_idx').on(columns.createdAt),
+  ],
+)
+
+export const leaders_locales = pgTable(
+  'leaders_locales',
+  {
+    first: varchar('first').notNull().default(''),
+    middle: varchar('middle').default(''),
+    last: varchar('last').notNull().default(''),
+    alias: varchar('alias').default(''),
+    basics_identifier_title: varchar('basics_identifier_title').notNull().default(''),
+    basics_description: varchar('basics_description').default(''),
+    seo_title: varchar('seo_title'),
+    seo_image: integer('seo_image_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    seo_description: varchar('seo_description'),
+    id: serial('id').primaryKey(),
+    _locale: enum__locales('_locale').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+  },
+  (columns) => [
+    index('leaders_first_idx').on(columns.first, columns._locale),
+    index('leaders_last_idx').on(columns.last, columns._locale),
+    index('leaders_seo_seo_image_idx').on(columns.seo_image, columns._locale),
+    uniqueIndex('leaders_locales_locale_parent_id_unique').on(columns._locale, columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [leaders.id],
+      name: 'leaders_locales_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const leaders_rels = pgTable(
+  'leaders_rels',
+  {
+    id: serial('id').primaryKey(),
+    order: integer('order'),
+    parent: integer('parent_id').notNull(),
+    path: varchar('path').notNull(),
+    leadersID: integer('leaders_id'),
+    individualsID: integer('individuals_id'),
+    driversID: integer('drivers_id'),
+    membersID: integer('members_id'),
+    categoriesID: integer('categories_id'),
+    tagsID: integer('tags_id'),
+  },
+  (columns) => [
+    index('leaders_rels_order_idx').on(columns.order),
+    index('leaders_rels_parent_idx').on(columns.parent),
+    index('leaders_rels_path_idx').on(columns.path),
+    index('leaders_rels_leaders_id_idx').on(columns.leadersID),
+    index('leaders_rels_individuals_id_idx').on(columns.individualsID),
+    index('leaders_rels_drivers_id_idx').on(columns.driversID),
+    index('leaders_rels_members_id_idx').on(columns.membersID),
+    index('leaders_rels_categories_id_idx').on(columns.categoriesID),
+    index('leaders_rels_tags_id_idx').on(columns.tagsID),
+    foreignKey({
+      columns: [columns['parent']],
+      foreignColumns: [leaders.id],
+      name: 'leaders_rels_parent_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['leadersID']],
+      foreignColumns: [leaders.id],
+      name: 'leaders_rels_leaders_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['individualsID']],
+      foreignColumns: [individuals.id],
+      name: 'leaders_rels_individuals_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['driversID']],
+      foreignColumns: [drivers.id],
+      name: 'leaders_rels_drivers_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['membersID']],
+      foreignColumns: [members.id],
+      name: 'leaders_rels_members_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['categoriesID']],
+      foreignColumns: [categories.id],
+      name: 'leaders_rels_categories_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['tagsID']],
+      foreignColumns: [tags.id],
+      name: 'leaders_rels_tags_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const members = pgTable(
+  'members',
+  {
+    id: serial('id').primaryKey(),
+    toggle: enum_members_toggle('toggle').default('advanced'),
+    type: integer('type_id')
+      .notNull()
+      .references(() => categories.id, {
+        onDelete: 'set null',
+      }),
+    basics_enable: boolean('basics_enable').default(true),
+    basics_identifier_number: varchar('basics_identifier_number').default(''),
+    basics_identifier_callsign: varchar('basics_identifier_callsign').default(''),
+    basics_identifier_badge: varchar('basics_identifier_badge').default(''),
+    basics_identity_gender: enum_members_basics_identity_gender('basics_identity_gender'),
+    basics_identity_pronouns: varchar('basics_identity_pronouns').default(''),
+    basics_identity_age: varchar('basics_identity_age').default(''),
+    basics_identity_nationality: varchar('basics_identity_nationality').default(''),
+    basics_chronology_birth: timestamp('basics_chronology_birth', {
+      mode: 'string',
+      withTimezone: true,
+      precision: 3,
+    }),
+    basics_chronology_debut: timestamp('basics_chronology_debut', {
+      mode: 'string',
+      withTimezone: true,
+      precision: 3,
+    }),
+    basics_chronology_retirement: timestamp('basics_chronology_retirement', {
+      mode: 'string',
+      withTimezone: true,
+      precision: 3,
+    }),
+    basics_visibility_show: boolean('basics_visibility_show').default(false),
+    details_enable: boolean('details_enable').default(true),
+    details_narrative: integer('details_narrative_id').references(() => narratives.id, {
+      onDelete: 'set null',
+    }),
+    details_departments: integer('details_departments_id').references(() => classifications.id, {
+      onDelete: 'set null',
+    }),
+    details_visibility_show: boolean('details_visibility_show').default(false),
+    traits_enable: boolean('traits_enable').default(true),
+    traits_channels: integer('traits_channels_id').references(() => channels.id, {
+      onDelete: 'set null',
+    }),
+    traits_personalities: integer('traits_personalities_id').references(() => features.id, {
+      onDelete: 'set null',
+    }),
+    traits_duties: integer('traits_duties_id').references(() => duties.id, {
+      onDelete: 'set null',
+    }),
+    traits_skills: integer('traits_skills_id').references(() => skills.id, {
+      onDelete: 'set null',
+    }),
+    traits_trainings: integer('traits_trainings_id').references(() => trainings.id, {
+      onDelete: 'set null',
+    }),
+    traits_visibility_show: boolean('traits_visibility_show').default(false),
+    metrics_enable: boolean('metrics_enable').default(true),
+    metrics_impacts: integer('metrics_impacts_id').references(() => impacts.id, {
+      onDelete: 'set null',
+    }),
+    metrics_awards: integer('metrics_awards_id').references(() => awards.id, {
+      onDelete: 'set null',
+    }),
+    metrics_visibility_show: boolean('metrics_visibility_show').default(false),
+    assets_enable: boolean('assets_enable').default(true),
+    assets_thumbnail: integer('assets_thumbnail_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    assets_cover: integer('assets_cover_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    assets_gallery: integer('assets_gallery_id').references(() => galleries.id, {
+      onDelete: 'set null',
+    }),
+    assets_certifications: integer('assets_certifications_id').references(() => archives.id, {
+      onDelete: 'set null',
+    }),
+    assets_visibility_show: boolean('assets_visibility_show').default(false),
+    contexts_enable: boolean('contexts_enable').default(true),
+    contexts_crew: integer('contexts_crew_id').references(() => drivers.id, {
+      onDelete: 'set null',
+    }),
+    contexts_cars: integer('contexts_cars_id').references(() => cars.id, {
+      onDelete: 'set null',
+    }),
+    contexts_visibility_show: boolean('contexts_visibility_show').default(false),
+    generateSlug: boolean('generate_slug').default(true),
+    slug: varchar('slug').notNull(),
+    visibility_check_publish: boolean('visibility_check_publish').default(false),
+    visibility_check_featured: boolean('visibility_check_featured').default(false),
+    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => [
+    index('members_type_idx').on(columns.type),
+    index('members_basics_identifier_basics_identifier_number_idx').on(
+      columns.basics_identifier_number,
+    ),
+    index('members_basics_identity_basics_identity_nationality_idx').on(
+      columns.basics_identity_nationality,
+    ),
+    index('members_details_details_narrative_idx').on(columns.details_narrative),
+    index('members_details_details_departments_idx').on(columns.details_departments),
+    index('members_traits_traits_channels_idx').on(columns.traits_channels),
+    index('members_traits_traits_personalities_idx').on(columns.traits_personalities),
+    index('members_traits_traits_duties_idx').on(columns.traits_duties),
+    index('members_traits_traits_skills_idx').on(columns.traits_skills),
+    index('members_traits_traits_trainings_idx').on(columns.traits_trainings),
+    index('members_metrics_metrics_impacts_idx').on(columns.metrics_impacts),
+    index('members_metrics_metrics_awards_idx').on(columns.metrics_awards),
+    index('members_assets_assets_thumbnail_idx').on(columns.assets_thumbnail),
+    index('members_assets_assets_cover_idx').on(columns.assets_cover),
+    index('members_assets_assets_gallery_idx').on(columns.assets_gallery),
+    index('members_assets_assets_certifications_idx').on(columns.assets_certifications),
+    index('members_contexts_contexts_crew_idx').on(columns.contexts_crew),
+    index('members_contexts_contexts_cars_idx').on(columns.contexts_cars),
+    uniqueIndex('members_slug_idx').on(columns.slug),
+    index('members_updated_at_idx').on(columns.updatedAt),
+    index('members_created_at_idx').on(columns.createdAt),
+  ],
+)
+
+export const members_locales = pgTable(
+  'members_locales',
+  {
+    first: varchar('first').notNull().default(''),
+    middle: varchar('middle').default(''),
+    last: varchar('last').notNull().default(''),
+    alias: varchar('alias').default(''),
+    basics_description: varchar('basics_description').default(''),
+    basics_identifier_nickname: varchar('basics_identifier_nickname').default(''),
+    details_background: varchar('details_background').default(''),
+    seo_title: varchar('seo_title'),
+    seo_image: integer('seo_image_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    seo_description: varchar('seo_description'),
+    id: serial('id').primaryKey(),
+    _locale: enum__locales('_locale').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+  },
+  (columns) => [
+    index('members_first_idx').on(columns.first, columns._locale),
+    index('members_last_idx').on(columns.last, columns._locale),
+    index('members_seo_seo_image_idx').on(columns.seo_image, columns._locale),
+    uniqueIndex('members_locales_locale_parent_id_unique').on(columns._locale, columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [members.id],
+      name: 'members_locales_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const members_rels = pgTable(
+  'members_rels',
+  {
+    id: serial('id').primaryKey(),
+    order: integer('order'),
+    parent: integer('parent_id').notNull(),
+    path: varchar('path').notNull(),
+    leadersID: integer('leaders_id'),
+    membersID: integer('members_id'),
+    categoriesID: integer('categories_id'),
+    tagsID: integer('tags_id'),
+  },
+  (columns) => [
+    index('members_rels_order_idx').on(columns.order),
+    index('members_rels_parent_idx').on(columns.parent),
+    index('members_rels_path_idx').on(columns.path),
+    index('members_rels_leaders_id_idx').on(columns.leadersID),
+    index('members_rels_members_id_idx').on(columns.membersID),
+    index('members_rels_categories_id_idx').on(columns.categoriesID),
+    index('members_rels_tags_id_idx').on(columns.tagsID),
+    foreignKey({
+      columns: [columns['parent']],
+      foreignColumns: [members.id],
+      name: 'members_rels_parent_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['leadersID']],
+      foreignColumns: [leaders.id],
+      name: 'members_rels_leaders_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['membersID']],
+      foreignColumns: [members.id],
+      name: 'members_rels_members_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['categoriesID']],
+      foreignColumns: [categories.id],
+      name: 'members_rels_categories_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['tagsID']],
+      foreignColumns: [tags.id],
+      name: 'members_rels_tags_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const individuals_details_interests = pgTable(
+  'individuals_details_interests',
+  {
+    _order: integer('_order').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+    id: varchar('id').primaryKey(),
+    interest: varchar('interest').notNull().default(''),
+    level: enum_individuals_details_interests_level('level'),
+    duration: varchar('duration').default(''),
+  },
+  (columns) => [
+    index('individuals_details_interests_order_idx').on(columns._order),
+    index('individuals_details_interests_parent_id_idx').on(columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [individuals.id],
+      name: 'individuals_details_interests_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const individuals_traits_benefits = pgTable(
+  'individuals_traits_benefits',
+  {
+    _order: integer('_order').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+    id: varchar('id').primaryKey(),
+    benefit: varchar('benefit').default(''),
+    type: enum_individuals_traits_benefits_type('type'),
+    impact: enum_individuals_traits_benefits_impact('impact'),
+  },
+  (columns) => [
+    index('individuals_traits_benefits_order_idx').on(columns._order),
+    index('individuals_traits_benefits_parent_id_idx').on(columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [individuals.id],
+      name: 'individuals_traits_benefits_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const individuals = pgTable(
+  'individuals',
+  {
+    id: serial('id').primaryKey(),
+    toggle: enum_individuals_toggle('toggle').default('advanced'),
+    type: integer('type_id')
+      .notNull()
+      .references(() => categories.id, {
+        onDelete: 'set null',
+      }),
+    basics_enable: boolean('basics_enable').default(true),
+    basics_identifier_code: varchar('basics_identifier_code').default(''),
+    basics_identifier_number: varchar('basics_identifier_number').default(''),
+    basics_identity_gender: enum_individuals_basics_identity_gender('basics_identity_gender'),
+    basics_identity_pronouns: varchar('basics_identity_pronouns').default(''),
+    basics_identity_age: varchar('basics_identity_age').default(''),
+    basics_identity_nationality: varchar('basics_identity_nationality').default(''),
+    basics_visibility_show: boolean('basics_visibility_show').default(false),
+    details_enable: boolean('details_enable').default(true),
+    details_narrative: integer('details_narrative_id').references(() => narratives.id, {
+      onDelete: 'set null',
+    }),
+    details_visibility_show: boolean('details_visibility_show').default(false),
+    traits_enable: boolean('traits_enable').default(true),
+    traits_channels: integer('traits_channels_id').references(() => channels.id, {
+      onDelete: 'set null',
+    }),
+    traits_influence_reach: enum_individuals_traits_influence_reach('traits_influence_reach'),
+    traits_influence_authority: enum_individuals_traits_influence_authority(
+      'traits_influence_authority',
+    ),
+    traits_influence_network: enum_individuals_traits_influence_network('traits_influence_network'),
+    traits_visibility_show: boolean('traits_visibility_show').default(false),
+    assets_enable: boolean('assets_enable').default(true),
+    assets_avatar: integer('assets_avatar_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    assets_gallery: integer('assets_gallery_id').references(() => galleries.id, {
+      onDelete: 'set null',
+    }),
+    assets_visibility_show: boolean('assets_visibility_show').default(false),
+    contexts_enable: boolean('contexts_enable').default(true),
+    contexts_history: integer('contexts_history_id').references(() => histories.id, {
+      onDelete: 'set null',
+    }),
+    contexts_notes: integer('contexts_notes_id').references(() => notes.id, {
+      onDelete: 'set null',
+    }),
+    contexts_visibility_show: boolean('contexts_visibility_show').default(false),
+    generateSlug: boolean('generate_slug').default(true),
+    slug: varchar('slug').notNull(),
+    visibility_check_publish: boolean('visibility_check_publish').default(false),
+    visibility_check_featured: boolean('visibility_check_featured').default(false),
+    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => [
+    index('individuals_type_idx').on(columns.type),
+    index('individuals_basics_identity_basics_identity_nationality_idx').on(
+      columns.basics_identity_nationality,
+    ),
+    index('individuals_details_details_narrative_idx').on(columns.details_narrative),
+    index('individuals_traits_traits_channels_idx').on(columns.traits_channels),
+    index('individuals_assets_assets_avatar_idx').on(columns.assets_avatar),
+    index('individuals_assets_assets_gallery_idx').on(columns.assets_gallery),
+    index('individuals_contexts_contexts_history_idx').on(columns.contexts_history),
+    index('individuals_contexts_contexts_notes_idx').on(columns.contexts_notes),
+    uniqueIndex('individuals_slug_idx').on(columns.slug),
+    index('individuals_updated_at_idx').on(columns.updatedAt),
+    index('individuals_created_at_idx').on(columns.createdAt),
+  ],
+)
+
+export const individuals_locales = pgTable(
+  'individuals_locales',
+  {
+    first: varchar('first').notNull().default(''),
+    middle: varchar('middle').default(''),
+    last: varchar('last').notNull().default(''),
+    alias: varchar('alias').default(''),
+    basics_identifier_nickname: varchar('basics_identifier_nickname').default(''),
+    basics_description: varchar('basics_description').default(''),
+    details_background: varchar('details_background').default(''),
+    seo_title: varchar('seo_title'),
+    seo_image: integer('seo_image_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    seo_description: varchar('seo_description'),
+    id: serial('id').primaryKey(),
+    _locale: enum__locales('_locale').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+  },
+  (columns) => [
+    index('individuals_first_idx').on(columns.first, columns._locale),
+    index('individuals_last_idx').on(columns.last, columns._locale),
+    index('individuals_seo_seo_image_idx').on(columns.seo_image, columns._locale),
+    uniqueIndex('individuals_locales_locale_parent_id_unique').on(
+      columns._locale,
+      columns._parentID,
+    ),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [individuals.id],
+      name: 'individuals_locales_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const individuals_rels = pgTable(
+  'individuals_rels',
+  {
+    id: serial('id').primaryKey(),
+    order: integer('order'),
+    parent: integer('parent_id').notNull(),
+    path: varchar('path').notNull(),
+    categoriesID: integer('categories_id'),
+    tagsID: integer('tags_id'),
+  },
+  (columns) => [
+    index('individuals_rels_order_idx').on(columns.order),
+    index('individuals_rels_parent_idx').on(columns.parent),
+    index('individuals_rels_path_idx').on(columns.path),
+    index('individuals_rels_categories_id_idx').on(columns.categoriesID),
+    index('individuals_rels_tags_id_idx').on(columns.tagsID),
+    foreignKey({
+      columns: [columns['parent']],
+      foreignColumns: [individuals.id],
+      name: 'individuals_rels_parent_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['categoriesID']],
+      foreignColumns: [categories.id],
+      name: 'individuals_rels_categories_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['tagsID']],
+      foreignColumns: [tags.id],
+      name: 'individuals_rels_tags_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const organizations_traits_benefits = pgTable(
+  'organizations_traits_benefits',
+  {
+    _order: integer('_order').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+    id: varchar('id').primaryKey(),
+    benefit: varchar('benefit').default(''),
+    type: enum_organizations_traits_benefits_type('type'),
+    impact: enum_organizations_traits_benefits_impact('impact'),
+  },
+  (columns) => [
+    index('organizations_traits_benefits_order_idx').on(columns._order),
+    index('organizations_traits_benefits_parent_id_idx').on(columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [organizations.id],
+      name: 'organizations_traits_benefits_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const organizations = pgTable(
+  'organizations',
+  {
+    id: serial('id').primaryKey(),
+    toggle: enum_organizations_toggle('toggle').default('advanced'),
+    type: integer('type_id')
+      .notNull()
+      .references(() => categories.id, {
+        onDelete: 'set null',
+      }),
+    basics_enable: boolean('basics_enable').default(true),
+    basics_identifier_code: varchar('basics_identifier_code').default(''),
+    basics_identifier_abbreviation: varchar('basics_identifier_abbreviation').default(''),
+    basics_identifier_registration: varchar('basics_identifier_registration').default(''),
+    basics_visibility_show: boolean('basics_visibility_show').default(false),
+    details_enable: boolean('details_enable').default(true),
+    details_narrative: integer('details_narrative_id').references(() => narratives.id, {
+      onDelete: 'set null',
+    }),
+    details_parent: integer('details_parent_id').references((): AnyPgColumn => organizations.id, {
+      onDelete: 'set null',
+    }),
+    details_evolution_founded: timestamp('details_evolution_founded', {
+      mode: 'string',
+      withTimezone: true,
+      precision: 3,
+    }),
+    details_evolution_merged: timestamp('details_evolution_merged', {
+      mode: 'string',
+      withTimezone: true,
+      precision: 3,
+    }),
+    details_evolution_rebranded: timestamp('details_evolution_rebranded', {
+      mode: 'string',
+      withTimezone: true,
+      precision: 3,
+    }),
+    details_evolution_defunct: timestamp('details_evolution_defunct', {
+      mode: 'string',
+      withTimezone: true,
+      precision: 3,
+    }),
+    details_visibility_show: boolean('details_visibility_show').default(false),
+    traits_enable: boolean('traits_enable').default(true),
+    traits_channels: integer('traits_channels_id').references(() => channels.id, {
+      onDelete: 'set null',
+    }),
+    traits_reputation_prestige: enum_organizations_traits_reputation_prestige(
+      'traits_reputation_prestige',
+    ),
+    traits_reputation_reliability: enum_organizations_traits_reputation_reliability(
+      'traits_reputation_reliability',
+    ),
+    traits_reputation_innovation: enum_organizations_traits_reputation_innovation(
+      'traits_reputation_innovation',
+    ),
+    traits_visibility_show: boolean('traits_visibility_show').default(false),
+    assets_enable: boolean('assets_enable').default(true),
+    assets_logo: integer('assets_logo_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    assets_gallery: integer('assets_gallery_id').references(() => galleries.id, {
+      onDelete: 'set null',
+    }),
+    assets_visibility_show: boolean('assets_visibility_show').default(false),
+    contexts_enable: boolean('contexts_enable').default(true),
+    contexts_headquarters: integer('contexts_headquarters_id').references(() => locations.id, {
+      onDelete: 'set null',
+    }),
+    contexts_history: integer('contexts_history_id').references(() => histories.id, {
+      onDelete: 'set null',
+    }),
+    contexts_notes: integer('contexts_notes_id').references(() => notes.id, {
+      onDelete: 'set null',
+    }),
+    contexts_visibility_show: boolean('contexts_visibility_show').default(false),
+    generateSlug: boolean('generate_slug').default(true),
+    slug: varchar('slug').notNull(),
+    visibility_check_publish: boolean('visibility_check_publish').default(false),
+    visibility_check_featured: boolean('visibility_check_featured').default(false),
+    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => [
+    index('organizations_type_idx').on(columns.type),
+    uniqueIndex('organizations_basics_identifier_basics_identifier_code_idx').on(
+      columns.basics_identifier_code,
+    ),
+    index('organizations_details_details_narrative_idx').on(columns.details_narrative),
+    index('organizations_details_details_parent_idx').on(columns.details_parent),
+    index('organizations_traits_traits_channels_idx').on(columns.traits_channels),
+    index('organizations_assets_assets_logo_idx').on(columns.assets_logo),
+    index('organizations_assets_assets_gallery_idx').on(columns.assets_gallery),
+    index('organizations_contexts_contexts_headquarters_idx').on(columns.contexts_headquarters),
+    index('organizations_contexts_contexts_history_idx').on(columns.contexts_history),
+    index('organizations_contexts_contexts_notes_idx').on(columns.contexts_notes),
+    uniqueIndex('organizations_slug_idx').on(columns.slug),
+    index('organizations_updated_at_idx').on(columns.updatedAt),
+    index('organizations_created_at_idx').on(columns.createdAt),
+  ],
+)
+
+export const organizations_locales = pgTable(
+  'organizations_locales',
+  {
+    name: varchar('name').notNull().default(''),
+    alias: varchar('alias').default(''),
+    basics_description: varchar('basics_description').default(''),
+    basics_tagline: varchar('basics_tagline').default(''),
+    details_background: varchar('details_background').default(''),
+    seo_title: varchar('seo_title'),
+    seo_image: integer('seo_image_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    seo_description: varchar('seo_description'),
+    id: serial('id').primaryKey(),
+    _locale: enum__locales('_locale').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+  },
+  (columns) => [
+    index('organizations_name_idx').on(columns.name, columns._locale),
+    index('organizations_seo_seo_image_idx').on(columns.seo_image, columns._locale),
+    uniqueIndex('organizations_locales_locale_parent_id_unique').on(
+      columns._locale,
+      columns._parentID,
+    ),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [organizations.id],
+      name: 'organizations_locales_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const organizations_rels = pgTable(
+  'organizations_rels',
+  {
+    id: serial('id').primaryKey(),
+    order: integer('order'),
+    parent: integer('parent_id').notNull(),
+    path: varchar('path').notNull(),
+    categoriesID: integer('categories_id'),
+    tagsID: integer('tags_id'),
+  },
+  (columns) => [
+    index('organizations_rels_order_idx').on(columns.order),
+    index('organizations_rels_parent_idx').on(columns.parent),
+    index('organizations_rels_path_idx').on(columns.path),
+    index('organizations_rels_categories_id_idx').on(columns.categoriesID),
+    index('organizations_rels_tags_id_idx').on(columns.tagsID),
+    foreignKey({
+      columns: [columns['parent']],
+      foreignColumns: [organizations.id],
+      name: 'organizations_rels_parent_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['categoriesID']],
+      foreignColumns: [categories.id],
+      name: 'organizations_rels_categories_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['tagsID']],
+      foreignColumns: [tags.id],
+      name: 'organizations_rels_tags_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const users_roles = pgTable(
+  'users_roles',
+  {
+    order: integer('order').notNull(),
+    parent: integer('parent_id').notNull(),
+    value: enum_users_roles('value'),
+    id: serial('id').primaryKey(),
+  },
+  (columns) => [
+    index('users_roles_order_idx').on(columns.order),
+    index('users_roles_parent_idx').on(columns.parent),
+    foreignKey({
+      columns: [columns['parent']],
+      foreignColumns: [users.id],
+      name: 'users_roles_parent_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const users_sessions = pgTable(
+  'users_sessions',
+  {
+    _order: integer('_order').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+    id: varchar('id').primaryKey(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 }),
+    expiresAt: timestamp('expires_at', {
+      mode: 'string',
+      withTimezone: true,
+      precision: 3,
+    }).notNull(),
+  },
+  (columns) => [
+    index('users_sessions_order_idx').on(columns._order),
+    index('users_sessions_parent_id_idx').on(columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [users.id],
+      name: 'users_sessions_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const users = pgTable(
+  'users',
+  {
+    id: serial('id').primaryKey(),
+    name: varchar('name'),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    email: varchar('email').notNull(),
+    resetPasswordToken: varchar('reset_password_token'),
+    resetPasswordExpiration: timestamp('reset_password_expiration', {
+      mode: 'string',
+      withTimezone: true,
+      precision: 3,
+    }),
+    salt: varchar('salt'),
+    hash: varchar('hash'),
+    loginAttempts: numeric('login_attempts', { mode: 'number' }).default(0),
+    lockUntil: timestamp('lock_until', { mode: 'string', withTimezone: true, precision: 3 }),
+  },
+  (columns) => [
+    index('users_updated_at_idx').on(columns.updatedAt),
+    index('users_created_at_idx').on(columns.createdAt),
+    uniqueIndex('users_email_idx').on(columns.email),
+  ],
+)
+
+export const narratives_details_timeline = pgTable(
+  'narratives_details_timeline',
+  {
+    _order: integer('_order').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+    id: varchar('id').primaryKey(),
+    date: timestamp('date', { mode: 'string', withTimezone: true, precision: 3 }),
+    type: enum_narratives_details_timeline_type('type'),
+  },
+  (columns) => [
+    index('narratives_details_timeline_order_idx').on(columns._order),
+    index('narratives_details_timeline_parent_id_idx').on(columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [narratives.id],
+      name: 'narratives_details_timeline_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const narratives = pgTable(
+  'narratives',
+  {
+    id: serial('id').primaryKey(),
+    toggle: enum_narratives_toggle('toggle').default('advanced'),
+    basics_enable: boolean('basics_enable').default(true),
+    basics_visibility_show: boolean('basics_visibility_show').default(false),
+    details_enable: boolean('details_enable').default(true),
+    details_scope_significance: enum_narratives_details_scope_significance(
+      'details_scope_significance',
+    ),
+    details_scope_scale: enum_narratives_details_scope_scale('details_scope_scale'),
+    details_scope_depth: enum_narratives_details_scope_depth('details_scope_depth'),
+    details_scope_level: varchar('details_scope_level').default(''),
+    details_context_background: varchar('details_context_background').default(''),
+    details_context_perspective: varchar('details_context_perspective').default(''),
+    details_context_purpose: varchar('details_context_purpose').default(''),
+    details_visibility_show: boolean('details_visibility_show').default(false),
+    traits_enable: boolean('traits_enable').default(true),
+    traits_tone: integer('traits_tone_id').references(() => tones.id, {
+      onDelete: 'set null',
+    }),
+    traits_visibility_show: boolean('traits_visibility_show').default(false),
+    contexts_enable: boolean('contexts_enable').default(true),
+    contexts_locations: integer('contexts_locations_id').references(() => locations.id, {
+      onDelete: 'set null',
+    }),
+    contexts_notes: integer('contexts_notes_id').references(() => notes.id, {
+      onDelete: 'set null',
+    }),
+    contexts_visibility_show: boolean('contexts_visibility_show').default(false),
+    generateSlug: boolean('generate_slug').default(true),
+    slug: varchar('slug').notNull(),
+    visibility_check_publish: boolean('visibility_check_publish').default(false),
+    visibility_check_featured: boolean('visibility_check_featured').default(false),
+    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => [
+    index('narratives_traits_traits_tone_idx').on(columns.traits_tone),
+    index('narratives_contexts_contexts_locations_idx').on(columns.contexts_locations),
+    index('narratives_contexts_contexts_notes_idx').on(columns.contexts_notes),
+    uniqueIndex('narratives_slug_idx').on(columns.slug),
+    index('narratives_updated_at_idx').on(columns.updatedAt),
+    index('narratives_created_at_idx').on(columns.createdAt),
+  ],
+)
+
+export const narratives_locales = pgTable(
+  'narratives_locales',
+  {
+    name: varchar('name').notNull().default(''),
+    alias: varchar('alias').default(''),
+    basics_description: varchar('basics_description').default(''),
+    details_content: jsonb('details_content').notNull(),
+    seo_title: varchar('seo_title'),
+    seo_image: integer('seo_image_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    seo_description: varchar('seo_description'),
+    id: serial('id').primaryKey(),
+    _locale: enum__locales('_locale').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+  },
+  (columns) => [
+    index('narratives_name_idx').on(columns.name, columns._locale),
+    index('narratives_seo_seo_image_idx').on(columns.seo_image, columns._locale),
+    uniqueIndex('narratives_locales_locale_parent_id_unique').on(
+      columns._locale,
+      columns._parentID,
+    ),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [narratives.id],
+      name: 'narratives_locales_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const narratives_rels = pgTable(
+  'narratives_rels',
+  {
+    id: serial('id').primaryKey(),
+    order: integer('order'),
+    parent: integer('parent_id').notNull(),
+    path: varchar('path').notNull(),
+    organizationsID: integer('organizations_id'),
+    individualsID: integer('individuals_id'),
+    leadersID: integer('leaders_id'),
+    driversID: integer('drivers_id'),
+    membersID: integer('members_id'),
+    categoriesID: integer('categories_id'),
+    tagsID: integer('tags_id'),
+  },
+  (columns) => [
+    index('narratives_rels_order_idx').on(columns.order),
+    index('narratives_rels_parent_idx').on(columns.parent),
+    index('narratives_rels_path_idx').on(columns.path),
+    index('narratives_rels_organizations_id_idx').on(columns.organizationsID),
+    index('narratives_rels_individuals_id_idx').on(columns.individualsID),
+    index('narratives_rels_leaders_id_idx').on(columns.leadersID),
+    index('narratives_rels_drivers_id_idx').on(columns.driversID),
+    index('narratives_rels_members_id_idx').on(columns.membersID),
+    index('narratives_rels_categories_id_idx').on(columns.categoriesID),
+    index('narratives_rels_tags_id_idx').on(columns.tagsID),
+    foreignKey({
+      columns: [columns['parent']],
+      foreignColumns: [narratives.id],
+      name: 'narratives_rels_parent_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['organizationsID']],
+      foreignColumns: [organizations.id],
+      name: 'narratives_rels_organizations_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['individualsID']],
+      foreignColumns: [individuals.id],
+      name: 'narratives_rels_individuals_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['leadersID']],
+      foreignColumns: [leaders.id],
+      name: 'narratives_rels_leaders_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['driversID']],
+      foreignColumns: [drivers.id],
+      name: 'narratives_rels_drivers_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['membersID']],
+      foreignColumns: [members.id],
+      name: 'narratives_rels_members_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['categoriesID']],
+      foreignColumns: [categories.id],
+      name: 'narratives_rels_categories_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['tagsID']],
+      foreignColumns: [tags.id],
+      name: 'narratives_rels_tags_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const stories_traits_concerns = pgTable(
+  'stories_traits_concerns',
+  {
+    _order: integer('_order').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+    id: varchar('id').primaryKey(),
+    conflict: varchar('conflict').default(''),
+    stakes: varchar('stakes').default(''),
+    resolution: varchar('resolution').default(''),
+  },
+  (columns) => [
+    index('stories_traits_concerns_order_idx').on(columns._order),
+    index('stories_traits_concerns_parent_id_idx').on(columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [stories.id],
+      name: 'stories_traits_concerns_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const stories_traits_interactions = pgTable(
+  'stories_traits_interactions',
+  {
+    _order: integer('_order').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+    id: varchar('id').primaryKey(),
+    dynamics: enum_stories_traits_interactions_dynamics('dynamics'),
+    outcome: varchar('outcome').default(''),
+  },
+  (columns) => [
+    index('stories_traits_interactions_order_idx').on(columns._order),
+    index('stories_traits_interactions_parent_id_idx').on(columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [stories.id],
+      name: 'stories_traits_interactions_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const stories = pgTable(
+  'stories',
+  {
+    id: serial('id').primaryKey(),
+    toggle: enum_stories_toggle('toggle').default('advanced'),
+    type: integer('type_id')
+      .notNull()
+      .references(() => categories.id, {
+        onDelete: 'set null',
+      }),
+    details_enable: boolean('details_enable').default(true),
+    details_narrative: integer('details_narrative_id')
+      .notNull()
+      .references(() => narratives.id, {
+        onDelete: 'set null',
+      }),
+    details_visibility_show: boolean('details_visibility_show').default(false),
+    traits_enable: boolean('traits_enable').default(true),
+    traits_visibility_show: boolean('traits_visibility_show').default(false),
+    assets_enable: boolean('assets_enable').default(true),
+    assets_gallery: integer('assets_gallery_id').references(() => galleries.id, {
+      onDelete: 'set null',
+    }),
+    assets_playlist: integer('assets_playlist_id').references(() => playlists.id, {
+      onDelete: 'set null',
+    }),
+    assets_visibility_show: boolean('assets_visibility_show').default(false),
+    contexts_enable: boolean('contexts_enable').default(true),
+    contexts_highlights: integer('contexts_highlights_id').references(() => highlights.id, {
+      onDelete: 'set null',
+    }),
+    contexts_incidents: integer('contexts_incidents_id').references(() => incidents.id, {
+      onDelete: 'set null',
+    }),
+    contexts_visibility_show: boolean('contexts_visibility_show').default(false),
+    generateSlug: boolean('generate_slug').default(true),
+    slug: varchar('slug').notNull(),
+    visibility_check_publish: boolean('visibility_check_publish').default(false),
+    visibility_check_featured: boolean('visibility_check_featured').default(false),
+    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => [
+    index('stories_type_idx').on(columns.type),
+    index('stories_details_details_narrative_idx').on(columns.details_narrative),
+    index('stories_assets_assets_gallery_idx').on(columns.assets_gallery),
+    index('stories_assets_assets_playlist_idx').on(columns.assets_playlist),
+    index('stories_contexts_contexts_highlights_idx').on(columns.contexts_highlights),
+    index('stories_contexts_contexts_incidents_idx').on(columns.contexts_incidents),
+    uniqueIndex('stories_slug_idx').on(columns.slug),
+    index('stories_updated_at_idx').on(columns.updatedAt),
+    index('stories_created_at_idx').on(columns.createdAt),
+  ],
+)
+
+export const stories_locales = pgTable(
+  'stories_locales',
+  {
+    name: varchar('name').notNull().default(''),
+    alias: varchar('alias').default(''),
+    seo_title: varchar('seo_title'),
+    seo_image: integer('seo_image_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    seo_description: varchar('seo_description'),
+    id: serial('id').primaryKey(),
+    _locale: enum__locales('_locale').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+  },
+  (columns) => [
+    index('stories_name_idx').on(columns.name, columns._locale),
+    index('stories_seo_seo_image_idx').on(columns.seo_image, columns._locale),
+    uniqueIndex('stories_locales_locale_parent_id_unique').on(columns._locale, columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [stories.id],
+      name: 'stories_locales_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const stories_rels = pgTable(
+  'stories_rels',
+  {
+    id: serial('id').primaryKey(),
+    order: integer('order'),
+    parent: integer('parent_id').notNull(),
+    path: varchar('path').notNull(),
+    categoriesID: integer('categories_id'),
+    tagsID: integer('tags_id'),
+  },
+  (columns) => [
+    index('stories_rels_order_idx').on(columns.order),
+    index('stories_rels_parent_idx').on(columns.parent),
+    index('stories_rels_path_idx').on(columns.path),
+    index('stories_rels_categories_id_idx').on(columns.categoriesID),
+    index('stories_rels_tags_id_idx').on(columns.tagsID),
+    foreignKey({
+      columns: [columns['parent']],
+      foreignColumns: [stories.id],
+      name: 'stories_rels_parent_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['categoriesID']],
+      foreignColumns: [categories.id],
+      name: 'stories_rels_categories_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['tagsID']],
+      foreignColumns: [tags.id],
+      name: 'stories_rels_tags_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const histories = pgTable(
+  'histories',
+  {
+    id: serial('id').primaryKey(),
+    toggle: enum_histories_toggle('toggle').default('advanced'),
+    type: integer('type_id')
+      .notNull()
+      .references(() => categories.id, {
+        onDelete: 'set null',
+      }),
+    details_enable: boolean('details_enable').default(true),
+    details_narrative: integer('details_narrative_id')
+      .notNull()
+      .references(() => narratives.id, {
+        onDelete: 'set null',
+      }),
+    details_stories: integer('details_stories_id').references(() => stories.id, {
+      onDelete: 'set null',
+    }),
+    details_visibility_show: boolean('details_visibility_show').default(false),
+    traits_enable: boolean('traits_enable').default(true),
+    traits_legacy_impact: enum_histories_traits_legacy_impact('traits_legacy_impact'),
+    traits_legacy_memory: enum_histories_traits_legacy_memory('traits_legacy_memory'),
+    traits_legacy_legacy: varchar('traits_legacy_legacy').default(''),
+    traits_evolution_origin: varchar('traits_evolution_origin').default(''),
+    traits_evolution_development: varchar('traits_evolution_development').default(''),
+    traits_evolution_lineage: varchar('traits_evolution_lineage').default(''),
+    traits_visibility_show: boolean('traits_visibility_show').default(false),
+    assets_enable: boolean('assets_enable').default(true),
+    assets_gallery: integer('assets_gallery_id').references(() => galleries.id, {
+      onDelete: 'set null',
+    }),
+    assets_playlist: integer('assets_playlist_id').references(() => playlists.id, {
+      onDelete: 'set null',
+    }),
+    assets_visibility_show: boolean('assets_visibility_show').default(false),
+    generateSlug: boolean('generate_slug').default(true),
+    slug: varchar('slug').notNull(),
+    visibility_check_publish: boolean('visibility_check_publish').default(false),
+    visibility_check_featured: boolean('visibility_check_featured').default(false),
+    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => [
+    index('histories_type_idx').on(columns.type),
+    index('histories_details_details_narrative_idx').on(columns.details_narrative),
+    index('histories_details_details_stories_idx').on(columns.details_stories),
+    index('histories_assets_assets_gallery_idx').on(columns.assets_gallery),
+    index('histories_assets_assets_playlist_idx').on(columns.assets_playlist),
+    uniqueIndex('histories_slug_idx').on(columns.slug),
+    index('histories_updated_at_idx').on(columns.updatedAt),
+    index('histories_created_at_idx').on(columns.createdAt),
+  ],
+)
+
+export const histories_locales = pgTable(
+  'histories_locales',
+  {
+    name: varchar('name').notNull().default(''),
+    alias: varchar('alias').default(''),
+    seo_title: varchar('seo_title'),
+    seo_image: integer('seo_image_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    seo_description: varchar('seo_description'),
+    id: serial('id').primaryKey(),
+    _locale: enum__locales('_locale').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+  },
+  (columns) => [
+    index('histories_name_idx').on(columns.name, columns._locale),
+    index('histories_seo_seo_image_idx').on(columns.seo_image, columns._locale),
+    uniqueIndex('histories_locales_locale_parent_id_unique').on(columns._locale, columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [histories.id],
+      name: 'histories_locales_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const histories_rels = pgTable(
+  'histories_rels',
+  {
+    id: serial('id').primaryKey(),
+    order: integer('order'),
+    parent: integer('parent_id').notNull(),
+    path: varchar('path').notNull(),
+    categoriesID: integer('categories_id'),
+    tagsID: integer('tags_id'),
+  },
+  (columns) => [
+    index('histories_rels_order_idx').on(columns.order),
+    index('histories_rels_parent_idx').on(columns.parent),
+    index('histories_rels_path_idx').on(columns.path),
+    index('histories_rels_categories_id_idx').on(columns.categoriesID),
+    index('histories_rels_tags_id_idx').on(columns.tagsID),
+    foreignKey({
+      columns: [columns['parent']],
+      foreignColumns: [histories.id],
+      name: 'histories_rels_parent_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['categoriesID']],
+      foreignColumns: [categories.id],
+      name: 'histories_rels_categories_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['tagsID']],
+      foreignColumns: [tags.id],
+      name: 'histories_rels_tags_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const journeys_traits_lessons = pgTable(
+  'journeys_traits_lessons',
+  {
+    _order: integer('_order').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+    id: varchar('id').primaryKey(),
+    lesson: varchar('lesson').notNull().default(''),
+    significance: enum_journeys_traits_lessons_significance('significance'),
+    application: varchar('application').default(''),
+    impact: enum_journeys_traits_lessons_impact('impact'),
+  },
+  (columns) => [
+    index('journeys_traits_lessons_order_idx').on(columns._order),
+    index('journeys_traits_lessons_parent_id_idx').on(columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [journeys.id],
+      name: 'journeys_traits_lessons_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const journeys = pgTable(
+  'journeys',
+  {
+    id: serial('id').primaryKey(),
+    toggle: enum_journeys_toggle('toggle').default('advanced'),
+    type: integer('type_id')
+      .notNull()
+      .references(() => categories.id, {
+        onDelete: 'set null',
+      }),
+    details_enable: boolean('details_enable').default(true),
+    details_narrative: integer('details_narrative_id')
+      .notNull()
+      .references(() => narratives.id, {
+        onDelete: 'set null',
+      }),
+    details_stories: integer('details_stories_id').references(() => stories.id, {
+      onDelete: 'set null',
+    }),
+    details_visibility_show: boolean('details_visibility_show').default(false),
+    traits_enable: boolean('traits_enable').default(true),
+    traits_decisions: integer('traits_decisions_id').references(() => decisions.id, {
+      onDelete: 'set null',
+    }),
+    traits_impacts: integer('traits_impacts_id').references(() => impacts.id, {
+      onDelete: 'set null',
+    }),
+    traits_visibility_show: boolean('traits_visibility_show').default(false),
+    assets_enable: boolean('assets_enable').default(true),
+    assets_gallery: integer('assets_gallery_id').references(() => galleries.id, {
+      onDelete: 'set null',
+    }),
+    assets_playlist: integer('assets_playlist_id').references(() => playlists.id, {
+      onDelete: 'set null',
+    }),
+    assets_visibility_show: boolean('assets_visibility_show').default(false),
+    generateSlug: boolean('generate_slug').default(true),
+    slug: varchar('slug').notNull(),
+    visibility_check_publish: boolean('visibility_check_publish').default(false),
+    visibility_check_featured: boolean('visibility_check_featured').default(false),
+    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => [
+    index('journeys_type_idx').on(columns.type),
+    index('journeys_details_details_narrative_idx').on(columns.details_narrative),
+    index('journeys_details_details_stories_idx').on(columns.details_stories),
+    index('journeys_traits_traits_decisions_idx').on(columns.traits_decisions),
+    index('journeys_traits_traits_impacts_idx').on(columns.traits_impacts),
+    index('journeys_assets_assets_gallery_idx').on(columns.assets_gallery),
+    index('journeys_assets_assets_playlist_idx').on(columns.assets_playlist),
+    uniqueIndex('journeys_slug_idx').on(columns.slug),
+    index('journeys_updated_at_idx').on(columns.updatedAt),
+    index('journeys_created_at_idx').on(columns.createdAt),
+  ],
+)
+
+export const journeys_locales = pgTable(
+  'journeys_locales',
+  {
+    name: varchar('name').notNull().default(''),
+    seo_title: varchar('seo_title'),
+    seo_image: integer('seo_image_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    seo_description: varchar('seo_description'),
+    id: serial('id').primaryKey(),
+    _locale: enum__locales('_locale').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+  },
+  (columns) => [
+    index('journeys_name_idx').on(columns.name, columns._locale),
+    index('journeys_seo_seo_image_idx').on(columns.seo_image, columns._locale),
+    uniqueIndex('journeys_locales_locale_parent_id_unique').on(columns._locale, columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [journeys.id],
+      name: 'journeys_locales_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const journeys_rels = pgTable(
+  'journeys_rels',
+  {
+    id: serial('id').primaryKey(),
+    order: integer('order'),
+    parent: integer('parent_id').notNull(),
+    path: varchar('path').notNull(),
+    categoriesID: integer('categories_id'),
+    tagsID: integer('tags_id'),
+  },
+  (columns) => [
+    index('journeys_rels_order_idx').on(columns.order),
+    index('journeys_rels_parent_idx').on(columns.parent),
+    index('journeys_rels_path_idx').on(columns.path),
+    index('journeys_rels_categories_id_idx').on(columns.categoriesID),
+    index('journeys_rels_tags_id_idx').on(columns.tagsID),
+    foreignKey({
+      columns: [columns['parent']],
+      foreignColumns: [journeys.id],
+      name: 'journeys_rels_parent_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['categoriesID']],
+      foreignColumns: [categories.id],
+      name: 'journeys_rels_categories_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['tagsID']],
+      foreignColumns: [tags.id],
+      name: 'journeys_rels_tags_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const notes_traits_intentions = pgTable(
+  'notes_traits_intentions',
+  {
+    _order: integer('_order').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+    id: varchar('id').primaryKey(),
+    type: enum_notes_traits_intentions_type('type'),
+    impact: enum_notes_traits_intentions_impact('impact'),
+    remark: varchar('remark').default(''),
+  },
+  (columns) => [
+    index('notes_traits_intentions_order_idx').on(columns._order),
+    index('notes_traits_intentions_parent_id_idx').on(columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [notes.id],
+      name: 'notes_traits_intentions_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const notes = pgTable(
+  'notes',
+  {
+    id: serial('id').primaryKey(),
+    toggle: enum_notes_toggle('toggle').default('advanced'),
+    type: integer('type_id')
+      .notNull()
+      .references(() => categories.id, {
+        onDelete: 'set null',
+      }),
+    details_enable: boolean('details_enable').default(true),
+    details_visibility_show: boolean('details_visibility_show').default(false),
+    traits_enable: boolean('traits_enable').default(true),
+    traits_visibility_show: boolean('traits_visibility_show').default(false),
+    assets_enable: boolean('assets_enable').default(true),
+    assets_archive: integer('assets_archive_id').references(() => archives.id, {
+      onDelete: 'set null',
+    }),
+    assets_visibility_show: boolean('assets_visibility_show').default(false),
+    generateSlug: boolean('generate_slug').default(true),
+    slug: varchar('slug').notNull(),
+    visibility_check_publish: boolean('visibility_check_publish').default(false),
+    visibility_check_featured: boolean('visibility_check_featured').default(false),
+    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => [
+    index('notes_type_idx').on(columns.type),
+    index('notes_assets_assets_archive_idx').on(columns.assets_archive),
+    uniqueIndex('notes_slug_idx').on(columns.slug),
+    index('notes_updated_at_idx').on(columns.updatedAt),
+    index('notes_created_at_idx').on(columns.createdAt),
+  ],
+)
+
+export const notes_locales = pgTable(
+  'notes_locales',
+  {
+    name: varchar('name').notNull().default(''),
+    alias: varchar('alias').default(''),
+    details_description: varchar('details_description').default(''),
+    seo_title: varchar('seo_title'),
+    seo_image: integer('seo_image_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    seo_description: varchar('seo_description'),
+    id: serial('id').primaryKey(),
+    _locale: enum__locales('_locale').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+  },
+  (columns) => [
+    index('notes_name_idx').on(columns.name, columns._locale),
+    index('notes_seo_seo_image_idx').on(columns.seo_image, columns._locale),
+    uniqueIndex('notes_locales_locale_parent_id_unique').on(columns._locale, columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [notes.id],
+      name: 'notes_locales_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const notes_rels = pgTable(
+  'notes_rels',
+  {
+    id: serial('id').primaryKey(),
+    order: integer('order'),
+    parent: integer('parent_id').notNull(),
+    path: varchar('path').notNull(),
+    categoriesID: integer('categories_id'),
+    tagsID: integer('tags_id'),
+  },
+  (columns) => [
+    index('notes_rels_order_idx').on(columns.order),
+    index('notes_rels_parent_idx').on(columns.parent),
+    index('notes_rels_path_idx').on(columns.path),
+    index('notes_rels_categories_id_idx').on(columns.categoriesID),
+    index('notes_rels_tags_id_idx').on(columns.tagsID),
+    foreignKey({
+      columns: [columns['parent']],
+      foreignColumns: [notes.id],
+      name: 'notes_rels_parent_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['categoriesID']],
+      foreignColumns: [categories.id],
+      name: 'notes_rels_categories_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['tagsID']],
+      foreignColumns: [tags.id],
+      name: 'notes_rels_tags_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const pages = pgTable(
+  'pages',
+  {
+    id: serial('id').primaryKey(),
+    toggle: enum_pages_toggle('toggle').default('advanced'),
+    basics_enable: boolean('basics_enable').default(true),
+    basics_visibility_show: boolean('basics_visibility_show').default(false),
+    details_enable: boolean('details_enable').default(true),
+    details_visibility_show: boolean('details_visibility_show').default(false),
+    traits_enable: boolean('traits_enable').default(true),
+    traits_visibility_show: boolean('traits_visibility_show').default(false),
+    metrics_enable: boolean('metrics_enable').default(true),
+    metrics_visibility_show: boolean('metrics_visibility_show').default(false),
+    assets_enable: boolean('assets_enable').default(true),
+    assets_visibility_show: boolean('assets_visibility_show').default(false),
+    contexts_enable: boolean('contexts_enable').default(true),
+    contexts_visibility_show: boolean('contexts_visibility_show').default(false),
+    generateSlug: boolean('generate_slug').default(true),
+    slug: varchar('slug').notNull(),
+    visibility_check_publish: boolean('visibility_check_publish').default(false),
+    visibility_check_featured: boolean('visibility_check_featured').default(false),
+    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => [
+    uniqueIndex('pages_slug_idx').on(columns.slug),
+    index('pages_updated_at_idx').on(columns.updatedAt),
+    index('pages_created_at_idx').on(columns.createdAt),
+  ],
+)
+
+export const pages_locales = pgTable(
+  'pages_locales',
+  {
+    seo_title: varchar('seo_title'),
+    seo_image: integer('seo_image_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    seo_description: varchar('seo_description'),
+    id: serial('id').primaryKey(),
+    _locale: enum__locales('_locale').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+  },
+  (columns) => [
+    index('pages_seo_seo_image_idx').on(columns.seo_image, columns._locale),
+    uniqueIndex('pages_locales_locale_parent_id_unique').on(columns._locale, columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [pages.id],
+      name: 'pages_locales_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const pages_rels = pgTable(
+  'pages_rels',
+  {
+    id: serial('id').primaryKey(),
+    order: integer('order'),
+    parent: integer('parent_id').notNull(),
+    path: varchar('path').notNull(),
+    categoriesID: integer('categories_id'),
+    tagsID: integer('tags_id'),
+  },
+  (columns) => [
+    index('pages_rels_order_idx').on(columns.order),
+    index('pages_rels_parent_idx').on(columns.parent),
+    index('pages_rels_path_idx').on(columns.path),
+    index('pages_rels_categories_id_idx').on(columns.categoriesID),
+    index('pages_rels_tags_id_idx').on(columns.tagsID),
+    foreignKey({
+      columns: [columns['parent']],
+      foreignColumns: [pages.id],
+      name: 'pages_rels_parent_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['categoriesID']],
+      foreignColumns: [categories.id],
+      name: 'pages_rels_categories_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['tagsID']],
+      foreignColumns: [tags.id],
+      name: 'pages_rels_tags_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const cars = pgTable(
+  'cars',
+  {
+    id: serial('id').primaryKey(),
+    toggle: enum_cars_toggle('toggle').default('advanced'),
+    type: integer('type_id')
+      .notNull()
+      .references(() => categories.id, {
+        onDelete: 'set null',
+      }),
+    identifiers_chassis: varchar('identifiers_chassis').default(''),
+    identifiers_version: varchar('identifiers_version').default(''),
+    identifiers_code: varchar('identifiers_code').default(''),
+    basics_enable: boolean('basics_enable').default(true),
+    basics_visibility_show: boolean('basics_visibility_show').default(false),
+    details_enable: boolean('details_enable').default(true),
+    details_classifications: integer('details_classifications_id').references(
+      () => classifications.id,
+      {
+        onDelete: 'set null',
+      },
+    ),
+    details_visibility_show: boolean('details_visibility_show').default(false),
+    traits_enable: boolean('traits_enable').default(true),
+    traits_status: enum_cars_traits_status('traits_status').notNull(),
+    traits_features: integer('traits_features_id').references(() => features.id, {
+      onDelete: 'set null',
+    }),
+    traits_specifications: integer('traits_specifications_id').references(() => specifications.id, {
+      onDelete: 'set null',
+    }),
+    traits_visibility_show: boolean('traits_visibility_show').default(false),
+    assets_enable: boolean('assets_enable').default(true),
+    assets_primary: integer('assets_primary_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    assets_cover: integer('assets_cover_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    assets_gallery: integer('assets_gallery_id').references(() => galleries.id, {
+      onDelete: 'set null',
+    }),
+    assets_playlist: integer('assets_playlist_id').references(() => playlists.id, {
+      onDelete: 'set null',
+    }),
+    assets_visualization: integer('assets_visualization_id').references(() => visualizations.id, {
+      onDelete: 'set null',
+    }),
+    assets_documents: integer('assets_documents_id').references(() => archives.id, {
+      onDelete: 'set null',
+    }),
+    assets_visibility_show: boolean('assets_visibility_show').default(false),
+    contexts_enable: boolean('contexts_enable').default(true),
+    contexts_manufacturers: integer('contexts_manufacturers_id').references(
+      () => organizations.id,
+      {
+        onDelete: 'set null',
+      },
+    ),
+    contexts_drivers: integer('contexts_drivers_id').references(() => drivers.id, {
+      onDelete: 'set null',
+    }),
+    contexts_crew: integer('contexts_crew_id').references(() => members.id, {
+      onDelete: 'set null',
+    }),
+    contexts_histories: integer('contexts_histories_id').references(() => histories.id, {
+      onDelete: 'set null',
+    }),
+    contexts_visibility_show: boolean('contexts_visibility_show').default(false),
+    generateSlug: boolean('generate_slug').default(true),
+    slug: varchar('slug').notNull(),
+    visibility_check_publish: boolean('visibility_check_publish').default(false),
+    visibility_check_featured: boolean('visibility_check_featured').default(false),
+    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => [
+    index('cars_type_idx').on(columns.type),
+    uniqueIndex('cars_identifiers_identifiers_chassis_idx').on(columns.identifiers_chassis),
+    index('cars_identifiers_identifiers_code_idx').on(columns.identifiers_code),
+    index('cars_details_details_classifications_idx').on(columns.details_classifications),
+    index('cars_traits_traits_features_idx').on(columns.traits_features),
+    index('cars_traits_traits_specifications_idx').on(columns.traits_specifications),
+    index('cars_assets_assets_primary_idx').on(columns.assets_primary),
+    index('cars_assets_assets_cover_idx').on(columns.assets_cover),
+    index('cars_assets_assets_gallery_idx').on(columns.assets_gallery),
+    index('cars_assets_assets_playlist_idx').on(columns.assets_playlist),
+    index('cars_assets_assets_visualization_idx').on(columns.assets_visualization),
+    index('cars_assets_assets_documents_idx').on(columns.assets_documents),
+    index('cars_contexts_contexts_manufacturers_idx').on(columns.contexts_manufacturers),
+    index('cars_contexts_contexts_drivers_idx').on(columns.contexts_drivers),
+    index('cars_contexts_contexts_crew_idx').on(columns.contexts_crew),
+    index('cars_contexts_contexts_histories_idx').on(columns.contexts_histories),
+    uniqueIndex('cars_slug_idx').on(columns.slug),
+    index('cars_updated_at_idx').on(columns.updatedAt),
+    index('cars_created_at_idx').on(columns.createdAt),
+  ],
+)
+
+export const cars_locales = pgTable(
+  'cars_locales',
+  {
+    name: varchar('name').notNull().default(''),
+    identifiers_model: varchar('identifiers_model').notNull().default(''),
+    basics_description: varchar('basics_description').default(''),
+    seo_title: varchar('seo_title'),
+    seo_image: integer('seo_image_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    seo_description: varchar('seo_description'),
+    id: serial('id').primaryKey(),
+    _locale: enum__locales('_locale').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+  },
+  (columns) => [
+    index('cars_name_idx').on(columns.name, columns._locale),
+    index('cars_seo_seo_image_idx').on(columns.seo_image, columns._locale),
+    uniqueIndex('cars_locales_locale_parent_id_unique').on(columns._locale, columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [cars.id],
+      name: 'cars_locales_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const cars_rels = pgTable(
+  'cars_rels',
+  {
+    id: serial('id').primaryKey(),
+    order: integer('order'),
+    parent: integer('parent_id').notNull(),
+    path: varchar('path').notNull(),
+    organizationsID: integer('organizations_id'),
+    individualsID: integer('individuals_id'),
+    leadersID: integer('leaders_id'),
+    categoriesID: integer('categories_id'),
+    tagsID: integer('tags_id'),
+  },
+  (columns) => [
+    index('cars_rels_order_idx').on(columns.order),
+    index('cars_rels_parent_idx').on(columns.parent),
+    index('cars_rels_path_idx').on(columns.path),
+    index('cars_rels_organizations_id_idx').on(columns.organizationsID),
+    index('cars_rels_individuals_id_idx').on(columns.individualsID),
+    index('cars_rels_leaders_id_idx').on(columns.leadersID),
+    index('cars_rels_categories_id_idx').on(columns.categoriesID),
+    index('cars_rels_tags_id_idx').on(columns.tagsID),
+    foreignKey({
+      columns: [columns['parent']],
+      foreignColumns: [cars.id],
+      name: 'cars_rels_parent_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['organizationsID']],
+      foreignColumns: [organizations.id],
+      name: 'cars_rels_organizations_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['individualsID']],
+      foreignColumns: [individuals.id],
+      name: 'cars_rels_individuals_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['leadersID']],
+      foreignColumns: [leaders.id],
+      name: 'cars_rels_leaders_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['categoriesID']],
+      foreignColumns: [categories.id],
+      name: 'cars_rels_categories_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['tagsID']],
+      foreignColumns: [tags.id],
+      name: 'cars_rels_tags_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const kits_traits_materials = pgTable(
+  'kits_traits_materials',
+  {
+    _order: integer('_order').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+    id: varchar('id').primaryKey(),
+    type: enum_kits_traits_materials_type('type'),
+    specification: varchar('specification').default(''),
+    origin: varchar('origin').default(''),
+  },
+  (columns) => [
+    index('kits_traits_materials_order_idx').on(columns._order),
+    index('kits_traits_materials_parent_id_idx').on(columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [kits.id],
+      name: 'kits_traits_materials_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const kits = pgTable(
+  'kits',
+  {
+    id: serial('id').primaryKey(),
+    toggle: enum_kits_toggle('toggle').default('advanced'),
+    type: integer('type_id')
+      .notNull()
+      .references(() => categories.id, {
+        onDelete: 'set null',
+      }),
+    basics_enable: boolean('basics_enable').default(true),
+    basics_purpose_application: enum_kits_basics_purpose_application('basics_purpose_application'),
+    basics_purpose_context: varchar('basics_purpose_context').default(''),
+    basics_purpose_conditions: varchar('basics_purpose_conditions').default(''),
+    basics_visibility_show: boolean('basics_visibility_show').default(false),
+    details_enable: boolean('details_enable').default(true),
+    details_design_designer: varchar('details_design_designer').default(''),
+    details_design_year: timestamp('details_design_year', {
+      mode: 'string',
+      withTimezone: true,
+      precision: 3,
+    }),
+    details_functionality_performance: enum_kits_details_functionality_performance(
+      'details_functionality_performance',
+    ),
+    details_functionality_durability: enum_kits_details_functionality_durability(
+      'details_functionality_durability',
+    ),
+    details_functionality_comfort: enum_kits_details_functionality_comfort(
+      'details_functionality_comfort',
+    ),
+    details_visibility_show: boolean('details_visibility_show').default(false),
+    traits_enable: boolean('traits_enable').default(true),
+    traits_composition_construction: enum_kits_traits_composition_construction(
+      'traits_composition_construction',
+    ),
+    traits_composition_assembly: enum_kits_traits_composition_assembly(
+      'traits_composition_assembly',
+    ),
+    traits_composition_finish: enum_kits_traits_composition_finish('traits_composition_finish'),
+    traits_appearance_colors: varchar('traits_appearance_colors').default(''),
+    traits_appearance_branding: enum_kits_traits_appearance_branding('traits_appearance_branding'),
+    traits_appearance_style: enum_kits_traits_appearance_style('traits_appearance_style'),
+    traits_visibility_show: boolean('traits_visibility_show').default(false),
+    assets_enable: boolean('assets_enable').default(true),
+    assets_thumbnail: integer('assets_thumbnail_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    assets_cover: integer('assets_cover_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    assets_gallery: integer('assets_gallery_id').references(() => galleries.id, {
+      onDelete: 'set null',
+    }),
+    assets_visualizations: integer('assets_visualizations_id').references(() => visualizations.id, {
+      onDelete: 'set null',
+    }),
+    assets_visibility_show: boolean('assets_visibility_show').default(false),
+    contexts_enable: boolean('contexts_enable').default(true),
+    contexts_notes: integer('contexts_notes_id').references(() => notes.id, {
+      onDelete: 'set null',
+    }),
+    contexts_visibility_show: boolean('contexts_visibility_show').default(false),
+    generateSlug: boolean('generate_slug').default(true),
+    slug: varchar('slug').notNull(),
+    visibility_check_publish: boolean('visibility_check_publish').default(false),
+    visibility_check_featured: boolean('visibility_check_featured').default(false),
+    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => [
+    index('kits_type_idx').on(columns.type),
+    index('kits_assets_assets_thumbnail_idx').on(columns.assets_thumbnail),
+    index('kits_assets_assets_cover_idx').on(columns.assets_cover),
+    index('kits_assets_assets_gallery_idx').on(columns.assets_gallery),
+    index('kits_assets_assets_visualizations_idx').on(columns.assets_visualizations),
+    index('kits_contexts_contexts_notes_idx').on(columns.contexts_notes),
+    uniqueIndex('kits_slug_idx').on(columns.slug),
+    index('kits_updated_at_idx').on(columns.updatedAt),
+    index('kits_created_at_idx').on(columns.createdAt),
+  ],
+)
+
+export const kits_locales = pgTable(
+  'kits_locales',
+  {
+    name: varchar('name').notNull().default(''),
+    basics_description: varchar('basics_description').default(''),
+    details_design_concept: varchar('details_design_concept').default(''),
+    details_design_inspiration: varchar('details_design_inspiration').default(''),
+    seo_title: varchar('seo_title'),
+    seo_image: integer('seo_image_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    seo_description: varchar('seo_description'),
+    id: serial('id').primaryKey(),
+    _locale: enum__locales('_locale').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+  },
+  (columns) => [
+    index('kits_name_idx').on(columns.name, columns._locale),
+    index('kits_seo_seo_image_idx').on(columns.seo_image, columns._locale),
+    uniqueIndex('kits_locales_locale_parent_id_unique').on(columns._locale, columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [kits.id],
+      name: 'kits_locales_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const kits_rels = pgTable(
+  'kits_rels',
+  {
+    id: serial('id').primaryKey(),
+    order: integer('order'),
+    parent: integer('parent_id').notNull(),
+    path: varchar('path').notNull(),
+    driversID: integer('drivers_id'),
+    membersID: integer('members_id'),
+    leadersID: integer('leaders_id'),
+    individualsID: integer('individuals_id'),
+    organizationsID: integer('organizations_id'),
+    categoriesID: integer('categories_id'),
+    tagsID: integer('tags_id'),
+  },
+  (columns) => [
+    index('kits_rels_order_idx').on(columns.order),
+    index('kits_rels_parent_idx').on(columns.parent),
+    index('kits_rels_path_idx').on(columns.path),
+    index('kits_rels_drivers_id_idx').on(columns.driversID),
+    index('kits_rels_members_id_idx').on(columns.membersID),
+    index('kits_rels_leaders_id_idx').on(columns.leadersID),
+    index('kits_rels_individuals_id_idx').on(columns.individualsID),
+    index('kits_rels_organizations_id_idx').on(columns.organizationsID),
+    index('kits_rels_categories_id_idx').on(columns.categoriesID),
+    index('kits_rels_tags_id_idx').on(columns.tagsID),
+    foreignKey({
+      columns: [columns['parent']],
+      foreignColumns: [kits.id],
+      name: 'kits_rels_parent_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['driversID']],
+      foreignColumns: [drivers.id],
+      name: 'kits_rels_drivers_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['membersID']],
+      foreignColumns: [members.id],
+      name: 'kits_rels_members_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['leadersID']],
+      foreignColumns: [leaders.id],
+      name: 'kits_rels_leaders_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['individualsID']],
+      foreignColumns: [individuals.id],
+      name: 'kits_rels_individuals_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['organizationsID']],
+      foreignColumns: [organizations.id],
+      name: 'kits_rels_organizations_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['categoriesID']],
+      foreignColumns: [categories.id],
+      name: 'kits_rels_categories_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['tagsID']],
+      foreignColumns: [tags.id],
+      name: 'kits_rels_tags_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const media = pgTable(
+  'media',
+  {
+    id: serial('id').primaryKey(),
+    alt: varchar('alt'),
+    caption: jsonb('caption'),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    url: varchar('url'),
+    thumbnailURL: varchar('thumbnail_u_r_l'),
+    filename: varchar('filename'),
+    mimeType: varchar('mime_type'),
+    filesize: numeric('filesize', { mode: 'number' }),
+    width: numeric('width', { mode: 'number' }),
+    height: numeric('height', { mode: 'number' }),
+    focalX: numeric('focal_x', { mode: 'number' }),
+    focalY: numeric('focal_y', { mode: 'number' }),
+  },
+  (columns) => [
+    index('media_updated_at_idx').on(columns.updatedAt),
+    index('media_created_at_idx').on(columns.createdAt),
+    uniqueIndex('media_filename_idx').on(columns.filename),
+  ],
+)
+
+export const galleries = pgTable(
+  'galleries',
+  {
+    id: serial('id').primaryKey(),
+    toggle: enum_galleries_toggle('toggle').default('advanced'),
+    type: integer('type_id')
+      .notNull()
+      .references(() => categories.id, {
+        onDelete: 'set null',
+      }),
+    details_enable: boolean('details_enable').default(true),
+    details_images: integer('details_images_id')
+      .notNull()
+      .references(() => media.id, {
+        onDelete: 'set null',
+      }),
+    details_narrative: integer('details_narrative_id').references(() => narratives.id, {
+      onDelete: 'set null',
+    }),
+    details_visibility_show: boolean('details_visibility_show').default(false),
+    generateSlug: boolean('generate_slug').default(true),
+    slug: varchar('slug').notNull(),
+    visibility_check_publish: boolean('visibility_check_publish').default(false),
+    visibility_check_featured: boolean('visibility_check_featured').default(false),
+    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => [
+    index('galleries_type_idx').on(columns.type),
+    index('galleries_details_details_images_idx').on(columns.details_images),
+    index('galleries_details_details_narrative_idx').on(columns.details_narrative),
+    uniqueIndex('galleries_slug_idx').on(columns.slug),
+    index('galleries_updated_at_idx').on(columns.updatedAt),
+    index('galleries_created_at_idx').on(columns.createdAt),
+  ],
+)
+
+export const galleries_locales = pgTable(
+  'galleries_locales',
+  {
+    name: varchar('name').notNull().default(''),
+    seo_title: varchar('seo_title'),
+    seo_image: integer('seo_image_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    seo_description: varchar('seo_description'),
+    id: serial('id').primaryKey(),
+    _locale: enum__locales('_locale').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+  },
+  (columns) => [
+    index('galleries_name_idx').on(columns.name, columns._locale),
+    index('galleries_seo_seo_image_idx').on(columns.seo_image, columns._locale),
+    uniqueIndex('galleries_locales_locale_parent_id_unique').on(columns._locale, columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [galleries.id],
+      name: 'galleries_locales_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const galleries_rels = pgTable(
+  'galleries_rels',
+  {
+    id: serial('id').primaryKey(),
+    order: integer('order'),
+    parent: integer('parent_id').notNull(),
+    path: varchar('path').notNull(),
+    categoriesID: integer('categories_id'),
+    tagsID: integer('tags_id'),
+  },
+  (columns) => [
+    index('galleries_rels_order_idx').on(columns.order),
+    index('galleries_rels_parent_idx').on(columns.parent),
+    index('galleries_rels_path_idx').on(columns.path),
+    index('galleries_rels_categories_id_idx').on(columns.categoriesID),
+    index('galleries_rels_tags_id_idx').on(columns.tagsID),
+    foreignKey({
+      columns: [columns['parent']],
+      foreignColumns: [galleries.id],
+      name: 'galleries_rels_parent_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['categoriesID']],
+      foreignColumns: [categories.id],
+      name: 'galleries_rels_categories_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['tagsID']],
+      foreignColumns: [tags.id],
+      name: 'galleries_rels_tags_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const playlists = pgTable(
+  'playlists',
+  {
+    id: serial('id').primaryKey(),
+    toggle: enum_playlists_toggle('toggle').default('advanced'),
+    type: integer('type_id')
+      .notNull()
+      .references(() => categories.id, {
+        onDelete: 'set null',
+      }),
+    details_enable: boolean('details_enable').default(true),
+    details_clips: integer('details_clips_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    details_videos: integer('details_videos_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    details_narrative: integer('details_narrative_id').references(() => narratives.id, {
+      onDelete: 'set null',
+    }),
+    details_visibility_show: boolean('details_visibility_show').default(false),
+    traits_enable: boolean('traits_enable').default(true),
+    traits_quality: enum_playlists_traits_quality('traits_quality'),
+    traits_format: enum_playlists_traits_format('traits_format'),
+    traits_visibility_show: boolean('traits_visibility_show').default(false),
+    generateSlug: boolean('generate_slug').default(true),
+    slug: varchar('slug').notNull(),
+    visibility_check_publish: boolean('visibility_check_publish').default(false),
+    visibility_check_featured: boolean('visibility_check_featured').default(false),
+    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => [
+    index('playlists_type_idx').on(columns.type),
+    index('playlists_details_details_clips_idx').on(columns.details_clips),
+    index('playlists_details_details_videos_idx').on(columns.details_videos),
+    index('playlists_details_details_narrative_idx').on(columns.details_narrative),
+    uniqueIndex('playlists_slug_idx').on(columns.slug),
+    index('playlists_updated_at_idx').on(columns.updatedAt),
+    index('playlists_created_at_idx').on(columns.createdAt),
+  ],
+)
+
+export const playlists_locales = pgTable(
+  'playlists_locales',
+  {
+    name: varchar('name').notNull().default(''),
+    seo_title: varchar('seo_title'),
+    seo_image: integer('seo_image_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    seo_description: varchar('seo_description'),
+    id: serial('id').primaryKey(),
+    _locale: enum__locales('_locale').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+  },
+  (columns) => [
+    index('playlists_name_idx').on(columns.name, columns._locale),
+    index('playlists_seo_seo_image_idx').on(columns.seo_image, columns._locale),
+    uniqueIndex('playlists_locales_locale_parent_id_unique').on(columns._locale, columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [playlists.id],
+      name: 'playlists_locales_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const playlists_rels = pgTable(
+  'playlists_rels',
+  {
+    id: serial('id').primaryKey(),
+    order: integer('order'),
+    parent: integer('parent_id').notNull(),
+    path: varchar('path').notNull(),
+    categoriesID: integer('categories_id'),
+    tagsID: integer('tags_id'),
+  },
+  (columns) => [
+    index('playlists_rels_order_idx').on(columns.order),
+    index('playlists_rels_parent_idx').on(columns.parent),
+    index('playlists_rels_path_idx').on(columns.path),
+    index('playlists_rels_categories_id_idx').on(columns.categoriesID),
+    index('playlists_rels_tags_id_idx').on(columns.tagsID),
+    foreignKey({
+      columns: [columns['parent']],
+      foreignColumns: [playlists.id],
+      name: 'playlists_rels_parent_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['categoriesID']],
+      foreignColumns: [categories.id],
+      name: 'playlists_rels_categories_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['tagsID']],
+      foreignColumns: [tags.id],
+      name: 'playlists_rels_tags_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const archives = pgTable(
+  'archives',
+  {
+    id: serial('id').primaryKey(),
+    toggle: enum_archives_toggle('toggle').default('advanced'),
+    type: integer('type_id')
+      .notNull()
+      .references(() => categories.id, {
+        onDelete: 'set null',
+      }),
+    details_enable: boolean('details_enable').default(true),
+    details_samples: integer('details_samples_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    details_documents: integer('details_documents_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    details_narrative: integer('details_narrative_id')
+      .notNull()
+      .references(() => narratives.id, {
+        onDelete: 'set null',
+      }),
+    details_visibility_show: boolean('details_visibility_show').default(false),
+    generateSlug: boolean('generate_slug').default(true),
+    slug: varchar('slug').notNull(),
+    visibility_check_publish: boolean('visibility_check_publish').default(false),
+    visibility_check_featured: boolean('visibility_check_featured').default(false),
+    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => [
+    index('archives_type_idx').on(columns.type),
+    index('archives_details_details_samples_idx').on(columns.details_samples),
+    index('archives_details_details_documents_idx').on(columns.details_documents),
+    index('archives_details_details_narrative_idx').on(columns.details_narrative),
+    uniqueIndex('archives_slug_idx').on(columns.slug),
+    index('archives_updated_at_idx').on(columns.updatedAt),
+    index('archives_created_at_idx').on(columns.createdAt),
+  ],
+)
+
+export const archives_locales = pgTable(
+  'archives_locales',
+  {
+    name: varchar('name').notNull().default(''),
+    seo_title: varchar('seo_title'),
+    seo_image: integer('seo_image_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    seo_description: varchar('seo_description'),
+    id: serial('id').primaryKey(),
+    _locale: enum__locales('_locale').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+  },
+  (columns) => [
+    index('archives_name_idx').on(columns.name, columns._locale),
+    index('archives_seo_seo_image_idx').on(columns.seo_image, columns._locale),
+    uniqueIndex('archives_locales_locale_parent_id_unique').on(columns._locale, columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [archives.id],
+      name: 'archives_locales_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const archives_rels = pgTable(
+  'archives_rels',
+  {
+    id: serial('id').primaryKey(),
+    order: integer('order'),
+    parent: integer('parent_id').notNull(),
+    path: varchar('path').notNull(),
+    categoriesID: integer('categories_id'),
+    tagsID: integer('tags_id'),
+  },
+  (columns) => [
+    index('archives_rels_order_idx').on(columns.order),
+    index('archives_rels_parent_idx').on(columns.parent),
+    index('archives_rels_path_idx').on(columns.path),
+    index('archives_rels_categories_id_idx').on(columns.categoriesID),
+    index('archives_rels_tags_id_idx').on(columns.tagsID),
+    foreignKey({
+      columns: [columns['parent']],
+      foreignColumns: [archives.id],
+      name: 'archives_rels_parent_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['categoriesID']],
+      foreignColumns: [categories.id],
+      name: 'archives_rels_categories_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['tagsID']],
+      foreignColumns: [tags.id],
+      name: 'archives_rels_tags_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const visualizations = pgTable(
+  'visualizations',
+  {
+    id: serial('id').primaryKey(),
+    toggle: enum_visualizations_toggle('toggle').default('advanced'),
+    type: integer('type_id')
+      .notNull()
+      .references(() => categories.id, {
+        onDelete: 'set null',
+      }),
+    details_enable: boolean('details_enable').default(true),
+    details_designs: integer('details_designs_id')
+      .notNull()
+      .references(() => media.id, {
+        onDelete: 'set null',
+      }),
+    details_narrative: integer('details_narrative_id').references(() => narratives.id, {
+      onDelete: 'set null',
+    }),
+    details_visibility_show: boolean('details_visibility_show').default(false),
+    generateSlug: boolean('generate_slug').default(true),
+    slug: varchar('slug').notNull(),
+    visibility_check_publish: boolean('visibility_check_publish').default(false),
+    visibility_check_featured: boolean('visibility_check_featured').default(false),
+    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => [
+    index('visualizations_type_idx').on(columns.type),
+    index('visualizations_details_details_designs_idx').on(columns.details_designs),
+    index('visualizations_details_details_narrative_idx').on(columns.details_narrative),
+    uniqueIndex('visualizations_slug_idx').on(columns.slug),
+    index('visualizations_updated_at_idx').on(columns.updatedAt),
+    index('visualizations_created_at_idx').on(columns.createdAt),
+  ],
+)
+
+export const visualizations_locales = pgTable(
+  'visualizations_locales',
+  {
+    name: varchar('name').notNull().default(''),
+    seo_title: varchar('seo_title'),
+    seo_image: integer('seo_image_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    seo_description: varchar('seo_description'),
+    id: serial('id').primaryKey(),
+    _locale: enum__locales('_locale').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+  },
+  (columns) => [
+    index('visualizations_name_idx').on(columns.name, columns._locale),
+    index('visualizations_seo_seo_image_idx').on(columns.seo_image, columns._locale),
+    uniqueIndex('visualizations_locales_locale_parent_id_unique').on(
+      columns._locale,
+      columns._parentID,
+    ),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [visualizations.id],
+      name: 'visualizations_locales_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const visualizations_rels = pgTable(
+  'visualizations_rels',
+  {
+    id: serial('id').primaryKey(),
+    order: integer('order'),
+    parent: integer('parent_id').notNull(),
+    path: varchar('path').notNull(),
+    categoriesID: integer('categories_id'),
+    tagsID: integer('tags_id'),
+  },
+  (columns) => [
+    index('visualizations_rels_order_idx').on(columns.order),
+    index('visualizations_rels_parent_idx').on(columns.parent),
+    index('visualizations_rels_path_idx').on(columns.path),
+    index('visualizations_rels_categories_id_idx').on(columns.categoriesID),
+    index('visualizations_rels_tags_id_idx').on(columns.tagsID),
+    foreignKey({
+      columns: [columns['parent']],
+      foreignColumns: [visualizations.id],
+      name: 'visualizations_rels_parent_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['categoriesID']],
+      foreignColumns: [categories.id],
+      name: 'visualizations_rels_categories_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['tagsID']],
+      foreignColumns: [tags.id],
+      name: 'visualizations_rels_tags_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const schedules_details_slots = pgTable(
+  'schedules_details_slots',
+  {
+    _order: integer('_order').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+    id: varchar('id').primaryKey(),
+    activity: varchar('activity').notNull().default(''),
+    start: timestamp('start', { mode: 'string', withTimezone: true, precision: 3 }).notNull(),
+    end: timestamp('end', { mode: 'string', withTimezone: true, precision: 3 }).notNull(),
+    duration: varchar('duration').default(''),
+    location: varchar('location').default(''),
+  },
+  (columns) => [
+    index('schedules_details_slots_order_idx').on(columns._order),
+    index('schedules_details_slots_parent_id_idx').on(columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [schedules.id],
+      name: 'schedules_details_slots_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const schedules_traits_constraints = pgTable(
+  'schedules_traits_constraints',
+  {
+    _order: integer('_order').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+    id: varchar('id').primaryKey(),
+    constraint: varchar('constraint').default(''),
+    type: enum_schedules_traits_constraints_type('type'),
+    impact: enum_schedules_traits_constraints_impact('impact'),
+  },
+  (columns) => [
+    index('schedules_traits_constraints_order_idx').on(columns._order),
+    index('schedules_traits_constraints_parent_id_idx').on(columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [schedules.id],
+      name: 'schedules_traits_constraints_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const schedules = pgTable(
+  'schedules',
+  {
+    id: serial('id').primaryKey(),
+    toggle: enum_schedules_toggle('toggle').default('advanced'),
+    type: integer('type_id')
+      .notNull()
+      .references(() => categories.id, {
+        onDelete: 'set null',
+      }),
+    basics_enable: boolean('basics_enable').default(true),
+    basics_scope_significance: enum_schedules_basics_scope_significance(
+      'basics_scope_significance',
+    ),
+    basics_scope_scale: enum_schedules_basics_scope_scale('basics_scope_scale'),
+    basics_scope_depth: enum_schedules_basics_scope_depth('basics_scope_depth'),
+    basics_visibility_show: boolean('basics_visibility_show').default(false),
+    details_enable: boolean('details_enable').default(true),
+    details_chronology_date: timestamp('details_chronology_date', {
+      mode: 'string',
+      withTimezone: true,
+      precision: 3,
+    }).notNull(),
+    details_chronology_type: enum_schedules_details_chronology_type('details_chronology_type'),
+    details_visibility_show: boolean('details_visibility_show').default(false),
+    traits_enable: boolean('traits_enable').default(true),
+    traits_visibility_show: boolean('traits_visibility_show').default(false),
+    contexts_enable: boolean('contexts_enable').default(true),
+    contexts_visibility_show: boolean('contexts_visibility_show').default(false),
+    generateSlug: boolean('generate_slug').default(true),
+    slug: varchar('slug').notNull(),
+    visibility_check_publish: boolean('visibility_check_publish').default(false),
+    visibility_check_featured: boolean('visibility_check_featured').default(false),
+    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => [
+    index('schedules_type_idx').on(columns.type),
+    uniqueIndex('schedules_slug_idx').on(columns.slug),
+    index('schedules_updated_at_idx').on(columns.updatedAt),
+    index('schedules_created_at_idx').on(columns.createdAt),
+  ],
+)
+
+export const schedules_locales = pgTable(
+  'schedules_locales',
+  {
+    name: varchar('name').notNull().default(''),
+    basics_agenda: varchar('basics_agenda').default(''),
+    seo_title: varchar('seo_title'),
+    seo_image: integer('seo_image_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    seo_description: varchar('seo_description'),
+    id: serial('id').primaryKey(),
+    _locale: enum__locales('_locale').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+  },
+  (columns) => [
+    index('schedules_name_idx').on(columns.name, columns._locale),
+    index('schedules_seo_seo_image_idx').on(columns.seo_image, columns._locale),
+    uniqueIndex('schedules_locales_locale_parent_id_unique').on(columns._locale, columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [schedules.id],
+      name: 'schedules_locales_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const schedules_rels = pgTable(
+  'schedules_rels',
+  {
+    id: serial('id').primaryKey(),
+    order: integer('order'),
+    parent: integer('parent_id').notNull(),
+    path: varchar('path').notNull(),
+    trainingsID: integer('trainings_id'),
+    meetupsID: integer('meetups_id'),
+    initiativesID: integer('initiatives_id'),
+    celebrationsID: integer('celebrations_id'),
+    leadersID: integer('leaders_id'),
+    driversID: integer('drivers_id'),
+    membersID: integer('members_id'),
+    individualsID: integer('individuals_id'),
+    organizationsID: integer('organizations_id'),
+    categoriesID: integer('categories_id'),
+    tagsID: integer('tags_id'),
+  },
+  (columns) => [
+    index('schedules_rels_order_idx').on(columns.order),
+    index('schedules_rels_parent_idx').on(columns.parent),
+    index('schedules_rels_path_idx').on(columns.path),
+    index('schedules_rels_trainings_id_idx').on(columns.trainingsID),
+    index('schedules_rels_meetups_id_idx').on(columns.meetupsID),
+    index('schedules_rels_initiatives_id_idx').on(columns.initiativesID),
+    index('schedules_rels_celebrations_id_idx').on(columns.celebrationsID),
+    index('schedules_rels_leaders_id_idx').on(columns.leadersID),
+    index('schedules_rels_drivers_id_idx').on(columns.driversID),
+    index('schedules_rels_members_id_idx').on(columns.membersID),
+    index('schedules_rels_individuals_id_idx').on(columns.individualsID),
+    index('schedules_rels_organizations_id_idx').on(columns.organizationsID),
+    index('schedules_rels_categories_id_idx').on(columns.categoriesID),
+    index('schedules_rels_tags_id_idx').on(columns.tagsID),
+    foreignKey({
+      columns: [columns['parent']],
+      foreignColumns: [schedules.id],
+      name: 'schedules_rels_parent_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['trainingsID']],
+      foreignColumns: [trainings.id],
+      name: 'schedules_rels_trainings_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['meetupsID']],
+      foreignColumns: [meetups.id],
+      name: 'schedules_rels_meetups_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['initiativesID']],
+      foreignColumns: [initiatives.id],
+      name: 'schedules_rels_initiatives_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['celebrationsID']],
+      foreignColumns: [celebrations.id],
+      name: 'schedules_rels_celebrations_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['leadersID']],
+      foreignColumns: [leaders.id],
+      name: 'schedules_rels_leaders_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['driversID']],
+      foreignColumns: [drivers.id],
+      name: 'schedules_rels_drivers_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['membersID']],
+      foreignColumns: [members.id],
+      name: 'schedules_rels_members_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['individualsID']],
+      foreignColumns: [individuals.id],
+      name: 'schedules_rels_individuals_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['organizationsID']],
+      foreignColumns: [organizations.id],
+      name: 'schedules_rels_organizations_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['categoriesID']],
+      foreignColumns: [categories.id],
+      name: 'schedules_rels_categories_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['tagsID']],
+      foreignColumns: [tags.id],
+      name: 'schedules_rels_tags_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const trainings = pgTable(
+  'trainings',
+  {
+    id: serial('id').primaryKey(),
+    toggle: enum_trainings_toggle('toggle').default('advanced'),
+    type: integer('type_id')
+      .notNull()
+      .references(() => categories.id, {
+        onDelete: 'set null',
+      }),
+    basics_enable: boolean('basics_enable').default(true),
+    basics_visibility_show: boolean('basics_visibility_show').default(false),
+    details_enable: boolean('details_enable').default(true),
+    details_narrative: integer('details_narrative_id')
+      .notNull()
+      .references(() => narratives.id, {
+        onDelete: 'set null',
+      }),
+    details_visibility_show: boolean('details_visibility_show').default(false),
+    traits_enable: boolean('traits_enable').default(true),
+    traits_intensity: enum_trainings_traits_intensity('traits_intensity'),
+    traits_format: enum_trainings_traits_format('traits_format'),
+    traits_specifications: integer('traits_specifications_id').references(() => specifications.id, {
+      onDelete: 'set null',
+    }),
+    traits_visibility_show: boolean('traits_visibility_show').default(false),
+    assets_enable: boolean('assets_enable').default(true),
+    assets_gallery: integer('assets_gallery_id').references(() => galleries.id, {
+      onDelete: 'set null',
+    }),
+    assets_playlist: integer('assets_playlist_id').references(() => playlists.id, {
+      onDelete: 'set null',
+    }),
+    assets_visibility_show: boolean('assets_visibility_show').default(false),
+    contexts_enable: boolean('contexts_enable').default(true),
+    contexts_strategies: integer('contexts_strategies_id').references(() => strategies.id, {
+      onDelete: 'set null',
+    }),
+    contexts_skills: integer('contexts_skills_id').references(() => skills.id, {
+      onDelete: 'set null',
+    }),
+    contexts_stories: integer('contexts_stories_id').references(() => stories.id, {
+      onDelete: 'set null',
+    }),
+    contexts_visibility_show: boolean('contexts_visibility_show').default(false),
+    generateSlug: boolean('generate_slug').default(true),
+    slug: varchar('slug').notNull(),
+    visibility_check_publish: boolean('visibility_check_publish').default(false),
+    visibility_check_featured: boolean('visibility_check_featured').default(false),
+    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => [
+    index('trainings_type_idx').on(columns.type),
+    index('trainings_details_details_narrative_idx').on(columns.details_narrative),
+    index('trainings_traits_traits_specifications_idx').on(columns.traits_specifications),
+    index('trainings_assets_assets_gallery_idx').on(columns.assets_gallery),
+    index('trainings_assets_assets_playlist_idx').on(columns.assets_playlist),
+    index('trainings_contexts_contexts_strategies_idx').on(columns.contexts_strategies),
+    index('trainings_contexts_contexts_skills_idx').on(columns.contexts_skills),
+    index('trainings_contexts_contexts_stories_idx').on(columns.contexts_stories),
+    uniqueIndex('trainings_slug_idx').on(columns.slug),
+    index('trainings_updated_at_idx').on(columns.updatedAt),
+    index('trainings_created_at_idx').on(columns.createdAt),
+  ],
+)
+
+export const trainings_locales = pgTable(
+  'trainings_locales',
+  {
+    name: varchar('name').notNull().default(''),
+    basics_description: varchar('basics_description').default(''),
+    seo_title: varchar('seo_title'),
+    seo_image: integer('seo_image_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    seo_description: varchar('seo_description'),
+    id: serial('id').primaryKey(),
+    _locale: enum__locales('_locale').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+  },
+  (columns) => [
+    index('trainings_name_idx').on(columns.name, columns._locale),
+    index('trainings_seo_seo_image_idx').on(columns.seo_image, columns._locale),
+    uniqueIndex('trainings_locales_locale_parent_id_unique').on(columns._locale, columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [trainings.id],
+      name: 'trainings_locales_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const trainings_rels = pgTable(
+  'trainings_rels',
+  {
+    id: serial('id').primaryKey(),
+    order: integer('order'),
+    parent: integer('parent_id').notNull(),
+    path: varchar('path').notNull(),
+    driversID: integer('drivers_id'),
+    membersID: integer('members_id'),
+    leadersID: integer('leaders_id'),
+    individualsID: integer('individuals_id'),
+    organizationsID: integer('organizations_id'),
+    categoriesID: integer('categories_id'),
+    tagsID: integer('tags_id'),
+  },
+  (columns) => [
+    index('trainings_rels_order_idx').on(columns.order),
+    index('trainings_rels_parent_idx').on(columns.parent),
+    index('trainings_rels_path_idx').on(columns.path),
+    index('trainings_rels_drivers_id_idx').on(columns.driversID),
+    index('trainings_rels_members_id_idx').on(columns.membersID),
+    index('trainings_rels_leaders_id_idx').on(columns.leadersID),
+    index('trainings_rels_individuals_id_idx').on(columns.individualsID),
+    index('trainings_rels_organizations_id_idx').on(columns.organizationsID),
+    index('trainings_rels_categories_id_idx').on(columns.categoriesID),
+    index('trainings_rels_tags_id_idx').on(columns.tagsID),
+    foreignKey({
+      columns: [columns['parent']],
+      foreignColumns: [trainings.id],
+      name: 'trainings_rels_parent_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['driversID']],
+      foreignColumns: [drivers.id],
+      name: 'trainings_rels_drivers_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['membersID']],
+      foreignColumns: [members.id],
+      name: 'trainings_rels_members_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['leadersID']],
+      foreignColumns: [leaders.id],
+      name: 'trainings_rels_leaders_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['individualsID']],
+      foreignColumns: [individuals.id],
+      name: 'trainings_rels_individuals_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['organizationsID']],
+      foreignColumns: [organizations.id],
+      name: 'trainings_rels_organizations_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['categoriesID']],
+      foreignColumns: [categories.id],
+      name: 'trainings_rels_categories_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['tagsID']],
+      foreignColumns: [tags.id],
+      name: 'trainings_rels_tags_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const careers_traits_positions = pgTable(
+  'careers_traits_positions',
+  {
+    _order: integer('_order').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+    id: varchar('id').primaryKey(),
+    title: varchar('title').notNull().default(''),
+    start: timestamp('start', { mode: 'string', withTimezone: true, precision: 3 }).notNull(),
+    end: timestamp('end', { mode: 'string', withTimezone: true, precision: 3 }),
+  },
+  (columns) => [
+    index('careers_traits_positions_order_idx').on(columns._order),
+    index('careers_traits_positions_parent_id_idx').on(columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [careers.id],
+      name: 'careers_traits_positions_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const careers = pgTable(
+  'careers',
+  {
+    id: serial('id').primaryKey(),
+    toggle: enum_careers_toggle('toggle').default('advanced'),
+    type: integer('type_id')
+      .notNull()
+      .references(() => categories.id, {
+        onDelete: 'set null',
+      }),
+    basics_enable: boolean('basics_enable').default(true),
+    basics_visibility_show: boolean('basics_visibility_show').default(false),
+    details_enable: boolean('details_enable').default(true),
+    details_narrative: integer('details_narrative_id')
+      .notNull()
+      .references(() => narratives.id, {
+        onDelete: 'set null',
+      }),
+    details_organization: integer('details_organization_id')
+      .notNull()
+      .references(() => organizations.id, {
+        onDelete: 'set null',
+      }),
+    details_expectations: integer('details_expectations_id').references(() => expectations.id, {
+      onDelete: 'set null',
+    }),
+    details_awards: integer('details_awards_id').references(() => awards.id, {
+      onDelete: 'set null',
+    }),
+    details_visibility_show: boolean('details_visibility_show').default(false),
+    traits_enable: boolean('traits_enable').default(true),
+    traits_contract: enum_careers_traits_contract('traits_contract'),
+    traits_visibility_show: boolean('traits_visibility_show').default(false),
+    contexts_enable: boolean('contexts_enable').default(true),
+    contexts_highlights: integer('contexts_highlights_id').references(() => highlights.id, {
+      onDelete: 'set null',
+    }),
+    contexts_stories: integer('contexts_stories_id').references(() => stories.id, {
+      onDelete: 'set null',
+    }),
+    contexts_visibility_show: boolean('contexts_visibility_show').default(false),
+    generateSlug: boolean('generate_slug').default(true),
+    slug: varchar('slug').notNull(),
+    visibility_check_publish: boolean('visibility_check_publish').default(false),
+    visibility_check_featured: boolean('visibility_check_featured').default(false),
+    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => [
+    index('careers_type_idx').on(columns.type),
+    index('careers_details_details_narrative_idx').on(columns.details_narrative),
+    index('careers_details_details_organization_idx').on(columns.details_organization),
+    index('careers_details_details_expectations_idx').on(columns.details_expectations),
+    index('careers_details_details_awards_idx').on(columns.details_awards),
+    index('careers_contexts_contexts_highlights_idx').on(columns.contexts_highlights),
+    index('careers_contexts_contexts_stories_idx').on(columns.contexts_stories),
+    uniqueIndex('careers_slug_idx').on(columns.slug),
+    index('careers_updated_at_idx').on(columns.updatedAt),
+    index('careers_created_at_idx').on(columns.createdAt),
+  ],
+)
+
+export const careers_locales = pgTable(
+  'careers_locales',
+  {
+    name: varchar('name').notNull().default(''),
+    basics_description: varchar('basics_description').default(''),
+    seo_title: varchar('seo_title'),
+    seo_image: integer('seo_image_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    seo_description: varchar('seo_description'),
+    id: serial('id').primaryKey(),
+    _locale: enum__locales('_locale').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+  },
+  (columns) => [
+    index('careers_name_idx').on(columns.name, columns._locale),
+    index('careers_seo_seo_image_idx').on(columns.seo_image, columns._locale),
+    uniqueIndex('careers_locales_locale_parent_id_unique').on(columns._locale, columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [careers.id],
+      name: 'careers_locales_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const careers_rels = pgTable(
+  'careers_rels',
+  {
+    id: serial('id').primaryKey(),
+    order: integer('order'),
+    parent: integer('parent_id').notNull(),
+    path: varchar('path').notNull(),
+    leadersID: integer('leaders_id'),
+    driversID: integer('drivers_id'),
+    membersID: integer('members_id'),
+    individualsID: integer('individuals_id'),
+    carsID: integer('cars_id'),
+    categoriesID: integer('categories_id'),
+    tagsID: integer('tags_id'),
+  },
+  (columns) => [
+    index('careers_rels_order_idx').on(columns.order),
+    index('careers_rels_parent_idx').on(columns.parent),
+    index('careers_rels_path_idx').on(columns.path),
+    index('careers_rels_leaders_id_idx').on(columns.leadersID),
+    index('careers_rels_drivers_id_idx').on(columns.driversID),
+    index('careers_rels_members_id_idx').on(columns.membersID),
+    index('careers_rels_individuals_id_idx').on(columns.individualsID),
+    index('careers_rels_cars_id_idx').on(columns.carsID),
+    index('careers_rels_categories_id_idx').on(columns.categoriesID),
+    index('careers_rels_tags_id_idx').on(columns.tagsID),
+    foreignKey({
+      columns: [columns['parent']],
+      foreignColumns: [careers.id],
+      name: 'careers_rels_parent_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['leadersID']],
+      foreignColumns: [leaders.id],
+      name: 'careers_rels_leaders_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['driversID']],
+      foreignColumns: [drivers.id],
+      name: 'careers_rels_drivers_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['membersID']],
+      foreignColumns: [members.id],
+      name: 'careers_rels_members_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['individualsID']],
+      foreignColumns: [individuals.id],
+      name: 'careers_rels_individuals_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['carsID']],
+      foreignColumns: [cars.id],
+      name: 'careers_rels_cars_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['categoriesID']],
+      foreignColumns: [categories.id],
+      name: 'careers_rels_categories_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['tagsID']],
+      foreignColumns: [tags.id],
+      name: 'careers_rels_tags_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const initiatives = pgTable(
+  'initiatives',
+  {
+    id: serial('id').primaryKey(),
+    toggle: enum_initiatives_toggle('toggle').default('advanced'),
+    type: integer('type_id')
+      .notNull()
+      .references(() => categories.id, {
+        onDelete: 'set null',
+      }),
+    basics_enable: boolean('basics_enable').default(true),
+    basics_visibility_show: boolean('basics_visibility_show').default(false),
+    details_enable: boolean('details_enable').default(true),
+    details_narrative: integer('details_narrative_id')
+      .notNull()
+      .references(() => narratives.id, {
+        onDelete: 'set null',
+      }),
+    details_strategies: integer('details_strategies_id').references(() => strategies.id, {
+      onDelete: 'set null',
+    }),
+    details_expectations: integer('details_expectations_id').references(() => expectations.id, {
+      onDelete: 'set null',
+    }),
+    details_insights: integer('details_insights_id').references(() => notes.id, {
+      onDelete: 'set null',
+    }),
+    details_visibility_show: boolean('details_visibility_show').default(false),
+    traits_enable: boolean('traits_enable').default(true),
+    traits_status: enum_initiatives_traits_status('traits_status').notNull(),
+    traits_visibility_show: boolean('traits_visibility_show').default(false),
+    assets_enable: boolean('assets_enable').default(true),
+    assets_primary: integer('assets_primary_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    assets_gallery: integer('assets_gallery_id').references(() => galleries.id, {
+      onDelete: 'set null',
+    }),
+    assets_document: integer('assets_document_id').references(() => archives.id, {
+      onDelete: 'set null',
+    }),
+    assets_visibility_show: boolean('assets_visibility_show').default(false),
+    contexts_enable: boolean('contexts_enable').default(true),
+    contexts_classifications: integer('contexts_classifications_id').references(
+      () => classifications.id,
+      {
+        onDelete: 'set null',
+      },
+    ),
+    contexts_schedules: integer('contexts_schedules_id').references(() => schedules.id, {
+      onDelete: 'set null',
+    }),
+    contexts_histories: integer('contexts_histories_id').references(() => histories.id, {
+      onDelete: 'set null',
+    }),
+    contexts_visibility_show: boolean('contexts_visibility_show').default(false),
+    generateSlug: boolean('generate_slug').default(true),
+    slug: varchar('slug').notNull(),
+    visibility_check_publish: boolean('visibility_check_publish').default(false),
+    visibility_check_featured: boolean('visibility_check_featured').default(false),
+    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => [
+    index('initiatives_type_idx').on(columns.type),
+    index('initiatives_details_details_narrative_idx').on(columns.details_narrative),
+    index('initiatives_details_details_strategies_idx').on(columns.details_strategies),
+    index('initiatives_details_details_expectations_idx').on(columns.details_expectations),
+    index('initiatives_details_details_insights_idx').on(columns.details_insights),
+    index('initiatives_assets_assets_primary_idx').on(columns.assets_primary),
+    index('initiatives_assets_assets_gallery_idx').on(columns.assets_gallery),
+    index('initiatives_assets_assets_document_idx').on(columns.assets_document),
+    index('initiatives_contexts_contexts_classifications_idx').on(columns.contexts_classifications),
+    index('initiatives_contexts_contexts_schedules_idx').on(columns.contexts_schedules),
+    index('initiatives_contexts_contexts_histories_idx').on(columns.contexts_histories),
+    uniqueIndex('initiatives_slug_idx').on(columns.slug),
+    index('initiatives_updated_at_idx').on(columns.updatedAt),
+    index('initiatives_created_at_idx').on(columns.createdAt),
+  ],
+)
+
+export const initiatives_locales = pgTable(
+  'initiatives_locales',
+  {
+    name: varchar('name').notNull().default(''),
+    basics_description: varchar('basics_description').default(''),
+    basics_mission: varchar('basics_mission').notNull().default(''),
+    seo_title: varchar('seo_title'),
+    seo_image: integer('seo_image_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    seo_description: varchar('seo_description'),
+    id: serial('id').primaryKey(),
+    _locale: enum__locales('_locale').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+  },
+  (columns) => [
+    index('initiatives_name_idx').on(columns.name, columns._locale),
+    index('initiatives_seo_seo_image_idx').on(columns.seo_image, columns._locale),
+    uniqueIndex('initiatives_locales_locale_parent_id_unique').on(
+      columns._locale,
+      columns._parentID,
+    ),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [initiatives.id],
+      name: 'initiatives_locales_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const initiatives_rels = pgTable(
+  'initiatives_rels',
+  {
+    id: serial('id').primaryKey(),
+    order: integer('order'),
+    parent: integer('parent_id').notNull(),
+    path: varchar('path').notNull(),
+    organizationsID: integer('organizations_id'),
+    leadersID: integer('leaders_id'),
+    individualsID: integer('individuals_id'),
+    incidentsID: integer('incidents_id'),
+    celebrationsID: integer('celebrations_id'),
+    categoriesID: integer('categories_id'),
+    tagsID: integer('tags_id'),
+  },
+  (columns) => [
+    index('initiatives_rels_order_idx').on(columns.order),
+    index('initiatives_rels_parent_idx').on(columns.parent),
+    index('initiatives_rels_path_idx').on(columns.path),
+    index('initiatives_rels_organizations_id_idx').on(columns.organizationsID),
+    index('initiatives_rels_leaders_id_idx').on(columns.leadersID),
+    index('initiatives_rels_individuals_id_idx').on(columns.individualsID),
+    index('initiatives_rels_incidents_id_idx').on(columns.incidentsID),
+    index('initiatives_rels_celebrations_id_idx').on(columns.celebrationsID),
+    index('initiatives_rels_categories_id_idx').on(columns.categoriesID),
+    index('initiatives_rels_tags_id_idx').on(columns.tagsID),
+    foreignKey({
+      columns: [columns['parent']],
+      foreignColumns: [initiatives.id],
+      name: 'initiatives_rels_parent_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['organizationsID']],
+      foreignColumns: [organizations.id],
+      name: 'initiatives_rels_organizations_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['leadersID']],
+      foreignColumns: [leaders.id],
+      name: 'initiatives_rels_leaders_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['individualsID']],
+      foreignColumns: [individuals.id],
+      name: 'initiatives_rels_individuals_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['incidentsID']],
+      foreignColumns: [incidents.id],
+      name: 'initiatives_rels_incidents_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['celebrationsID']],
+      foreignColumns: [celebrations.id],
+      name: 'initiatives_rels_celebrations_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['categoriesID']],
+      foreignColumns: [categories.id],
+      name: 'initiatives_rels_categories_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['tagsID']],
+      foreignColumns: [tags.id],
+      name: 'initiatives_rels_tags_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const meetups = pgTable(
+  'meetups',
+  {
+    id: serial('id').primaryKey(),
+    toggle: enum_meetups_toggle('toggle').default('advanced'),
+    type: integer('type_id')
+      .notNull()
+      .references(() => categories.id, {
+        onDelete: 'set null',
+      }),
+    basics_enable: boolean('basics_enable').default(true),
+    basics_date: timestamp('basics_date', {
+      mode: 'string',
+      withTimezone: true,
+      precision: 3,
+    }).notNull(),
+    basics_location: integer('basics_location_id')
+      .notNull()
+      .references(() => locations.id, {
+        onDelete: 'set null',
+      }),
+    basics_visibility_show: boolean('basics_visibility_show').default(false),
+    details_enable: boolean('details_enable').default(true),
+    details_narrative: integer('details_narrative_id')
+      .notNull()
+      .references(() => narratives.id, {
+        onDelete: 'set null',
+      }),
+    details_features: integer('details_features_id').references(() => features.id, {
+      onDelete: 'set null',
+    }),
+    details_visibility_show: boolean('details_visibility_show').default(false),
+    traits_enable: boolean('traits_enable').default(true),
+    traits_specifications: integer('traits_specifications_id').references(() => specifications.id, {
+      onDelete: 'set null',
+    }),
+    traits_format: enum_meetups_traits_format('traits_format').notNull(),
+    traits_access: enum_meetups_traits_access('traits_access').notNull(),
+    traits_visibility_show: boolean('traits_visibility_show').default(false),
+    assets_enable: boolean('assets_enable').default(true),
+    assets_primary: integer('assets_primary_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    assets_gallery: integer('assets_gallery_id').references(() => galleries.id, {
+      onDelete: 'set null',
+    }),
+    assets_playlist: integer('assets_playlist_id').references(() => playlists.id, {
+      onDelete: 'set null',
+    }),
+    assets_materials: integer('assets_materials_id').references(() => archives.id, {
+      onDelete: 'set null',
+    }),
+    assets_visibility_show: boolean('assets_visibility_show').default(false),
+    contexts_enable: boolean('contexts_enable').default(true),
+    contexts_schedules: integer('contexts_schedules_id').references(() => schedules.id, {
+      onDelete: 'set null',
+    }),
+    contexts_notes: integer('contexts_notes_id').references(() => notes.id, {
+      onDelete: 'set null',
+    }),
+    contexts_visibility_show: boolean('contexts_visibility_show').default(false),
+    generateSlug: boolean('generate_slug').default(true),
+    slug: varchar('slug').notNull(),
+    visibility_check_publish: boolean('visibility_check_publish').default(false),
+    visibility_check_featured: boolean('visibility_check_featured').default(false),
+    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => [
+    index('meetups_type_idx').on(columns.type),
+    index('meetups_basics_basics_location_idx').on(columns.basics_location),
+    index('meetups_details_details_narrative_idx').on(columns.details_narrative),
+    index('meetups_details_details_features_idx').on(columns.details_features),
+    index('meetups_traits_traits_specifications_idx').on(columns.traits_specifications),
+    index('meetups_assets_assets_primary_idx').on(columns.assets_primary),
+    index('meetups_assets_assets_gallery_idx').on(columns.assets_gallery),
+    index('meetups_assets_assets_playlist_idx').on(columns.assets_playlist),
+    index('meetups_assets_assets_materials_idx').on(columns.assets_materials),
+    index('meetups_contexts_contexts_schedules_idx').on(columns.contexts_schedules),
+    index('meetups_contexts_contexts_notes_idx').on(columns.contexts_notes),
+    uniqueIndex('meetups_slug_idx').on(columns.slug),
+    index('meetups_updated_at_idx').on(columns.updatedAt),
+    index('meetups_created_at_idx').on(columns.createdAt),
+  ],
+)
+
+export const meetups_locales = pgTable(
+  'meetups_locales',
+  {
+    name: varchar('name').notNull().default(''),
+    basics_description: varchar('basics_description').default(''),
+    seo_title: varchar('seo_title'),
+    seo_image: integer('seo_image_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    seo_description: varchar('seo_description'),
+    id: serial('id').primaryKey(),
+    _locale: enum__locales('_locale').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+  },
+  (columns) => [
+    index('meetups_name_idx').on(columns.name, columns._locale),
+    index('meetups_seo_seo_image_idx').on(columns.seo_image, columns._locale),
+    uniqueIndex('meetups_locales_locale_parent_id_unique').on(columns._locale, columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [meetups.id],
+      name: 'meetups_locales_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const meetups_rels = pgTable(
+  'meetups_rels',
+  {
+    id: serial('id').primaryKey(),
+    order: integer('order'),
+    parent: integer('parent_id').notNull(),
+    path: varchar('path').notNull(),
+    organizationsID: integer('organizations_id'),
+    leadersID: integer('leaders_id'),
+    individualsID: integer('individuals_id'),
+    driversID: integer('drivers_id'),
+    membersID: integer('members_id'),
+    initiativesID: integer('initiatives_id'),
+    celebrationsID: integer('celebrations_id'),
+    categoriesID: integer('categories_id'),
+    tagsID: integer('tags_id'),
+  },
+  (columns) => [
+    index('meetups_rels_order_idx').on(columns.order),
+    index('meetups_rels_parent_idx').on(columns.parent),
+    index('meetups_rels_path_idx').on(columns.path),
+    index('meetups_rels_organizations_id_idx').on(columns.organizationsID),
+    index('meetups_rels_leaders_id_idx').on(columns.leadersID),
+    index('meetups_rels_individuals_id_idx').on(columns.individualsID),
+    index('meetups_rels_drivers_id_idx').on(columns.driversID),
+    index('meetups_rels_members_id_idx').on(columns.membersID),
+    index('meetups_rels_initiatives_id_idx').on(columns.initiativesID),
+    index('meetups_rels_celebrations_id_idx').on(columns.celebrationsID),
+    index('meetups_rels_categories_id_idx').on(columns.categoriesID),
+    index('meetups_rels_tags_id_idx').on(columns.tagsID),
+    foreignKey({
+      columns: [columns['parent']],
+      foreignColumns: [meetups.id],
+      name: 'meetups_rels_parent_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['organizationsID']],
+      foreignColumns: [organizations.id],
+      name: 'meetups_rels_organizations_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['leadersID']],
+      foreignColumns: [leaders.id],
+      name: 'meetups_rels_leaders_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['individualsID']],
+      foreignColumns: [individuals.id],
+      name: 'meetups_rels_individuals_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['driversID']],
+      foreignColumns: [drivers.id],
+      name: 'meetups_rels_drivers_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['membersID']],
+      foreignColumns: [members.id],
+      name: 'meetups_rels_members_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['initiativesID']],
+      foreignColumns: [initiatives.id],
+      name: 'meetups_rels_initiatives_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['celebrationsID']],
+      foreignColumns: [celebrations.id],
+      name: 'meetups_rels_celebrations_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['categoriesID']],
+      foreignColumns: [categories.id],
+      name: 'meetups_rels_categories_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['tagsID']],
+      foreignColumns: [tags.id],
+      name: 'meetups_rels_tags_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const celebrations = pgTable(
+  'celebrations',
+  {
+    id: serial('id').primaryKey(),
+    toggle: enum_celebrations_toggle('toggle').default('advanced'),
+    type: integer('type_id')
+      .notNull()
+      .references(() => categories.id, {
+        onDelete: 'set null',
+      }),
+    basics_enable: boolean('basics_enable').default(true),
+    basics_visibility_show: boolean('basics_visibility_show').default(false),
+    details_enable: boolean('details_enable').default(true),
+    details_narrative: integer('details_narrative_id')
+      .notNull()
+      .references(() => narratives.id, {
+        onDelete: 'set null',
+      }),
+    details_expectations: integer('details_expectations_id').references(() => expectations.id, {
+      onDelete: 'set null',
+    }),
+    details_stories: integer('details_stories_id').references(() => stories.id, {
+      onDelete: 'set null',
+    }),
+    details_visibility_show: boolean('details_visibility_show').default(false),
+    traits_enable: boolean('traits_enable').default(true),
+    traits_prestige: enum_celebrations_traits_prestige('traits_prestige'),
+    traits_exclusivity: enum_celebrations_traits_exclusivity('traits_exclusivity'),
+    traits_visibility_show: boolean('traits_visibility_show').default(false),
+    assets_enable: boolean('assets_enable').default(true),
+    assets_primary: integer('assets_primary_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    assets_gallery: integer('assets_gallery_id').references(() => galleries.id, {
+      onDelete: 'set null',
+    }),
+    assets_playlist: integer('assets_playlist_id').references(() => playlists.id, {
+      onDelete: 'set null',
+    }),
+    assets_visibility_show: boolean('assets_visibility_show').default(false),
+    contexts_enable: boolean('contexts_enable').default(true),
+    contexts_notes: integer('contexts_notes_id').references(() => notes.id, {
+      onDelete: 'set null',
+    }),
+    contexts_visibility_show: boolean('contexts_visibility_show').default(false),
+    generateSlug: boolean('generate_slug').default(true),
+    slug: varchar('slug').notNull(),
+    visibility_check_publish: boolean('visibility_check_publish').default(false),
+    visibility_check_featured: boolean('visibility_check_featured').default(false),
+    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => [
+    index('celebrations_type_idx').on(columns.type),
+    index('celebrations_details_details_narrative_idx').on(columns.details_narrative),
+    index('celebrations_details_details_expectations_idx').on(columns.details_expectations),
+    index('celebrations_details_details_stories_idx').on(columns.details_stories),
+    index('celebrations_assets_assets_primary_idx').on(columns.assets_primary),
+    index('celebrations_assets_assets_gallery_idx').on(columns.assets_gallery),
+    index('celebrations_assets_assets_playlist_idx').on(columns.assets_playlist),
+    index('celebrations_contexts_contexts_notes_idx').on(columns.contexts_notes),
+    uniqueIndex('celebrations_slug_idx').on(columns.slug),
+    index('celebrations_updated_at_idx').on(columns.updatedAt),
+    index('celebrations_created_at_idx').on(columns.createdAt),
+  ],
+)
+
+export const celebrations_locales = pgTable(
+  'celebrations_locales',
+  {
+    name: varchar('name').notNull().default(''),
+    basics_description: varchar('basics_description').default(''),
+    seo_title: varchar('seo_title'),
+    seo_image: integer('seo_image_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    seo_description: varchar('seo_description'),
+    id: serial('id').primaryKey(),
+    _locale: enum__locales('_locale').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+  },
+  (columns) => [
+    index('celebrations_name_idx').on(columns.name, columns._locale),
+    index('celebrations_seo_seo_image_idx').on(columns.seo_image, columns._locale),
+    uniqueIndex('celebrations_locales_locale_parent_id_unique').on(
+      columns._locale,
+      columns._parentID,
+    ),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [celebrations.id],
+      name: 'celebrations_locales_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const celebrations_rels = pgTable(
+  'celebrations_rels',
+  {
+    id: serial('id').primaryKey(),
+    order: integer('order'),
+    parent: integer('parent_id').notNull(),
+    path: varchar('path').notNull(),
+    driversID: integer('drivers_id'),
+    membersID: integer('members_id'),
+    leadersID: integer('leaders_id'),
+    organizationsID: integer('organizations_id'),
+    individualsID: integer('individuals_id'),
+    categoriesID: integer('categories_id'),
+    tagsID: integer('tags_id'),
+  },
+  (columns) => [
+    index('celebrations_rels_order_idx').on(columns.order),
+    index('celebrations_rels_parent_idx').on(columns.parent),
+    index('celebrations_rels_path_idx').on(columns.path),
+    index('celebrations_rels_drivers_id_idx').on(columns.driversID),
+    index('celebrations_rels_members_id_idx').on(columns.membersID),
+    index('celebrations_rels_leaders_id_idx').on(columns.leadersID),
+    index('celebrations_rels_organizations_id_idx').on(columns.organizationsID),
+    index('celebrations_rels_individuals_id_idx').on(columns.individualsID),
+    index('celebrations_rels_categories_id_idx').on(columns.categoriesID),
+    index('celebrations_rels_tags_id_idx').on(columns.tagsID),
+    foreignKey({
+      columns: [columns['parent']],
+      foreignColumns: [celebrations.id],
+      name: 'celebrations_rels_parent_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['driversID']],
+      foreignColumns: [drivers.id],
+      name: 'celebrations_rels_drivers_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['membersID']],
+      foreignColumns: [members.id],
+      name: 'celebrations_rels_members_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['leadersID']],
+      foreignColumns: [leaders.id],
+      name: 'celebrations_rels_leaders_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['organizationsID']],
+      foreignColumns: [organizations.id],
+      name: 'celebrations_rels_organizations_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['individualsID']],
+      foreignColumns: [individuals.id],
+      name: 'celebrations_rels_individuals_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['categoriesID']],
+      foreignColumns: [categories.id],
+      name: 'celebrations_rels_categories_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['tagsID']],
+      foreignColumns: [tags.id],
+      name: 'celebrations_rels_tags_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const protocols_details_steps = pgTable(
+  'protocols_details_steps',
+  {
+    _order: integer('_order').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+    id: varchar('id').primaryKey(),
+    step: varchar('step').notNull().default(''),
+    instruction: varchar('instruction').notNull().default(''),
+    requirement: varchar('requirement').default(''),
+  },
+  (columns) => [
+    index('protocols_details_steps_order_idx').on(columns._order),
+    index('protocols_details_steps_parent_id_idx').on(columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [protocols.id],
+      name: 'protocols_details_steps_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const protocols = pgTable(
+  'protocols',
+  {
+    id: serial('id').primaryKey(),
+    toggle: enum_protocols_toggle('toggle').default('advanced'),
+    type: integer('type_id')
+      .notNull()
+      .references(() => categories.id, {
+        onDelete: 'set null',
+      }),
+    identifier_code: varchar('identifier_code').default(''),
+    identifier_version: varchar('identifier_version').default(''),
+    identifier_revision: varchar('identifier_revision').default(''),
+    basics_enable: boolean('basics_enable').default(true),
+    basics_visibility_show: boolean('basics_visibility_show').default(false),
+    details_enable: boolean('details_enable').default(true),
+    details_visibility_show: boolean('details_visibility_show').default(false),
+    assets_enable: boolean('assets_enable').default(true),
+    assets_documentation: integer('assets_documentation_id').references(() => archives.id, {
+      onDelete: 'set null',
+    }),
+    assets_visibility_show: boolean('assets_visibility_show').default(false),
+    contexts_enable: boolean('contexts_enable').default(true),
+    contexts_classifications: integer('contexts_classifications_id').references(
+      () => classifications.id,
+      {
+        onDelete: 'set null',
+      },
+    ),
+    contexts_visibility_show: boolean('contexts_visibility_show').default(false),
+    generateSlug: boolean('generate_slug').default(true),
+    slug: varchar('slug').notNull(),
+    visibility_check_publish: boolean('visibility_check_publish').default(false),
+    visibility_check_featured: boolean('visibility_check_featured').default(false),
+    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => [
+    index('protocols_type_idx').on(columns.type),
+    uniqueIndex('protocols_identifier_identifier_code_idx').on(columns.identifier_code),
+    index('protocols_assets_assets_documentation_idx').on(columns.assets_documentation),
+    index('protocols_contexts_contexts_classifications_idx').on(columns.contexts_classifications),
+    uniqueIndex('protocols_slug_idx').on(columns.slug),
+    index('protocols_updated_at_idx').on(columns.updatedAt),
+    index('protocols_created_at_idx').on(columns.createdAt),
+  ],
+)
+
+export const protocols_locales = pgTable(
+  'protocols_locales',
+  {
+    name: varchar('name').notNull().default(''),
+    basics_description: varchar('basics_description').default(''),
+    basics_objective: varchar('basics_objective').notNull().default(''),
+    details_procedure: varchar('details_procedure').notNull().default(''),
+    seo_title: varchar('seo_title'),
+    seo_image: integer('seo_image_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    seo_description: varchar('seo_description'),
+    id: serial('id').primaryKey(),
+    _locale: enum__locales('_locale').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+  },
+  (columns) => [
+    index('protocols_name_idx').on(columns.name, columns._locale),
+    index('protocols_seo_seo_image_idx').on(columns.seo_image, columns._locale),
+    uniqueIndex('protocols_locales_locale_parent_id_unique').on(columns._locale, columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [protocols.id],
+      name: 'protocols_locales_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const protocols_rels = pgTable(
+  'protocols_rels',
+  {
+    id: serial('id').primaryKey(),
+    order: integer('order'),
+    parent: integer('parent_id').notNull(),
+    path: varchar('path').notNull(),
+    categoriesID: integer('categories_id'),
+    tagsID: integer('tags_id'),
+  },
+  (columns) => [
+    index('protocols_rels_order_idx').on(columns.order),
+    index('protocols_rels_parent_idx').on(columns.parent),
+    index('protocols_rels_path_idx').on(columns.path),
+    index('protocols_rels_categories_id_idx').on(columns.categoriesID),
+    index('protocols_rels_tags_id_idx').on(columns.tagsID),
+    foreignKey({
+      columns: [columns['parent']],
+      foreignColumns: [protocols.id],
+      name: 'protocols_rels_parent_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['categoriesID']],
+      foreignColumns: [categories.id],
+      name: 'protocols_rels_categories_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['tagsID']],
+      foreignColumns: [tags.id],
+      name: 'protocols_rels_tags_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const duties = pgTable(
+  'duties',
+  {
+    id: serial('id').primaryKey(),
+    toggle: enum_duties_toggle('toggle').default('advanced'),
+    type: integer('type_id')
+      .notNull()
+      .references(() => categories.id, {
+        onDelete: 'set null',
+      }),
+    basics_enable: boolean('basics_enable').default(true),
+    basics_visibility_show: boolean('basics_visibility_show').default(false),
+    details_enable: boolean('details_enable').default(true),
+    details_obligation_reporting: varchar('details_obligation_reporting').default(''),
+    details_obligation_authority: varchar('details_obligation_authority').default(''),
+    details_visibility_show: boolean('details_visibility_show').default(false),
+    contexts_enable: boolean('contexts_enable').default(true),
+    contexts_protocols: integer('contexts_protocols_id').references(() => protocols.id, {
+      onDelete: 'set null',
+    }),
+    contexts_expectations: integer('contexts_expectations_id').references(() => expectations.id, {
+      onDelete: 'set null',
+    }),
+    contexts_notes: integer('contexts_notes_id').references(() => notes.id, {
+      onDelete: 'set null',
+    }),
+    contexts_visibility_show: boolean('contexts_visibility_show').default(false),
+    generateSlug: boolean('generate_slug').default(true),
+    slug: varchar('slug').notNull(),
+    visibility_check_publish: boolean('visibility_check_publish').default(false),
+    visibility_check_featured: boolean('visibility_check_featured').default(false),
+    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => [
+    index('duties_type_idx').on(columns.type),
+    index('duties_contexts_contexts_protocols_idx').on(columns.contexts_protocols),
+    index('duties_contexts_contexts_expectations_idx').on(columns.contexts_expectations),
+    index('duties_contexts_contexts_notes_idx').on(columns.contexts_notes),
+    uniqueIndex('duties_slug_idx').on(columns.slug),
+    index('duties_updated_at_idx').on(columns.updatedAt),
+    index('duties_created_at_idx').on(columns.createdAt),
+  ],
+)
+
+export const duties_locales = pgTable(
+  'duties_locales',
+  {
+    name: varchar('name').notNull().default(''),
+    basics_description: varchar('basics_description').default(''),
+    details_obligation_tasks: varchar('details_obligation_tasks').notNull().default(''),
+    seo_title: varchar('seo_title'),
+    seo_image: integer('seo_image_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    seo_description: varchar('seo_description'),
+    id: serial('id').primaryKey(),
+    _locale: enum__locales('_locale').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+  },
+  (columns) => [
+    index('duties_name_idx').on(columns.name, columns._locale),
+    index('duties_seo_seo_image_idx').on(columns.seo_image, columns._locale),
+    uniqueIndex('duties_locales_locale_parent_id_unique').on(columns._locale, columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [duties.id],
+      name: 'duties_locales_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const duties_rels = pgTable(
+  'duties_rels',
+  {
+    id: serial('id').primaryKey(),
+    order: integer('order'),
+    parent: integer('parent_id').notNull(),
+    path: varchar('path').notNull(),
+    categoriesID: integer('categories_id'),
+    tagsID: integer('tags_id'),
+  },
+  (columns) => [
+    index('duties_rels_order_idx').on(columns.order),
+    index('duties_rels_parent_idx').on(columns.parent),
+    index('duties_rels_path_idx').on(columns.path),
+    index('duties_rels_categories_id_idx').on(columns.categoriesID),
+    index('duties_rels_tags_id_idx').on(columns.tagsID),
+    foreignKey({
+      columns: [columns['parent']],
+      foreignColumns: [duties.id],
+      name: 'duties_rels_parent_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['categoriesID']],
+      foreignColumns: [categories.id],
+      name: 'duties_rels_categories_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['tagsID']],
+      foreignColumns: [tags.id],
+      name: 'duties_rels_tags_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const expectations = pgTable(
+  'expectations',
+  {
+    id: serial('id').primaryKey(),
+    toggle: enum_expectations_toggle('toggle').default('advanced'),
+    type: integer('type_id')
+      .notNull()
+      .references(() => categories.id, {
+        onDelete: 'set null',
+      }),
+    basics_enable: boolean('basics_enable').default(true),
+    basics_visibility_show: boolean('basics_visibility_show').default(false),
+    details_enable: boolean('details_enable').default(true),
+    details_visibility_show: boolean('details_visibility_show').default(false),
+    traits_enable: boolean('traits_enable').default(true),
+    traits_direction: enum_expectations_traits_direction('traits_direction'),
+    traits_priority: enum_expectations_traits_priority('traits_priority'),
+    traits_flexibility: enum_expectations_traits_flexibility('traits_flexibility'),
+    traits_visibility_show: boolean('traits_visibility_show').default(false),
+    contexts_enable: boolean('contexts_enable').default(true),
+    contexts_specifications: integer('contexts_specifications_id').references(
+      () => specifications.id,
+      {
+        onDelete: 'set null',
+      },
+    ),
+    contexts_protocols: integer('contexts_protocols_id').references(() => protocols.id, {
+      onDelete: 'set null',
+    }),
+    contexts_notes: integer('contexts_notes_id').references(() => notes.id, {
+      onDelete: 'set null',
+    }),
+    contexts_visibility_show: boolean('contexts_visibility_show').default(false),
+    generateSlug: boolean('generate_slug').default(true),
+    slug: varchar('slug').notNull(),
+    visibility_check_publish: boolean('visibility_check_publish').default(false),
+    visibility_check_featured: boolean('visibility_check_featured').default(false),
+    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => [
+    index('expectations_type_idx').on(columns.type),
+    index('expectations_contexts_contexts_specifications_idx').on(columns.contexts_specifications),
+    index('expectations_contexts_contexts_protocols_idx').on(columns.contexts_protocols),
+    index('expectations_contexts_contexts_notes_idx').on(columns.contexts_notes),
+    uniqueIndex('expectations_slug_idx').on(columns.slug),
+    index('expectations_updated_at_idx').on(columns.updatedAt),
+    index('expectations_created_at_idx').on(columns.createdAt),
+  ],
+)
+
+export const expectations_locales = pgTable(
+  'expectations_locales',
+  {
+    name: varchar('name').notNull().default(''),
+    basics_statement: varchar('basics_statement').notNull().default(''),
+    details_criteria: varchar('details_criteria').default(''),
+    seo_title: varchar('seo_title'),
+    seo_image: integer('seo_image_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    seo_description: varchar('seo_description'),
+    id: serial('id').primaryKey(),
+    _locale: enum__locales('_locale').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+  },
+  (columns) => [
+    index('expectations_name_idx').on(columns.name, columns._locale),
+    index('expectations_seo_seo_image_idx').on(columns.seo_image, columns._locale),
+    uniqueIndex('expectations_locales_locale_parent_id_unique').on(
+      columns._locale,
+      columns._parentID,
+    ),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [expectations.id],
+      name: 'expectations_locales_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const expectations_rels = pgTable(
+  'expectations_rels',
+  {
+    id: serial('id').primaryKey(),
+    order: integer('order'),
+    parent: integer('parent_id').notNull(),
+    path: varchar('path').notNull(),
+    categoriesID: integer('categories_id'),
+    tagsID: integer('tags_id'),
+  },
+  (columns) => [
+    index('expectations_rels_order_idx').on(columns.order),
+    index('expectations_rels_parent_idx').on(columns.parent),
+    index('expectations_rels_path_idx').on(columns.path),
+    index('expectations_rels_categories_id_idx').on(columns.categoriesID),
+    index('expectations_rels_tags_id_idx').on(columns.tagsID),
+    foreignKey({
+      columns: [columns['parent']],
+      foreignColumns: [expectations.id],
+      name: 'expectations_rels_parent_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['categoriesID']],
+      foreignColumns: [categories.id],
+      name: 'expectations_rels_categories_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['tagsID']],
+      foreignColumns: [tags.id],
+      name: 'expectations_rels_tags_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const highlights = pgTable(
+  'highlights',
+  {
+    id: serial('id').primaryKey(),
+    toggle: enum_highlights_toggle('toggle').default('advanced'),
+    type: integer('type_id')
+      .notNull()
+      .references(() => categories.id, {
+        onDelete: 'set null',
+      }),
+    basics_enable: boolean('basics_enable').default(true),
+    basics_visibility_show: boolean('basics_visibility_show').default(false),
+    details_enable: boolean('details_enable').default(true),
+    details_narrative: integer('details_narrative_id')
+      .notNull()
+      .references(() => narratives.id, {
+        onDelete: 'set null',
+      }),
+    details_visibility_show: boolean('details_visibility_show').default(false),
+    traits_enable: boolean('traits_enable').default(true),
+    traits_specifications: integer('traits_specifications_id').references(() => specifications.id, {
+      onDelete: 'set null',
+    }),
+    traits_visibility_show: boolean('traits_visibility_show').default(false),
+    assets_enable: boolean('assets_enable').default(true),
+    assets_thumbnail: integer('assets_thumbnail_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    assets_gallery: integer('assets_gallery_id').references(() => galleries.id, {
+      onDelete: 'set null',
+    }),
+    assets_playlist: integer('assets_playlist_id').references(() => playlists.id, {
+      onDelete: 'set null',
+    }),
+    assets_visibility_show: boolean('assets_visibility_show').default(false),
+    contexts_enable: boolean('contexts_enable').default(true),
+    contexts_stories: integer('contexts_stories_id').references(() => stories.id, {
+      onDelete: 'set null',
+    }),
+    contexts_visibility_show: boolean('contexts_visibility_show').default(false),
+    generateSlug: boolean('generate_slug').default(true),
+    slug: varchar('slug').notNull(),
+    visibility_check_publish: boolean('visibility_check_publish').default(false),
+    visibility_check_featured: boolean('visibility_check_featured').default(false),
+    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => [
+    index('highlights_type_idx').on(columns.type),
+    index('highlights_details_details_narrative_idx').on(columns.details_narrative),
+    index('highlights_traits_traits_specifications_idx').on(columns.traits_specifications),
+    index('highlights_assets_assets_thumbnail_idx').on(columns.assets_thumbnail),
+    index('highlights_assets_assets_gallery_idx').on(columns.assets_gallery),
+    index('highlights_assets_assets_playlist_idx').on(columns.assets_playlist),
+    index('highlights_contexts_contexts_stories_idx').on(columns.contexts_stories),
+    uniqueIndex('highlights_slug_idx').on(columns.slug),
+    index('highlights_updated_at_idx').on(columns.updatedAt),
+    index('highlights_created_at_idx').on(columns.createdAt),
+  ],
+)
+
+export const highlights_locales = pgTable(
+  'highlights_locales',
+  {
+    name: varchar('name').notNull().default(''),
+    basics_description: varchar('basics_description').default(''),
+    seo_title: varchar('seo_title'),
+    seo_image: integer('seo_image_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    seo_description: varchar('seo_description'),
+    id: serial('id').primaryKey(),
+    _locale: enum__locales('_locale').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+  },
+  (columns) => [
+    index('highlights_name_idx').on(columns.name, columns._locale),
+    index('highlights_seo_seo_image_idx').on(columns.seo_image, columns._locale),
+    uniqueIndex('highlights_locales_locale_parent_id_unique').on(
+      columns._locale,
+      columns._parentID,
+    ),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [highlights.id],
+      name: 'highlights_locales_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const highlights_rels = pgTable(
+  'highlights_rels',
+  {
+    id: serial('id').primaryKey(),
+    order: integer('order'),
+    parent: integer('parent_id').notNull(),
+    path: varchar('path').notNull(),
+    driversID: integer('drivers_id'),
+    carsID: integer('cars_id'),
+    categoriesID: integer('categories_id'),
+    tagsID: integer('tags_id'),
+  },
+  (columns) => [
+    index('highlights_rels_order_idx').on(columns.order),
+    index('highlights_rels_parent_idx').on(columns.parent),
+    index('highlights_rels_path_idx').on(columns.path),
+    index('highlights_rels_drivers_id_idx').on(columns.driversID),
+    index('highlights_rels_cars_id_idx').on(columns.carsID),
+    index('highlights_rels_categories_id_idx').on(columns.categoriesID),
+    index('highlights_rels_tags_id_idx').on(columns.tagsID),
+    foreignKey({
+      columns: [columns['parent']],
+      foreignColumns: [highlights.id],
+      name: 'highlights_rels_parent_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['driversID']],
+      foreignColumns: [drivers.id],
+      name: 'highlights_rels_drivers_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['carsID']],
+      foreignColumns: [cars.id],
+      name: 'highlights_rels_cars_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['categoriesID']],
+      foreignColumns: [categories.id],
+      name: 'highlights_rels_categories_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['tagsID']],
+      foreignColumns: [tags.id],
+      name: 'highlights_rels_tags_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const incidents = pgTable(
+  'incidents',
+  {
+    id: serial('id').primaryKey(),
+    toggle: enum_incidents_toggle('toggle').default('advanced'),
+    type: integer('type_id')
+      .notNull()
+      .references(() => categories.id, {
+        onDelete: 'set null',
+      }),
+    basics_enable: boolean('basics_enable').default(true),
+    basics_visibility_show: boolean('basics_visibility_show').default(false),
+    details_enable: boolean('details_enable').default(true),
+    details_decisions: integer('details_decisions_id').references(() => decisions.id, {
+      onDelete: 'set null',
+    }),
+    details_specifications: integer('details_specifications_id').references(
+      () => specifications.id,
+      {
+        onDelete: 'set null',
+      },
+    ),
+    details_visibility_show: boolean('details_visibility_show').default(false),
+    traits_enable: boolean('traits_enable').default(true),
+    traits_impacts: integer('traits_impacts_id').references(() => impacts.id, {
+      onDelete: 'set null',
+    }),
+    traits_visibility_show: boolean('traits_visibility_show').default(false),
+    assets_enable: boolean('assets_enable').default(true),
+    assets_gallery: integer('assets_gallery_id').references(() => galleries.id, {
+      onDelete: 'set null',
+    }),
+    assets_archive: integer('assets_archive_id').references(() => archives.id, {
+      onDelete: 'set null',
+    }),
+    assets_visibility_show: boolean('assets_visibility_show').default(false),
+    contexts_enable: boolean('contexts_enable').default(true),
+    contexts_narrative: integer('contexts_narrative_id')
+      .notNull()
+      .references(() => narratives.id, {
+        onDelete: 'set null',
+      }),
+    contexts_visibility_show: boolean('contexts_visibility_show').default(false),
+    generateSlug: boolean('generate_slug').default(true),
+    slug: varchar('slug').notNull(),
+    visibility_check_publish: boolean('visibility_check_publish').default(false),
+    visibility_check_featured: boolean('visibility_check_featured').default(false),
+    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => [
+    index('incidents_type_idx').on(columns.type),
+    index('incidents_details_details_decisions_idx').on(columns.details_decisions),
+    index('incidents_details_details_specifications_idx').on(columns.details_specifications),
+    index('incidents_traits_traits_impacts_idx').on(columns.traits_impacts),
+    index('incidents_assets_assets_gallery_idx').on(columns.assets_gallery),
+    index('incidents_assets_assets_archive_idx').on(columns.assets_archive),
+    index('incidents_contexts_contexts_narrative_idx').on(columns.contexts_narrative),
+    uniqueIndex('incidents_slug_idx').on(columns.slug),
+    index('incidents_updated_at_idx').on(columns.updatedAt),
+    index('incidents_created_at_idx').on(columns.createdAt),
+  ],
+)
+
+export const incidents_locales = pgTable(
+  'incidents_locales',
+  {
+    name: varchar('name').notNull().default(''),
+    basics_description: varchar('basics_description').default(''),
+    seo_title: varchar('seo_title'),
+    seo_image: integer('seo_image_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    seo_description: varchar('seo_description'),
+    id: serial('id').primaryKey(),
+    _locale: enum__locales('_locale').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+  },
+  (columns) => [
+    index('incidents_name_idx').on(columns.name, columns._locale),
+    index('incidents_seo_seo_image_idx').on(columns.seo_image, columns._locale),
+    uniqueIndex('incidents_locales_locale_parent_id_unique').on(columns._locale, columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [incidents.id],
+      name: 'incidents_locales_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const incidents_rels = pgTable(
+  'incidents_rels',
+  {
+    id: serial('id').primaryKey(),
+    order: integer('order'),
+    parent: integer('parent_id').notNull(),
+    path: varchar('path').notNull(),
+    driversID: integer('drivers_id'),
+    membersID: integer('members_id'),
+    leadersID: integer('leaders_id'),
+    organizationsID: integer('organizations_id'),
+    kitsID: integer('kits_id'),
+    categoriesID: integer('categories_id'),
+    tagsID: integer('tags_id'),
+  },
+  (columns) => [
+    index('incidents_rels_order_idx').on(columns.order),
+    index('incidents_rels_parent_idx').on(columns.parent),
+    index('incidents_rels_path_idx').on(columns.path),
+    index('incidents_rels_drivers_id_idx').on(columns.driversID),
+    index('incidents_rels_members_id_idx').on(columns.membersID),
+    index('incidents_rels_leaders_id_idx').on(columns.leadersID),
+    index('incidents_rels_organizations_id_idx').on(columns.organizationsID),
+    index('incidents_rels_kits_id_idx').on(columns.kitsID),
+    index('incidents_rels_categories_id_idx').on(columns.categoriesID),
+    index('incidents_rels_tags_id_idx').on(columns.tagsID),
+    foreignKey({
+      columns: [columns['parent']],
+      foreignColumns: [incidents.id],
+      name: 'incidents_rels_parent_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['driversID']],
+      foreignColumns: [drivers.id],
+      name: 'incidents_rels_drivers_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['membersID']],
+      foreignColumns: [members.id],
+      name: 'incidents_rels_members_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['leadersID']],
+      foreignColumns: [leaders.id],
+      name: 'incidents_rels_leaders_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['organizationsID']],
+      foreignColumns: [organizations.id],
+      name: 'incidents_rels_organizations_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['kitsID']],
+      foreignColumns: [kits.id],
+      name: 'incidents_rels_kits_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['categoriesID']],
+      foreignColumns: [categories.id],
+      name: 'incidents_rels_categories_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['tagsID']],
+      foreignColumns: [tags.id],
+      name: 'incidents_rels_tags_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const impacts = pgTable(
+  'impacts',
+  {
+    id: serial('id').primaryKey(),
+    toggle: enum_impacts_toggle('toggle').default('advanced'),
+    type: integer('type_id')
+      .notNull()
+      .references(() => categories.id, {
+        onDelete: 'set null',
+      }),
+    basics_enable: boolean('basics_enable').default(true),
+    basics_scope_significance: varchar('basics_scope_significance').default(''),
+    basics_scope_scale: enum_impacts_basics_scope_scale('basics_scope_scale'),
+    basics_scope_depth: enum_impacts_basics_scope_depth('basics_scope_depth'),
+    basics_visibility_show: boolean('basics_visibility_show').default(false),
+    traits_enable: boolean('traits_enable').default(true),
+    traits_tone: integer('traits_tone_id').references(() => tones.id, {
+      onDelete: 'set null',
+    }),
+    traits_velocity: enum_impacts_traits_velocity('traits_velocity'),
+    traits_gravity: enum_impacts_traits_gravity('traits_gravity'),
+    traits_permanence: enum_impacts_traits_permanence('traits_permanence'),
+    traits_visibility_show: boolean('traits_visibility_show').default(false),
+    contexts_enable: boolean('contexts_enable').default(true),
+    contexts_notes: integer('contexts_notes_id').references(() => notes.id, {
+      onDelete: 'set null',
+    }),
+    contexts_visibility_show: boolean('contexts_visibility_show').default(false),
+    generateSlug: boolean('generate_slug').default(true),
+    slug: varchar('slug').notNull(),
+    visibility_check_publish: boolean('visibility_check_publish').default(false),
+    visibility_check_featured: boolean('visibility_check_featured').default(false),
+    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => [
+    index('impacts_type_idx').on(columns.type),
+    index('impacts_traits_traits_tone_idx').on(columns.traits_tone),
+    index('impacts_contexts_contexts_notes_idx').on(columns.contexts_notes),
+    uniqueIndex('impacts_slug_idx').on(columns.slug),
+    index('impacts_updated_at_idx').on(columns.updatedAt),
+    index('impacts_created_at_idx').on(columns.createdAt),
+  ],
+)
+
+export const impacts_locales = pgTable(
+  'impacts_locales',
+  {
+    name: varchar('name').notNull().default(''),
+    basics_description: varchar('basics_description').default(''),
+    seo_title: varchar('seo_title'),
+    seo_image: integer('seo_image_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    seo_description: varchar('seo_description'),
+    id: serial('id').primaryKey(),
+    _locale: enum__locales('_locale').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+  },
+  (columns) => [
+    index('impacts_name_idx').on(columns.name, columns._locale),
+    index('impacts_seo_seo_image_idx').on(columns.seo_image, columns._locale),
+    uniqueIndex('impacts_locales_locale_parent_id_unique').on(columns._locale, columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [impacts.id],
+      name: 'impacts_locales_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const impacts_rels = pgTable(
+  'impacts_rels',
+  {
+    id: serial('id').primaryKey(),
+    order: integer('order'),
+    parent: integer('parent_id').notNull(),
+    path: varchar('path').notNull(),
+    organizationsID: integer('organizations_id'),
+    individualsID: integer('individuals_id'),
+    driversID: integer('drivers_id'),
+    leadersID: integer('leaders_id'),
+    membersID: integer('members_id'),
+    carsID: integer('cars_id'),
+    kitsID: integer('kits_id'),
+    categoriesID: integer('categories_id'),
+    tagsID: integer('tags_id'),
+  },
+  (columns) => [
+    index('impacts_rels_order_idx').on(columns.order),
+    index('impacts_rels_parent_idx').on(columns.parent),
+    index('impacts_rels_path_idx').on(columns.path),
+    index('impacts_rels_organizations_id_idx').on(columns.organizationsID),
+    index('impacts_rels_individuals_id_idx').on(columns.individualsID),
+    index('impacts_rels_drivers_id_idx').on(columns.driversID),
+    index('impacts_rels_leaders_id_idx').on(columns.leadersID),
+    index('impacts_rels_members_id_idx').on(columns.membersID),
+    index('impacts_rels_cars_id_idx').on(columns.carsID),
+    index('impacts_rels_kits_id_idx').on(columns.kitsID),
+    index('impacts_rels_categories_id_idx').on(columns.categoriesID),
+    index('impacts_rels_tags_id_idx').on(columns.tagsID),
+    foreignKey({
+      columns: [columns['parent']],
+      foreignColumns: [impacts.id],
+      name: 'impacts_rels_parent_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['organizationsID']],
+      foreignColumns: [organizations.id],
+      name: 'impacts_rels_organizations_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['individualsID']],
+      foreignColumns: [individuals.id],
+      name: 'impacts_rels_individuals_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['driversID']],
+      foreignColumns: [drivers.id],
+      name: 'impacts_rels_drivers_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['leadersID']],
+      foreignColumns: [leaders.id],
+      name: 'impacts_rels_leaders_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['membersID']],
+      foreignColumns: [members.id],
+      name: 'impacts_rels_members_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['carsID']],
+      foreignColumns: [cars.id],
+      name: 'impacts_rels_cars_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['kitsID']],
+      foreignColumns: [kits.id],
+      name: 'impacts_rels_kits_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['categoriesID']],
+      foreignColumns: [categories.id],
+      name: 'impacts_rels_categories_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['tagsID']],
+      foreignColumns: [tags.id],
+      name: 'impacts_rels_tags_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const decisions = pgTable(
+  'decisions',
+  {
+    id: serial('id').primaryKey(),
+    toggle: enum_decisions_toggle('toggle').default('advanced'),
+    type: integer('type_id')
+      .notNull()
+      .references(() => categories.id, {
+        onDelete: 'set null',
+      }),
+    basics_enable: boolean('basics_enable').default(true),
+    basics_visibility_show: boolean('basics_visibility_show').default(false),
+    details_enable: boolean('details_enable').default(true),
+    details_narrative: integer('details_narrative_id')
+      .notNull()
+      .references(() => narratives.id, {
+        onDelete: 'set null',
+      }),
+    details_visibility_show: boolean('details_visibility_show').default(false),
+    traits_enable: boolean('traits_enable').default(true),
+    traits_features: integer('traits_features_id').references(() => features.id, {
+      onDelete: 'set null',
+    }),
+    traits_specifications: integer('traits_specifications_id').references(() => specifications.id, {
+      onDelete: 'set null',
+    }),
+    traits_expectations: integer('traits_expectations_id').references(() => expectations.id, {
+      onDelete: 'set null',
+    }),
+    traits_visibility_show: boolean('traits_visibility_show').default(false),
+    contexts_enable: boolean('contexts_enable').default(true),
+    contexts_protocols: integer('contexts_protocols_id').references(() => protocols.id, {
+      onDelete: 'set null',
+    }),
+    contexts_preferences: integer('contexts_preferences_id').references(() => preferences.id, {
+      onDelete: 'set null',
+    }),
+    contexts_notes: integer('contexts_notes_id').references(() => notes.id, {
+      onDelete: 'set null',
+    }),
+    contexts_impacts: integer('contexts_impacts_id').references(() => impacts.id, {
+      onDelete: 'set null',
+    }),
+    contexts_visibility_show: boolean('contexts_visibility_show').default(false),
+    generateSlug: boolean('generate_slug').default(true),
+    slug: varchar('slug').notNull(),
+    visibility_check_publish: boolean('visibility_check_publish').default(false),
+    visibility_check_featured: boolean('visibility_check_featured').default(false),
+    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => [
+    index('decisions_type_idx').on(columns.type),
+    index('decisions_details_details_narrative_idx').on(columns.details_narrative),
+    index('decisions_traits_traits_features_idx').on(columns.traits_features),
+    index('decisions_traits_traits_specifications_idx').on(columns.traits_specifications),
+    index('decisions_traits_traits_expectations_idx').on(columns.traits_expectations),
+    index('decisions_contexts_contexts_protocols_idx').on(columns.contexts_protocols),
+    index('decisions_contexts_contexts_preferences_idx').on(columns.contexts_preferences),
+    index('decisions_contexts_contexts_notes_idx').on(columns.contexts_notes),
+    index('decisions_contexts_contexts_impacts_idx').on(columns.contexts_impacts),
+    uniqueIndex('decisions_slug_idx').on(columns.slug),
+    index('decisions_updated_at_idx').on(columns.updatedAt),
+    index('decisions_created_at_idx').on(columns.createdAt),
+  ],
+)
+
+export const decisions_locales = pgTable(
+  'decisions_locales',
+  {
+    name: varchar('name').notNull().default(''),
+    basics_description: varchar('basics_description').default(''),
+    seo_title: varchar('seo_title'),
+    seo_image: integer('seo_image_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    seo_description: varchar('seo_description'),
+    id: serial('id').primaryKey(),
+    _locale: enum__locales('_locale').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+  },
+  (columns) => [
+    index('decisions_name_idx').on(columns.name, columns._locale),
+    index('decisions_seo_seo_image_idx').on(columns.seo_image, columns._locale),
+    uniqueIndex('decisions_locales_locale_parent_id_unique').on(columns._locale, columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [decisions.id],
+      name: 'decisions_locales_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const decisions_rels = pgTable(
+  'decisions_rels',
+  {
+    id: serial('id').primaryKey(),
+    order: integer('order'),
+    parent: integer('parent_id').notNull(),
+    path: varchar('path').notNull(),
+    organizationsID: integer('organizations_id'),
+    individualsID: integer('individuals_id'),
+    leadersID: integer('leaders_id'),
+    driversID: integer('drivers_id'),
+    membersID: integer('members_id'),
+    categoriesID: integer('categories_id'),
+    tagsID: integer('tags_id'),
+  },
+  (columns) => [
+    index('decisions_rels_order_idx').on(columns.order),
+    index('decisions_rels_parent_idx').on(columns.parent),
+    index('decisions_rels_path_idx').on(columns.path),
+    index('decisions_rels_organizations_id_idx').on(columns.organizationsID),
+    index('decisions_rels_individuals_id_idx').on(columns.individualsID),
+    index('decisions_rels_leaders_id_idx').on(columns.leadersID),
+    index('decisions_rels_drivers_id_idx').on(columns.driversID),
+    index('decisions_rels_members_id_idx').on(columns.membersID),
+    index('decisions_rels_categories_id_idx').on(columns.categoriesID),
+    index('decisions_rels_tags_id_idx').on(columns.tagsID),
+    foreignKey({
+      columns: [columns['parent']],
+      foreignColumns: [decisions.id],
+      name: 'decisions_rels_parent_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['organizationsID']],
+      foreignColumns: [organizations.id],
+      name: 'decisions_rels_organizations_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['individualsID']],
+      foreignColumns: [individuals.id],
+      name: 'decisions_rels_individuals_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['leadersID']],
+      foreignColumns: [leaders.id],
+      name: 'decisions_rels_leaders_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['driversID']],
+      foreignColumns: [drivers.id],
+      name: 'decisions_rels_drivers_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['membersID']],
+      foreignColumns: [members.id],
+      name: 'decisions_rels_members_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['categoriesID']],
+      foreignColumns: [categories.id],
+      name: 'decisions_rels_categories_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['tagsID']],
+      foreignColumns: [tags.id],
+      name: 'decisions_rels_tags_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const strategies_traits_directives = pgTable(
+  'strategies_traits_directives',
+  {
+    _order: integer('_order').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+    id: varchar('id').primaryKey(),
+    phase: varchar('phase').default(''),
+    action: varchar('action').default(''),
+    owner: varchar('owner').default(''),
+    deadline: timestamp('deadline', { mode: 'string', withTimezone: true, precision: 3 }),
+  },
+  (columns) => [
+    index('strategies_traits_directives_order_idx').on(columns._order),
+    index('strategies_traits_directives_parent_id_idx').on(columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [strategies.id],
+      name: 'strategies_traits_directives_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const strategies_traits_contingencies = pgTable(
+  'strategies_traits_contingencies',
+  {
+    _order: integer('_order').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+    id: varchar('id').primaryKey(),
+    trigger: varchar('trigger').default(''),
+    response: varchar('response').default(''),
+    probability: enum_strategies_traits_contingencies_probability('probability'),
+    impact: enum_strategies_traits_contingencies_impact('impact'),
+  },
+  (columns) => [
+    index('strategies_traits_contingencies_order_idx').on(columns._order),
+    index('strategies_traits_contingencies_parent_id_idx').on(columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [strategies.id],
+      name: 'strategies_traits_contingencies_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const strategies = pgTable(
+  'strategies',
+  {
+    id: serial('id').primaryKey(),
+    toggle: enum_strategies_toggle('toggle').default('advanced'),
+    type: integer('type_id')
+      .notNull()
+      .references(() => categories.id, {
+        onDelete: 'set null',
+      }),
+    basics_enable: boolean('basics_enable').default(true),
+    basics_visibility_show: boolean('basics_visibility_show').default(false),
+    details_enable: boolean('details_enable').default(true),
+    details_decisions: integer('details_decisions_id').references(() => decisions.id, {
+      onDelete: 'set null',
+    }),
+    details_impacts: integer('details_impacts_id').references(() => impacts.id, {
+      onDelete: 'set null',
+    }),
+    details_visibility_show: boolean('details_visibility_show').default(false),
+    traits_enable: boolean('traits_enable').default(true),
+    traits_visibility_show: boolean('traits_visibility_show').default(false),
+    contexts_enable: boolean('contexts_enable').default(true),
+    contexts_narrative: integer('contexts_narrative_id').references(() => narratives.id, {
+      onDelete: 'set null',
+    }),
+    contexts_visibility_show: boolean('contexts_visibility_show').default(false),
+    generateSlug: boolean('generate_slug').default(true),
+    slug: varchar('slug').notNull(),
+    visibility_check_publish: boolean('visibility_check_publish').default(false),
+    visibility_check_featured: boolean('visibility_check_featured').default(false),
+    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => [
+    index('strategies_type_idx').on(columns.type),
+    index('strategies_details_details_decisions_idx').on(columns.details_decisions),
+    index('strategies_details_details_impacts_idx').on(columns.details_impacts),
+    index('strategies_contexts_contexts_narrative_idx').on(columns.contexts_narrative),
+    uniqueIndex('strategies_slug_idx').on(columns.slug),
+    index('strategies_updated_at_idx').on(columns.updatedAt),
+    index('strategies_created_at_idx').on(columns.createdAt),
+  ],
+)
+
+export const strategies_locales = pgTable(
+  'strategies_locales',
+  {
+    name: varchar('name').notNull().default(''),
+    basics_description: varchar('basics_description').default(''),
+    details_methodology: varchar('details_methodology').default(''),
+    seo_title: varchar('seo_title'),
+    seo_image: integer('seo_image_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    seo_description: varchar('seo_description'),
+    id: serial('id').primaryKey(),
+    _locale: enum__locales('_locale').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+  },
+  (columns) => [
+    index('strategies_name_idx').on(columns.name, columns._locale),
+    index('strategies_seo_seo_image_idx').on(columns.seo_image, columns._locale),
+    uniqueIndex('strategies_locales_locale_parent_id_unique').on(
+      columns._locale,
+      columns._parentID,
+    ),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [strategies.id],
+      name: 'strategies_locales_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const strategies_rels = pgTable(
+  'strategies_rels',
+  {
+    id: serial('id').primaryKey(),
+    order: integer('order'),
+    parent: integer('parent_id').notNull(),
+    path: varchar('path').notNull(),
+    driversID: integer('drivers_id'),
+    membersID: integer('members_id'),
+    leadersID: integer('leaders_id'),
+    organizationsID: integer('organizations_id'),
+    kitsID: integer('kits_id'),
+    categoriesID: integer('categories_id'),
+    tagsID: integer('tags_id'),
+  },
+  (columns) => [
+    index('strategies_rels_order_idx').on(columns.order),
+    index('strategies_rels_parent_idx').on(columns.parent),
+    index('strategies_rels_path_idx').on(columns.path),
+    index('strategies_rels_drivers_id_idx').on(columns.driversID),
+    index('strategies_rels_members_id_idx').on(columns.membersID),
+    index('strategies_rels_leaders_id_idx').on(columns.leadersID),
+    index('strategies_rels_organizations_id_idx').on(columns.organizationsID),
+    index('strategies_rels_kits_id_idx').on(columns.kitsID),
+    index('strategies_rels_categories_id_idx').on(columns.categoriesID),
+    index('strategies_rels_tags_id_idx').on(columns.tagsID),
+    foreignKey({
+      columns: [columns['parent']],
+      foreignColumns: [strategies.id],
+      name: 'strategies_rels_parent_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['driversID']],
+      foreignColumns: [drivers.id],
+      name: 'strategies_rels_drivers_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['membersID']],
+      foreignColumns: [members.id],
+      name: 'strategies_rels_members_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['leadersID']],
+      foreignColumns: [leaders.id],
+      name: 'strategies_rels_leaders_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['organizationsID']],
+      foreignColumns: [organizations.id],
+      name: 'strategies_rels_organizations_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['kitsID']],
+      foreignColumns: [kits.id],
+      name: 'strategies_rels_kits_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['categoriesID']],
+      foreignColumns: [categories.id],
+      name: 'strategies_rels_categories_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['tagsID']],
+      foreignColumns: [tags.id],
+      name: 'strategies_rels_tags_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const awards = pgTable(
+  'awards',
+  {
+    id: serial('id').primaryKey(),
+    toggle: enum_awards_toggle('toggle').default('advanced'),
+    type: integer('type_id')
+      .notNull()
+      .references(() => categories.id, {
+        onDelete: 'set null',
+      }),
+    basics_enable: boolean('basics_enable').default(true),
+    basics_visibility_show: boolean('basics_visibility_show').default(false),
+    details_enable: boolean('details_enable').default(true),
+    details_narrative: integer('details_narrative_id')
+      .notNull()
+      .references(() => narratives.id, {
+        onDelete: 'set null',
+      }),
+    details_visibility_show: boolean('details_visibility_show').default(false),
+    assets_enable: boolean('assets_enable').default(true),
+    assets_thumbnail: integer('assets_thumbnail_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    assets_visualization: integer('assets_visualization_id').references(() => visualizations.id, {
+      onDelete: 'set null',
+    }),
+    assets_visibility_show: boolean('assets_visibility_show').default(false),
+    contexts_enable: boolean('contexts_enable').default(true),
+    contexts_story: integer('contexts_story_id').references(() => stories.id, {
+      onDelete: 'set null',
+    }),
+    contexts_visibility_show: boolean('contexts_visibility_show').default(false),
+    generateSlug: boolean('generate_slug').default(true),
+    slug: varchar('slug').notNull(),
+    visibility_check_publish: boolean('visibility_check_publish').default(false),
+    visibility_check_featured: boolean('visibility_check_featured').default(false),
+    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => [
+    index('awards_type_idx').on(columns.type),
+    index('awards_details_details_narrative_idx').on(columns.details_narrative),
+    index('awards_assets_assets_thumbnail_idx').on(columns.assets_thumbnail),
+    index('awards_assets_assets_visualization_idx').on(columns.assets_visualization),
+    index('awards_contexts_contexts_story_idx').on(columns.contexts_story),
+    uniqueIndex('awards_slug_idx').on(columns.slug),
+    index('awards_updated_at_idx').on(columns.updatedAt),
+    index('awards_created_at_idx').on(columns.createdAt),
+  ],
+)
+
+export const awards_locales = pgTable(
+  'awards_locales',
+  {
+    name: varchar('name').notNull().default(''),
+    basics_description: varchar('basics_description').default(''),
+    seo_title: varchar('seo_title'),
+    seo_image: integer('seo_image_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    seo_description: varchar('seo_description'),
+    id: serial('id').primaryKey(),
+    _locale: enum__locales('_locale').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+  },
+  (columns) => [
+    index('awards_name_idx').on(columns.name, columns._locale),
+    index('awards_seo_seo_image_idx').on(columns.seo_image, columns._locale),
+    uniqueIndex('awards_locales_locale_parent_id_unique').on(columns._locale, columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [awards.id],
+      name: 'awards_locales_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const awards_rels = pgTable(
+  'awards_rels',
+  {
+    id: serial('id').primaryKey(),
+    order: integer('order'),
+    parent: integer('parent_id').notNull(),
+    path: varchar('path').notNull(),
+    leadersID: integer('leaders_id'),
+    organizationsID: integer('organizations_id'),
+    individualsID: integer('individuals_id'),
+    categoriesID: integer('categories_id'),
+    tagsID: integer('tags_id'),
+  },
+  (columns) => [
+    index('awards_rels_order_idx').on(columns.order),
+    index('awards_rels_parent_idx').on(columns.parent),
+    index('awards_rels_path_idx').on(columns.path),
+    index('awards_rels_leaders_id_idx').on(columns.leadersID),
+    index('awards_rels_organizations_id_idx').on(columns.organizationsID),
+    index('awards_rels_individuals_id_idx').on(columns.individualsID),
+    index('awards_rels_categories_id_idx').on(columns.categoriesID),
+    index('awards_rels_tags_id_idx').on(columns.tagsID),
+    foreignKey({
+      columns: [columns['parent']],
+      foreignColumns: [awards.id],
+      name: 'awards_rels_parent_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['leadersID']],
+      foreignColumns: [leaders.id],
+      name: 'awards_rels_leaders_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['organizationsID']],
+      foreignColumns: [organizations.id],
+      name: 'awards_rels_organizations_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['individualsID']],
+      foreignColumns: [individuals.id],
+      name: 'awards_rels_individuals_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['categoriesID']],
+      foreignColumns: [categories.id],
+      name: 'awards_rels_categories_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['tagsID']],
+      foreignColumns: [tags.id],
+      name: 'awards_rels_tags_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const experiences_traits_skills = pgTable(
+  'experiences_traits_skills',
+  {
+    _order: integer('_order').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+    id: varchar('id').primaryKey(),
+    skill: integer('skill_id')
+      .notNull()
+      .references(() => skills.id, {
+        onDelete: 'set null',
+      }),
+    proficiency: enum_experiences_traits_skills_proficiency('proficiency'),
+  },
+  (columns) => [
+    index('experiences_traits_skills_order_idx').on(columns._order),
+    index('experiences_traits_skills_parent_id_idx').on(columns._parentID),
+    index('experiences_traits_skills_skill_idx').on(columns.skill),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [experiences.id],
+      name: 'experiences_traits_skills_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const experiences = pgTable(
+  'experiences',
+  {
+    id: serial('id').primaryKey(),
+    toggle: enum_experiences_toggle('toggle').default('advanced'),
+    type: integer('type_id')
+      .notNull()
+      .references(() => categories.id, {
+        onDelete: 'set null',
+      }),
+    basics_enable: boolean('basics_enable').default(true),
+    basics_visibility_show: boolean('basics_visibility_show').default(false),
+    details_enable: boolean('details_enable').default(true),
+    details_narrative: integer('details_narrative_id')
+      .notNull()
+      .references(() => narratives.id, {
+        onDelete: 'set null',
+      }),
+    details_visibility_show: boolean('details_visibility_show').default(false),
+    traits_enable: boolean('traits_enable').default(true),
+    traits_visibility_show: boolean('traits_visibility_show').default(false),
+    assets_enable: boolean('assets_enable').default(true),
+    assets_evidence: integer('assets_evidence_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    assets_gallery: integer('assets_gallery_id').references(() => galleries.id, {
+      onDelete: 'set null',
+    }),
+    assets_visibility_show: boolean('assets_visibility_show').default(false),
+    contexts_enable: boolean('contexts_enable').default(true),
+    contexts_highlights: integer('contexts_highlights_id').references(() => highlights.id, {
+      onDelete: 'set null',
+    }),
+    contexts_incidents: integer('contexts_incidents_id').references(() => incidents.id, {
+      onDelete: 'set null',
+    }),
+    contexts_journey: integer('contexts_journey_id').references(() => journeys.id, {
+      onDelete: 'set null',
+    }),
+    contexts_visibility_show: boolean('contexts_visibility_show').default(false),
+    generateSlug: boolean('generate_slug').default(true),
+    slug: varchar('slug').notNull(),
+    visibility_check_publish: boolean('visibility_check_publish').default(false),
+    visibility_check_featured: boolean('visibility_check_featured').default(false),
+    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => [
+    index('experiences_type_idx').on(columns.type),
+    index('experiences_details_details_narrative_idx').on(columns.details_narrative),
+    index('experiences_assets_assets_evidence_idx').on(columns.assets_evidence),
+    index('experiences_assets_assets_gallery_idx').on(columns.assets_gallery),
+    index('experiences_contexts_contexts_highlights_idx').on(columns.contexts_highlights),
+    index('experiences_contexts_contexts_incidents_idx').on(columns.contexts_incidents),
+    index('experiences_contexts_contexts_journey_idx').on(columns.contexts_journey),
+    uniqueIndex('experiences_slug_idx').on(columns.slug),
+    index('experiences_updated_at_idx').on(columns.updatedAt),
+    index('experiences_created_at_idx').on(columns.createdAt),
+  ],
+)
+
+export const experiences_locales = pgTable(
+  'experiences_locales',
+  {
+    name: varchar('name').notNull().default(''),
+    basics_description: varchar('basics_description').default(''),
+    seo_title: varchar('seo_title'),
+    seo_image: integer('seo_image_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    seo_description: varchar('seo_description'),
+    id: serial('id').primaryKey(),
+    _locale: enum__locales('_locale').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+  },
+  (columns) => [
+    index('experiences_name_idx').on(columns.name, columns._locale),
+    index('experiences_seo_seo_image_idx').on(columns.seo_image, columns._locale),
+    uniqueIndex('experiences_locales_locale_parent_id_unique').on(
+      columns._locale,
+      columns._parentID,
+    ),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [experiences.id],
+      name: 'experiences_locales_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const experiences_rels = pgTable(
+  'experiences_rels',
+  {
+    id: serial('id').primaryKey(),
+    order: integer('order'),
+    parent: integer('parent_id').notNull(),
+    path: varchar('path').notNull(),
+    organizationsID: integer('organizations_id'),
+    driversID: integer('drivers_id'),
+    membersID: integer('members_id'),
+    leadersID: integer('leaders_id'),
+    individualsID: integer('individuals_id'),
+    categoriesID: integer('categories_id'),
+    tagsID: integer('tags_id'),
+  },
+  (columns) => [
+    index('experiences_rels_order_idx').on(columns.order),
+    index('experiences_rels_parent_idx').on(columns.parent),
+    index('experiences_rels_path_idx').on(columns.path),
+    index('experiences_rels_organizations_id_idx').on(columns.organizationsID),
+    index('experiences_rels_drivers_id_idx').on(columns.driversID),
+    index('experiences_rels_members_id_idx').on(columns.membersID),
+    index('experiences_rels_leaders_id_idx').on(columns.leadersID),
+    index('experiences_rels_individuals_id_idx').on(columns.individualsID),
+    index('experiences_rels_categories_id_idx').on(columns.categoriesID),
+    index('experiences_rels_tags_id_idx').on(columns.tagsID),
+    foreignKey({
+      columns: [columns['parent']],
+      foreignColumns: [experiences.id],
+      name: 'experiences_rels_parent_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['organizationsID']],
+      foreignColumns: [organizations.id],
+      name: 'experiences_rels_organizations_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['driversID']],
+      foreignColumns: [drivers.id],
+      name: 'experiences_rels_drivers_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['membersID']],
+      foreignColumns: [members.id],
+      name: 'experiences_rels_members_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['leadersID']],
+      foreignColumns: [leaders.id],
+      name: 'experiences_rels_leaders_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['individualsID']],
+      foreignColumns: [individuals.id],
+      name: 'experiences_rels_individuals_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['categoriesID']],
+      foreignColumns: [categories.id],
+      name: 'experiences_rels_categories_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['tagsID']],
+      foreignColumns: [tags.id],
+      name: 'experiences_rels_tags_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
 export const categories_attributes_questions = pgTable(
   'categories_attributes_questions',
   {
@@ -408,865 +7750,6 @@ export const categories_rels = pgTable(
   ],
 )
 
-export const users_roles = pgTable(
-  'users_roles',
-  {
-    order: integer('order').notNull(),
-    parent: integer('parent_id').notNull(),
-    value: enum_users_roles('value'),
-    id: serial('id').primaryKey(),
-  },
-  (columns) => [
-    index('users_roles_order_idx').on(columns.order),
-    index('users_roles_parent_idx').on(columns.parent),
-    foreignKey({
-      columns: [columns['parent']],
-      foreignColumns: [users.id],
-      name: 'users_roles_parent_fk',
-    }).onDelete('cascade'),
-  ],
-)
-
-export const users_sessions = pgTable(
-  'users_sessions',
-  {
-    _order: integer('_order').notNull(),
-    _parentID: integer('_parent_id').notNull(),
-    id: varchar('id').primaryKey(),
-    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 }),
-    expiresAt: timestamp('expires_at', {
-      mode: 'string',
-      withTimezone: true,
-      precision: 3,
-    }).notNull(),
-  },
-  (columns) => [
-    index('users_sessions_order_idx').on(columns._order),
-    index('users_sessions_parent_id_idx').on(columns._parentID),
-    foreignKey({
-      columns: [columns['_parentID']],
-      foreignColumns: [users.id],
-      name: 'users_sessions_parent_id_fk',
-    }).onDelete('cascade'),
-  ],
-)
-
-export const users = pgTable(
-  'users',
-  {
-    id: serial('id').primaryKey(),
-    name: varchar('name'),
-    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
-    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
-    email: varchar('email').notNull(),
-    resetPasswordToken: varchar('reset_password_token'),
-    resetPasswordExpiration: timestamp('reset_password_expiration', {
-      mode: 'string',
-      withTimezone: true,
-      precision: 3,
-    }),
-    salt: varchar('salt'),
-    hash: varchar('hash'),
-    loginAttempts: numeric('login_attempts', { mode: 'number' }).default(0),
-    lockUntil: timestamp('lock_until', { mode: 'string', withTimezone: true, precision: 3 }),
-  },
-  (columns) => [
-    index('users_updated_at_idx').on(columns.updatedAt),
-    index('users_created_at_idx').on(columns.createdAt),
-    uniqueIndex('users_email_idx').on(columns.email),
-  ],
-)
-
-export const media = pgTable(
-  'media',
-  {
-    id: serial('id').primaryKey(),
-    alt: varchar('alt'),
-    caption: jsonb('caption'),
-    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
-    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
-    url: varchar('url'),
-    thumbnailURL: varchar('thumbnail_u_r_l'),
-    filename: varchar('filename'),
-    mimeType: varchar('mime_type'),
-    filesize: numeric('filesize', { mode: 'number' }),
-    width: numeric('width', { mode: 'number' }),
-    height: numeric('height', { mode: 'number' }),
-    focalX: numeric('focal_x', { mode: 'number' }),
-    focalY: numeric('focal_y', { mode: 'number' }),
-  },
-  (columns) => [
-    index('media_updated_at_idx').on(columns.updatedAt),
-    index('media_created_at_idx').on(columns.createdAt),
-    uniqueIndex('media_filename_idx').on(columns.filename),
-  ],
-)
-
-export const pages_hero_links = pgTable(
-  'pages_hero_links',
-  {
-    _order: integer('_order').notNull(),
-    _parentID: integer('_parent_id').notNull(),
-    id: varchar('id').primaryKey(),
-    link_type: enum_pages_hero_links_link_type('link_type').default('reference'),
-    link_newTab: boolean('link_new_tab'),
-    link_url: varchar('link_url'),
-    link_label: varchar('link_label'),
-    link_appearance: enum_pages_hero_links_link_appearance('link_appearance').default('default'),
-  },
-  (columns) => [
-    index('pages_hero_links_order_idx').on(columns._order),
-    index('pages_hero_links_parent_id_idx').on(columns._parentID),
-    foreignKey({
-      columns: [columns['_parentID']],
-      foreignColumns: [pages.id],
-      name: 'pages_hero_links_parent_id_fk',
-    }).onDelete('cascade'),
-  ],
-)
-
-export const pages_blocks_cta_links = pgTable(
-  'pages_blocks_cta_links',
-  {
-    _order: integer('_order').notNull(),
-    _parentID: varchar('_parent_id').notNull(),
-    id: varchar('id').primaryKey(),
-    link_type: enum_pages_blocks_cta_links_link_type('link_type').default('reference'),
-    link_newTab: boolean('link_new_tab'),
-    link_url: varchar('link_url'),
-    link_label: varchar('link_label'),
-    link_appearance:
-      enum_pages_blocks_cta_links_link_appearance('link_appearance').default('default'),
-  },
-  (columns) => [
-    index('pages_blocks_cta_links_order_idx').on(columns._order),
-    index('pages_blocks_cta_links_parent_id_idx').on(columns._parentID),
-    foreignKey({
-      columns: [columns['_parentID']],
-      foreignColumns: [pages_blocks_cta.id],
-      name: 'pages_blocks_cta_links_parent_id_fk',
-    }).onDelete('cascade'),
-  ],
-)
-
-export const pages_blocks_cta = pgTable(
-  'pages_blocks_cta',
-  {
-    _order: integer('_order').notNull(),
-    _parentID: integer('_parent_id').notNull(),
-    _path: text('_path').notNull(),
-    id: varchar('id').primaryKey(),
-    richText: jsonb('rich_text'),
-    blockName: varchar('block_name'),
-  },
-  (columns) => [
-    index('pages_blocks_cta_order_idx').on(columns._order),
-    index('pages_blocks_cta_parent_id_idx').on(columns._parentID),
-    index('pages_blocks_cta_path_idx').on(columns._path),
-    foreignKey({
-      columns: [columns['_parentID']],
-      foreignColumns: [pages.id],
-      name: 'pages_blocks_cta_parent_id_fk',
-    }).onDelete('cascade'),
-  ],
-)
-
-export const pages_blocks_content_columns = pgTable(
-  'pages_blocks_content_columns',
-  {
-    _order: integer('_order').notNull(),
-    _parentID: varchar('_parent_id').notNull(),
-    id: varchar('id').primaryKey(),
-    size: enum_pages_blocks_content_columns_size('size').default('oneThird'),
-    richText: jsonb('rich_text'),
-    enableLink: boolean('enable_link'),
-    link_type: enum_pages_blocks_content_columns_link_type('link_type').default('reference'),
-    link_newTab: boolean('link_new_tab'),
-    link_url: varchar('link_url'),
-    link_label: varchar('link_label'),
-    link_appearance:
-      enum_pages_blocks_content_columns_link_appearance('link_appearance').default('default'),
-  },
-  (columns) => [
-    index('pages_blocks_content_columns_order_idx').on(columns._order),
-    index('pages_blocks_content_columns_parent_id_idx').on(columns._parentID),
-    foreignKey({
-      columns: [columns['_parentID']],
-      foreignColumns: [pages_blocks_content.id],
-      name: 'pages_blocks_content_columns_parent_id_fk',
-    }).onDelete('cascade'),
-  ],
-)
-
-export const pages_blocks_content = pgTable(
-  'pages_blocks_content',
-  {
-    _order: integer('_order').notNull(),
-    _parentID: integer('_parent_id').notNull(),
-    _path: text('_path').notNull(),
-    id: varchar('id').primaryKey(),
-    blockName: varchar('block_name'),
-  },
-  (columns) => [
-    index('pages_blocks_content_order_idx').on(columns._order),
-    index('pages_blocks_content_parent_id_idx').on(columns._parentID),
-    index('pages_blocks_content_path_idx').on(columns._path),
-    foreignKey({
-      columns: [columns['_parentID']],
-      foreignColumns: [pages.id],
-      name: 'pages_blocks_content_parent_id_fk',
-    }).onDelete('cascade'),
-  ],
-)
-
-export const pages_blocks_media_block = pgTable(
-  'pages_blocks_media_block',
-  {
-    _order: integer('_order').notNull(),
-    _parentID: integer('_parent_id').notNull(),
-    _path: text('_path').notNull(),
-    id: varchar('id').primaryKey(),
-    media: integer('media_id').references(() => media.id, {
-      onDelete: 'set null',
-    }),
-    blockName: varchar('block_name'),
-  },
-  (columns) => [
-    index('pages_blocks_media_block_order_idx').on(columns._order),
-    index('pages_blocks_media_block_parent_id_idx').on(columns._parentID),
-    index('pages_blocks_media_block_path_idx').on(columns._path),
-    index('pages_blocks_media_block_media_idx').on(columns.media),
-    foreignKey({
-      columns: [columns['_parentID']],
-      foreignColumns: [pages.id],
-      name: 'pages_blocks_media_block_parent_id_fk',
-    }).onDelete('cascade'),
-  ],
-)
-
-export const pages_blocks_archive = pgTable(
-  'pages_blocks_archive',
-  {
-    _order: integer('_order').notNull(),
-    _parentID: integer('_parent_id').notNull(),
-    _path: text('_path').notNull(),
-    id: varchar('id').primaryKey(),
-    introContent: jsonb('intro_content'),
-    populateBy: enum_pages_blocks_archive_populate_by('populate_by').default('collection'),
-    relationTo: enum_pages_blocks_archive_relation_to('relation_to').default('products'),
-    limit: numeric('limit', { mode: 'number' }).default(10),
-    blockName: varchar('block_name'),
-  },
-  (columns) => [
-    index('pages_blocks_archive_order_idx').on(columns._order),
-    index('pages_blocks_archive_parent_id_idx').on(columns._parentID),
-    index('pages_blocks_archive_path_idx').on(columns._path),
-    foreignKey({
-      columns: [columns['_parentID']],
-      foreignColumns: [pages.id],
-      name: 'pages_blocks_archive_parent_id_fk',
-    }).onDelete('cascade'),
-  ],
-)
-
-export const pages_blocks_carousel = pgTable(
-  'pages_blocks_carousel',
-  {
-    _order: integer('_order').notNull(),
-    _parentID: integer('_parent_id').notNull(),
-    _path: text('_path').notNull(),
-    id: varchar('id').primaryKey(),
-    populateBy: enum_pages_blocks_carousel_populate_by('populate_by').default('collection'),
-    relationTo: enum_pages_blocks_carousel_relation_to('relation_to').default('products'),
-    limit: numeric('limit', { mode: 'number' }).default(10),
-    populatedDocsTotal: numeric('populated_docs_total', { mode: 'number' }),
-    blockName: varchar('block_name'),
-  },
-  (columns) => [
-    index('pages_blocks_carousel_order_idx').on(columns._order),
-    index('pages_blocks_carousel_parent_id_idx').on(columns._parentID),
-    index('pages_blocks_carousel_path_idx').on(columns._path),
-    foreignKey({
-      columns: [columns['_parentID']],
-      foreignColumns: [pages.id],
-      name: 'pages_blocks_carousel_parent_id_fk',
-    }).onDelete('cascade'),
-  ],
-)
-
-export const pages_blocks_three_item_grid = pgTable(
-  'pages_blocks_three_item_grid',
-  {
-    _order: integer('_order').notNull(),
-    _parentID: integer('_parent_id').notNull(),
-    _path: text('_path').notNull(),
-    id: varchar('id').primaryKey(),
-    blockName: varchar('block_name'),
-  },
-  (columns) => [
-    index('pages_blocks_three_item_grid_order_idx').on(columns._order),
-    index('pages_blocks_three_item_grid_parent_id_idx').on(columns._parentID),
-    index('pages_blocks_three_item_grid_path_idx').on(columns._path),
-    foreignKey({
-      columns: [columns['_parentID']],
-      foreignColumns: [pages.id],
-      name: 'pages_blocks_three_item_grid_parent_id_fk',
-    }).onDelete('cascade'),
-  ],
-)
-
-export const pages_blocks_banner = pgTable(
-  'pages_blocks_banner',
-  {
-    _order: integer('_order').notNull(),
-    _parentID: integer('_parent_id').notNull(),
-    _path: text('_path').notNull(),
-    id: varchar('id').primaryKey(),
-    style: enum_pages_blocks_banner_style('style').default('info'),
-    content: jsonb('content'),
-    blockName: varchar('block_name'),
-  },
-  (columns) => [
-    index('pages_blocks_banner_order_idx').on(columns._order),
-    index('pages_blocks_banner_parent_id_idx').on(columns._parentID),
-    index('pages_blocks_banner_path_idx').on(columns._path),
-    foreignKey({
-      columns: [columns['_parentID']],
-      foreignColumns: [pages.id],
-      name: 'pages_blocks_banner_parent_id_fk',
-    }).onDelete('cascade'),
-  ],
-)
-
-export const pages_blocks_form_block = pgTable(
-  'pages_blocks_form_block',
-  {
-    _order: integer('_order').notNull(),
-    _parentID: integer('_parent_id').notNull(),
-    _path: text('_path').notNull(),
-    id: varchar('id').primaryKey(),
-    form: integer('form_id').references(() => forms.id, {
-      onDelete: 'set null',
-    }),
-    enableIntro: boolean('enable_intro'),
-    introContent: jsonb('intro_content'),
-    blockName: varchar('block_name'),
-  },
-  (columns) => [
-    index('pages_blocks_form_block_order_idx').on(columns._order),
-    index('pages_blocks_form_block_parent_id_idx').on(columns._parentID),
-    index('pages_blocks_form_block_path_idx').on(columns._path),
-    index('pages_blocks_form_block_form_idx').on(columns.form),
-    foreignKey({
-      columns: [columns['_parentID']],
-      foreignColumns: [pages.id],
-      name: 'pages_blocks_form_block_parent_id_fk',
-    }).onDelete('cascade'),
-  ],
-)
-
-export const pages = pgTable(
-  'pages',
-  {
-    id: serial('id').primaryKey(),
-    title: varchar('title'),
-    publishedOn: timestamp('published_on', { mode: 'string', withTimezone: true, precision: 3 }),
-    hero_type: enum_pages_hero_type('hero_type').default('lowImpact'),
-    hero_richText: jsonb('hero_rich_text'),
-    hero_media: integer('hero_media_id').references(() => media.id, {
-      onDelete: 'set null',
-    }),
-    generateSlug: boolean('generate_slug').default(true),
-    slug: varchar('slug'),
-    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
-    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
-    _status: enum_pages_status('_status').default('draft'),
-  },
-  (columns) => [
-    index('pages_hero_hero_media_idx').on(columns.hero_media),
-    uniqueIndex('pages_slug_idx').on(columns.slug),
-    index('pages_updated_at_idx').on(columns.updatedAt),
-    index('pages_created_at_idx').on(columns.createdAt),
-    index('pages__status_idx').on(columns._status),
-  ],
-)
-
-export const pages_locales = pgTable(
-  'pages_locales',
-  {
-    meta_title: varchar('meta_title'),
-    meta_image: integer('meta_image_id').references(() => media.id, {
-      onDelete: 'set null',
-    }),
-    meta_description: varchar('meta_description'),
-    id: serial('id').primaryKey(),
-    _locale: enum__locales('_locale').notNull(),
-    _parentID: integer('_parent_id').notNull(),
-  },
-  (columns) => [
-    index('pages_meta_meta_image_idx').on(columns.meta_image, columns._locale),
-    uniqueIndex('pages_locales_locale_parent_id_unique').on(columns._locale, columns._parentID),
-    foreignKey({
-      columns: [columns['_parentID']],
-      foreignColumns: [pages.id],
-      name: 'pages_locales_parent_id_fk',
-    }).onDelete('cascade'),
-  ],
-)
-
-export const pages_rels = pgTable(
-  'pages_rels',
-  {
-    id: serial('id').primaryKey(),
-    order: integer('order'),
-    parent: integer('parent_id').notNull(),
-    path: varchar('path').notNull(),
-    pagesID: integer('pages_id'),
-    categoriesID: integer('categories_id'),
-    productsID: integer('products_id'),
-  },
-  (columns) => [
-    index('pages_rels_order_idx').on(columns.order),
-    index('pages_rels_parent_idx').on(columns.parent),
-    index('pages_rels_path_idx').on(columns.path),
-    index('pages_rels_pages_id_idx').on(columns.pagesID),
-    index('pages_rels_categories_id_idx').on(columns.categoriesID),
-    index('pages_rels_products_id_idx').on(columns.productsID),
-    foreignKey({
-      columns: [columns['parent']],
-      foreignColumns: [pages.id],
-      name: 'pages_rels_parent_fk',
-    }).onDelete('cascade'),
-    foreignKey({
-      columns: [columns['pagesID']],
-      foreignColumns: [pages.id],
-      name: 'pages_rels_pages_fk',
-    }).onDelete('cascade'),
-    foreignKey({
-      columns: [columns['categoriesID']],
-      foreignColumns: [categories.id],
-      name: 'pages_rels_categories_fk',
-    }).onDelete('cascade'),
-    foreignKey({
-      columns: [columns['productsID']],
-      foreignColumns: [products.id],
-      name: 'pages_rels_products_fk',
-    }).onDelete('cascade'),
-  ],
-)
-
-export const _pages_v_version_hero_links = pgTable(
-  '_pages_v_version_hero_links',
-  {
-    _order: integer('_order').notNull(),
-    _parentID: integer('_parent_id').notNull(),
-    id: serial('id').primaryKey(),
-    link_type: enum__pages_v_version_hero_links_link_type('link_type').default('reference'),
-    link_newTab: boolean('link_new_tab'),
-    link_url: varchar('link_url'),
-    link_label: varchar('link_label'),
-    link_appearance:
-      enum__pages_v_version_hero_links_link_appearance('link_appearance').default('default'),
-    _uuid: varchar('_uuid'),
-  },
-  (columns) => [
-    index('_pages_v_version_hero_links_order_idx').on(columns._order),
-    index('_pages_v_version_hero_links_parent_id_idx').on(columns._parentID),
-    foreignKey({
-      columns: [columns['_parentID']],
-      foreignColumns: [_pages_v.id],
-      name: '_pages_v_version_hero_links_parent_id_fk',
-    }).onDelete('cascade'),
-  ],
-)
-
-export const _pages_v_blocks_cta_links = pgTable(
-  '_pages_v_blocks_cta_links',
-  {
-    _order: integer('_order').notNull(),
-    _parentID: integer('_parent_id').notNull(),
-    id: serial('id').primaryKey(),
-    link_type: enum__pages_v_blocks_cta_links_link_type('link_type').default('reference'),
-    link_newTab: boolean('link_new_tab'),
-    link_url: varchar('link_url'),
-    link_label: varchar('link_label'),
-    link_appearance:
-      enum__pages_v_blocks_cta_links_link_appearance('link_appearance').default('default'),
-    _uuid: varchar('_uuid'),
-  },
-  (columns) => [
-    index('_pages_v_blocks_cta_links_order_idx').on(columns._order),
-    index('_pages_v_blocks_cta_links_parent_id_idx').on(columns._parentID),
-    foreignKey({
-      columns: [columns['_parentID']],
-      foreignColumns: [_pages_v_blocks_cta.id],
-      name: '_pages_v_blocks_cta_links_parent_id_fk',
-    }).onDelete('cascade'),
-  ],
-)
-
-export const _pages_v_blocks_cta = pgTable(
-  '_pages_v_blocks_cta',
-  {
-    _order: integer('_order').notNull(),
-    _parentID: integer('_parent_id').notNull(),
-    _path: text('_path').notNull(),
-    id: serial('id').primaryKey(),
-    richText: jsonb('rich_text'),
-    _uuid: varchar('_uuid'),
-    blockName: varchar('block_name'),
-  },
-  (columns) => [
-    index('_pages_v_blocks_cta_order_idx').on(columns._order),
-    index('_pages_v_blocks_cta_parent_id_idx').on(columns._parentID),
-    index('_pages_v_blocks_cta_path_idx').on(columns._path),
-    foreignKey({
-      columns: [columns['_parentID']],
-      foreignColumns: [_pages_v.id],
-      name: '_pages_v_blocks_cta_parent_id_fk',
-    }).onDelete('cascade'),
-  ],
-)
-
-export const _pages_v_blocks_content_columns = pgTable(
-  '_pages_v_blocks_content_columns',
-  {
-    _order: integer('_order').notNull(),
-    _parentID: integer('_parent_id').notNull(),
-    id: serial('id').primaryKey(),
-    size: enum__pages_v_blocks_content_columns_size('size').default('oneThird'),
-    richText: jsonb('rich_text'),
-    enableLink: boolean('enable_link'),
-    link_type: enum__pages_v_blocks_content_columns_link_type('link_type').default('reference'),
-    link_newTab: boolean('link_new_tab'),
-    link_url: varchar('link_url'),
-    link_label: varchar('link_label'),
-    link_appearance:
-      enum__pages_v_blocks_content_columns_link_appearance('link_appearance').default('default'),
-    _uuid: varchar('_uuid'),
-  },
-  (columns) => [
-    index('_pages_v_blocks_content_columns_order_idx').on(columns._order),
-    index('_pages_v_blocks_content_columns_parent_id_idx').on(columns._parentID),
-    foreignKey({
-      columns: [columns['_parentID']],
-      foreignColumns: [_pages_v_blocks_content.id],
-      name: '_pages_v_blocks_content_columns_parent_id_fk',
-    }).onDelete('cascade'),
-  ],
-)
-
-export const _pages_v_blocks_content = pgTable(
-  '_pages_v_blocks_content',
-  {
-    _order: integer('_order').notNull(),
-    _parentID: integer('_parent_id').notNull(),
-    _path: text('_path').notNull(),
-    id: serial('id').primaryKey(),
-    _uuid: varchar('_uuid'),
-    blockName: varchar('block_name'),
-  },
-  (columns) => [
-    index('_pages_v_blocks_content_order_idx').on(columns._order),
-    index('_pages_v_blocks_content_parent_id_idx').on(columns._parentID),
-    index('_pages_v_blocks_content_path_idx').on(columns._path),
-    foreignKey({
-      columns: [columns['_parentID']],
-      foreignColumns: [_pages_v.id],
-      name: '_pages_v_blocks_content_parent_id_fk',
-    }).onDelete('cascade'),
-  ],
-)
-
-export const _pages_v_blocks_media_block = pgTable(
-  '_pages_v_blocks_media_block',
-  {
-    _order: integer('_order').notNull(),
-    _parentID: integer('_parent_id').notNull(),
-    _path: text('_path').notNull(),
-    id: serial('id').primaryKey(),
-    media: integer('media_id').references(() => media.id, {
-      onDelete: 'set null',
-    }),
-    _uuid: varchar('_uuid'),
-    blockName: varchar('block_name'),
-  },
-  (columns) => [
-    index('_pages_v_blocks_media_block_order_idx').on(columns._order),
-    index('_pages_v_blocks_media_block_parent_id_idx').on(columns._parentID),
-    index('_pages_v_blocks_media_block_path_idx').on(columns._path),
-    index('_pages_v_blocks_media_block_media_idx').on(columns.media),
-    foreignKey({
-      columns: [columns['_parentID']],
-      foreignColumns: [_pages_v.id],
-      name: '_pages_v_blocks_media_block_parent_id_fk',
-    }).onDelete('cascade'),
-  ],
-)
-
-export const _pages_v_blocks_archive = pgTable(
-  '_pages_v_blocks_archive',
-  {
-    _order: integer('_order').notNull(),
-    _parentID: integer('_parent_id').notNull(),
-    _path: text('_path').notNull(),
-    id: serial('id').primaryKey(),
-    introContent: jsonb('intro_content'),
-    populateBy: enum__pages_v_blocks_archive_populate_by('populate_by').default('collection'),
-    relationTo: enum__pages_v_blocks_archive_relation_to('relation_to').default('products'),
-    limit: numeric('limit', { mode: 'number' }).default(10),
-    _uuid: varchar('_uuid'),
-    blockName: varchar('block_name'),
-  },
-  (columns) => [
-    index('_pages_v_blocks_archive_order_idx').on(columns._order),
-    index('_pages_v_blocks_archive_parent_id_idx').on(columns._parentID),
-    index('_pages_v_blocks_archive_path_idx').on(columns._path),
-    foreignKey({
-      columns: [columns['_parentID']],
-      foreignColumns: [_pages_v.id],
-      name: '_pages_v_blocks_archive_parent_id_fk',
-    }).onDelete('cascade'),
-  ],
-)
-
-export const _pages_v_blocks_carousel = pgTable(
-  '_pages_v_blocks_carousel',
-  {
-    _order: integer('_order').notNull(),
-    _parentID: integer('_parent_id').notNull(),
-    _path: text('_path').notNull(),
-    id: serial('id').primaryKey(),
-    populateBy: enum__pages_v_blocks_carousel_populate_by('populate_by').default('collection'),
-    relationTo: enum__pages_v_blocks_carousel_relation_to('relation_to').default('products'),
-    limit: numeric('limit', { mode: 'number' }).default(10),
-    populatedDocsTotal: numeric('populated_docs_total', { mode: 'number' }),
-    _uuid: varchar('_uuid'),
-    blockName: varchar('block_name'),
-  },
-  (columns) => [
-    index('_pages_v_blocks_carousel_order_idx').on(columns._order),
-    index('_pages_v_blocks_carousel_parent_id_idx').on(columns._parentID),
-    index('_pages_v_blocks_carousel_path_idx').on(columns._path),
-    foreignKey({
-      columns: [columns['_parentID']],
-      foreignColumns: [_pages_v.id],
-      name: '_pages_v_blocks_carousel_parent_id_fk',
-    }).onDelete('cascade'),
-  ],
-)
-
-export const _pages_v_blocks_three_item_grid = pgTable(
-  '_pages_v_blocks_three_item_grid',
-  {
-    _order: integer('_order').notNull(),
-    _parentID: integer('_parent_id').notNull(),
-    _path: text('_path').notNull(),
-    id: serial('id').primaryKey(),
-    _uuid: varchar('_uuid'),
-    blockName: varchar('block_name'),
-  },
-  (columns) => [
-    index('_pages_v_blocks_three_item_grid_order_idx').on(columns._order),
-    index('_pages_v_blocks_three_item_grid_parent_id_idx').on(columns._parentID),
-    index('_pages_v_blocks_three_item_grid_path_idx').on(columns._path),
-    foreignKey({
-      columns: [columns['_parentID']],
-      foreignColumns: [_pages_v.id],
-      name: '_pages_v_blocks_three_item_grid_parent_id_fk',
-    }).onDelete('cascade'),
-  ],
-)
-
-export const _pages_v_blocks_banner = pgTable(
-  '_pages_v_blocks_banner',
-  {
-    _order: integer('_order').notNull(),
-    _parentID: integer('_parent_id').notNull(),
-    _path: text('_path').notNull(),
-    id: serial('id').primaryKey(),
-    style: enum__pages_v_blocks_banner_style('style').default('info'),
-    content: jsonb('content'),
-    _uuid: varchar('_uuid'),
-    blockName: varchar('block_name'),
-  },
-  (columns) => [
-    index('_pages_v_blocks_banner_order_idx').on(columns._order),
-    index('_pages_v_blocks_banner_parent_id_idx').on(columns._parentID),
-    index('_pages_v_blocks_banner_path_idx').on(columns._path),
-    foreignKey({
-      columns: [columns['_parentID']],
-      foreignColumns: [_pages_v.id],
-      name: '_pages_v_blocks_banner_parent_id_fk',
-    }).onDelete('cascade'),
-  ],
-)
-
-export const _pages_v_blocks_form_block = pgTable(
-  '_pages_v_blocks_form_block',
-  {
-    _order: integer('_order').notNull(),
-    _parentID: integer('_parent_id').notNull(),
-    _path: text('_path').notNull(),
-    id: serial('id').primaryKey(),
-    form: integer('form_id').references(() => forms.id, {
-      onDelete: 'set null',
-    }),
-    enableIntro: boolean('enable_intro'),
-    introContent: jsonb('intro_content'),
-    _uuid: varchar('_uuid'),
-    blockName: varchar('block_name'),
-  },
-  (columns) => [
-    index('_pages_v_blocks_form_block_order_idx').on(columns._order),
-    index('_pages_v_blocks_form_block_parent_id_idx').on(columns._parentID),
-    index('_pages_v_blocks_form_block_path_idx').on(columns._path),
-    index('_pages_v_blocks_form_block_form_idx').on(columns.form),
-    foreignKey({
-      columns: [columns['_parentID']],
-      foreignColumns: [_pages_v.id],
-      name: '_pages_v_blocks_form_block_parent_id_fk',
-    }).onDelete('cascade'),
-  ],
-)
-
-export const _pages_v = pgTable(
-  '_pages_v',
-  {
-    id: serial('id').primaryKey(),
-    parent: integer('parent_id').references(() => pages.id, {
-      onDelete: 'set null',
-    }),
-    version_title: varchar('version_title'),
-    version_publishedOn: timestamp('version_published_on', {
-      mode: 'string',
-      withTimezone: true,
-      precision: 3,
-    }),
-    version_hero_type: enum__pages_v_version_hero_type('version_hero_type').default('lowImpact'),
-    version_hero_richText: jsonb('version_hero_rich_text'),
-    version_hero_media: integer('version_hero_media_id').references(() => media.id, {
-      onDelete: 'set null',
-    }),
-    version_generateSlug: boolean('version_generate_slug').default(true),
-    version_slug: varchar('version_slug'),
-    version_updatedAt: timestamp('version_updated_at', {
-      mode: 'string',
-      withTimezone: true,
-      precision: 3,
-    }),
-    version_createdAt: timestamp('version_created_at', {
-      mode: 'string',
-      withTimezone: true,
-      precision: 3,
-    }),
-    version__status: enum__pages_v_version_status('version__status').default('draft'),
-    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
-    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
-    snapshot: boolean('snapshot'),
-    publishedLocale: enum__pages_v_published_locale('published_locale'),
-    latest: boolean('latest'),
-    autosave: boolean('autosave'),
-  },
-  (columns) => [
-    index('_pages_v_parent_idx').on(columns.parent),
-    index('_pages_v_version_hero_version_hero_media_idx').on(columns.version_hero_media),
-    index('_pages_v_version_version_slug_idx').on(columns.version_slug),
-    index('_pages_v_version_version_updated_at_idx').on(columns.version_updatedAt),
-    index('_pages_v_version_version_created_at_idx').on(columns.version_createdAt),
-    index('_pages_v_version_version__status_idx').on(columns.version__status),
-    index('_pages_v_created_at_idx').on(columns.createdAt),
-    index('_pages_v_updated_at_idx').on(columns.updatedAt),
-    index('_pages_v_snapshot_idx').on(columns.snapshot),
-    index('_pages_v_published_locale_idx').on(columns.publishedLocale),
-    index('_pages_v_latest_idx').on(columns.latest),
-    index('_pages_v_autosave_idx').on(columns.autosave),
-  ],
-)
-
-export const _pages_v_locales = pgTable(
-  '_pages_v_locales',
-  {
-    version_meta_title: varchar('version_meta_title'),
-    version_meta_image: integer('version_meta_image_id').references(() => media.id, {
-      onDelete: 'set null',
-    }),
-    version_meta_description: varchar('version_meta_description'),
-    id: serial('id').primaryKey(),
-    _locale: enum__locales('_locale').notNull(),
-    _parentID: integer('_parent_id').notNull(),
-  },
-  (columns) => [
-    index('_pages_v_version_meta_version_meta_image_idx').on(
-      columns.version_meta_image,
-      columns._locale,
-    ),
-    uniqueIndex('_pages_v_locales_locale_parent_id_unique').on(columns._locale, columns._parentID),
-    foreignKey({
-      columns: [columns['_parentID']],
-      foreignColumns: [_pages_v.id],
-      name: '_pages_v_locales_parent_id_fk',
-    }).onDelete('cascade'),
-  ],
-)
-
-export const _pages_v_rels = pgTable(
-  '_pages_v_rels',
-  {
-    id: serial('id').primaryKey(),
-    order: integer('order'),
-    parent: integer('parent_id').notNull(),
-    path: varchar('path').notNull(),
-    pagesID: integer('pages_id'),
-    categoriesID: integer('categories_id'),
-    productsID: integer('products_id'),
-  },
-  (columns) => [
-    index('_pages_v_rels_order_idx').on(columns.order),
-    index('_pages_v_rels_parent_idx').on(columns.parent),
-    index('_pages_v_rels_path_idx').on(columns.path),
-    index('_pages_v_rels_pages_id_idx').on(columns.pagesID),
-    index('_pages_v_rels_categories_id_idx').on(columns.categoriesID),
-    index('_pages_v_rels_products_id_idx').on(columns.productsID),
-    foreignKey({
-      columns: [columns['parent']],
-      foreignColumns: [_pages_v.id],
-      name: '_pages_v_rels_parent_fk',
-    }).onDelete('cascade'),
-    foreignKey({
-      columns: [columns['pagesID']],
-      foreignColumns: [pages.id],
-      name: '_pages_v_rels_pages_fk',
-    }).onDelete('cascade'),
-    foreignKey({
-      columns: [columns['categoriesID']],
-      foreignColumns: [categories.id],
-      name: '_pages_v_rels_categories_fk',
-    }).onDelete('cascade'),
-    foreignKey({
-      columns: [columns['productsID']],
-      foreignColumns: [products.id],
-      name: '_pages_v_rels_products_fk',
-    }).onDelete('cascade'),
-  ],
-)
-
 export const tags = pgTable(
   'tags',
   {
@@ -1283,6 +7766,1408 @@ export const tags = pgTable(
     uniqueIndex('tags_title_idx').on(columns.title),
     index('tags_updated_at_idx').on(columns.updatedAt),
     index('tags_created_at_idx').on(columns.createdAt),
+  ],
+)
+
+export const tones_traits_scope_list = pgTable(
+  'tones_traits_scope_list',
+  {
+    _order: integer('_order').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+    id: varchar('id').primaryKey(),
+    significance: varchar('significance').default(''),
+    scale: enum_tones_traits_scope_list_scale('scale'),
+    depth: enum_tones_traits_scope_list_depth('depth'),
+    settings_show: boolean('settings_show').default(true),
+    settings_featured: boolean('settings_featured').default(false),
+    settings_pinned: boolean('settings_pinned').default(false),
+  },
+  (columns) => [
+    index('tones_traits_scope_list_order_idx').on(columns._order),
+    index('tones_traits_scope_list_parent_id_idx').on(columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [tones.id],
+      name: 'tones_traits_scope_list_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const tones_traits_qualities = pgTable(
+  'tones_traits_qualities',
+  {
+    _order: integer('_order').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+    id: varchar('id').primaryKey(),
+    quality: enum_tones_traits_qualities_quality('quality'),
+    intensity: enum_tones_traits_qualities_intensity('intensity'),
+    mood: enum_tones_traits_qualities_mood('mood'),
+    scale: enum_tones_traits_qualities_scale('scale'),
+  },
+  (columns) => [
+    index('tones_traits_qualities_order_idx').on(columns._order),
+    index('tones_traits_qualities_parent_id_idx').on(columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [tones.id],
+      name: 'tones_traits_qualities_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const tones = pgTable(
+  'tones',
+  {
+    id: serial('id').primaryKey(),
+    toggle: enum_tones_toggle('toggle').default('advanced'),
+    type: integer('type_id')
+      .notNull()
+      .references(() => categories.id, {
+        onDelete: 'set null',
+      }),
+    basics_enable: boolean('basics_enable').default(true),
+    basics_visibility_show: boolean('basics_visibility_show').default(false),
+    traits_enable: boolean('traits_enable').default(true),
+    traits_visibility_show: boolean('traits_visibility_show').default(false),
+    generateSlug: boolean('generate_slug').default(true),
+    slug: varchar('slug').notNull(),
+    visibility_check_publish: boolean('visibility_check_publish').default(false),
+    visibility_check_featured: boolean('visibility_check_featured').default(false),
+    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => [
+    index('tones_type_idx').on(columns.type),
+    uniqueIndex('tones_slug_idx').on(columns.slug),
+    index('tones_updated_at_idx').on(columns.updatedAt),
+    index('tones_created_at_idx').on(columns.createdAt),
+  ],
+)
+
+export const tones_locales = pgTable(
+  'tones_locales',
+  {
+    name: varchar('name').notNull().default(''),
+    alias: varchar('alias').default(''),
+    basics_description: varchar('basics_description').default(''),
+    seo_title: varchar('seo_title'),
+    seo_image: integer('seo_image_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    seo_description: varchar('seo_description'),
+    id: serial('id').primaryKey(),
+    _locale: enum__locales('_locale').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+  },
+  (columns) => [
+    index('tones_name_idx').on(columns.name, columns._locale),
+    index('tones_seo_seo_image_idx').on(columns.seo_image, columns._locale),
+    uniqueIndex('tones_locales_locale_parent_id_unique').on(columns._locale, columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [tones.id],
+      name: 'tones_locales_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const tones_rels = pgTable(
+  'tones_rels',
+  {
+    id: serial('id').primaryKey(),
+    order: integer('order'),
+    parent: integer('parent_id').notNull(),
+    path: varchar('path').notNull(),
+    categoriesID: integer('categories_id'),
+    tagsID: integer('tags_id'),
+  },
+  (columns) => [
+    index('tones_rels_order_idx').on(columns.order),
+    index('tones_rels_parent_idx').on(columns.parent),
+    index('tones_rels_path_idx').on(columns.path),
+    index('tones_rels_categories_id_idx').on(columns.categoriesID),
+    index('tones_rels_tags_id_idx').on(columns.tagsID),
+    foreignKey({
+      columns: [columns['parent']],
+      foreignColumns: [tones.id],
+      name: 'tones_rels_parent_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['categoriesID']],
+      foreignColumns: [categories.id],
+      name: 'tones_rels_categories_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['tagsID']],
+      foreignColumns: [tags.id],
+      name: 'tones_rels_tags_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const features_traits_nature_list = pgTable(
+  'features_traits_nature_list',
+  {
+    _order: integer('_order').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+    id: varchar('id').primaryKey(),
+    complexity: enum_features_traits_nature_list_complexity('complexity'),
+    visibility: enum_features_traits_nature_list_visibility('visibility'),
+    impact: enum_features_traits_nature_list_impact('impact'),
+    settings_show: boolean('settings_show').default(true),
+    settings_featured: boolean('settings_featured').default(false),
+    settings_pinned: boolean('settings_pinned').default(false),
+  },
+  (columns) => [
+    index('features_traits_nature_list_order_idx').on(columns._order),
+    index('features_traits_nature_list_parent_id_idx').on(columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [features.id],
+      name: 'features_traits_nature_list_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const features = pgTable(
+  'features',
+  {
+    id: serial('id').primaryKey(),
+    toggle: enum_features_toggle('toggle').default('advanced'),
+    type: integer('type_id')
+      .notNull()
+      .references(() => categories.id, {
+        onDelete: 'set null',
+      }),
+    basics_enable: boolean('basics_enable').default(true),
+    basics_visibility_show: boolean('basics_visibility_show').default(false),
+    details_enable: boolean('details_enable').default(true),
+    details_visibility_show: boolean('details_visibility_show').default(false),
+    traits_enable: boolean('traits_enable').default(true),
+    traits_visibility_show: boolean('traits_visibility_show').default(false),
+    contexts_enable: boolean('contexts_enable').default(true),
+    contexts_notes: integer('contexts_notes_id').references(() => notes.id, {
+      onDelete: 'set null',
+    }),
+    contexts_visibility_show: boolean('contexts_visibility_show').default(false),
+    generateSlug: boolean('generate_slug').default(true),
+    slug: varchar('slug').notNull(),
+    visibility_check_publish: boolean('visibility_check_publish').default(false),
+    visibility_check_featured: boolean('visibility_check_featured').default(false),
+    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => [
+    index('features_type_idx').on(columns.type),
+    index('features_contexts_contexts_notes_idx').on(columns.contexts_notes),
+    uniqueIndex('features_slug_idx').on(columns.slug),
+    index('features_updated_at_idx').on(columns.updatedAt),
+    index('features_created_at_idx').on(columns.createdAt),
+  ],
+)
+
+export const features_locales = pgTable(
+  'features_locales',
+  {
+    name: varchar('name').notNull().default(''),
+    basics_description: varchar('basics_description').default(''),
+    details_functionality: varchar('details_functionality').default(''),
+    seo_title: varchar('seo_title'),
+    seo_image: integer('seo_image_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    seo_description: varchar('seo_description'),
+    id: serial('id').primaryKey(),
+    _locale: enum__locales('_locale').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+  },
+  (columns) => [
+    index('features_name_idx').on(columns.name, columns._locale),
+    index('features_seo_seo_image_idx').on(columns.seo_image, columns._locale),
+    uniqueIndex('features_locales_locale_parent_id_unique').on(columns._locale, columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [features.id],
+      name: 'features_locales_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const features_rels = pgTable(
+  'features_rels',
+  {
+    id: serial('id').primaryKey(),
+    order: integer('order'),
+    parent: integer('parent_id').notNull(),
+    path: varchar('path').notNull(),
+    categoriesID: integer('categories_id'),
+    tagsID: integer('tags_id'),
+  },
+  (columns) => [
+    index('features_rels_order_idx').on(columns.order),
+    index('features_rels_parent_idx').on(columns.parent),
+    index('features_rels_path_idx').on(columns.path),
+    index('features_rels_categories_id_idx').on(columns.categoriesID),
+    index('features_rels_tags_id_idx').on(columns.tagsID),
+    foreignKey({
+      columns: [columns['parent']],
+      foreignColumns: [features.id],
+      name: 'features_rels_parent_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['categoriesID']],
+      foreignColumns: [categories.id],
+      name: 'features_rels_categories_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['tagsID']],
+      foreignColumns: [tags.id],
+      name: 'features_rels_tags_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const specifications_details_conditions_list = pgTable(
+  'specifications_details_conditions_list',
+  {
+    _order: integer('_order').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+    id: varchar('id').primaryKey(),
+    environment: varchar('environment').default(''),
+    constraints: varchar('constraints').default(''),
+    compliance: enum_specifications_details_conditions_list_compliance('compliance'),
+    settings_show: boolean('settings_show').default(true),
+    settings_featured: boolean('settings_featured').default(false),
+    settings_pinned: boolean('settings_pinned').default(false),
+  },
+  (columns) => [
+    index('specifications_details_conditions_list_order_idx').on(columns._order),
+    index('specifications_details_conditions_list_parent_id_idx').on(columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [specifications.id],
+      name: 'specifications_details_conditions_list_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const specifications_metrics_parameters = pgTable(
+  'specifications_metrics_parameters',
+  {
+    _order: integer('_order').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+    id: varchar('id').primaryKey(),
+    parameter: varchar('parameter').notNull().default(''),
+    value: varchar('value').notNull().default(''),
+    unit: varchar('unit').notNull().default(''),
+    tolerance: varchar('tolerance').default(''),
+  },
+  (columns) => [
+    index('specifications_metrics_parameters_order_idx').on(columns._order),
+    index('specifications_metrics_parameters_parent_id_idx').on(columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [specifications.id],
+      name: 'specifications_metrics_parameters_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const specifications_metrics_measurement_list = pgTable(
+  'specifications_metrics_measurement_list',
+  {
+    _order: integer('_order').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+    id: varchar('id').primaryKey(),
+    method: varchar('method').default(''),
+    frequency: enum_specifications_metrics_measurement_list_frequency('frequency'),
+    accuracy: enum_specifications_metrics_measurement_list_accuracy('accuracy'),
+    settings_show: boolean('settings_show').default(true),
+    settings_featured: boolean('settings_featured').default(false),
+    settings_pinned: boolean('settings_pinned').default(false),
+  },
+  (columns) => [
+    index('specifications_metrics_measurement_list_order_idx').on(columns._order),
+    index('specifications_metrics_measurement_list_parent_id_idx').on(columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [specifications.id],
+      name: 'specifications_metrics_measurement_list_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const specifications = pgTable(
+  'specifications',
+  {
+    id: serial('id').primaryKey(),
+    toggle: enum_specifications_toggle('toggle').default('advanced'),
+    type: integer('type_id')
+      .notNull()
+      .references(() => categories.id, {
+        onDelete: 'set null',
+      }),
+    identifier_code: varchar('identifier_code').default(''),
+    identifier_version: varchar('identifier_version').default(''),
+    identifier_revision: varchar('identifier_revision').default(''),
+    basics_enable: boolean('basics_enable').default(true),
+    basics_visibility_show: boolean('basics_visibility_show').default(false),
+    details_enable: boolean('details_enable').default(true),
+    details_visibility_show: boolean('details_visibility_show').default(false),
+    metrics_enable: boolean('metrics_enable').default(true),
+    metrics_visibility_show: boolean('metrics_visibility_show').default(false),
+    generateSlug: boolean('generate_slug').default(true),
+    slug: varchar('slug').notNull(),
+    visibility_check_publish: boolean('visibility_check_publish').default(false),
+    visibility_check_featured: boolean('visibility_check_featured').default(false),
+    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => [
+    index('specifications_type_idx').on(columns.type),
+    uniqueIndex('specifications_identifier_identifier_code_idx').on(columns.identifier_code),
+    uniqueIndex('specifications_slug_idx').on(columns.slug),
+    index('specifications_updated_at_idx').on(columns.updatedAt),
+    index('specifications_created_at_idx').on(columns.createdAt),
+  ],
+)
+
+export const specifications_locales = pgTable(
+  'specifications_locales',
+  {
+    name: varchar('name').notNull().default(''),
+    basics_description: varchar('basics_description').default(''),
+    details_definition: varchar('details_definition').default(''),
+    seo_title: varchar('seo_title'),
+    seo_image: integer('seo_image_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    seo_description: varchar('seo_description'),
+    id: serial('id').primaryKey(),
+    _locale: enum__locales('_locale').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+  },
+  (columns) => [
+    index('specifications_name_idx').on(columns.name, columns._locale),
+    index('specifications_seo_seo_image_idx').on(columns.seo_image, columns._locale),
+    uniqueIndex('specifications_locales_locale_parent_id_unique').on(
+      columns._locale,
+      columns._parentID,
+    ),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [specifications.id],
+      name: 'specifications_locales_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const specifications_rels = pgTable(
+  'specifications_rels',
+  {
+    id: serial('id').primaryKey(),
+    order: integer('order'),
+    parent: integer('parent_id').notNull(),
+    path: varchar('path').notNull(),
+    categoriesID: integer('categories_id'),
+    tagsID: integer('tags_id'),
+  },
+  (columns) => [
+    index('specifications_rels_order_idx').on(columns.order),
+    index('specifications_rels_parent_idx').on(columns.parent),
+    index('specifications_rels_path_idx').on(columns.path),
+    index('specifications_rels_categories_id_idx').on(columns.categoriesID),
+    index('specifications_rels_tags_id_idx').on(columns.tagsID),
+    foreignKey({
+      columns: [columns['parent']],
+      foreignColumns: [specifications.id],
+      name: 'specifications_rels_parent_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['categoriesID']],
+      foreignColumns: [categories.id],
+      name: 'specifications_rels_categories_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['tagsID']],
+      foreignColumns: [tags.id],
+      name: 'specifications_rels_tags_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const classifications = pgTable(
+  'classifications',
+  {
+    id: serial('id').primaryKey(),
+    toggle: enum_classifications_toggle('toggle').default('advanced'),
+    type: integer('type_id')
+      .notNull()
+      .references(() => categories.id, {
+        onDelete: 'set null',
+      }),
+    basics_enable: boolean('basics_enable').default(true),
+    basics_visibility_show: boolean('basics_visibility_show').default(false),
+    details_enable: boolean('details_enable').default(true),
+    details_visibility_show: boolean('details_visibility_show').default(false),
+    contexts_enable: boolean('contexts_enable').default(true),
+    contexts_notes: integer('contexts_notes_id').references(() => notes.id, {
+      onDelete: 'set null',
+    }),
+    contexts_visibility_show: boolean('contexts_visibility_show').default(false),
+    generateSlug: boolean('generate_slug').default(true),
+    slug: varchar('slug').notNull(),
+    visibility_check_publish: boolean('visibility_check_publish').default(false),
+    visibility_check_featured: boolean('visibility_check_featured').default(false),
+    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => [
+    index('classifications_type_idx').on(columns.type),
+    index('classifications_contexts_contexts_notes_idx').on(columns.contexts_notes),
+    uniqueIndex('classifications_slug_idx').on(columns.slug),
+    index('classifications_updated_at_idx').on(columns.updatedAt),
+    index('classifications_created_at_idx').on(columns.createdAt),
+  ],
+)
+
+export const classifications_locales = pgTable(
+  'classifications_locales',
+  {
+    name: varchar('name').notNull().default(''),
+    basics_description: varchar('basics_description').default(''),
+    details_definition: varchar('details_definition').default(''),
+    details_criteria: varchar('details_criteria').default(''),
+    seo_title: varchar('seo_title'),
+    seo_image: integer('seo_image_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    seo_description: varchar('seo_description'),
+    id: serial('id').primaryKey(),
+    _locale: enum__locales('_locale').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+  },
+  (columns) => [
+    index('classifications_name_idx').on(columns.name, columns._locale),
+    index('classifications_seo_seo_image_idx').on(columns.seo_image, columns._locale),
+    uniqueIndex('classifications_locales_locale_parent_id_unique').on(
+      columns._locale,
+      columns._parentID,
+    ),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [classifications.id],
+      name: 'classifications_locales_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const classifications_rels = pgTable(
+  'classifications_rels',
+  {
+    id: serial('id').primaryKey(),
+    order: integer('order'),
+    parent: integer('parent_id').notNull(),
+    path: varchar('path').notNull(),
+    categoriesID: integer('categories_id'),
+    tagsID: integer('tags_id'),
+  },
+  (columns) => [
+    index('classifications_rels_order_idx').on(columns.order),
+    index('classifications_rels_parent_idx').on(columns.parent),
+    index('classifications_rels_path_idx').on(columns.path),
+    index('classifications_rels_categories_id_idx').on(columns.categoriesID),
+    index('classifications_rels_tags_id_idx').on(columns.tagsID),
+    foreignKey({
+      columns: [columns['parent']],
+      foreignColumns: [classifications.id],
+      name: 'classifications_rels_parent_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['categoriesID']],
+      foreignColumns: [categories.id],
+      name: 'classifications_rels_categories_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['tagsID']],
+      foreignColumns: [tags.id],
+      name: 'classifications_rels_tags_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const skills_basics_scope_list = pgTable(
+  'skills_basics_scope_list',
+  {
+    _order: integer('_order').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+    id: varchar('id').primaryKey(),
+    significance: varchar('significance').default(''),
+    scale: enum_skills_basics_scope_list_scale('scale'),
+    depth: enum_skills_basics_scope_list_depth('depth'),
+    rarity: enum_skills_basics_scope_list_rarity('rarity'),
+    settings_show: boolean('settings_show').default(true),
+    settings_featured: boolean('settings_featured').default(false),
+    settings_pinned: boolean('settings_pinned').default(false),
+  },
+  (columns) => [
+    index('skills_basics_scope_list_order_idx').on(columns._order),
+    index('skills_basics_scope_list_parent_id_idx').on(columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [skills.id],
+      name: 'skills_basics_scope_list_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const skills_details_methods = pgTable(
+  'skills_details_methods',
+  {
+    _order: integer('_order').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+    id: varchar('id').primaryKey(),
+    method: varchar('method').default(''),
+    type: enum_skills_details_methods_type('type'),
+    description: varchar('description').default(''),
+  },
+  (columns) => [
+    index('skills_details_methods_order_idx').on(columns._order),
+    index('skills_details_methods_parent_id_idx').on(columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [skills.id],
+      name: 'skills_details_methods_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const skills_details_dependencies = pgTable(
+  'skills_details_dependencies',
+  {
+    _order: integer('_order').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+    id: varchar('id').primaryKey(),
+    skill: integer('skill_id').references(() => skills.id, {
+      onDelete: 'set null',
+    }),
+    type: enum_skills_details_dependencies_type('type'),
+  },
+  (columns) => [
+    index('skills_details_dependencies_order_idx').on(columns._order),
+    index('skills_details_dependencies_parent_id_idx').on(columns._parentID),
+    index('skills_details_dependencies_skill_idx').on(columns.skill),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [skills.id],
+      name: 'skills_details_dependencies_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const skills_traits_nature_list = pgTable(
+  'skills_traits_nature_list',
+  {
+    _order: integer('_order').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+    id: varchar('id').primaryKey(),
+    complexity: enum_skills_traits_nature_list_complexity('complexity'),
+    visibility: enum_skills_traits_nature_list_visibility('visibility'),
+    impact: enum_skills_traits_nature_list_impact('impact'),
+    settings_show: boolean('settings_show').default(true),
+    settings_featured: boolean('settings_featured').default(false),
+    settings_pinned: boolean('settings_pinned').default(false),
+  },
+  (columns) => [
+    index('skills_traits_nature_list_order_idx').on(columns._order),
+    index('skills_traits_nature_list_parent_id_idx').on(columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [skills.id],
+      name: 'skills_traits_nature_list_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const skills = pgTable(
+  'skills',
+  {
+    id: serial('id').primaryKey(),
+    toggle: enum_skills_toggle('toggle').default('advanced'),
+    type: integer('type_id')
+      .notNull()
+      .references(() => categories.id, {
+        onDelete: 'set null',
+      }),
+    basics_enable: boolean('basics_enable').default(true),
+    basics_visibility_show: boolean('basics_visibility_show').default(false),
+    details_enable: boolean('details_enable').default(true),
+    details_features: integer('details_features_id').references(() => features.id, {
+      onDelete: 'set null',
+    }),
+    details_specifications: integer('details_specifications_id').references(
+      () => specifications.id,
+      {
+        onDelete: 'set null',
+      },
+    ),
+    details_visibility_show: boolean('details_visibility_show').default(false),
+    traits_enable: boolean('traits_enable').default(true),
+    traits_visibility_show: boolean('traits_visibility_show').default(false),
+    contexts_enable: boolean('contexts_enable').default(true),
+    contexts_classifications: integer('contexts_classifications_id').references(
+      () => classifications.id,
+      {
+        onDelete: 'set null',
+      },
+    ),
+    contexts_trainings: integer('contexts_trainings_id').references(() => trainings.id, {
+      onDelete: 'set null',
+    }),
+    contexts_notes: integer('contexts_notes_id').references(() => notes.id, {
+      onDelete: 'set null',
+    }),
+    contexts_visibility_show: boolean('contexts_visibility_show').default(false),
+    generateSlug: boolean('generate_slug').default(true),
+    slug: varchar('slug').notNull(),
+    visibility_check_publish: boolean('visibility_check_publish').default(false),
+    visibility_check_featured: boolean('visibility_check_featured').default(false),
+    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => [
+    index('skills_type_idx').on(columns.type),
+    index('skills_details_details_features_idx').on(columns.details_features),
+    index('skills_details_details_specifications_idx').on(columns.details_specifications),
+    index('skills_contexts_contexts_classifications_idx').on(columns.contexts_classifications),
+    index('skills_contexts_contexts_trainings_idx').on(columns.contexts_trainings),
+    index('skills_contexts_contexts_notes_idx').on(columns.contexts_notes),
+    uniqueIndex('skills_slug_idx').on(columns.slug),
+    index('skills_updated_at_idx').on(columns.updatedAt),
+    index('skills_created_at_idx').on(columns.createdAt),
+  ],
+)
+
+export const skills_locales = pgTable(
+  'skills_locales',
+  {
+    name: varchar('name').notNull().default(''),
+    basics_description: varchar('basics_description').default(''),
+    details_definition: varchar('details_definition').default(''),
+    seo_title: varchar('seo_title'),
+    seo_image: integer('seo_image_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    seo_description: varchar('seo_description'),
+    id: serial('id').primaryKey(),
+    _locale: enum__locales('_locale').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+  },
+  (columns) => [
+    index('skills_name_idx').on(columns.name, columns._locale),
+    index('skills_seo_seo_image_idx').on(columns.seo_image, columns._locale),
+    uniqueIndex('skills_locales_locale_parent_id_unique').on(columns._locale, columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [skills.id],
+      name: 'skills_locales_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const skills_rels = pgTable(
+  'skills_rels',
+  {
+    id: serial('id').primaryKey(),
+    order: integer('order'),
+    parent: integer('parent_id').notNull(),
+    path: varchar('path').notNull(),
+    categoriesID: integer('categories_id'),
+    tagsID: integer('tags_id'),
+  },
+  (columns) => [
+    index('skills_rels_order_idx').on(columns.order),
+    index('skills_rels_parent_idx').on(columns.parent),
+    index('skills_rels_path_idx').on(columns.path),
+    index('skills_rels_categories_id_idx').on(columns.categoriesID),
+    index('skills_rels_tags_id_idx').on(columns.tagsID),
+    foreignKey({
+      columns: [columns['parent']],
+      foreignColumns: [skills.id],
+      name: 'skills_rels_parent_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['categoriesID']],
+      foreignColumns: [categories.id],
+      name: 'skills_rels_categories_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['tagsID']],
+      foreignColumns: [tags.id],
+      name: 'skills_rels_tags_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const principles = pgTable(
+  'principles',
+  {
+    id: serial('id').primaryKey(),
+    toggle: enum_principles_toggle('toggle').default('advanced'),
+    type: integer('type_id')
+      .notNull()
+      .references(() => categories.id, {
+        onDelete: 'set null',
+      }),
+    basics_enable: boolean('basics_enable').default(true),
+    basics_visibility_show: boolean('basics_visibility_show').default(false),
+    details_enable: boolean('details_enable').default(true),
+    details_visibility_show: boolean('details_visibility_show').default(false),
+    contexts_enable: boolean('contexts_enable').default(true),
+    contexts_notes: integer('contexts_notes_id').references(() => notes.id, {
+      onDelete: 'set null',
+    }),
+    contexts_visibility_show: boolean('contexts_visibility_show').default(false),
+    generateSlug: boolean('generate_slug').default(true),
+    slug: varchar('slug').notNull(),
+    visibility_check_publish: boolean('visibility_check_publish').default(false),
+    visibility_check_featured: boolean('visibility_check_featured').default(false),
+    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => [
+    index('principles_type_idx').on(columns.type),
+    index('principles_contexts_contexts_notes_idx').on(columns.contexts_notes),
+    uniqueIndex('principles_slug_idx').on(columns.slug),
+    index('principles_updated_at_idx').on(columns.updatedAt),
+    index('principles_created_at_idx').on(columns.createdAt),
+  ],
+)
+
+export const principles_locales = pgTable(
+  'principles_locales',
+  {
+    name: varchar('name').notNull().default(''),
+    basics_description: varchar('basics_description').default(''),
+    basics_statement: varchar('basics_statement').notNull().default(''),
+    details_application: varchar('details_application').default(''),
+    details_rationale: varchar('details_rationale').default(''),
+    seo_title: varchar('seo_title'),
+    seo_image: integer('seo_image_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    seo_description: varchar('seo_description'),
+    id: serial('id').primaryKey(),
+    _locale: enum__locales('_locale').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+  },
+  (columns) => [
+    index('principles_name_idx').on(columns.name, columns._locale),
+    index('principles_seo_seo_image_idx').on(columns.seo_image, columns._locale),
+    uniqueIndex('principles_locales_locale_parent_id_unique').on(
+      columns._locale,
+      columns._parentID,
+    ),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [principles.id],
+      name: 'principles_locales_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const principles_rels = pgTable(
+  'principles_rels',
+  {
+    id: serial('id').primaryKey(),
+    order: integer('order'),
+    parent: integer('parent_id').notNull(),
+    path: varchar('path').notNull(),
+    categoriesID: integer('categories_id'),
+    tagsID: integer('tags_id'),
+  },
+  (columns) => [
+    index('principles_rels_order_idx').on(columns.order),
+    index('principles_rels_parent_idx').on(columns.parent),
+    index('principles_rels_path_idx').on(columns.path),
+    index('principles_rels_categories_id_idx').on(columns.categoriesID),
+    index('principles_rels_tags_id_idx').on(columns.tagsID),
+    foreignKey({
+      columns: [columns['parent']],
+      foreignColumns: [principles.id],
+      name: 'principles_rels_parent_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['categoriesID']],
+      foreignColumns: [categories.id],
+      name: 'principles_rels_categories_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['tagsID']],
+      foreignColumns: [tags.id],
+      name: 'principles_rels_tags_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const preferences_traits_conditions = pgTable(
+  'preferences_traits_conditions',
+  {
+    _order: integer('_order').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+    id: varchar('id').primaryKey(),
+    trigger: varchar('trigger').default(''),
+    prerequisite: varchar('prerequisite').default(''),
+  },
+  (columns) => [
+    index('preferences_traits_conditions_order_idx').on(columns._order),
+    index('preferences_traits_conditions_parent_id_idx').on(columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [preferences.id],
+      name: 'preferences_traits_conditions_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const preferences_traits_reasons = pgTable(
+  'preferences_traits_reasons',
+  {
+    _order: integer('_order').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+    id: varchar('id').primaryKey(),
+    reason: varchar('reason').default(''),
+    importance: enum_preferences_traits_reasons_importance('importance'),
+  },
+  (columns) => [
+    index('preferences_traits_reasons_order_idx').on(columns._order),
+    index('preferences_traits_reasons_parent_id_idx').on(columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [preferences.id],
+      name: 'preferences_traits_reasons_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const preferences = pgTable(
+  'preferences',
+  {
+    id: serial('id').primaryKey(),
+    toggle: enum_preferences_toggle('toggle').default('advanced'),
+    type: integer('type_id')
+      .notNull()
+      .references(() => categories.id, {
+        onDelete: 'set null',
+      }),
+    basics_enable: boolean('basics_enable').default(true),
+    basics_visibility_show: boolean('basics_visibility_show').default(false),
+    traits_enable: boolean('traits_enable').default(true),
+    traits_visibility_show: boolean('traits_visibility_show').default(false),
+    contexts_enable: boolean('contexts_enable').default(true),
+    contexts_principles: integer('contexts_principles_id').references(() => principles.id, {
+      onDelete: 'set null',
+    }),
+    contexts_notes: integer('contexts_notes_id').references(() => notes.id, {
+      onDelete: 'set null',
+    }),
+    contexts_visibility_show: boolean('contexts_visibility_show').default(false),
+    generateSlug: boolean('generate_slug').default(true),
+    slug: varchar('slug').notNull(),
+    visibility_check_publish: boolean('visibility_check_publish').default(false),
+    visibility_check_featured: boolean('visibility_check_featured').default(false),
+    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => [
+    index('preferences_type_idx').on(columns.type),
+    index('preferences_contexts_contexts_principles_idx').on(columns.contexts_principles),
+    index('preferences_contexts_contexts_notes_idx').on(columns.contexts_notes),
+    uniqueIndex('preferences_slug_idx').on(columns.slug),
+    index('preferences_updated_at_idx').on(columns.updatedAt),
+    index('preferences_created_at_idx').on(columns.createdAt),
+  ],
+)
+
+export const preferences_locales = pgTable(
+  'preferences_locales',
+  {
+    name: varchar('name').notNull().default(''),
+    basics_description: varchar('basics_description').default(''),
+    seo_title: varchar('seo_title'),
+    seo_image: integer('seo_image_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    seo_description: varchar('seo_description'),
+    id: serial('id').primaryKey(),
+    _locale: enum__locales('_locale').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+  },
+  (columns) => [
+    index('preferences_name_idx').on(columns.name, columns._locale),
+    index('preferences_seo_seo_image_idx').on(columns.seo_image, columns._locale),
+    uniqueIndex('preferences_locales_locale_parent_id_unique').on(
+      columns._locale,
+      columns._parentID,
+    ),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [preferences.id],
+      name: 'preferences_locales_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const preferences_rels = pgTable(
+  'preferences_rels',
+  {
+    id: serial('id').primaryKey(),
+    order: integer('order'),
+    parent: integer('parent_id').notNull(),
+    path: varchar('path').notNull(),
+    categoriesID: integer('categories_id'),
+    tagsID: integer('tags_id'),
+  },
+  (columns) => [
+    index('preferences_rels_order_idx').on(columns.order),
+    index('preferences_rels_parent_idx').on(columns.parent),
+    index('preferences_rels_path_idx').on(columns.path),
+    index('preferences_rels_categories_id_idx').on(columns.categoriesID),
+    index('preferences_rels_tags_id_idx').on(columns.tagsID),
+    foreignKey({
+      columns: [columns['parent']],
+      foreignColumns: [preferences.id],
+      name: 'preferences_rels_parent_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['categoriesID']],
+      foreignColumns: [categories.id],
+      name: 'preferences_rels_categories_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['tagsID']],
+      foreignColumns: [tags.id],
+      name: 'preferences_rels_tags_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const channels_traits_usage_list = pgTable(
+  'channels_traits_usage_list',
+  {
+    _order: integer('_order').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+    id: varchar('id').primaryKey(),
+    role: enum_channels_traits_usage_list_role('role'),
+    function: enum_channels_traits_usage_list_function('function'),
+    settings_show: boolean('settings_show').default(true),
+    settings_featured: boolean('settings_featured').default(false),
+    settings_pinned: boolean('settings_pinned').default(false),
+  },
+  (columns) => [
+    index('channels_traits_usage_list_order_idx').on(columns._order),
+    index('channels_traits_usage_list_parent_id_idx').on(columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [channels.id],
+      name: 'channels_traits_usage_list_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const channels_traits_usage_list_locales = pgTable(
+  'channels_traits_usage_list_locales',
+  {
+    purpose: varchar('purpose').default(''),
+    id: serial('id').primaryKey(),
+    _locale: enum__locales('_locale').notNull(),
+    _parentID: varchar('_parent_id').notNull(),
+  },
+  (columns) => [
+    uniqueIndex('channels_traits_usage_list_locales_locale_parent_id_unique').on(
+      columns._locale,
+      columns._parentID,
+    ),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [channels_traits_usage_list.id],
+      name: 'channels_traits_usage_list_locales_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const channels_traits_validity_list = pgTable(
+  'channels_traits_validity_list',
+  {
+    _order: integer('_order').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+    id: varchar('id').primaryKey(),
+    status: enum_channels_traits_validity_list_status('status'),
+    condition: enum_channels_traits_validity_list_condition('condition'),
+    state: enum_channels_traits_validity_list_state('state'),
+    settings_show: boolean('settings_show').default(true),
+    settings_featured: boolean('settings_featured').default(false),
+    settings_pinned: boolean('settings_pinned').default(false),
+  },
+  (columns) => [
+    index('channels_traits_validity_list_order_idx').on(columns._order),
+    index('channels_traits_validity_list_parent_id_idx').on(columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [channels.id],
+      name: 'channels_traits_validity_list_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const channels = pgTable(
+  'channels',
+  {
+    id: serial('id').primaryKey(),
+    toggle: enum_channels_toggle('toggle').default('advanced'),
+    type: integer('type_id')
+      .notNull()
+      .references(() => categories.id, {
+        onDelete: 'set null',
+      }),
+    basics_enable: boolean('basics_enable').default(true),
+    basics_protocol_format:
+      enum_channels_basics_protocol_format('basics_protocol_format').notNull(),
+    basics_protocol_scheme: enum_channels_basics_protocol_scheme('basics_protocol_scheme'),
+    basics_protocol_specification: varchar('basics_protocol_specification').default(''),
+    basics_visibility_show: boolean('basics_visibility_show').default(false),
+    traits_enable: boolean('traits_enable').default(true),
+    traits_visibility_show: boolean('traits_visibility_show').default(false),
+    generateSlug: boolean('generate_slug').default(true),
+    slug: varchar('slug').notNull(),
+    visibility_check_publish: boolean('visibility_check_publish').default(false),
+    visibility_check_featured: boolean('visibility_check_featured').default(false),
+    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => [
+    index('channels_type_idx').on(columns.type),
+    uniqueIndex('channels_slug_idx').on(columns.slug),
+    index('channels_updated_at_idx').on(columns.updatedAt),
+    index('channels_created_at_idx').on(columns.createdAt),
+  ],
+)
+
+export const channels_locales = pgTable(
+  'channels_locales',
+  {
+    name: varchar('name').notNull().default(''),
+    basics_identifier_label: varchar('basics_identifier_label').default(''),
+    basics_identifier_title: varchar('basics_identifier_title').default(''),
+    basics_address_value: varchar('basics_address_value').default(''),
+    basics_address_locator: varchar('basics_address_locator').default(''),
+    basics_address_endpoint: varchar('basics_address_endpoint').default(''),
+    seo_title: varchar('seo_title'),
+    seo_image: integer('seo_image_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    seo_description: varchar('seo_description'),
+    id: serial('id').primaryKey(),
+    _locale: enum__locales('_locale').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+  },
+  (columns) => [
+    index('channels_name_idx').on(columns.name, columns._locale),
+    index('channels_seo_seo_image_idx').on(columns.seo_image, columns._locale),
+    uniqueIndex('channels_locales_locale_parent_id_unique').on(columns._locale, columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [channels.id],
+      name: 'channels_locales_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const channels_rels = pgTable(
+  'channels_rels',
+  {
+    id: serial('id').primaryKey(),
+    order: integer('order'),
+    parent: integer('parent_id').notNull(),
+    path: varchar('path').notNull(),
+    categoriesID: integer('categories_id'),
+    tagsID: integer('tags_id'),
+  },
+  (columns) => [
+    index('channels_rels_order_idx').on(columns.order),
+    index('channels_rels_parent_idx').on(columns.parent),
+    index('channels_rels_path_idx').on(columns.path),
+    index('channels_rels_categories_id_idx').on(columns.categoriesID),
+    index('channels_rels_tags_id_idx').on(columns.tagsID),
+    foreignKey({
+      columns: [columns['parent']],
+      foreignColumns: [channels.id],
+      name: 'channels_rels_parent_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['categoriesID']],
+      foreignColumns: [categories.id],
+      name: 'channels_rels_categories_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['tagsID']],
+      foreignColumns: [tags.id],
+      name: 'channels_rels_tags_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const locations_traits_geography_list = pgTable(
+  'locations_traits_geography_list',
+  {
+    _order: integer('_order').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+    id: varchar('id').primaryKey(),
+    terrain: varchar('terrain').default(''),
+    climate: enum_locations_traits_geography_list_climate('climate'),
+    features: varchar('features').default(''),
+    settings_show: boolean('settings_show').default(true),
+    settings_featured: boolean('settings_featured').default(false),
+    settings_pinned: boolean('settings_pinned').default(false),
+  },
+  (columns) => [
+    index('locations_traits_geography_list_order_idx').on(columns._order),
+    index('locations_traits_geography_list_parent_id_idx').on(columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [locations.id],
+      name: 'locations_traits_geography_list_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const locations_traits_infrastructure_list = pgTable(
+  'locations_traits_infrastructure_list',
+  {
+    _order: integer('_order').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+    id: varchar('id').primaryKey(),
+    transport: varchar('transport').default(''),
+    facilities: varchar('facilities').default(''),
+    amenities: varchar('amenities').default(''),
+    settings_show: boolean('settings_show').default(true),
+    settings_featured: boolean('settings_featured').default(false),
+    settings_pinned: boolean('settings_pinned').default(false),
+  },
+  (columns) => [
+    index('locations_traits_infrastructure_list_order_idx').on(columns._order),
+    index('locations_traits_infrastructure_list_parent_id_idx').on(columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [locations.id],
+      name: 'locations_traits_infrastructure_list_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const locations_traits_accessibility_list = pgTable(
+  'locations_traits_accessibility_list',
+  {
+    _order: integer('_order').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+    id: varchar('id').primaryKey(),
+    approach: enum_locations_traits_accessibility_list_approach('approach'),
+    facilities: enum_locations_traits_accessibility_list_facilities('facilities'),
+    capacity: enum_locations_traits_accessibility_list_capacity('capacity'),
+    settings_show: boolean('settings_show').default(true),
+    settings_featured: boolean('settings_featured').default(false),
+    settings_pinned: boolean('settings_pinned').default(false),
+  },
+  (columns) => [
+    index('locations_traits_accessibility_list_order_idx').on(columns._order),
+    index('locations_traits_accessibility_list_parent_id_idx').on(columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [locations.id],
+      name: 'locations_traits_accessibility_list_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const locations = pgTable(
+  'locations',
+  {
+    id: serial('id').primaryKey(),
+    toggle: enum_locations_toggle('toggle').default('advanced'),
+    type: integer('type_id')
+      .notNull()
+      .references(() => categories.id, {
+        onDelete: 'set null',
+      }),
+    basics_enable: boolean('basics_enable').default(true),
+    basics_visibility_show: boolean('basics_visibility_show').default(false),
+    details_enable: boolean('details_enable').default(true),
+    details_geometry_coordinates: geometryColumn('details_geometry_coordinates').default(sql`0,0`),
+    details_geometry_bounds: varchar('details_geometry_bounds').default(''),
+    details_geometry_area: varchar('details_geometry_area').default(''),
+    details_visibility_show: boolean('details_visibility_show').default(false),
+    traits_enable: boolean('traits_enable').default(true),
+    traits_visibility_show: boolean('traits_visibility_show').default(false),
+    contexts_enable: boolean('contexts_enable').default(true),
+    contexts_visibility_show: boolean('contexts_visibility_show').default(false),
+    generateSlug: boolean('generate_slug').default(true),
+    slug: varchar('slug').notNull(),
+    visibility_check_publish: boolean('visibility_check_publish').default(false),
+    visibility_check_featured: boolean('visibility_check_featured').default(false),
+    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => [
+    index('locations_type_idx').on(columns.type),
+    index('locations_details_geometry_details_geometry_coordinates_idx').on(
+      columns.details_geometry_coordinates,
+    ),
+    uniqueIndex('locations_slug_idx').on(columns.slug),
+    index('locations_updated_at_idx').on(columns.updatedAt),
+    index('locations_created_at_idx').on(columns.createdAt),
+  ],
+)
+
+export const locations_locales = pgTable(
+  'locations_locales',
+  {
+    name: varchar('name').notNull().default(''),
+    label: varchar('label').default(''),
+    basics_title: varchar('basics_title').default(''),
+    basics_description: varchar('basics_description').default(''),
+    details_address: varchar('details_address').default(''),
+    seo_title: varchar('seo_title'),
+    seo_image: integer('seo_image_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    seo_description: varchar('seo_description'),
+    id: serial('id').primaryKey(),
+    _locale: enum__locales('_locale').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+  },
+  (columns) => [
+    index('locations_name_idx').on(columns.name, columns._locale),
+    index('locations_seo_seo_image_idx').on(columns.seo_image, columns._locale),
+    uniqueIndex('locations_locales_locale_parent_id_unique').on(columns._locale, columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [locations.id],
+      name: 'locations_locales_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const locations_rels = pgTable(
+  'locations_rels',
+  {
+    id: serial('id').primaryKey(),
+    order: integer('order'),
+    parent: integer('parent_id').notNull(),
+    path: varchar('path').notNull(),
+    organizationsID: integer('organizations_id'),
+    individualsID: integer('individuals_id'),
+    leadersID: integer('leaders_id'),
+    driversID: integer('drivers_id'),
+    membersID: integer('members_id'),
+    categoriesID: integer('categories_id'),
+    tagsID: integer('tags_id'),
+  },
+  (columns) => [
+    index('locations_rels_order_idx').on(columns.order),
+    index('locations_rels_parent_idx').on(columns.parent),
+    index('locations_rels_path_idx').on(columns.path),
+    index('locations_rels_organizations_id_idx').on(columns.organizationsID),
+    index('locations_rels_individuals_id_idx').on(columns.individualsID),
+    index('locations_rels_leaders_id_idx').on(columns.leadersID),
+    index('locations_rels_drivers_id_idx').on(columns.driversID),
+    index('locations_rels_members_id_idx').on(columns.membersID),
+    index('locations_rels_categories_id_idx').on(columns.categoriesID),
+    index('locations_rels_tags_id_idx').on(columns.tagsID),
+    foreignKey({
+      columns: [columns['parent']],
+      foreignColumns: [locations.id],
+      name: 'locations_rels_parent_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['organizationsID']],
+      foreignColumns: [organizations.id],
+      name: 'locations_rels_organizations_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['individualsID']],
+      foreignColumns: [individuals.id],
+      name: 'locations_rels_individuals_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['leadersID']],
+      foreignColumns: [leaders.id],
+      name: 'locations_rels_leaders_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['driversID']],
+      foreignColumns: [drivers.id],
+      name: 'locations_rels_drivers_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['membersID']],
+      foreignColumns: [members.id],
+      name: 'locations_rels_members_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['categoriesID']],
+      foreignColumns: [categories.id],
+      name: 'locations_rels_categories_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['tagsID']],
+      foreignColumns: [tags.id],
+      name: 'locations_rels_tags_fk',
+    }).onDelete('cascade'),
   ],
 )
 
@@ -2834,6 +10719,320 @@ export const transactions = pgTable(
   ],
 )
 
+export const search = pgTable(
+  'search',
+  {
+    id: serial('id').primaryKey(),
+    priority: numeric('priority', { mode: 'number' }),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => [
+    index('search_updated_at_idx').on(columns.updatedAt),
+    index('search_created_at_idx').on(columns.createdAt),
+  ],
+)
+
+export const search_locales = pgTable(
+  'search_locales',
+  {
+    title: varchar('title'),
+    id: serial('id').primaryKey(),
+    _locale: enum__locales('_locale').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+  },
+  (columns) => [
+    uniqueIndex('search_locales_locale_parent_id_unique').on(columns._locale, columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [search.id],
+      name: 'search_locales_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const search_rels = pgTable(
+  'search_rels',
+  {
+    id: serial('id').primaryKey(),
+    order: integer('order'),
+    parent: integer('parent_id').notNull(),
+    path: varchar('path').notNull(),
+    usersID: integer('users_id'),
+    pagesID: integer('pages_id'),
+    categoriesID: integer('categories_id'),
+    tagsID: integer('tags_id'),
+    mediaID: integer('media_id'),
+    formsID: integer('forms_id'),
+  },
+  (columns) => [
+    index('search_rels_order_idx').on(columns.order),
+    index('search_rels_parent_idx').on(columns.parent),
+    index('search_rels_path_idx').on(columns.path),
+    index('search_rels_users_id_idx').on(columns.usersID),
+    index('search_rels_pages_id_idx').on(columns.pagesID),
+    index('search_rels_categories_id_idx').on(columns.categoriesID),
+    index('search_rels_tags_id_idx').on(columns.tagsID),
+    index('search_rels_media_id_idx').on(columns.mediaID),
+    index('search_rels_forms_id_idx').on(columns.formsID),
+    foreignKey({
+      columns: [columns['parent']],
+      foreignColumns: [search.id],
+      name: 'search_rels_parent_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['usersID']],
+      foreignColumns: [users.id],
+      name: 'search_rels_users_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['pagesID']],
+      foreignColumns: [pages.id],
+      name: 'search_rels_pages_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['categoriesID']],
+      foreignColumns: [categories.id],
+      name: 'search_rels_categories_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['tagsID']],
+      foreignColumns: [tags.id],
+      name: 'search_rels_tags_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['mediaID']],
+      foreignColumns: [media.id],
+      name: 'search_rels_media_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['formsID']],
+      foreignColumns: [forms.id],
+      name: 'search_rels_forms_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const payload_mcp_api_keys = pgTable(
+  'payload_mcp_api_keys',
+  {
+    id: serial('id').primaryKey(),
+    user: integer('user_id')
+      .notNull()
+      .references(() => users.id, {
+        onDelete: 'set null',
+      }),
+    label: varchar('label'),
+    description: varchar('description'),
+    series_find: boolean('series_find').default(false),
+    series_create: boolean('series_create').default(false),
+    series_update: boolean('series_update').default(false),
+    series_delete: boolean('series_delete').default(false),
+    seasons_find: boolean('seasons_find').default(false),
+    seasons_create: boolean('seasons_create').default(false),
+    seasons_update: boolean('seasons_update').default(false),
+    seasons_delete: boolean('seasons_delete').default(false),
+    events_find: boolean('events_find').default(false),
+    events_create: boolean('events_create').default(false),
+    events_update: boolean('events_update').default(false),
+    events_delete: boolean('events_delete').default(false),
+    sessions_find: boolean('sessions_find').default(false),
+    sessions_create: boolean('sessions_create').default(false),
+    sessions_update: boolean('sessions_update').default(false),
+    sessions_delete: boolean('sessions_delete').default(false),
+    entries_find: boolean('entries_find').default(false),
+    entries_create: boolean('entries_create').default(false),
+    entries_update: boolean('entries_update').default(false),
+    entries_delete: boolean('entries_delete').default(false),
+    results_find: boolean('results_find').default(false),
+    results_create: boolean('results_create').default(false),
+    results_update: boolean('results_update').default(false),
+    results_delete: boolean('results_delete').default(false),
+    points_find: boolean('points_find').default(false),
+    points_create: boolean('points_create').default(false),
+    points_update: boolean('points_update').default(false),
+    points_delete: boolean('points_delete').default(false),
+    drivers_find: boolean('drivers_find').default(false),
+    drivers_create: boolean('drivers_create').default(false),
+    drivers_update: boolean('drivers_update').default(false),
+    drivers_delete: boolean('drivers_delete').default(false),
+    leaders_find: boolean('leaders_find').default(false),
+    leaders_create: boolean('leaders_create').default(false),
+    leaders_update: boolean('leaders_update').default(false),
+    leaders_delete: boolean('leaders_delete').default(false),
+    members_find: boolean('members_find').default(false),
+    members_create: boolean('members_create').default(false),
+    members_update: boolean('members_update').default(false),
+    members_delete: boolean('members_delete').default(false),
+    individuals_find: boolean('individuals_find').default(false),
+    individuals_create: boolean('individuals_create').default(false),
+    individuals_update: boolean('individuals_update').default(false),
+    individuals_delete: boolean('individuals_delete').default(false),
+    organizations_find: boolean('organizations_find').default(false),
+    organizations_create: boolean('organizations_create').default(false),
+    organizations_update: boolean('organizations_update').default(false),
+    organizations_delete: boolean('organizations_delete').default(false),
+    users_find: boolean('users_find').default(false),
+    users_create: boolean('users_create').default(false),
+    users_update: boolean('users_update').default(false),
+    users_delete: boolean('users_delete').default(false),
+    stories_find: boolean('stories_find').default(false),
+    stories_create: boolean('stories_create').default(false),
+    stories_update: boolean('stories_update').default(false),
+    stories_delete: boolean('stories_delete').default(false),
+    histories_find: boolean('histories_find').default(false),
+    histories_create: boolean('histories_create').default(false),
+    histories_update: boolean('histories_update').default(false),
+    histories_delete: boolean('histories_delete').default(false),
+    journeys_find: boolean('journeys_find').default(false),
+    journeys_create: boolean('journeys_create').default(false),
+    journeys_update: boolean('journeys_update').default(false),
+    journeys_delete: boolean('journeys_delete').default(false),
+    notes_find: boolean('notes_find').default(false),
+    notes_create: boolean('notes_create').default(false),
+    notes_update: boolean('notes_update').default(false),
+    notes_delete: boolean('notes_delete').default(false),
+    pages_find: boolean('pages_find').default(false),
+    pages_create: boolean('pages_create').default(false),
+    pages_update: boolean('pages_update').default(false),
+    pages_delete: boolean('pages_delete').default(false),
+    cars_find: boolean('cars_find').default(false),
+    cars_create: boolean('cars_create').default(false),
+    cars_update: boolean('cars_update').default(false),
+    cars_delete: boolean('cars_delete').default(false),
+    kits_find: boolean('kits_find').default(false),
+    kits_create: boolean('kits_create').default(false),
+    kits_update: boolean('kits_update').default(false),
+    kits_delete: boolean('kits_delete').default(false),
+    media_find: boolean('media_find').default(false),
+    media_create: boolean('media_create').default(false),
+    media_update: boolean('media_update').default(false),
+    media_delete: boolean('media_delete').default(false),
+    galleries_find: boolean('galleries_find').default(false),
+    galleries_create: boolean('galleries_create').default(false),
+    galleries_update: boolean('galleries_update').default(false),
+    galleries_delete: boolean('galleries_delete').default(false),
+    archives_find: boolean('archives_find').default(false),
+    archives_create: boolean('archives_create').default(false),
+    archives_update: boolean('archives_update').default(false),
+    archives_delete: boolean('archives_delete').default(false),
+    visualizations_find: boolean('visualizations_find').default(false),
+    visualizations_create: boolean('visualizations_create').default(false),
+    visualizations_update: boolean('visualizations_update').default(false),
+    visualizations_delete: boolean('visualizations_delete').default(false),
+    schedules_find: boolean('schedules_find').default(false),
+    schedules_create: boolean('schedules_create').default(false),
+    schedules_update: boolean('schedules_update').default(false),
+    schedules_delete: boolean('schedules_delete').default(false),
+    trainings_find: boolean('trainings_find').default(false),
+    trainings_create: boolean('trainings_create').default(false),
+    trainings_update: boolean('trainings_update').default(false),
+    trainings_delete: boolean('trainings_delete').default(false),
+    careers_find: boolean('careers_find').default(false),
+    careers_create: boolean('careers_create').default(false),
+    careers_update: boolean('careers_update').default(false),
+    careers_delete: boolean('careers_delete').default(false),
+    initiatives_find: boolean('initiatives_find').default(false),
+    initiatives_create: boolean('initiatives_create').default(false),
+    initiatives_update: boolean('initiatives_update').default(false),
+    initiatives_delete: boolean('initiatives_delete').default(false),
+    meetups_find: boolean('meetups_find').default(false),
+    meetups_create: boolean('meetups_create').default(false),
+    meetups_update: boolean('meetups_update').default(false),
+    meetups_delete: boolean('meetups_delete').default(false),
+    celebrations_find: boolean('celebrations_find').default(false),
+    celebrations_create: boolean('celebrations_create').default(false),
+    celebrations_update: boolean('celebrations_update').default(false),
+    celebrations_delete: boolean('celebrations_delete').default(false),
+    duties_find: boolean('duties_find').default(false),
+    duties_create: boolean('duties_create').default(false),
+    duties_update: boolean('duties_update').default(false),
+    duties_delete: boolean('duties_delete').default(false),
+    expectations_find: boolean('expectations_find').default(false),
+    expectations_create: boolean('expectations_create').default(false),
+    expectations_update: boolean('expectations_update').default(false),
+    expectations_delete: boolean('expectations_delete').default(false),
+    highlights_find: boolean('highlights_find').default(false),
+    highlights_create: boolean('highlights_create').default(false),
+    highlights_update: boolean('highlights_update').default(false),
+    highlights_delete: boolean('highlights_delete').default(false),
+    incidents_find: boolean('incidents_find').default(false),
+    incidents_create: boolean('incidents_create').default(false),
+    incidents_update: boolean('incidents_update').default(false),
+    incidents_delete: boolean('incidents_delete').default(false),
+    decisions_find: boolean('decisions_find').default(false),
+    decisions_create: boolean('decisions_create').default(false),
+    decisions_update: boolean('decisions_update').default(false),
+    decisions_delete: boolean('decisions_delete').default(false),
+    strategies_find: boolean('strategies_find').default(false),
+    strategies_create: boolean('strategies_create').default(false),
+    strategies_update: boolean('strategies_update').default(false),
+    strategies_delete: boolean('strategies_delete').default(false),
+    awards_find: boolean('awards_find').default(false),
+    awards_create: boolean('awards_create').default(false),
+    awards_update: boolean('awards_update').default(false),
+    awards_delete: boolean('awards_delete').default(false),
+    experiences_find: boolean('experiences_find').default(false),
+    experiences_create: boolean('experiences_create').default(false),
+    experiences_update: boolean('experiences_update').default(false),
+    experiences_delete: boolean('experiences_delete').default(false),
+    categories_find: boolean('categories_find').default(false),
+    categories_create: boolean('categories_create').default(false),
+    categories_update: boolean('categories_update').default(false),
+    categories_delete: boolean('categories_delete').default(false),
+    tags_find: boolean('tags_find').default(false),
+    tags_create: boolean('tags_create').default(false),
+    tags_update: boolean('tags_update').default(false),
+    tags_delete: boolean('tags_delete').default(false),
+    tones_find: boolean('tones_find').default(false),
+    tones_create: boolean('tones_create').default(false),
+    tones_update: boolean('tones_update').default(false),
+    tones_delete: boolean('tones_delete').default(false),
+    features_find: boolean('features_find').default(false),
+    features_create: boolean('features_create').default(false),
+    features_update: boolean('features_update').default(false),
+    features_delete: boolean('features_delete').default(false),
+    classifications_find: boolean('classifications_find').default(false),
+    classifications_create: boolean('classifications_create').default(false),
+    classifications_update: boolean('classifications_update').default(false),
+    classifications_delete: boolean('classifications_delete').default(false),
+    skills_find: boolean('skills_find').default(false),
+    skills_create: boolean('skills_create').default(false),
+    skills_update: boolean('skills_update').default(false),
+    skills_delete: boolean('skills_delete').default(false),
+    preferences_find: boolean('preferences_find').default(false),
+    preferences_create: boolean('preferences_create').default(false),
+    preferences_update: boolean('preferences_update').default(false),
+    preferences_delete: boolean('preferences_delete').default(false),
+    channels_find: boolean('channels_find').default(false),
+    channels_create: boolean('channels_create').default(false),
+    channels_update: boolean('channels_update').default(false),
+    channels_delete: boolean('channels_delete').default(false),
+    forms_find: boolean('forms_find').default(false),
+    forms_create: boolean('forms_create').default(false),
+    forms_update: boolean('forms_update').default(false),
+    forms_delete: boolean('forms_delete').default(false),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    enableAPIKey: boolean('enable_a_p_i_key'),
+    apiKey: varchar('api_key'),
+    apiKeyIndex: varchar('api_key_index'),
+  },
+  (columns) => [
+    index('payload_mcp_api_keys_user_idx').on(columns.user),
+    index('payload_mcp_api_keys_updated_at_idx').on(columns.updatedAt),
+    index('payload_mcp_api_keys_created_at_idx').on(columns.createdAt),
+  ],
+)
+
 export const payload_kv = pgTable(
   'payload_kv',
   {
@@ -2912,11 +11111,59 @@ export const payload_locked_documents_rels = pgTable(
     order: integer('order'),
     parent: integer('parent_id').notNull(),
     path: varchar('path').notNull(),
-    categoriesID: integer('categories_id'),
+    seriesID: integer('series_id'),
+    seasonsID: integer('seasons_id'),
+    eventsID: integer('events_id'),
+    sessionsID: integer('sessions_id'),
+    entriesID: integer('entries_id'),
+    resultsID: integer('results_id'),
+    pointsID: integer('points_id'),
+    driversID: integer('drivers_id'),
+    leadersID: integer('leaders_id'),
+    membersID: integer('members_id'),
+    individualsID: integer('individuals_id'),
+    organizationsID: integer('organizations_id'),
     usersID: integer('users_id'),
-    mediaID: integer('media_id'),
+    narrativesID: integer('narratives_id'),
+    storiesID: integer('stories_id'),
+    historiesID: integer('histories_id'),
+    journeysID: integer('journeys_id'),
+    notesID: integer('notes_id'),
     pagesID: integer('pages_id'),
+    carsID: integer('cars_id'),
+    kitsID: integer('kits_id'),
+    mediaID: integer('media_id'),
+    galleriesID: integer('galleries_id'),
+    playlistsID: integer('playlists_id'),
+    archivesID: integer('archives_id'),
+    visualizationsID: integer('visualizations_id'),
+    schedulesID: integer('schedules_id'),
+    trainingsID: integer('trainings_id'),
+    careersID: integer('careers_id'),
+    initiativesID: integer('initiatives_id'),
+    meetupsID: integer('meetups_id'),
+    celebrationsID: integer('celebrations_id'),
+    protocolsID: integer('protocols_id'),
+    dutiesID: integer('duties_id'),
+    expectationsID: integer('expectations_id'),
+    highlightsID: integer('highlights_id'),
+    incidentsID: integer('incidents_id'),
+    impactsID: integer('impacts_id'),
+    decisionsID: integer('decisions_id'),
+    strategiesID: integer('strategies_id'),
+    awardsID: integer('awards_id'),
+    experiencesID: integer('experiences_id'),
+    categoriesID: integer('categories_id'),
     tagsID: integer('tags_id'),
+    tonesID: integer('tones_id'),
+    featuresID: integer('features_id'),
+    specificationsID: integer('specifications_id'),
+    classificationsID: integer('classifications_id'),
+    skillsID: integer('skills_id'),
+    principlesID: integer('principles_id'),
+    preferencesID: integer('preferences_id'),
+    channelsID: integer('channels_id'),
+    locationsID: integer('locations_id'),
     formsID: integer('forms_id'),
     'form-submissionsID': integer('form_submissions_id'),
     addressesID: integer('addresses_id'),
@@ -2927,17 +11174,67 @@ export const payload_locked_documents_rels = pgTable(
     cartsID: integer('carts_id'),
     ordersID: integer('orders_id'),
     transactionsID: integer('transactions_id'),
+    searchID: integer('search_id'),
+    'payload-mcp-api-keysID': integer('payload_mcp_api_keys_id'),
     'payload-foldersID': integer('payload_folders_id'),
   },
   (columns) => [
     index('payload_locked_documents_rels_order_idx').on(columns.order),
     index('payload_locked_documents_rels_parent_idx').on(columns.parent),
     index('payload_locked_documents_rels_path_idx').on(columns.path),
-    index('payload_locked_documents_rels_categories_id_idx').on(columns.categoriesID),
+    index('payload_locked_documents_rels_series_id_idx').on(columns.seriesID),
+    index('payload_locked_documents_rels_seasons_id_idx').on(columns.seasonsID),
+    index('payload_locked_documents_rels_events_id_idx').on(columns.eventsID),
+    index('payload_locked_documents_rels_sessions_id_idx').on(columns.sessionsID),
+    index('payload_locked_documents_rels_entries_id_idx').on(columns.entriesID),
+    index('payload_locked_documents_rels_results_id_idx').on(columns.resultsID),
+    index('payload_locked_documents_rels_points_id_idx').on(columns.pointsID),
+    index('payload_locked_documents_rels_drivers_id_idx').on(columns.driversID),
+    index('payload_locked_documents_rels_leaders_id_idx').on(columns.leadersID),
+    index('payload_locked_documents_rels_members_id_idx').on(columns.membersID),
+    index('payload_locked_documents_rels_individuals_id_idx').on(columns.individualsID),
+    index('payload_locked_documents_rels_organizations_id_idx').on(columns.organizationsID),
     index('payload_locked_documents_rels_users_id_idx').on(columns.usersID),
-    index('payload_locked_documents_rels_media_id_idx').on(columns.mediaID),
+    index('payload_locked_documents_rels_narratives_id_idx').on(columns.narrativesID),
+    index('payload_locked_documents_rels_stories_id_idx').on(columns.storiesID),
+    index('payload_locked_documents_rels_histories_id_idx').on(columns.historiesID),
+    index('payload_locked_documents_rels_journeys_id_idx').on(columns.journeysID),
+    index('payload_locked_documents_rels_notes_id_idx').on(columns.notesID),
     index('payload_locked_documents_rels_pages_id_idx').on(columns.pagesID),
+    index('payload_locked_documents_rels_cars_id_idx').on(columns.carsID),
+    index('payload_locked_documents_rels_kits_id_idx').on(columns.kitsID),
+    index('payload_locked_documents_rels_media_id_idx').on(columns.mediaID),
+    index('payload_locked_documents_rels_galleries_id_idx').on(columns.galleriesID),
+    index('payload_locked_documents_rels_playlists_id_idx').on(columns.playlistsID),
+    index('payload_locked_documents_rels_archives_id_idx').on(columns.archivesID),
+    index('payload_locked_documents_rels_visualizations_id_idx').on(columns.visualizationsID),
+    index('payload_locked_documents_rels_schedules_id_idx').on(columns.schedulesID),
+    index('payload_locked_documents_rels_trainings_id_idx').on(columns.trainingsID),
+    index('payload_locked_documents_rels_careers_id_idx').on(columns.careersID),
+    index('payload_locked_documents_rels_initiatives_id_idx').on(columns.initiativesID),
+    index('payload_locked_documents_rels_meetups_id_idx').on(columns.meetupsID),
+    index('payload_locked_documents_rels_celebrations_id_idx').on(columns.celebrationsID),
+    index('payload_locked_documents_rels_protocols_id_idx').on(columns.protocolsID),
+    index('payload_locked_documents_rels_duties_id_idx').on(columns.dutiesID),
+    index('payload_locked_documents_rels_expectations_id_idx').on(columns.expectationsID),
+    index('payload_locked_documents_rels_highlights_id_idx').on(columns.highlightsID),
+    index('payload_locked_documents_rels_incidents_id_idx').on(columns.incidentsID),
+    index('payload_locked_documents_rels_impacts_id_idx').on(columns.impactsID),
+    index('payload_locked_documents_rels_decisions_id_idx').on(columns.decisionsID),
+    index('payload_locked_documents_rels_strategies_id_idx').on(columns.strategiesID),
+    index('payload_locked_documents_rels_awards_id_idx').on(columns.awardsID),
+    index('payload_locked_documents_rels_experiences_id_idx').on(columns.experiencesID),
+    index('payload_locked_documents_rels_categories_id_idx').on(columns.categoriesID),
     index('payload_locked_documents_rels_tags_id_idx').on(columns.tagsID),
+    index('payload_locked_documents_rels_tones_id_idx').on(columns.tonesID),
+    index('payload_locked_documents_rels_features_id_idx').on(columns.featuresID),
+    index('payload_locked_documents_rels_specifications_id_idx').on(columns.specificationsID),
+    index('payload_locked_documents_rels_classifications_id_idx').on(columns.classificationsID),
+    index('payload_locked_documents_rels_skills_id_idx').on(columns.skillsID),
+    index('payload_locked_documents_rels_principles_id_idx').on(columns.principlesID),
+    index('payload_locked_documents_rels_preferences_id_idx').on(columns.preferencesID),
+    index('payload_locked_documents_rels_channels_id_idx').on(columns.channelsID),
+    index('payload_locked_documents_rels_locations_id_idx').on(columns.locationsID),
     index('payload_locked_documents_rels_forms_id_idx').on(columns.formsID),
     index('payload_locked_documents_rels_form_submissions_id_idx').on(
       columns['form-submissionsID'],
@@ -2950,6 +11247,10 @@ export const payload_locked_documents_rels = pgTable(
     index('payload_locked_documents_rels_carts_id_idx').on(columns.cartsID),
     index('payload_locked_documents_rels_orders_id_idx').on(columns.ordersID),
     index('payload_locked_documents_rels_transactions_id_idx').on(columns.transactionsID),
+    index('payload_locked_documents_rels_search_id_idx').on(columns.searchID),
+    index('payload_locked_documents_rels_payload_mcp_api_keys_id_idx').on(
+      columns['payload-mcp-api-keysID'],
+    ),
     index('payload_locked_documents_rels_payload_folders_id_idx').on(columns['payload-foldersID']),
     foreignKey({
       columns: [columns['parent']],
@@ -2957,9 +11258,64 @@ export const payload_locked_documents_rels = pgTable(
       name: 'payload_locked_documents_rels_parent_fk',
     }).onDelete('cascade'),
     foreignKey({
-      columns: [columns['categoriesID']],
-      foreignColumns: [categories.id],
-      name: 'payload_locked_documents_rels_categories_fk',
+      columns: [columns['seriesID']],
+      foreignColumns: [series.id],
+      name: 'payload_locked_documents_rels_series_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['seasonsID']],
+      foreignColumns: [seasons.id],
+      name: 'payload_locked_documents_rels_seasons_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['eventsID']],
+      foreignColumns: [events.id],
+      name: 'payload_locked_documents_rels_events_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['sessionsID']],
+      foreignColumns: [sessions.id],
+      name: 'payload_locked_documents_rels_sessions_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['entriesID']],
+      foreignColumns: [entries.id],
+      name: 'payload_locked_documents_rels_entries_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['resultsID']],
+      foreignColumns: [results.id],
+      name: 'payload_locked_documents_rels_results_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['pointsID']],
+      foreignColumns: [points.id],
+      name: 'payload_locked_documents_rels_points_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['driversID']],
+      foreignColumns: [drivers.id],
+      name: 'payload_locked_documents_rels_drivers_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['leadersID']],
+      foreignColumns: [leaders.id],
+      name: 'payload_locked_documents_rels_leaders_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['membersID']],
+      foreignColumns: [members.id],
+      name: 'payload_locked_documents_rels_members_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['individualsID']],
+      foreignColumns: [individuals.id],
+      name: 'payload_locked_documents_rels_individuals_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['organizationsID']],
+      foreignColumns: [organizations.id],
+      name: 'payload_locked_documents_rels_organizations_fk',
     }).onDelete('cascade'),
     foreignKey({
       columns: [columns['usersID']],
@@ -2967,9 +11323,29 @@ export const payload_locked_documents_rels = pgTable(
       name: 'payload_locked_documents_rels_users_fk',
     }).onDelete('cascade'),
     foreignKey({
-      columns: [columns['mediaID']],
-      foreignColumns: [media.id],
-      name: 'payload_locked_documents_rels_media_fk',
+      columns: [columns['narrativesID']],
+      foreignColumns: [narratives.id],
+      name: 'payload_locked_documents_rels_narratives_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['storiesID']],
+      foreignColumns: [stories.id],
+      name: 'payload_locked_documents_rels_stories_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['historiesID']],
+      foreignColumns: [histories.id],
+      name: 'payload_locked_documents_rels_histories_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['journeysID']],
+      foreignColumns: [journeys.id],
+      name: 'payload_locked_documents_rels_journeys_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['notesID']],
+      foreignColumns: [notes.id],
+      name: 'payload_locked_documents_rels_notes_fk',
     }).onDelete('cascade'),
     foreignKey({
       columns: [columns['pagesID']],
@@ -2977,9 +11353,174 @@ export const payload_locked_documents_rels = pgTable(
       name: 'payload_locked_documents_rels_pages_fk',
     }).onDelete('cascade'),
     foreignKey({
+      columns: [columns['carsID']],
+      foreignColumns: [cars.id],
+      name: 'payload_locked_documents_rels_cars_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['kitsID']],
+      foreignColumns: [kits.id],
+      name: 'payload_locked_documents_rels_kits_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['mediaID']],
+      foreignColumns: [media.id],
+      name: 'payload_locked_documents_rels_media_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['galleriesID']],
+      foreignColumns: [galleries.id],
+      name: 'payload_locked_documents_rels_galleries_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['playlistsID']],
+      foreignColumns: [playlists.id],
+      name: 'payload_locked_documents_rels_playlists_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['archivesID']],
+      foreignColumns: [archives.id],
+      name: 'payload_locked_documents_rels_archives_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['visualizationsID']],
+      foreignColumns: [visualizations.id],
+      name: 'payload_locked_documents_rels_visualizations_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['schedulesID']],
+      foreignColumns: [schedules.id],
+      name: 'payload_locked_documents_rels_schedules_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['trainingsID']],
+      foreignColumns: [trainings.id],
+      name: 'payload_locked_documents_rels_trainings_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['careersID']],
+      foreignColumns: [careers.id],
+      name: 'payload_locked_documents_rels_careers_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['initiativesID']],
+      foreignColumns: [initiatives.id],
+      name: 'payload_locked_documents_rels_initiatives_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['meetupsID']],
+      foreignColumns: [meetups.id],
+      name: 'payload_locked_documents_rels_meetups_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['celebrationsID']],
+      foreignColumns: [celebrations.id],
+      name: 'payload_locked_documents_rels_celebrations_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['protocolsID']],
+      foreignColumns: [protocols.id],
+      name: 'payload_locked_documents_rels_protocols_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['dutiesID']],
+      foreignColumns: [duties.id],
+      name: 'payload_locked_documents_rels_duties_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['expectationsID']],
+      foreignColumns: [expectations.id],
+      name: 'payload_locked_documents_rels_expectations_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['highlightsID']],
+      foreignColumns: [highlights.id],
+      name: 'payload_locked_documents_rels_highlights_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['incidentsID']],
+      foreignColumns: [incidents.id],
+      name: 'payload_locked_documents_rels_incidents_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['impactsID']],
+      foreignColumns: [impacts.id],
+      name: 'payload_locked_documents_rels_impacts_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['decisionsID']],
+      foreignColumns: [decisions.id],
+      name: 'payload_locked_documents_rels_decisions_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['strategiesID']],
+      foreignColumns: [strategies.id],
+      name: 'payload_locked_documents_rels_strategies_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['awardsID']],
+      foreignColumns: [awards.id],
+      name: 'payload_locked_documents_rels_awards_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['experiencesID']],
+      foreignColumns: [experiences.id],
+      name: 'payload_locked_documents_rels_experiences_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['categoriesID']],
+      foreignColumns: [categories.id],
+      name: 'payload_locked_documents_rels_categories_fk',
+    }).onDelete('cascade'),
+    foreignKey({
       columns: [columns['tagsID']],
       foreignColumns: [tags.id],
       name: 'payload_locked_documents_rels_tags_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['tonesID']],
+      foreignColumns: [tones.id],
+      name: 'payload_locked_documents_rels_tones_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['featuresID']],
+      foreignColumns: [features.id],
+      name: 'payload_locked_documents_rels_features_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['specificationsID']],
+      foreignColumns: [specifications.id],
+      name: 'payload_locked_documents_rels_specifications_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['classificationsID']],
+      foreignColumns: [classifications.id],
+      name: 'payload_locked_documents_rels_classifications_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['skillsID']],
+      foreignColumns: [skills.id],
+      name: 'payload_locked_documents_rels_skills_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['principlesID']],
+      foreignColumns: [principles.id],
+      name: 'payload_locked_documents_rels_principles_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['preferencesID']],
+      foreignColumns: [preferences.id],
+      name: 'payload_locked_documents_rels_preferences_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['channelsID']],
+      foreignColumns: [channels.id],
+      name: 'payload_locked_documents_rels_channels_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['locationsID']],
+      foreignColumns: [locations.id],
+      name: 'payload_locked_documents_rels_locations_fk',
     }).onDelete('cascade'),
     foreignKey({
       columns: [columns['formsID']],
@@ -3032,6 +11573,16 @@ export const payload_locked_documents_rels = pgTable(
       name: 'payload_locked_documents_rels_transactions_fk',
     }).onDelete('cascade'),
     foreignKey({
+      columns: [columns['searchID']],
+      foreignColumns: [search.id],
+      name: 'payload_locked_documents_rels_search_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['payload-mcp-api-keysID']],
+      foreignColumns: [payload_mcp_api_keys.id],
+      name: 'payload_locked_documents_rels_payload_mcp_api_keys_fk',
+    }).onDelete('cascade'),
+    foreignKey({
       columns: [columns['payload-foldersID']],
       foreignColumns: [payload_folders.id],
       name: 'payload_locked_documents_rels_payload_folders_fk',
@@ -3067,12 +11618,16 @@ export const payload_preferences_rels = pgTable(
     parent: integer('parent_id').notNull(),
     path: varchar('path').notNull(),
     usersID: integer('users_id'),
+    'payload-mcp-api-keysID': integer('payload_mcp_api_keys_id'),
   },
   (columns) => [
     index('payload_preferences_rels_order_idx').on(columns.order),
     index('payload_preferences_rels_parent_idx').on(columns.parent),
     index('payload_preferences_rels_path_idx').on(columns.path),
     index('payload_preferences_rels_users_id_idx').on(columns.usersID),
+    index('payload_preferences_rels_payload_mcp_api_keys_id_idx').on(
+      columns['payload-mcp-api-keysID'],
+    ),
     foreignKey({
       columns: [columns['parent']],
       foreignColumns: [payload_preferences.id],
@@ -3082,6 +11637,11 @@ export const payload_preferences_rels = pgTable(
       columns: [columns['usersID']],
       foreignColumns: [users.id],
       name: 'payload_preferences_rels_users_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['payload-mcp-api-keysID']],
+      foreignColumns: [payload_mcp_api_keys.id],
+      name: 'payload_preferences_rels_payload_mcp_api_keys_fk',
     }).onDelete('cascade'),
   ],
 )
@@ -3369,6 +11929,3886 @@ export const questions_locales = pgTable(
   ],
 )
 
+export const relations_series_locales = relations(series_locales, ({ one }) => ({
+  _parentID: one(series, {
+    fields: [series_locales._parentID],
+    references: [series.id],
+    relationName: '_locales',
+  }),
+  seo_image: one(media, {
+    fields: [series_locales.seo_image],
+    references: [media.id],
+    relationName: 'seo_image',
+  }),
+}))
+export const relations_series_rels = relations(series_rels, ({ one }) => ({
+  parent: one(series, {
+    fields: [series_rels.parent],
+    references: [series.id],
+    relationName: '_rels',
+  }),
+  organizationsID: one(organizations, {
+    fields: [series_rels.organizationsID],
+    references: [organizations.id],
+    relationName: 'organizations',
+  }),
+  individualsID: one(individuals, {
+    fields: [series_rels.individualsID],
+    references: [individuals.id],
+    relationName: 'individuals',
+  }),
+  categoriesID: one(categories, {
+    fields: [series_rels.categoriesID],
+    references: [categories.id],
+    relationName: 'categories',
+  }),
+  tagsID: one(tags, {
+    fields: [series_rels.tagsID],
+    references: [tags.id],
+    relationName: 'tags',
+  }),
+}))
+export const relations_series = relations(series, ({ one, many }) => ({
+  type: one(categories, {
+    fields: [series.type],
+    references: [categories.id],
+    relationName: 'type',
+  }),
+  details_narrative: one(narratives, {
+    fields: [series.details_narrative],
+    references: [narratives.id],
+    relationName: 'details_narrative',
+  }),
+  details_history: one(histories, {
+    fields: [series.details_history],
+    references: [histories.id],
+    relationName: 'details_history',
+  }),
+  details_organization: one(organizations, {
+    fields: [series.details_organization],
+    references: [organizations.id],
+    relationName: 'details_organization',
+  }),
+  details_classification: one(classifications, {
+    fields: [series.details_classification],
+    references: [classifications.id],
+    relationName: 'details_classification',
+  }),
+  details_features: one(features, {
+    fields: [series.details_features],
+    references: [features.id],
+    relationName: 'details_features',
+  }),
+  traits_heritage_predecessor: one(series, {
+    fields: [series.traits_heritage_predecessor],
+    references: [series.id],
+    relationName: 'traits_heritage_predecessor',
+  }),
+  traits_heritage_successor: one(series, {
+    fields: [series.traits_heritage_successor],
+    references: [series.id],
+    relationName: 'traits_heritage_successor',
+  }),
+  traits_specifications: one(specifications, {
+    fields: [series.traits_specifications],
+    references: [specifications.id],
+    relationName: 'traits_specifications',
+  }),
+  traits_schedule: one(schedules, {
+    fields: [series.traits_schedule],
+    references: [schedules.id],
+    relationName: 'traits_schedule',
+  }),
+  assets_logo: one(media, {
+    fields: [series.assets_logo],
+    references: [media.id],
+    relationName: 'assets_logo',
+  }),
+  assets_cover: one(media, {
+    fields: [series.assets_cover],
+    references: [media.id],
+    relationName: 'assets_cover',
+  }),
+  assets_archive: one(archives, {
+    fields: [series.assets_archive],
+    references: [archives.id],
+    relationName: 'assets_archive',
+  }),
+  contexts_locations: one(locations, {
+    fields: [series.contexts_locations],
+    references: [locations.id],
+    relationName: 'contexts_locations',
+  }),
+  contexts_notes: one(notes, {
+    fields: [series.contexts_notes],
+    references: [notes.id],
+    relationName: 'contexts_notes',
+  }),
+  _locales: many(series_locales, {
+    relationName: '_locales',
+  }),
+  _rels: many(series_rels, {
+    relationName: '_rels',
+  }),
+}))
+export const relations_seasons_metrics_counts_list = relations(
+  seasons_metrics_counts_list,
+  ({ one }) => ({
+    _parentID: one(seasons, {
+      fields: [seasons_metrics_counts_list._parentID],
+      references: [seasons.id],
+      relationName: 'metrics_counts_list',
+    }),
+  }),
+)
+export const relations_seasons_locales = relations(seasons_locales, ({ one }) => ({
+  _parentID: one(seasons, {
+    fields: [seasons_locales._parentID],
+    references: [seasons.id],
+    relationName: '_locales',
+  }),
+  seo_image: one(media, {
+    fields: [seasons_locales.seo_image],
+    references: [media.id],
+    relationName: 'seo_image',
+  }),
+}))
+export const relations_seasons_rels = relations(seasons_rels, ({ one }) => ({
+  parent: one(seasons, {
+    fields: [seasons_rels.parent],
+    references: [seasons.id],
+    relationName: '_rels',
+  }),
+  organizationsID: one(organizations, {
+    fields: [seasons_rels.organizationsID],
+    references: [organizations.id],
+    relationName: 'organizations',
+  }),
+  individualsID: one(individuals, {
+    fields: [seasons_rels.individualsID],
+    references: [individuals.id],
+    relationName: 'individuals',
+  }),
+  categoriesID: one(categories, {
+    fields: [seasons_rels.categoriesID],
+    references: [categories.id],
+    relationName: 'categories',
+  }),
+  tagsID: one(tags, {
+    fields: [seasons_rels.tagsID],
+    references: [tags.id],
+    relationName: 'tags',
+  }),
+}))
+export const relations_seasons = relations(seasons, ({ one, many }) => ({
+  series: one(series, {
+    fields: [seasons.series],
+    references: [series.id],
+    relationName: 'series',
+  }),
+  type: one(categories, {
+    fields: [seasons.type],
+    references: [categories.id],
+    relationName: 'type',
+  }),
+  details_narrative: one(narratives, {
+    fields: [seasons.details_narrative],
+    references: [narratives.id],
+    relationName: 'details_narrative',
+  }),
+  details_history: one(histories, {
+    fields: [seasons.details_history],
+    references: [histories.id],
+    relationName: 'details_history',
+  }),
+  details_schedule: one(schedules, {
+    fields: [seasons.details_schedule],
+    references: [schedules.id],
+    relationName: 'details_schedule',
+  }),
+  details_classifications: one(classifications, {
+    fields: [seasons.details_classifications],
+    references: [classifications.id],
+    relationName: 'details_classifications',
+  }),
+  details_regulations: one(protocols, {
+    fields: [seasons.details_regulations],
+    references: [protocols.id],
+    relationName: 'details_regulations',
+  }),
+  metrics_counts_list: many(seasons_metrics_counts_list, {
+    relationName: 'metrics_counts_list',
+  }),
+  assets_cover: one(media, {
+    fields: [seasons.assets_cover],
+    references: [media.id],
+    relationName: 'assets_cover',
+  }),
+  assets_gallery: one(galleries, {
+    fields: [seasons.assets_gallery],
+    references: [galleries.id],
+    relationName: 'assets_gallery',
+  }),
+  assets_playlist: one(playlists, {
+    fields: [seasons.assets_playlist],
+    references: [playlists.id],
+    relationName: 'assets_playlist',
+  }),
+  assets_archive: one(archives, {
+    fields: [seasons.assets_archive],
+    references: [archives.id],
+    relationName: 'assets_archive',
+  }),
+  contexts_teams: one(organizations, {
+    fields: [seasons.contexts_teams],
+    references: [organizations.id],
+    relationName: 'contexts_teams',
+  }),
+  contexts_participants: one(drivers, {
+    fields: [seasons.contexts_participants],
+    references: [drivers.id],
+    relationName: 'contexts_participants',
+  }),
+  contexts_notes: one(notes, {
+    fields: [seasons.contexts_notes],
+    references: [notes.id],
+    relationName: 'contexts_notes',
+  }),
+  _locales: many(seasons_locales, {
+    relationName: '_locales',
+  }),
+  _rels: many(seasons_rels, {
+    relationName: '_rels',
+  }),
+}))
+export const relations_events_locales = relations(events_locales, ({ one }) => ({
+  _parentID: one(events, {
+    fields: [events_locales._parentID],
+    references: [events.id],
+    relationName: '_locales',
+  }),
+  seo_image: one(media, {
+    fields: [events_locales.seo_image],
+    references: [media.id],
+    relationName: 'seo_image',
+  }),
+}))
+export const relations_events_rels = relations(events_rels, ({ one }) => ({
+  parent: one(events, {
+    fields: [events_rels.parent],
+    references: [events.id],
+    relationName: '_rels',
+  }),
+  categoriesID: one(categories, {
+    fields: [events_rels.categoriesID],
+    references: [categories.id],
+    relationName: 'categories',
+  }),
+  tagsID: one(tags, {
+    fields: [events_rels.tagsID],
+    references: [tags.id],
+    relationName: 'tags',
+  }),
+}))
+export const relations_events = relations(events, ({ one, many }) => ({
+  type: one(categories, {
+    fields: [events.type],
+    references: [categories.id],
+    relationName: 'type',
+  }),
+  details_narrative: one(narratives, {
+    fields: [events.details_narrative],
+    references: [narratives.id],
+    relationName: 'details_narrative',
+  }),
+  details_story: one(stories, {
+    fields: [events.details_story],
+    references: [stories.id],
+    relationName: 'details_story',
+  }),
+  details_season: one(seasons, {
+    fields: [events.details_season],
+    references: [seasons.id],
+    relationName: 'details_season',
+  }),
+  details_location: one(locations, {
+    fields: [events.details_location],
+    references: [locations.id],
+    relationName: 'details_location',
+  }),
+  details_classification: one(classifications, {
+    fields: [events.details_classification],
+    references: [classifications.id],
+    relationName: 'details_classification',
+  }),
+  details_features: one(features, {
+    fields: [events.details_features],
+    references: [features.id],
+    relationName: 'details_features',
+  }),
+  details_regulations: one(protocols, {
+    fields: [events.details_regulations],
+    references: [protocols.id],
+    relationName: 'details_regulations',
+  }),
+  traits_format: one(categories, {
+    fields: [events.traits_format],
+    references: [categories.id],
+    relationName: 'traits_format',
+  }),
+  metrics_specifications: one(specifications, {
+    fields: [events.metrics_specifications],
+    references: [specifications.id],
+    relationName: 'metrics_specifications',
+  }),
+  assets_poster: one(media, {
+    fields: [events.assets_poster],
+    references: [media.id],
+    relationName: 'assets_poster',
+  }),
+  assets_cover: one(media, {
+    fields: [events.assets_cover],
+    references: [media.id],
+    relationName: 'assets_cover',
+  }),
+  assets_gallery: one(galleries, {
+    fields: [events.assets_gallery],
+    references: [galleries.id],
+    relationName: 'assets_gallery',
+  }),
+  assets_playlist: one(playlists, {
+    fields: [events.assets_playlist],
+    references: [playlists.id],
+    relationName: 'assets_playlist',
+  }),
+  assets_archive: one(archives, {
+    fields: [events.assets_archive],
+    references: [archives.id],
+    relationName: 'assets_archive',
+  }),
+  contexts_highlights: one(highlights, {
+    fields: [events.contexts_highlights],
+    references: [highlights.id],
+    relationName: 'contexts_highlights',
+  }),
+  contexts_insights: one(notes, {
+    fields: [events.contexts_insights],
+    references: [notes.id],
+    relationName: 'contexts_insights',
+  }),
+  _locales: many(events_locales, {
+    relationName: '_locales',
+  }),
+  _rels: many(events_rels, {
+    relationName: '_rels',
+  }),
+}))
+export const relations_sessions_traits_constraints = relations(
+  sessions_traits_constraints,
+  ({ one }) => ({
+    _parentID: one(sessions, {
+      fields: [sessions_traits_constraints._parentID],
+      references: [sessions.id],
+      relationName: 'traits_constraints',
+    }),
+    type: one(classifications, {
+      fields: [sessions_traits_constraints.type],
+      references: [classifications.id],
+      relationName: 'type',
+    }),
+  }),
+)
+export const relations_sessions_traits_parameters = relations(
+  sessions_traits_parameters,
+  ({ one }) => ({
+    _parentID: one(sessions, {
+      fields: [sessions_traits_parameters._parentID],
+      references: [sessions.id],
+      relationName: 'traits_parameters',
+    }),
+    parameter: one(classifications, {
+      fields: [sessions_traits_parameters.parameter],
+      references: [classifications.id],
+      relationName: 'parameter',
+    }),
+  }),
+)
+export const relations_sessions_locales = relations(sessions_locales, ({ one }) => ({
+  _parentID: one(sessions, {
+    fields: [sessions_locales._parentID],
+    references: [sessions.id],
+    relationName: '_locales',
+  }),
+  seo_image: one(media, {
+    fields: [sessions_locales.seo_image],
+    references: [media.id],
+    relationName: 'seo_image',
+  }),
+}))
+export const relations_sessions_rels = relations(sessions_rels, ({ one }) => ({
+  parent: one(sessions, {
+    fields: [sessions_rels.parent],
+    references: [sessions.id],
+    relationName: '_rels',
+  }),
+  organizationsID: one(organizations, {
+    fields: [sessions_rels.organizationsID],
+    references: [organizations.id],
+    relationName: 'organizations',
+  }),
+  individualsID: one(individuals, {
+    fields: [sessions_rels.individualsID],
+    references: [individuals.id],
+    relationName: 'individuals',
+  }),
+  categoriesID: one(categories, {
+    fields: [sessions_rels.categoriesID],
+    references: [categories.id],
+    relationName: 'categories',
+  }),
+  tagsID: one(tags, {
+    fields: [sessions_rels.tagsID],
+    references: [tags.id],
+    relationName: 'tags',
+  }),
+}))
+export const relations_sessions = relations(sessions, ({ one, many }) => ({
+  type: one(categories, {
+    fields: [sessions.type],
+    references: [categories.id],
+    relationName: 'type',
+  }),
+  details_narrative: one(narratives, {
+    fields: [sessions.details_narrative],
+    references: [narratives.id],
+    relationName: 'details_narrative',
+  }),
+  details_event: one(events, {
+    fields: [sessions.details_event],
+    references: [events.id],
+    relationName: 'details_event',
+  }),
+  details_classifications: one(classifications, {
+    fields: [sessions.details_classifications],
+    references: [classifications.id],
+    relationName: 'details_classifications',
+  }),
+  details_features: one(features, {
+    fields: [sessions.details_features],
+    references: [features.id],
+    relationName: 'details_features',
+  }),
+  details_protocols: one(protocols, {
+    fields: [sessions.details_protocols],
+    references: [protocols.id],
+    relationName: 'details_protocols',
+  }),
+  details_strategies: one(strategies, {
+    fields: [sessions.details_strategies],
+    references: [strategies.id],
+    relationName: 'details_strategies',
+  }),
+  traits_constraints: many(sessions_traits_constraints, {
+    relationName: 'traits_constraints',
+  }),
+  traits_parameters: many(sessions_traits_parameters, {
+    relationName: 'traits_parameters',
+  }),
+  traits_specifications: one(specifications, {
+    fields: [sessions.traits_specifications],
+    references: [specifications.id],
+    relationName: 'traits_specifications',
+  }),
+  assets_gallery: one(galleries, {
+    fields: [sessions.assets_gallery],
+    references: [galleries.id],
+    relationName: 'assets_gallery',
+  }),
+  assets_playlist: one(playlists, {
+    fields: [sessions.assets_playlist],
+    references: [playlists.id],
+    relationName: 'assets_playlist',
+  }),
+  contexts_highlights: one(highlights, {
+    fields: [sessions.contexts_highlights],
+    references: [highlights.id],
+    relationName: 'contexts_highlights',
+  }),
+  contexts_incidents: one(incidents, {
+    fields: [sessions.contexts_incidents],
+    references: [incidents.id],
+    relationName: 'contexts_incidents',
+  }),
+  contexts_participants: one(drivers, {
+    fields: [sessions.contexts_participants],
+    references: [drivers.id],
+    relationName: 'contexts_participants',
+  }),
+  contexts_crews: one(members, {
+    fields: [sessions.contexts_crews],
+    references: [members.id],
+    relationName: 'contexts_crews',
+  }),
+  contexts_insights: one(notes, {
+    fields: [sessions.contexts_insights],
+    references: [notes.id],
+    relationName: 'contexts_insights',
+  }),
+  _locales: many(sessions_locales, {
+    relationName: '_locales',
+  }),
+  _rels: many(sessions_rels, {
+    relationName: '_rels',
+  }),
+}))
+export const relations_entries_traits_eligibility_list = relations(
+  entries_traits_eligibility_list,
+  ({ one }) => ({
+    _parentID: one(entries, {
+      fields: [entries_traits_eligibility_list._parentID],
+      references: [entries.id],
+      relationName: 'traits_eligibility_list',
+    }),
+  }),
+)
+export const relations_entries_metrics_parameters = relations(
+  entries_metrics_parameters,
+  ({ one }) => ({
+    _parentID: one(entries, {
+      fields: [entries_metrics_parameters._parentID],
+      references: [entries.id],
+      relationName: 'metrics_parameters',
+    }),
+    parameter: one(classifications, {
+      fields: [entries_metrics_parameters.parameter],
+      references: [classifications.id],
+      relationName: 'parameter',
+    }),
+  }),
+)
+export const relations_entries_locales = relations(entries_locales, ({ one }) => ({
+  _parentID: one(entries, {
+    fields: [entries_locales._parentID],
+    references: [entries.id],
+    relationName: '_locales',
+  }),
+  seo_image: one(media, {
+    fields: [entries_locales.seo_image],
+    references: [media.id],
+    relationName: 'seo_image',
+  }),
+}))
+export const relations_entries_rels = relations(entries_rels, ({ one }) => ({
+  parent: one(entries, {
+    fields: [entries_rels.parent],
+    references: [entries.id],
+    relationName: '_rels',
+  }),
+  categoriesID: one(categories, {
+    fields: [entries_rels.categoriesID],
+    references: [categories.id],
+    relationName: 'categories',
+  }),
+  tagsID: one(tags, {
+    fields: [entries_rels.tagsID],
+    references: [tags.id],
+    relationName: 'tags',
+  }),
+}))
+export const relations_entries = relations(entries, ({ one, many }) => ({
+  type: one(categories, {
+    fields: [entries.type],
+    references: [categories.id],
+    relationName: 'type',
+  }),
+  details_narrative: one(narratives, {
+    fields: [entries.details_narrative],
+    references: [narratives.id],
+    relationName: 'details_narrative',
+  }),
+  details_session: one(sessions, {
+    fields: [entries.details_session],
+    references: [sessions.id],
+    relationName: 'details_session',
+  }),
+  details_drivers: one(drivers, {
+    fields: [entries.details_drivers],
+    references: [drivers.id],
+    relationName: 'details_drivers',
+  }),
+  details_crew: one(members, {
+    fields: [entries.details_crew],
+    references: [members.id],
+    relationName: 'details_crew',
+  }),
+  details_car: one(cars, {
+    fields: [entries.details_car],
+    references: [cars.id],
+    relationName: 'details_car',
+  }),
+  details_classification: one(classifications, {
+    fields: [entries.details_classification],
+    references: [classifications.id],
+    relationName: 'details_classification',
+  }),
+  traits_eligibility_list: many(entries_traits_eligibility_list, {
+    relationName: 'traits_eligibility_list',
+  }),
+  traits_preferences: one(preferences, {
+    fields: [entries.traits_preferences],
+    references: [preferences.id],
+    relationName: 'traits_preferences',
+  }),
+  traits_specifications: one(specifications, {
+    fields: [entries.traits_specifications],
+    references: [specifications.id],
+    relationName: 'traits_specifications',
+  }),
+  metrics_parameters: many(entries_metrics_parameters, {
+    relationName: 'metrics_parameters',
+  }),
+  assets_thumbnail: one(media, {
+    fields: [entries.assets_thumbnail],
+    references: [media.id],
+    relationName: 'assets_thumbnail',
+  }),
+  assets_livery: one(media, {
+    fields: [entries.assets_livery],
+    references: [media.id],
+    relationName: 'assets_livery',
+  }),
+  assets_gallery: one(galleries, {
+    fields: [entries.assets_gallery],
+    references: [galleries.id],
+    relationName: 'assets_gallery',
+  }),
+  assets_playlist: one(playlists, {
+    fields: [entries.assets_playlist],
+    references: [playlists.id],
+    relationName: 'assets_playlist',
+  }),
+  contexts_notes: one(notes, {
+    fields: [entries.contexts_notes],
+    references: [notes.id],
+    relationName: 'contexts_notes',
+  }),
+  _locales: many(entries_locales, {
+    relationName: '_locales',
+  }),
+  _rels: many(entries_rels, {
+    relationName: '_rels',
+  }),
+}))
+export const relations_results_traits_achievement_list = relations(
+  results_traits_achievement_list,
+  ({ one }) => ({
+    _parentID: one(results, {
+      fields: [results_traits_achievement_list._parentID],
+      references: [results.id],
+      relationName: 'traits_achievement_list',
+    }),
+  }),
+)
+export const relations_results_metrics_performance_list = relations(
+  results_metrics_performance_list,
+  ({ one }) => ({
+    _parentID: one(results, {
+      fields: [results_metrics_performance_list._parentID],
+      references: [results.id],
+      relationName: 'metrics_performance_list',
+    }),
+  }),
+)
+export const relations_results_metrics_stoppages = relations(
+  results_metrics_stoppages,
+  ({ one }) => ({
+    _parentID: one(results, {
+      fields: [results_metrics_stoppages._parentID],
+      references: [results.id],
+      relationName: 'metrics_stoppages',
+    }),
+  }),
+)
+export const relations_results_locales = relations(results_locales, ({ one }) => ({
+  _parentID: one(results, {
+    fields: [results_locales._parentID],
+    references: [results.id],
+    relationName: '_locales',
+  }),
+  seo_image: one(media, {
+    fields: [results_locales.seo_image],
+    references: [media.id],
+    relationName: 'seo_image',
+  }),
+}))
+export const relations_results_rels = relations(results_rels, ({ one }) => ({
+  parent: one(results, {
+    fields: [results_rels.parent],
+    references: [results.id],
+    relationName: '_rels',
+  }),
+  categoriesID: one(categories, {
+    fields: [results_rels.categoriesID],
+    references: [categories.id],
+    relationName: 'categories',
+  }),
+  tagsID: one(tags, {
+    fields: [results_rels.tagsID],
+    references: [tags.id],
+    relationName: 'tags',
+  }),
+}))
+export const relations_results = relations(results, ({ one, many }) => ({
+  type: one(categories, {
+    fields: [results.type],
+    references: [categories.id],
+    relationName: 'type',
+  }),
+  details_narrative: one(narratives, {
+    fields: [results.details_narrative],
+    references: [narratives.id],
+    relationName: 'details_narrative',
+  }),
+  details_classification: one(classifications, {
+    fields: [results.details_classification],
+    references: [classifications.id],
+    relationName: 'details_classification',
+  }),
+  details_highlights: one(highlights, {
+    fields: [results.details_highlights],
+    references: [highlights.id],
+    relationName: 'details_highlights',
+  }),
+  details_incidents: one(incidents, {
+    fields: [results.details_incidents],
+    references: [incidents.id],
+    relationName: 'details_incidents',
+  }),
+  traits_achievement_list: many(results_traits_achievement_list, {
+    relationName: 'traits_achievement_list',
+  }),
+  metrics_performance_list: many(results_metrics_performance_list, {
+    relationName: 'metrics_performance_list',
+  }),
+  metrics_stoppages: many(results_metrics_stoppages, {
+    relationName: 'metrics_stoppages',
+  }),
+  assets_visualization: one(visualizations, {
+    fields: [results.assets_visualization],
+    references: [visualizations.id],
+    relationName: 'assets_visualization',
+  }),
+  contexts_entry: one(entries, {
+    fields: [results.contexts_entry],
+    references: [entries.id],
+    relationName: 'contexts_entry',
+  }),
+  contexts_notes: one(notes, {
+    fields: [results.contexts_notes],
+    references: [notes.id],
+    relationName: 'contexts_notes',
+  }),
+  _locales: many(results_locales, {
+    relationName: '_locales',
+  }),
+  _rels: many(results_rels, {
+    relationName: '_rels',
+  }),
+}))
+export const relations_points_traits_ranking_list = relations(
+  points_traits_ranking_list,
+  ({ one }) => ({
+    _parentID: one(points, {
+      fields: [points_traits_ranking_list._parentID],
+      references: [points.id],
+      relationName: 'traits_ranking_list',
+    }),
+  }),
+)
+export const relations_points_traits_modifiers = relations(points_traits_modifiers, ({ one }) => ({
+  _parentID: one(points, {
+    fields: [points_traits_modifiers._parentID],
+    references: [points.id],
+    relationName: 'traits_modifiers',
+  }),
+}))
+export const relations_points_locales = relations(points_locales, ({ one }) => ({
+  _parentID: one(points, {
+    fields: [points_locales._parentID],
+    references: [points.id],
+    relationName: '_locales',
+  }),
+  seo_image: one(media, {
+    fields: [points_locales.seo_image],
+    references: [media.id],
+    relationName: 'seo_image',
+  }),
+}))
+export const relations_points_rels = relations(points_rels, ({ one }) => ({
+  parent: one(points, {
+    fields: [points_rels.parent],
+    references: [points.id],
+    relationName: '_rels',
+  }),
+  categoriesID: one(categories, {
+    fields: [points_rels.categoriesID],
+    references: [categories.id],
+    relationName: 'categories',
+  }),
+  tagsID: one(tags, {
+    fields: [points_rels.tagsID],
+    references: [tags.id],
+    relationName: 'tags',
+  }),
+}))
+export const relations_points = relations(points, ({ one, many }) => ({
+  type: one(categories, {
+    fields: [points.type],
+    references: [categories.id],
+    relationName: 'type',
+  }),
+  details_result: one(results, {
+    fields: [points.details_result],
+    references: [results.id],
+    relationName: 'details_result',
+  }),
+  details_classification: one(classifications, {
+    fields: [points.details_classification],
+    references: [classifications.id],
+    relationName: 'details_classification',
+  }),
+  details_specification: one(specifications, {
+    fields: [points.details_specification],
+    references: [specifications.id],
+    relationName: 'details_specification',
+  }),
+  traits_ranking_list: many(points_traits_ranking_list, {
+    relationName: 'traits_ranking_list',
+  }),
+  traits_modifiers: many(points_traits_modifiers, {
+    relationName: 'traits_modifiers',
+  }),
+  contexts_authorities: one(organizations, {
+    fields: [points.contexts_authorities],
+    references: [organizations.id],
+    relationName: 'contexts_authorities',
+  }),
+  contexts_entries: one(entries, {
+    fields: [points.contexts_entries],
+    references: [entries.id],
+    relationName: 'contexts_entries',
+  }),
+  contexts_drivers: one(drivers, {
+    fields: [points.contexts_drivers],
+    references: [drivers.id],
+    relationName: 'contexts_drivers',
+  }),
+  contexts_insights: one(notes, {
+    fields: [points.contexts_insights],
+    references: [notes.id],
+    relationName: 'contexts_insights',
+  }),
+  _locales: many(points_locales, {
+    relationName: '_locales',
+  }),
+  _rels: many(points_rels, {
+    relationName: '_rels',
+  }),
+}))
+export const relations_drivers_locales = relations(drivers_locales, ({ one }) => ({
+  _parentID: one(drivers, {
+    fields: [drivers_locales._parentID],
+    references: [drivers.id],
+    relationName: '_locales',
+  }),
+  seo_image: one(media, {
+    fields: [drivers_locales.seo_image],
+    references: [media.id],
+    relationName: 'seo_image',
+  }),
+}))
+export const relations_drivers_rels = relations(drivers_rels, ({ one }) => ({
+  parent: one(drivers, {
+    fields: [drivers_rels.parent],
+    references: [drivers.id],
+    relationName: '_rels',
+  }),
+  membersID: one(members, {
+    fields: [drivers_rels.membersID],
+    references: [members.id],
+    relationName: 'members',
+  }),
+  leadersID: one(leaders, {
+    fields: [drivers_rels.leadersID],
+    references: [leaders.id],
+    relationName: 'leaders',
+  }),
+  categoriesID: one(categories, {
+    fields: [drivers_rels.categoriesID],
+    references: [categories.id],
+    relationName: 'categories',
+  }),
+  tagsID: one(tags, {
+    fields: [drivers_rels.tagsID],
+    references: [tags.id],
+    relationName: 'tags',
+  }),
+}))
+export const relations_drivers = relations(drivers, ({ one, many }) => ({
+  type: one(categories, {
+    fields: [drivers.type],
+    references: [categories.id],
+    relationName: 'type',
+  }),
+  details_narrative: one(narratives, {
+    fields: [drivers.details_narrative],
+    references: [narratives.id],
+    relationName: 'details_narrative',
+  }),
+  details_biography: one(histories, {
+    fields: [drivers.details_biography],
+    references: [histories.id],
+    relationName: 'details_biography',
+  }),
+  details_journeys: one(journeys, {
+    fields: [drivers.details_journeys],
+    references: [journeys.id],
+    relationName: 'details_journeys',
+  }),
+  traits_channels: one(channels, {
+    fields: [drivers.traits_channels],
+    references: [channels.id],
+    relationName: 'traits_channels',
+  }),
+  traits_experiences: one(experiences, {
+    fields: [drivers.traits_experiences],
+    references: [experiences.id],
+    relationName: 'traits_experiences',
+  }),
+  traits_skills: one(skills, {
+    fields: [drivers.traits_skills],
+    references: [skills.id],
+    relationName: 'traits_skills',
+  }),
+  traits_trainings: one(trainings, {
+    fields: [drivers.traits_trainings],
+    references: [trainings.id],
+    relationName: 'traits_trainings',
+  }),
+  metrics_results: one(results, {
+    fields: [drivers.metrics_results],
+    references: [results.id],
+    relationName: 'metrics_results',
+  }),
+  metrics_points: one(points, {
+    fields: [drivers.metrics_points],
+    references: [points.id],
+    relationName: 'metrics_points',
+  }),
+  metrics_awards: one(awards, {
+    fields: [drivers.metrics_awards],
+    references: [awards.id],
+    relationName: 'metrics_awards',
+  }),
+  assets_thumbnail: one(media, {
+    fields: [drivers.assets_thumbnail],
+    references: [media.id],
+    relationName: 'assets_thumbnail',
+  }),
+  assets_cover: one(media, {
+    fields: [drivers.assets_cover],
+    references: [media.id],
+    relationName: 'assets_cover',
+  }),
+  assets_helmet: one(media, {
+    fields: [drivers.assets_helmet],
+    references: [media.id],
+    relationName: 'assets_helmet',
+  }),
+  assets_suit: one(media, {
+    fields: [drivers.assets_suit],
+    references: [media.id],
+    relationName: 'assets_suit',
+  }),
+  assets_gallery: one(galleries, {
+    fields: [drivers.assets_gallery],
+    references: [galleries.id],
+    relationName: 'assets_gallery',
+  }),
+  contexts_teammates: one(drivers, {
+    fields: [drivers.contexts_teammates],
+    references: [drivers.id],
+    relationName: 'contexts_teammates',
+  }),
+  contexts_cars: one(cars, {
+    fields: [drivers.contexts_cars],
+    references: [cars.id],
+    relationName: 'contexts_cars',
+  }),
+  contexts_kits: one(kits, {
+    fields: [drivers.contexts_kits],
+    references: [kits.id],
+    relationName: 'contexts_kits',
+  }),
+  _locales: many(drivers_locales, {
+    relationName: '_locales',
+  }),
+  _rels: many(drivers_rels, {
+    relationName: '_rels',
+  }),
+}))
+export const relations_leaders_locales = relations(leaders_locales, ({ one }) => ({
+  _parentID: one(leaders, {
+    fields: [leaders_locales._parentID],
+    references: [leaders.id],
+    relationName: '_locales',
+  }),
+  seo_image: one(media, {
+    fields: [leaders_locales.seo_image],
+    references: [media.id],
+    relationName: 'seo_image',
+  }),
+}))
+export const relations_leaders_rels = relations(leaders_rels, ({ one }) => ({
+  parent: one(leaders, {
+    fields: [leaders_rels.parent],
+    references: [leaders.id],
+    relationName: '_rels',
+  }),
+  leadersID: one(leaders, {
+    fields: [leaders_rels.leadersID],
+    references: [leaders.id],
+    relationName: 'leaders',
+  }),
+  individualsID: one(individuals, {
+    fields: [leaders_rels.individualsID],
+    references: [individuals.id],
+    relationName: 'individuals',
+  }),
+  driversID: one(drivers, {
+    fields: [leaders_rels.driversID],
+    references: [drivers.id],
+    relationName: 'drivers',
+  }),
+  membersID: one(members, {
+    fields: [leaders_rels.membersID],
+    references: [members.id],
+    relationName: 'members',
+  }),
+  categoriesID: one(categories, {
+    fields: [leaders_rels.categoriesID],
+    references: [categories.id],
+    relationName: 'categories',
+  }),
+  tagsID: one(tags, {
+    fields: [leaders_rels.tagsID],
+    references: [tags.id],
+    relationName: 'tags',
+  }),
+}))
+export const relations_leaders = relations(leaders, ({ one, many }) => ({
+  type: one(categories, {
+    fields: [leaders.type],
+    references: [categories.id],
+    relationName: 'type',
+  }),
+  details_narrative: one(narratives, {
+    fields: [leaders.details_narrative],
+    references: [narratives.id],
+    relationName: 'details_narrative',
+  }),
+  details_biography: one(histories, {
+    fields: [leaders.details_biography],
+    references: [histories.id],
+    relationName: 'details_biography',
+  }),
+  details_vision: one(principles, {
+    fields: [leaders.details_vision],
+    references: [principles.id],
+    relationName: 'details_vision',
+  }),
+  details_departments: one(classifications, {
+    fields: [leaders.details_departments],
+    references: [classifications.id],
+    relationName: 'details_departments',
+  }),
+  traits_channels: one(channels, {
+    fields: [leaders.traits_channels],
+    references: [channels.id],
+    relationName: 'traits_channels',
+  }),
+  traits_personalities: one(features, {
+    fields: [leaders.traits_personalities],
+    references: [features.id],
+    relationName: 'traits_personalities',
+  }),
+  traits_achievements: one(experiences, {
+    fields: [leaders.traits_achievements],
+    references: [experiences.id],
+    relationName: 'traits_achievements',
+  }),
+  traits_strategies: one(strategies, {
+    fields: [leaders.traits_strategies],
+    references: [strategies.id],
+    relationName: 'traits_strategies',
+  }),
+  metrics_impacts: one(impacts, {
+    fields: [leaders.metrics_impacts],
+    references: [impacts.id],
+    relationName: 'metrics_impacts',
+  }),
+  metrics_awards: one(awards, {
+    fields: [leaders.metrics_awards],
+    references: [awards.id],
+    relationName: 'metrics_awards',
+  }),
+  assets_avatar: one(media, {
+    fields: [leaders.assets_avatar],
+    references: [media.id],
+    relationName: 'assets_avatar',
+  }),
+  assets_cover: one(media, {
+    fields: [leaders.assets_cover],
+    references: [media.id],
+    relationName: 'assets_cover',
+  }),
+  assets_gallery: one(galleries, {
+    fields: [leaders.assets_gallery],
+    references: [galleries.id],
+    relationName: 'assets_gallery',
+  }),
+  contexts_anecdotes: one(notes, {
+    fields: [leaders.contexts_anecdotes],
+    references: [notes.id],
+    relationName: 'contexts_anecdotes',
+  }),
+  _locales: many(leaders_locales, {
+    relationName: '_locales',
+  }),
+  _rels: many(leaders_rels, {
+    relationName: '_rels',
+  }),
+}))
+export const relations_members_locales = relations(members_locales, ({ one }) => ({
+  _parentID: one(members, {
+    fields: [members_locales._parentID],
+    references: [members.id],
+    relationName: '_locales',
+  }),
+  seo_image: one(media, {
+    fields: [members_locales.seo_image],
+    references: [media.id],
+    relationName: 'seo_image',
+  }),
+}))
+export const relations_members_rels = relations(members_rels, ({ one }) => ({
+  parent: one(members, {
+    fields: [members_rels.parent],
+    references: [members.id],
+    relationName: '_rels',
+  }),
+  leadersID: one(leaders, {
+    fields: [members_rels.leadersID],
+    references: [leaders.id],
+    relationName: 'leaders',
+  }),
+  membersID: one(members, {
+    fields: [members_rels.membersID],
+    references: [members.id],
+    relationName: 'members',
+  }),
+  categoriesID: one(categories, {
+    fields: [members_rels.categoriesID],
+    references: [categories.id],
+    relationName: 'categories',
+  }),
+  tagsID: one(tags, {
+    fields: [members_rels.tagsID],
+    references: [tags.id],
+    relationName: 'tags',
+  }),
+}))
+export const relations_members = relations(members, ({ one, many }) => ({
+  type: one(categories, {
+    fields: [members.type],
+    references: [categories.id],
+    relationName: 'type',
+  }),
+  details_narrative: one(narratives, {
+    fields: [members.details_narrative],
+    references: [narratives.id],
+    relationName: 'details_narrative',
+  }),
+  details_departments: one(classifications, {
+    fields: [members.details_departments],
+    references: [classifications.id],
+    relationName: 'details_departments',
+  }),
+  traits_channels: one(channels, {
+    fields: [members.traits_channels],
+    references: [channels.id],
+    relationName: 'traits_channels',
+  }),
+  traits_personalities: one(features, {
+    fields: [members.traits_personalities],
+    references: [features.id],
+    relationName: 'traits_personalities',
+  }),
+  traits_duties: one(duties, {
+    fields: [members.traits_duties],
+    references: [duties.id],
+    relationName: 'traits_duties',
+  }),
+  traits_skills: one(skills, {
+    fields: [members.traits_skills],
+    references: [skills.id],
+    relationName: 'traits_skills',
+  }),
+  traits_trainings: one(trainings, {
+    fields: [members.traits_trainings],
+    references: [trainings.id],
+    relationName: 'traits_trainings',
+  }),
+  metrics_impacts: one(impacts, {
+    fields: [members.metrics_impacts],
+    references: [impacts.id],
+    relationName: 'metrics_impacts',
+  }),
+  metrics_awards: one(awards, {
+    fields: [members.metrics_awards],
+    references: [awards.id],
+    relationName: 'metrics_awards',
+  }),
+  assets_thumbnail: one(media, {
+    fields: [members.assets_thumbnail],
+    references: [media.id],
+    relationName: 'assets_thumbnail',
+  }),
+  assets_cover: one(media, {
+    fields: [members.assets_cover],
+    references: [media.id],
+    relationName: 'assets_cover',
+  }),
+  assets_gallery: one(galleries, {
+    fields: [members.assets_gallery],
+    references: [galleries.id],
+    relationName: 'assets_gallery',
+  }),
+  assets_certifications: one(archives, {
+    fields: [members.assets_certifications],
+    references: [archives.id],
+    relationName: 'assets_certifications',
+  }),
+  contexts_crew: one(drivers, {
+    fields: [members.contexts_crew],
+    references: [drivers.id],
+    relationName: 'contexts_crew',
+  }),
+  contexts_cars: one(cars, {
+    fields: [members.contexts_cars],
+    references: [cars.id],
+    relationName: 'contexts_cars',
+  }),
+  _locales: many(members_locales, {
+    relationName: '_locales',
+  }),
+  _rels: many(members_rels, {
+    relationName: '_rels',
+  }),
+}))
+export const relations_individuals_details_interests = relations(
+  individuals_details_interests,
+  ({ one }) => ({
+    _parentID: one(individuals, {
+      fields: [individuals_details_interests._parentID],
+      references: [individuals.id],
+      relationName: 'details_interests',
+    }),
+  }),
+)
+export const relations_individuals_traits_benefits = relations(
+  individuals_traits_benefits,
+  ({ one }) => ({
+    _parentID: one(individuals, {
+      fields: [individuals_traits_benefits._parentID],
+      references: [individuals.id],
+      relationName: 'traits_benefits',
+    }),
+  }),
+)
+export const relations_individuals_locales = relations(individuals_locales, ({ one }) => ({
+  _parentID: one(individuals, {
+    fields: [individuals_locales._parentID],
+    references: [individuals.id],
+    relationName: '_locales',
+  }),
+  seo_image: one(media, {
+    fields: [individuals_locales.seo_image],
+    references: [media.id],
+    relationName: 'seo_image',
+  }),
+}))
+export const relations_individuals_rels = relations(individuals_rels, ({ one }) => ({
+  parent: one(individuals, {
+    fields: [individuals_rels.parent],
+    references: [individuals.id],
+    relationName: '_rels',
+  }),
+  categoriesID: one(categories, {
+    fields: [individuals_rels.categoriesID],
+    references: [categories.id],
+    relationName: 'categories',
+  }),
+  tagsID: one(tags, {
+    fields: [individuals_rels.tagsID],
+    references: [tags.id],
+    relationName: 'tags',
+  }),
+}))
+export const relations_individuals = relations(individuals, ({ one, many }) => ({
+  type: one(categories, {
+    fields: [individuals.type],
+    references: [categories.id],
+    relationName: 'type',
+  }),
+  details_narrative: one(narratives, {
+    fields: [individuals.details_narrative],
+    references: [narratives.id],
+    relationName: 'details_narrative',
+  }),
+  details_interests: many(individuals_details_interests, {
+    relationName: 'details_interests',
+  }),
+  traits_channels: one(channels, {
+    fields: [individuals.traits_channels],
+    references: [channels.id],
+    relationName: 'traits_channels',
+  }),
+  traits_benefits: many(individuals_traits_benefits, {
+    relationName: 'traits_benefits',
+  }),
+  assets_avatar: one(media, {
+    fields: [individuals.assets_avatar],
+    references: [media.id],
+    relationName: 'assets_avatar',
+  }),
+  assets_gallery: one(galleries, {
+    fields: [individuals.assets_gallery],
+    references: [galleries.id],
+    relationName: 'assets_gallery',
+  }),
+  contexts_history: one(histories, {
+    fields: [individuals.contexts_history],
+    references: [histories.id],
+    relationName: 'contexts_history',
+  }),
+  contexts_notes: one(notes, {
+    fields: [individuals.contexts_notes],
+    references: [notes.id],
+    relationName: 'contexts_notes',
+  }),
+  _locales: many(individuals_locales, {
+    relationName: '_locales',
+  }),
+  _rels: many(individuals_rels, {
+    relationName: '_rels',
+  }),
+}))
+export const relations_organizations_traits_benefits = relations(
+  organizations_traits_benefits,
+  ({ one }) => ({
+    _parentID: one(organizations, {
+      fields: [organizations_traits_benefits._parentID],
+      references: [organizations.id],
+      relationName: 'traits_benefits',
+    }),
+  }),
+)
+export const relations_organizations_locales = relations(organizations_locales, ({ one }) => ({
+  _parentID: one(organizations, {
+    fields: [organizations_locales._parentID],
+    references: [organizations.id],
+    relationName: '_locales',
+  }),
+  seo_image: one(media, {
+    fields: [organizations_locales.seo_image],
+    references: [media.id],
+    relationName: 'seo_image',
+  }),
+}))
+export const relations_organizations_rels = relations(organizations_rels, ({ one }) => ({
+  parent: one(organizations, {
+    fields: [organizations_rels.parent],
+    references: [organizations.id],
+    relationName: '_rels',
+  }),
+  categoriesID: one(categories, {
+    fields: [organizations_rels.categoriesID],
+    references: [categories.id],
+    relationName: 'categories',
+  }),
+  tagsID: one(tags, {
+    fields: [organizations_rels.tagsID],
+    references: [tags.id],
+    relationName: 'tags',
+  }),
+}))
+export const relations_organizations = relations(organizations, ({ one, many }) => ({
+  type: one(categories, {
+    fields: [organizations.type],
+    references: [categories.id],
+    relationName: 'type',
+  }),
+  details_narrative: one(narratives, {
+    fields: [organizations.details_narrative],
+    references: [narratives.id],
+    relationName: 'details_narrative',
+  }),
+  details_parent: one(organizations, {
+    fields: [organizations.details_parent],
+    references: [organizations.id],
+    relationName: 'details_parent',
+  }),
+  traits_channels: one(channels, {
+    fields: [organizations.traits_channels],
+    references: [channels.id],
+    relationName: 'traits_channels',
+  }),
+  traits_benefits: many(organizations_traits_benefits, {
+    relationName: 'traits_benefits',
+  }),
+  assets_logo: one(media, {
+    fields: [organizations.assets_logo],
+    references: [media.id],
+    relationName: 'assets_logo',
+  }),
+  assets_gallery: one(galleries, {
+    fields: [organizations.assets_gallery],
+    references: [galleries.id],
+    relationName: 'assets_gallery',
+  }),
+  contexts_headquarters: one(locations, {
+    fields: [organizations.contexts_headquarters],
+    references: [locations.id],
+    relationName: 'contexts_headquarters',
+  }),
+  contexts_history: one(histories, {
+    fields: [organizations.contexts_history],
+    references: [histories.id],
+    relationName: 'contexts_history',
+  }),
+  contexts_notes: one(notes, {
+    fields: [organizations.contexts_notes],
+    references: [notes.id],
+    relationName: 'contexts_notes',
+  }),
+  _locales: many(organizations_locales, {
+    relationName: '_locales',
+  }),
+  _rels: many(organizations_rels, {
+    relationName: '_rels',
+  }),
+}))
+export const relations_users_roles = relations(users_roles, ({ one }) => ({
+  parent: one(users, {
+    fields: [users_roles.parent],
+    references: [users.id],
+    relationName: 'roles',
+  }),
+}))
+export const relations_users_sessions = relations(users_sessions, ({ one }) => ({
+  _parentID: one(users, {
+    fields: [users_sessions._parentID],
+    references: [users.id],
+    relationName: 'sessions',
+  }),
+}))
+export const relations_users = relations(users, ({ many }) => ({
+  roles: many(users_roles, {
+    relationName: 'roles',
+  }),
+  sessions: many(users_sessions, {
+    relationName: 'sessions',
+  }),
+}))
+export const relations_narratives_details_timeline = relations(
+  narratives_details_timeline,
+  ({ one }) => ({
+    _parentID: one(narratives, {
+      fields: [narratives_details_timeline._parentID],
+      references: [narratives.id],
+      relationName: 'details_timeline',
+    }),
+  }),
+)
+export const relations_narratives_locales = relations(narratives_locales, ({ one }) => ({
+  _parentID: one(narratives, {
+    fields: [narratives_locales._parentID],
+    references: [narratives.id],
+    relationName: '_locales',
+  }),
+  seo_image: one(media, {
+    fields: [narratives_locales.seo_image],
+    references: [media.id],
+    relationName: 'seo_image',
+  }),
+}))
+export const relations_narratives_rels = relations(narratives_rels, ({ one }) => ({
+  parent: one(narratives, {
+    fields: [narratives_rels.parent],
+    references: [narratives.id],
+    relationName: '_rels',
+  }),
+  organizationsID: one(organizations, {
+    fields: [narratives_rels.organizationsID],
+    references: [organizations.id],
+    relationName: 'organizations',
+  }),
+  individualsID: one(individuals, {
+    fields: [narratives_rels.individualsID],
+    references: [individuals.id],
+    relationName: 'individuals',
+  }),
+  leadersID: one(leaders, {
+    fields: [narratives_rels.leadersID],
+    references: [leaders.id],
+    relationName: 'leaders',
+  }),
+  driversID: one(drivers, {
+    fields: [narratives_rels.driversID],
+    references: [drivers.id],
+    relationName: 'drivers',
+  }),
+  membersID: one(members, {
+    fields: [narratives_rels.membersID],
+    references: [members.id],
+    relationName: 'members',
+  }),
+  categoriesID: one(categories, {
+    fields: [narratives_rels.categoriesID],
+    references: [categories.id],
+    relationName: 'categories',
+  }),
+  tagsID: one(tags, {
+    fields: [narratives_rels.tagsID],
+    references: [tags.id],
+    relationName: 'tags',
+  }),
+}))
+export const relations_narratives = relations(narratives, ({ one, many }) => ({
+  details_timeline: many(narratives_details_timeline, {
+    relationName: 'details_timeline',
+  }),
+  traits_tone: one(tones, {
+    fields: [narratives.traits_tone],
+    references: [tones.id],
+    relationName: 'traits_tone',
+  }),
+  contexts_locations: one(locations, {
+    fields: [narratives.contexts_locations],
+    references: [locations.id],
+    relationName: 'contexts_locations',
+  }),
+  contexts_notes: one(notes, {
+    fields: [narratives.contexts_notes],
+    references: [notes.id],
+    relationName: 'contexts_notes',
+  }),
+  _locales: many(narratives_locales, {
+    relationName: '_locales',
+  }),
+  _rels: many(narratives_rels, {
+    relationName: '_rels',
+  }),
+}))
+export const relations_stories_traits_concerns = relations(stories_traits_concerns, ({ one }) => ({
+  _parentID: one(stories, {
+    fields: [stories_traits_concerns._parentID],
+    references: [stories.id],
+    relationName: 'traits_concerns',
+  }),
+}))
+export const relations_stories_traits_interactions = relations(
+  stories_traits_interactions,
+  ({ one }) => ({
+    _parentID: one(stories, {
+      fields: [stories_traits_interactions._parentID],
+      references: [stories.id],
+      relationName: 'traits_interactions',
+    }),
+  }),
+)
+export const relations_stories_locales = relations(stories_locales, ({ one }) => ({
+  _parentID: one(stories, {
+    fields: [stories_locales._parentID],
+    references: [stories.id],
+    relationName: '_locales',
+  }),
+  seo_image: one(media, {
+    fields: [stories_locales.seo_image],
+    references: [media.id],
+    relationName: 'seo_image',
+  }),
+}))
+export const relations_stories_rels = relations(stories_rels, ({ one }) => ({
+  parent: one(stories, {
+    fields: [stories_rels.parent],
+    references: [stories.id],
+    relationName: '_rels',
+  }),
+  categoriesID: one(categories, {
+    fields: [stories_rels.categoriesID],
+    references: [categories.id],
+    relationName: 'categories',
+  }),
+  tagsID: one(tags, {
+    fields: [stories_rels.tagsID],
+    references: [tags.id],
+    relationName: 'tags',
+  }),
+}))
+export const relations_stories = relations(stories, ({ one, many }) => ({
+  type: one(categories, {
+    fields: [stories.type],
+    references: [categories.id],
+    relationName: 'type',
+  }),
+  details_narrative: one(narratives, {
+    fields: [stories.details_narrative],
+    references: [narratives.id],
+    relationName: 'details_narrative',
+  }),
+  traits_concerns: many(stories_traits_concerns, {
+    relationName: 'traits_concerns',
+  }),
+  traits_interactions: many(stories_traits_interactions, {
+    relationName: 'traits_interactions',
+  }),
+  assets_gallery: one(galleries, {
+    fields: [stories.assets_gallery],
+    references: [galleries.id],
+    relationName: 'assets_gallery',
+  }),
+  assets_playlist: one(playlists, {
+    fields: [stories.assets_playlist],
+    references: [playlists.id],
+    relationName: 'assets_playlist',
+  }),
+  contexts_highlights: one(highlights, {
+    fields: [stories.contexts_highlights],
+    references: [highlights.id],
+    relationName: 'contexts_highlights',
+  }),
+  contexts_incidents: one(incidents, {
+    fields: [stories.contexts_incidents],
+    references: [incidents.id],
+    relationName: 'contexts_incidents',
+  }),
+  _locales: many(stories_locales, {
+    relationName: '_locales',
+  }),
+  _rels: many(stories_rels, {
+    relationName: '_rels',
+  }),
+}))
+export const relations_histories_locales = relations(histories_locales, ({ one }) => ({
+  _parentID: one(histories, {
+    fields: [histories_locales._parentID],
+    references: [histories.id],
+    relationName: '_locales',
+  }),
+  seo_image: one(media, {
+    fields: [histories_locales.seo_image],
+    references: [media.id],
+    relationName: 'seo_image',
+  }),
+}))
+export const relations_histories_rels = relations(histories_rels, ({ one }) => ({
+  parent: one(histories, {
+    fields: [histories_rels.parent],
+    references: [histories.id],
+    relationName: '_rels',
+  }),
+  categoriesID: one(categories, {
+    fields: [histories_rels.categoriesID],
+    references: [categories.id],
+    relationName: 'categories',
+  }),
+  tagsID: one(tags, {
+    fields: [histories_rels.tagsID],
+    references: [tags.id],
+    relationName: 'tags',
+  }),
+}))
+export const relations_histories = relations(histories, ({ one, many }) => ({
+  type: one(categories, {
+    fields: [histories.type],
+    references: [categories.id],
+    relationName: 'type',
+  }),
+  details_narrative: one(narratives, {
+    fields: [histories.details_narrative],
+    references: [narratives.id],
+    relationName: 'details_narrative',
+  }),
+  details_stories: one(stories, {
+    fields: [histories.details_stories],
+    references: [stories.id],
+    relationName: 'details_stories',
+  }),
+  assets_gallery: one(galleries, {
+    fields: [histories.assets_gallery],
+    references: [galleries.id],
+    relationName: 'assets_gallery',
+  }),
+  assets_playlist: one(playlists, {
+    fields: [histories.assets_playlist],
+    references: [playlists.id],
+    relationName: 'assets_playlist',
+  }),
+  _locales: many(histories_locales, {
+    relationName: '_locales',
+  }),
+  _rels: many(histories_rels, {
+    relationName: '_rels',
+  }),
+}))
+export const relations_journeys_traits_lessons = relations(journeys_traits_lessons, ({ one }) => ({
+  _parentID: one(journeys, {
+    fields: [journeys_traits_lessons._parentID],
+    references: [journeys.id],
+    relationName: 'traits_lessons',
+  }),
+}))
+export const relations_journeys_locales = relations(journeys_locales, ({ one }) => ({
+  _parentID: one(journeys, {
+    fields: [journeys_locales._parentID],
+    references: [journeys.id],
+    relationName: '_locales',
+  }),
+  seo_image: one(media, {
+    fields: [journeys_locales.seo_image],
+    references: [media.id],
+    relationName: 'seo_image',
+  }),
+}))
+export const relations_journeys_rels = relations(journeys_rels, ({ one }) => ({
+  parent: one(journeys, {
+    fields: [journeys_rels.parent],
+    references: [journeys.id],
+    relationName: '_rels',
+  }),
+  categoriesID: one(categories, {
+    fields: [journeys_rels.categoriesID],
+    references: [categories.id],
+    relationName: 'categories',
+  }),
+  tagsID: one(tags, {
+    fields: [journeys_rels.tagsID],
+    references: [tags.id],
+    relationName: 'tags',
+  }),
+}))
+export const relations_journeys = relations(journeys, ({ one, many }) => ({
+  type: one(categories, {
+    fields: [journeys.type],
+    references: [categories.id],
+    relationName: 'type',
+  }),
+  details_narrative: one(narratives, {
+    fields: [journeys.details_narrative],
+    references: [narratives.id],
+    relationName: 'details_narrative',
+  }),
+  details_stories: one(stories, {
+    fields: [journeys.details_stories],
+    references: [stories.id],
+    relationName: 'details_stories',
+  }),
+  traits_lessons: many(journeys_traits_lessons, {
+    relationName: 'traits_lessons',
+  }),
+  traits_decisions: one(decisions, {
+    fields: [journeys.traits_decisions],
+    references: [decisions.id],
+    relationName: 'traits_decisions',
+  }),
+  traits_impacts: one(impacts, {
+    fields: [journeys.traits_impacts],
+    references: [impacts.id],
+    relationName: 'traits_impacts',
+  }),
+  assets_gallery: one(galleries, {
+    fields: [journeys.assets_gallery],
+    references: [galleries.id],
+    relationName: 'assets_gallery',
+  }),
+  assets_playlist: one(playlists, {
+    fields: [journeys.assets_playlist],
+    references: [playlists.id],
+    relationName: 'assets_playlist',
+  }),
+  _locales: many(journeys_locales, {
+    relationName: '_locales',
+  }),
+  _rels: many(journeys_rels, {
+    relationName: '_rels',
+  }),
+}))
+export const relations_notes_traits_intentions = relations(notes_traits_intentions, ({ one }) => ({
+  _parentID: one(notes, {
+    fields: [notes_traits_intentions._parentID],
+    references: [notes.id],
+    relationName: 'traits_intentions',
+  }),
+}))
+export const relations_notes_locales = relations(notes_locales, ({ one }) => ({
+  _parentID: one(notes, {
+    fields: [notes_locales._parentID],
+    references: [notes.id],
+    relationName: '_locales',
+  }),
+  seo_image: one(media, {
+    fields: [notes_locales.seo_image],
+    references: [media.id],
+    relationName: 'seo_image',
+  }),
+}))
+export const relations_notes_rels = relations(notes_rels, ({ one }) => ({
+  parent: one(notes, {
+    fields: [notes_rels.parent],
+    references: [notes.id],
+    relationName: '_rels',
+  }),
+  categoriesID: one(categories, {
+    fields: [notes_rels.categoriesID],
+    references: [categories.id],
+    relationName: 'categories',
+  }),
+  tagsID: one(tags, {
+    fields: [notes_rels.tagsID],
+    references: [tags.id],
+    relationName: 'tags',
+  }),
+}))
+export const relations_notes = relations(notes, ({ one, many }) => ({
+  type: one(categories, {
+    fields: [notes.type],
+    references: [categories.id],
+    relationName: 'type',
+  }),
+  traits_intentions: many(notes_traits_intentions, {
+    relationName: 'traits_intentions',
+  }),
+  assets_archive: one(archives, {
+    fields: [notes.assets_archive],
+    references: [archives.id],
+    relationName: 'assets_archive',
+  }),
+  _locales: many(notes_locales, {
+    relationName: '_locales',
+  }),
+  _rels: many(notes_rels, {
+    relationName: '_rels',
+  }),
+}))
+export const relations_pages_locales = relations(pages_locales, ({ one }) => ({
+  _parentID: one(pages, {
+    fields: [pages_locales._parentID],
+    references: [pages.id],
+    relationName: '_locales',
+  }),
+  seo_image: one(media, {
+    fields: [pages_locales.seo_image],
+    references: [media.id],
+    relationName: 'seo_image',
+  }),
+}))
+export const relations_pages_rels = relations(pages_rels, ({ one }) => ({
+  parent: one(pages, {
+    fields: [pages_rels.parent],
+    references: [pages.id],
+    relationName: '_rels',
+  }),
+  categoriesID: one(categories, {
+    fields: [pages_rels.categoriesID],
+    references: [categories.id],
+    relationName: 'categories',
+  }),
+  tagsID: one(tags, {
+    fields: [pages_rels.tagsID],
+    references: [tags.id],
+    relationName: 'tags',
+  }),
+}))
+export const relations_pages = relations(pages, ({ many }) => ({
+  _locales: many(pages_locales, {
+    relationName: '_locales',
+  }),
+  _rels: many(pages_rels, {
+    relationName: '_rels',
+  }),
+}))
+export const relations_cars_locales = relations(cars_locales, ({ one }) => ({
+  _parentID: one(cars, {
+    fields: [cars_locales._parentID],
+    references: [cars.id],
+    relationName: '_locales',
+  }),
+  seo_image: one(media, {
+    fields: [cars_locales.seo_image],
+    references: [media.id],
+    relationName: 'seo_image',
+  }),
+}))
+export const relations_cars_rels = relations(cars_rels, ({ one }) => ({
+  parent: one(cars, {
+    fields: [cars_rels.parent],
+    references: [cars.id],
+    relationName: '_rels',
+  }),
+  organizationsID: one(organizations, {
+    fields: [cars_rels.organizationsID],
+    references: [organizations.id],
+    relationName: 'organizations',
+  }),
+  individualsID: one(individuals, {
+    fields: [cars_rels.individualsID],
+    references: [individuals.id],
+    relationName: 'individuals',
+  }),
+  leadersID: one(leaders, {
+    fields: [cars_rels.leadersID],
+    references: [leaders.id],
+    relationName: 'leaders',
+  }),
+  categoriesID: one(categories, {
+    fields: [cars_rels.categoriesID],
+    references: [categories.id],
+    relationName: 'categories',
+  }),
+  tagsID: one(tags, {
+    fields: [cars_rels.tagsID],
+    references: [tags.id],
+    relationName: 'tags',
+  }),
+}))
+export const relations_cars = relations(cars, ({ one, many }) => ({
+  type: one(categories, {
+    fields: [cars.type],
+    references: [categories.id],
+    relationName: 'type',
+  }),
+  details_classifications: one(classifications, {
+    fields: [cars.details_classifications],
+    references: [classifications.id],
+    relationName: 'details_classifications',
+  }),
+  traits_features: one(features, {
+    fields: [cars.traits_features],
+    references: [features.id],
+    relationName: 'traits_features',
+  }),
+  traits_specifications: one(specifications, {
+    fields: [cars.traits_specifications],
+    references: [specifications.id],
+    relationName: 'traits_specifications',
+  }),
+  assets_primary: one(media, {
+    fields: [cars.assets_primary],
+    references: [media.id],
+    relationName: 'assets_primary',
+  }),
+  assets_cover: one(media, {
+    fields: [cars.assets_cover],
+    references: [media.id],
+    relationName: 'assets_cover',
+  }),
+  assets_gallery: one(galleries, {
+    fields: [cars.assets_gallery],
+    references: [galleries.id],
+    relationName: 'assets_gallery',
+  }),
+  assets_playlist: one(playlists, {
+    fields: [cars.assets_playlist],
+    references: [playlists.id],
+    relationName: 'assets_playlist',
+  }),
+  assets_visualization: one(visualizations, {
+    fields: [cars.assets_visualization],
+    references: [visualizations.id],
+    relationName: 'assets_visualization',
+  }),
+  assets_documents: one(archives, {
+    fields: [cars.assets_documents],
+    references: [archives.id],
+    relationName: 'assets_documents',
+  }),
+  contexts_manufacturers: one(organizations, {
+    fields: [cars.contexts_manufacturers],
+    references: [organizations.id],
+    relationName: 'contexts_manufacturers',
+  }),
+  contexts_drivers: one(drivers, {
+    fields: [cars.contexts_drivers],
+    references: [drivers.id],
+    relationName: 'contexts_drivers',
+  }),
+  contexts_crew: one(members, {
+    fields: [cars.contexts_crew],
+    references: [members.id],
+    relationName: 'contexts_crew',
+  }),
+  contexts_histories: one(histories, {
+    fields: [cars.contexts_histories],
+    references: [histories.id],
+    relationName: 'contexts_histories',
+  }),
+  _locales: many(cars_locales, {
+    relationName: '_locales',
+  }),
+  _rels: many(cars_rels, {
+    relationName: '_rels',
+  }),
+}))
+export const relations_kits_traits_materials = relations(kits_traits_materials, ({ one }) => ({
+  _parentID: one(kits, {
+    fields: [kits_traits_materials._parentID],
+    references: [kits.id],
+    relationName: 'traits_materials',
+  }),
+}))
+export const relations_kits_locales = relations(kits_locales, ({ one }) => ({
+  _parentID: one(kits, {
+    fields: [kits_locales._parentID],
+    references: [kits.id],
+    relationName: '_locales',
+  }),
+  seo_image: one(media, {
+    fields: [kits_locales.seo_image],
+    references: [media.id],
+    relationName: 'seo_image',
+  }),
+}))
+export const relations_kits_rels = relations(kits_rels, ({ one }) => ({
+  parent: one(kits, {
+    fields: [kits_rels.parent],
+    references: [kits.id],
+    relationName: '_rels',
+  }),
+  driversID: one(drivers, {
+    fields: [kits_rels.driversID],
+    references: [drivers.id],
+    relationName: 'drivers',
+  }),
+  membersID: one(members, {
+    fields: [kits_rels.membersID],
+    references: [members.id],
+    relationName: 'members',
+  }),
+  leadersID: one(leaders, {
+    fields: [kits_rels.leadersID],
+    references: [leaders.id],
+    relationName: 'leaders',
+  }),
+  individualsID: one(individuals, {
+    fields: [kits_rels.individualsID],
+    references: [individuals.id],
+    relationName: 'individuals',
+  }),
+  organizationsID: one(organizations, {
+    fields: [kits_rels.organizationsID],
+    references: [organizations.id],
+    relationName: 'organizations',
+  }),
+  categoriesID: one(categories, {
+    fields: [kits_rels.categoriesID],
+    references: [categories.id],
+    relationName: 'categories',
+  }),
+  tagsID: one(tags, {
+    fields: [kits_rels.tagsID],
+    references: [tags.id],
+    relationName: 'tags',
+  }),
+}))
+export const relations_kits = relations(kits, ({ one, many }) => ({
+  type: one(categories, {
+    fields: [kits.type],
+    references: [categories.id],
+    relationName: 'type',
+  }),
+  traits_materials: many(kits_traits_materials, {
+    relationName: 'traits_materials',
+  }),
+  assets_thumbnail: one(media, {
+    fields: [kits.assets_thumbnail],
+    references: [media.id],
+    relationName: 'assets_thumbnail',
+  }),
+  assets_cover: one(media, {
+    fields: [kits.assets_cover],
+    references: [media.id],
+    relationName: 'assets_cover',
+  }),
+  assets_gallery: one(galleries, {
+    fields: [kits.assets_gallery],
+    references: [galleries.id],
+    relationName: 'assets_gallery',
+  }),
+  assets_visualizations: one(visualizations, {
+    fields: [kits.assets_visualizations],
+    references: [visualizations.id],
+    relationName: 'assets_visualizations',
+  }),
+  contexts_notes: one(notes, {
+    fields: [kits.contexts_notes],
+    references: [notes.id],
+    relationName: 'contexts_notes',
+  }),
+  _locales: many(kits_locales, {
+    relationName: '_locales',
+  }),
+  _rels: many(kits_rels, {
+    relationName: '_rels',
+  }),
+}))
+export const relations_media = relations(media, () => ({}))
+export const relations_galleries_locales = relations(galleries_locales, ({ one }) => ({
+  _parentID: one(galleries, {
+    fields: [galleries_locales._parentID],
+    references: [galleries.id],
+    relationName: '_locales',
+  }),
+  seo_image: one(media, {
+    fields: [galleries_locales.seo_image],
+    references: [media.id],
+    relationName: 'seo_image',
+  }),
+}))
+export const relations_galleries_rels = relations(galleries_rels, ({ one }) => ({
+  parent: one(galleries, {
+    fields: [galleries_rels.parent],
+    references: [galleries.id],
+    relationName: '_rels',
+  }),
+  categoriesID: one(categories, {
+    fields: [galleries_rels.categoriesID],
+    references: [categories.id],
+    relationName: 'categories',
+  }),
+  tagsID: one(tags, {
+    fields: [galleries_rels.tagsID],
+    references: [tags.id],
+    relationName: 'tags',
+  }),
+}))
+export const relations_galleries = relations(galleries, ({ one, many }) => ({
+  type: one(categories, {
+    fields: [galleries.type],
+    references: [categories.id],
+    relationName: 'type',
+  }),
+  details_images: one(media, {
+    fields: [galleries.details_images],
+    references: [media.id],
+    relationName: 'details_images',
+  }),
+  details_narrative: one(narratives, {
+    fields: [galleries.details_narrative],
+    references: [narratives.id],
+    relationName: 'details_narrative',
+  }),
+  _locales: many(galleries_locales, {
+    relationName: '_locales',
+  }),
+  _rels: many(galleries_rels, {
+    relationName: '_rels',
+  }),
+}))
+export const relations_playlists_locales = relations(playlists_locales, ({ one }) => ({
+  _parentID: one(playlists, {
+    fields: [playlists_locales._parentID],
+    references: [playlists.id],
+    relationName: '_locales',
+  }),
+  seo_image: one(media, {
+    fields: [playlists_locales.seo_image],
+    references: [media.id],
+    relationName: 'seo_image',
+  }),
+}))
+export const relations_playlists_rels = relations(playlists_rels, ({ one }) => ({
+  parent: one(playlists, {
+    fields: [playlists_rels.parent],
+    references: [playlists.id],
+    relationName: '_rels',
+  }),
+  categoriesID: one(categories, {
+    fields: [playlists_rels.categoriesID],
+    references: [categories.id],
+    relationName: 'categories',
+  }),
+  tagsID: one(tags, {
+    fields: [playlists_rels.tagsID],
+    references: [tags.id],
+    relationName: 'tags',
+  }),
+}))
+export const relations_playlists = relations(playlists, ({ one, many }) => ({
+  type: one(categories, {
+    fields: [playlists.type],
+    references: [categories.id],
+    relationName: 'type',
+  }),
+  details_clips: one(media, {
+    fields: [playlists.details_clips],
+    references: [media.id],
+    relationName: 'details_clips',
+  }),
+  details_videos: one(media, {
+    fields: [playlists.details_videos],
+    references: [media.id],
+    relationName: 'details_videos',
+  }),
+  details_narrative: one(narratives, {
+    fields: [playlists.details_narrative],
+    references: [narratives.id],
+    relationName: 'details_narrative',
+  }),
+  _locales: many(playlists_locales, {
+    relationName: '_locales',
+  }),
+  _rels: many(playlists_rels, {
+    relationName: '_rels',
+  }),
+}))
+export const relations_archives_locales = relations(archives_locales, ({ one }) => ({
+  _parentID: one(archives, {
+    fields: [archives_locales._parentID],
+    references: [archives.id],
+    relationName: '_locales',
+  }),
+  seo_image: one(media, {
+    fields: [archives_locales.seo_image],
+    references: [media.id],
+    relationName: 'seo_image',
+  }),
+}))
+export const relations_archives_rels = relations(archives_rels, ({ one }) => ({
+  parent: one(archives, {
+    fields: [archives_rels.parent],
+    references: [archives.id],
+    relationName: '_rels',
+  }),
+  categoriesID: one(categories, {
+    fields: [archives_rels.categoriesID],
+    references: [categories.id],
+    relationName: 'categories',
+  }),
+  tagsID: one(tags, {
+    fields: [archives_rels.tagsID],
+    references: [tags.id],
+    relationName: 'tags',
+  }),
+}))
+export const relations_archives = relations(archives, ({ one, many }) => ({
+  type: one(categories, {
+    fields: [archives.type],
+    references: [categories.id],
+    relationName: 'type',
+  }),
+  details_samples: one(media, {
+    fields: [archives.details_samples],
+    references: [media.id],
+    relationName: 'details_samples',
+  }),
+  details_documents: one(media, {
+    fields: [archives.details_documents],
+    references: [media.id],
+    relationName: 'details_documents',
+  }),
+  details_narrative: one(narratives, {
+    fields: [archives.details_narrative],
+    references: [narratives.id],
+    relationName: 'details_narrative',
+  }),
+  _locales: many(archives_locales, {
+    relationName: '_locales',
+  }),
+  _rels: many(archives_rels, {
+    relationName: '_rels',
+  }),
+}))
+export const relations_visualizations_locales = relations(visualizations_locales, ({ one }) => ({
+  _parentID: one(visualizations, {
+    fields: [visualizations_locales._parentID],
+    references: [visualizations.id],
+    relationName: '_locales',
+  }),
+  seo_image: one(media, {
+    fields: [visualizations_locales.seo_image],
+    references: [media.id],
+    relationName: 'seo_image',
+  }),
+}))
+export const relations_visualizations_rels = relations(visualizations_rels, ({ one }) => ({
+  parent: one(visualizations, {
+    fields: [visualizations_rels.parent],
+    references: [visualizations.id],
+    relationName: '_rels',
+  }),
+  categoriesID: one(categories, {
+    fields: [visualizations_rels.categoriesID],
+    references: [categories.id],
+    relationName: 'categories',
+  }),
+  tagsID: one(tags, {
+    fields: [visualizations_rels.tagsID],
+    references: [tags.id],
+    relationName: 'tags',
+  }),
+}))
+export const relations_visualizations = relations(visualizations, ({ one, many }) => ({
+  type: one(categories, {
+    fields: [visualizations.type],
+    references: [categories.id],
+    relationName: 'type',
+  }),
+  details_designs: one(media, {
+    fields: [visualizations.details_designs],
+    references: [media.id],
+    relationName: 'details_designs',
+  }),
+  details_narrative: one(narratives, {
+    fields: [visualizations.details_narrative],
+    references: [narratives.id],
+    relationName: 'details_narrative',
+  }),
+  _locales: many(visualizations_locales, {
+    relationName: '_locales',
+  }),
+  _rels: many(visualizations_rels, {
+    relationName: '_rels',
+  }),
+}))
+export const relations_schedules_details_slots = relations(schedules_details_slots, ({ one }) => ({
+  _parentID: one(schedules, {
+    fields: [schedules_details_slots._parentID],
+    references: [schedules.id],
+    relationName: 'details_slots',
+  }),
+}))
+export const relations_schedules_traits_constraints = relations(
+  schedules_traits_constraints,
+  ({ one }) => ({
+    _parentID: one(schedules, {
+      fields: [schedules_traits_constraints._parentID],
+      references: [schedules.id],
+      relationName: 'traits_constraints',
+    }),
+  }),
+)
+export const relations_schedules_locales = relations(schedules_locales, ({ one }) => ({
+  _parentID: one(schedules, {
+    fields: [schedules_locales._parentID],
+    references: [schedules.id],
+    relationName: '_locales',
+  }),
+  seo_image: one(media, {
+    fields: [schedules_locales.seo_image],
+    references: [media.id],
+    relationName: 'seo_image',
+  }),
+}))
+export const relations_schedules_rels = relations(schedules_rels, ({ one }) => ({
+  parent: one(schedules, {
+    fields: [schedules_rels.parent],
+    references: [schedules.id],
+    relationName: '_rels',
+  }),
+  trainingsID: one(trainings, {
+    fields: [schedules_rels.trainingsID],
+    references: [trainings.id],
+    relationName: 'trainings',
+  }),
+  meetupsID: one(meetups, {
+    fields: [schedules_rels.meetupsID],
+    references: [meetups.id],
+    relationName: 'meetups',
+  }),
+  initiativesID: one(initiatives, {
+    fields: [schedules_rels.initiativesID],
+    references: [initiatives.id],
+    relationName: 'initiatives',
+  }),
+  celebrationsID: one(celebrations, {
+    fields: [schedules_rels.celebrationsID],
+    references: [celebrations.id],
+    relationName: 'celebrations',
+  }),
+  leadersID: one(leaders, {
+    fields: [schedules_rels.leadersID],
+    references: [leaders.id],
+    relationName: 'leaders',
+  }),
+  driversID: one(drivers, {
+    fields: [schedules_rels.driversID],
+    references: [drivers.id],
+    relationName: 'drivers',
+  }),
+  membersID: one(members, {
+    fields: [schedules_rels.membersID],
+    references: [members.id],
+    relationName: 'members',
+  }),
+  individualsID: one(individuals, {
+    fields: [schedules_rels.individualsID],
+    references: [individuals.id],
+    relationName: 'individuals',
+  }),
+  organizationsID: one(organizations, {
+    fields: [schedules_rels.organizationsID],
+    references: [organizations.id],
+    relationName: 'organizations',
+  }),
+  categoriesID: one(categories, {
+    fields: [schedules_rels.categoriesID],
+    references: [categories.id],
+    relationName: 'categories',
+  }),
+  tagsID: one(tags, {
+    fields: [schedules_rels.tagsID],
+    references: [tags.id],
+    relationName: 'tags',
+  }),
+}))
+export const relations_schedules = relations(schedules, ({ one, many }) => ({
+  type: one(categories, {
+    fields: [schedules.type],
+    references: [categories.id],
+    relationName: 'type',
+  }),
+  details_slots: many(schedules_details_slots, {
+    relationName: 'details_slots',
+  }),
+  traits_constraints: many(schedules_traits_constraints, {
+    relationName: 'traits_constraints',
+  }),
+  _locales: many(schedules_locales, {
+    relationName: '_locales',
+  }),
+  _rels: many(schedules_rels, {
+    relationName: '_rels',
+  }),
+}))
+export const relations_trainings_locales = relations(trainings_locales, ({ one }) => ({
+  _parentID: one(trainings, {
+    fields: [trainings_locales._parentID],
+    references: [trainings.id],
+    relationName: '_locales',
+  }),
+  seo_image: one(media, {
+    fields: [trainings_locales.seo_image],
+    references: [media.id],
+    relationName: 'seo_image',
+  }),
+}))
+export const relations_trainings_rels = relations(trainings_rels, ({ one }) => ({
+  parent: one(trainings, {
+    fields: [trainings_rels.parent],
+    references: [trainings.id],
+    relationName: '_rels',
+  }),
+  driversID: one(drivers, {
+    fields: [trainings_rels.driversID],
+    references: [drivers.id],
+    relationName: 'drivers',
+  }),
+  membersID: one(members, {
+    fields: [trainings_rels.membersID],
+    references: [members.id],
+    relationName: 'members',
+  }),
+  leadersID: one(leaders, {
+    fields: [trainings_rels.leadersID],
+    references: [leaders.id],
+    relationName: 'leaders',
+  }),
+  individualsID: one(individuals, {
+    fields: [trainings_rels.individualsID],
+    references: [individuals.id],
+    relationName: 'individuals',
+  }),
+  organizationsID: one(organizations, {
+    fields: [trainings_rels.organizationsID],
+    references: [organizations.id],
+    relationName: 'organizations',
+  }),
+  categoriesID: one(categories, {
+    fields: [trainings_rels.categoriesID],
+    references: [categories.id],
+    relationName: 'categories',
+  }),
+  tagsID: one(tags, {
+    fields: [trainings_rels.tagsID],
+    references: [tags.id],
+    relationName: 'tags',
+  }),
+}))
+export const relations_trainings = relations(trainings, ({ one, many }) => ({
+  type: one(categories, {
+    fields: [trainings.type],
+    references: [categories.id],
+    relationName: 'type',
+  }),
+  details_narrative: one(narratives, {
+    fields: [trainings.details_narrative],
+    references: [narratives.id],
+    relationName: 'details_narrative',
+  }),
+  traits_specifications: one(specifications, {
+    fields: [trainings.traits_specifications],
+    references: [specifications.id],
+    relationName: 'traits_specifications',
+  }),
+  assets_gallery: one(galleries, {
+    fields: [trainings.assets_gallery],
+    references: [galleries.id],
+    relationName: 'assets_gallery',
+  }),
+  assets_playlist: one(playlists, {
+    fields: [trainings.assets_playlist],
+    references: [playlists.id],
+    relationName: 'assets_playlist',
+  }),
+  contexts_strategies: one(strategies, {
+    fields: [trainings.contexts_strategies],
+    references: [strategies.id],
+    relationName: 'contexts_strategies',
+  }),
+  contexts_skills: one(skills, {
+    fields: [trainings.contexts_skills],
+    references: [skills.id],
+    relationName: 'contexts_skills',
+  }),
+  contexts_stories: one(stories, {
+    fields: [trainings.contexts_stories],
+    references: [stories.id],
+    relationName: 'contexts_stories',
+  }),
+  _locales: many(trainings_locales, {
+    relationName: '_locales',
+  }),
+  _rels: many(trainings_rels, {
+    relationName: '_rels',
+  }),
+}))
+export const relations_careers_traits_positions = relations(
+  careers_traits_positions,
+  ({ one }) => ({
+    _parentID: one(careers, {
+      fields: [careers_traits_positions._parentID],
+      references: [careers.id],
+      relationName: 'traits_positions',
+    }),
+  }),
+)
+export const relations_careers_locales = relations(careers_locales, ({ one }) => ({
+  _parentID: one(careers, {
+    fields: [careers_locales._parentID],
+    references: [careers.id],
+    relationName: '_locales',
+  }),
+  seo_image: one(media, {
+    fields: [careers_locales.seo_image],
+    references: [media.id],
+    relationName: 'seo_image',
+  }),
+}))
+export const relations_careers_rels = relations(careers_rels, ({ one }) => ({
+  parent: one(careers, {
+    fields: [careers_rels.parent],
+    references: [careers.id],
+    relationName: '_rels',
+  }),
+  leadersID: one(leaders, {
+    fields: [careers_rels.leadersID],
+    references: [leaders.id],
+    relationName: 'leaders',
+  }),
+  driversID: one(drivers, {
+    fields: [careers_rels.driversID],
+    references: [drivers.id],
+    relationName: 'drivers',
+  }),
+  membersID: one(members, {
+    fields: [careers_rels.membersID],
+    references: [members.id],
+    relationName: 'members',
+  }),
+  individualsID: one(individuals, {
+    fields: [careers_rels.individualsID],
+    references: [individuals.id],
+    relationName: 'individuals',
+  }),
+  carsID: one(cars, {
+    fields: [careers_rels.carsID],
+    references: [cars.id],
+    relationName: 'cars',
+  }),
+  categoriesID: one(categories, {
+    fields: [careers_rels.categoriesID],
+    references: [categories.id],
+    relationName: 'categories',
+  }),
+  tagsID: one(tags, {
+    fields: [careers_rels.tagsID],
+    references: [tags.id],
+    relationName: 'tags',
+  }),
+}))
+export const relations_careers = relations(careers, ({ one, many }) => ({
+  type: one(categories, {
+    fields: [careers.type],
+    references: [categories.id],
+    relationName: 'type',
+  }),
+  details_narrative: one(narratives, {
+    fields: [careers.details_narrative],
+    references: [narratives.id],
+    relationName: 'details_narrative',
+  }),
+  details_organization: one(organizations, {
+    fields: [careers.details_organization],
+    references: [organizations.id],
+    relationName: 'details_organization',
+  }),
+  details_expectations: one(expectations, {
+    fields: [careers.details_expectations],
+    references: [expectations.id],
+    relationName: 'details_expectations',
+  }),
+  details_awards: one(awards, {
+    fields: [careers.details_awards],
+    references: [awards.id],
+    relationName: 'details_awards',
+  }),
+  traits_positions: many(careers_traits_positions, {
+    relationName: 'traits_positions',
+  }),
+  contexts_highlights: one(highlights, {
+    fields: [careers.contexts_highlights],
+    references: [highlights.id],
+    relationName: 'contexts_highlights',
+  }),
+  contexts_stories: one(stories, {
+    fields: [careers.contexts_stories],
+    references: [stories.id],
+    relationName: 'contexts_stories',
+  }),
+  _locales: many(careers_locales, {
+    relationName: '_locales',
+  }),
+  _rels: many(careers_rels, {
+    relationName: '_rels',
+  }),
+}))
+export const relations_initiatives_locales = relations(initiatives_locales, ({ one }) => ({
+  _parentID: one(initiatives, {
+    fields: [initiatives_locales._parentID],
+    references: [initiatives.id],
+    relationName: '_locales',
+  }),
+  seo_image: one(media, {
+    fields: [initiatives_locales.seo_image],
+    references: [media.id],
+    relationName: 'seo_image',
+  }),
+}))
+export const relations_initiatives_rels = relations(initiatives_rels, ({ one }) => ({
+  parent: one(initiatives, {
+    fields: [initiatives_rels.parent],
+    references: [initiatives.id],
+    relationName: '_rels',
+  }),
+  organizationsID: one(organizations, {
+    fields: [initiatives_rels.organizationsID],
+    references: [organizations.id],
+    relationName: 'organizations',
+  }),
+  leadersID: one(leaders, {
+    fields: [initiatives_rels.leadersID],
+    references: [leaders.id],
+    relationName: 'leaders',
+  }),
+  individualsID: one(individuals, {
+    fields: [initiatives_rels.individualsID],
+    references: [individuals.id],
+    relationName: 'individuals',
+  }),
+  incidentsID: one(incidents, {
+    fields: [initiatives_rels.incidentsID],
+    references: [incidents.id],
+    relationName: 'incidents',
+  }),
+  celebrationsID: one(celebrations, {
+    fields: [initiatives_rels.celebrationsID],
+    references: [celebrations.id],
+    relationName: 'celebrations',
+  }),
+  categoriesID: one(categories, {
+    fields: [initiatives_rels.categoriesID],
+    references: [categories.id],
+    relationName: 'categories',
+  }),
+  tagsID: one(tags, {
+    fields: [initiatives_rels.tagsID],
+    references: [tags.id],
+    relationName: 'tags',
+  }),
+}))
+export const relations_initiatives = relations(initiatives, ({ one, many }) => ({
+  type: one(categories, {
+    fields: [initiatives.type],
+    references: [categories.id],
+    relationName: 'type',
+  }),
+  details_narrative: one(narratives, {
+    fields: [initiatives.details_narrative],
+    references: [narratives.id],
+    relationName: 'details_narrative',
+  }),
+  details_strategies: one(strategies, {
+    fields: [initiatives.details_strategies],
+    references: [strategies.id],
+    relationName: 'details_strategies',
+  }),
+  details_expectations: one(expectations, {
+    fields: [initiatives.details_expectations],
+    references: [expectations.id],
+    relationName: 'details_expectations',
+  }),
+  details_insights: one(notes, {
+    fields: [initiatives.details_insights],
+    references: [notes.id],
+    relationName: 'details_insights',
+  }),
+  assets_primary: one(media, {
+    fields: [initiatives.assets_primary],
+    references: [media.id],
+    relationName: 'assets_primary',
+  }),
+  assets_gallery: one(galleries, {
+    fields: [initiatives.assets_gallery],
+    references: [galleries.id],
+    relationName: 'assets_gallery',
+  }),
+  assets_document: one(archives, {
+    fields: [initiatives.assets_document],
+    references: [archives.id],
+    relationName: 'assets_document',
+  }),
+  contexts_classifications: one(classifications, {
+    fields: [initiatives.contexts_classifications],
+    references: [classifications.id],
+    relationName: 'contexts_classifications',
+  }),
+  contexts_schedules: one(schedules, {
+    fields: [initiatives.contexts_schedules],
+    references: [schedules.id],
+    relationName: 'contexts_schedules',
+  }),
+  contexts_histories: one(histories, {
+    fields: [initiatives.contexts_histories],
+    references: [histories.id],
+    relationName: 'contexts_histories',
+  }),
+  _locales: many(initiatives_locales, {
+    relationName: '_locales',
+  }),
+  _rels: many(initiatives_rels, {
+    relationName: '_rels',
+  }),
+}))
+export const relations_meetups_locales = relations(meetups_locales, ({ one }) => ({
+  _parentID: one(meetups, {
+    fields: [meetups_locales._parentID],
+    references: [meetups.id],
+    relationName: '_locales',
+  }),
+  seo_image: one(media, {
+    fields: [meetups_locales.seo_image],
+    references: [media.id],
+    relationName: 'seo_image',
+  }),
+}))
+export const relations_meetups_rels = relations(meetups_rels, ({ one }) => ({
+  parent: one(meetups, {
+    fields: [meetups_rels.parent],
+    references: [meetups.id],
+    relationName: '_rels',
+  }),
+  organizationsID: one(organizations, {
+    fields: [meetups_rels.organizationsID],
+    references: [organizations.id],
+    relationName: 'organizations',
+  }),
+  leadersID: one(leaders, {
+    fields: [meetups_rels.leadersID],
+    references: [leaders.id],
+    relationName: 'leaders',
+  }),
+  individualsID: one(individuals, {
+    fields: [meetups_rels.individualsID],
+    references: [individuals.id],
+    relationName: 'individuals',
+  }),
+  driversID: one(drivers, {
+    fields: [meetups_rels.driversID],
+    references: [drivers.id],
+    relationName: 'drivers',
+  }),
+  membersID: one(members, {
+    fields: [meetups_rels.membersID],
+    references: [members.id],
+    relationName: 'members',
+  }),
+  initiativesID: one(initiatives, {
+    fields: [meetups_rels.initiativesID],
+    references: [initiatives.id],
+    relationName: 'initiatives',
+  }),
+  celebrationsID: one(celebrations, {
+    fields: [meetups_rels.celebrationsID],
+    references: [celebrations.id],
+    relationName: 'celebrations',
+  }),
+  categoriesID: one(categories, {
+    fields: [meetups_rels.categoriesID],
+    references: [categories.id],
+    relationName: 'categories',
+  }),
+  tagsID: one(tags, {
+    fields: [meetups_rels.tagsID],
+    references: [tags.id],
+    relationName: 'tags',
+  }),
+}))
+export const relations_meetups = relations(meetups, ({ one, many }) => ({
+  type: one(categories, {
+    fields: [meetups.type],
+    references: [categories.id],
+    relationName: 'type',
+  }),
+  basics_location: one(locations, {
+    fields: [meetups.basics_location],
+    references: [locations.id],
+    relationName: 'basics_location',
+  }),
+  details_narrative: one(narratives, {
+    fields: [meetups.details_narrative],
+    references: [narratives.id],
+    relationName: 'details_narrative',
+  }),
+  details_features: one(features, {
+    fields: [meetups.details_features],
+    references: [features.id],
+    relationName: 'details_features',
+  }),
+  traits_specifications: one(specifications, {
+    fields: [meetups.traits_specifications],
+    references: [specifications.id],
+    relationName: 'traits_specifications',
+  }),
+  assets_primary: one(media, {
+    fields: [meetups.assets_primary],
+    references: [media.id],
+    relationName: 'assets_primary',
+  }),
+  assets_gallery: one(galleries, {
+    fields: [meetups.assets_gallery],
+    references: [galleries.id],
+    relationName: 'assets_gallery',
+  }),
+  assets_playlist: one(playlists, {
+    fields: [meetups.assets_playlist],
+    references: [playlists.id],
+    relationName: 'assets_playlist',
+  }),
+  assets_materials: one(archives, {
+    fields: [meetups.assets_materials],
+    references: [archives.id],
+    relationName: 'assets_materials',
+  }),
+  contexts_schedules: one(schedules, {
+    fields: [meetups.contexts_schedules],
+    references: [schedules.id],
+    relationName: 'contexts_schedules',
+  }),
+  contexts_notes: one(notes, {
+    fields: [meetups.contexts_notes],
+    references: [notes.id],
+    relationName: 'contexts_notes',
+  }),
+  _locales: many(meetups_locales, {
+    relationName: '_locales',
+  }),
+  _rels: many(meetups_rels, {
+    relationName: '_rels',
+  }),
+}))
+export const relations_celebrations_locales = relations(celebrations_locales, ({ one }) => ({
+  _parentID: one(celebrations, {
+    fields: [celebrations_locales._parentID],
+    references: [celebrations.id],
+    relationName: '_locales',
+  }),
+  seo_image: one(media, {
+    fields: [celebrations_locales.seo_image],
+    references: [media.id],
+    relationName: 'seo_image',
+  }),
+}))
+export const relations_celebrations_rels = relations(celebrations_rels, ({ one }) => ({
+  parent: one(celebrations, {
+    fields: [celebrations_rels.parent],
+    references: [celebrations.id],
+    relationName: '_rels',
+  }),
+  driversID: one(drivers, {
+    fields: [celebrations_rels.driversID],
+    references: [drivers.id],
+    relationName: 'drivers',
+  }),
+  membersID: one(members, {
+    fields: [celebrations_rels.membersID],
+    references: [members.id],
+    relationName: 'members',
+  }),
+  leadersID: one(leaders, {
+    fields: [celebrations_rels.leadersID],
+    references: [leaders.id],
+    relationName: 'leaders',
+  }),
+  organizationsID: one(organizations, {
+    fields: [celebrations_rels.organizationsID],
+    references: [organizations.id],
+    relationName: 'organizations',
+  }),
+  individualsID: one(individuals, {
+    fields: [celebrations_rels.individualsID],
+    references: [individuals.id],
+    relationName: 'individuals',
+  }),
+  categoriesID: one(categories, {
+    fields: [celebrations_rels.categoriesID],
+    references: [categories.id],
+    relationName: 'categories',
+  }),
+  tagsID: one(tags, {
+    fields: [celebrations_rels.tagsID],
+    references: [tags.id],
+    relationName: 'tags',
+  }),
+}))
+export const relations_celebrations = relations(celebrations, ({ one, many }) => ({
+  type: one(categories, {
+    fields: [celebrations.type],
+    references: [categories.id],
+    relationName: 'type',
+  }),
+  details_narrative: one(narratives, {
+    fields: [celebrations.details_narrative],
+    references: [narratives.id],
+    relationName: 'details_narrative',
+  }),
+  details_expectations: one(expectations, {
+    fields: [celebrations.details_expectations],
+    references: [expectations.id],
+    relationName: 'details_expectations',
+  }),
+  details_stories: one(stories, {
+    fields: [celebrations.details_stories],
+    references: [stories.id],
+    relationName: 'details_stories',
+  }),
+  assets_primary: one(media, {
+    fields: [celebrations.assets_primary],
+    references: [media.id],
+    relationName: 'assets_primary',
+  }),
+  assets_gallery: one(galleries, {
+    fields: [celebrations.assets_gallery],
+    references: [galleries.id],
+    relationName: 'assets_gallery',
+  }),
+  assets_playlist: one(playlists, {
+    fields: [celebrations.assets_playlist],
+    references: [playlists.id],
+    relationName: 'assets_playlist',
+  }),
+  contexts_notes: one(notes, {
+    fields: [celebrations.contexts_notes],
+    references: [notes.id],
+    relationName: 'contexts_notes',
+  }),
+  _locales: many(celebrations_locales, {
+    relationName: '_locales',
+  }),
+  _rels: many(celebrations_rels, {
+    relationName: '_rels',
+  }),
+}))
+export const relations_protocols_details_steps = relations(protocols_details_steps, ({ one }) => ({
+  _parentID: one(protocols, {
+    fields: [protocols_details_steps._parentID],
+    references: [protocols.id],
+    relationName: 'details_steps',
+  }),
+}))
+export const relations_protocols_locales = relations(protocols_locales, ({ one }) => ({
+  _parentID: one(protocols, {
+    fields: [protocols_locales._parentID],
+    references: [protocols.id],
+    relationName: '_locales',
+  }),
+  seo_image: one(media, {
+    fields: [protocols_locales.seo_image],
+    references: [media.id],
+    relationName: 'seo_image',
+  }),
+}))
+export const relations_protocols_rels = relations(protocols_rels, ({ one }) => ({
+  parent: one(protocols, {
+    fields: [protocols_rels.parent],
+    references: [protocols.id],
+    relationName: '_rels',
+  }),
+  categoriesID: one(categories, {
+    fields: [protocols_rels.categoriesID],
+    references: [categories.id],
+    relationName: 'categories',
+  }),
+  tagsID: one(tags, {
+    fields: [protocols_rels.tagsID],
+    references: [tags.id],
+    relationName: 'tags',
+  }),
+}))
+export const relations_protocols = relations(protocols, ({ one, many }) => ({
+  type: one(categories, {
+    fields: [protocols.type],
+    references: [categories.id],
+    relationName: 'type',
+  }),
+  details_steps: many(protocols_details_steps, {
+    relationName: 'details_steps',
+  }),
+  assets_documentation: one(archives, {
+    fields: [protocols.assets_documentation],
+    references: [archives.id],
+    relationName: 'assets_documentation',
+  }),
+  contexts_classifications: one(classifications, {
+    fields: [protocols.contexts_classifications],
+    references: [classifications.id],
+    relationName: 'contexts_classifications',
+  }),
+  _locales: many(protocols_locales, {
+    relationName: '_locales',
+  }),
+  _rels: many(protocols_rels, {
+    relationName: '_rels',
+  }),
+}))
+export const relations_duties_locales = relations(duties_locales, ({ one }) => ({
+  _parentID: one(duties, {
+    fields: [duties_locales._parentID],
+    references: [duties.id],
+    relationName: '_locales',
+  }),
+  seo_image: one(media, {
+    fields: [duties_locales.seo_image],
+    references: [media.id],
+    relationName: 'seo_image',
+  }),
+}))
+export const relations_duties_rels = relations(duties_rels, ({ one }) => ({
+  parent: one(duties, {
+    fields: [duties_rels.parent],
+    references: [duties.id],
+    relationName: '_rels',
+  }),
+  categoriesID: one(categories, {
+    fields: [duties_rels.categoriesID],
+    references: [categories.id],
+    relationName: 'categories',
+  }),
+  tagsID: one(tags, {
+    fields: [duties_rels.tagsID],
+    references: [tags.id],
+    relationName: 'tags',
+  }),
+}))
+export const relations_duties = relations(duties, ({ one, many }) => ({
+  type: one(categories, {
+    fields: [duties.type],
+    references: [categories.id],
+    relationName: 'type',
+  }),
+  contexts_protocols: one(protocols, {
+    fields: [duties.contexts_protocols],
+    references: [protocols.id],
+    relationName: 'contexts_protocols',
+  }),
+  contexts_expectations: one(expectations, {
+    fields: [duties.contexts_expectations],
+    references: [expectations.id],
+    relationName: 'contexts_expectations',
+  }),
+  contexts_notes: one(notes, {
+    fields: [duties.contexts_notes],
+    references: [notes.id],
+    relationName: 'contexts_notes',
+  }),
+  _locales: many(duties_locales, {
+    relationName: '_locales',
+  }),
+  _rels: many(duties_rels, {
+    relationName: '_rels',
+  }),
+}))
+export const relations_expectations_locales = relations(expectations_locales, ({ one }) => ({
+  _parentID: one(expectations, {
+    fields: [expectations_locales._parentID],
+    references: [expectations.id],
+    relationName: '_locales',
+  }),
+  seo_image: one(media, {
+    fields: [expectations_locales.seo_image],
+    references: [media.id],
+    relationName: 'seo_image',
+  }),
+}))
+export const relations_expectations_rels = relations(expectations_rels, ({ one }) => ({
+  parent: one(expectations, {
+    fields: [expectations_rels.parent],
+    references: [expectations.id],
+    relationName: '_rels',
+  }),
+  categoriesID: one(categories, {
+    fields: [expectations_rels.categoriesID],
+    references: [categories.id],
+    relationName: 'categories',
+  }),
+  tagsID: one(tags, {
+    fields: [expectations_rels.tagsID],
+    references: [tags.id],
+    relationName: 'tags',
+  }),
+}))
+export const relations_expectations = relations(expectations, ({ one, many }) => ({
+  type: one(categories, {
+    fields: [expectations.type],
+    references: [categories.id],
+    relationName: 'type',
+  }),
+  contexts_specifications: one(specifications, {
+    fields: [expectations.contexts_specifications],
+    references: [specifications.id],
+    relationName: 'contexts_specifications',
+  }),
+  contexts_protocols: one(protocols, {
+    fields: [expectations.contexts_protocols],
+    references: [protocols.id],
+    relationName: 'contexts_protocols',
+  }),
+  contexts_notes: one(notes, {
+    fields: [expectations.contexts_notes],
+    references: [notes.id],
+    relationName: 'contexts_notes',
+  }),
+  _locales: many(expectations_locales, {
+    relationName: '_locales',
+  }),
+  _rels: many(expectations_rels, {
+    relationName: '_rels',
+  }),
+}))
+export const relations_highlights_locales = relations(highlights_locales, ({ one }) => ({
+  _parentID: one(highlights, {
+    fields: [highlights_locales._parentID],
+    references: [highlights.id],
+    relationName: '_locales',
+  }),
+  seo_image: one(media, {
+    fields: [highlights_locales.seo_image],
+    references: [media.id],
+    relationName: 'seo_image',
+  }),
+}))
+export const relations_highlights_rels = relations(highlights_rels, ({ one }) => ({
+  parent: one(highlights, {
+    fields: [highlights_rels.parent],
+    references: [highlights.id],
+    relationName: '_rels',
+  }),
+  driversID: one(drivers, {
+    fields: [highlights_rels.driversID],
+    references: [drivers.id],
+    relationName: 'drivers',
+  }),
+  carsID: one(cars, {
+    fields: [highlights_rels.carsID],
+    references: [cars.id],
+    relationName: 'cars',
+  }),
+  categoriesID: one(categories, {
+    fields: [highlights_rels.categoriesID],
+    references: [categories.id],
+    relationName: 'categories',
+  }),
+  tagsID: one(tags, {
+    fields: [highlights_rels.tagsID],
+    references: [tags.id],
+    relationName: 'tags',
+  }),
+}))
+export const relations_highlights = relations(highlights, ({ one, many }) => ({
+  type: one(categories, {
+    fields: [highlights.type],
+    references: [categories.id],
+    relationName: 'type',
+  }),
+  details_narrative: one(narratives, {
+    fields: [highlights.details_narrative],
+    references: [narratives.id],
+    relationName: 'details_narrative',
+  }),
+  traits_specifications: one(specifications, {
+    fields: [highlights.traits_specifications],
+    references: [specifications.id],
+    relationName: 'traits_specifications',
+  }),
+  assets_thumbnail: one(media, {
+    fields: [highlights.assets_thumbnail],
+    references: [media.id],
+    relationName: 'assets_thumbnail',
+  }),
+  assets_gallery: one(galleries, {
+    fields: [highlights.assets_gallery],
+    references: [galleries.id],
+    relationName: 'assets_gallery',
+  }),
+  assets_playlist: one(playlists, {
+    fields: [highlights.assets_playlist],
+    references: [playlists.id],
+    relationName: 'assets_playlist',
+  }),
+  contexts_stories: one(stories, {
+    fields: [highlights.contexts_stories],
+    references: [stories.id],
+    relationName: 'contexts_stories',
+  }),
+  _locales: many(highlights_locales, {
+    relationName: '_locales',
+  }),
+  _rels: many(highlights_rels, {
+    relationName: '_rels',
+  }),
+}))
+export const relations_incidents_locales = relations(incidents_locales, ({ one }) => ({
+  _parentID: one(incidents, {
+    fields: [incidents_locales._parentID],
+    references: [incidents.id],
+    relationName: '_locales',
+  }),
+  seo_image: one(media, {
+    fields: [incidents_locales.seo_image],
+    references: [media.id],
+    relationName: 'seo_image',
+  }),
+}))
+export const relations_incidents_rels = relations(incidents_rels, ({ one }) => ({
+  parent: one(incidents, {
+    fields: [incidents_rels.parent],
+    references: [incidents.id],
+    relationName: '_rels',
+  }),
+  driversID: one(drivers, {
+    fields: [incidents_rels.driversID],
+    references: [drivers.id],
+    relationName: 'drivers',
+  }),
+  membersID: one(members, {
+    fields: [incidents_rels.membersID],
+    references: [members.id],
+    relationName: 'members',
+  }),
+  leadersID: one(leaders, {
+    fields: [incidents_rels.leadersID],
+    references: [leaders.id],
+    relationName: 'leaders',
+  }),
+  organizationsID: one(organizations, {
+    fields: [incidents_rels.organizationsID],
+    references: [organizations.id],
+    relationName: 'organizations',
+  }),
+  kitsID: one(kits, {
+    fields: [incidents_rels.kitsID],
+    references: [kits.id],
+    relationName: 'kits',
+  }),
+  categoriesID: one(categories, {
+    fields: [incidents_rels.categoriesID],
+    references: [categories.id],
+    relationName: 'categories',
+  }),
+  tagsID: one(tags, {
+    fields: [incidents_rels.tagsID],
+    references: [tags.id],
+    relationName: 'tags',
+  }),
+}))
+export const relations_incidents = relations(incidents, ({ one, many }) => ({
+  type: one(categories, {
+    fields: [incidents.type],
+    references: [categories.id],
+    relationName: 'type',
+  }),
+  details_decisions: one(decisions, {
+    fields: [incidents.details_decisions],
+    references: [decisions.id],
+    relationName: 'details_decisions',
+  }),
+  details_specifications: one(specifications, {
+    fields: [incidents.details_specifications],
+    references: [specifications.id],
+    relationName: 'details_specifications',
+  }),
+  traits_impacts: one(impacts, {
+    fields: [incidents.traits_impacts],
+    references: [impacts.id],
+    relationName: 'traits_impacts',
+  }),
+  assets_gallery: one(galleries, {
+    fields: [incidents.assets_gallery],
+    references: [galleries.id],
+    relationName: 'assets_gallery',
+  }),
+  assets_archive: one(archives, {
+    fields: [incidents.assets_archive],
+    references: [archives.id],
+    relationName: 'assets_archive',
+  }),
+  contexts_narrative: one(narratives, {
+    fields: [incidents.contexts_narrative],
+    references: [narratives.id],
+    relationName: 'contexts_narrative',
+  }),
+  _locales: many(incidents_locales, {
+    relationName: '_locales',
+  }),
+  _rels: many(incidents_rels, {
+    relationName: '_rels',
+  }),
+}))
+export const relations_impacts_locales = relations(impacts_locales, ({ one }) => ({
+  _parentID: one(impacts, {
+    fields: [impacts_locales._parentID],
+    references: [impacts.id],
+    relationName: '_locales',
+  }),
+  seo_image: one(media, {
+    fields: [impacts_locales.seo_image],
+    references: [media.id],
+    relationName: 'seo_image',
+  }),
+}))
+export const relations_impacts_rels = relations(impacts_rels, ({ one }) => ({
+  parent: one(impacts, {
+    fields: [impacts_rels.parent],
+    references: [impacts.id],
+    relationName: '_rels',
+  }),
+  organizationsID: one(organizations, {
+    fields: [impacts_rels.organizationsID],
+    references: [organizations.id],
+    relationName: 'organizations',
+  }),
+  individualsID: one(individuals, {
+    fields: [impacts_rels.individualsID],
+    references: [individuals.id],
+    relationName: 'individuals',
+  }),
+  driversID: one(drivers, {
+    fields: [impacts_rels.driversID],
+    references: [drivers.id],
+    relationName: 'drivers',
+  }),
+  leadersID: one(leaders, {
+    fields: [impacts_rels.leadersID],
+    references: [leaders.id],
+    relationName: 'leaders',
+  }),
+  membersID: one(members, {
+    fields: [impacts_rels.membersID],
+    references: [members.id],
+    relationName: 'members',
+  }),
+  carsID: one(cars, {
+    fields: [impacts_rels.carsID],
+    references: [cars.id],
+    relationName: 'cars',
+  }),
+  kitsID: one(kits, {
+    fields: [impacts_rels.kitsID],
+    references: [kits.id],
+    relationName: 'kits',
+  }),
+  categoriesID: one(categories, {
+    fields: [impacts_rels.categoriesID],
+    references: [categories.id],
+    relationName: 'categories',
+  }),
+  tagsID: one(tags, {
+    fields: [impacts_rels.tagsID],
+    references: [tags.id],
+    relationName: 'tags',
+  }),
+}))
+export const relations_impacts = relations(impacts, ({ one, many }) => ({
+  type: one(categories, {
+    fields: [impacts.type],
+    references: [categories.id],
+    relationName: 'type',
+  }),
+  traits_tone: one(tones, {
+    fields: [impacts.traits_tone],
+    references: [tones.id],
+    relationName: 'traits_tone',
+  }),
+  contexts_notes: one(notes, {
+    fields: [impacts.contexts_notes],
+    references: [notes.id],
+    relationName: 'contexts_notes',
+  }),
+  _locales: many(impacts_locales, {
+    relationName: '_locales',
+  }),
+  _rels: many(impacts_rels, {
+    relationName: '_rels',
+  }),
+}))
+export const relations_decisions_locales = relations(decisions_locales, ({ one }) => ({
+  _parentID: one(decisions, {
+    fields: [decisions_locales._parentID],
+    references: [decisions.id],
+    relationName: '_locales',
+  }),
+  seo_image: one(media, {
+    fields: [decisions_locales.seo_image],
+    references: [media.id],
+    relationName: 'seo_image',
+  }),
+}))
+export const relations_decisions_rels = relations(decisions_rels, ({ one }) => ({
+  parent: one(decisions, {
+    fields: [decisions_rels.parent],
+    references: [decisions.id],
+    relationName: '_rels',
+  }),
+  organizationsID: one(organizations, {
+    fields: [decisions_rels.organizationsID],
+    references: [organizations.id],
+    relationName: 'organizations',
+  }),
+  individualsID: one(individuals, {
+    fields: [decisions_rels.individualsID],
+    references: [individuals.id],
+    relationName: 'individuals',
+  }),
+  leadersID: one(leaders, {
+    fields: [decisions_rels.leadersID],
+    references: [leaders.id],
+    relationName: 'leaders',
+  }),
+  driversID: one(drivers, {
+    fields: [decisions_rels.driversID],
+    references: [drivers.id],
+    relationName: 'drivers',
+  }),
+  membersID: one(members, {
+    fields: [decisions_rels.membersID],
+    references: [members.id],
+    relationName: 'members',
+  }),
+  categoriesID: one(categories, {
+    fields: [decisions_rels.categoriesID],
+    references: [categories.id],
+    relationName: 'categories',
+  }),
+  tagsID: one(tags, {
+    fields: [decisions_rels.tagsID],
+    references: [tags.id],
+    relationName: 'tags',
+  }),
+}))
+export const relations_decisions = relations(decisions, ({ one, many }) => ({
+  type: one(categories, {
+    fields: [decisions.type],
+    references: [categories.id],
+    relationName: 'type',
+  }),
+  details_narrative: one(narratives, {
+    fields: [decisions.details_narrative],
+    references: [narratives.id],
+    relationName: 'details_narrative',
+  }),
+  traits_features: one(features, {
+    fields: [decisions.traits_features],
+    references: [features.id],
+    relationName: 'traits_features',
+  }),
+  traits_specifications: one(specifications, {
+    fields: [decisions.traits_specifications],
+    references: [specifications.id],
+    relationName: 'traits_specifications',
+  }),
+  traits_expectations: one(expectations, {
+    fields: [decisions.traits_expectations],
+    references: [expectations.id],
+    relationName: 'traits_expectations',
+  }),
+  contexts_protocols: one(protocols, {
+    fields: [decisions.contexts_protocols],
+    references: [protocols.id],
+    relationName: 'contexts_protocols',
+  }),
+  contexts_preferences: one(preferences, {
+    fields: [decisions.contexts_preferences],
+    references: [preferences.id],
+    relationName: 'contexts_preferences',
+  }),
+  contexts_notes: one(notes, {
+    fields: [decisions.contexts_notes],
+    references: [notes.id],
+    relationName: 'contexts_notes',
+  }),
+  contexts_impacts: one(impacts, {
+    fields: [decisions.contexts_impacts],
+    references: [impacts.id],
+    relationName: 'contexts_impacts',
+  }),
+  _locales: many(decisions_locales, {
+    relationName: '_locales',
+  }),
+  _rels: many(decisions_rels, {
+    relationName: '_rels',
+  }),
+}))
+export const relations_strategies_traits_directives = relations(
+  strategies_traits_directives,
+  ({ one }) => ({
+    _parentID: one(strategies, {
+      fields: [strategies_traits_directives._parentID],
+      references: [strategies.id],
+      relationName: 'traits_directives',
+    }),
+  }),
+)
+export const relations_strategies_traits_contingencies = relations(
+  strategies_traits_contingencies,
+  ({ one }) => ({
+    _parentID: one(strategies, {
+      fields: [strategies_traits_contingencies._parentID],
+      references: [strategies.id],
+      relationName: 'traits_contingencies',
+    }),
+  }),
+)
+export const relations_strategies_locales = relations(strategies_locales, ({ one }) => ({
+  _parentID: one(strategies, {
+    fields: [strategies_locales._parentID],
+    references: [strategies.id],
+    relationName: '_locales',
+  }),
+  seo_image: one(media, {
+    fields: [strategies_locales.seo_image],
+    references: [media.id],
+    relationName: 'seo_image',
+  }),
+}))
+export const relations_strategies_rels = relations(strategies_rels, ({ one }) => ({
+  parent: one(strategies, {
+    fields: [strategies_rels.parent],
+    references: [strategies.id],
+    relationName: '_rels',
+  }),
+  driversID: one(drivers, {
+    fields: [strategies_rels.driversID],
+    references: [drivers.id],
+    relationName: 'drivers',
+  }),
+  membersID: one(members, {
+    fields: [strategies_rels.membersID],
+    references: [members.id],
+    relationName: 'members',
+  }),
+  leadersID: one(leaders, {
+    fields: [strategies_rels.leadersID],
+    references: [leaders.id],
+    relationName: 'leaders',
+  }),
+  organizationsID: one(organizations, {
+    fields: [strategies_rels.organizationsID],
+    references: [organizations.id],
+    relationName: 'organizations',
+  }),
+  kitsID: one(kits, {
+    fields: [strategies_rels.kitsID],
+    references: [kits.id],
+    relationName: 'kits',
+  }),
+  categoriesID: one(categories, {
+    fields: [strategies_rels.categoriesID],
+    references: [categories.id],
+    relationName: 'categories',
+  }),
+  tagsID: one(tags, {
+    fields: [strategies_rels.tagsID],
+    references: [tags.id],
+    relationName: 'tags',
+  }),
+}))
+export const relations_strategies = relations(strategies, ({ one, many }) => ({
+  type: one(categories, {
+    fields: [strategies.type],
+    references: [categories.id],
+    relationName: 'type',
+  }),
+  details_decisions: one(decisions, {
+    fields: [strategies.details_decisions],
+    references: [decisions.id],
+    relationName: 'details_decisions',
+  }),
+  details_impacts: one(impacts, {
+    fields: [strategies.details_impacts],
+    references: [impacts.id],
+    relationName: 'details_impacts',
+  }),
+  traits_directives: many(strategies_traits_directives, {
+    relationName: 'traits_directives',
+  }),
+  traits_contingencies: many(strategies_traits_contingencies, {
+    relationName: 'traits_contingencies',
+  }),
+  contexts_narrative: one(narratives, {
+    fields: [strategies.contexts_narrative],
+    references: [narratives.id],
+    relationName: 'contexts_narrative',
+  }),
+  _locales: many(strategies_locales, {
+    relationName: '_locales',
+  }),
+  _rels: many(strategies_rels, {
+    relationName: '_rels',
+  }),
+}))
+export const relations_awards_locales = relations(awards_locales, ({ one }) => ({
+  _parentID: one(awards, {
+    fields: [awards_locales._parentID],
+    references: [awards.id],
+    relationName: '_locales',
+  }),
+  seo_image: one(media, {
+    fields: [awards_locales.seo_image],
+    references: [media.id],
+    relationName: 'seo_image',
+  }),
+}))
+export const relations_awards_rels = relations(awards_rels, ({ one }) => ({
+  parent: one(awards, {
+    fields: [awards_rels.parent],
+    references: [awards.id],
+    relationName: '_rels',
+  }),
+  leadersID: one(leaders, {
+    fields: [awards_rels.leadersID],
+    references: [leaders.id],
+    relationName: 'leaders',
+  }),
+  organizationsID: one(organizations, {
+    fields: [awards_rels.organizationsID],
+    references: [organizations.id],
+    relationName: 'organizations',
+  }),
+  individualsID: one(individuals, {
+    fields: [awards_rels.individualsID],
+    references: [individuals.id],
+    relationName: 'individuals',
+  }),
+  categoriesID: one(categories, {
+    fields: [awards_rels.categoriesID],
+    references: [categories.id],
+    relationName: 'categories',
+  }),
+  tagsID: one(tags, {
+    fields: [awards_rels.tagsID],
+    references: [tags.id],
+    relationName: 'tags',
+  }),
+}))
+export const relations_awards = relations(awards, ({ one, many }) => ({
+  type: one(categories, {
+    fields: [awards.type],
+    references: [categories.id],
+    relationName: 'type',
+  }),
+  details_narrative: one(narratives, {
+    fields: [awards.details_narrative],
+    references: [narratives.id],
+    relationName: 'details_narrative',
+  }),
+  assets_thumbnail: one(media, {
+    fields: [awards.assets_thumbnail],
+    references: [media.id],
+    relationName: 'assets_thumbnail',
+  }),
+  assets_visualization: one(visualizations, {
+    fields: [awards.assets_visualization],
+    references: [visualizations.id],
+    relationName: 'assets_visualization',
+  }),
+  contexts_story: one(stories, {
+    fields: [awards.contexts_story],
+    references: [stories.id],
+    relationName: 'contexts_story',
+  }),
+  _locales: many(awards_locales, {
+    relationName: '_locales',
+  }),
+  _rels: many(awards_rels, {
+    relationName: '_rels',
+  }),
+}))
+export const relations_experiences_traits_skills = relations(
+  experiences_traits_skills,
+  ({ one }) => ({
+    _parentID: one(experiences, {
+      fields: [experiences_traits_skills._parentID],
+      references: [experiences.id],
+      relationName: 'traits_skills',
+    }),
+    skill: one(skills, {
+      fields: [experiences_traits_skills.skill],
+      references: [skills.id],
+      relationName: 'skill',
+    }),
+  }),
+)
+export const relations_experiences_locales = relations(experiences_locales, ({ one }) => ({
+  _parentID: one(experiences, {
+    fields: [experiences_locales._parentID],
+    references: [experiences.id],
+    relationName: '_locales',
+  }),
+  seo_image: one(media, {
+    fields: [experiences_locales.seo_image],
+    references: [media.id],
+    relationName: 'seo_image',
+  }),
+}))
+export const relations_experiences_rels = relations(experiences_rels, ({ one }) => ({
+  parent: one(experiences, {
+    fields: [experiences_rels.parent],
+    references: [experiences.id],
+    relationName: '_rels',
+  }),
+  organizationsID: one(organizations, {
+    fields: [experiences_rels.organizationsID],
+    references: [organizations.id],
+    relationName: 'organizations',
+  }),
+  driversID: one(drivers, {
+    fields: [experiences_rels.driversID],
+    references: [drivers.id],
+    relationName: 'drivers',
+  }),
+  membersID: one(members, {
+    fields: [experiences_rels.membersID],
+    references: [members.id],
+    relationName: 'members',
+  }),
+  leadersID: one(leaders, {
+    fields: [experiences_rels.leadersID],
+    references: [leaders.id],
+    relationName: 'leaders',
+  }),
+  individualsID: one(individuals, {
+    fields: [experiences_rels.individualsID],
+    references: [individuals.id],
+    relationName: 'individuals',
+  }),
+  categoriesID: one(categories, {
+    fields: [experiences_rels.categoriesID],
+    references: [categories.id],
+    relationName: 'categories',
+  }),
+  tagsID: one(tags, {
+    fields: [experiences_rels.tagsID],
+    references: [tags.id],
+    relationName: 'tags',
+  }),
+}))
+export const relations_experiences = relations(experiences, ({ one, many }) => ({
+  type: one(categories, {
+    fields: [experiences.type],
+    references: [categories.id],
+    relationName: 'type',
+  }),
+  details_narrative: one(narratives, {
+    fields: [experiences.details_narrative],
+    references: [narratives.id],
+    relationName: 'details_narrative',
+  }),
+  traits_skills: many(experiences_traits_skills, {
+    relationName: 'traits_skills',
+  }),
+  assets_evidence: one(media, {
+    fields: [experiences.assets_evidence],
+    references: [media.id],
+    relationName: 'assets_evidence',
+  }),
+  assets_gallery: one(galleries, {
+    fields: [experiences.assets_gallery],
+    references: [galleries.id],
+    relationName: 'assets_gallery',
+  }),
+  contexts_highlights: one(highlights, {
+    fields: [experiences.contexts_highlights],
+    references: [highlights.id],
+    relationName: 'contexts_highlights',
+  }),
+  contexts_incidents: one(incidents, {
+    fields: [experiences.contexts_incidents],
+    references: [incidents.id],
+    relationName: 'contexts_incidents',
+  }),
+  contexts_journey: one(journeys, {
+    fields: [experiences.contexts_journey],
+    references: [journeys.id],
+    relationName: 'contexts_journey',
+  }),
+  _locales: many(experiences_locales, {
+    relationName: '_locales',
+  }),
+  _rels: many(experiences_rels, {
+    relationName: '_rels',
+  }),
+}))
 export const relations_categories_attributes_questions = relations(
   categories_attributes_questions,
   ({ one }) => ({
@@ -3429,402 +15869,690 @@ export const relations_categories = relations(categories, ({ one, many }) => ({
     relationName: '_rels',
   }),
 }))
-export const relations_users_roles = relations(users_roles, ({ one }) => ({
-  parent: one(users, {
-    fields: [users_roles.parent],
-    references: [users.id],
-    relationName: 'roles',
-  }),
-}))
-export const relations_users_sessions = relations(users_sessions, ({ one }) => ({
-  _parentID: one(users, {
-    fields: [users_sessions._parentID],
-    references: [users.id],
-    relationName: 'sessions',
-  }),
-}))
-export const relations_users = relations(users, ({ many }) => ({
-  roles: many(users_roles, {
-    relationName: 'roles',
-  }),
-  sessions: many(users_sessions, {
-    relationName: 'sessions',
-  }),
-}))
-export const relations_media = relations(media, () => ({}))
-export const relations_pages_hero_links = relations(pages_hero_links, ({ one }) => ({
-  _parentID: one(pages, {
-    fields: [pages_hero_links._parentID],
-    references: [pages.id],
-    relationName: 'hero_links',
-  }),
-}))
-export const relations_pages_blocks_cta_links = relations(pages_blocks_cta_links, ({ one }) => ({
-  _parentID: one(pages_blocks_cta, {
-    fields: [pages_blocks_cta_links._parentID],
-    references: [pages_blocks_cta.id],
-    relationName: 'links',
-  }),
-}))
-export const relations_pages_blocks_cta = relations(pages_blocks_cta, ({ one, many }) => ({
-  _parentID: one(pages, {
-    fields: [pages_blocks_cta._parentID],
-    references: [pages.id],
-    relationName: '_blocks_cta',
-  }),
-  links: many(pages_blocks_cta_links, {
-    relationName: 'links',
-  }),
-}))
-export const relations_pages_blocks_content_columns = relations(
-  pages_blocks_content_columns,
-  ({ one }) => ({
-    _parentID: one(pages_blocks_content, {
-      fields: [pages_blocks_content_columns._parentID],
-      references: [pages_blocks_content.id],
-      relationName: 'columns',
-    }),
-  }),
-)
-export const relations_pages_blocks_content = relations(pages_blocks_content, ({ one, many }) => ({
-  _parentID: one(pages, {
-    fields: [pages_blocks_content._parentID],
-    references: [pages.id],
-    relationName: '_blocks_content',
-  }),
-  columns: many(pages_blocks_content_columns, {
-    relationName: 'columns',
-  }),
-}))
-export const relations_pages_blocks_media_block = relations(
-  pages_blocks_media_block,
-  ({ one }) => ({
-    _parentID: one(pages, {
-      fields: [pages_blocks_media_block._parentID],
-      references: [pages.id],
-      relationName: '_blocks_mediaBlock',
-    }),
-    media: one(media, {
-      fields: [pages_blocks_media_block.media],
-      references: [media.id],
-      relationName: 'media',
-    }),
-  }),
-)
-export const relations_pages_blocks_archive = relations(pages_blocks_archive, ({ one }) => ({
-  _parentID: one(pages, {
-    fields: [pages_blocks_archive._parentID],
-    references: [pages.id],
-    relationName: '_blocks_archive',
-  }),
-}))
-export const relations_pages_blocks_carousel = relations(pages_blocks_carousel, ({ one }) => ({
-  _parentID: one(pages, {
-    fields: [pages_blocks_carousel._parentID],
-    references: [pages.id],
-    relationName: '_blocks_carousel',
-  }),
-}))
-export const relations_pages_blocks_three_item_grid = relations(
-  pages_blocks_three_item_grid,
-  ({ one }) => ({
-    _parentID: one(pages, {
-      fields: [pages_blocks_three_item_grid._parentID],
-      references: [pages.id],
-      relationName: '_blocks_threeItemGrid',
-    }),
-  }),
-)
-export const relations_pages_blocks_banner = relations(pages_blocks_banner, ({ one }) => ({
-  _parentID: one(pages, {
-    fields: [pages_blocks_banner._parentID],
-    references: [pages.id],
-    relationName: '_blocks_banner',
-  }),
-}))
-export const relations_pages_blocks_form_block = relations(pages_blocks_form_block, ({ one }) => ({
-  _parentID: one(pages, {
-    fields: [pages_blocks_form_block._parentID],
-    references: [pages.id],
-    relationName: '_blocks_formBlock',
-  }),
-  form: one(forms, {
-    fields: [pages_blocks_form_block.form],
-    references: [forms.id],
-    relationName: 'form',
-  }),
-}))
-export const relations_pages_locales = relations(pages_locales, ({ one }) => ({
-  _parentID: one(pages, {
-    fields: [pages_locales._parentID],
-    references: [pages.id],
-    relationName: '_locales',
-  }),
-  meta_image: one(media, {
-    fields: [pages_locales.meta_image],
-    references: [media.id],
-    relationName: 'meta_image',
-  }),
-}))
-export const relations_pages_rels = relations(pages_rels, ({ one }) => ({
-  parent: one(pages, {
-    fields: [pages_rels.parent],
-    references: [pages.id],
-    relationName: '_rels',
-  }),
-  pagesID: one(pages, {
-    fields: [pages_rels.pagesID],
-    references: [pages.id],
-    relationName: 'pages',
-  }),
-  categoriesID: one(categories, {
-    fields: [pages_rels.categoriesID],
-    references: [categories.id],
-    relationName: 'categories',
-  }),
-  productsID: one(products, {
-    fields: [pages_rels.productsID],
-    references: [products.id],
-    relationName: 'products',
-  }),
-}))
-export const relations_pages = relations(pages, ({ one, many }) => ({
-  hero_links: many(pages_hero_links, {
-    relationName: 'hero_links',
-  }),
-  hero_media: one(media, {
-    fields: [pages.hero_media],
-    references: [media.id],
-    relationName: 'hero_media',
-  }),
-  _blocks_cta: many(pages_blocks_cta, {
-    relationName: '_blocks_cta',
-  }),
-  _blocks_content: many(pages_blocks_content, {
-    relationName: '_blocks_content',
-  }),
-  _blocks_mediaBlock: many(pages_blocks_media_block, {
-    relationName: '_blocks_mediaBlock',
-  }),
-  _blocks_archive: many(pages_blocks_archive, {
-    relationName: '_blocks_archive',
-  }),
-  _blocks_carousel: many(pages_blocks_carousel, {
-    relationName: '_blocks_carousel',
-  }),
-  _blocks_threeItemGrid: many(pages_blocks_three_item_grid, {
-    relationName: '_blocks_threeItemGrid',
-  }),
-  _blocks_banner: many(pages_blocks_banner, {
-    relationName: '_blocks_banner',
-  }),
-  _blocks_formBlock: many(pages_blocks_form_block, {
-    relationName: '_blocks_formBlock',
-  }),
-  _locales: many(pages_locales, {
-    relationName: '_locales',
-  }),
-  _rels: many(pages_rels, {
-    relationName: '_rels',
-  }),
-}))
-export const relations__pages_v_version_hero_links = relations(
-  _pages_v_version_hero_links,
-  ({ one }) => ({
-    _parentID: one(_pages_v, {
-      fields: [_pages_v_version_hero_links._parentID],
-      references: [_pages_v.id],
-      relationName: 'version_hero_links',
-    }),
-  }),
-)
-export const relations__pages_v_blocks_cta_links = relations(
-  _pages_v_blocks_cta_links,
-  ({ one }) => ({
-    _parentID: one(_pages_v_blocks_cta, {
-      fields: [_pages_v_blocks_cta_links._parentID],
-      references: [_pages_v_blocks_cta.id],
-      relationName: 'links',
-    }),
-  }),
-)
-export const relations__pages_v_blocks_cta = relations(_pages_v_blocks_cta, ({ one, many }) => ({
-  _parentID: one(_pages_v, {
-    fields: [_pages_v_blocks_cta._parentID],
-    references: [_pages_v.id],
-    relationName: '_blocks_cta',
-  }),
-  links: many(_pages_v_blocks_cta_links, {
-    relationName: 'links',
-  }),
-}))
-export const relations__pages_v_blocks_content_columns = relations(
-  _pages_v_blocks_content_columns,
-  ({ one }) => ({
-    _parentID: one(_pages_v_blocks_content, {
-      fields: [_pages_v_blocks_content_columns._parentID],
-      references: [_pages_v_blocks_content.id],
-      relationName: 'columns',
-    }),
-  }),
-)
-export const relations__pages_v_blocks_content = relations(
-  _pages_v_blocks_content,
-  ({ one, many }) => ({
-    _parentID: one(_pages_v, {
-      fields: [_pages_v_blocks_content._parentID],
-      references: [_pages_v.id],
-      relationName: '_blocks_content',
-    }),
-    columns: many(_pages_v_blocks_content_columns, {
-      relationName: 'columns',
-    }),
-  }),
-)
-export const relations__pages_v_blocks_media_block = relations(
-  _pages_v_blocks_media_block,
-  ({ one }) => ({
-    _parentID: one(_pages_v, {
-      fields: [_pages_v_blocks_media_block._parentID],
-      references: [_pages_v.id],
-      relationName: '_blocks_mediaBlock',
-    }),
-    media: one(media, {
-      fields: [_pages_v_blocks_media_block.media],
-      references: [media.id],
-      relationName: 'media',
-    }),
-  }),
-)
-export const relations__pages_v_blocks_archive = relations(_pages_v_blocks_archive, ({ one }) => ({
-  _parentID: one(_pages_v, {
-    fields: [_pages_v_blocks_archive._parentID],
-    references: [_pages_v.id],
-    relationName: '_blocks_archive',
-  }),
-}))
-export const relations__pages_v_blocks_carousel = relations(
-  _pages_v_blocks_carousel,
-  ({ one }) => ({
-    _parentID: one(_pages_v, {
-      fields: [_pages_v_blocks_carousel._parentID],
-      references: [_pages_v.id],
-      relationName: '_blocks_carousel',
-    }),
-  }),
-)
-export const relations__pages_v_blocks_three_item_grid = relations(
-  _pages_v_blocks_three_item_grid,
-  ({ one }) => ({
-    _parentID: one(_pages_v, {
-      fields: [_pages_v_blocks_three_item_grid._parentID],
-      references: [_pages_v.id],
-      relationName: '_blocks_threeItemGrid',
-    }),
-  }),
-)
-export const relations__pages_v_blocks_banner = relations(_pages_v_blocks_banner, ({ one }) => ({
-  _parentID: one(_pages_v, {
-    fields: [_pages_v_blocks_banner._parentID],
-    references: [_pages_v.id],
-    relationName: '_blocks_banner',
-  }),
-}))
-export const relations__pages_v_blocks_form_block = relations(
-  _pages_v_blocks_form_block,
-  ({ one }) => ({
-    _parentID: one(_pages_v, {
-      fields: [_pages_v_blocks_form_block._parentID],
-      references: [_pages_v.id],
-      relationName: '_blocks_formBlock',
-    }),
-    form: one(forms, {
-      fields: [_pages_v_blocks_form_block.form],
-      references: [forms.id],
-      relationName: 'form',
-    }),
-  }),
-)
-export const relations__pages_v_locales = relations(_pages_v_locales, ({ one }) => ({
-  _parentID: one(_pages_v, {
-    fields: [_pages_v_locales._parentID],
-    references: [_pages_v.id],
-    relationName: '_locales',
-  }),
-  version_meta_image: one(media, {
-    fields: [_pages_v_locales.version_meta_image],
-    references: [media.id],
-    relationName: 'version_meta_image',
-  }),
-}))
-export const relations__pages_v_rels = relations(_pages_v_rels, ({ one }) => ({
-  parent: one(_pages_v, {
-    fields: [_pages_v_rels.parent],
-    references: [_pages_v.id],
-    relationName: '_rels',
-  }),
-  pagesID: one(pages, {
-    fields: [_pages_v_rels.pagesID],
-    references: [pages.id],
-    relationName: 'pages',
-  }),
-  categoriesID: one(categories, {
-    fields: [_pages_v_rels.categoriesID],
-    references: [categories.id],
-    relationName: 'categories',
-  }),
-  productsID: one(products, {
-    fields: [_pages_v_rels.productsID],
-    references: [products.id],
-    relationName: 'products',
-  }),
-}))
-export const relations__pages_v = relations(_pages_v, ({ one, many }) => ({
-  parent: one(pages, {
-    fields: [_pages_v.parent],
-    references: [pages.id],
-    relationName: 'parent',
-  }),
-  version_hero_links: many(_pages_v_version_hero_links, {
-    relationName: 'version_hero_links',
-  }),
-  version_hero_media: one(media, {
-    fields: [_pages_v.version_hero_media],
-    references: [media.id],
-    relationName: 'version_hero_media',
-  }),
-  _blocks_cta: many(_pages_v_blocks_cta, {
-    relationName: '_blocks_cta',
-  }),
-  _blocks_content: many(_pages_v_blocks_content, {
-    relationName: '_blocks_content',
-  }),
-  _blocks_mediaBlock: many(_pages_v_blocks_media_block, {
-    relationName: '_blocks_mediaBlock',
-  }),
-  _blocks_archive: many(_pages_v_blocks_archive, {
-    relationName: '_blocks_archive',
-  }),
-  _blocks_carousel: many(_pages_v_blocks_carousel, {
-    relationName: '_blocks_carousel',
-  }),
-  _blocks_threeItemGrid: many(_pages_v_blocks_three_item_grid, {
-    relationName: '_blocks_threeItemGrid',
-  }),
-  _blocks_banner: many(_pages_v_blocks_banner, {
-    relationName: '_blocks_banner',
-  }),
-  _blocks_formBlock: many(_pages_v_blocks_form_block, {
-    relationName: '_blocks_formBlock',
-  }),
-  _locales: many(_pages_v_locales, {
-    relationName: '_locales',
-  }),
-  _rels: many(_pages_v_rels, {
-    relationName: '_rels',
-  }),
-}))
 export const relations_tags = relations(tags, () => ({}))
+export const relations_tones_traits_scope_list = relations(tones_traits_scope_list, ({ one }) => ({
+  _parentID: one(tones, {
+    fields: [tones_traits_scope_list._parentID],
+    references: [tones.id],
+    relationName: 'traits_scope_list',
+  }),
+}))
+export const relations_tones_traits_qualities = relations(tones_traits_qualities, ({ one }) => ({
+  _parentID: one(tones, {
+    fields: [tones_traits_qualities._parentID],
+    references: [tones.id],
+    relationName: 'traits_qualities',
+  }),
+}))
+export const relations_tones_locales = relations(tones_locales, ({ one }) => ({
+  _parentID: one(tones, {
+    fields: [tones_locales._parentID],
+    references: [tones.id],
+    relationName: '_locales',
+  }),
+  seo_image: one(media, {
+    fields: [tones_locales.seo_image],
+    references: [media.id],
+    relationName: 'seo_image',
+  }),
+}))
+export const relations_tones_rels = relations(tones_rels, ({ one }) => ({
+  parent: one(tones, {
+    fields: [tones_rels.parent],
+    references: [tones.id],
+    relationName: '_rels',
+  }),
+  categoriesID: one(categories, {
+    fields: [tones_rels.categoriesID],
+    references: [categories.id],
+    relationName: 'categories',
+  }),
+  tagsID: one(tags, {
+    fields: [tones_rels.tagsID],
+    references: [tags.id],
+    relationName: 'tags',
+  }),
+}))
+export const relations_tones = relations(tones, ({ one, many }) => ({
+  type: one(categories, {
+    fields: [tones.type],
+    references: [categories.id],
+    relationName: 'type',
+  }),
+  traits_scope_list: many(tones_traits_scope_list, {
+    relationName: 'traits_scope_list',
+  }),
+  traits_qualities: many(tones_traits_qualities, {
+    relationName: 'traits_qualities',
+  }),
+  _locales: many(tones_locales, {
+    relationName: '_locales',
+  }),
+  _rels: many(tones_rels, {
+    relationName: '_rels',
+  }),
+}))
+export const relations_features_traits_nature_list = relations(
+  features_traits_nature_list,
+  ({ one }) => ({
+    _parentID: one(features, {
+      fields: [features_traits_nature_list._parentID],
+      references: [features.id],
+      relationName: 'traits_nature_list',
+    }),
+  }),
+)
+export const relations_features_locales = relations(features_locales, ({ one }) => ({
+  _parentID: one(features, {
+    fields: [features_locales._parentID],
+    references: [features.id],
+    relationName: '_locales',
+  }),
+  seo_image: one(media, {
+    fields: [features_locales.seo_image],
+    references: [media.id],
+    relationName: 'seo_image',
+  }),
+}))
+export const relations_features_rels = relations(features_rels, ({ one }) => ({
+  parent: one(features, {
+    fields: [features_rels.parent],
+    references: [features.id],
+    relationName: '_rels',
+  }),
+  categoriesID: one(categories, {
+    fields: [features_rels.categoriesID],
+    references: [categories.id],
+    relationName: 'categories',
+  }),
+  tagsID: one(tags, {
+    fields: [features_rels.tagsID],
+    references: [tags.id],
+    relationName: 'tags',
+  }),
+}))
+export const relations_features = relations(features, ({ one, many }) => ({
+  type: one(categories, {
+    fields: [features.type],
+    references: [categories.id],
+    relationName: 'type',
+  }),
+  traits_nature_list: many(features_traits_nature_list, {
+    relationName: 'traits_nature_list',
+  }),
+  contexts_notes: one(notes, {
+    fields: [features.contexts_notes],
+    references: [notes.id],
+    relationName: 'contexts_notes',
+  }),
+  _locales: many(features_locales, {
+    relationName: '_locales',
+  }),
+  _rels: many(features_rels, {
+    relationName: '_rels',
+  }),
+}))
+export const relations_specifications_details_conditions_list = relations(
+  specifications_details_conditions_list,
+  ({ one }) => ({
+    _parentID: one(specifications, {
+      fields: [specifications_details_conditions_list._parentID],
+      references: [specifications.id],
+      relationName: 'details_conditions_list',
+    }),
+  }),
+)
+export const relations_specifications_metrics_parameters = relations(
+  specifications_metrics_parameters,
+  ({ one }) => ({
+    _parentID: one(specifications, {
+      fields: [specifications_metrics_parameters._parentID],
+      references: [specifications.id],
+      relationName: 'metrics_parameters',
+    }),
+  }),
+)
+export const relations_specifications_metrics_measurement_list = relations(
+  specifications_metrics_measurement_list,
+  ({ one }) => ({
+    _parentID: one(specifications, {
+      fields: [specifications_metrics_measurement_list._parentID],
+      references: [specifications.id],
+      relationName: 'metrics_measurement_list',
+    }),
+  }),
+)
+export const relations_specifications_locales = relations(specifications_locales, ({ one }) => ({
+  _parentID: one(specifications, {
+    fields: [specifications_locales._parentID],
+    references: [specifications.id],
+    relationName: '_locales',
+  }),
+  seo_image: one(media, {
+    fields: [specifications_locales.seo_image],
+    references: [media.id],
+    relationName: 'seo_image',
+  }),
+}))
+export const relations_specifications_rels = relations(specifications_rels, ({ one }) => ({
+  parent: one(specifications, {
+    fields: [specifications_rels.parent],
+    references: [specifications.id],
+    relationName: '_rels',
+  }),
+  categoriesID: one(categories, {
+    fields: [specifications_rels.categoriesID],
+    references: [categories.id],
+    relationName: 'categories',
+  }),
+  tagsID: one(tags, {
+    fields: [specifications_rels.tagsID],
+    references: [tags.id],
+    relationName: 'tags',
+  }),
+}))
+export const relations_specifications = relations(specifications, ({ one, many }) => ({
+  type: one(categories, {
+    fields: [specifications.type],
+    references: [categories.id],
+    relationName: 'type',
+  }),
+  details_conditions_list: many(specifications_details_conditions_list, {
+    relationName: 'details_conditions_list',
+  }),
+  metrics_parameters: many(specifications_metrics_parameters, {
+    relationName: 'metrics_parameters',
+  }),
+  metrics_measurement_list: many(specifications_metrics_measurement_list, {
+    relationName: 'metrics_measurement_list',
+  }),
+  _locales: many(specifications_locales, {
+    relationName: '_locales',
+  }),
+  _rels: many(specifications_rels, {
+    relationName: '_rels',
+  }),
+}))
+export const relations_classifications_locales = relations(classifications_locales, ({ one }) => ({
+  _parentID: one(classifications, {
+    fields: [classifications_locales._parentID],
+    references: [classifications.id],
+    relationName: '_locales',
+  }),
+  seo_image: one(media, {
+    fields: [classifications_locales.seo_image],
+    references: [media.id],
+    relationName: 'seo_image',
+  }),
+}))
+export const relations_classifications_rels = relations(classifications_rels, ({ one }) => ({
+  parent: one(classifications, {
+    fields: [classifications_rels.parent],
+    references: [classifications.id],
+    relationName: '_rels',
+  }),
+  categoriesID: one(categories, {
+    fields: [classifications_rels.categoriesID],
+    references: [categories.id],
+    relationName: 'categories',
+  }),
+  tagsID: one(tags, {
+    fields: [classifications_rels.tagsID],
+    references: [tags.id],
+    relationName: 'tags',
+  }),
+}))
+export const relations_classifications = relations(classifications, ({ one, many }) => ({
+  type: one(categories, {
+    fields: [classifications.type],
+    references: [categories.id],
+    relationName: 'type',
+  }),
+  contexts_notes: one(notes, {
+    fields: [classifications.contexts_notes],
+    references: [notes.id],
+    relationName: 'contexts_notes',
+  }),
+  _locales: many(classifications_locales, {
+    relationName: '_locales',
+  }),
+  _rels: many(classifications_rels, {
+    relationName: '_rels',
+  }),
+}))
+export const relations_skills_basics_scope_list = relations(
+  skills_basics_scope_list,
+  ({ one }) => ({
+    _parentID: one(skills, {
+      fields: [skills_basics_scope_list._parentID],
+      references: [skills.id],
+      relationName: 'basics_scope_list',
+    }),
+  }),
+)
+export const relations_skills_details_methods = relations(skills_details_methods, ({ one }) => ({
+  _parentID: one(skills, {
+    fields: [skills_details_methods._parentID],
+    references: [skills.id],
+    relationName: 'details_methods',
+  }),
+}))
+export const relations_skills_details_dependencies = relations(
+  skills_details_dependencies,
+  ({ one }) => ({
+    _parentID: one(skills, {
+      fields: [skills_details_dependencies._parentID],
+      references: [skills.id],
+      relationName: 'details_dependencies',
+    }),
+    skill: one(skills, {
+      fields: [skills_details_dependencies.skill],
+      references: [skills.id],
+      relationName: 'skill',
+    }),
+  }),
+)
+export const relations_skills_traits_nature_list = relations(
+  skills_traits_nature_list,
+  ({ one }) => ({
+    _parentID: one(skills, {
+      fields: [skills_traits_nature_list._parentID],
+      references: [skills.id],
+      relationName: 'traits_nature_list',
+    }),
+  }),
+)
+export const relations_skills_locales = relations(skills_locales, ({ one }) => ({
+  _parentID: one(skills, {
+    fields: [skills_locales._parentID],
+    references: [skills.id],
+    relationName: '_locales',
+  }),
+  seo_image: one(media, {
+    fields: [skills_locales.seo_image],
+    references: [media.id],
+    relationName: 'seo_image',
+  }),
+}))
+export const relations_skills_rels = relations(skills_rels, ({ one }) => ({
+  parent: one(skills, {
+    fields: [skills_rels.parent],
+    references: [skills.id],
+    relationName: '_rels',
+  }),
+  categoriesID: one(categories, {
+    fields: [skills_rels.categoriesID],
+    references: [categories.id],
+    relationName: 'categories',
+  }),
+  tagsID: one(tags, {
+    fields: [skills_rels.tagsID],
+    references: [tags.id],
+    relationName: 'tags',
+  }),
+}))
+export const relations_skills = relations(skills, ({ one, many }) => ({
+  type: one(categories, {
+    fields: [skills.type],
+    references: [categories.id],
+    relationName: 'type',
+  }),
+  basics_scope_list: many(skills_basics_scope_list, {
+    relationName: 'basics_scope_list',
+  }),
+  details_methods: many(skills_details_methods, {
+    relationName: 'details_methods',
+  }),
+  details_features: one(features, {
+    fields: [skills.details_features],
+    references: [features.id],
+    relationName: 'details_features',
+  }),
+  details_specifications: one(specifications, {
+    fields: [skills.details_specifications],
+    references: [specifications.id],
+    relationName: 'details_specifications',
+  }),
+  details_dependencies: many(skills_details_dependencies, {
+    relationName: 'details_dependencies',
+  }),
+  traits_nature_list: many(skills_traits_nature_list, {
+    relationName: 'traits_nature_list',
+  }),
+  contexts_classifications: one(classifications, {
+    fields: [skills.contexts_classifications],
+    references: [classifications.id],
+    relationName: 'contexts_classifications',
+  }),
+  contexts_trainings: one(trainings, {
+    fields: [skills.contexts_trainings],
+    references: [trainings.id],
+    relationName: 'contexts_trainings',
+  }),
+  contexts_notes: one(notes, {
+    fields: [skills.contexts_notes],
+    references: [notes.id],
+    relationName: 'contexts_notes',
+  }),
+  _locales: many(skills_locales, {
+    relationName: '_locales',
+  }),
+  _rels: many(skills_rels, {
+    relationName: '_rels',
+  }),
+}))
+export const relations_principles_locales = relations(principles_locales, ({ one }) => ({
+  _parentID: one(principles, {
+    fields: [principles_locales._parentID],
+    references: [principles.id],
+    relationName: '_locales',
+  }),
+  seo_image: one(media, {
+    fields: [principles_locales.seo_image],
+    references: [media.id],
+    relationName: 'seo_image',
+  }),
+}))
+export const relations_principles_rels = relations(principles_rels, ({ one }) => ({
+  parent: one(principles, {
+    fields: [principles_rels.parent],
+    references: [principles.id],
+    relationName: '_rels',
+  }),
+  categoriesID: one(categories, {
+    fields: [principles_rels.categoriesID],
+    references: [categories.id],
+    relationName: 'categories',
+  }),
+  tagsID: one(tags, {
+    fields: [principles_rels.tagsID],
+    references: [tags.id],
+    relationName: 'tags',
+  }),
+}))
+export const relations_principles = relations(principles, ({ one, many }) => ({
+  type: one(categories, {
+    fields: [principles.type],
+    references: [categories.id],
+    relationName: 'type',
+  }),
+  contexts_notes: one(notes, {
+    fields: [principles.contexts_notes],
+    references: [notes.id],
+    relationName: 'contexts_notes',
+  }),
+  _locales: many(principles_locales, {
+    relationName: '_locales',
+  }),
+  _rels: many(principles_rels, {
+    relationName: '_rels',
+  }),
+}))
+export const relations_preferences_traits_conditions = relations(
+  preferences_traits_conditions,
+  ({ one }) => ({
+    _parentID: one(preferences, {
+      fields: [preferences_traits_conditions._parentID],
+      references: [preferences.id],
+      relationName: 'traits_conditions',
+    }),
+  }),
+)
+export const relations_preferences_traits_reasons = relations(
+  preferences_traits_reasons,
+  ({ one }) => ({
+    _parentID: one(preferences, {
+      fields: [preferences_traits_reasons._parentID],
+      references: [preferences.id],
+      relationName: 'traits_reasons',
+    }),
+  }),
+)
+export const relations_preferences_locales = relations(preferences_locales, ({ one }) => ({
+  _parentID: one(preferences, {
+    fields: [preferences_locales._parentID],
+    references: [preferences.id],
+    relationName: '_locales',
+  }),
+  seo_image: one(media, {
+    fields: [preferences_locales.seo_image],
+    references: [media.id],
+    relationName: 'seo_image',
+  }),
+}))
+export const relations_preferences_rels = relations(preferences_rels, ({ one }) => ({
+  parent: one(preferences, {
+    fields: [preferences_rels.parent],
+    references: [preferences.id],
+    relationName: '_rels',
+  }),
+  categoriesID: one(categories, {
+    fields: [preferences_rels.categoriesID],
+    references: [categories.id],
+    relationName: 'categories',
+  }),
+  tagsID: one(tags, {
+    fields: [preferences_rels.tagsID],
+    references: [tags.id],
+    relationName: 'tags',
+  }),
+}))
+export const relations_preferences = relations(preferences, ({ one, many }) => ({
+  type: one(categories, {
+    fields: [preferences.type],
+    references: [categories.id],
+    relationName: 'type',
+  }),
+  traits_conditions: many(preferences_traits_conditions, {
+    relationName: 'traits_conditions',
+  }),
+  traits_reasons: many(preferences_traits_reasons, {
+    relationName: 'traits_reasons',
+  }),
+  contexts_principles: one(principles, {
+    fields: [preferences.contexts_principles],
+    references: [principles.id],
+    relationName: 'contexts_principles',
+  }),
+  contexts_notes: one(notes, {
+    fields: [preferences.contexts_notes],
+    references: [notes.id],
+    relationName: 'contexts_notes',
+  }),
+  _locales: many(preferences_locales, {
+    relationName: '_locales',
+  }),
+  _rels: many(preferences_rels, {
+    relationName: '_rels',
+  }),
+}))
+export const relations_channels_traits_usage_list_locales = relations(
+  channels_traits_usage_list_locales,
+  ({ one }) => ({
+    _parentID: one(channels_traits_usage_list, {
+      fields: [channels_traits_usage_list_locales._parentID],
+      references: [channels_traits_usage_list.id],
+      relationName: '_locales',
+    }),
+  }),
+)
+export const relations_channels_traits_usage_list = relations(
+  channels_traits_usage_list,
+  ({ one, many }) => ({
+    _parentID: one(channels, {
+      fields: [channels_traits_usage_list._parentID],
+      references: [channels.id],
+      relationName: 'traits_usage_list',
+    }),
+    _locales: many(channels_traits_usage_list_locales, {
+      relationName: '_locales',
+    }),
+  }),
+)
+export const relations_channels_traits_validity_list = relations(
+  channels_traits_validity_list,
+  ({ one }) => ({
+    _parentID: one(channels, {
+      fields: [channels_traits_validity_list._parentID],
+      references: [channels.id],
+      relationName: 'traits_validity_list',
+    }),
+  }),
+)
+export const relations_channels_locales = relations(channels_locales, ({ one }) => ({
+  _parentID: one(channels, {
+    fields: [channels_locales._parentID],
+    references: [channels.id],
+    relationName: '_locales',
+  }),
+  seo_image: one(media, {
+    fields: [channels_locales.seo_image],
+    references: [media.id],
+    relationName: 'seo_image',
+  }),
+}))
+export const relations_channels_rels = relations(channels_rels, ({ one }) => ({
+  parent: one(channels, {
+    fields: [channels_rels.parent],
+    references: [channels.id],
+    relationName: '_rels',
+  }),
+  categoriesID: one(categories, {
+    fields: [channels_rels.categoriesID],
+    references: [categories.id],
+    relationName: 'categories',
+  }),
+  tagsID: one(tags, {
+    fields: [channels_rels.tagsID],
+    references: [tags.id],
+    relationName: 'tags',
+  }),
+}))
+export const relations_channels = relations(channels, ({ one, many }) => ({
+  type: one(categories, {
+    fields: [channels.type],
+    references: [categories.id],
+    relationName: 'type',
+  }),
+  traits_usage_list: many(channels_traits_usage_list, {
+    relationName: 'traits_usage_list',
+  }),
+  traits_validity_list: many(channels_traits_validity_list, {
+    relationName: 'traits_validity_list',
+  }),
+  _locales: many(channels_locales, {
+    relationName: '_locales',
+  }),
+  _rels: many(channels_rels, {
+    relationName: '_rels',
+  }),
+}))
+export const relations_locations_traits_geography_list = relations(
+  locations_traits_geography_list,
+  ({ one }) => ({
+    _parentID: one(locations, {
+      fields: [locations_traits_geography_list._parentID],
+      references: [locations.id],
+      relationName: 'traits_geography_list',
+    }),
+  }),
+)
+export const relations_locations_traits_infrastructure_list = relations(
+  locations_traits_infrastructure_list,
+  ({ one }) => ({
+    _parentID: one(locations, {
+      fields: [locations_traits_infrastructure_list._parentID],
+      references: [locations.id],
+      relationName: 'traits_infrastructure_list',
+    }),
+  }),
+)
+export const relations_locations_traits_accessibility_list = relations(
+  locations_traits_accessibility_list,
+  ({ one }) => ({
+    _parentID: one(locations, {
+      fields: [locations_traits_accessibility_list._parentID],
+      references: [locations.id],
+      relationName: 'traits_accessibility_list',
+    }),
+  }),
+)
+export const relations_locations_locales = relations(locations_locales, ({ one }) => ({
+  _parentID: one(locations, {
+    fields: [locations_locales._parentID],
+    references: [locations.id],
+    relationName: '_locales',
+  }),
+  seo_image: one(media, {
+    fields: [locations_locales.seo_image],
+    references: [media.id],
+    relationName: 'seo_image',
+  }),
+}))
+export const relations_locations_rels = relations(locations_rels, ({ one }) => ({
+  parent: one(locations, {
+    fields: [locations_rels.parent],
+    references: [locations.id],
+    relationName: '_rels',
+  }),
+  organizationsID: one(organizations, {
+    fields: [locations_rels.organizationsID],
+    references: [organizations.id],
+    relationName: 'organizations',
+  }),
+  individualsID: one(individuals, {
+    fields: [locations_rels.individualsID],
+    references: [individuals.id],
+    relationName: 'individuals',
+  }),
+  leadersID: one(leaders, {
+    fields: [locations_rels.leadersID],
+    references: [leaders.id],
+    relationName: 'leaders',
+  }),
+  driversID: one(drivers, {
+    fields: [locations_rels.driversID],
+    references: [drivers.id],
+    relationName: 'drivers',
+  }),
+  membersID: one(members, {
+    fields: [locations_rels.membersID],
+    references: [members.id],
+    relationName: 'members',
+  }),
+  categoriesID: one(categories, {
+    fields: [locations_rels.categoriesID],
+    references: [categories.id],
+    relationName: 'categories',
+  }),
+  tagsID: one(tags, {
+    fields: [locations_rels.tagsID],
+    references: [tags.id],
+    relationName: 'tags',
+  }),
+}))
+export const relations_locations = relations(locations, ({ one, many }) => ({
+  type: one(categories, {
+    fields: [locations.type],
+    references: [categories.id],
+    relationName: 'type',
+  }),
+  traits_geography_list: many(locations_traits_geography_list, {
+    relationName: 'traits_geography_list',
+  }),
+  traits_infrastructure_list: many(locations_traits_infrastructure_list, {
+    relationName: 'traits_infrastructure_list',
+  }),
+  traits_accessibility_list: many(locations_traits_accessibility_list, {
+    relationName: 'traits_accessibility_list',
+  }),
+  _locales: many(locations_locales, {
+    relationName: '_locales',
+  }),
+  _rels: many(locations_rels, {
+    relationName: '_rels',
+  }),
+}))
 export const relations_forms_blocks_checkbox_locales = relations(
   forms_blocks_checkbox_locales,
   ({ one }) => ({
@@ -4565,6 +17293,65 @@ export const relations_transactions = relations(transactions, ({ one, many }) =>
     relationName: 'cart',
   }),
 }))
+export const relations_search_locales = relations(search_locales, ({ one }) => ({
+  _parentID: one(search, {
+    fields: [search_locales._parentID],
+    references: [search.id],
+    relationName: '_locales',
+  }),
+}))
+export const relations_search_rels = relations(search_rels, ({ one }) => ({
+  parent: one(search, {
+    fields: [search_rels.parent],
+    references: [search.id],
+    relationName: '_rels',
+  }),
+  usersID: one(users, {
+    fields: [search_rels.usersID],
+    references: [users.id],
+    relationName: 'users',
+  }),
+  pagesID: one(pages, {
+    fields: [search_rels.pagesID],
+    references: [pages.id],
+    relationName: 'pages',
+  }),
+  categoriesID: one(categories, {
+    fields: [search_rels.categoriesID],
+    references: [categories.id],
+    relationName: 'categories',
+  }),
+  tagsID: one(tags, {
+    fields: [search_rels.tagsID],
+    references: [tags.id],
+    relationName: 'tags',
+  }),
+  mediaID: one(media, {
+    fields: [search_rels.mediaID],
+    references: [media.id],
+    relationName: 'media',
+  }),
+  formsID: one(forms, {
+    fields: [search_rels.formsID],
+    references: [forms.id],
+    relationName: 'forms',
+  }),
+}))
+export const relations_search = relations(search, ({ many }) => ({
+  _locales: many(search_locales, {
+    relationName: '_locales',
+  }),
+  _rels: many(search_rels, {
+    relationName: '_rels',
+  }),
+}))
+export const relations_payload_mcp_api_keys = relations(payload_mcp_api_keys, ({ one }) => ({
+  user: one(users, {
+    fields: [payload_mcp_api_keys.user],
+    references: [users.id],
+    relationName: 'user',
+  }),
+}))
 export const relations_payload_kv = relations(payload_kv, () => ({}))
 export const relations_payload_folders_folder_type = relations(
   payload_folders_folder_type,
@@ -4594,30 +17381,270 @@ export const relations_payload_locked_documents_rels = relations(
       references: [payload_locked_documents.id],
       relationName: '_rels',
     }),
-    categoriesID: one(categories, {
-      fields: [payload_locked_documents_rels.categoriesID],
-      references: [categories.id],
-      relationName: 'categories',
+    seriesID: one(series, {
+      fields: [payload_locked_documents_rels.seriesID],
+      references: [series.id],
+      relationName: 'series',
+    }),
+    seasonsID: one(seasons, {
+      fields: [payload_locked_documents_rels.seasonsID],
+      references: [seasons.id],
+      relationName: 'seasons',
+    }),
+    eventsID: one(events, {
+      fields: [payload_locked_documents_rels.eventsID],
+      references: [events.id],
+      relationName: 'events',
+    }),
+    sessionsID: one(sessions, {
+      fields: [payload_locked_documents_rels.sessionsID],
+      references: [sessions.id],
+      relationName: 'sessions',
+    }),
+    entriesID: one(entries, {
+      fields: [payload_locked_documents_rels.entriesID],
+      references: [entries.id],
+      relationName: 'entries',
+    }),
+    resultsID: one(results, {
+      fields: [payload_locked_documents_rels.resultsID],
+      references: [results.id],
+      relationName: 'results',
+    }),
+    pointsID: one(points, {
+      fields: [payload_locked_documents_rels.pointsID],
+      references: [points.id],
+      relationName: 'points',
+    }),
+    driversID: one(drivers, {
+      fields: [payload_locked_documents_rels.driversID],
+      references: [drivers.id],
+      relationName: 'drivers',
+    }),
+    leadersID: one(leaders, {
+      fields: [payload_locked_documents_rels.leadersID],
+      references: [leaders.id],
+      relationName: 'leaders',
+    }),
+    membersID: one(members, {
+      fields: [payload_locked_documents_rels.membersID],
+      references: [members.id],
+      relationName: 'members',
+    }),
+    individualsID: one(individuals, {
+      fields: [payload_locked_documents_rels.individualsID],
+      references: [individuals.id],
+      relationName: 'individuals',
+    }),
+    organizationsID: one(organizations, {
+      fields: [payload_locked_documents_rels.organizationsID],
+      references: [organizations.id],
+      relationName: 'organizations',
     }),
     usersID: one(users, {
       fields: [payload_locked_documents_rels.usersID],
       references: [users.id],
       relationName: 'users',
     }),
-    mediaID: one(media, {
-      fields: [payload_locked_documents_rels.mediaID],
-      references: [media.id],
-      relationName: 'media',
+    narrativesID: one(narratives, {
+      fields: [payload_locked_documents_rels.narrativesID],
+      references: [narratives.id],
+      relationName: 'narratives',
+    }),
+    storiesID: one(stories, {
+      fields: [payload_locked_documents_rels.storiesID],
+      references: [stories.id],
+      relationName: 'stories',
+    }),
+    historiesID: one(histories, {
+      fields: [payload_locked_documents_rels.historiesID],
+      references: [histories.id],
+      relationName: 'histories',
+    }),
+    journeysID: one(journeys, {
+      fields: [payload_locked_documents_rels.journeysID],
+      references: [journeys.id],
+      relationName: 'journeys',
+    }),
+    notesID: one(notes, {
+      fields: [payload_locked_documents_rels.notesID],
+      references: [notes.id],
+      relationName: 'notes',
     }),
     pagesID: one(pages, {
       fields: [payload_locked_documents_rels.pagesID],
       references: [pages.id],
       relationName: 'pages',
     }),
+    carsID: one(cars, {
+      fields: [payload_locked_documents_rels.carsID],
+      references: [cars.id],
+      relationName: 'cars',
+    }),
+    kitsID: one(kits, {
+      fields: [payload_locked_documents_rels.kitsID],
+      references: [kits.id],
+      relationName: 'kits',
+    }),
+    mediaID: one(media, {
+      fields: [payload_locked_documents_rels.mediaID],
+      references: [media.id],
+      relationName: 'media',
+    }),
+    galleriesID: one(galleries, {
+      fields: [payload_locked_documents_rels.galleriesID],
+      references: [galleries.id],
+      relationName: 'galleries',
+    }),
+    playlistsID: one(playlists, {
+      fields: [payload_locked_documents_rels.playlistsID],
+      references: [playlists.id],
+      relationName: 'playlists',
+    }),
+    archivesID: one(archives, {
+      fields: [payload_locked_documents_rels.archivesID],
+      references: [archives.id],
+      relationName: 'archives',
+    }),
+    visualizationsID: one(visualizations, {
+      fields: [payload_locked_documents_rels.visualizationsID],
+      references: [visualizations.id],
+      relationName: 'visualizations',
+    }),
+    schedulesID: one(schedules, {
+      fields: [payload_locked_documents_rels.schedulesID],
+      references: [schedules.id],
+      relationName: 'schedules',
+    }),
+    trainingsID: one(trainings, {
+      fields: [payload_locked_documents_rels.trainingsID],
+      references: [trainings.id],
+      relationName: 'trainings',
+    }),
+    careersID: one(careers, {
+      fields: [payload_locked_documents_rels.careersID],
+      references: [careers.id],
+      relationName: 'careers',
+    }),
+    initiativesID: one(initiatives, {
+      fields: [payload_locked_documents_rels.initiativesID],
+      references: [initiatives.id],
+      relationName: 'initiatives',
+    }),
+    meetupsID: one(meetups, {
+      fields: [payload_locked_documents_rels.meetupsID],
+      references: [meetups.id],
+      relationName: 'meetups',
+    }),
+    celebrationsID: one(celebrations, {
+      fields: [payload_locked_documents_rels.celebrationsID],
+      references: [celebrations.id],
+      relationName: 'celebrations',
+    }),
+    protocolsID: one(protocols, {
+      fields: [payload_locked_documents_rels.protocolsID],
+      references: [protocols.id],
+      relationName: 'protocols',
+    }),
+    dutiesID: one(duties, {
+      fields: [payload_locked_documents_rels.dutiesID],
+      references: [duties.id],
+      relationName: 'duties',
+    }),
+    expectationsID: one(expectations, {
+      fields: [payload_locked_documents_rels.expectationsID],
+      references: [expectations.id],
+      relationName: 'expectations',
+    }),
+    highlightsID: one(highlights, {
+      fields: [payload_locked_documents_rels.highlightsID],
+      references: [highlights.id],
+      relationName: 'highlights',
+    }),
+    incidentsID: one(incidents, {
+      fields: [payload_locked_documents_rels.incidentsID],
+      references: [incidents.id],
+      relationName: 'incidents',
+    }),
+    impactsID: one(impacts, {
+      fields: [payload_locked_documents_rels.impactsID],
+      references: [impacts.id],
+      relationName: 'impacts',
+    }),
+    decisionsID: one(decisions, {
+      fields: [payload_locked_documents_rels.decisionsID],
+      references: [decisions.id],
+      relationName: 'decisions',
+    }),
+    strategiesID: one(strategies, {
+      fields: [payload_locked_documents_rels.strategiesID],
+      references: [strategies.id],
+      relationName: 'strategies',
+    }),
+    awardsID: one(awards, {
+      fields: [payload_locked_documents_rels.awardsID],
+      references: [awards.id],
+      relationName: 'awards',
+    }),
+    experiencesID: one(experiences, {
+      fields: [payload_locked_documents_rels.experiencesID],
+      references: [experiences.id],
+      relationName: 'experiences',
+    }),
+    categoriesID: one(categories, {
+      fields: [payload_locked_documents_rels.categoriesID],
+      references: [categories.id],
+      relationName: 'categories',
+    }),
     tagsID: one(tags, {
       fields: [payload_locked_documents_rels.tagsID],
       references: [tags.id],
       relationName: 'tags',
+    }),
+    tonesID: one(tones, {
+      fields: [payload_locked_documents_rels.tonesID],
+      references: [tones.id],
+      relationName: 'tones',
+    }),
+    featuresID: one(features, {
+      fields: [payload_locked_documents_rels.featuresID],
+      references: [features.id],
+      relationName: 'features',
+    }),
+    specificationsID: one(specifications, {
+      fields: [payload_locked_documents_rels.specificationsID],
+      references: [specifications.id],
+      relationName: 'specifications',
+    }),
+    classificationsID: one(classifications, {
+      fields: [payload_locked_documents_rels.classificationsID],
+      references: [classifications.id],
+      relationName: 'classifications',
+    }),
+    skillsID: one(skills, {
+      fields: [payload_locked_documents_rels.skillsID],
+      references: [skills.id],
+      relationName: 'skills',
+    }),
+    principlesID: one(principles, {
+      fields: [payload_locked_documents_rels.principlesID],
+      references: [principles.id],
+      relationName: 'principles',
+    }),
+    preferencesID: one(preferences, {
+      fields: [payload_locked_documents_rels.preferencesID],
+      references: [preferences.id],
+      relationName: 'preferences',
+    }),
+    channelsID: one(channels, {
+      fields: [payload_locked_documents_rels.channelsID],
+      references: [channels.id],
+      relationName: 'channels',
+    }),
+    locationsID: one(locations, {
+      fields: [payload_locked_documents_rels.locationsID],
+      references: [locations.id],
+      relationName: 'locations',
     }),
     formsID: one(forms, {
       fields: [payload_locked_documents_rels.formsID],
@@ -4669,6 +17696,16 @@ export const relations_payload_locked_documents_rels = relations(
       references: [transactions.id],
       relationName: 'transactions',
     }),
+    searchID: one(search, {
+      fields: [payload_locked_documents_rels.searchID],
+      references: [search.id],
+      relationName: 'search',
+    }),
+    'payload-mcp-api-keysID': one(payload_mcp_api_keys, {
+      fields: [payload_locked_documents_rels['payload-mcp-api-keysID']],
+      references: [payload_mcp_api_keys.id],
+      relationName: 'payload-mcp-api-keys',
+    }),
     'payload-foldersID': one(payload_folders, {
       fields: [payload_locked_documents_rels['payload-foldersID']],
       references: [payload_folders.id],
@@ -4696,6 +17733,11 @@ export const relations_payload_preferences_rels = relations(
       fields: [payload_preferences_rels.usersID],
       references: [users.id],
       relationName: 'users',
+    }),
+    'payload-mcp-api-keysID': one(payload_mcp_api_keys, {
+      fields: [payload_preferences_rels['payload-mcp-api-keysID']],
+      references: [payload_mcp_api_keys.id],
+      relationName: 'payload-mcp-api-keys',
     }),
   }),
 )
@@ -4837,36 +17879,161 @@ export const relations_questions = relations(questions, ({ many }) => ({
 
 type DatabaseSchema = {
   enum__locales: typeof enum__locales
+  enum_series_toggle: typeof enum_series_toggle
+  enum_series_basics_status: typeof enum_series_basics_status
+  enum_seasons_toggle: typeof enum_seasons_toggle
+  enum_events_toggle: typeof enum_events_toggle
+  enum_events_basics_status: typeof enum_events_basics_status
+  enum_events_basics_access: typeof enum_events_basics_access
+  enum_sessions_toggle: typeof enum_sessions_toggle
+  enum_sessions_basics_status: typeof enum_sessions_basics_status
+  enum_sessions_basics_access: typeof enum_sessions_basics_access
+  enum_entries_toggle: typeof enum_entries_toggle
+  enum_entries_basics_status: typeof enum_entries_basics_status
+  enum_entries_traits_role: typeof enum_entries_traits_role
+  enum_results_toggle: typeof enum_results_toggle
+  enum_results_basics_status: typeof enum_results_basics_status
+  enum_points_toggle: typeof enum_points_toggle
+  enum_points_basics_scale: typeof enum_points_basics_scale
+  enum_drivers_toggle: typeof enum_drivers_toggle
+  enum_drivers_basics_identity_gender: typeof enum_drivers_basics_identity_gender
+  enum_leaders_toggle: typeof enum_leaders_toggle
+  enum_leaders_basics_identity_gender: typeof enum_leaders_basics_identity_gender
+  enum_members_toggle: typeof enum_members_toggle
+  enum_members_basics_identity_gender: typeof enum_members_basics_identity_gender
+  enum_individuals_details_interests_level: typeof enum_individuals_details_interests_level
+  enum_individuals_traits_benefits_type: typeof enum_individuals_traits_benefits_type
+  enum_individuals_traits_benefits_impact: typeof enum_individuals_traits_benefits_impact
+  enum_individuals_toggle: typeof enum_individuals_toggle
+  enum_individuals_basics_identity_gender: typeof enum_individuals_basics_identity_gender
+  enum_individuals_traits_influence_reach: typeof enum_individuals_traits_influence_reach
+  enum_individuals_traits_influence_authority: typeof enum_individuals_traits_influence_authority
+  enum_individuals_traits_influence_network: typeof enum_individuals_traits_influence_network
+  enum_organizations_traits_benefits_type: typeof enum_organizations_traits_benefits_type
+  enum_organizations_traits_benefits_impact: typeof enum_organizations_traits_benefits_impact
+  enum_organizations_toggle: typeof enum_organizations_toggle
+  enum_organizations_traits_reputation_prestige: typeof enum_organizations_traits_reputation_prestige
+  enum_organizations_traits_reputation_reliability: typeof enum_organizations_traits_reputation_reliability
+  enum_organizations_traits_reputation_innovation: typeof enum_organizations_traits_reputation_innovation
   enum_users_roles: typeof enum_users_roles
-  enum_pages_hero_links_link_type: typeof enum_pages_hero_links_link_type
-  enum_pages_hero_links_link_appearance: typeof enum_pages_hero_links_link_appearance
-  enum_pages_blocks_cta_links_link_type: typeof enum_pages_blocks_cta_links_link_type
-  enum_pages_blocks_cta_links_link_appearance: typeof enum_pages_blocks_cta_links_link_appearance
-  enum_pages_blocks_content_columns_size: typeof enum_pages_blocks_content_columns_size
-  enum_pages_blocks_content_columns_link_type: typeof enum_pages_blocks_content_columns_link_type
-  enum_pages_blocks_content_columns_link_appearance: typeof enum_pages_blocks_content_columns_link_appearance
-  enum_pages_blocks_archive_populate_by: typeof enum_pages_blocks_archive_populate_by
-  enum_pages_blocks_archive_relation_to: typeof enum_pages_blocks_archive_relation_to
-  enum_pages_blocks_carousel_populate_by: typeof enum_pages_blocks_carousel_populate_by
-  enum_pages_blocks_carousel_relation_to: typeof enum_pages_blocks_carousel_relation_to
-  enum_pages_blocks_banner_style: typeof enum_pages_blocks_banner_style
-  enum_pages_hero_type: typeof enum_pages_hero_type
-  enum_pages_status: typeof enum_pages_status
-  enum__pages_v_version_hero_links_link_type: typeof enum__pages_v_version_hero_links_link_type
-  enum__pages_v_version_hero_links_link_appearance: typeof enum__pages_v_version_hero_links_link_appearance
-  enum__pages_v_blocks_cta_links_link_type: typeof enum__pages_v_blocks_cta_links_link_type
-  enum__pages_v_blocks_cta_links_link_appearance: typeof enum__pages_v_blocks_cta_links_link_appearance
-  enum__pages_v_blocks_content_columns_size: typeof enum__pages_v_blocks_content_columns_size
-  enum__pages_v_blocks_content_columns_link_type: typeof enum__pages_v_blocks_content_columns_link_type
-  enum__pages_v_blocks_content_columns_link_appearance: typeof enum__pages_v_blocks_content_columns_link_appearance
-  enum__pages_v_blocks_archive_populate_by: typeof enum__pages_v_blocks_archive_populate_by
-  enum__pages_v_blocks_archive_relation_to: typeof enum__pages_v_blocks_archive_relation_to
-  enum__pages_v_blocks_carousel_populate_by: typeof enum__pages_v_blocks_carousel_populate_by
-  enum__pages_v_blocks_carousel_relation_to: typeof enum__pages_v_blocks_carousel_relation_to
-  enum__pages_v_blocks_banner_style: typeof enum__pages_v_blocks_banner_style
-  enum__pages_v_version_hero_type: typeof enum__pages_v_version_hero_type
-  enum__pages_v_version_status: typeof enum__pages_v_version_status
-  enum__pages_v_published_locale: typeof enum__pages_v_published_locale
+  enum_narratives_details_timeline_type: typeof enum_narratives_details_timeline_type
+  enum_narratives_toggle: typeof enum_narratives_toggle
+  enum_narratives_details_scope_significance: typeof enum_narratives_details_scope_significance
+  enum_narratives_details_scope_scale: typeof enum_narratives_details_scope_scale
+  enum_narratives_details_scope_depth: typeof enum_narratives_details_scope_depth
+  enum_stories_traits_interactions_dynamics: typeof enum_stories_traits_interactions_dynamics
+  enum_stories_toggle: typeof enum_stories_toggle
+  enum_histories_toggle: typeof enum_histories_toggle
+  enum_histories_traits_legacy_impact: typeof enum_histories_traits_legacy_impact
+  enum_histories_traits_legacy_memory: typeof enum_histories_traits_legacy_memory
+  enum_journeys_traits_lessons_significance: typeof enum_journeys_traits_lessons_significance
+  enum_journeys_traits_lessons_impact: typeof enum_journeys_traits_lessons_impact
+  enum_journeys_toggle: typeof enum_journeys_toggle
+  enum_notes_traits_intentions_type: typeof enum_notes_traits_intentions_type
+  enum_notes_traits_intentions_impact: typeof enum_notes_traits_intentions_impact
+  enum_notes_toggle: typeof enum_notes_toggle
+  enum_pages_toggle: typeof enum_pages_toggle
+  enum_cars_toggle: typeof enum_cars_toggle
+  enum_cars_traits_status: typeof enum_cars_traits_status
+  enum_kits_traits_materials_type: typeof enum_kits_traits_materials_type
+  enum_kits_toggle: typeof enum_kits_toggle
+  enum_kits_basics_purpose_application: typeof enum_kits_basics_purpose_application
+  enum_kits_details_functionality_performance: typeof enum_kits_details_functionality_performance
+  enum_kits_details_functionality_durability: typeof enum_kits_details_functionality_durability
+  enum_kits_details_functionality_comfort: typeof enum_kits_details_functionality_comfort
+  enum_kits_traits_composition_construction: typeof enum_kits_traits_composition_construction
+  enum_kits_traits_composition_assembly: typeof enum_kits_traits_composition_assembly
+  enum_kits_traits_composition_finish: typeof enum_kits_traits_composition_finish
+  enum_kits_traits_appearance_branding: typeof enum_kits_traits_appearance_branding
+  enum_kits_traits_appearance_style: typeof enum_kits_traits_appearance_style
+  enum_galleries_toggle: typeof enum_galleries_toggle
+  enum_playlists_toggle: typeof enum_playlists_toggle
+  enum_playlists_traits_quality: typeof enum_playlists_traits_quality
+  enum_playlists_traits_format: typeof enum_playlists_traits_format
+  enum_archives_toggle: typeof enum_archives_toggle
+  enum_visualizations_toggle: typeof enum_visualizations_toggle
+  enum_schedules_traits_constraints_type: typeof enum_schedules_traits_constraints_type
+  enum_schedules_traits_constraints_impact: typeof enum_schedules_traits_constraints_impact
+  enum_schedules_toggle: typeof enum_schedules_toggle
+  enum_schedules_basics_scope_significance: typeof enum_schedules_basics_scope_significance
+  enum_schedules_basics_scope_scale: typeof enum_schedules_basics_scope_scale
+  enum_schedules_basics_scope_depth: typeof enum_schedules_basics_scope_depth
+  enum_schedules_details_chronology_type: typeof enum_schedules_details_chronology_type
+  enum_trainings_toggle: typeof enum_trainings_toggle
+  enum_trainings_traits_intensity: typeof enum_trainings_traits_intensity
+  enum_trainings_traits_format: typeof enum_trainings_traits_format
+  enum_careers_toggle: typeof enum_careers_toggle
+  enum_careers_traits_contract: typeof enum_careers_traits_contract
+  enum_initiatives_toggle: typeof enum_initiatives_toggle
+  enum_initiatives_traits_status: typeof enum_initiatives_traits_status
+  enum_meetups_toggle: typeof enum_meetups_toggle
+  enum_meetups_traits_format: typeof enum_meetups_traits_format
+  enum_meetups_traits_access: typeof enum_meetups_traits_access
+  enum_celebrations_toggle: typeof enum_celebrations_toggle
+  enum_celebrations_traits_prestige: typeof enum_celebrations_traits_prestige
+  enum_celebrations_traits_exclusivity: typeof enum_celebrations_traits_exclusivity
+  enum_protocols_toggle: typeof enum_protocols_toggle
+  enum_duties_toggle: typeof enum_duties_toggle
+  enum_expectations_toggle: typeof enum_expectations_toggle
+  enum_expectations_traits_direction: typeof enum_expectations_traits_direction
+  enum_expectations_traits_priority: typeof enum_expectations_traits_priority
+  enum_expectations_traits_flexibility: typeof enum_expectations_traits_flexibility
+  enum_highlights_toggle: typeof enum_highlights_toggle
+  enum_incidents_toggle: typeof enum_incidents_toggle
+  enum_impacts_toggle: typeof enum_impacts_toggle
+  enum_impacts_basics_scope_scale: typeof enum_impacts_basics_scope_scale
+  enum_impacts_basics_scope_depth: typeof enum_impacts_basics_scope_depth
+  enum_impacts_traits_velocity: typeof enum_impacts_traits_velocity
+  enum_impacts_traits_gravity: typeof enum_impacts_traits_gravity
+  enum_impacts_traits_permanence: typeof enum_impacts_traits_permanence
+  enum_decisions_toggle: typeof enum_decisions_toggle
+  enum_strategies_traits_contingencies_probability: typeof enum_strategies_traits_contingencies_probability
+  enum_strategies_traits_contingencies_impact: typeof enum_strategies_traits_contingencies_impact
+  enum_strategies_toggle: typeof enum_strategies_toggle
+  enum_awards_toggle: typeof enum_awards_toggle
+  enum_experiences_traits_skills_proficiency: typeof enum_experiences_traits_skills_proficiency
+  enum_experiences_toggle: typeof enum_experiences_toggle
+  enum_tones_traits_scope_list_scale: typeof enum_tones_traits_scope_list_scale
+  enum_tones_traits_scope_list_depth: typeof enum_tones_traits_scope_list_depth
+  enum_tones_traits_qualities_quality: typeof enum_tones_traits_qualities_quality
+  enum_tones_traits_qualities_intensity: typeof enum_tones_traits_qualities_intensity
+  enum_tones_traits_qualities_mood: typeof enum_tones_traits_qualities_mood
+  enum_tones_traits_qualities_scale: typeof enum_tones_traits_qualities_scale
+  enum_tones_toggle: typeof enum_tones_toggle
+  enum_features_traits_nature_list_complexity: typeof enum_features_traits_nature_list_complexity
+  enum_features_traits_nature_list_visibility: typeof enum_features_traits_nature_list_visibility
+  enum_features_traits_nature_list_impact: typeof enum_features_traits_nature_list_impact
+  enum_features_toggle: typeof enum_features_toggle
+  enum_specifications_details_conditions_list_compliance: typeof enum_specifications_details_conditions_list_compliance
+  enum_specifications_metrics_measurement_list_frequency: typeof enum_specifications_metrics_measurement_list_frequency
+  enum_specifications_metrics_measurement_list_accuracy: typeof enum_specifications_metrics_measurement_list_accuracy
+  enum_specifications_toggle: typeof enum_specifications_toggle
+  enum_classifications_toggle: typeof enum_classifications_toggle
+  enum_skills_basics_scope_list_scale: typeof enum_skills_basics_scope_list_scale
+  enum_skills_basics_scope_list_depth: typeof enum_skills_basics_scope_list_depth
+  enum_skills_basics_scope_list_rarity: typeof enum_skills_basics_scope_list_rarity
+  enum_skills_details_methods_type: typeof enum_skills_details_methods_type
+  enum_skills_details_dependencies_type: typeof enum_skills_details_dependencies_type
+  enum_skills_traits_nature_list_complexity: typeof enum_skills_traits_nature_list_complexity
+  enum_skills_traits_nature_list_visibility: typeof enum_skills_traits_nature_list_visibility
+  enum_skills_traits_nature_list_impact: typeof enum_skills_traits_nature_list_impact
+  enum_skills_toggle: typeof enum_skills_toggle
+  enum_principles_toggle: typeof enum_principles_toggle
+  enum_preferences_traits_reasons_importance: typeof enum_preferences_traits_reasons_importance
+  enum_preferences_toggle: typeof enum_preferences_toggle
+  enum_channels_traits_usage_list_role: typeof enum_channels_traits_usage_list_role
+  enum_channels_traits_usage_list_function: typeof enum_channels_traits_usage_list_function
+  enum_channels_traits_validity_list_status: typeof enum_channels_traits_validity_list_status
+  enum_channels_traits_validity_list_condition: typeof enum_channels_traits_validity_list_condition
+  enum_channels_traits_validity_list_state: typeof enum_channels_traits_validity_list_state
+  enum_channels_toggle: typeof enum_channels_toggle
+  enum_channels_basics_protocol_format: typeof enum_channels_basics_protocol_format
+  enum_channels_basics_protocol_scheme: typeof enum_channels_basics_protocol_scheme
+  enum_locations_traits_geography_list_climate: typeof enum_locations_traits_geography_list_climate
+  enum_locations_traits_accessibility_list_approach: typeof enum_locations_traits_accessibility_list_approach
+  enum_locations_traits_accessibility_list_facilities: typeof enum_locations_traits_accessibility_list_facilities
+  enum_locations_traits_accessibility_list_capacity: typeof enum_locations_traits_accessibility_list_capacity
+  enum_locations_toggle: typeof enum_locations_toggle
   enum_forms_confirmation_type: typeof enum_forms_confirmation_type
   enum_addresses_country: typeof enum_addresses_country
   enum_variants_status: typeof enum_variants_status
@@ -4895,43 +18062,206 @@ type DatabaseSchema = {
   enum_header_nav_items_link_type: typeof enum_header_nav_items_link_type
   enum_footer_nav_items_link_type: typeof enum_footer_nav_items_link_type
   enum_socials_socials_link_type: typeof enum_socials_socials_link_type
+  series: typeof series
+  series_locales: typeof series_locales
+  series_rels: typeof series_rels
+  seasons_metrics_counts_list: typeof seasons_metrics_counts_list
+  seasons: typeof seasons
+  seasons_locales: typeof seasons_locales
+  seasons_rels: typeof seasons_rels
+  events: typeof events
+  events_locales: typeof events_locales
+  events_rels: typeof events_rels
+  sessions_traits_constraints: typeof sessions_traits_constraints
+  sessions_traits_parameters: typeof sessions_traits_parameters
+  sessions: typeof sessions
+  sessions_locales: typeof sessions_locales
+  sessions_rels: typeof sessions_rels
+  entries_traits_eligibility_list: typeof entries_traits_eligibility_list
+  entries_metrics_parameters: typeof entries_metrics_parameters
+  entries: typeof entries
+  entries_locales: typeof entries_locales
+  entries_rels: typeof entries_rels
+  results_traits_achievement_list: typeof results_traits_achievement_list
+  results_metrics_performance_list: typeof results_metrics_performance_list
+  results_metrics_stoppages: typeof results_metrics_stoppages
+  results: typeof results
+  results_locales: typeof results_locales
+  results_rels: typeof results_rels
+  points_traits_ranking_list: typeof points_traits_ranking_list
+  points_traits_modifiers: typeof points_traits_modifiers
+  points: typeof points
+  points_locales: typeof points_locales
+  points_rels: typeof points_rels
+  drivers: typeof drivers
+  drivers_locales: typeof drivers_locales
+  drivers_rels: typeof drivers_rels
+  leaders: typeof leaders
+  leaders_locales: typeof leaders_locales
+  leaders_rels: typeof leaders_rels
+  members: typeof members
+  members_locales: typeof members_locales
+  members_rels: typeof members_rels
+  individuals_details_interests: typeof individuals_details_interests
+  individuals_traits_benefits: typeof individuals_traits_benefits
+  individuals: typeof individuals
+  individuals_locales: typeof individuals_locales
+  individuals_rels: typeof individuals_rels
+  organizations_traits_benefits: typeof organizations_traits_benefits
+  organizations: typeof organizations
+  organizations_locales: typeof organizations_locales
+  organizations_rels: typeof organizations_rels
+  users_roles: typeof users_roles
+  users_sessions: typeof users_sessions
+  users: typeof users
+  narratives_details_timeline: typeof narratives_details_timeline
+  narratives: typeof narratives
+  narratives_locales: typeof narratives_locales
+  narratives_rels: typeof narratives_rels
+  stories_traits_concerns: typeof stories_traits_concerns
+  stories_traits_interactions: typeof stories_traits_interactions
+  stories: typeof stories
+  stories_locales: typeof stories_locales
+  stories_rels: typeof stories_rels
+  histories: typeof histories
+  histories_locales: typeof histories_locales
+  histories_rels: typeof histories_rels
+  journeys_traits_lessons: typeof journeys_traits_lessons
+  journeys: typeof journeys
+  journeys_locales: typeof journeys_locales
+  journeys_rels: typeof journeys_rels
+  notes_traits_intentions: typeof notes_traits_intentions
+  notes: typeof notes
+  notes_locales: typeof notes_locales
+  notes_rels: typeof notes_rels
+  pages: typeof pages
+  pages_locales: typeof pages_locales
+  pages_rels: typeof pages_rels
+  cars: typeof cars
+  cars_locales: typeof cars_locales
+  cars_rels: typeof cars_rels
+  kits_traits_materials: typeof kits_traits_materials
+  kits: typeof kits
+  kits_locales: typeof kits_locales
+  kits_rels: typeof kits_rels
+  media: typeof media
+  galleries: typeof galleries
+  galleries_locales: typeof galleries_locales
+  galleries_rels: typeof galleries_rels
+  playlists: typeof playlists
+  playlists_locales: typeof playlists_locales
+  playlists_rels: typeof playlists_rels
+  archives: typeof archives
+  archives_locales: typeof archives_locales
+  archives_rels: typeof archives_rels
+  visualizations: typeof visualizations
+  visualizations_locales: typeof visualizations_locales
+  visualizations_rels: typeof visualizations_rels
+  schedules_details_slots: typeof schedules_details_slots
+  schedules_traits_constraints: typeof schedules_traits_constraints
+  schedules: typeof schedules
+  schedules_locales: typeof schedules_locales
+  schedules_rels: typeof schedules_rels
+  trainings: typeof trainings
+  trainings_locales: typeof trainings_locales
+  trainings_rels: typeof trainings_rels
+  careers_traits_positions: typeof careers_traits_positions
+  careers: typeof careers
+  careers_locales: typeof careers_locales
+  careers_rels: typeof careers_rels
+  initiatives: typeof initiatives
+  initiatives_locales: typeof initiatives_locales
+  initiatives_rels: typeof initiatives_rels
+  meetups: typeof meetups
+  meetups_locales: typeof meetups_locales
+  meetups_rels: typeof meetups_rels
+  celebrations: typeof celebrations
+  celebrations_locales: typeof celebrations_locales
+  celebrations_rels: typeof celebrations_rels
+  protocols_details_steps: typeof protocols_details_steps
+  protocols: typeof protocols
+  protocols_locales: typeof protocols_locales
+  protocols_rels: typeof protocols_rels
+  duties: typeof duties
+  duties_locales: typeof duties_locales
+  duties_rels: typeof duties_rels
+  expectations: typeof expectations
+  expectations_locales: typeof expectations_locales
+  expectations_rels: typeof expectations_rels
+  highlights: typeof highlights
+  highlights_locales: typeof highlights_locales
+  highlights_rels: typeof highlights_rels
+  incidents: typeof incidents
+  incidents_locales: typeof incidents_locales
+  incidents_rels: typeof incidents_rels
+  impacts: typeof impacts
+  impacts_locales: typeof impacts_locales
+  impacts_rels: typeof impacts_rels
+  decisions: typeof decisions
+  decisions_locales: typeof decisions_locales
+  decisions_rels: typeof decisions_rels
+  strategies_traits_directives: typeof strategies_traits_directives
+  strategies_traits_contingencies: typeof strategies_traits_contingencies
+  strategies: typeof strategies
+  strategies_locales: typeof strategies_locales
+  strategies_rels: typeof strategies_rels
+  awards: typeof awards
+  awards_locales: typeof awards_locales
+  awards_rels: typeof awards_rels
+  experiences_traits_skills: typeof experiences_traits_skills
+  experiences: typeof experiences
+  experiences_locales: typeof experiences_locales
+  experiences_rels: typeof experiences_rels
   categories_attributes_questions: typeof categories_attributes_questions
   categories: typeof categories
   categories_locales: typeof categories_locales
   categories_rels: typeof categories_rels
-  users_roles: typeof users_roles
-  users_sessions: typeof users_sessions
-  users: typeof users
-  media: typeof media
-  pages_hero_links: typeof pages_hero_links
-  pages_blocks_cta_links: typeof pages_blocks_cta_links
-  pages_blocks_cta: typeof pages_blocks_cta
-  pages_blocks_content_columns: typeof pages_blocks_content_columns
-  pages_blocks_content: typeof pages_blocks_content
-  pages_blocks_media_block: typeof pages_blocks_media_block
-  pages_blocks_archive: typeof pages_blocks_archive
-  pages_blocks_carousel: typeof pages_blocks_carousel
-  pages_blocks_three_item_grid: typeof pages_blocks_three_item_grid
-  pages_blocks_banner: typeof pages_blocks_banner
-  pages_blocks_form_block: typeof pages_blocks_form_block
-  pages: typeof pages
-  pages_locales: typeof pages_locales
-  pages_rels: typeof pages_rels
-  _pages_v_version_hero_links: typeof _pages_v_version_hero_links
-  _pages_v_blocks_cta_links: typeof _pages_v_blocks_cta_links
-  _pages_v_blocks_cta: typeof _pages_v_blocks_cta
-  _pages_v_blocks_content_columns: typeof _pages_v_blocks_content_columns
-  _pages_v_blocks_content: typeof _pages_v_blocks_content
-  _pages_v_blocks_media_block: typeof _pages_v_blocks_media_block
-  _pages_v_blocks_archive: typeof _pages_v_blocks_archive
-  _pages_v_blocks_carousel: typeof _pages_v_blocks_carousel
-  _pages_v_blocks_three_item_grid: typeof _pages_v_blocks_three_item_grid
-  _pages_v_blocks_banner: typeof _pages_v_blocks_banner
-  _pages_v_blocks_form_block: typeof _pages_v_blocks_form_block
-  _pages_v: typeof _pages_v
-  _pages_v_locales: typeof _pages_v_locales
-  _pages_v_rels: typeof _pages_v_rels
   tags: typeof tags
+  tones_traits_scope_list: typeof tones_traits_scope_list
+  tones_traits_qualities: typeof tones_traits_qualities
+  tones: typeof tones
+  tones_locales: typeof tones_locales
+  tones_rels: typeof tones_rels
+  features_traits_nature_list: typeof features_traits_nature_list
+  features: typeof features
+  features_locales: typeof features_locales
+  features_rels: typeof features_rels
+  specifications_details_conditions_list: typeof specifications_details_conditions_list
+  specifications_metrics_parameters: typeof specifications_metrics_parameters
+  specifications_metrics_measurement_list: typeof specifications_metrics_measurement_list
+  specifications: typeof specifications
+  specifications_locales: typeof specifications_locales
+  specifications_rels: typeof specifications_rels
+  classifications: typeof classifications
+  classifications_locales: typeof classifications_locales
+  classifications_rels: typeof classifications_rels
+  skills_basics_scope_list: typeof skills_basics_scope_list
+  skills_details_methods: typeof skills_details_methods
+  skills_details_dependencies: typeof skills_details_dependencies
+  skills_traits_nature_list: typeof skills_traits_nature_list
+  skills: typeof skills
+  skills_locales: typeof skills_locales
+  skills_rels: typeof skills_rels
+  principles: typeof principles
+  principles_locales: typeof principles_locales
+  principles_rels: typeof principles_rels
+  preferences_traits_conditions: typeof preferences_traits_conditions
+  preferences_traits_reasons: typeof preferences_traits_reasons
+  preferences: typeof preferences
+  preferences_locales: typeof preferences_locales
+  preferences_rels: typeof preferences_rels
+  channels_traits_usage_list: typeof channels_traits_usage_list
+  channels_traits_usage_list_locales: typeof channels_traits_usage_list_locales
+  channels_traits_validity_list: typeof channels_traits_validity_list
+  channels: typeof channels
+  channels_locales: typeof channels_locales
+  channels_rels: typeof channels_rels
+  locations_traits_geography_list: typeof locations_traits_geography_list
+  locations_traits_infrastructure_list: typeof locations_traits_infrastructure_list
+  locations_traits_accessibility_list: typeof locations_traits_accessibility_list
+  locations: typeof locations
+  locations_locales: typeof locations_locales
+  locations_rels: typeof locations_rels
   forms_blocks_checkbox: typeof forms_blocks_checkbox
   forms_blocks_checkbox_locales: typeof forms_blocks_checkbox_locales
   forms_blocks_country: typeof forms_blocks_country
@@ -4990,6 +18320,10 @@ type DatabaseSchema = {
   orders_rels: typeof orders_rels
   transactions_items: typeof transactions_items
   transactions: typeof transactions
+  search: typeof search
+  search_locales: typeof search_locales
+  search_rels: typeof search_rels
+  payload_mcp_api_keys: typeof payload_mcp_api_keys
   payload_kv: typeof payload_kv
   payload_folders_folder_type: typeof payload_folders_folder_type
   payload_folders: typeof payload_folders
@@ -5015,43 +18349,206 @@ type DatabaseSchema = {
   announcements_locales: typeof announcements_locales
   questions: typeof questions
   questions_locales: typeof questions_locales
+  relations_series_locales: typeof relations_series_locales
+  relations_series_rels: typeof relations_series_rels
+  relations_series: typeof relations_series
+  relations_seasons_metrics_counts_list: typeof relations_seasons_metrics_counts_list
+  relations_seasons_locales: typeof relations_seasons_locales
+  relations_seasons_rels: typeof relations_seasons_rels
+  relations_seasons: typeof relations_seasons
+  relations_events_locales: typeof relations_events_locales
+  relations_events_rels: typeof relations_events_rels
+  relations_events: typeof relations_events
+  relations_sessions_traits_constraints: typeof relations_sessions_traits_constraints
+  relations_sessions_traits_parameters: typeof relations_sessions_traits_parameters
+  relations_sessions_locales: typeof relations_sessions_locales
+  relations_sessions_rels: typeof relations_sessions_rels
+  relations_sessions: typeof relations_sessions
+  relations_entries_traits_eligibility_list: typeof relations_entries_traits_eligibility_list
+  relations_entries_metrics_parameters: typeof relations_entries_metrics_parameters
+  relations_entries_locales: typeof relations_entries_locales
+  relations_entries_rels: typeof relations_entries_rels
+  relations_entries: typeof relations_entries
+  relations_results_traits_achievement_list: typeof relations_results_traits_achievement_list
+  relations_results_metrics_performance_list: typeof relations_results_metrics_performance_list
+  relations_results_metrics_stoppages: typeof relations_results_metrics_stoppages
+  relations_results_locales: typeof relations_results_locales
+  relations_results_rels: typeof relations_results_rels
+  relations_results: typeof relations_results
+  relations_points_traits_ranking_list: typeof relations_points_traits_ranking_list
+  relations_points_traits_modifiers: typeof relations_points_traits_modifiers
+  relations_points_locales: typeof relations_points_locales
+  relations_points_rels: typeof relations_points_rels
+  relations_points: typeof relations_points
+  relations_drivers_locales: typeof relations_drivers_locales
+  relations_drivers_rels: typeof relations_drivers_rels
+  relations_drivers: typeof relations_drivers
+  relations_leaders_locales: typeof relations_leaders_locales
+  relations_leaders_rels: typeof relations_leaders_rels
+  relations_leaders: typeof relations_leaders
+  relations_members_locales: typeof relations_members_locales
+  relations_members_rels: typeof relations_members_rels
+  relations_members: typeof relations_members
+  relations_individuals_details_interests: typeof relations_individuals_details_interests
+  relations_individuals_traits_benefits: typeof relations_individuals_traits_benefits
+  relations_individuals_locales: typeof relations_individuals_locales
+  relations_individuals_rels: typeof relations_individuals_rels
+  relations_individuals: typeof relations_individuals
+  relations_organizations_traits_benefits: typeof relations_organizations_traits_benefits
+  relations_organizations_locales: typeof relations_organizations_locales
+  relations_organizations_rels: typeof relations_organizations_rels
+  relations_organizations: typeof relations_organizations
+  relations_users_roles: typeof relations_users_roles
+  relations_users_sessions: typeof relations_users_sessions
+  relations_users: typeof relations_users
+  relations_narratives_details_timeline: typeof relations_narratives_details_timeline
+  relations_narratives_locales: typeof relations_narratives_locales
+  relations_narratives_rels: typeof relations_narratives_rels
+  relations_narratives: typeof relations_narratives
+  relations_stories_traits_concerns: typeof relations_stories_traits_concerns
+  relations_stories_traits_interactions: typeof relations_stories_traits_interactions
+  relations_stories_locales: typeof relations_stories_locales
+  relations_stories_rels: typeof relations_stories_rels
+  relations_stories: typeof relations_stories
+  relations_histories_locales: typeof relations_histories_locales
+  relations_histories_rels: typeof relations_histories_rels
+  relations_histories: typeof relations_histories
+  relations_journeys_traits_lessons: typeof relations_journeys_traits_lessons
+  relations_journeys_locales: typeof relations_journeys_locales
+  relations_journeys_rels: typeof relations_journeys_rels
+  relations_journeys: typeof relations_journeys
+  relations_notes_traits_intentions: typeof relations_notes_traits_intentions
+  relations_notes_locales: typeof relations_notes_locales
+  relations_notes_rels: typeof relations_notes_rels
+  relations_notes: typeof relations_notes
+  relations_pages_locales: typeof relations_pages_locales
+  relations_pages_rels: typeof relations_pages_rels
+  relations_pages: typeof relations_pages
+  relations_cars_locales: typeof relations_cars_locales
+  relations_cars_rels: typeof relations_cars_rels
+  relations_cars: typeof relations_cars
+  relations_kits_traits_materials: typeof relations_kits_traits_materials
+  relations_kits_locales: typeof relations_kits_locales
+  relations_kits_rels: typeof relations_kits_rels
+  relations_kits: typeof relations_kits
+  relations_media: typeof relations_media
+  relations_galleries_locales: typeof relations_galleries_locales
+  relations_galleries_rels: typeof relations_galleries_rels
+  relations_galleries: typeof relations_galleries
+  relations_playlists_locales: typeof relations_playlists_locales
+  relations_playlists_rels: typeof relations_playlists_rels
+  relations_playlists: typeof relations_playlists
+  relations_archives_locales: typeof relations_archives_locales
+  relations_archives_rels: typeof relations_archives_rels
+  relations_archives: typeof relations_archives
+  relations_visualizations_locales: typeof relations_visualizations_locales
+  relations_visualizations_rels: typeof relations_visualizations_rels
+  relations_visualizations: typeof relations_visualizations
+  relations_schedules_details_slots: typeof relations_schedules_details_slots
+  relations_schedules_traits_constraints: typeof relations_schedules_traits_constraints
+  relations_schedules_locales: typeof relations_schedules_locales
+  relations_schedules_rels: typeof relations_schedules_rels
+  relations_schedules: typeof relations_schedules
+  relations_trainings_locales: typeof relations_trainings_locales
+  relations_trainings_rels: typeof relations_trainings_rels
+  relations_trainings: typeof relations_trainings
+  relations_careers_traits_positions: typeof relations_careers_traits_positions
+  relations_careers_locales: typeof relations_careers_locales
+  relations_careers_rels: typeof relations_careers_rels
+  relations_careers: typeof relations_careers
+  relations_initiatives_locales: typeof relations_initiatives_locales
+  relations_initiatives_rels: typeof relations_initiatives_rels
+  relations_initiatives: typeof relations_initiatives
+  relations_meetups_locales: typeof relations_meetups_locales
+  relations_meetups_rels: typeof relations_meetups_rels
+  relations_meetups: typeof relations_meetups
+  relations_celebrations_locales: typeof relations_celebrations_locales
+  relations_celebrations_rels: typeof relations_celebrations_rels
+  relations_celebrations: typeof relations_celebrations
+  relations_protocols_details_steps: typeof relations_protocols_details_steps
+  relations_protocols_locales: typeof relations_protocols_locales
+  relations_protocols_rels: typeof relations_protocols_rels
+  relations_protocols: typeof relations_protocols
+  relations_duties_locales: typeof relations_duties_locales
+  relations_duties_rels: typeof relations_duties_rels
+  relations_duties: typeof relations_duties
+  relations_expectations_locales: typeof relations_expectations_locales
+  relations_expectations_rels: typeof relations_expectations_rels
+  relations_expectations: typeof relations_expectations
+  relations_highlights_locales: typeof relations_highlights_locales
+  relations_highlights_rels: typeof relations_highlights_rels
+  relations_highlights: typeof relations_highlights
+  relations_incidents_locales: typeof relations_incidents_locales
+  relations_incidents_rels: typeof relations_incidents_rels
+  relations_incidents: typeof relations_incidents
+  relations_impacts_locales: typeof relations_impacts_locales
+  relations_impacts_rels: typeof relations_impacts_rels
+  relations_impacts: typeof relations_impacts
+  relations_decisions_locales: typeof relations_decisions_locales
+  relations_decisions_rels: typeof relations_decisions_rels
+  relations_decisions: typeof relations_decisions
+  relations_strategies_traits_directives: typeof relations_strategies_traits_directives
+  relations_strategies_traits_contingencies: typeof relations_strategies_traits_contingencies
+  relations_strategies_locales: typeof relations_strategies_locales
+  relations_strategies_rels: typeof relations_strategies_rels
+  relations_strategies: typeof relations_strategies
+  relations_awards_locales: typeof relations_awards_locales
+  relations_awards_rels: typeof relations_awards_rels
+  relations_awards: typeof relations_awards
+  relations_experiences_traits_skills: typeof relations_experiences_traits_skills
+  relations_experiences_locales: typeof relations_experiences_locales
+  relations_experiences_rels: typeof relations_experiences_rels
+  relations_experiences: typeof relations_experiences
   relations_categories_attributes_questions: typeof relations_categories_attributes_questions
   relations_categories_locales: typeof relations_categories_locales
   relations_categories_rels: typeof relations_categories_rels
   relations_categories: typeof relations_categories
-  relations_users_roles: typeof relations_users_roles
-  relations_users_sessions: typeof relations_users_sessions
-  relations_users: typeof relations_users
-  relations_media: typeof relations_media
-  relations_pages_hero_links: typeof relations_pages_hero_links
-  relations_pages_blocks_cta_links: typeof relations_pages_blocks_cta_links
-  relations_pages_blocks_cta: typeof relations_pages_blocks_cta
-  relations_pages_blocks_content_columns: typeof relations_pages_blocks_content_columns
-  relations_pages_blocks_content: typeof relations_pages_blocks_content
-  relations_pages_blocks_media_block: typeof relations_pages_blocks_media_block
-  relations_pages_blocks_archive: typeof relations_pages_blocks_archive
-  relations_pages_blocks_carousel: typeof relations_pages_blocks_carousel
-  relations_pages_blocks_three_item_grid: typeof relations_pages_blocks_three_item_grid
-  relations_pages_blocks_banner: typeof relations_pages_blocks_banner
-  relations_pages_blocks_form_block: typeof relations_pages_blocks_form_block
-  relations_pages_locales: typeof relations_pages_locales
-  relations_pages_rels: typeof relations_pages_rels
-  relations_pages: typeof relations_pages
-  relations__pages_v_version_hero_links: typeof relations__pages_v_version_hero_links
-  relations__pages_v_blocks_cta_links: typeof relations__pages_v_blocks_cta_links
-  relations__pages_v_blocks_cta: typeof relations__pages_v_blocks_cta
-  relations__pages_v_blocks_content_columns: typeof relations__pages_v_blocks_content_columns
-  relations__pages_v_blocks_content: typeof relations__pages_v_blocks_content
-  relations__pages_v_blocks_media_block: typeof relations__pages_v_blocks_media_block
-  relations__pages_v_blocks_archive: typeof relations__pages_v_blocks_archive
-  relations__pages_v_blocks_carousel: typeof relations__pages_v_blocks_carousel
-  relations__pages_v_blocks_three_item_grid: typeof relations__pages_v_blocks_three_item_grid
-  relations__pages_v_blocks_banner: typeof relations__pages_v_blocks_banner
-  relations__pages_v_blocks_form_block: typeof relations__pages_v_blocks_form_block
-  relations__pages_v_locales: typeof relations__pages_v_locales
-  relations__pages_v_rels: typeof relations__pages_v_rels
-  relations__pages_v: typeof relations__pages_v
   relations_tags: typeof relations_tags
+  relations_tones_traits_scope_list: typeof relations_tones_traits_scope_list
+  relations_tones_traits_qualities: typeof relations_tones_traits_qualities
+  relations_tones_locales: typeof relations_tones_locales
+  relations_tones_rels: typeof relations_tones_rels
+  relations_tones: typeof relations_tones
+  relations_features_traits_nature_list: typeof relations_features_traits_nature_list
+  relations_features_locales: typeof relations_features_locales
+  relations_features_rels: typeof relations_features_rels
+  relations_features: typeof relations_features
+  relations_specifications_details_conditions_list: typeof relations_specifications_details_conditions_list
+  relations_specifications_metrics_parameters: typeof relations_specifications_metrics_parameters
+  relations_specifications_metrics_measurement_list: typeof relations_specifications_metrics_measurement_list
+  relations_specifications_locales: typeof relations_specifications_locales
+  relations_specifications_rels: typeof relations_specifications_rels
+  relations_specifications: typeof relations_specifications
+  relations_classifications_locales: typeof relations_classifications_locales
+  relations_classifications_rels: typeof relations_classifications_rels
+  relations_classifications: typeof relations_classifications
+  relations_skills_basics_scope_list: typeof relations_skills_basics_scope_list
+  relations_skills_details_methods: typeof relations_skills_details_methods
+  relations_skills_details_dependencies: typeof relations_skills_details_dependencies
+  relations_skills_traits_nature_list: typeof relations_skills_traits_nature_list
+  relations_skills_locales: typeof relations_skills_locales
+  relations_skills_rels: typeof relations_skills_rels
+  relations_skills: typeof relations_skills
+  relations_principles_locales: typeof relations_principles_locales
+  relations_principles_rels: typeof relations_principles_rels
+  relations_principles: typeof relations_principles
+  relations_preferences_traits_conditions: typeof relations_preferences_traits_conditions
+  relations_preferences_traits_reasons: typeof relations_preferences_traits_reasons
+  relations_preferences_locales: typeof relations_preferences_locales
+  relations_preferences_rels: typeof relations_preferences_rels
+  relations_preferences: typeof relations_preferences
+  relations_channels_traits_usage_list_locales: typeof relations_channels_traits_usage_list_locales
+  relations_channels_traits_usage_list: typeof relations_channels_traits_usage_list
+  relations_channels_traits_validity_list: typeof relations_channels_traits_validity_list
+  relations_channels_locales: typeof relations_channels_locales
+  relations_channels_rels: typeof relations_channels_rels
+  relations_channels: typeof relations_channels
+  relations_locations_traits_geography_list: typeof relations_locations_traits_geography_list
+  relations_locations_traits_infrastructure_list: typeof relations_locations_traits_infrastructure_list
+  relations_locations_traits_accessibility_list: typeof relations_locations_traits_accessibility_list
+  relations_locations_locales: typeof relations_locations_locales
+  relations_locations_rels: typeof relations_locations_rels
+  relations_locations: typeof relations_locations
   relations_forms_blocks_checkbox_locales: typeof relations_forms_blocks_checkbox_locales
   relations_forms_blocks_checkbox: typeof relations_forms_blocks_checkbox
   relations_forms_blocks_country_locales: typeof relations_forms_blocks_country_locales
@@ -5110,6 +18607,10 @@ type DatabaseSchema = {
   relations_orders: typeof relations_orders
   relations_transactions_items: typeof relations_transactions_items
   relations_transactions: typeof relations_transactions
+  relations_search_locales: typeof relations_search_locales
+  relations_search_rels: typeof relations_search_rels
+  relations_search: typeof relations_search
+  relations_payload_mcp_api_keys: typeof relations_payload_mcp_api_keys
   relations_payload_kv: typeof relations_payload_kv
   relations_payload_folders_folder_type: typeof relations_payload_folders_folder_type
   relations_payload_folders: typeof relations_payload_folders

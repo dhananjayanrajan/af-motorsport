@@ -1,0 +1,3 @@
+Error: Error: the payload config is required to initialize payload.
+    at BasePayload.init (file:///var/www/clients/af-motorsport/node_modules/payload/dist/index.js:305:19)
+    at [eval]:5:13

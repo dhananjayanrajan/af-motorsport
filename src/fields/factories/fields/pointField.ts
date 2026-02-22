@@ -118,7 +118,6 @@ export const pointFieldFactory = (opts: PointFactoryOptions): Field => {
 
       if (value && Array.isArray(value)) {
         const [longitude, latitude] = value
-
         if (typeof longitude !== 'number' || typeof latitude !== 'number') {
           return 'Coordinates must be numbers.'
         }

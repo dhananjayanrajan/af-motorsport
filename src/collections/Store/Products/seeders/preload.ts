@@ -1,0 +1,6 @@
+// FILE: src/collections/Store/Products/seeders/preload.ts
+export const PRELOAD_PRODUCT = [
+  { title: 'AF Motorsport Cap', description: { root: { type: 'root', children: [{ type: 'paragraph', children: [{ type: 'text', value: 'Official cap.' }] }], direction: null, format: '', indent: 0, version: 1 } }, gallery: [], layout: [], inventory: 100, priceInUSDEnabled: true, priceInUSD: 29.99, categories: [1], generateSlug: true, slug: 'af-motorsport-cap', _status: 'published' },
+  { title: 'Team Shirt', description: { root: { type: 'root', children: [{ type: 'paragraph', children: [{ type: 'text', value: 'Official shirt.' }] }], direction: null, format: '', indent: 0, version: 1 } }, gallery: [], layout: [], inventory: 50, enableVariants: true, priceInUSDEnabled: true, priceInUSD: 39.99, categories: [2], generateSlug: true, slug: 'team-shirt', _status: 'published' },
+  { title: 'Model Car', description: { root: { type: 'root', children: [{ type: 'paragraph', children: [{ type: 'text', value: 'Die-cast model.' }] }], direction: null, format: '', indent: 0, version: 1 } }, gallery: [], layout: [], inventory: 20, priceInUSDEnabled: true, priceInUSD: 89.99, categories: [3], generateSlug: true, slug: 'model-car', _status: 'published' }
+] as const

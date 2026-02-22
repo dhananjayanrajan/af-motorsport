@@ -1,3 +1,4 @@
+// FILE: src/collections/Content/Pages/hooks/revalidatePage.ts
 import type { CollectionAfterChangeHook, CollectionAfterDeleteHook } from 'payload'
 
 import { revalidatePath, revalidateTag } from 'next/cache'

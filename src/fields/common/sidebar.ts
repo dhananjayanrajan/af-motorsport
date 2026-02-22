@@ -1,13 +1,11 @@
-import type { Field, StaticLabel } from 'payload'
+import type { Field } from 'payload'
 import { slugField } from 'payload'
 
-interface SidebarOptions {
-  record: StaticLabel
-  records: StaticLabel
-}
-
-export const createSidebarFields = ({ record, records }: SidebarOptions): Field[] => [
-  slugField(),
+export const createSidebarFields = (): Field[] => [
+  slugField({
+    required: false,
+    useAsSlug: 'name'
+  }),
   {
     label: '',
     type: 'group',
@@ -78,27 +76,21 @@ export const createSidebarFields = ({ record, records }: SidebarOptions): Field[
         name: 'check_publish',
         type: 'checkbox',
         defaultValue: false,
-        admin: {
-          description: { en: 'Publish as live.', es: 'Publicar como activo.', pt: 'Publicar como ativo.' }
-        },
+        admin: { readOnly: true },
       },
       {
         label: { en: 'Is this featured?', es: '¿Es destacado?', pt: 'É destaque?' },
         name: 'check_featured',
         type: 'checkbox',
         defaultValue: false,
-        admin: {
-          description: { en: 'Highlights as featured.', es: 'Resaltar como destacado.', pt: 'Destacar como destaque.' }
-        },
+        admin: { readOnly: true },
       },
       {
         label: { en: 'Is this pinned?', es: '¿Está fijado?', pt: 'Está fixado?' },
         name: 'check_pinned',
         type: 'checkbox',
         defaultValue: false,
-        admin: {
-          description: { en: 'Pins on the top.', es: 'Fijar en la parte superior.', pt: 'Fixar no topo.' }
-        },
+        admin: { readOnly: true },
       },
     ],
   },

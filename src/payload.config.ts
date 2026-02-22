@@ -13,90 +13,168 @@ import {
 import path from 'path'
 import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
-
-// Plugins
 import { plugins } from './plugins'
 import { searchPlugin } from '@payloadcms/plugin-search'
 import { mcpPlugin } from '@payloadcms/plugin-mcp'
-
-// Globals
+import { en } from '@payloadcms/translations/languages/en'
+import { es } from '@payloadcms/translations/languages/es'
+import { pt } from '@payloadcms/translations/languages/pt'
 import { Header } from '@/globals/Configurations/Header'
 import { Footer } from '@/globals/Configurations/Footer'
-
 import { Socials } from './globals/Connectivity/Socials'
 import { Policies } from './globals/Branding/Policies'
 import { Identity } from './globals/Branding/Identity'
 import { Announcements } from './globals/Connectivity/Announcements'
 import { Questions } from './globals/Connectivity/Questions'
-
-// Collections
-import { Categories } from '@/collections/Meta/Categories'
-import { Tags } from './collections/Meta/Tags'
-import { Users } from '@/collections/Team/Users'
+import { Categories } from '@/collections/Attributes/Category'
+import { Tags } from './collections/Attributes/Tag'
+import { Users } from '@/collections/Entities/User'
 import { Media } from '@/collections/Resources/Media'
 import { Pages } from '@/collections/Content/Pages'
-
 import { Series } from '@/collections/Competition/Series'
-import { Seasons } from '@/collections/Competition/Seasons'
-import { Events } from '@/collections/Competition/Events'
-import { Sessions } from '@/collections/Competition/Sessions'
-import { Entries } from '@/collections/Competition/Entries'
-import { Results } from '@/collections/Competition/Results'
-import { Points } from '@/collections/Competition/Points'
-import { Drivers } from '@/collections/Entities/Drivers'
-import { Leaders } from '@/collections/Entities/Leaders'
-import { Members } from '@/collections/Entities/Members'
-import { Individuals } from '@/collections/Entities/Individuals'
-import { Organizations } from '@/collections/Entities/Organizations'
-import { Narratives } from '@/collections/Content/Narratives'
-import { Stories } from '@/collections/Content/Stories'
-import { Histories } from '@/collections/Content/Histories'
-import { Journeys } from '@/collections/Content/Journeys'
-import { Notes } from '@/collections/Content/Notes'
-import { Cars } from '@/collections/Resources/Cars'
-import { Kits } from '@/collections/Resources/Kits'
-import { Galleries } from '@/collections/Resources/Galleries'
-import { Playlists } from '@/collections/Resources/Playlists'
-import { Archives } from '@/collections/Resources/Archives'
-import { Visualizations } from '@/collections/Resources/Visualizations'
-import { Schedules } from '@/collections/Operations/Schedules'
-import { Trainings } from '@/collections/Operations/Trainings'
-import { Careers } from '@/collections/Operations/Careers'
-import { Initiatives } from '@/collections/Operations/Initiatives'
-import { Meetups } from '@/collections/Operations/Meetups'
-import { Celebrations } from '@/collections/Operations/Celebrations'
-import { Protocols } from '@/collections/Operations/Protocols'
-import { Duties } from '@/collections/Operations/Duties'
-import { Expectations } from '@/collections/Operations/Expectations'
-import { Highlights } from '@/collections/Outcomes/Highlights'
-import { Incidents } from '@/collections/Outcomes/Incidents'
-import { Impacts } from '@/collections/Outcomes/Impacts'
-import { Decisions } from '@/collections/Outcomes/Decisions'
-import { Strategies } from '@/collections/Outcomes/Strategies'
-import { Awards } from '@/collections/Outcomes/Awards'
-import { Experiences } from '@/collections/Outcomes/Experiences'
-import { Tones } from '@/collections/Attributes/Tones'
-import { Features } from '@/collections/Attributes/Features'
-import { Specifications } from '@/collections/Attributes/Specifications'
-import { Classifications } from '@/collections/Attributes/Classifications'
-import { Skills } from '@/collections/Attributes/Skills'
-import { Principles } from '@/collections/Attributes/Principles'
-import { Preferences } from '@/collections/Attributes/Preferences'
-import { Channels } from '@/collections/Attributes/Channels'
-import { Locations } from '@/collections/Attributes/Locations'
-
-
+import { Seasons } from '@/collections/Competition/Season'
+import { Events } from '@/collections/Competition/Event'
+import { Sessions } from '@/collections/Competition/Session'
+import { Entries } from '@/collections/Competition/Entry'
+import { Results } from '@/collections/Competition/Result'
+import { Points } from '@/collections/Competition/Point'
+import { Drivers } from '@/collections/Entities/Driver'
+import { Leaders } from '@/collections/Entities/Leader'
+import { Members } from '@/collections/Entities/Member'
+import { Individuals } from '@/collections/Entities/Individual'
+import { Organizations } from '@/collections/Entities/Organization'
+import { Narratives } from '@/collections/Content/Narrative'
+import { Stories } from '@/collections/Content/Story'
+import { Histories } from '@/collections/Content/History'
+import { Journeys } from '@/collections/Content/Journey'
+import { Notes } from '@/collections/Content/Note'
+import { Cars } from '@/collections/Resources/Car'
+import { Kits } from '@/collections/Resources/Kit'
+import { Galleries } from '@/collections/Resources/Gallery'
+import { Playlists } from '@/collections/Resources/Playlist'
+import { Archives } from '@/collections/Resources/Archive'
+import { Visualizations } from '@/collections/Resources/Visualization'
+import { Schedules } from '@/collections/Operations/Schedule'
+import { Trainings } from '@/collections/Operations/Training'
+import { Careers } from '@/collections/Operations/Career'
+import { Initiatives } from '@/collections/Operations/Initiative'
+import { Meetups } from '@/collections/Operations/Meetup'
+import { Celebrations } from '@/collections/Operations/Celebration'
+import { Protocols } from '@/collections/Operations/Protocol'
+import { Duties } from '@/collections/Operations/Duty'
+import { Expectations } from '@/collections/Operations/Expectation'
+import { Highlights } from '@/collections/Outcomes/Highlight'
+import { Incidents } from '@/collections/Outcomes/Incident'
+import { Impacts } from '@/collections/Outcomes/Impact'
+import { Decisions } from '@/collections/Outcomes/Decision'
+import { Strategies } from '@/collections/Outcomes/Strategy'
+import { Awards } from '@/collections/Outcomes/Award'
+import { Experiences } from '@/collections/Outcomes/Experience'
+import { Tones } from '@/collections/Attributes/Tone'
+import { Features } from '@/collections/Attributes/Feature'
+import { Specifications } from '@/collections/Attributes/Specification'
+import { Classifications } from '@/collections/Attributes/Classification'
+import { Skills } from '@/collections/Attributes/Skill'
+import { Principles } from '@/collections/Attributes/Principle'
+import { Preferences } from '@/collections/Attributes/Preference'
+import { Channels } from '@/collections/Attributes/Channel'
+import { Locations } from '@/collections/Attributes/Location'
+import {
+  createStatsBar,
+  createRecentActivityFeed,
+  createTypeBreakdownChart,
+  createCompletionScore,
+  createToggleDistribution,
+  createRelationshipDensity,
+  createTopTagsCategories,
+  createPublishingPipeline,
+  createSlugHealth,
+  createTimeline,
+  DriversDashboard,
+  RacingOperationsWorkflow,
+  KitsWorkflow,
+} from './widgets'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
+const DriversStatsBar = createStatsBar({ collectionSlug: 'drivers', title: 'Drivers Overview', cacheTTL: 120, requiredRoles: ['admin', 'editor'] })
+const DriversRecentActivity = createRecentActivityFeed({ collectionSlug: 'drivers', title: 'Recent Driver Updates', limit: 8, cacheTTL: 60 })
+const DriversTypeBreakdown = createTypeBreakdownChart({ collectionSlug: 'drivers', title: 'Driver Types', cacheTTL: 300 })
+const DriversCompletion = createCompletionScore({ collectionSlug: 'drivers', title: 'Profile Completion', sections: ['basics', 'details', 'traits', 'metrics', 'assets', 'contexts'], limit: 10, cacheTTL: 180 })
+const DriversToggleDist = createToggleDistribution({ collectionSlug: 'drivers', title: 'Display Mode', cacheTTL: 300 })
+const DriversRelDensity = createRelationshipDensity({ collectionSlug: 'drivers', title: 'Data Relationships', relationGroups: ['details', 'traits', 'metrics', 'assets', 'contexts'], limit: 10, cacheTTL: 180 })
+const DriversTagsCats = createTopTagsCategories({ collectionSlug: 'drivers', title: 'Tags & Categories', tagLimit: 12, categoryLimit: 12, cacheTTL: 300 })
+const DriversPipeline = createPublishingPipeline({ collectionSlug: 'drivers', title: 'Publishing Status', cacheTTL: 90 })
+const DriversSlugHealth = createSlugHealth({ collectionSlug: 'drivers', title: 'Slug Audit', cacheTTL: 120 })
+const DriversTimeline = createTimeline({ collectionSlug: 'drivers', title: 'Creation Timeline', dateField: 'createdAt', cacheTTL: 300 })
+
+const KitsStatsBar = createStatsBar({ collectionSlug: 'kits', title: 'Kits Overview', cacheTTL: 120 })
+const KitsRecentActivity = createRecentActivityFeed({ collectionSlug: 'kits', title: 'Recent Kit Updates', limit: 8, cacheTTL: 60 })
+const KitsPipeline = createPublishingPipeline({ collectionSlug: 'kits', title: 'Kit Publishing', cacheTTL: 90 })
+const KitsCompletion = createCompletionScore({ collectionSlug: 'kits', title: 'Kit Completion', sections: ['basics', 'details', 'traits', 'assets', 'contexts'], limit: 10, cacheTTL: 180 })
+
+const SeriesStatsBar = createStatsBar({ collectionSlug: 'series', title: 'Series Stats', cacheTTL: 300 })
+const SeasonsStatsBar = createStatsBar({ collectionSlug: 'seasons', title: 'Season Stats', cacheTTL: 300 })
+const EventsTimeline = createTimeline({ collectionSlug: 'events', title: 'Event Timeline', dateField: 'createdAt', cacheTTL: 300 })
+const EventsPipeline = createPublishingPipeline({ collectionSlug: 'events', title: 'Event Status', cacheTTL: 90 })
+
+const MembersRecentActivity = createRecentActivityFeed({ collectionSlug: 'members', limit: 8, cacheTTL: 60 })
+const OrganizationsStatsBar = createStatsBar({ collectionSlug: 'organizations', title: 'Org Overview', cacheTTL: 300 })
+
+const StoriesTimeline = createTimeline({ collectionSlug: 'stories', title: 'Story Timeline', cacheTTL: 300 })
+const NarrativesStatsBar = createStatsBar({ collectionSlug: 'narratives', title: 'Narrative Stats', cacheTTL: 300 })
+
+const MediaStatsBar = createStatsBar({ collectionSlug: 'media', title: 'Media Library', cacheTTL: 300 })
+const CarsRecentActivity = createRecentActivityFeed({ collectionSlug: 'cars', limit: 8, cacheTTL: 60 })
+
 export default buildConfig({
+  bin: [
+    {
+      scriptPath: path.resolve(dirname, 'seed.ts'),
+      key: 'seed',
+    },
+  ],
   admin: {
+    user: Users.slug,
     components: {
       beforeLogin: [],
       beforeDashboard: [],
+      afterDashboard: [],
     },
-    user: Users.slug,
+    dashboard: {
+      defaultLayout: ({ req }) => {
+        return []
+      },
+      widgets: [
+        DriversStatsBar as any,
+        DriversRecentActivity as any,
+        DriversTypeBreakdown as any,
+        DriversTimeline as any,
+        DriversTagsCats as any,
+        DriversCompletion as any,
+        DriversRelDensity as any,
+        DriversSlugHealth as any,
+        DriversToggleDist as any,
+        DriversPipeline as any,
+        KitsWorkflow as any,
+        KitsStatsBar as any,
+        KitsRecentActivity as any,
+        KitsPipeline as any,
+        KitsCompletion as any,
+        RacingOperationsWorkflow as any,
+        SeriesStatsBar as any,
+        SeasonsStatsBar as any,
+        EventsTimeline as any,
+        EventsPipeline as any,
+        MembersRecentActivity as any,
+        OrganizationsStatsBar as any,
+        StoriesTimeline as any,
+        NarrativesStatsBar as any,
+        MediaStatsBar as any,
+        CarsRecentActivity as any,
+      ],
+    },
   },
   collections: [
     Series, Seasons, Events, Sessions, Entries, Results, Points,
@@ -108,24 +186,16 @@ export default buildConfig({
     Categories, Tags, Tones, Features, Specifications, Classifications, Skills, Principles, Preferences, Channels, Locations
   ],
   i18n: {
+    supportedLanguages: { en, es, pt },
     fallbackLanguage: 'en',
   },
   localization: {
     locales: [
-      {
-        label: 'English',
-        code: 'en-US',
-      },
-      {
-        label: 'Spanish',
-        code: 'es-MX',
-      },
-      {
-        label: 'Portugeese',
-        code: 'pt-PT',
-      },
+      { label: 'English', code: 'en' },
+      { label: 'Spanish', code: 'es' },
+      { label: 'Portuguese', code: 'pt' },
     ],
-    defaultLocale: 'en-US',
+    defaultLocale: 'en',
     fallback: true,
   },
   db: postgresAdapter({
@@ -148,7 +218,6 @@ export default buildConfig({
               if ('name' in field && field.name === 'url') return false
               return true
             })
-
             return [
               ...defaultFieldsWithoutUrl,
               {
@@ -168,7 +237,6 @@ export default buildConfig({
       ]
     },
   }),
-  //email: nodemailerAdapter(),
   endpoints: [],
   globals: [
     Header, Footer,
@@ -242,147 +310,53 @@ export default buildConfig({
     }),
     mcpPlugin({
       collections: {
-        series: {
-          enabled: true
-        },
-        seasons: {
-          enabled: true
-        },
-        events: {
-          enabled: true
-        },
-        sessions: {
-          enabled: true
-        },
-        entries: {
-          enabled: true
-        },
-        results: {
-          enabled: true
-        },
-        points: {
-          enabled: true
-        },
-        drivers: {
-          enabled: true
-        },
-        leaders: {
-          enabled: true
-        },
-        members: {
-          enabled: true
-        },
-        individuals: {
-          enabled: true
-        },
-        organizations: {
-          enabled: true
-        },
-        users: {
-          enabled: true
-        },
-        stories: {
-          enabled: true
-        },
-        histories: {
-          enabled: true
-        },
-        journeys: {
-          enabled: true
-        },
-        notes: {
-          enabled: true
-        },
-        pages: {
-          enabled: true
-        },
-        cars: {
-          enabled: true
-        },
-        kits: {
-          enabled: true
-        },
-        media: {
-          enabled: true
-        },
-        galleries: {
-          enabled: true
-        },
-        archives: {
-          enabled: true
-        },
-        visualizations: {
-          enabled: true
-        },
-        schedules: {
-          enabled: true
-        },
-        trainings: {
-          enabled: true
-        },
-        careers: {
-          enabled: true
-        },
-        initiatives: {
-          enabled: true
-        },
-        meetups: {
-          enabled: true
-        },
-        celebrations: {
-          enabled: true
-        },
-        duties: {
-          enabled: true
-        },
-        expectations: {
-          enabled: true
-        },
-        highlights: {
-          enabled: true
-        },
-        incidents: {
-          enabled: true
-        },
-        decisions: {
-          enabled: true
-        },
-        strategies: {
-          enabled: true
-        },
-        awards: {
-          enabled: true
-        },
-        experiences: {
-          enabled: true
-        },
-        categories: {
-          enabled: true
-        },
-        tags: {
-          enabled: true
-        },
-        tones: {
-          enabled: true
-        },
-        features: {
-          enabled: true
-        },
-        classifications: {
-          enabled: true
-        },
-        skills: {
-          enabled: true
-        },
-        preferences: {
-          enabled: true
-        },
-        channels: {
-          enabled: true
-        },
-        forms: {
-          enabled: true
-        }
+        series: { enabled: true },
+        seasons: { enabled: true },
+        events: { enabled: true },
+        sessions: { enabled: true },
+        entries: { enabled: true },
+        results: { enabled: true },
+        points: { enabled: true },
+        drivers: { enabled: true },
+        leaders: { enabled: true },
+        members: { enabled: true },
+        individuals: { enabled: true },
+        organizations: { enabled: true },
+        users: { enabled: true },
+        stories: { enabled: true },
+        histories: { enabled: true },
+        journeys: { enabled: true },
+        notes: { enabled: true },
+        pages: { enabled: true },
+        cars: { enabled: true },
+        kits: { enabled: true },
+        media: { enabled: true },
+        galleries: { enabled: true },
+        archives: { enabled: true },
+        visualizations: { enabled: true },
+        schedules: { enabled: true },
+        trainings: { enabled: true },
+        careers: { enabled: true },
+        initiatives: { enabled: true },
+        meetups: { enabled: true },
+        celebrations: { enabled: true },
+        duties: { enabled: true },
+        expectations: { enabled: true },
+        highlights: { enabled: true },
+        incidents: { enabled: true },
+        decisions: { enabled: true },
+        strategies: { enabled: true },
+        awards: { enabled: true },
+        experiences: { enabled: true },
+        categories: { enabled: true },
+        tags: { enabled: true },
+        tones: { enabled: true },
+        features: { enabled: true },
+        classifications: { enabled: true },
+        skills: { enabled: true },
+        preferences: { enabled: true },
+        channels: { enabled: true },
+        forms: { enabled: true }
       },
     }),
   ],
@@ -390,8 +364,4 @@ export default buildConfig({
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
-  // Sharp is now an optional dependency -
-  // if you want to resize images, crop, set focal point, etc.
-  // make sure to install it and pass it to the config.
-  // sharp,
 })

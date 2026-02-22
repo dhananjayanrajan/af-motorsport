@@ -14,7 +14,7 @@ This document outlines the field structure for all collections across the entire
   - description `textarea` flags: [localized]
 
 - DETAILS
-  - parent `relationship: categories` (hasOne) flags: [] [Advanced]
+  - parent `relationship: categories` (hasOne) flags: [] [advanced]
 
 ### CHANNELS
 - ESSENTIALS

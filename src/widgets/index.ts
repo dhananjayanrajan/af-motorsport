@@ -1,0 +1,15 @@
+// src/widgets/index.ts
+export { createStatsBar } from './factories/createStatsBar'
+export { createRecentActivityFeed } from './factories/createRecentActivityFeed'
+export { createTypeBreakdownChart } from './factories/createTypeBreakdownChart'
+export { createCompletionScore } from './factories/createCompletionScore'
+export { createToggleDistribution } from './factories/createToggleDistribution'
+export { createRelationshipDensity } from './factories/createRelationshipDensity'
+export { createTopTagsCategories } from './factories/createTopTagsCategories'
+export { createPublishingPipeline } from './factories/createPublishingPipeline'
+export { createSlugHealth } from './factories/createSlugHealth'
+export { createTimeline } from './factories/createTimeline'
+
+export { default as DriversDashboard } from './DriversDashboard'
+export { default as RacingOperationsWorkflow } from './RacingOperationsWorkflow'
+export { default as KitsWorkflow } from './KitsWorkflow'

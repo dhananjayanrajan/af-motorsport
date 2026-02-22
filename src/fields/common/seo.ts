@@ -1,4 +1,4 @@
-// fields/common/seoTab.ts
+// FILE: src/fields/common/seo.ts
 import type { Tab } from 'payload';
 import {
   MetaDescriptionField,

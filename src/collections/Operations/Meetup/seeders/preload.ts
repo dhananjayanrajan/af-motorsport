@@ -1,0 +1,81 @@
+// FILE: src/collections/Operations/Meetup/seeders/preload.ts
+export const PRELOAD_MEETUP = [
+  {
+    name: 'Fan Forum London',
+    toggle: 'advanced',
+    type: 1,
+    basics: {
+      enable: true,
+      description: 'Meet the drivers in London',
+      date: '2026-05-20',
+      location: 1,
+      visibility: { show: true },
+    },
+    details: {
+      enable: true,
+      narrative: 1,
+      visibility: { show: true },
+    },
+    traits: {
+      enable: true,
+      format: 'InPerson',
+      access: 'Public',
+      visibility: { show: true },
+    },
+    generateSlug: false,
+    slug: 'fan-forum-london',
+    visibility: { check_publish: true, check_featured: false, check_pinned: false },
+  },
+  {
+    name: 'Team Strategy Meeting',
+    toggle: 'advanced',
+    type: 2,
+    basics: {
+      enable: true,
+      description: 'Quarterly strategy review',
+      date: '2026-03-15',
+      location: 2,
+      visibility: { show: true },
+    },
+    details: {
+      enable: true,
+      narrative: 2,
+      visibility: { show: true },
+    },
+    traits: {
+      enable: true,
+      format: 'InPerson',
+      access: 'Private',
+      visibility: { show: true },
+    },
+    generateSlug: false,
+    slug: 'strategy-meeting',
+    visibility: { check_publish: true, check_featured: false, check_pinned: false },
+  },
+  {
+    name: 'Webinar: Race Engineering',
+    toggle: 'advanced',
+    type: 3,
+    basics: {
+      enable: true,
+      description: 'Online webinar on race engineering',
+      date: '2026-04-10',
+      location: 3,
+      visibility: { show: true },
+    },
+    details: {
+      enable: true,
+      narrative: 3,
+      visibility: { show: true },
+    },
+    traits: {
+      enable: true,
+      format: 'Virtual',
+      access: 'Public',
+      visibility: { show: true },
+    },
+    generateSlug: false,
+    slug: 'webinar-race-engineering',
+    visibility: { check_publish: true, check_featured: false, check_pinned: false },
+  },
+] as const

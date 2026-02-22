@@ -1,3 +1,4 @@
+// FILE: src/collections/Resources/Media.ts
 import type { CollectionConfig } from 'payload'
 
 import {

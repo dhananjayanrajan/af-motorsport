@@ -1,17 +1,43 @@
+// FILE: Competition/Series/index.ts
 import { collectionFactory, tabFactory } from '@/fields/factories/blueprint'
-import { dictionary } from './dictionary'
-import { essentialFields } from './essentials'
-import { basicsFields } from './basics'
-import { detailsFields } from './details'
-import { traitsFields } from './traits'
-import { metricsFields } from './metrics'
-import { assetsFields } from './assets'
-import { contextsFields } from './contexts'
-
+import { dictionary } from './sources/dictionary'
+import { essentialFields } from './tabs/essentials'
+import { basicsFields } from './tabs/basics'
+import { detailsFields } from './tabs/details'
+import { traitsFields } from './tabs/traits'
+import { metricsFields } from './tabs/metrics'
+import { assetsFields } from './tabs/assets'
+import { contextsFields } from './tabs/contexts'
 export const Series = collectionFactory(
   {
     slug: 'series',
     labels: { singular: dictionary.host, plural: dictionary.hostPlural },
+    access: {
+      read: ({ req: { user } }) => {
+        if (!user || !('roles' in user) || !user.roles) return false
+        return user.roles.some((role) =>
+          ['admin', 'race_admin'].includes(role)
+        )
+      },
+      create: ({ req: { user } }) => {
+        if (!user || !('roles' in user) || !user.roles) return false
+        return user.roles.some((role) =>
+          ['admin', 'race_admin'].includes(role)
+        )
+      },
+      update: ({ req: { user } }) => {
+        if (!user || !('roles' in user) || !user.roles) return false
+        return user.roles.some((role) =>
+          ['admin', 'race_admin'].includes(role)
+        )
+      },
+      delete: ({ req: { user } }) => {
+        if (!user || !('roles' in user) || !user.roles) return false
+        return user.roles.some((role) =>
+          ['admin', 'race_admin'].includes(role)
+        )
+      },
+    },
     admin: {
       group: 'Competition',
       useAsTitle: 'name',
