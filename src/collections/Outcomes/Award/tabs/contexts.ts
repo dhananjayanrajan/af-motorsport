@@ -13,7 +13,7 @@ export const contextsFields: Field[] = [
         relationTo: ['leaders', 'organizations', 'individuals'],
         dictionary: dictionary.tabs.contexts.fields,
         width: 2,
-        flags: ['required'],
+        flags: [],
       }),
       relationshipFieldFactory({
         name: 'story',

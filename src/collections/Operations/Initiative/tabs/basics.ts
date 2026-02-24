@@ -22,7 +22,7 @@ export const basicsFields: Field[] = [
         name: 'mission',
         dictionary: dictionary.tabs.basics.fields,
         width: 1,
-        flags: ['required', 'localized'],
+        flags: ['localized'],
       }),
     ],
   },

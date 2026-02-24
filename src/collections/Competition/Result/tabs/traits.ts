@@ -18,7 +18,7 @@ export const traitsFields: Field[] = [
             name: 'overall',
             dictionary: dictionary.tabs.traits.fields.position.fields,
             width: 3,
-            flags: ['required'],
+            flags: [],
           }),
           numberFieldFactory({
             name: 'class',

@@ -24,13 +24,13 @@ export const traitsFields: Field[] = [
               name: 'title',
               dictionary: dictionary.tabs.traits.fields.positions.fields,
               width: 2,
-              flags: ['required'],
+              flags: [],
             }),
             dateFieldFactory({
               name: 'start',
               dictionary: dictionary.tabs.traits.fields.positions.fields,
               width: 2,
-              flags: ['required'],
+              flags: [],
               pickerAppearance: 'dayOnly',
             }),
             dateFieldFactory({

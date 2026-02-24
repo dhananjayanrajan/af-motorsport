@@ -318,7 +318,7 @@ export interface Series {
   /**
    * The series name.
    */
-  name: string;
+  name?: string | null;
   /**
    * The series alias.
    */
@@ -326,11 +326,11 @@ export interface Series {
   /**
    * The type of series.
    */
-  type: number | Category;
+  type?: (number | null) | Category;
   /**
    * Identifying info.
    */
-  basics: {
+  basics?: {
     /**
      * Toggle the Basics section on or off.
      */
@@ -359,7 +359,7 @@ export interface Series {
     /**
      * Series status.
      */
-    status: 'Active' | 'Inactive' | 'Defunct' | 'Upcoming' | 'Rebranded' | 'Merged' | 'Sanctioned';
+    status?: ('Active' | 'Inactive' | 'Defunct' | 'Upcoming' | 'Rebranded' | 'Merged' | 'Sanctioned') | null;
     visibility?: {
       /**
        * Toggle the Basics section on or off.
@@ -386,15 +386,15 @@ export interface Series {
     /**
      * Governing bodies.
      */
-    organization?: (number | null) | Organization;
+    organization?: (number | Organization)[] | null;
     /**
      * Select related document(s).
      */
-    classification?: (number | null) | Classification;
+    classification?: (number | Classification)[] | null;
     /**
      * Select related document(s).
      */
-    features?: (number | null) | Feature;
+    features?: (number | Feature)[] | null;
     visibility?: {
       /**
        * Toggle the Details section on or off.
@@ -405,7 +405,7 @@ export interface Series {
   /**
    * Characteristics.
    */
-  traits: {
+  traits?: {
     /**
      * Toggle the Traits section on or off.
      */
@@ -426,11 +426,11 @@ export interface Series {
     /**
      * Select related document(s).
      */
-    specifications?: (number | null) | Specification;
+    specifications?: (number | Specification)[] | null;
     /**
      * Select related document(s).
      */
-    schedule: number | Schedule;
+    schedule?: (number | null) | Schedule;
     visibility?: {
       /**
        * Toggle the Traits section on or off.
@@ -489,7 +489,7 @@ export interface Series {
     /**
      * Select related document(s).
      */
-    archive?: (number | null) | Archive;
+    archive?: (number | Archive)[] | null;
     visibility?: {
       /**
        * Toggle the Assets section on or off.
@@ -508,23 +508,26 @@ export interface Series {
     /**
      * Select related document(s).
      */
-    locations?: (number | null) | Location;
+    locations?: (number | Location)[] | null;
     /**
      * Select related document(s).
      */
     authorities?:
-      | ({
-          relationTo: 'organizations';
-          value: number | Organization;
-        } | null)
-      | ({
-          relationTo: 'individuals';
-          value: number | Individual;
-        } | null);
+      | (
+          | {
+              relationTo: 'organizations';
+              value: number | Organization;
+            }
+          | {
+              relationTo: 'individuals';
+              value: number | Individual;
+            }
+        )[]
+      | null;
     /**
      * Select related document(s).
      */
-    notes?: (number | null) | Note;
+    notes?: (number | Note)[] | null;
     visibility?: {
       /**
        * Toggle the Contexts section on or off.
@@ -574,7 +577,7 @@ export interface Category {
   /**
    * The category name.
    */
-  name: string;
+  name?: string | null;
   /**
    * Category types with label and value pairs
    */
@@ -583,11 +586,11 @@ export interface Category {
         /**
          * Display label.
          */
-        label: string;
+        label?: string | null;
         /**
          * Unique value.
          */
-        value: string;
+        value?: string | null;
         id?: string | null;
       }[]
     | null;
@@ -705,11 +708,11 @@ export interface Tag {
   /**
    * Tag name.
    */
-  name: string;
+  name?: string | null;
   /**
    * Tag type.
    */
-  type: number | Category;
+  type?: (number | null) | Category;
   /**
    * Extra data.
    */
@@ -775,7 +778,7 @@ export interface Narrative {
   /**
    * The narrative name.
    */
-  name: string;
+  name?: string | null;
   /**
    * Enter text value.
    */
@@ -802,7 +805,7 @@ export interface Narrative {
   /**
    * Extra data.
    */
-  details: {
+  details?: {
     /**
      * Toggle the Details section on or off.
      */
@@ -810,7 +813,7 @@ export interface Narrative {
     /**
      * Main narrative body.
      */
-    content: {
+    content?: {
       root: {
         type: string;
         children: {
@@ -824,7 +827,7 @@ export interface Narrative {
         version: number;
       };
       [k: string]: unknown;
-    };
+    } | null;
     /**
      * Narrative scope.
      */
@@ -916,35 +919,38 @@ export interface Narrative {
     /**
      * Select related document(s).
      */
-    locations?: (number | null) | Location;
+    locations?: (number | Location)[] | null;
     /**
      * Select related document(s).
      */
-    notes?: (number | null) | Note;
+    notes?: (number | Note)[] | null;
     /**
      * Select related document(s).
      */
     entities?:
-      | ({
-          relationTo: 'organizations';
-          value: number | Organization;
-        } | null)
-      | ({
-          relationTo: 'individuals';
-          value: number | Individual;
-        } | null)
-      | ({
-          relationTo: 'leaders';
-          value: number | Leader;
-        } | null)
-      | ({
-          relationTo: 'drivers';
-          value: number | Driver;
-        } | null)
-      | ({
-          relationTo: 'members';
-          value: number | Member;
-        } | null);
+      | (
+          | {
+              relationTo: 'organizations';
+              value: number | Organization;
+            }
+          | {
+              relationTo: 'individuals';
+              value: number | Individual;
+            }
+          | {
+              relationTo: 'leaders';
+              value: number | Leader;
+            }
+          | {
+              relationTo: 'drivers';
+              value: number | Driver;
+            }
+          | {
+              relationTo: 'members';
+              value: number | Member;
+            }
+        )[]
+      | null;
     visibility?: {
       /**
        * Toggle the Contexts section on or off.
@@ -994,7 +1000,7 @@ export interface Tone {
   /**
    * Tone name.
    */
-  name: string;
+  name?: string | null;
   /**
    * Tone alias.
    */
@@ -1002,7 +1008,7 @@ export interface Tone {
   /**
    * Tone type.
    */
-  type: number | Category;
+  type?: (number | null) | Category;
   /**
    * Identifying info.
    */
@@ -1120,11 +1126,11 @@ export interface Location {
   /**
    * The name of the location.
    */
-  name: string;
+  name?: string | null;
   /**
    * The type of location.
    */
-  type: number | Category;
+  type?: (number | null) | Category;
   /**
    * A short label.
    */
@@ -1210,7 +1216,19 @@ export interface Location {
       /**
        * Climate zone.
        */
-      climate?: ('Temperate' | 'Tropical' | 'Arid' | 'Continental' | 'Polar') | null;
+      climate?:
+        | (
+            | 'Temperate'
+            | 'Tropical'
+            | 'Arid'
+            | 'Continental'
+            | 'Polar'
+            | 'Mediterranean'
+            | 'Subtropical'
+            | 'Oceanic'
+            | 'Desert'
+          )
+        | null;
       /**
        * Natural features.
        */
@@ -1269,26 +1287,29 @@ export interface Location {
      * Associated entities.
      */
     entities?:
-      | ({
-          relationTo: 'organizations';
-          value: number | Organization;
-        } | null)
-      | ({
-          relationTo: 'individuals';
-          value: number | Individual;
-        } | null)
-      | ({
-          relationTo: 'leaders';
-          value: number | Leader;
-        } | null)
-      | ({
-          relationTo: 'drivers';
-          value: number | Driver;
-        } | null)
-      | ({
-          relationTo: 'members';
-          value: number | Member;
-        } | null);
+      | (
+          | {
+              relationTo: 'organizations';
+              value: number | Organization;
+            }
+          | {
+              relationTo: 'individuals';
+              value: number | Individual;
+            }
+          | {
+              relationTo: 'leaders';
+              value: number | Leader;
+            }
+          | {
+              relationTo: 'drivers';
+              value: number | Driver;
+            }
+          | {
+              relationTo: 'members';
+              value: number | Member;
+            }
+        )[]
+      | null;
     visibility?: {
       /**
        * Toggle the Contexts section on or off.
@@ -1338,7 +1359,7 @@ export interface Organization {
   /**
    * Enter text value.
    */
-  name: string;
+  name?: string | null;
   /**
    * Enter text value.
    */
@@ -1346,7 +1367,7 @@ export interface Organization {
   /**
    * Select related document(s).
    */
-  type: number | Category;
+  type?: (number | null) | Category;
   /**
    * Identifying info.
    */
@@ -1446,7 +1467,7 @@ export interface Organization {
     /**
      * Select related document(s).
      */
-    channels?: (number | null) | Channel;
+    channels?: (number | Channel)[] | null;
     /**
      * Market reputation
      */
@@ -1500,13 +1521,13 @@ export interface Organization {
      */
     enable?: boolean | null;
     /**
-     * Select related document(s).
+     * Select an uploaded file.
      */
     logo?: (number | null) | Media;
     /**
      * Select related document(s).
      */
-    gallery?: (number | null) | Gallery;
+    gallery?: (number | Gallery)[] | null;
     visibility?: {
       /**
        * Toggle the Assets section on or off.
@@ -1525,7 +1546,7 @@ export interface Organization {
     /**
      * Select related document(s).
      */
-    headquarters?: (number | null) | Location;
+    headquarters?: (number | Location)[] | null;
     /**
      * Select related document(s).
      */
@@ -1533,7 +1554,7 @@ export interface Organization {
     /**
      * Select related document(s).
      */
-    notes?: (number | null) | Note;
+    notes?: (number | Note)[] | null;
     visibility?: {
       /**
        * Toggle the Contexts section on or off.
@@ -1583,15 +1604,15 @@ export interface Channel {
   /**
    * The name of the channel.
    */
-  name: string;
+  name?: string | null;
   /**
    * Category of the channel.
    */
-  type: number | Category;
+  type?: (number | null) | Category;
   /**
    * Identifying info.
    */
-  basics: {
+  basics?: {
     /**
      * Toggle the Basics section on or off.
      */
@@ -1629,11 +1650,11 @@ export interface Channel {
     /**
      * Protocol details.
      */
-    protocol: {
+    protocol?: {
       /**
        * Data format.
        */
-      format: 'HTTP' | 'HTTPS' | 'FTP' | 'SFTP' | 'SMTP' | 'Custom';
+      format?: ('HTTP' | 'HTTPS' | 'FTP' | 'SFTP' | 'SMTP' | 'Custom') | null;
       /**
        * Communication scheme.
        */
@@ -1779,11 +1800,11 @@ export interface Gallery {
   /**
    * Enter text value.
    */
-  name: string;
+  name?: string | null;
   /**
    * Select related document(s).
    */
-  type: number | Category;
+  type?: (number | null) | Category;
   /**
    * Extra data.
    */
@@ -1795,7 +1816,7 @@ export interface Gallery {
     /**
      * Select related document(s).
      */
-    images: number | Media;
+    images: (number | Media)[];
     /**
      * Select related document(s).
      */
@@ -1849,7 +1870,7 @@ export interface History {
   /**
    * The history name.
    */
-  name: string;
+  name?: string | null;
   /**
    * Enter text value.
    */
@@ -1857,11 +1878,11 @@ export interface History {
   /**
    * The type of history.
    */
-  type: number | Category;
+  type?: (number | null) | Category;
   /**
    * Extra data.
    */
-  details: {
+  details?: {
     /**
      * Toggle the Details section on or off.
      */
@@ -1869,11 +1890,11 @@ export interface History {
     /**
      * Primary narrative.
      */
-    narrative: number | Narrative;
+    narrative?: (number | null) | Narrative;
     /**
      * Related stories.
      */
-    stories?: (number | null) | Story;
+    stories?: (number | Story)[] | null;
     visibility?: {
       /**
        * Toggle the Details section on or off.
@@ -1995,7 +2016,7 @@ export interface Story {
   /**
    * The story name.
    */
-  name: string;
+  name?: string | null;
   /**
    * Enter text value.
    */
@@ -2003,11 +2024,11 @@ export interface Story {
   /**
    * The type of story.
    */
-  type: number | Category;
+  type?: (number | null) | Category;
   /**
    * Extra data.
    */
-  details: {
+  details?: {
     /**
      * Toggle the Details section on or off.
      */
@@ -2015,7 +2036,7 @@ export interface Story {
     /**
      * Primary narrative.
      */
-    narrative: number | Narrative;
+    narrative?: (number | null) | Narrative;
     visibility?: {
       /**
        * Toggle the Details section on or off.
@@ -2108,11 +2129,11 @@ export interface Story {
     /**
      * Select related document(s).
      */
-    highlights?: (number | null) | Highlight;
+    highlights?: (number | Highlight)[] | null;
     /**
      * Select related document(s).
      */
-    incidents?: (number | null) | Incident;
+    incidents?: (number | Incident)[] | null;
     visibility?: {
       /**
        * Toggle the Contexts section on or off.
@@ -2162,11 +2183,11 @@ export interface Playlist {
   /**
    * Enter text value.
    */
-  name: string;
+  name?: string | null;
   /**
    * Select related document(s).
    */
-  type: number | Category;
+  type?: (number | null) | Category;
   /**
    * Extra data.
    */
@@ -2178,11 +2199,11 @@ export interface Playlist {
     /**
      * Select related document(s).
      */
-    clips?: (number | null) | Media;
+    clips?: (number | Media)[] | null;
     /**
      * Select related document(s).
      */
-    videos?: (number | null) | Media;
+    videos?: (number | Media)[] | null;
     /**
      * Select related document(s).
      */
@@ -2259,11 +2280,11 @@ export interface Highlight {
   /**
    * Enter text value.
    */
-  name: string;
+  name?: string | null;
   /**
    * Select related document(s).
    */
-  type: number | Category;
+  type?: (number | null) | Category;
   /**
    * Identifying info.
    */
@@ -2286,7 +2307,7 @@ export interface Highlight {
   /**
    * Extra data.
    */
-  details: {
+  details?: {
     /**
      * Toggle the Details section on or off.
      */
@@ -2294,7 +2315,7 @@ export interface Highlight {
     /**
      * Select related document(s).
      */
-    narrative: number | Narrative;
+    narrative?: (number | null) | Narrative;
     visibility?: {
       /**
        * Toggle the Details section on or off.
@@ -2313,7 +2334,7 @@ export interface Highlight {
     /**
      * Select related document(s).
      */
-    specifications?: (number | null) | Specification;
+    specifications?: (number | Specification)[] | null;
     visibility?: {
       /**
        * Toggle the Traits section on or off.
@@ -2360,18 +2381,21 @@ export interface Highlight {
      * Select related document(s).
      */
     entities?:
-      | ({
-          relationTo: 'drivers';
-          value: number | Driver;
-        } | null)
-      | ({
-          relationTo: 'cars';
-          value: number | Car;
-        } | null);
+      | (
+          | {
+              relationTo: 'drivers';
+              value: number | Driver;
+            }
+          | {
+              relationTo: 'cars';
+              value: number | Car;
+            }
+        )[]
+      | null;
     /**
      * Select related document(s).
      */
-    stories?: (number | null) | Story;
+    stories?: (number | Story)[] | null;
     visibility?: {
       /**
        * Toggle the Contexts section on or off.
@@ -2421,11 +2445,11 @@ export interface Specification {
   /**
    * Spec name.
    */
-  name: string;
+  name?: string | null;
   /**
    * Spec type.
    */
-  type: number | Category;
+  type?: (number | null) | Category;
   /**
    * Unique identifier.
    */
@@ -2514,15 +2538,15 @@ export interface Specification {
           /**
            * Parameter name.
            */
-          parameter: string;
+          parameter?: string | null;
           /**
            * Parameter value.
            */
-          value: string;
+          value?: string | null;
           /**
            * Measurement unit.
            */
-          unit: string;
+          unit?: string | null;
           /**
            * Allowed tolerance.
            */
@@ -2596,7 +2620,7 @@ export interface Driver {
   /**
    * Enter text value.
    */
-  first: string;
+  first?: string | null;
   /**
    * Enter text value.
    */
@@ -2604,7 +2628,7 @@ export interface Driver {
   /**
    * Enter text value.
    */
-  last: string;
+  last?: string | null;
   /**
    * Enter text value.
    */
@@ -2612,7 +2636,7 @@ export interface Driver {
   /**
    * Select related document(s).
    */
-  type: number | Category;
+  type?: (number | null) | Category;
   /**
    * Identifying info.
    */
@@ -2710,7 +2734,7 @@ export interface Driver {
     /**
      * Select related document(s).
      */
-    journeys?: (number | null) | Journey;
+    journeys?: (number | Journey)[] | null;
     visibility?: {
       /**
        * Toggle the Details section on or off.
@@ -2729,19 +2753,19 @@ export interface Driver {
     /**
      * Select related document(s).
      */
-    channels?: (number | null) | Channel;
+    channels?: (number | Channel)[] | null;
     /**
      * Select related document(s).
      */
-    experiences?: (number | null) | Experience;
+    experiences?: (number | Experience)[] | null;
     /**
      * Select related document(s).
      */
-    skills?: (number | null) | Skill;
+    skills?: (number | Skill)[] | null;
     /**
      * Select related document(s).
      */
-    trainings?: (number | null) | Training;
+    trainings?: (number | Training)[] | null;
     visibility?: {
       /**
        * Toggle the Traits section on or off.
@@ -2760,15 +2784,15 @@ export interface Driver {
     /**
      * Select related document(s).
      */
-    results?: (number | null) | Result;
+    results?: (number | Result)[] | null;
     /**
      * Select related document(s).
      */
-    points?: (number | null) | Point;
+    points?: (number | Point)[] | null;
     /**
      * Select related document(s).
      */
-    awards?: (number | null) | Award;
+    awards?: (number | Award)[] | null;
     visibility?: {
       /**
        * Toggle the Metrics section on or off.
@@ -2785,25 +2809,25 @@ export interface Driver {
      */
     enable?: boolean | null;
     /**
-     * Select related document(s).
+     * Select an uploaded file.
      */
-    thumbnail?: (number | null) | Media;
+    avatar?: (number | null) | Media;
     /**
-     * Select related document(s).
+     * Select an uploaded file.
+     */
+    helmet?: (number | null) | Media;
+    /**
+     * Select an uploaded file.
+     */
+    suit?: (number | null) | Media;
+    /**
+     * Select an uploaded file.
      */
     cover?: (number | null) | Media;
     /**
      * Select related document(s).
      */
-    helmet?: (number | null) | Media;
-    /**
-     * Select related document(s).
-     */
-    suit?: (number | null) | Media;
-    /**
-     * Select related document(s).
-     */
-    gallery?: (number | null) | Gallery;
+    gallery?: (number | Gallery)[] | null;
     visibility?: {
       /**
        * Toggle the Assets section on or off.
@@ -2822,27 +2846,30 @@ export interface Driver {
     /**
      * Select related document(s).
      */
-    teammates?: (number | null) | Driver;
+    teammates?: (number | Driver)[] | null;
     /**
      * Select related document(s).
      */
     crew?:
-      | ({
-          relationTo: 'members';
-          value: number | Member;
-        } | null)
-      | ({
-          relationTo: 'leaders';
-          value: number | Leader;
-        } | null);
+      | (
+          | {
+              relationTo: 'members';
+              value: number | Member;
+            }
+          | {
+              relationTo: 'leaders';
+              value: number | Leader;
+            }
+        )[]
+      | null;
     /**
      * Select related document(s).
      */
-    cars?: (number | null) | Car;
+    cars?: (number | Car)[] | null;
     /**
      * Select related document(s).
      */
-    kits?: (number | null) | Kit;
+    kits?: (number | Kit)[] | null;
     visibility?: {
       /**
        * Toggle the Contexts section on or off.
@@ -2892,15 +2919,15 @@ export interface Journey {
   /**
    * The journey name.
    */
-  name: string;
+  name?: string | null;
   /**
    * The type of journey.
    */
-  type: number | Category;
+  type?: (number | null) | Category;
   /**
    * Extra data.
    */
-  details: {
+  details?: {
     /**
      * Toggle the Details section on or off.
      */
@@ -2908,11 +2935,11 @@ export interface Journey {
     /**
      * Select related document(s).
      */
-    narrative: number | Narrative;
+    narrative?: (number | null) | Narrative;
     /**
      * Select related document(s).
      */
-    stories?: (number | null) | Story;
+    stories?: (number | Story)[] | null;
     visibility?: {
       /**
        * Toggle the Details section on or off.
@@ -2936,7 +2963,7 @@ export interface Journey {
           /**
            * Enter text value.
            */
-          lesson: string;
+          lesson?: string | null;
           /**
            * Select one or more options.
            */
@@ -2955,11 +2982,11 @@ export interface Journey {
     /**
      * Select related document(s).
      */
-    decisions?: (number | null) | Decision;
+    decisions?: (number | Decision)[] | null;
     /**
      * Select related document(s).
      */
-    impacts?: (number | null) | Impact;
+    impacts?: (number | Impact)[] | null;
     visibility?: {
       /**
        * Toggle the Traits section on or off.
@@ -3032,11 +3059,11 @@ export interface Decision {
   /**
    * Enter text value.
    */
-  name: string;
+  name?: string | null;
   /**
    * Select related document(s).
    */
-  type: number | Category;
+  type?: (number | null) | Category;
   /**
    * Identifying info.
    */
@@ -3059,7 +3086,7 @@ export interface Decision {
   /**
    * Extra data.
    */
-  details: {
+  details?: {
     /**
      * Toggle the Details section on or off.
      */
@@ -3067,7 +3094,7 @@ export interface Decision {
     /**
      * Select related document(s).
      */
-    narrative: number | Narrative;
+    narrative?: (number | null) | Narrative;
     visibility?: {
       /**
        * Toggle the Details section on or off.
@@ -3086,15 +3113,15 @@ export interface Decision {
     /**
      * Select related document(s).
      */
-    features?: (number | null) | Feature;
+    features?: (number | Feature)[] | null;
     /**
      * Select related document(s).
      */
-    specifications?: (number | null) | Specification;
+    specifications?: (number | Specification)[] | null;
     /**
      * Select related document(s).
      */
-    expectations?: (number | null) | Expectation;
+    expectations?: (number | Expectation)[] | null;
     visibility?: {
       /**
        * Toggle the Traits section on or off.
@@ -3113,43 +3140,46 @@ export interface Decision {
     /**
      * Select related document(s).
      */
-    protocols?: (number | null) | Protocol;
+    protocols?: (number | Protocol)[] | null;
     /**
      * Select related document(s).
      */
-    preferences?: (number | null) | Preference;
+    preferences?: (number | Preference)[] | null;
     /**
      * Select related document(s).
      */
-    notes?: (number | null) | Note;
+    notes?: (number | Note)[] | null;
     /**
      * Select related document(s).
      */
     entities?:
-      | ({
-          relationTo: 'organizations';
-          value: number | Organization;
-        } | null)
-      | ({
-          relationTo: 'individuals';
-          value: number | Individual;
-        } | null)
-      | ({
-          relationTo: 'leaders';
-          value: number | Leader;
-        } | null)
-      | ({
-          relationTo: 'drivers';
-          value: number | Driver;
-        } | null)
-      | ({
-          relationTo: 'members';
-          value: number | Member;
-        } | null);
+      | (
+          | {
+              relationTo: 'organizations';
+              value: number | Organization;
+            }
+          | {
+              relationTo: 'individuals';
+              value: number | Individual;
+            }
+          | {
+              relationTo: 'leaders';
+              value: number | Leader;
+            }
+          | {
+              relationTo: 'drivers';
+              value: number | Driver;
+            }
+          | {
+              relationTo: 'members';
+              value: number | Member;
+            }
+        )[]
+      | null;
     /**
      * Select related document(s).
      */
-    impacts?: (number | null) | Impact;
+    impacts?: (number | Impact)[] | null;
     visibility?: {
       /**
        * Toggle the Contexts section on or off.
@@ -3199,11 +3229,11 @@ export interface Feature {
   /**
    * The name of the feature.
    */
-  name: string;
+  name?: string | null;
   /**
    * The category of the feature.
    */
-  type: number | Category;
+  type?: (number | null) | Category;
   /**
    * Identifying info.
    */
@@ -3285,7 +3315,7 @@ export interface Feature {
     /**
      * Related notes.
      */
-    notes?: (number | null) | Note;
+    notes?: (number | Note)[] | null;
     visibility?: {
       /**
        * Toggle the Contexts section on or off.
@@ -3335,7 +3365,7 @@ export interface Note {
   /**
    * The note name.
    */
-  name: string;
+  name?: string | null;
   /**
    * Enter text value.
    */
@@ -3343,7 +3373,7 @@ export interface Note {
   /**
    * The type of note.
    */
-  type: number | Category;
+  type?: (number | null) | Category;
   /**
    * Extra data.
    */
@@ -3379,7 +3409,7 @@ export interface Note {
           /**
            * Select one or more options.
            */
-          type?: ('Inform' | 'Persuade' | 'Clarify' | 'Critique' | 'Praise') | null;
+          type?: ('Inform' | 'Persuade' | 'Clarify' | 'Critique' | 'Praise' | 'Evaluate') | null;
           /**
            * Select one or more options.
            */
@@ -3459,15 +3489,15 @@ export interface Archive {
   /**
    * Enter text value.
    */
-  name: string;
+  name?: string | null;
   /**
    * Select related document(s).
    */
-  type: number | Category;
+  type?: (number | null) | Category;
   /**
    * Extra data.
    */
-  details: {
+  details?: {
     /**
      * Toggle the Details section on or off.
      */
@@ -3475,15 +3505,15 @@ export interface Archive {
     /**
      * Select related document(s).
      */
-    samples?: (number | null) | Media;
+    samples?: (number | Media)[] | null;
     /**
      * Select related document(s).
      */
-    documents?: (number | null) | Media;
+    documents?: (number | Media)[] | null;
     /**
      * Select related document(s).
      */
-    narrative: number | Narrative;
+    narrative?: (number | null) | Narrative;
     visibility?: {
       /**
        * Toggle the Details section on or off.
@@ -3533,15 +3563,15 @@ export interface Expectation {
   /**
    * Enter text value.
    */
-  name: string;
+  name?: string | null;
   /**
    * Select related document(s).
    */
-  type: number | Category;
+  type?: (number | null) | Category;
   /**
    * Identifying info.
    */
-  basics: {
+  basics?: {
     /**
      * Toggle the Basics section on or off.
      */
@@ -3549,7 +3579,7 @@ export interface Expectation {
     /**
      * Enter text value.
      */
-    statement: string;
+    statement?: string | null;
     visibility?: {
       /**
        * Toggle the Basics section on or off.
@@ -3587,7 +3617,7 @@ export interface Expectation {
     /**
      * Select one or more options.
      */
-    direction?: ('Required' | 'Anticipated' | 'Committed') | null;
+    direction?: ('Anticipated' | 'Committed') | null;
     /**
      * Select one or more options.
      */
@@ -3614,15 +3644,15 @@ export interface Expectation {
     /**
      * Select related document(s).
      */
-    specifications?: (number | null) | Specification;
+    specifications?: (number | Specification)[] | null;
     /**
      * Select related document(s).
      */
-    protocols?: (number | null) | Protocol;
+    protocols?: (number | Protocol)[] | null;
     /**
      * Select related document(s).
      */
-    notes?: (number | null) | Note;
+    notes?: (number | Note)[] | null;
     visibility?: {
       /**
        * Toggle the Contexts section on or off.
@@ -3672,11 +3702,11 @@ export interface Protocol {
   /**
    * Enter text value.
    */
-  name: string;
+  name?: string | null;
   /**
    * Select related document(s).
    */
-  type: number | Category;
+  type?: (number | null) | Category;
   /**
    * Protocol identification details.
    */
@@ -3697,7 +3727,7 @@ export interface Protocol {
   /**
    * Identifying info.
    */
-  basics: {
+  basics?: {
     /**
      * Toggle the Basics section on or off.
      */
@@ -3709,7 +3739,7 @@ export interface Protocol {
     /**
      * Enter text value.
      */
-    objective: string;
+    objective?: string | null;
     visibility?: {
       /**
        * Toggle the Basics section on or off.
@@ -3720,7 +3750,7 @@ export interface Protocol {
   /**
    * Extra data.
    */
-  details: {
+  details?: {
     /**
      * Toggle the Details section on or off.
      */
@@ -3728,7 +3758,7 @@ export interface Protocol {
     /**
      * Enter text value.
      */
-    procedure: string;
+    procedure?: string | null;
     /**
      * Step-by-step instructions.
      */
@@ -3737,11 +3767,11 @@ export interface Protocol {
           /**
            * Enter text value.
            */
-          step: string;
+          step?: string | null;
           /**
            * Enter text value.
            */
-          instruction: string;
+          instruction?: string | null;
           /**
            * Enter text value.
            */
@@ -3767,7 +3797,7 @@ export interface Protocol {
     /**
      * Select related document(s).
      */
-    documentation?: (number | null) | Archive;
+    documentation?: (number | Archive)[] | null;
     visibility?: {
       /**
        * Toggle the Assets section on or off.
@@ -3786,7 +3816,7 @@ export interface Protocol {
     /**
      * Select related document(s).
      */
-    classifications?: (number | null) | Classification;
+    classifications?: (number | Classification)[] | null;
     visibility?: {
       /**
        * Toggle the Contexts section on or off.
@@ -3836,11 +3866,11 @@ export interface Classification {
   /**
    * The name of the classification.
    */
-  name: string;
+  name?: string | null;
   /**
    * The category type.
    */
-  type: number | Category;
+  type?: (number | null) | Category;
   /**
    * Identifying info.
    */
@@ -3894,7 +3924,7 @@ export interface Classification {
     /**
      * Related notes.
      */
-    notes?: (number | null) | Note;
+    notes?: (number | Note)[] | null;
     visibility?: {
       /**
        * Toggle the Contexts section on or off.
@@ -3944,11 +3974,11 @@ export interface Preference {
   /**
    * Preference name.
    */
-  name: string;
+  name?: string | null;
   /**
    * Preference type.
    */
-  type: number | Category;
+  type?: (number | null) | Category;
   /**
    * Identifying info.
    */
@@ -4026,11 +4056,11 @@ export interface Preference {
     /**
      * Related principles.
      */
-    principles?: (number | null) | Principle;
+    principles?: (number | Principle)[] | null;
     /**
      * Related notes.
      */
-    notes?: (number | null) | Note;
+    notes?: (number | Note)[] | null;
     visibility?: {
       /**
        * Toggle the Contexts section on or off.
@@ -4080,15 +4110,15 @@ export interface Principle {
   /**
    * Principle name.
    */
-  name: string;
+  name?: string | null;
   /**
    * Principle type.
    */
-  type: number | Category;
+  type?: (number | null) | Category;
   /**
    * Identifying info.
    */
-  basics: {
+  basics?: {
     /**
      * Toggle the Basics section on or off.
      */
@@ -4100,7 +4130,7 @@ export interface Principle {
     /**
      * Official statement.
      */
-    statement: string;
+    statement?: string | null;
     visibility?: {
       /**
        * Toggle the Basics section on or off.
@@ -4142,7 +4172,7 @@ export interface Principle {
     /**
      * Related notes.
      */
-    notes?: (number | null) | Note;
+    notes?: (number | Note)[] | null;
     visibility?: {
       /**
        * Toggle the Contexts section on or off.
@@ -4192,7 +4222,7 @@ export interface Individual {
   /**
    * Enter text value.
    */
-  first: string;
+  first?: string | null;
   /**
    * Enter text value.
    */
@@ -4200,7 +4230,7 @@ export interface Individual {
   /**
    * Enter text value.
    */
-  last: string;
+  last?: string | null;
   /**
    * Enter text value.
    */
@@ -4208,7 +4238,7 @@ export interface Individual {
   /**
    * Select related document(s).
    */
-  type: number | Category;
+  type?: (number | null) | Category;
   /**
    * Identifying info.
    */
@@ -4290,7 +4320,7 @@ export interface Individual {
           /**
            * Enter text value.
            */
-          interest: string;
+          interest?: string | null;
           /**
            * Select one or more options.
            */
@@ -4320,7 +4350,7 @@ export interface Individual {
     /**
      * Select related document(s).
      */
-    channels?: (number | null) | Channel;
+    channels?: (number | Channel)[] | null;
     /**
      * Network influence.
      */
@@ -4374,13 +4404,13 @@ export interface Individual {
      */
     enable?: boolean | null;
     /**
-     * Select related document(s).
+     * Select an uploaded file.
      */
     avatar?: (number | null) | Media;
     /**
      * Select related document(s).
      */
-    gallery?: (number | null) | Gallery;
+    gallery?: (number | Gallery)[] | null;
     visibility?: {
       /**
        * Toggle the Assets section on or off.
@@ -4403,7 +4433,7 @@ export interface Individual {
     /**
      * Select related document(s).
      */
-    notes?: (number | null) | Note;
+    notes?: (number | Note)[] | null;
     visibility?: {
       /**
        * Toggle the Contexts section on or off.
@@ -4453,7 +4483,7 @@ export interface Leader {
   /**
    * Enter text value.
    */
-  first: string;
+  first?: string | null;
   /**
    * Enter text value.
    */
@@ -4461,7 +4491,7 @@ export interface Leader {
   /**
    * Enter text value.
    */
-  last: string;
+  last?: string | null;
   /**
    * Enter text value.
    */
@@ -4469,7 +4499,7 @@ export interface Leader {
   /**
    * Select related document(s).
    */
-  type: number | Category;
+  type?: (number | null) | Category;
   /**
    * Identifying info.
    */
@@ -4489,7 +4519,7 @@ export interface Leader {
       /**
        * Enter text value.
        */
-      title: string;
+      title?: string | null;
       /**
        * Enter text value.
        */
@@ -4563,11 +4593,11 @@ export interface Leader {
     /**
      * Select related document(s).
      */
-    vision?: (number | null) | Principle;
+    vision?: (number | Principle)[] | null;
     /**
      * Select related document(s).
      */
-    departments?: (number | null) | Classification;
+    departments?: (number | Classification)[] | null;
     visibility?: {
       /**
        * Toggle the Details section on or off.
@@ -4586,19 +4616,19 @@ export interface Leader {
     /**
      * Select related document(s).
      */
-    channels?: (number | null) | Channel;
+    channels?: (number | Channel)[] | null;
     /**
      * Select related document(s).
      */
-    personalities?: (number | null) | Feature;
+    personalities?: (number | Feature)[] | null;
     /**
      * Select related document(s).
      */
-    achievements?: (number | null) | Experience;
+    achievements?: (number | Experience)[] | null;
     /**
      * Select related document(s).
      */
-    strategies?: (number | null) | Strategy;
+    strategies?: (number | Strategy)[] | null;
     visibility?: {
       /**
        * Toggle the Traits section on or off.
@@ -4617,11 +4647,11 @@ export interface Leader {
     /**
      * Select related document(s).
      */
-    impacts?: (number | null) | Impact;
+    impacts?: (number | Impact)[] | null;
     /**
      * Select related document(s).
      */
-    awards?: (number | null) | Award;
+    awards?: (number | Award)[] | null;
     visibility?: {
       /**
        * Toggle the Metrics section on or off.
@@ -4638,17 +4668,17 @@ export interface Leader {
      */
     enable?: boolean | null;
     /**
-     * Select related document(s).
+     * Select an uploaded file.
      */
     avatar?: (number | null) | Media;
     /**
-     * Select related document(s).
+     * Select an uploaded file.
      */
     cover?: (number | null) | Media;
     /**
      * Select related document(s).
      */
-    gallery?: (number | null) | Gallery;
+    gallery?: (number | Gallery)[] | null;
     visibility?: {
       /**
        * Toggle the Assets section on or off.
@@ -4668,30 +4698,36 @@ export interface Leader {
      * Select related document(s).
      */
     peers?:
-      | ({
-          relationTo: 'leaders';
-          value: number | Leader;
-        } | null)
-      | ({
-          relationTo: 'individuals';
-          value: number | Individual;
-        } | null);
+      | (
+          | {
+              relationTo: 'leaders';
+              value: number | Leader;
+            }
+          | {
+              relationTo: 'individuals';
+              value: number | Individual;
+            }
+        )[]
+      | null;
     /**
      * Select related document(s).
      */
     crew?:
-      | ({
-          relationTo: 'drivers';
-          value: number | Driver;
-        } | null)
-      | ({
-          relationTo: 'members';
-          value: number | Member;
-        } | null);
+      | (
+          | {
+              relationTo: 'drivers';
+              value: number | Driver;
+            }
+          | {
+              relationTo: 'members';
+              value: number | Member;
+            }
+        )[]
+      | null;
     /**
      * Select related document(s).
      */
-    anecdotes?: (number | null) | Note;
+    anecdotes?: (number | Note)[] | null;
     visibility?: {
       /**
        * Toggle the Contexts section on or off.
@@ -4741,11 +4777,11 @@ export interface Experience {
   /**
    * Enter text value.
    */
-  name: string;
+  name?: string | null;
   /**
    * Select related document(s).
    */
-  type: number | Category;
+  type?: (number | null) | Category;
   /**
    * Identifying info.
    */
@@ -4768,7 +4804,7 @@ export interface Experience {
   /**
    * Extra data.
    */
-  details: {
+  details?: {
     /**
      * Toggle the Details section on or off.
      */
@@ -4776,7 +4812,7 @@ export interface Experience {
     /**
      * Select related document(s).
      */
-    narrative: number | Narrative;
+    narrative?: (number | null) | Narrative;
     visibility?: {
       /**
        * Toggle the Details section on or off.
@@ -4800,7 +4836,7 @@ export interface Experience {
           /**
            * Select related document(s).
            */
-          skill: number | Skill;
+          skill?: (number | null) | Skill;
           /**
            * Select one or more options.
            */
@@ -4826,7 +4862,7 @@ export interface Experience {
     /**
      * Select related document(s).
      */
-    evidence?: (number | null) | Media;
+    evidence?: (number | Media)[] | null;
     /**
      * Select related document(s).
      */
@@ -4850,34 +4886,37 @@ export interface Experience {
      * Select related document(s).
      */
     entities?:
-      | ({
-          relationTo: 'organizations';
-          value: number | Organization;
-        } | null)
-      | ({
-          relationTo: 'drivers';
-          value: number | Driver;
-        } | null)
-      | ({
-          relationTo: 'members';
-          value: number | Member;
-        } | null)
-      | ({
-          relationTo: 'leaders';
-          value: number | Leader;
-        } | null)
-      | ({
-          relationTo: 'individuals';
-          value: number | Individual;
-        } | null);
+      | (
+          | {
+              relationTo: 'organizations';
+              value: number | Organization;
+            }
+          | {
+              relationTo: 'drivers';
+              value: number | Driver;
+            }
+          | {
+              relationTo: 'members';
+              value: number | Member;
+            }
+          | {
+              relationTo: 'leaders';
+              value: number | Leader;
+            }
+          | {
+              relationTo: 'individuals';
+              value: number | Individual;
+            }
+        )[]
+      | null;
     /**
      * Select related document(s).
      */
-    highlights?: (number | null) | Highlight;
+    highlights?: (number | Highlight)[] | null;
     /**
      * Select related document(s).
      */
-    incidents?: (number | null) | Incident;
+    incidents?: (number | Incident)[] | null;
     /**
      * Select related document(s).
      */
@@ -4931,11 +4970,11 @@ export interface Skill {
   /**
    * Skill name.
    */
-  name: string;
+  name?: string | null;
   /**
    * Skill type.
    */
-  type: number | Category;
+  type?: (number | null) | Category;
   /**
    * Identifying info.
    */
@@ -5011,11 +5050,11 @@ export interface Skill {
     /**
      * Related features.
      */
-    features?: (number | null) | Feature;
+    features?: (number | Feature)[] | null;
     /**
      * Related specs.
      */
-    specifications?: (number | null) | Specification;
+    specifications?: (number | Specification)[] | null;
     /**
      * Skill dependencies.
      */
@@ -5082,15 +5121,15 @@ export interface Skill {
     /**
      * Related classifications.
      */
-    classifications?: (number | null) | Classification;
+    classifications?: (number | Classification)[] | null;
     /**
      * Related trainings.
      */
-    trainings?: (number | null) | Training;
+    trainings?: (number | Training)[] | null;
     /**
      * Related notes.
      */
-    notes?: (number | null) | Note;
+    notes?: (number | Note)[] | null;
     visibility?: {
       /**
        * Toggle the Contexts section on or off.
@@ -5140,11 +5179,11 @@ export interface Training {
   /**
    * Enter text value.
    */
-  name: string;
+  name?: string | null;
   /**
    * Select related document(s).
    */
-  type: number | Category;
+  type?: (number | null) | Category;
   /**
    * Identifying info.
    */
@@ -5167,7 +5206,7 @@ export interface Training {
   /**
    * Extra data.
    */
-  details: {
+  details?: {
     /**
      * Toggle the Details section on or off.
      */
@@ -5175,7 +5214,7 @@ export interface Training {
     /**
      * Select related document(s).
      */
-    narrative: number | Narrative;
+    narrative?: (number | null) | Narrative;
     visibility?: {
       /**
        * Toggle the Details section on or off.
@@ -5198,11 +5237,11 @@ export interface Training {
     /**
      * Select one or more options.
      */
-    format?: ('Individual' | 'Group' | 'Lecture' | 'HandsOn' | 'Simulated' | 'Remote') | null;
+    format?: ('Individual' | 'Group' | 'Lecture' | 'HandsOn' | 'Simulated' | 'Remote' | 'Classroom') | null;
     /**
      * Select related document(s).
      */
-    specifications?: (number | null) | Specification;
+    specifications?: (number | Specification)[] | null;
     visibility?: {
       /**
        * Toggle the Traits section on or off.
@@ -5245,38 +5284,41 @@ export interface Training {
      * Select related document(s).
      */
     entities?:
-      | ({
-          relationTo: 'drivers';
-          value: number | Driver;
-        } | null)
-      | ({
-          relationTo: 'members';
-          value: number | Member;
-        } | null)
-      | ({
-          relationTo: 'leaders';
-          value: number | Leader;
-        } | null)
-      | ({
-          relationTo: 'individuals';
-          value: number | Individual;
-        } | null)
-      | ({
-          relationTo: 'organizations';
-          value: number | Organization;
-        } | null);
+      | (
+          | {
+              relationTo: 'drivers';
+              value: number | Driver;
+            }
+          | {
+              relationTo: 'members';
+              value: number | Member;
+            }
+          | {
+              relationTo: 'leaders';
+              value: number | Leader;
+            }
+          | {
+              relationTo: 'individuals';
+              value: number | Individual;
+            }
+          | {
+              relationTo: 'organizations';
+              value: number | Organization;
+            }
+        )[]
+      | null;
     /**
      * Select related document(s).
      */
-    strategies?: (number | null) | Strategy;
+    strategies?: (number | Strategy)[] | null;
     /**
      * Select related document(s).
      */
-    skills?: (number | null) | Skill;
+    skills?: (number | Skill)[] | null;
     /**
      * Select related document(s).
      */
-    stories?: (number | null) | Story;
+    stories?: (number | Story)[] | null;
     visibility?: {
       /**
        * Toggle the Contexts section on or off.
@@ -5326,7 +5368,7 @@ export interface Member {
   /**
    * Enter text value.
    */
-  first: string;
+  first?: string | null;
   /**
    * Enter text value.
    */
@@ -5334,7 +5376,7 @@ export interface Member {
   /**
    * Enter text value.
    */
-  last: string;
+  last?: string | null;
   /**
    * Enter text value.
    */
@@ -5342,7 +5384,7 @@ export interface Member {
   /**
    * Select related document(s).
    */
-  type: number | Category;
+  type?: (number | null) | Category;
   /**
    * Identifying info.
    */
@@ -5440,7 +5482,7 @@ export interface Member {
     /**
      * Select related document(s).
      */
-    departments?: (number | null) | Classification;
+    departments?: (number | Classification)[] | null;
     visibility?: {
       /**
        * Toggle the Details section on or off.
@@ -5459,23 +5501,23 @@ export interface Member {
     /**
      * Select related document(s).
      */
-    channels?: (number | null) | Channel;
+    channels?: (number | Channel)[] | null;
     /**
      * Select related document(s).
      */
-    personalities?: (number | null) | Feature;
+    personalities?: (number | Feature)[] | null;
     /**
      * Select related document(s).
      */
-    duties?: (number | null) | Duty;
+    duties?: (number | Duty)[] | null;
     /**
      * Select related document(s).
      */
-    skills?: (number | null) | Skill;
+    skills?: (number | Skill)[] | null;
     /**
      * Select related document(s).
      */
-    trainings?: (number | null) | Training;
+    trainings?: (number | Training)[] | null;
     visibility?: {
       /**
        * Toggle the Traits section on or off.
@@ -5494,11 +5536,11 @@ export interface Member {
     /**
      * Select related document(s).
      */
-    impacts?: (number | null) | Impact;
+    impacts?: (number | Impact)[] | null;
     /**
      * Select related document(s).
      */
-    awards?: (number | null) | Award;
+    awards?: (number | Award)[] | null;
     visibility?: {
       /**
        * Toggle the Metrics section on or off.
@@ -5515,21 +5557,21 @@ export interface Member {
      */
     enable?: boolean | null;
     /**
-     * Select related document(s).
+     * Select an uploaded file.
      */
-    thumbnail?: (number | null) | Media;
+    avatar?: (number | null) | Media;
     /**
-     * Select related document(s).
+     * Select an uploaded file.
      */
     cover?: (number | null) | Media;
     /**
      * Select related document(s).
      */
-    gallery?: (number | null) | Gallery;
+    gallery?: (number | Gallery)[] | null;
     /**
      * Select related document(s).
      */
-    certifications?: (number | null) | Archive;
+    certifications?: (number | Archive)[] | null;
     visibility?: {
       /**
        * Toggle the Assets section on or off.
@@ -5549,22 +5591,25 @@ export interface Member {
      * Select related document(s).
      */
     mentors?:
-      | ({
-          relationTo: 'leaders';
-          value: number | Leader;
-        } | null)
-      | ({
-          relationTo: 'members';
-          value: number | Member;
-        } | null);
+      | (
+          | {
+              relationTo: 'leaders';
+              value: number | Leader;
+            }
+          | {
+              relationTo: 'members';
+              value: number | Member;
+            }
+        )[]
+      | null;
     /**
      * Select related document(s).
      */
-    crew?: (number | null) | Driver;
+    crew?: (number | Driver)[] | null;
     /**
      * Select related document(s).
      */
-    cars?: (number | null) | Car;
+    cars?: (number | Car)[] | null;
     visibility?: {
       /**
        * Toggle the Contexts section on or off.
@@ -5614,11 +5659,11 @@ export interface Duty {
   /**
    * Enter text value.
    */
-  name: string;
+  name?: string | null;
   /**
    * Select related document(s).
    */
-  type: number | Category;
+  type?: (number | null) | Category;
   /**
    * Identifying info.
    */
@@ -5653,7 +5698,7 @@ export interface Duty {
       /**
        * Enter text value.
        */
-      tasks: string;
+      tasks?: string | null;
       /**
        * Enter text value.
        */
@@ -5681,15 +5726,15 @@ export interface Duty {
     /**
      * Select related document(s).
      */
-    protocols?: (number | null) | Protocol;
+    protocols?: (number | Protocol)[] | null;
     /**
      * Select related document(s).
      */
-    expectations?: (number | null) | Expectation;
+    expectations?: (number | Expectation)[] | null;
     /**
      * Select related document(s).
      */
-    notes?: (number | null) | Note;
+    notes?: (number | Note)[] | null;
     visibility?: {
       /**
        * Toggle the Contexts section on or off.
@@ -5739,11 +5784,11 @@ export interface Impact {
   /**
    * Enter text value.
    */
-  name: string;
+  name?: string | null;
   /**
    * Select related document(s).
    */
-  type: number | Category;
+  type?: (number | null) | Category;
   /**
    * Identifying info.
    */
@@ -5767,11 +5812,11 @@ export interface Impact {
       /**
        * Select one or more options.
        */
-      scale?: ('Local' | 'Regional' | 'National' | 'Global') | null;
+      scale?: ('Local' | 'Regional' | 'National' | 'Global' | 'Organization' | 'Event') | null;
       /**
        * Select one or more options.
        */
-      depth?: ('Surface' | 'Moderate' | 'Deep' | 'Fundamental') | null;
+      depth?: ('Surface' | 'Moderate' | 'Deep' | 'Fundamental' | 'Profound') | null;
     };
     visibility?: {
       /**
@@ -5799,7 +5844,7 @@ export interface Impact {
     /**
      * Select one or more options.
      */
-    gravity?: ('Catastrophic' | 'Severe' | 'Moderate' | 'Minor' | 'Negligible') | null;
+    gravity?: ('Catastrophic' | 'Severe' | 'Moderate' | 'Minor' | 'Negligible' | 'Major') | null;
     /**
      * Select one or more options.
      */
@@ -5823,38 +5868,41 @@ export interface Impact {
      * Select related document(s).
      */
     entities?:
-      | ({
-          relationTo: 'organizations';
-          value: number | Organization;
-        } | null)
-      | ({
-          relationTo: 'individuals';
-          value: number | Individual;
-        } | null)
-      | ({
-          relationTo: 'drivers';
-          value: number | Driver;
-        } | null)
-      | ({
-          relationTo: 'leaders';
-          value: number | Leader;
-        } | null)
-      | ({
-          relationTo: 'members';
-          value: number | Member;
-        } | null)
-      | ({
-          relationTo: 'cars';
-          value: number | Car;
-        } | null)
-      | ({
-          relationTo: 'kits';
-          value: number | Kit;
-        } | null);
+      | (
+          | {
+              relationTo: 'organizations';
+              value: number | Organization;
+            }
+          | {
+              relationTo: 'individuals';
+              value: number | Individual;
+            }
+          | {
+              relationTo: 'drivers';
+              value: number | Driver;
+            }
+          | {
+              relationTo: 'leaders';
+              value: number | Leader;
+            }
+          | {
+              relationTo: 'members';
+              value: number | Member;
+            }
+          | {
+              relationTo: 'cars';
+              value: number | Car;
+            }
+          | {
+              relationTo: 'kits';
+              value: number | Kit;
+            }
+        )[]
+      | null;
     /**
      * Select related document(s).
      */
-    notes?: (number | null) | Note;
+    notes?: (number | Note)[] | null;
     visibility?: {
       /**
        * Toggle the Contexts section on or off.
@@ -5904,15 +5952,15 @@ export interface Car {
   /**
    * Enter text value.
    */
-  name: string;
+  name?: string | null;
   /**
    * Select related document(s).
    */
-  type: number | Category;
+  type?: (number | null) | Category;
   /**
    * Car identification details.
    */
-  identifiers: {
+  identifiers?: {
     /**
      * Enter text value.
      */
@@ -5920,7 +5968,7 @@ export interface Car {
     /**
      * Enter text value.
      */
-    model: string;
+    model?: string | null;
     /**
      * Enter text value.
      */
@@ -5960,7 +6008,7 @@ export interface Car {
     /**
      * Select related document(s).
      */
-    classifications?: (number | null) | Classification;
+    classifications?: (number | Classification)[] | null;
     visibility?: {
       /**
        * Toggle the Details section on or off.
@@ -5971,7 +6019,7 @@ export interface Car {
   /**
    * Characteristics.
    */
-  traits: {
+  traits?: {
     /**
      * Toggle the Traits section on or off.
      */
@@ -5979,15 +6027,15 @@ export interface Car {
     /**
      * Select one or more options.
      */
-    status: 'Active' | 'Retired' | 'Development' | 'Museum' | 'Prototype' | 'Concept';
+    status?: ('Active' | 'Retired' | 'Development' | 'Museum' | 'Prototype' | 'Concept') | null;
     /**
      * Select related document(s).
      */
-    features?: (number | null) | Feature;
+    features?: (number | Feature)[] | null;
     /**
      * Select related document(s).
      */
-    specifications?: (number | null) | Specification;
+    specifications?: (number | Specification)[] | null;
     visibility?: {
       /**
        * Toggle the Traits section on or off.
@@ -6026,7 +6074,7 @@ export interface Car {
     /**
      * Select related document(s).
      */
-    documents?: (number | null) | Archive;
+    documents?: (number | Archive)[] | null;
     visibility?: {
       /**
        * Toggle the Assets section on or off.
@@ -6045,31 +6093,34 @@ export interface Car {
     /**
      * Select related document(s).
      */
-    manufacturers?: (number | null) | Organization;
+    manufacturers?: (number | Organization)[] | null;
     /**
      * Select related document(s).
      */
-    drivers?: (number | null) | Driver;
+    drivers?: (number | Driver)[] | null;
     /**
      * Select related document(s).
      */
-    crew?: (number | null) | Member;
+    crew?: (number | Member)[] | null;
     /**
      * Select related document(s).
      */
     associations?:
-      | ({
-          relationTo: 'organizations';
-          value: number | Organization;
-        } | null)
-      | ({
-          relationTo: 'individuals';
-          value: number | Individual;
-        } | null)
-      | ({
-          relationTo: 'leaders';
-          value: number | Leader;
-        } | null);
+      | (
+          | {
+              relationTo: 'organizations';
+              value: number | Organization;
+            }
+          | {
+              relationTo: 'individuals';
+              value: number | Individual;
+            }
+          | {
+              relationTo: 'leaders';
+              value: number | Leader;
+            }
+        )[]
+      | null;
     /**
      * Select related document(s).
      */
@@ -6123,11 +6174,11 @@ export interface Visualization {
   /**
    * Enter text value.
    */
-  name: string;
+  name?: string | null;
   /**
    * Select related document(s).
    */
-  type: number | Category;
+  type?: (number | null) | Category;
   /**
    * Extra data.
    */
@@ -6139,7 +6190,7 @@ export interface Visualization {
     /**
      * Select related document(s).
      */
-    designs: number | Media;
+    designs: (number | Media)[];
     /**
      * Select related document(s).
      */
@@ -6193,11 +6244,11 @@ export interface Kit {
   /**
    * Enter text value.
    */
-  name: string;
+  name?: string | null;
   /**
    * Select related document(s).
    */
-  type: number | Category;
+  type?: (number | null) | Category;
   /**
    * Identifying info.
    */
@@ -6379,7 +6430,7 @@ export interface Kit {
     /**
      * Select related document(s).
      */
-    visualizations?: (number | null) | Visualization;
+    visualizations?: (number | Visualization)[] | null;
     visibility?: {
       /**
        * Toggle the Assets section on or off.
@@ -6399,34 +6450,40 @@ export interface Kit {
      * Select related document(s).
      */
     entities?:
-      | ({
-          relationTo: 'drivers';
-          value: number | Driver;
-        } | null)
-      | ({
-          relationTo: 'members';
-          value: number | Member;
-        } | null)
-      | ({
-          relationTo: 'leaders';
-          value: number | Leader;
-        } | null);
+      | (
+          | {
+              relationTo: 'drivers';
+              value: number | Driver;
+            }
+          | {
+              relationTo: 'members';
+              value: number | Member;
+            }
+          | {
+              relationTo: 'leaders';
+              value: number | Leader;
+            }
+        )[]
+      | null;
     /**
      * Select related document(s).
      */
     associations?:
-      | ({
-          relationTo: 'individuals';
-          value: number | Individual;
-        } | null)
-      | ({
-          relationTo: 'organizations';
-          value: number | Organization;
-        } | null);
+      | (
+          | {
+              relationTo: 'individuals';
+              value: number | Individual;
+            }
+          | {
+              relationTo: 'organizations';
+              value: number | Organization;
+            }
+        )[]
+      | null;
     /**
      * Select related document(s).
      */
-    notes?: (number | null) | Note;
+    notes?: (number | Note)[] | null;
     visibility?: {
       /**
        * Toggle the Contexts section on or off.
@@ -6476,11 +6533,11 @@ export interface Award {
   /**
    * Enter text value.
    */
-  name: string;
+  name?: string | null;
   /**
    * Select related document(s).
    */
-  type: number | Category;
+  type?: (number | null) | Category;
   /**
    * Identifying info.
    */
@@ -6503,7 +6560,7 @@ export interface Award {
   /**
    * Extra data.
    */
-  details: {
+  details?: {
     /**
      * Toggle the Details section on or off.
      */
@@ -6511,7 +6568,7 @@ export interface Award {
     /**
      * Select related document(s).
      */
-    narrative: number | Narrative;
+    narrative?: (number | null) | Narrative;
     visibility?: {
       /**
        * Toggle the Details section on or off.
@@ -6545,7 +6602,7 @@ export interface Award {
   /**
    * Contextual information.
    */
-  contexts: {
+  contexts?: {
     /**
      * Toggle the Contexts section on or off.
      */
@@ -6553,19 +6610,19 @@ export interface Award {
     /**
      * Select related document(s).
      */
-    entities:
-      | {
+    entities?:
+      | ({
           relationTo: 'leaders';
           value: number | Leader;
-        }
-      | {
+        } | null)
+      | ({
           relationTo: 'organizations';
           value: number | Organization;
-        }
-      | {
+        } | null)
+      | ({
           relationTo: 'individuals';
           value: number | Individual;
-        };
+        } | null);
     /**
      * Select related document(s).
      */
@@ -6619,11 +6676,11 @@ export interface Strategy {
   /**
    * Enter text value.
    */
-  name: string;
+  name?: string | null;
   /**
    * Select related document(s).
    */
-  type: number | Category;
+  type?: (number | null) | Category;
   /**
    * Identifying info.
    */
@@ -6658,11 +6715,11 @@ export interface Strategy {
     /**
      * Select related document(s).
      */
-    decisions?: (number | null) | Decision;
+    decisions?: (number | Decision)[] | null;
     /**
      * Select related document(s).
      */
-    impacts?: (number | null) | Impact;
+    impacts?: (number | Impact)[] | null;
     visibility?: {
       /**
        * Toggle the Details section on or off.
@@ -6749,26 +6806,29 @@ export interface Strategy {
      * Select related document(s).
      */
     entities?:
-      | ({
-          relationTo: 'drivers';
-          value: number | Driver;
-        } | null)
-      | ({
-          relationTo: 'members';
-          value: number | Member;
-        } | null)
-      | ({
-          relationTo: 'leaders';
-          value: number | Leader;
-        } | null)
-      | ({
-          relationTo: 'organizations';
-          value: number | Organization;
-        } | null)
-      | ({
-          relationTo: 'kits';
-          value: number | Kit;
-        } | null);
+      | (
+          | {
+              relationTo: 'drivers';
+              value: number | Driver;
+            }
+          | {
+              relationTo: 'members';
+              value: number | Member;
+            }
+          | {
+              relationTo: 'leaders';
+              value: number | Leader;
+            }
+          | {
+              relationTo: 'organizations';
+              value: number | Organization;
+            }
+          | {
+              relationTo: 'kits';
+              value: number | Kit;
+            }
+        )[]
+      | null;
     visibility?: {
       /**
        * Toggle the Contexts section on or off.
@@ -6818,11 +6878,11 @@ export interface Incident {
   /**
    * Enter text value.
    */
-  name: string;
+  name?: string | null;
   /**
    * Select related document(s).
    */
-  type: number | Category;
+  type?: (number | null) | Category;
   /**
    * Identifying info.
    */
@@ -6853,11 +6913,11 @@ export interface Incident {
     /**
      * Select related document(s).
      */
-    decisions?: (number | null) | Decision;
+    decisions?: (number | Decision)[] | null;
     /**
      * Select related document(s).
      */
-    specifications?: (number | null) | Specification;
+    specifications?: (number | Specification)[] | null;
     visibility?: {
       /**
        * Toggle the Details section on or off.
@@ -6876,7 +6936,7 @@ export interface Incident {
     /**
      * Select related document(s).
      */
-    impacts?: (number | null) | Impact;
+    impacts?: (number | Impact)[] | null;
     visibility?: {
       /**
        * Toggle the Traits section on or off.
@@ -6910,7 +6970,7 @@ export interface Incident {
   /**
    * Contextual information.
    */
-  contexts: {
+  contexts?: {
     /**
      * Toggle the Contexts section on or off.
      */
@@ -6918,31 +6978,34 @@ export interface Incident {
     /**
      * Select related document(s).
      */
-    narrative: number | Narrative;
+    narrative?: (number | null) | Narrative;
     /**
      * Select related document(s).
      */
     entities?:
-      | ({
-          relationTo: 'drivers';
-          value: number | Driver;
-        } | null)
-      | ({
-          relationTo: 'members';
-          value: number | Member;
-        } | null)
-      | ({
-          relationTo: 'leaders';
-          value: number | Leader;
-        } | null)
-      | ({
-          relationTo: 'organizations';
-          value: number | Organization;
-        } | null)
-      | ({
-          relationTo: 'kits';
-          value: number | Kit;
-        } | null);
+      | (
+          | {
+              relationTo: 'drivers';
+              value: number | Driver;
+            }
+          | {
+              relationTo: 'members';
+              value: number | Member;
+            }
+          | {
+              relationTo: 'leaders';
+              value: number | Leader;
+            }
+          | {
+              relationTo: 'organizations';
+              value: number | Organization;
+            }
+          | {
+              relationTo: 'kits';
+              value: number | Kit;
+            }
+        )[]
+      | null;
     visibility?: {
       /**
        * Toggle the Contexts section on or off.
@@ -6992,15 +7055,15 @@ export interface Result {
   /**
    * The result name.
    */
-  name: string;
+  name?: string | null;
   /**
    * The type of result.
    */
-  type: number | Category;
+  type?: (number | null) | Category;
   /**
    * Identifying info.
    */
-  basics: {
+  basics?: {
     /**
      * Toggle the Basics section on or off.
      */
@@ -7012,7 +7075,7 @@ export interface Result {
     /**
      * Result status.
      */
-    status: 'Official' | 'Provisional' | 'Corrected' | 'Historic' | 'Estimated' | 'Certified' | 'Void';
+    status?: ('Official' | 'Provisional' | 'Corrected' | 'Historic' | 'Estimated' | 'Certified' | 'Void') | null;
     visibility?: {
       /**
        * Toggle the Basics section on or off.
@@ -7039,11 +7102,11 @@ export interface Result {
     /**
      * Select related document(s).
      */
-    highlights?: (number | null) | Highlight;
+    highlights?: (number | Highlight)[] | null;
     /**
      * Select related document(s).
      */
-    incidents?: (number | null) | Incident;
+    incidents?: (number | Incident)[] | null;
     visibility?: {
       /**
        * Toggle the Details section on or off.
@@ -7054,7 +7117,7 @@ export interface Result {
   /**
    * Characteristics.
    */
-  traits: {
+  traits?: {
     /**
      * Toggle the Traits section on or off.
      */
@@ -7062,11 +7125,11 @@ export interface Result {
     /**
      * Final positions.
      */
-    position: {
+    position?: {
       /**
        * Enter numeric value.
        */
-      overall: number;
+      overall?: number | null;
       /**
        * Enter numeric value.
        */
@@ -7178,7 +7241,7 @@ export interface Result {
   /**
    * Contextual information.
    */
-  contexts: {
+  contexts?: {
     /**
      * Toggle the Contexts section on or off.
      */
@@ -7186,11 +7249,11 @@ export interface Result {
     /**
      * Select related document(s).
      */
-    entry: number | Entry;
+    entry?: (number | null) | Entry;
     /**
      * Select related document(s).
      */
-    notes?: (number | null) | Note;
+    notes?: (number | Note)[] | null;
     visibility?: {
       /**
        * Toggle the Contexts section on or off.
@@ -7240,15 +7303,15 @@ export interface Entry {
   /**
    * The entry name.
    */
-  name: string;
+  name?: string | null;
   /**
    * The type of entry.
    */
-  type: number | Category;
+  type?: (number | null) | Category;
   /**
    * Identifying info.
    */
-  basics: {
+  basics?: {
     /**
      * Toggle the Basics section on or off.
      */
@@ -7264,7 +7327,7 @@ export interface Entry {
       /**
        * Enter text value.
        */
-      number: string;
+      number?: string | null;
       /**
        * Enter text value.
        */
@@ -7273,17 +7336,20 @@ export interface Entry {
     /**
      * Entry status.
      */
-    status:
-      | 'Entered'
-      | 'Confirmed'
-      | 'Withdrawn'
-      | 'Disqualified'
-      | 'DidNotStart'
-      | 'DidNotFinish'
-      | 'Classified'
-      | 'NotClassified'
-      | 'Provisional'
-      | 'Excluded';
+    status?:
+      | (
+          | 'Entered'
+          | 'Confirmed'
+          | 'Withdrawn'
+          | 'Disqualified'
+          | 'DidNotStart'
+          | 'DidNotFinish'
+          | 'Classified'
+          | 'NotClassified'
+          | 'Provisional'
+          | 'Excluded'
+        )
+      | null;
     visibility?: {
       /**
        * Toggle the Basics section on or off.
@@ -7306,19 +7372,19 @@ export interface Entry {
     /**
      * Associated session.
      */
-    session: number | Session;
+    session?: (number | null) | Session;
     /**
      * Assigned drivers.
      */
-    drivers: number | Driver;
+    drivers: (number | Driver)[];
     /**
      * Assigned crew.
      */
-    crew?: (number | null) | Member;
+    crew?: (number | Member)[] | null;
     /**
      * Assigned car.
      */
-    car: number | Car;
+    car?: (number | null) | Car;
     /**
      * Classification.
      */
@@ -7362,11 +7428,11 @@ export interface Entry {
     /**
      * Select related document(s).
      */
-    preferences?: (number | null) | Preference;
+    preferences?: (number | Preference)[] | null;
     /**
      * Select related document(s).
      */
-    specifications?: (number | null) | Specification;
+    specifications?: (number | Specification)[] | null;
     visibility?: {
       /**
        * Toggle the Traits section on or off.
@@ -7472,7 +7538,7 @@ export interface Entry {
     /**
      * Select related document(s).
      */
-    notes?: (number | null) | Note;
+    notes?: (number | Note)[] | null;
     visibility?: {
       /**
        * Toggle the Contexts section on or off.
@@ -7522,7 +7588,7 @@ export interface Session {
   /**
    * The session name.
    */
-  name: string;
+  name?: string | null;
   /**
    * Enter text value.
    */
@@ -7534,11 +7600,11 @@ export interface Session {
   /**
    * The type of session.
    */
-  type: number | Category;
+  type?: (number | null) | Category;
   /**
    * Identifying info.
    */
-  basics: {
+  basics?: {
     /**
      * Toggle the Basics section on or off.
      */
@@ -7550,11 +7616,11 @@ export interface Session {
     /**
      * Session status.
      */
-    status: 'Scheduled' | 'Confirmed' | 'Completed' | 'Cancelled' | 'Postponed' | 'Abandoned' | 'Provisional';
+    status?: ('Scheduled' | 'Confirmed' | 'Completed' | 'Cancelled' | 'Postponed' | 'Abandoned' | 'Provisional') | null;
     /**
      * Session access.
      */
-    access: 'Public' | 'Private' | 'InviteOnly' | 'MemberOnly' | 'VIP';
+    access?: ('Public' | 'Private' | 'InviteOnly' | 'MemberOnly' | 'VIP') | null;
     visibility?: {
       /**
        * Toggle the Basics section on or off.
@@ -7565,7 +7631,7 @@ export interface Session {
   /**
    * Extra data.
    */
-  details: {
+  details?: {
     /**
      * Toggle the Details section on or off.
      */
@@ -7577,7 +7643,7 @@ export interface Session {
     /**
      * Associated event.
      */
-    event: number | Event;
+    event?: (number | null) | Event;
     /**
      * Session format.
      */
@@ -7602,19 +7668,19 @@ export interface Session {
     /**
      * Select related document(s).
      */
-    classifications?: (number | null) | Classification;
+    classifications?: (number | Classification)[] | null;
     /**
      * Select related document(s).
      */
-    features?: (number | null) | Feature;
+    features?: (number | Feature)[] | null;
     /**
      * Select related document(s).
      */
-    protocols?: (number | null) | Protocol;
+    protocols?: (number | Protocol)[] | null;
     /**
      * Select related document(s).
      */
-    strategies?: (number | null) | Strategy;
+    strategies?: (number | Strategy)[] | null;
     visibility?: {
       /**
        * Toggle the Details section on or off.
@@ -7673,7 +7739,7 @@ export interface Session {
     /**
      * Select related document(s).
      */
-    specifications?: (number | null) | Specification;
+    specifications?: (number | Specification)[] | null;
     visibility?: {
       /**
        * Toggle the Traits section on or off.
@@ -7747,47 +7813,53 @@ export interface Session {
     /**
      * Select related document(s).
      */
-    highlights?: (number | null) | Highlight;
+    highlights?: (number | Highlight)[] | null;
     /**
      * Select related document(s).
      */
-    incidents?: (number | null) | Incident;
+    incidents?: (number | Incident)[] | null;
     /**
      * Select related document(s).
      */
     authorities?:
-      | ({
-          relationTo: 'organizations';
-          value: number | Organization;
-        } | null)
-      | ({
-          relationTo: 'individuals';
-          value: number | Individual;
-        } | null);
+      | (
+          | {
+              relationTo: 'organizations';
+              value: number | Organization;
+            }
+          | {
+              relationTo: 'individuals';
+              value: number | Individual;
+            }
+        )[]
+      | null;
     /**
      * Select related document(s).
      */
-    participants?: (number | null) | Driver;
+    participants?: (number | Driver)[] | null;
     /**
      * Select related document(s).
      */
-    crews?: (number | null) | Member;
+    crews?: (number | Member)[] | null;
     /**
      * Select related document(s).
      */
     entities?:
-      | ({
-          relationTo: 'organizations';
-          value: number | Organization;
-        } | null)
-      | ({
-          relationTo: 'individuals';
-          value: number | Individual;
-        } | null);
+      | (
+          | {
+              relationTo: 'organizations';
+              value: number | Organization;
+            }
+          | {
+              relationTo: 'individuals';
+              value: number | Individual;
+            }
+        )[]
+      | null;
     /**
      * Select related document(s).
      */
-    insights?: (number | null) | Note;
+    insights?: (number | Note)[] | null;
     visibility?: {
       /**
        * Toggle the Contexts section on or off.
@@ -7837,15 +7909,15 @@ export interface Event {
   /**
    * The event name.
    */
-  name: string;
+  name?: string | null;
   /**
    * The type of event.
    */
-  type: number | Category;
+  type?: (number | null) | Category;
   /**
    * Identifying info.
    */
-  basics: {
+  basics?: {
     /**
      * Toggle the Basics section on or off.
      */
@@ -7870,11 +7942,11 @@ export interface Event {
     /**
      * Event status.
      */
-    status: 'Scheduled' | 'Confirmed' | 'Completed' | 'Cancelled' | 'Postponed' | 'Abandoned' | 'Provisional';
+    status?: ('Scheduled' | 'Confirmed' | 'Completed' | 'Cancelled' | 'Postponed' | 'Abandoned' | 'Provisional') | null;
     /**
      * Event access.
      */
-    access: 'Public' | 'Private' | 'InviteOnly' | 'MemberOnly' | 'VIP';
+    access?: ('Public' | 'Private' | 'InviteOnly' | 'MemberOnly' | 'VIP') | null;
     visibility?: {
       /**
        * Toggle the Basics section on or off.
@@ -7885,7 +7957,7 @@ export interface Event {
   /**
    * Extra data.
    */
-  details: {
+  details?: {
     /**
      * Toggle the Details section on or off.
      */
@@ -7901,23 +7973,23 @@ export interface Event {
     /**
      * Associated season.
      */
-    season: number | Season;
+    season?: (number | null) | Season;
     /**
      * Event location.
      */
-    location: number | Location;
+    location?: (number | null) | Location;
     /**
      * Select related document(s).
      */
-    classification?: (number | null) | Classification;
+    classification?: (number | Classification)[] | null;
     /**
      * Select related document(s).
      */
-    features?: (number | null) | Feature;
+    features?: (number | Feature)[] | null;
     /**
      * Select related document(s).
      */
-    regulations?: (number | null) | Protocol;
+    regulations?: (number | Protocol)[] | null;
     visibility?: {
       /**
        * Toggle the Details section on or off.
@@ -7928,7 +8000,7 @@ export interface Event {
   /**
    * Characteristics.
    */
-  traits: {
+  traits?: {
     /**
      * Toggle the Traits section on or off.
      */
@@ -7936,24 +8008,24 @@ export interface Event {
     /**
      * Event timing.
      */
-    chronology: {
+    chronology?: {
       /**
        * Select a date and/or time.
        */
-      start: string;
+      start?: string | null;
       /**
        * Select a date and/or time.
        */
-      end: string;
+      end?: string | null;
       /**
        * Enter text value.
        */
-      timezone: string;
+      timezone?: string | null;
     };
     /**
      * Select related document(s).
      */
-    format: number | Category;
+    format?: (number | null) | Category;
     visibility?: {
       /**
        * Toggle the Traits section on or off.
@@ -7972,7 +8044,7 @@ export interface Event {
     /**
      * Select related document(s).
      */
-    specifications?: (number | null) | Specification;
+    specifications?: (number | Specification)[] | null;
     visibility?: {
       /**
        * Toggle the Metrics section on or off.
@@ -8007,7 +8079,7 @@ export interface Event {
     /**
      * Select related document(s).
      */
-    archive?: (number | null) | Archive;
+    archive?: (number | Archive)[] | null;
     visibility?: {
       /**
        * Toggle the Assets section on or off.
@@ -8026,11 +8098,11 @@ export interface Event {
     /**
      * Select related document(s).
      */
-    highlights?: (number | null) | Highlight;
+    highlights?: (number | Highlight)[] | null;
     /**
      * Select related document(s).
      */
-    insights?: (number | null) | Note;
+    insights?: (number | Note)[] | null;
     visibility?: {
       /**
        * Toggle the Contexts section on or off.
@@ -8080,15 +8152,15 @@ export interface Season {
   /**
    * The season name.
    */
-  name: string;
+  name?: string | null;
   /**
    * Associated series.
    */
-  series: number | Series;
+  series?: (number | null) | Series;
   /**
    * The type of season.
    */
-  type: number | Category;
+  type?: (number | null) | Category;
   /**
    * Identifying info.
    */
@@ -8124,7 +8196,7 @@ export interface Season {
   /**
    * Extra data.
    */
-  details: {
+  details?: {
     /**
      * Toggle the Details section on or off.
      */
@@ -8140,15 +8212,15 @@ export interface Season {
     /**
      * Season schedule.
      */
-    schedule: number | Schedule;
+    schedule?: (number | null) | Schedule;
     /**
      * Select related document(s).
      */
-    classifications?: (number | null) | Classification;
+    classifications?: (number | Classification)[] | null;
     /**
      * Select related document(s).
      */
-    regulations?: (number | null) | Protocol;
+    regulations?: (number | Protocol)[] | null;
     visibility?: {
       /**
        * Toggle the Details section on or off.
@@ -8211,7 +8283,7 @@ export interface Season {
     /**
      * Select related document(s).
      */
-    archive?: (number | null) | Archive;
+    archive?: (number | Archive)[] | null;
     visibility?: {
       /**
        * Toggle the Assets section on or off.
@@ -8231,26 +8303,29 @@ export interface Season {
      * Select related document(s).
      */
     authorities?:
-      | ({
-          relationTo: 'organizations';
-          value: number | Organization;
-        } | null)
-      | ({
-          relationTo: 'individuals';
-          value: number | Individual;
-        } | null);
+      | (
+          | {
+              relationTo: 'organizations';
+              value: number | Organization;
+            }
+          | {
+              relationTo: 'individuals';
+              value: number | Individual;
+            }
+        )[]
+      | null;
     /**
      * Select related document(s).
      */
-    teams?: (number | null) | Organization;
+    teams?: (number | Organization)[] | null;
     /**
      * Select related document(s).
      */
-    participants?: (number | null) | Driver;
+    participants?: (number | Driver)[] | null;
     /**
      * Select related document(s).
      */
-    notes?: (number | null) | Note;
+    notes?: (number | Note)[] | null;
     visibility?: {
       /**
        * Toggle the Contexts section on or off.
@@ -8300,11 +8375,11 @@ export interface Schedule {
   /**
    * Enter text value.
    */
-  name: string;
+  name?: string | null;
   /**
    * Select related document(s).
    */
-  type: number | Category;
+  type?: (number | null) | Category;
   /**
    * Identifying info.
    */
@@ -8356,7 +8431,7 @@ export interface Schedule {
       /**
        * Select a date and/or time.
        */
-      date: string;
+      date?: string | null;
       /**
        * Select one or more options.
        */
@@ -8370,15 +8445,15 @@ export interface Schedule {
           /**
            * Enter text value.
            */
-          activity: string;
+          activity?: string | null;
           /**
            * Select a date and/or time.
            */
-          start: string;
+          start?: string | null;
           /**
            * Select a date and/or time.
            */
-          end: string;
+          end?: string | null;
           /**
            * Enter text value.
            */
@@ -8444,46 +8519,52 @@ export interface Schedule {
      * Select related document(s).
      */
     occurrences?:
-      | ({
-          relationTo: 'trainings';
-          value: number | Training;
-        } | null)
-      | ({
-          relationTo: 'meetups';
-          value: number | Meetup;
-        } | null)
-      | ({
-          relationTo: 'initiatives';
-          value: number | Initiative;
-        } | null)
-      | ({
-          relationTo: 'celebrations';
-          value: number | Celebration;
-        } | null);
+      | (
+          | {
+              relationTo: 'trainings';
+              value: number | Training;
+            }
+          | {
+              relationTo: 'meetups';
+              value: number | Meetup;
+            }
+          | {
+              relationTo: 'initiatives';
+              value: number | Initiative;
+            }
+          | {
+              relationTo: 'celebrations';
+              value: number | Celebration;
+            }
+        )[]
+      | null;
     /**
      * Select related document(s).
      */
     entities?:
-      | ({
-          relationTo: 'leaders';
-          value: number | Leader;
-        } | null)
-      | ({
-          relationTo: 'drivers';
-          value: number | Driver;
-        } | null)
-      | ({
-          relationTo: 'members';
-          value: number | Member;
-        } | null)
-      | ({
-          relationTo: 'individuals';
-          value: number | Individual;
-        } | null)
-      | ({
-          relationTo: 'organizations';
-          value: number | Organization;
-        } | null);
+      | (
+          | {
+              relationTo: 'leaders';
+              value: number | Leader;
+            }
+          | {
+              relationTo: 'drivers';
+              value: number | Driver;
+            }
+          | {
+              relationTo: 'members';
+              value: number | Member;
+            }
+          | {
+              relationTo: 'individuals';
+              value: number | Individual;
+            }
+          | {
+              relationTo: 'organizations';
+              value: number | Organization;
+            }
+        )[]
+      | null;
     visibility?: {
       /**
        * Toggle the Contexts section on or off.
@@ -8533,15 +8614,15 @@ export interface Meetup {
   /**
    * Enter text value.
    */
-  name: string;
+  name?: string | null;
   /**
    * Select related document(s).
    */
-  type: number | Category;
+  type?: (number | null) | Category;
   /**
    * Identifying info.
    */
-  basics: {
+  basics?: {
     /**
      * Toggle the Basics section on or off.
      */
@@ -8553,7 +8634,7 @@ export interface Meetup {
     /**
      * Select a date and/or time.
      */
-    date: string;
+    date?: string | null;
     /**
      * Select related document(s).
      */
@@ -8568,7 +8649,7 @@ export interface Meetup {
   /**
    * Extra data.
    */
-  details: {
+  details?: {
     /**
      * Toggle the Details section on or off.
      */
@@ -8576,11 +8657,11 @@ export interface Meetup {
     /**
      * Select related document(s).
      */
-    narrative: number | Narrative;
+    narrative?: (number | null) | Narrative;
     /**
      * Select related document(s).
      */
-    features?: (number | null) | Feature;
+    features?: (number | Feature)[] | null;
     visibility?: {
       /**
        * Toggle the Details section on or off.
@@ -8591,7 +8672,7 @@ export interface Meetup {
   /**
    * Characteristics.
    */
-  traits: {
+  traits?: {
     /**
      * Toggle the Traits section on or off.
      */
@@ -8599,15 +8680,15 @@ export interface Meetup {
     /**
      * Select related document(s).
      */
-    specifications?: (number | null) | Specification;
+    specifications?: (number | Specification)[] | null;
     /**
      * Select one or more options.
      */
-    format: 'InPerson' | 'Virtual' | 'Hybrid';
+    format?: ('InPerson' | 'Virtual' | 'Hybrid') | null;
     /**
      * Select one or more options.
      */
-    access: 'Public' | 'InviteOnly' | 'Private' | 'Exclusive';
+    access?: ('Public' | 'InviteOnly' | 'Private' | 'Exclusive') | null;
     visibility?: {
       /**
        * Toggle the Traits section on or off.
@@ -8638,7 +8719,7 @@ export interface Meetup {
     /**
      * Select related document(s).
      */
-    materials?: (number | null) | Archive;
+    materials?: (number | Archive)[] | null;
     visibility?: {
       /**
        * Toggle the Assets section on or off.
@@ -8658,62 +8739,71 @@ export interface Meetup {
      * Select related document(s).
      */
     hosts?:
-      | ({
-          relationTo: 'organizations';
-          value: number | Organization;
-        } | null)
-      | ({
-          relationTo: 'leaders';
-          value: number | Leader;
-        } | null)
-      | ({
-          relationTo: 'individuals';
-          value: number | Individual;
-        } | null);
+      | (
+          | {
+              relationTo: 'organizations';
+              value: number | Organization;
+            }
+          | {
+              relationTo: 'leaders';
+              value: number | Leader;
+            }
+          | {
+              relationTo: 'individuals';
+              value: number | Individual;
+            }
+        )[]
+      | null;
     /**
      * Select related document(s).
      */
     attendees?:
-      | ({
-          relationTo: 'drivers';
-          value: number | Driver;
-        } | null)
-      | ({
-          relationTo: 'members';
-          value: number | Member;
-        } | null)
-      | ({
-          relationTo: 'leaders';
-          value: number | Leader;
-        } | null)
-      | ({
-          relationTo: 'individuals';
-          value: number | Individual;
-        } | null)
-      | ({
-          relationTo: 'organizations';
-          value: number | Organization;
-        } | null);
+      | (
+          | {
+              relationTo: 'drivers';
+              value: number | Driver;
+            }
+          | {
+              relationTo: 'members';
+              value: number | Member;
+            }
+          | {
+              relationTo: 'leaders';
+              value: number | Leader;
+            }
+          | {
+              relationTo: 'individuals';
+              value: number | Individual;
+            }
+          | {
+              relationTo: 'organizations';
+              value: number | Organization;
+            }
+        )[]
+      | null;
     /**
      * Select related document(s).
      */
-    schedules?: (number | null) | Schedule;
+    schedules?: (number | Schedule)[] | null;
     /**
      * Select related document(s).
      */
     references?:
-      | ({
-          relationTo: 'initiatives';
-          value: number | Initiative;
-        } | null)
-      | ({
-          relationTo: 'celebrations';
-          value: number | Celebration;
-        } | null);
+      | (
+          | {
+              relationTo: 'initiatives';
+              value: number | Initiative;
+            }
+          | {
+              relationTo: 'celebrations';
+              value: number | Celebration;
+            }
+        )[]
+      | null;
     /**
      * Select related document(s).
      */
-    notes?: (number | null) | Note;
+    notes?: (number | Note)[] | null;
     visibility?: {
       /**
        * Toggle the Contexts section on or off.
@@ -8763,15 +8853,15 @@ export interface Initiative {
   /**
    * Enter text value.
    */
-  name: string;
+  name?: string | null;
   /**
    * Select related document(s).
    */
-  type: number | Category;
+  type?: (number | null) | Category;
   /**
    * Identifying info.
    */
-  basics: {
+  basics?: {
     /**
      * Toggle the Basics section on or off.
      */
@@ -8783,7 +8873,7 @@ export interface Initiative {
     /**
      * Enter text value.
      */
-    mission: string;
+    mission?: string | null;
     visibility?: {
       /**
        * Toggle the Basics section on or off.
@@ -8794,7 +8884,7 @@ export interface Initiative {
   /**
    * Extra data.
    */
-  details: {
+  details?: {
     /**
      * Toggle the Details section on or off.
      */
@@ -8802,19 +8892,19 @@ export interface Initiative {
     /**
      * Select related document(s).
      */
-    narrative: number | Narrative;
+    narrative?: (number | null) | Narrative;
     /**
      * Select related document(s).
      */
-    strategies?: (number | null) | Strategy;
+    strategies?: (number | Strategy)[] | null;
     /**
      * Select related document(s).
      */
-    expectations?: (number | null) | Expectation;
+    expectations?: (number | Expectation)[] | null;
     /**
      * Select related document(s).
      */
-    insights?: (number | null) | Note;
+    insights?: (number | Note)[] | null;
     visibility?: {
       /**
        * Toggle the Details section on or off.
@@ -8825,7 +8915,7 @@ export interface Initiative {
   /**
    * Characteristics.
    */
-  traits: {
+  traits?: {
     /**
      * Toggle the Traits section on or off.
      */
@@ -8833,7 +8923,7 @@ export interface Initiative {
     /**
      * Select one or more options.
      */
-    status: 'Proposed' | 'Active' | 'Paused' | 'Completed' | 'Archived';
+    status?: ('Proposed' | 'Active' | 'Paused' | 'Completed' | 'Archived') | null;
     visibility?: {
       /**
        * Toggle the Traits section on or off.
@@ -8860,7 +8950,7 @@ export interface Initiative {
     /**
      * Select related document(s).
      */
-    document?: (number | null) | Archive;
+    document?: (number | Archive)[] | null;
     visibility?: {
       /**
        * Toggle the Assets section on or off.
@@ -8884,38 +8974,44 @@ export interface Initiative {
      * Select related document(s).
      */
     entities?:
-      | ({
-          relationTo: 'organizations';
-          value: number | Organization;
-        } | null)
-      | ({
-          relationTo: 'leaders';
-          value: number | Leader;
-        } | null)
-      | ({
-          relationTo: 'individuals';
-          value: number | Individual;
-        } | null);
+      | (
+          | {
+              relationTo: 'organizations';
+              value: number | Organization;
+            }
+          | {
+              relationTo: 'leaders';
+              value: number | Leader;
+            }
+          | {
+              relationTo: 'individuals';
+              value: number | Individual;
+            }
+        )[]
+      | null;
     /**
      * Select related document(s).
      */
-    schedules?: (number | null) | Schedule;
+    schedules?: (number | Schedule)[] | null;
     /**
      * Select related document(s).
      */
     references?:
-      | ({
-          relationTo: 'incidents';
-          value: number | Incident;
-        } | null)
-      | ({
-          relationTo: 'celebrations';
-          value: number | Celebration;
-        } | null);
+      | (
+          | {
+              relationTo: 'incidents';
+              value: number | Incident;
+            }
+          | {
+              relationTo: 'celebrations';
+              value: number | Celebration;
+            }
+        )[]
+      | null;
     /**
      * Select related document(s).
      */
-    histories?: (number | null) | History;
+    histories?: (number | History)[] | null;
     visibility?: {
       /**
        * Toggle the Contexts section on or off.
@@ -8965,11 +9061,11 @@ export interface Celebration {
   /**
    * Enter text value.
    */
-  name: string;
+  name?: string | null;
   /**
    * Select related document(s).
    */
-  type: number | Category;
+  type?: (number | null) | Category;
   /**
    * Identifying info.
    */
@@ -8992,7 +9088,7 @@ export interface Celebration {
   /**
    * Extra data.
    */
-  details: {
+  details?: {
     /**
      * Toggle the Details section on or off.
      */
@@ -9000,15 +9096,15 @@ export interface Celebration {
     /**
      * Select related document(s).
      */
-    narrative: number | Narrative;
+    narrative?: (number | null) | Narrative;
     /**
      * Select related document(s).
      */
-    expectations?: (number | null) | Expectation;
+    expectations?: (number | Expectation)[] | null;
     /**
      * Select related document(s).
      */
-    stories?: (number | null) | Story;
+    stories?: (number | Story)[] | null;
     visibility?: {
       /**
        * Toggle the Details section on or off.
@@ -9078,30 +9174,33 @@ export interface Celebration {
      * Select related document(s).
      */
     beneficiaries?:
-      | ({
-          relationTo: 'drivers';
-          value: number | Driver;
-        } | null)
-      | ({
-          relationTo: 'members';
-          value: number | Member;
-        } | null)
-      | ({
-          relationTo: 'leaders';
-          value: number | Leader;
-        } | null)
-      | ({
-          relationTo: 'organizations';
-          value: number | Organization;
-        } | null)
-      | ({
-          relationTo: 'individuals';
-          value: number | Individual;
-        } | null);
+      | (
+          | {
+              relationTo: 'drivers';
+              value: number | Driver;
+            }
+          | {
+              relationTo: 'members';
+              value: number | Member;
+            }
+          | {
+              relationTo: 'leaders';
+              value: number | Leader;
+            }
+          | {
+              relationTo: 'organizations';
+              value: number | Organization;
+            }
+          | {
+              relationTo: 'individuals';
+              value: number | Individual;
+            }
+        )[]
+      | null;
     /**
      * Select related document(s).
      */
-    notes?: (number | null) | Note;
+    notes?: (number | Note)[] | null;
     visibility?: {
       /**
        * Toggle the Contexts section on or off.
@@ -9151,15 +9250,15 @@ export interface Point {
   /**
    * The points name.
    */
-  name: string;
+  name?: string | null;
   /**
    * The type of points.
    */
-  type: number | Category;
+  type?: (number | null) | Category;
   /**
    * Identifying info.
    */
-  basics: {
+  basics?: {
     /**
      * Toggle the Basics section on or off.
      */
@@ -9171,7 +9270,7 @@ export interface Point {
     /**
      * Points value.
      */
-    value: number;
+    value?: number | null;
     /**
      * Points scale.
      */
@@ -9186,7 +9285,7 @@ export interface Point {
   /**
    * Extra data.
    */
-  details: {
+  details?: {
     /**
      * Toggle the Details section on or off.
      */
@@ -9194,7 +9293,7 @@ export interface Point {
     /**
      * Associated result.
      */
-    result: number | Result;
+    result?: (number | null) | Result;
     /**
      * Select related document(s).
      */
@@ -9273,19 +9372,19 @@ export interface Point {
     /**
      * Select related document(s).
      */
-    authorities?: (number | null) | Organization;
+    authorities?: (number | Organization)[] | null;
     /**
      * Select related document(s).
      */
-    entries?: (number | null) | Entry;
+    entries?: (number | Entry)[] | null;
     /**
      * Select related document(s).
      */
-    drivers?: (number | null) | Driver;
+    drivers?: (number | Driver)[] | null;
     /**
      * Select related document(s).
      */
-    insights?: (number | null) | Note;
+    insights?: (number | Note)[] | null;
     visibility?: {
       /**
        * Toggle the Contexts section on or off.
@@ -9882,11 +9981,11 @@ export interface Career {
   /**
    * Enter text value.
    */
-  name: string;
+  name?: string | null;
   /**
    * Select related document(s).
    */
-  type: number | Category;
+  type?: (number | null) | Category;
   /**
    * Identifying info.
    */
@@ -9909,7 +10008,7 @@ export interface Career {
   /**
    * Extra data.
    */
-  details: {
+  details?: {
     /**
      * Toggle the Details section on or off.
      */
@@ -9917,19 +10016,19 @@ export interface Career {
     /**
      * Select related document(s).
      */
-    narrative: number | Narrative;
+    narrative?: (number | null) | Narrative;
     /**
      * Select related document(s).
      */
-    organization: number | Organization;
+    organization?: (number | null) | Organization;
     /**
      * Select related document(s).
      */
-    expectations?: (number | null) | Expectation;
+    expectations?: (number | Expectation)[] | null;
     /**
      * Select related document(s).
      */
-    awards?: (number | null) | Award;
+    awards?: (number | Award)[] | null;
     visibility?: {
       /**
        * Toggle the Details section on or off.
@@ -9953,11 +10052,11 @@ export interface Career {
           /**
            * Enter text value.
            */
-          title: string;
+          title?: string | null;
           /**
            * Select a date and/or time.
            */
-          start: string;
+          start?: string | null;
           /**
            * Select a date and/or time.
            */
@@ -9988,34 +10087,37 @@ export interface Career {
      * Select related document(s).
      */
     entities?:
-      | ({
-          relationTo: 'leaders';
-          value: number | Leader;
-        } | null)
-      | ({
-          relationTo: 'drivers';
-          value: number | Driver;
-        } | null)
-      | ({
-          relationTo: 'members';
-          value: number | Member;
-        } | null)
-      | ({
-          relationTo: 'individuals';
-          value: number | Individual;
-        } | null)
-      | ({
-          relationTo: 'cars';
-          value: number | Car;
-        } | null);
+      | (
+          | {
+              relationTo: 'leaders';
+              value: number | Leader;
+            }
+          | {
+              relationTo: 'drivers';
+              value: number | Driver;
+            }
+          | {
+              relationTo: 'members';
+              value: number | Member;
+            }
+          | {
+              relationTo: 'individuals';
+              value: number | Individual;
+            }
+          | {
+              relationTo: 'cars';
+              value: number | Car;
+            }
+        )[]
+      | null;
     /**
      * Select related document(s).
      */
-    highlights?: (number | null) | Highlight;
+    highlights?: (number | Highlight)[] | null;
     /**
      * Select related document(s).
      */
-    stories?: (number | null) | Story;
+    stories?: (number | Story)[] | null;
     visibility?: {
       /**
        * Toggle the Contexts section on or off.
@@ -12432,10 +12534,10 @@ export interface DriversSelect<T extends boolean = true> {
     | T
     | {
         enable?: T;
-        thumbnail?: T;
-        cover?: T;
+        avatar?: T;
         helmet?: T;
         suit?: T;
+        cover?: T;
         gallery?: T;
         visibility?:
           | T
@@ -12698,7 +12800,7 @@ export interface MembersSelect<T extends boolean = true> {
     | T
     | {
         enable?: T;
-        thumbnail?: T;
+        avatar?: T;
         cover?: T;
         gallery?: T;
         certifications?: T;

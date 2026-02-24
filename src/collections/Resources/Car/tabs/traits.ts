@@ -14,7 +14,7 @@ export const traitsFields: Field[] = [
         options: CAR_STATUS,
         dictionary: dictionary.tabs.traits.fields,
         width: 1,
-        flags: ['required'],
+        flags: [],
       }),
     ],
   },

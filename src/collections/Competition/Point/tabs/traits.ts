@@ -55,13 +55,13 @@ export const traitsFields: Field[] = [
               name: 'condition',
               dictionary: dictionary.tabs.traits.fields.modifiers.fields,
               width: 3,
-              flags: ['required', 'advanced'],
+              flags: ['advanced'],
             }),
             numberFieldFactory({
               name: 'adjustment',
               dictionary: dictionary.tabs.traits.fields.modifiers.fields,
               width: 3,
-              flags: ['required', 'advanced'],
+              flags: ['advanced'],
             }),
             textFieldFactory({
               name: 'impact',

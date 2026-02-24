@@ -24,7 +24,7 @@ export const traitsFields: Field[] = [
               name: 'lesson',
               dictionary: dictionary.tabs.traits.fields.lessons.fields,
               width: 3,
-              flags: ['required'],
+              flags: [],
             }),
             selectFieldFactory({
               name: 'significance',

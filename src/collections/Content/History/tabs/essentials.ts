@@ -15,7 +15,7 @@ export const essentialFields: Field[] = [
             name: 'name',
             dictionary: dictionary.essential,
             width: 2,
-            flags: ['required', 'localized', 'index'],
+            flags: ['localized', 'index'],
           }),
           textFieldFactory({
             name: 'alias',
@@ -33,7 +33,7 @@ export const essentialFields: Field[] = [
             relationTo: 'categories',
             dictionary: dictionary.essential,
             width: 1,
-            flags: ['required'],
+            flags: [],
           }),
         ],
       },

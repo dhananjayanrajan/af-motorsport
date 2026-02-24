@@ -1,17 +1,16 @@
-// FILE: src/collections/Outcomes/Decision/seeders/preload.ts
-export const PRELOAD_DECISION = [
+export const PRELOAD_DECISION = (categoriesIds: number[], narrativesIds: number[]) => [
   {
-    name: 'Tire Choice',
+    name: 'Strategic Pit Stop Window Selection - Monaco Grand Prix',
     toggle: 'advanced',
-    type: 1,
+    type: categoriesIds[185],
     basics: {
       enable: true,
-      description: 'Decision on tire strategy for race',
+      description: 'Critical strategic determination of optimal pit stop timing during Monaco GP to maximize track position while accounting for traffic, tire degradation, and safety car probability on the tight street circuit.',
       visibility: { show: true },
     },
     details: {
       enable: true,
-      narrative: 1,
+      narrative: narrativesIds[29],
       visibility: { show: true },
     },
     traits: {
@@ -23,21 +22,73 @@ export const PRELOAD_DECISION = [
       visibility: { show: true },
     },
     generateSlug: false,
-    slug: 'tire-choice',
+    slug: 'strategic-pit-stop-window-selection-monaco-gp',
+    visibility: { check_publish: true, check_featured: true, check_pinned: false },
+  },
+  {
+    name: 'Tactical Tire Compound Switch Under Changing Weather',
+    toggle: 'advanced',
+    type: categoriesIds[53],
+    basics: {
+      enable: true,
+      description: 'Real-time tactical decision to switch tire compounds during intermittent rain conditions, balancing grip availability, pit lane time loss, and positional risk against competitors on differing strategies.',
+      visibility: { show: true },
+    },
+    details: {
+      enable: true,
+      narrative: narrativesIds[1],
+      visibility: { show: true },
+    },
+    traits: {
+      enable: true,
+      visibility: { show: true },
+    },
+    contexts: {
+      enable: true,
+      visibility: { show: true },
+    },
+    generateSlug: false,
+    slug: 'tactical-tire-compound-switch-changing-weather',
+    visibility: { check_publish: true, check_featured: true, check_pinned: false },
+  },
+  {
+    name: 'Operational Garage Reorganization for Flyaway Races',
+    toggle: 'advanced',
+    type: categoriesIds[146],
+    basics: {
+      enable: true,
+      description: 'Operational restructuring of garage layout, equipment flow, and personnel positioning to optimize efficiency during overseas events with limited setup time and freight constraints.',
+      visibility: { show: true },
+    },
+    details: {
+      enable: true,
+      narrative: narrativesIds[50],
+      visibility: { show: true },
+    },
+    traits: {
+      enable: true,
+      visibility: { show: true },
+    },
+    contexts: {
+      enable: true,
+      visibility: { show: true },
+    },
+    generateSlug: false,
+    slug: 'operational-garage-reorganization-flyaway-races',
     visibility: { check_publish: true, check_featured: false, check_pinned: false },
   },
   {
-    name: 'Pit Stop Timing',
+    name: 'Technical Hybrid System Deployment Strategy',
     toggle: 'advanced',
-    type: 2,
+    type: categoriesIds[123],
     basics: {
       enable: true,
-      description: 'When to pit during the race',
+      description: 'Technical determination of MGU-K energy deployment patterns, harvesting zones, and battery management protocols to maximize lap time while complying with FIA energy usage regulations.',
       visibility: { show: true },
     },
     details: {
       enable: true,
-      narrative: 2,
+      narrative: narrativesIds[31],
       visibility: { show: true },
     },
     traits: {
@@ -49,21 +100,47 @@ export const PRELOAD_DECISION = [
       visibility: { show: true },
     },
     generateSlug: false,
-    slug: 'pit-stop-timing',
+    slug: 'technical-hybrid-system-deployment-strategy',
+    visibility: { check_publish: true, check_featured: true, check_pinned: false },
+  },
+  {
+    name: 'Personnel Driver Lineup Change Mid-Season',
+    toggle: 'advanced',
+    type: categoriesIds[38],
+    basics: {
+      enable: true,
+      description: 'Personnel decision to adjust driver roster mid-championship due to performance metrics, contractual considerations, development priorities, or unforeseen circumstances affecting competitive positioning.',
+      visibility: { show: true },
+    },
+    details: {
+      enable: true,
+      narrative: narrativesIds[12],
+      visibility: { show: true },
+    },
+    traits: {
+      enable: true,
+      visibility: { show: true },
+    },
+    contexts: {
+      enable: true,
+      visibility: { show: true },
+    },
+    generateSlug: false,
+    slug: 'personnel-driver-lineup-change-mid-season',
     visibility: { check_publish: true, check_featured: false, check_pinned: false },
   },
   {
-    name: 'Driver Swap',
+    name: 'Financial Budget Allocation: R&D vs Race Operations',
     toggle: 'advanced',
-    type: 3,
+    type: categoriesIds[122],
     basics: {
       enable: true,
-      description: 'Decision to swap drivers during race',
+      description: 'Financial resource allocation decision balancing immediate race weekend operational needs against long-term research and development investments for competitive advantage in future seasons.',
       visibility: { show: true },
     },
     details: {
       enable: true,
-      narrative: 3,
+      narrative: narrativesIds[33],
       visibility: { show: true },
     },
     traits: {
@@ -75,7 +152,371 @@ export const PRELOAD_DECISION = [
       visibility: { show: true },
     },
     generateSlug: false,
-    slug: 'driver-swap',
+    slug: 'financial-budget-allocation-rd-vs-race-operations',
+    visibility: { check_publish: true, check_featured: false, check_pinned: false },
+  },
+  {
+    name: 'Emergency Red Flag Procedure Activation',
+    toggle: 'advanced',
+    type: categoriesIds[17],
+    basics: {
+      enable: true,
+      description: 'Emergency protocol decision to activate red flag procedures following serious incident, prioritizing driver safety, medical response coordination, and track clearance under FIA sporting regulations.',
+      visibility: { show: true },
+    },
+    details: {
+      enable: true,
+      narrative: narrativesIds[52],
+      visibility: { show: true },
+    },
+    traits: {
+      enable: true,
+      visibility: { show: true },
+    },
+    contexts: {
+      enable: true,
+      visibility: { show: true },
+    },
+    generateSlug: false,
+    slug: 'emergency-red-flag-procedure-activation',
+    visibility: { check_publish: true, check_featured: true, check_pinned: true },
+  },
+  {
+    name: 'Regulatory Protest Filing Against Competitor Infringement',
+    toggle: 'advanced',
+    type: categoriesIds[245],
+    basics: {
+      enable: true,
+      description: 'Regulatory decision to file formal protest regarding suspected technical or sporting regulation breach by competitor, including evidence compilation, procedural timing, and strategic championship implications.',
+      visibility: { show: true },
+    },
+    details: {
+      enable: true,
+      narrative: narrativesIds[54],
+      visibility: { show: true },
+    },
+    traits: {
+      enable: true,
+      visibility: { show: true },
+    },
+    contexts: {
+      enable: true,
+      visibility: { show: true },
+    },
+    generateSlug: false,
+    slug: 'regulatory-protest-filing-competitor-infringement',
+    visibility: { check_publish: true, check_featured: false, check_pinned: false },
+  },
+  {
+    name: 'Strategic Championship Points Prioritization',
+    toggle: 'advanced',
+    type: categoriesIds[243],
+    basics: {
+      enable: true,
+      description: 'Strategic determination to prioritize drivers\' or constructors\' championship points accumulation through team orders, resource allocation, and risk management across remaining season events.',
+      visibility: { show: true },
+    },
+    details: {
+      enable: true,
+      narrative: narrativesIds[30],
+      visibility: { show: true },
+    },
+    traits: {
+      enable: true,
+      visibility: { show: true },
+    },
+    contexts: {
+      enable: true,
+      visibility: { show: true },
+    },
+    generateSlug: false,
+    slug: 'strategic-championship-points-prioritization',
+    visibility: { check_publish: true, check_featured: true, check_pinned: false },
+  },
+  {
+    name: 'Tactical Overtaking Maneuver Authorization',
+    toggle: 'advanced',
+    type: categoriesIds[52],
+    basics: {
+      enable: true,
+      description: 'Tactical authorization for driver to execute high-risk overtaking maneuver considering track position, tire condition, competitor behavior, and championship stakes during critical race moments.',
+      visibility: { show: true },
+    },
+    details: {
+      enable: true,
+      narrative: narrativesIds[27],
+      visibility: { show: true },
+    },
+    traits: {
+      enable: true,
+      visibility: { show: true },
+    },
+    contexts: {
+      enable: true,
+      visibility: { show: true },
+    },
+    generateSlug: false,
+    slug: 'tactical-overtaking-maneuver-authorization',
+    visibility: { check_publish: true, check_featured: false, check_pinned: false },
+  },
+  {
+    name: 'Operational Logistics Rerouting Due to Weather',
+    toggle: 'advanced',
+    type: categoriesIds[215],
+    basics: {
+      enable: true,
+      description: 'Operational decision to reroute freight, personnel travel, and equipment deployment schedules in response to severe weather disruptions affecting race weekend logistics and timing.',
+      visibility: { show: true },
+    },
+    details: {
+      enable: true,
+      narrative: narrativesIds[59],
+      visibility: { show: true },
+    },
+    traits: {
+      enable: true,
+      visibility: { show: true },
+    },
+    contexts: {
+      enable: true,
+      visibility: { show: true },
+    },
+    generateSlug: false,
+    slug: 'operational-logistics-rerouting-due-weather',
+    visibility: { check_publish: true, check_featured: false, check_pinned: false },
+  },
+  {
+    name: 'Technical Aerodynamic Package Selection Per Circuit',
+    toggle: 'advanced',
+    type: categoriesIds[232],
+    basics: {
+      enable: true,
+      description: 'Technical determination of optimal aerodynamic configuration balancing downforce, drag, and cooling requirements specific to circuit characteristics, weather forecasts, and competitive positioning.',
+      visibility: { show: true },
+    },
+    details: {
+      enable: true,
+      narrative: narrativesIds[5],
+      visibility: { show: true },
+    },
+    traits: {
+      enable: true,
+      visibility: { show: true },
+    },
+    contexts: {
+      enable: true,
+      visibility: { show: true },
+    },
+    generateSlug: false,
+    slug: 'technical-aerodynamic-package-selection-per-circuit',
+    visibility: { check_publish: true, check_featured: true, check_pinned: false },
+  },
+  {
+    name: 'Personnel Pit Crew Rotation for Endurance Events',
+    toggle: 'advanced',
+    type: categoriesIds[107],
+    basics: {
+      enable: true,
+      description: 'Personnel strategy for rotating pit crew members during endurance races to maintain peak performance, manage fatigue, and ensure consistent sub-2.5 second stop execution across 24-hour competition.',
+      visibility: { show: true },
+    },
+    details: {
+      enable: true,
+      narrative: narrativesIds[60],
+      visibility: { show: true },
+    },
+    traits: {
+      enable: true,
+      visibility: { show: true },
+    },
+    contexts: {
+      enable: true,
+      visibility: { show: true },
+    },
+    generateSlug: false,
+    slug: 'personnel-pit-crew-rotation-endurance-events',
+    visibility: { check_publish: true, check_featured: false, check_pinned: false },
+  },
+  {
+    name: 'Financial Sponsorship Activation Budget Decision',
+    toggle: 'advanced',
+    type: categoriesIds[126],
+    basics: {
+      enable: true,
+      description: 'Financial allocation decision for maximizing sponsor visibility and activation value across media exposure, hospitality, digital content, and on-car branding within contractual and regulatory frameworks.',
+      visibility: { show: true },
+    },
+    details: {
+      enable: true,
+      narrative: narrativesIds[54],
+      visibility: { show: true },
+    },
+    traits: {
+      enable: true,
+      visibility: { show: true },
+    },
+    contexts: {
+      enable: true,
+      visibility: { show: true },
+    },
+    generateSlug: false,
+    slug: 'financial-sponsorship-activation-budget-decision',
+    visibility: { check_publish: true, check_featured: false, check_pinned: false },
+  },
+  {
+    name: 'Emergency Medical Extraction Protocol Activation',
+    toggle: 'advanced',
+    type: categoriesIds[41],
+    basics: {
+      enable: true,
+      description: 'Emergency medical decision to activate specialized extraction procedures following high-impact incident, coordinating FIA medical delegate, extrication team, and hospital transport under time-critical conditions.',
+      visibility: { show: true },
+    },
+    details: {
+      enable: true,
+      narrative: narrativesIds[10],
+      visibility: { show: true },
+    },
+    traits: {
+      enable: true,
+      visibility: { show: true },
+    },
+    contexts: {
+      enable: true,
+      visibility: { show: true },
+    },
+    generateSlug: false,
+    slug: 'emergency-medical-extraction-protocol-activation',
+    visibility: { check_publish: true, check_featured: true, check_pinned: true },
+  },
+  {
+    name: 'Regulatory Technical Directive Compliance Response',
+    toggle: 'advanced',
+    type: categoriesIds[9],
+    basics: {
+      enable: true,
+      description: 'Regulatory response decision to FIA technical directive requiring immediate design modification, operational adjustment, or procedural change to maintain competition eligibility and sporting integrity.',
+      visibility: { show: true },
+    },
+    details: {
+      enable: true,
+      narrative: narrativesIds[38],
+      visibility: { show: true },
+    },
+    traits: {
+      enable: true,
+      visibility: { show: true },
+    },
+    contexts: {
+      enable: true,
+      visibility: { show: true },
+    },
+    generateSlug: false,
+    slug: 'regulatory-technical-directive-compliance-response',
+    visibility: { check_publish: true, check_featured: false, check_pinned: false },
+  },
+  {
+    name: 'Strategic Development Token Allocation for Powertrain',
+    toggle: 'advanced',
+    type: categoriesIds[105],
+    basics: {
+      enable: true,
+      description: 'Strategic allocation of limited development tokens to powertrain components prioritizing performance gains, reliability improvements, and regulatory compliance within seasonal upgrade constraints.',
+      visibility: { show: true },
+    },
+    details: {
+      enable: true,
+      narrative: narrativesIds[46],
+      visibility: { show: true },
+    },
+    traits: {
+      enable: true,
+      visibility: { show: true },
+    },
+    contexts: {
+      enable: true,
+      visibility: { show: true },
+    },
+    generateSlug: false,
+    slug: 'strategic-development-token-allocation-powertrain',
+    visibility: { check_publish: true, check_featured: true, check_pinned: false },
+  },
+  {
+    name: 'Tactical Defensive Driving Instruction During Restart',
+    toggle: 'advanced',
+    type: categoriesIds[118],
+    basics: {
+      enable: true,
+      description: 'Tactical communication to driver regarding defensive positioning, braking points, and line selection during race restarts to protect position while complying with sporting regulations and safety standards.',
+      visibility: { show: true },
+    },
+    details: {
+      enable: true,
+      narrative: narrativesIds[3],
+      visibility: { show: true },
+    },
+    traits: {
+      enable: true,
+      visibility: { show: true },
+    },
+    contexts: {
+      enable: true,
+      visibility: { show: true },
+    },
+    generateSlug: false,
+    slug: 'tactical-defensive-driving-instruction-restart',
+    visibility: { check_publish: true, check_featured: false, check_pinned: false },
+  },
+  {
+    name: 'Operational Communication Protocol Adjustment',
+    toggle: 'advanced',
+    type: categoriesIds[27],
+    basics: {
+      enable: true,
+      description: 'Operational decision to modify radio communication protocols, terminology standards, and information flow priorities between driver, race engineer, and pit wall during dynamic competition scenarios.',
+      visibility: { show: true },
+    },
+    details: {
+      enable: true,
+      narrative: narrativesIds[24],
+      visibility: { show: true },
+    },
+    traits: {
+      enable: true,
+      visibility: { show: true },
+    },
+    contexts: {
+      enable: true,
+      visibility: { show: true },
+    },
+    generateSlug: false,
+    slug: 'operational-communication-protocol-adjustment',
+    visibility: { check_publish: true, check_featured: false, check_pinned: false },
+  },
+  {
+    name: 'Technical Data Sharing Policy with Partner Teams',
+    toggle: 'advanced',
+    type: categoriesIds[166],
+    basics: {
+      enable: true,
+      description: 'Technical governance decision defining permissible data exchange parameters with customer or partner teams while protecting proprietary intellectual property and maintaining competitive advantage under FIA regulations.',
+      visibility: { show: true },
+    },
+    details: {
+      enable: true,
+      narrative: narrativesIds[2],
+      visibility: { show: true },
+    },
+    traits: {
+      enable: true,
+      visibility: { show: true },
+    },
+    contexts: {
+      enable: true,
+      visibility: { show: true },
+    },
+    generateSlug: false,
+    slug: 'technical-data-sharing-policy-partner-teams',
     visibility: { check_publish: true, check_featured: false, check_pinned: false },
   },
 ] as const

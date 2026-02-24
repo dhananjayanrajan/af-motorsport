@@ -13,7 +13,7 @@ export const detailsFields: Field[] = [
         relationTo: 'narratives',
         dictionary: dictionary.tabs.details.fields,
         width: 2,
-        flags: ['required'],
+        flags: [],
       }),
       relationshipFieldFactory({
         name: 'stories',

@@ -57,7 +57,7 @@ export const basicsFields: Field[] = [
         options: SERIES_STATUS,
         dictionary: dictionary.tabs.basics.fields,
         width: 2,
-        flags: ['required'],
+        flags: [],
       }),
     ],
   },

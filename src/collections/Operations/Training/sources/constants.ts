@@ -25,4 +25,5 @@ export const TRAINING_FORMAT = [
   'HandsOn',
   'Simulated',
   'Remote',
+  'Classroom',
 ]

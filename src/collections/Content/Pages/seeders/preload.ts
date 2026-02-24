@@ -1,5 +1,5 @@
 // FILE: src/collections/Content/Pages/seeders/preload.ts
-export const PRELOAD_PAGE = [
+export const PRELOAD_PAGES = (categoriesIds: number[]) => [
   {
     toggle: 'advanced',
     generateSlug: false,

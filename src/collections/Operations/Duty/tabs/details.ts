@@ -19,7 +19,7 @@ export const detailsFields: Field[] = [
               name: 'tasks',
               dictionary: dictionary.tabs.details.fields.obligation.fields,
               width: 1,
-              flags: ['required', 'localized'],
+              flags: ['localized'],
             }),
           ],
         },

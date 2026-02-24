@@ -25,7 +25,7 @@ export const basicsFields: Field[] = [
         name: 'value',
         dictionary: dictionary.tabs.basics.fields,
         width: 2,
-        flags: ['required'],
+        flags: [],
       }),
       selectFieldFactory({
         name: 'scale',

@@ -26,7 +26,7 @@ export const detailsFields: Field[] = [
         relationTo: 'schedules',
         dictionary: dictionary.tabs.details.fields,
         width: 3,
-        flags: ['required'],
+        flags: [],
       }),
     ],
   },

@@ -83,7 +83,7 @@ export const basicsFields: Field[] = [
             options: PROTOCOL_FORMAT,
             dictionary: dictionary.tabs.basics.protocol.fields,
             width: 2,
-            flags: ['required'],
+            flags: [],
           }),
           selectFieldFactory({
             name: 'scheme',

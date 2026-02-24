@@ -12,7 +12,7 @@ export const contextsFields: Field[] = [
         relationTo: 'entries',
         dictionary: dictionary.tabs.contexts.fields,
         width: 1,
-        flags: ['required'],
+        flags: [],
       }),
     ],
   },

@@ -2,32 +2,41 @@
 import type { Field } from 'payload'
 import { dictionary } from '../sources/dictionary'
 import { relationshipFieldFactory } from '@/fields/factories/fields/relationshipField'
+import { uploadFieldFactory } from '@/fields/factories/fields/uploadField'
+import { advanced } from '@/fields/factories/toggles/advanced'
 
 export const assetsFields: Field[] = [
   {
     type: 'row',
     fields: [
-      relationshipFieldFactory({
+      uploadFieldFactory({
         name: 'avatar',
         relationTo: 'media',
         dictionary: dictionary.tabs.assets.fields,
-        width: 3,
+        width: 1,
         flags: [],
       }),
-      relationshipFieldFactory({
-        name: 'cover',
-        relationTo: 'media',
-        dictionary: dictionary.tabs.assets.fields,
-        width: 3,
-        flags: [],
-      }),
-      relationshipFieldFactory({
-        name: 'gallery',
-        relationTo: 'galleries',
-        dictionary: dictionary.tabs.assets.fields,
-        width: 3,
-        flags: [],
-      }),
-    ],
+    ]
   },
+  advanced(
+    {
+      type: 'row',
+      fields: [
+        uploadFieldFactory({
+          name: 'cover',
+          relationTo: 'media',
+          dictionary: dictionary.tabs.assets.fields,
+          width: 1,
+          flags: ['advanced'],
+        }),
+        relationshipFieldFactory({
+          name: 'gallery',
+          relationTo: 'galleries',
+          dictionary: dictionary.tabs.assets.fields,
+          width: 1,
+          flags: ['hasMany', 'advanced'],
+        }),
+      ]
+    }
+  )
 ]

@@ -32,7 +32,7 @@ export const basicsFields: Field[] = [
               name: 'number',
               dictionary: dictionary.tabs.basics.fields.identifiers.fields,
               width: 2,
-              flags: ['required', 'index'],
+              flags: ['index'],
             }),
             textFieldFactory({
               name: 'plate',
@@ -54,7 +54,7 @@ export const basicsFields: Field[] = [
         options: ENTRY_STATUS,
         dictionary: dictionary.tabs.basics.fields,
         width: 1,
-        flags: ['required'],
+        flags: [],
       }),
     ],
   },

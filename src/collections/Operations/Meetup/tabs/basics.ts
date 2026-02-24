@@ -26,7 +26,7 @@ export const basicsFields: Field[] = [
           name: 'date',
           dictionary: dictionary.tabs.basics.fields,
           width: 2,
-          flags: ['required'],
+          flags: [],
           pickerAppearance: 'dayAndTime',
         }),
         relationshipFieldFactory({
@@ -34,7 +34,7 @@ export const basicsFields: Field[] = [
           relationTo: 'locations',
           dictionary: dictionary.tabs.basics.fields,
           width: 2,
-          flags: ['required', 'advanced'],
+          flags: ['advanced'],
         }),
       ],
     }

@@ -1,5 +1,5 @@
 // FILE: src/collections/Entities/User/seeders/preload.ts
-export const PRELOAD_USER = [
+export const PRELOAD_USER = (categoriesIds: number[]) => [
   {
     email: 'admin@afmotorsport.com',
     password: 'password123',

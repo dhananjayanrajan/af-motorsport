@@ -1,15 +1,44 @@
-// src/widgets/index.ts
-export { createStatsBar } from './factories/createStatsBar'
-export { createRecentActivityFeed } from './factories/createRecentActivityFeed'
-export { createTypeBreakdownChart } from './factories/createTypeBreakdownChart'
-export { createCompletionScore } from './factories/createCompletionScore'
-export { createToggleDistribution } from './factories/createToggleDistribution'
-export { createRelationshipDensity } from './factories/createRelationshipDensity'
-export { createTopTagsCategories } from './factories/createTopTagsCategories'
-export { createPublishingPipeline } from './factories/createPublishingPipeline'
-export { createSlugHealth } from './factories/createSlugHealth'
-export { createTimeline } from './factories/createTimeline'
+export type {
+  AnyWidgetConfig,
+  StatsBarConfig,
+  RecentActivityFeedConfig,
+  TypeBreakdownChartConfig,
+  CompletionScoreConfig,
+  ToggleDistributionConfig,
+  RelationshipDensityConfig,
+  TopTagsCategoriesConfig,
+  PublishingPipelineConfig,
+  SlugHealthConfig,
+  TimelineConfig,
+  CustomWidgetConfig,
+  SlugHealthResult,
+  SectionName,
+  WidgetType,
+} from './widgetTypes'
 
-export { default as DriversDashboard } from './DriversDashboard'
-export { default as RacingOperationsWorkflow } from './RacingOperationsWorkflow'
-export { default as KitsWorkflow } from './KitsWorkflow'
+export {
+  createStatsBar,
+  createRecentActivityFeed,
+  createTypeBreakdownChart,
+  createCompletionScore,
+  createToggleDistribution,
+  createRelationshipDensity,
+  createTopTagsCategories,
+  createPublishingPipeline,
+  createSlugHealth,
+  createTimeline,
+  createCustomWidget,
+} from './factories'
+
+export {
+  getWidgetCache,
+  setWidgetCache,
+  clearWidgetCache,
+  buildCacheKey,
+} from './widgetCache'
+
+export {
+  hasRequiredRoles,
+} from './widgetUtils'
+
+export { WIDGET_REGISTRY } from './widgetRegistry'

@@ -49,7 +49,7 @@ export const traitsFields: Field[] = [
         relationTo: 'schedules',
         dictionary: dictionary.tabs.traits.fields,
         width: 2,
-        flags: ['required'],
+        flags: [],
       }),
     ],
   },

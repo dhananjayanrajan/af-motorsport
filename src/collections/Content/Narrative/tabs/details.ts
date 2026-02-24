@@ -22,7 +22,7 @@ export const detailsFields: Field[] = [
         name: 'content',
         dictionary: dictionary.tabs.details.fields,
         width: 1,
-        flags: ['required', 'localized'],
+        flags: ['localized'],
       }),
     ],
   },

@@ -24,7 +24,7 @@ export const traitsFields: Field[] = [
               relationTo: 'skills',
               dictionary: dictionary.tabs.traits.fields.skills.fields,
               width: 2,
-              flags: ['required'],
+              flags: [],
             }),
             selectFieldFactory({
               name: 'proficiency',

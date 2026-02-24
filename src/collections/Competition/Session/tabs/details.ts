@@ -23,7 +23,7 @@ export const detailsFields: Field[] = [
         relationTo: 'events',
         dictionary: dictionary.tabs.details.fields,
         width: 2,
-        flags: ['required'],
+        flags: [],
       }),
     ],
   },

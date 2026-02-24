@@ -19,7 +19,7 @@ export const detailsFields: Field[] = [
         relationTo: 'sessions',
         dictionary: dictionary.tabs.details.fields,
         width: 2,
-        flags: ['required'],
+        flags: [],
       }),
     ],
   },
@@ -50,7 +50,7 @@ export const detailsFields: Field[] = [
         relationTo: 'cars',
         dictionary: dictionary.tabs.details.fields,
         width: 2,
-        flags: ['required'],
+        flags: [],
       }),
       relationshipFieldFactory({
         name: 'classification',

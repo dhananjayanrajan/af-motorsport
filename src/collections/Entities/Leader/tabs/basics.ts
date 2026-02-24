@@ -28,7 +28,7 @@ export const basicsFields: Field[] = [
               name: 'title',
               dictionary: dictionary.tabs.basics.fields.identifier.fields,
               width: 3,
-              flags: ['required', 'localized'],
+              flags: ['localized'],
             }),
             textFieldFactory({
               name: 'code',

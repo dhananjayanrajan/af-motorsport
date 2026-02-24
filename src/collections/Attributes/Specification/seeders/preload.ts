@@ -1,72 +1,243 @@
 // FILE: src/collections/Attributes/Specification/seeders/preload.ts
-export const PRELOAD_SPECIFICATION = [
+export const PRELOAD_SPECIFICATION = (categoriesIds: number[]) => [
   {
     name: 'Engine Displacement',
-    type: 1,
+    type: categoriesIds[185],
     toggle: 'advanced',
     identifier: { code: 'ENG-DISP-001', version: '2026.1', revision: 'A' },
     basics: { enable: true, description: 'Total swept volume of all engine cylinders', visibility: { show: true } },
-    details: {
-      enable: true,
-      definition: 'The volume displaced by all pistons during one complete engine cycle',
-      conditions: { environment: 'Standard atmospheric conditions', constraints: 'Measured at rest, ambient temperature 20°C', compliance: 'Mandatory' },
-      visibility: { show: true }
-    },
-    metrics: {
-      enable: true,
-      parameters: [{ parameter: 'Displacement', value: '1.6', unit: 'liters', tolerance: '±0.1L' }],
-      measurement: { method: 'Bore × Stroke × Cylinder count calculation', frequency: 'Once', accuracy: 'Precision' },
-      visibility: { show: true }
-    },
+    details: { enable: true, definition: 'The volume displaced by all pistons during one complete engine cycle', conditions: { environment: 'Standard atmospheric conditions', constraints: 'Measured at rest, ambient temperature 20°C', compliance: 'Mandatory' }, visibility: { show: true } },
+    metrics: { enable: true, parameters: [{ parameter: 'Displacement', value: '1.6', unit: 'liters', tolerance: '±0.1L' }], measurement: { method: 'Bore × Stroke × Cylinder count calculation', frequency: 'Once', accuracy: 'Precision' }, visibility: { show: true } },
     seo: { title: 'Engine Displacement Specification', description: 'Technical specification for racing engine displacement' },
-    generateSlug: false,
-    slug: 'engine-displacement',
+    generateSlug: false, slug: 'engine-displacement',
     visibility: { check_publish: true, check_featured: true, check_pinned: true }
   },
   {
     name: 'Minimum Weight',
-    type: 2,
+    type: categoriesIds[53],
     toggle: 'advanced',
     identifier: { code: 'WGT-MIN-002', version: '2026.1', revision: 'B' },
     basics: { enable: true, description: 'Minimum allowable vehicle weight including driver', visibility: { show: true } },
-    details: {
-      enable: true,
-      definition: 'Total mass of car with driver, fully fueled, ready to race',
-      conditions: { environment: 'Post-race scrutineering', constraints: 'Dry conditions, no ballast removal', compliance: 'Mandatory' },
-      visibility: { show: true }
-    },
-    metrics: {
-      enable: true,
-      parameters: [{ parameter: 'Minimum Weight', value: '798', unit: 'kg', tolerance: '0' }],
-      measurement: { method: 'Electronic scales, all four wheels simultaneously', frequency: 'Periodic', accuracy: 'High' },
-      visibility: { show: true }
-    },
+    details: { enable: true, definition: 'Total mass of car with driver, fully fueled, ready to race', conditions: { environment: 'Post-race scrutineering', constraints: 'Dry conditions, no ballast removal', compliance: 'Mandatory' }, visibility: { show: true } },
+    metrics: { enable: true, parameters: [{ parameter: 'Minimum Weight', value: '798', unit: 'kg', tolerance: '0' }], measurement: { method: 'Electronic scales, all four wheels simultaneously', frequency: 'Periodic', accuracy: 'High' }, visibility: { show: true } },
     seo: { title: 'Minimum Weight Specification', description: 'Technical specification for minimum vehicle weight regulations' },
-    generateSlug: false,
-    slug: 'minimum-weight',
+    generateSlug: false, slug: 'minimum-weight',
     visibility: { check_publish: true, check_featured: true, check_pinned: false }
   },
   {
     name: 'Fuel Flow Rate',
-    type: 3,
+    type: categoriesIds[146],
     toggle: 'advanced',
     identifier: { code: 'FUL-FLOW-003', version: '2026.2', revision: 'A' },
     basics: { enable: true, description: 'Maximum permitted fuel mass flow rate', visibility: { show: true } },
-    details: {
-      enable: true,
-      definition: 'The maximum instantaneous fuel mass that can be delivered to the engine',
-      conditions: { environment: 'All racing conditions', constraints: 'Measured at fuel rail', compliance: 'Mandatory' },
-      visibility: { show: true }
-    },
-    metrics: {
-      enable: true,
-      parameters: [{ parameter: 'Maximum Flow Rate', value: '100', unit: 'kg/h', tolerance: '0' }],
-      measurement: { method: 'Coriolis flow meter', frequency: 'Continuous', accuracy: 'Precision' },
-      visibility: { show: true }
-    },
+    details: { enable: true, definition: 'The maximum instantaneous fuel mass that can be delivered to the engine', conditions: { environment: 'All racing conditions', constraints: 'Measured at fuel rail', compliance: 'Mandatory' }, visibility: { show: true } },
+    metrics: { enable: true, parameters: [{ parameter: 'Maximum Flow Rate', value: '100', unit: 'kg/h', tolerance: '0' }], measurement: { method: 'Coriolis flow meter', frequency: 'Continuous', accuracy: 'Precision' }, visibility: { show: true } },
     seo: { title: 'Fuel Flow Rate Specification', description: 'Technical specification for maximum fuel flow regulations' },
-    generateSlug: false,
-    slug: 'fuel-flow-rate',
+    generateSlug: false, slug: 'fuel-flow-rate',
     visibility: { check_publish: true, check_featured: false, check_pinned: true }
+  },
+  {
+    name: 'MGU-K Power Output',
+    type: categoriesIds[123],
+    toggle: 'advanced',
+    identifier: { code: 'HYB-MGUK-004', version: '2026.1', revision: 'C' },
+    basics: { enable: true, description: 'Maximum electrical power deployment from kinetic energy recovery', visibility: { show: true } },
+    details: { enable: true, definition: 'Peak power output from Motor Generator Unit-Kinetic during acceleration phases', conditions: { environment: 'Race session conditions', constraints: 'Maximum 33.3 seconds per lap deployment', compliance: 'Mandatory' }, visibility: { show: true } },
+    metrics: { enable: true, parameters: [{ parameter: 'Maximum Power', value: '120', unit: 'kW', tolerance: '±0.5kW' }], measurement: { method: 'Dyno validation with ECU telemetry correlation', frequency: 'Periodic', accuracy: 'Precision' }, visibility: { show: true } },
+    seo: { title: 'MGU-K Power Specification', description: 'Hybrid system kinetic energy recovery power output limits' },
+    generateSlug: false, slug: 'mgu-k-power-output',
+    visibility: { check_publish: true, check_featured: true, check_pinned: true }
+  },
+  {
+    name: 'Front Wing Width',
+    type: categoriesIds[38],
+    toggle: 'advanced',
+    identifier: { code: 'AERO-FW-005', version: '2026.1', revision: 'A' },
+    basics: { enable: true, description: 'Maximum allowable width of front wing assembly', visibility: { show: true } },
+    details: { enable: true, definition: 'Total lateral dimension of front wing including endplates measured at widest point', conditions: { environment: 'Static measurement, vehicle on setup stands', constraints: 'Excludes wheel deflectors and brake ducts', compliance: 'Mandatory' }, visibility: { show: true } },
+    metrics: { enable: true, parameters: [{ parameter: 'Maximum Width', value: '2000', unit: 'mm', tolerance: '±2mm' }], measurement: { method: 'Laser coordinate measurement system', frequency: 'Once', accuracy: 'Precision' }, visibility: { show: true } },
+    seo: { title: 'Front Wing Width Specification', description: 'Aerodynamic component dimensional regulation for front wing assembly' },
+    generateSlug: false, slug: 'front-wing-width',
+    visibility: { check_publish: true, check_featured: true, check_pinned: false }
+  },
+  {
+    name: 'Brake Disc Diameter',
+    type: categoriesIds[122],
+    toggle: 'advanced',
+    identifier: { code: 'BRK-DISC-006', version: '2026.1', revision: 'B' },
+    basics: { enable: true, description: 'Maximum permitted diameter of carbon-carbon brake discs', visibility: { show: true } },
+    details: { enable: true, definition: 'Outer diameter measurement of ventilated carbon composite brake rotor', conditions: { environment: 'Ambient workshop conditions', constraints: 'Measured at room temperature, no thermal expansion', compliance: 'Mandatory' }, visibility: { show: true } },
+    metrics: { enable: true, parameters: [{ parameter: 'Maximum Diameter', value: '328', unit: 'mm', tolerance: '±0.5mm' }], measurement: { method: 'Digital caliper with temperature compensation', frequency: 'Periodic', accuracy: 'Precision' }, visibility: { show: true } },
+    seo: { title: 'Brake Disc Diameter Specification', description: 'Component dimensional specification for racing brake systems' },
+    generateSlug: false, slug: 'brake-disc-diameter',
+    visibility: { check_publish: true, check_featured: false, check_pinned: false }
+  },
+  {
+    name: 'Tire Pressure Operating Range',
+    type: categoriesIds[17],
+    toggle: 'advanced',
+    identifier: { code: 'TIRE-PRES-007', version: '2026.2', revision: 'A' },
+    basics: { enable: true, description: 'Permitted inflation pressure range for racing slick tires', visibility: { show: true } },
+    details: { enable: true, definition: 'Cold inflation pressure measured before track session commencement', conditions: { environment: 'Garage ambient temperature 15-25°C', constraints: 'Measured with calibrated digital gauge, tires at rest 30+ minutes', compliance: 'Mandatory' }, visibility: { show: true } },
+    metrics: { enable: true, parameters: [{ parameter: 'Minimum Pressure', value: '22.0', unit: 'psi', tolerance: '±0.2psi' }, { parameter: 'Maximum Pressure', value: '26.0', unit: 'psi', tolerance: '±0.2psi' }], measurement: { method: 'Calibrated digital pressure gauge with temperature compensation', frequency: 'Periodic', accuracy: 'High' }, visibility: { show: true } },
+    seo: { title: 'Tire Pressure Specification', description: 'Operating pressure range specification for racing tire compounds' },
+    generateSlug: false, slug: 'tire-pressure-operating-range',
+    visibility: { check_publish: true, check_featured: true, check_pinned: false }
+  },
+  {
+    name: 'Ride Height Minimum',
+    type: categoriesIds[245],
+    toggle: 'advanced',
+    identifier: { code: 'CHS-RIDE-008', version: '2026.1', revision: 'A' },
+    basics: { enable: true, description: 'Minimum allowable ground clearance at reference points', visibility: { show: true } },
+    details: { enable: true, definition: 'Vertical distance between reference plane and lowest point of plank/skid block', conditions: { environment: 'Static measurement on level surface', constraints: 'Vehicle at race weight, suspension settled, tires at operating pressure', compliance: 'Mandatory' }, visibility: { show: true } },
+    metrics: { enable: true, parameters: [{ parameter: 'Front Minimum', value: '55', unit: 'mm', tolerance: '±1mm' }, { parameter: 'Rear Minimum', value: '65', unit: 'mm', tolerance: '±1mm' }], measurement: { method: 'Laser displacement sensor with reference datum', frequency: 'Periodic', accuracy: 'Precision' }, visibility: { show: true } },
+    seo: { title: 'Ride Height Specification', description: 'Chassis ground clearance regulation for aerodynamic compliance' },
+    generateSlug: false, slug: 'ride-height-minimum',
+    visibility: { check_publish: true, check_featured: true, check_pinned: true }
+  },
+  {
+    name: 'ECU Sampling Frequency',
+    type: categoriesIds[243],
+    toggle: 'advanced',
+    identifier: { code: 'ECU-SAMP-009', version: '2026.1', revision: 'C' },
+    basics: { enable: true, description: 'Data acquisition sampling rate for critical engine parameters', visibility: { show: true } },
+    details: { enable: true, definition: 'Frequency at which ECU records and transmits sensor data for telemetry analysis', conditions: { environment: 'All operating conditions', constraints: 'Synchronized to GPS time reference, zero packet loss tolerance', compliance: 'Mandatory' }, visibility: { show: true } },
+    metrics: { enable: true, parameters: [{ parameter: 'Critical Parameters', value: '1000', unit: 'Hz', tolerance: '±10Hz' }, { parameter: 'Secondary Parameters', value: '100', unit: 'Hz', tolerance: '±5Hz' }], measurement: { method: 'Oscilloscope validation against reference clock', frequency: 'Continuous', accuracy: 'Precision' }, visibility: { show: true } },
+    seo: { title: 'ECU Sampling Specification', description: 'Electronic control unit data acquisition rate specification' },
+    generateSlug: false, slug: 'ecu-sampling-frequency',
+    visibility: { check_publish: true, check_featured: false, check_pinned: false }
+  },
+  {
+    name: 'Suspension Travel Limit',
+    type: categoriesIds[52],
+    toggle: 'advanced',
+    identifier: { code: 'SUS-TRAV-010', version: '2026.1', revision: 'A' },
+    basics: { enable: true, description: 'Maximum allowable vertical wheel movement range', visibility: { show: true } },
+    details: { enable: true, definition: 'Total vertical displacement range of wheel center relative to chassis reference plane', conditions: { environment: 'Static suspension rig testing', constraints: 'Measured with vehicle at race weight, dampers at mid-stroke', compliance: 'Mandatory' }, visibility: { show: true } },
+    metrics: { enable: true, parameters: [{ parameter: 'Front Travel', value: '65', unit: 'mm', tolerance: '±2mm' }, { parameter: 'Rear Travel', value: '75', unit: 'mm', tolerance: '±2mm' }], measurement: { method: 'LVDT displacement sensors with data logging', frequency: 'Once', accuracy: 'High' }, visibility: { show: true } },
+    seo: { title: 'Suspension Travel Specification', description: 'Chassis suspension movement range specification for regulatory compliance' },
+    generateSlug: false, slug: 'suspension-travel-limit',
+    visibility: { check_publish: true, check_featured: true, check_pinned: false }
+  },
+  {
+    name: 'Coolant Operating Temperature',
+    type: categoriesIds[215],
+    toggle: 'advanced',
+    identifier: { code: 'FLD-COOL-011', version: '2026.1', revision: 'B' },
+    basics: { enable: true, description: 'Permitted operating temperature range for engine cooling system', visibility: { show: true } },
+    details: { enable: true, definition: 'Temperature range of water-glycol mixture circulating through engine block and radiators', conditions: { environment: 'Steady-state race conditions', constraints: 'Measured at engine outlet, ambient temperature 10-35°C', compliance: 'Recommended' }, visibility: { show: true } },
+    metrics: { enable: true, parameters: [{ parameter: 'Minimum Temperature', value: '85', unit: '°C', tolerance: '±2°C' }, { parameter: 'Maximum Temperature', value: '105', unit: '°C', tolerance: '±2°C' }], measurement: { method: 'Calibrated thermocouple with data logger', frequency: 'Continuous', accuracy: 'High' }, visibility: { show: true } },
+    seo: { title: 'Coolant Temperature Specification', description: 'Engine cooling system operating temperature range specification' },
+    generateSlug: false, slug: 'coolant-operating-temperature',
+    visibility: { check_publish: true, check_featured: false, check_pinned: false }
+  },
+  {
+    name: 'DRS Activation Zone Length',
+    type: categoriesIds[232],
+    toggle: 'advanced',
+    identifier: { code: 'AERO-DRS-012', version: '2026.1', revision: 'A' },
+    basics: { enable: true, description: 'Length of track section where DRS may be activated', visibility: { show: true } },
+    details: { enable: true, definition: 'Distance between DRS detection point and activation zone termination marker', conditions: { environment: 'Circuit survey conditions', constraints: 'Measured along racing line, GPS-verified coordinates', compliance: 'Mandatory' }, visibility: { show: true } },
+    metrics: { enable: true, parameters: [{ parameter: 'Zone Length', value: '760', unit: 'm', tolerance: '±5m' }], measurement: { method: 'RTK-GPS survey with laser verification', frequency: 'Once', accuracy: 'Precision' }, visibility: { show: true } },
+    seo: { title: 'DRS Zone Specification', description: 'Aerodynamic device activation zone dimensional specification' },
+    generateSlug: false, slug: 'drs-activation-zone-length',
+    visibility: { check_publish: true, check_featured: true, check_pinned: true }
+  },
+  {
+    name: 'Gearbox Shift Time',
+    type: categoriesIds[107],
+    toggle: 'advanced',
+    identifier: { code: 'PWT-SHIFT-013', version: '2026.1', revision: 'B' },
+    basics: { enable: true, description: 'Maximum permitted time for sequential gear change completion', visibility: { show: true } },
+    details: { enable: true, definition: 'Duration from shift command initiation to torque re-engagement in target gear', conditions: { environment: 'Dyno test bench conditions', constraints: 'Engine at operating temperature, throttle at 100%', compliance: 'Optional' }, visibility: { show: true } },
+    metrics: { enable: true, parameters: [{ parameter: 'Upshift Time', value: '45', unit: 'ms', tolerance: '±5ms' }, { parameter: 'Downshift Time', value: '55', unit: 'ms', tolerance: '±5ms' }], measurement: { method: 'High-speed data acquisition with torque sensor correlation', frequency: 'Periodic', accuracy: 'Precision' }, visibility: { show: true } },
+    seo: { title: 'Gearbox Shift Time Specification', description: 'Powertrain transmission shift performance specification' },
+    generateSlug: false, slug: 'gearbox-shift-time',
+    visibility: { check_publish: true, check_featured: true, check_pinned: false }
+  },
+  {
+    name: 'Carbon Fiber Laminate Thickness',
+    type: categoriesIds[126],
+    toggle: 'advanced',
+    identifier: { code: 'MAT-CF-014', version: '2026.1', revision: 'A' },
+    basics: { enable: true, description: 'Nominal thickness specification for structural carbon composite components', visibility: { show: true } },
+    details: { enable: true, definition: 'Total thickness of cured carbon fiber reinforced polymer laminate including resin matrix', conditions: { environment: 'Controlled laboratory conditions 23°C, 50% RH', constraints: 'Measured post-cure, no surface coatings applied', compliance: 'Mandatory' }, visibility: { show: true } },
+    metrics: { enable: true, parameters: [{ parameter: 'Nominal Thickness', value: '2.5', unit: 'mm', tolerance: '±0.1mm' }], measurement: { method: 'Digital micrometer with surface contact probes', frequency: 'Periodic', accuracy: 'Precision' }, visibility: { show: true } },
+    seo: { title: 'Carbon Fiber Thickness Specification', description: 'Composite material dimensional specification for structural components' },
+    generateSlug: false, slug: 'carbon-fiber-laminate-thickness',
+    visibility: { check_publish: true, check_featured: false, check_pinned: false }
+  },
+  {
+    name: 'Telemetry Bandwidth Allocation',
+    type: categoriesIds[41],
+    toggle: 'advanced',
+    identifier: { code: 'SW-TEL-015', version: '2026.2', revision: 'A' },
+    basics: { enable: true, description: 'Maximum permitted radio frequency bandwidth for live telemetry transmission', visibility: { show: true } },
+    details: { enable: true, definition: 'Spectral bandwidth allocation for real-time vehicle data transmission to pit wall', conditions: { environment: 'RF spectrum regulatory compliance', constraints: 'Licensed frequency band, power output within limits', compliance: 'Mandatory' }, visibility: { show: true } },
+    metrics: { enable: true, parameters: [{ parameter: 'Maximum Bandwidth', value: '2.5', unit: 'MHz', tolerance: '±0.1MHz' }], measurement: { method: 'Spectrum analyzer with calibrated reference', frequency: 'Continuous', accuracy: 'Precision' }, visibility: { show: true } },
+    seo: { title: 'Telemetry Bandwidth Specification', description: 'Software communication specification for live racing data transmission' },
+    generateSlug: false, slug: 'telemetry-bandwidth-allocation',
+    visibility: { check_publish: true, check_featured: true, check_pinned: false }
+  },
+  {
+    name: 'Oil Pressure Operating Range',
+    type: categoriesIds[9],
+    toggle: 'advanced',
+    identifier: { code: 'FLD-OIL-016', version: '2026.1', revision: 'B' },
+    basics: { enable: true, description: 'Permitted lubrication system pressure range during operation', visibility: { show: true } },
+    details: { enable: true, definition: 'Hydraulic pressure of engine oil at main gallery under various operating conditions', conditions: { environment: 'Engine at operating temperature', constraints: 'Measured at main bearing feed, RPM range 4000-15000', compliance: 'Mandatory' }, visibility: { show: true } },
+    metrics: { enable: true, parameters: [{ parameter: 'Idle Pressure', value: '1.5', unit: 'bar', tolerance: '±0.2bar' }, { parameter: 'Race Pressure', value: '4.5', unit: 'bar', tolerance: '±0.3bar' }], measurement: { method: 'Piezoresistive pressure transducer with data logging', frequency: 'Continuous', accuracy: 'High' }, visibility: { show: true } },
+    seo: { title: 'Oil Pressure Specification', description: 'Engine lubrication system pressure operating range specification' },
+    generateSlug: false, slug: 'oil-pressure-operating-range',
+    visibility: { check_publish: true, check_featured: false, check_pinned: false }
+  },
+  {
+    name: 'Wheel Track Width',
+    type: categoriesIds[105],
+    toggle: 'advanced',
+    identifier: { code: 'DIM-TRACK-017', version: '2026.1', revision: 'A' },
+    basics: { enable: true, description: 'Maximum allowable distance between wheel centerlines on same axle', visibility: { show: true } },
+    details: { enable: true, definition: 'Lateral distance measured between centers of left and right wheel hubs at reference ride height', conditions: { environment: 'Static measurement on level surface', constraints: 'Vehicle at race weight, suspension settled, wheels aligned', compliance: 'Mandatory' }, visibility: { show: true } },
+    metrics: { enable: true, parameters: [{ parameter: 'Front Track', value: '1600', unit: 'mm', tolerance: '±3mm' }, { parameter: 'Rear Track', value: '1550', unit: 'mm', tolerance: '±3mm' }], measurement: { method: 'Laser tracking system with reference datum', frequency: 'Once', accuracy: 'Precision' }, visibility: { show: true } },
+    seo: { title: 'Wheel Track Width Specification', description: 'Vehicle dimensional specification for chassis width regulation' },
+    generateSlug: false, slug: 'wheel-track-width',
+    visibility: { check_publish: true, check_featured: true, check_pinned: false }
+  },
+  {
+    name: 'Hybrid Energy Deployment Limit',
+    type: categoriesIds[118],
+    toggle: 'advanced',
+    identifier: { code: 'HYB-DEPL-018', version: '2026.1', revision: 'C' },
+    basics: { enable: true, description: 'Maximum electrical energy permitted for deployment per lap', visibility: { show: true } },
+    details: { enable: true, definition: 'Total electrical energy that may be discharged from energy store to drivetrain during single lap', conditions: { environment: 'Race session conditions', constraints: 'Measured from lap start to lap start, excludes recovery phases', compliance: 'Mandatory' }, visibility: { show: true } },
+    metrics: { enable: true, parameters: [{ parameter: 'Maximum Energy', value: '4.0', unit: 'MJ', tolerance: '±0.05MJ' }], measurement: { method: 'Integrated power measurement with ECU validation', frequency: 'Periodic', accuracy: 'Precision' }, visibility: { show: true } },
+    seo: { title: 'Hybrid Energy Deployment Specification', description: 'Powertrain hybrid system energy deployment limit specification' },
+    generateSlug: false, slug: 'hybrid-energy-deployment-limit',
+    visibility: { check_publish: true, check_featured: true, check_pinned: true }
+  },
+  {
+    name: 'Aerodynamic Downforce Coefficient',
+    type: categoriesIds[27],
+    toggle: 'advanced',
+    identifier: { code: 'AERO-CL-019', version: '2026.1', revision: 'B' },
+    basics: { enable: true, description: 'Target lift coefficient for aerodynamic performance optimization', visibility: { show: true } },
+    details: { enable: true, definition: 'Non-dimensional coefficient representing downforce generation efficiency relative to dynamic pressure and reference area', conditions: { environment: 'Wind tunnel test conditions', constraints: 'Reynolds number matched to full-scale, yaw angle ±2.5°', compliance: 'Optional' }, visibility: { show: true } },
+    metrics: { enable: true, parameters: [{ parameter: 'CL Target', value: '3.8', unit: 'dimensionless', tolerance: '±0.1' }], measurement: { method: 'Six-component balance with pressure tap correlation', frequency: 'Periodic', accuracy: 'Precision' }, visibility: { show: true } },
+    seo: { title: 'Downforce Coefficient Specification', description: 'Aerodynamic performance target specification for vehicle development' },
+    generateSlug: false, slug: 'aerodynamic-downforce-coefficient',
+    visibility: { check_publish: true, check_featured: true, check_pinned: false }
+  },
+  {
+    name: 'Battery State of Charge Window',
+    type: categoriesIds[166],
+    toggle: 'advanced',
+    identifier: { code: 'HYB-SOC-020', version: '2026.1', revision: 'A' },
+    basics: { enable: true, description: 'Permitted state of charge range for hybrid energy storage system', visibility: { show: true } },
+    details: { enable: true, definition: 'Percentage of usable energy capacity remaining in battery pack at defined measurement points', conditions: { environment: 'All race session phases', constraints: 'Measured at start/finish line, temperature compensated', compliance: 'Mandatory' }, visibility: { show: true } },
+    metrics: { enable: true, parameters: [{ parameter: 'Minimum SOC', value: '20', unit: '%', tolerance: '±1%' }, { parameter: 'Maximum SOC', value: '100', unit: '%', tolerance: '±0.5%' }], measurement: { method: 'Coulomb counting with voltage correlation and temperature compensation', frequency: 'Continuous', accuracy: 'Precision' }, visibility: { show: true } },
+    seo: { title: 'Battery SOC Specification', description: 'Hybrid system energy storage state of charge operating range specification' },
+    generateSlug: false, slug: 'battery-state-of-charge-window',
+    visibility: { check_publish: true, check_featured: true, check_pinned: false }
   }
-] as const
+] as const;

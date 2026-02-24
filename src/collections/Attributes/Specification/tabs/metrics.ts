@@ -23,19 +23,19 @@ export const metricsFields: Field[] = [
             name: 'parameter',
             dictionary: dictionary.tabs.metrics.fields.parameters.fields,
             width: 4,
-            flags: ['required'],
+            flags: [],
           }),
           textFieldFactory({
             name: 'value',
             dictionary: dictionary.tabs.metrics.fields.parameters.fields,
             width: 4,
-            flags: ['required'],
+            flags: [],
           }),
           textFieldFactory({
             name: 'unit',
             dictionary: dictionary.tabs.metrics.fields.parameters.fields,
             width: 4,
-            flags: ['required'],
+            flags: [],
           }),
           textFieldFactory({
             name: 'tolerance',

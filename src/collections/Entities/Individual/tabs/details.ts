@@ -52,7 +52,7 @@ export const detailsFields: Field[] = [
               name: 'interest',
               dictionary: dictionary.tabs.details.fields.interests.fields,
               width: 3,
-              flags: ['required'],
+              flags: [],
             }),
             selectFieldFactory({
               name: 'level',

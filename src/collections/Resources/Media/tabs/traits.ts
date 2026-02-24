@@ -34,7 +34,7 @@ export const traitsFields: Field[] = [
             name: 'url',
             dictionary: dictionary.tabs.traits.fields.sources.fields,
             width: 2,
-            flags: ['required', 'advanced'],
+            flags: ['advanced'],
           }),
           selectFieldFactory({
             name: 'type',

@@ -106,9 +106,8 @@ export const relationshipFieldFactory = (opts: RelationshipFactoryOptions): Fiel
   const localized = flags.has('localized') || dictNode?.localized || DEFAULTS.localized
   const unique = flags.has('unique') || DEFAULTS.unique
   const index = flags.has('index') || DEFAULTS.index
-  const hasMany = opts.hasMany ?? DEFAULTS.hasMany
+  const hasMany = flags.has('hasMany') || (opts.hasMany ?? DEFAULTS.hasMany)
 
-  // Build the field with proper typing
   const field: any = {
     name: opts.name,
     type: 'relationship',
@@ -133,7 +132,6 @@ export const relationshipFieldFactory = (opts: RelationshipFactoryOptions): Fiel
     },
   }
 
-  // Add optional properties if they are defined
   if (opts.minRows !== undefined) field.minRows = opts.minRows
   if (opts.maxRows !== undefined) field.maxRows = opts.maxRows
   if (opts.maxDepth !== undefined) field.maxDepth = opts.maxDepth

@@ -25,7 +25,7 @@ export const basicsFields: Field[] = [
         options: RESULT_STATUS,
         dictionary: dictionary.tabs.basics.fields,
         width: 1,
-        flags: ['required'],
+        flags: [],
       }),
     ],
   },

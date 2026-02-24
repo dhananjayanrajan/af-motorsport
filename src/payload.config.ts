@@ -16,9 +16,12 @@ import { fileURLToPath } from 'url'
 import { plugins } from './plugins'
 import { searchPlugin } from '@payloadcms/plugin-search'
 import { mcpPlugin } from '@payloadcms/plugin-mcp'
+import { payloadEnhancedSidebar } from '@veiag/payload-enhanced-sidebar'
+
 import { en } from '@payloadcms/translations/languages/en'
 import { es } from '@payloadcms/translations/languages/es'
 import { pt } from '@payloadcms/translations/languages/pt'
+
 import { Header } from '@/globals/Configurations/Header'
 import { Footer } from '@/globals/Configurations/Footer'
 import { Socials } from './globals/Connectivity/Socials'
@@ -26,6 +29,7 @@ import { Policies } from './globals/Branding/Policies'
 import { Identity } from './globals/Branding/Identity'
 import { Announcements } from './globals/Connectivity/Announcements'
 import { Questions } from './globals/Connectivity/Questions'
+
 import { Categories } from '@/collections/Attributes/Category'
 import { Tags } from './collections/Attributes/Tag'
 import { Users } from '@/collections/Entities/User'
@@ -90,9 +94,6 @@ import {
   createPublishingPipeline,
   createSlugHealth,
   createTimeline,
-  DriversDashboard,
-  RacingOperationsWorkflow,
-  KitsWorkflow,
 } from './widgets'
 
 const filename = fileURLToPath(import.meta.url)
@@ -138,43 +139,9 @@ export default buildConfig({
   admin: {
     user: Users.slug,
     components: {
-      beforeLogin: [],
-      beforeDashboard: [],
-      afterDashboard: [],
+      afterDashboard: ['@/widgets/DashboardOrchestrator'],
     },
-    dashboard: {
-      defaultLayout: ({ req }) => {
-        return []
-      },
-      widgets: [
-        DriversStatsBar as any,
-        DriversRecentActivity as any,
-        DriversTypeBreakdown as any,
-        DriversTimeline as any,
-        DriversTagsCats as any,
-        DriversCompletion as any,
-        DriversRelDensity as any,
-        DriversSlugHealth as any,
-        DriversToggleDist as any,
-        DriversPipeline as any,
-        KitsWorkflow as any,
-        KitsStatsBar as any,
-        KitsRecentActivity as any,
-        KitsPipeline as any,
-        KitsCompletion as any,
-        RacingOperationsWorkflow as any,
-        SeriesStatsBar as any,
-        SeasonsStatsBar as any,
-        EventsTimeline as any,
-        EventsPipeline as any,
-        MembersRecentActivity as any,
-        OrganizationsStatsBar as any,
-        StoriesTimeline as any,
-        NarrativesStatsBar as any,
-        MediaStatsBar as any,
-        CarsRecentActivity as any,
-      ],
-    },
+    suppressHydrationWarning: true,
   },
   collections: [
     Series, Seasons, Events, Sessions, Entries, Results, Points,
@@ -245,6 +212,162 @@ export default buildConfig({
   ],
   plugins: [
     ...plugins,
+    payloadEnhancedSidebar({
+      tabs: [
+        {
+          id: 'dashboard',
+          type: 'link',
+          href: '/',
+          icon: 'LayoutDashboard',
+          label: {
+            en: 'Dashboard',
+            es: 'Panel',
+            pt: 'Painel',
+          },
+        },
+        {
+          id: 'attributes',
+          type: 'tab',
+          icon: 'Cog',
+          label: {
+            en: 'Attributes',
+            es: 'Atributos',
+            pt: 'Atributos',
+          },
+          collections: [
+            'categories', 'channels', 'classifications', 'features', 'locations',
+            'preferences', 'principles', 'skills', 'specifications', 'tags', 'tones'
+          ],
+          badge: {
+            type: 'collection-count',
+            collectionSlug: 'categories',
+            color: 'primary',
+          },
+        },
+        {
+          id: 'competition',
+          type: 'tab',
+          icon: 'Trophy',
+          label: {
+            en: 'Competition',
+            es: 'Competición',
+            pt: 'Competição',
+          },
+          collections: [
+            'entries', 'events', 'points', 'results', 'seasons', 'series', 'sessions'
+          ],
+        },
+        {
+          id: 'content',
+          type: 'tab',
+          icon: 'FileText',
+          label: {
+            en: 'Content',
+            es: 'Contenido',
+            pt: 'Conteúdo',
+          },
+          collections: [
+            'histories', 'journeys', 'narratives', 'notes', 'pages', 'stories'
+          ],
+        },
+        {
+          id: 'entities',
+          type: 'tab',
+          icon: 'Users',
+          label: {
+            en: 'Entities',
+            es: 'Entidades',
+            pt: 'Entidades',
+          },
+          collections: [
+            'drivers', 'individuals', 'leaders', 'members', 'organizations', 'users'
+          ],
+        },
+        {
+          id: 'operations',
+          type: 'tab',
+          icon: 'Zap',
+          label: {
+            en: 'Operations',
+            es: 'Operaciones',
+            pt: 'Operações',
+          },
+          collections: [
+            'careers', 'celebrations', 'duties', 'expectations', 'initiatives',
+            'meetups', 'protocols', 'schedules', 'trainings'
+          ],
+        },
+        {
+          id: 'outcomes',
+          type: 'tab',
+          icon: 'Target',
+          label: {
+            en: 'Outcomes',
+            es: 'Resultados',
+            pt: 'Resultados',
+          },
+          collections: [
+            'awards', 'decisions', 'experiences', 'highlights', 'impacts',
+            'incidents', 'strategies'
+          ],
+        },
+        {
+          id: 'resources',
+          type: 'tab',
+          icon: 'Package',
+          label: {
+            en: 'Resources',
+            es: 'Recursos',
+            pt: 'Recursos',
+          },
+          collections: [
+            'archives', 'cars', 'galleries', 'kits', 'media', 'playlists', 'visualizations'
+          ],
+        },
+        {
+          id: 'settings',
+          type: 'tab',
+          icon: 'Settings',
+          label: {
+            en: 'Settings',
+            es: 'Ajustes',
+            pt: 'Configurações',
+          },
+          globals: [
+            'header', 'footer', 'identity', 'policies', 'socials', 'announcements', 'questions'
+          ],
+          customItems: [
+            {
+              slug: 'docs',
+              href: 'https://your-docs.com',
+              isExternal: true,
+              label: {
+                en: 'Documentation',
+                es: 'Documentación',
+                pt: 'Documentação',
+              },
+            },
+            {
+              slug: 'api-keys',
+              href: '/api-keys',
+              label: {
+                en: 'API Keys',
+                es: 'Claves API',
+                pt: 'Chaves API',
+              },
+            },
+          ],
+        },
+      ],
+      showLogout: true,
+      badges: {
+        stories: {
+          type: 'collection-count',
+          where: { _status: { equals: 'draft' } },
+          color: 'warning',
+        },
+      },
+    }),
     searchPlugin({
       collections: [
         "users", "pages",

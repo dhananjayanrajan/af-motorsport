@@ -19,7 +19,7 @@ export const Users: CollectionConfig = {
     update: adminOrSelf,
   },
   admin: {
-    group: 'People & Teams',
+    group: 'Entities',
     defaultColumns: ['name', 'email', 'roles'],
     description: 'Defines authenticated individuals who manage, operate, or administer the platform and its content.',
     useAsTitle: 'name',
