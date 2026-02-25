@@ -6,96 +6,86 @@ import { dateFieldFactory } from '@/fields/factories/fields/dateField'
 import { selectFieldFactory } from '@/fields/factories/fields/selectField'
 import { advanced } from '@/fields/factories/toggles/advanced'
 import { STRATEGY_CONTINGENCY_PROBABILITY, STRATEGY_CONTINGENCY_IMPACT } from '../sources/constants'
+import { groupFactory } from '@/fields/factories/blueprint'
 
 export const traitsFields: Field[] = [
   advanced(
-    {
-      name: 'directives',
-      type: 'array',
-      label: dictionary.tabs.traits.fields.directives.label,
-      admin: {
-        description: dictionary.tabs.traits.fields.directives.description,
-      },
-      fields: [
+    groupFactory(
+      dictionary.tabs.traits.fields.directives,
+      dictionary.host,
+      [
         {
           type: 'row',
           fields: [
             textFieldFactory({
               name: 'phase',
               dictionary: dictionary.tabs.traits.fields.directives.fields,
-              width: 4,
-              flags: [],
+              width: 2,
+              flags: ['localized', 'index', 'advanced'],
             }),
             textFieldFactory({
               name: 'action',
               dictionary: dictionary.tabs.traits.fields.directives.fields,
-              width: 4,
-              flags: [],
+              width: 2,
+              flags: ['localized', 'index', 'advanced'],
             }),
             textFieldFactory({
               name: 'owner',
               dictionary: dictionary.tabs.traits.fields.directives.fields,
-              width: 4,
-              flags: [],
+              width: 2,
+              flags: ['localized', 'index', 'advanced'],
             }),
             dateFieldFactory({
               name: 'deadline',
               dictionary: dictionary.tabs.traits.fields.directives.fields,
-              width: 4,
-              flags: [],
+              width: 2,
+              flags: ['localized', 'index', 'advanced'],
               pickerAppearance: 'dayOnly',
             }),
           ],
         },
       ],
-    }
+      true
+    )
   ),
   advanced(
-    {
-      name: 'contingencies',
-      type: 'array',
-      label: dictionary.tabs.traits.fields.contingencies.label,
-      admin: {
-        description: dictionary.tabs.traits.fields.contingencies.description,
-      },
-      fields: [
+    groupFactory(
+      dictionary.tabs.traits.fields.contingencies,
+      dictionary.host,
+      [
         {
           type: 'row',
           fields: [
             textFieldFactory({
               name: 'trigger',
               dictionary: dictionary.tabs.traits.fields.contingencies.fields,
-              width: 2,
-              flags: ['advanced'],
+              width: 1,
+              flags: ['localized', 'index', 'advanced'],
             }),
             textFieldFactory({
               name: 'response',
               dictionary: dictionary.tabs.traits.fields.contingencies.fields,
-              width: 2,
-              flags: ['advanced'],
+              width: 1,
+              flags: ['localized', 'index', 'advanced'],
             }),
-          ],
-        },
-        {
-          type: 'row',
-          fields: [
             selectFieldFactory({
               name: 'probability',
               options: STRATEGY_CONTINGENCY_PROBABILITY,
               dictionary: dictionary.tabs.traits.fields.contingencies.fields,
               width: 2,
-              flags: ['advanced'],
+              flags: ['localized', 'index', 'advanced'],
             }),
             selectFieldFactory({
               name: 'impact',
               options: STRATEGY_CONTINGENCY_IMPACT,
               dictionary: dictionary.tabs.traits.fields.contingencies.fields,
               width: 2,
-              flags: ['advanced'],
+              flags: ['localized', 'index', 'advanced'],
             }),
           ],
         },
       ],
-    }
+      true
+    )
   ),
 ]

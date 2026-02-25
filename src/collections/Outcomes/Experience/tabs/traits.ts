@@ -5,17 +5,14 @@ import { relationshipFieldFactory } from '@/fields/factories/fields/relationship
 import { selectFieldFactory } from '@/fields/factories/fields/selectField'
 import { advanced } from '@/fields/factories/toggles/advanced'
 import { EXPERIENCE_SKILL_PROFICIENCY } from '../sources/constants'
+import { groupFactory } from '@/fields/factories/blueprint'
 
 export const traitsFields: Field[] = [
   advanced(
-    {
-      name: 'skills',
-      type: 'array',
-      label: dictionary.tabs.traits.fields.skills.label,
-      admin: {
-        description: dictionary.tabs.traits.fields.skills.description,
-      },
-      fields: [
+    groupFactory(
+      dictionary.tabs.traits.fields.skills,
+      dictionary.host,
+      [
         {
           type: 'row',
           fields: [
@@ -24,18 +21,18 @@ export const traitsFields: Field[] = [
               relationTo: 'skills',
               dictionary: dictionary.tabs.traits.fields.skills.fields,
               width: 2,
-              flags: [],
+              flags: ['advanced'],
             }),
             selectFieldFactory({
               name: 'proficiency',
               options: EXPERIENCE_SKILL_PROFICIENCY,
               dictionary: dictionary.tabs.traits.fields.skills.fields,
               width: 2,
-              flags: [],
+              flags: ['advanced'],
             }),
           ],
         },
-      ],
-    }
+      ]
+    )
   ),
 ]

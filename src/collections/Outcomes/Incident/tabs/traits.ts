@@ -10,6 +10,13 @@ export const traitsFields: Field[] = [
       type: 'row',
       fields: [
         relationshipFieldFactory({
+          name: 'decisions',
+          relationTo: 'decisions',
+          dictionary: dictionary.tabs.traits.fields,
+          width: 1,
+          flags: ['hasMany', 'advanced'],
+        }),
+        relationshipFieldFactory({
           name: 'impacts',
           relationTo: 'impacts',
           dictionary: dictionary.tabs.traits.fields,

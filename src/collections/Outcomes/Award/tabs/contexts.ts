@@ -5,23 +5,25 @@ import { relationshipFieldFactory } from '@/fields/factories/fields/relationship
 import { advanced } from '@/fields/factories/toggles/advanced'
 
 export const contextsFields: Field[] = [
-  {
-    type: 'row',
-    fields: [
-      relationshipFieldFactory({
-        name: 'entities',
-        relationTo: ['leaders', 'organizations', 'individuals'],
-        dictionary: dictionary.tabs.contexts.fields,
-        width: 2,
-        flags: [],
-      }),
-      relationshipFieldFactory({
-        name: 'story',
-        relationTo: 'stories',
-        dictionary: dictionary.tabs.contexts.fields,
-        width: 2,
-        flags: ['advanced'],
-      }),
-    ],
-  },
+  advanced(
+    {
+      type: 'row',
+      fields: [
+        relationshipFieldFactory({
+          name: 'entities',
+          relationTo: ['leaders', 'organizations', 'individuals'],
+          dictionary: dictionary.tabs.contexts.fields,
+          width: 1,
+          flags: ['hasMany', 'advanced'],
+        }),
+        relationshipFieldFactory({
+          name: 'story',
+          relationTo: 'stories',
+          dictionary: dictionary.tabs.contexts.fields,
+          width: 1,
+          flags: ['advanced'],
+        }),
+      ],
+    }
+  )
 ]

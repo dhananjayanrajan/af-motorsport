@@ -6,20 +6,17 @@ import { textFieldFactory } from '@/fields/factories/fields/textField'
 import { selectFieldFactory } from '@/fields/factories/fields/selectField'
 import { groupFactory } from '@/fields/factories/blueprint'
 import { advanced } from '@/fields/factories/toggles/advanced'
-import { IMPACT_SCALE, IMPACT_DEPTH } from '../sources/constants'
+import { IMPACT_SCALE, IMPACT_DEPTH, IMPACT_RARITY } from '../sources/constants'
 
 export const basicsFields: Field[] = [
-  {
-    type: 'row',
-    fields: [
-      textareaFieldFactory({
-        name: 'description',
-        dictionary: dictionary.tabs.basics.fields,
-        width: 1,
-        flags: ['localized'],
-      }),
-    ],
-  },
+  advanced(
+    textareaFieldFactory({
+      name: 'description',
+      dictionary: dictionary.tabs.basics.fields,
+      width: 1,
+      flags: ['localized', 'index'],
+    }),
+  ),
   advanced(
     groupFactory(
       dictionary.tabs.basics.fields.scope,
@@ -31,21 +28,28 @@ export const basicsFields: Field[] = [
             textFieldFactory({
               name: 'significance',
               dictionary: dictionary.tabs.basics.fields.scope.fields,
-              width: 3,
+              width: 2,
               flags: ['advanced'],
             }),
             selectFieldFactory({
               name: 'scale',
               options: IMPACT_SCALE,
               dictionary: dictionary.tabs.basics.fields.scope.fields,
-              width: 3,
+              width: 2,
               flags: ['advanced'],
             }),
             selectFieldFactory({
               name: 'depth',
               options: IMPACT_DEPTH,
               dictionary: dictionary.tabs.basics.fields.scope.fields,
-              width: 3,
+              width: 2,
+              flags: ['advanced'],
+            }),
+            selectFieldFactory({
+              name: 'rarity',
+              options: IMPACT_RARITY,
+              dictionary: dictionary.tabs.basics.fields.scope.fields,
+              width: 2,
               flags: ['advanced'],
             }),
           ],

@@ -15,35 +15,28 @@ export const traitsFields: Field[] = [
           name: 'tone',
           relationTo: 'tones',
           dictionary: dictionary.tabs.traits.fields,
-          width: 2,
+          width: 1,
           flags: ['advanced'],
         }),
         selectFieldFactory({
           name: 'velocity',
           options: IMPACT_VELOCITY,
           dictionary: dictionary.tabs.traits.fields,
-          width: 2,
+          width: 3,
           flags: ['advanced'],
         }),
-      ],
-    }
-  ),
-  advanced(
-    {
-      type: 'row',
-      fields: [
         selectFieldFactory({
           name: 'gravity',
           options: IMPACT_GRAVITY,
           dictionary: dictionary.tabs.traits.fields,
-          width: 2,
+          width: 3,
           flags: ['advanced'],
         }),
         selectFieldFactory({
           name: 'permanence',
           options: IMPACT_PERMANENCE,
           dictionary: dictionary.tabs.traits.fields,
-          width: 2,
+          width: 3,
           flags: ['advanced'],
         }),
       ],

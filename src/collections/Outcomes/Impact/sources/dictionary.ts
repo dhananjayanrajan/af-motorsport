@@ -28,6 +28,7 @@ export const dictionary = {
             significance: { label: { en: 'Significance', es: 'Significancia', pt: 'Significância' } },
             scale: { label: { en: 'Scale', es: 'Escala', pt: 'Escala' } },
             depth: { label: { en: 'Depth', es: 'Profundidad', pt: 'Profundidade' } },
+            rarity: { label: { en: 'Rarity', es: 'Rareza', pt: 'Raridade' } },
           },
         },
       },

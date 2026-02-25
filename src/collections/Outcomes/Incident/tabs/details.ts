@@ -6,24 +6,12 @@ import { advanced } from '@/fields/factories/toggles/advanced'
 
 export const detailsFields: Field[] = [
   advanced(
-    {
-      type: 'row',
-      fields: [
-        relationshipFieldFactory({
-          name: 'decisions',
-          relationTo: 'decisions',
-          dictionary: dictionary.tabs.details.fields,
-          width: 2,
-          flags: ['hasMany', 'advanced'],
-        }),
-        relationshipFieldFactory({
-          name: 'specifications',
-          relationTo: 'specifications',
-          dictionary: dictionary.tabs.details.fields,
-          width: 2,
-          flags: ['hasMany', 'advanced'],
-        }),
-      ],
-    }
+    relationshipFieldFactory({
+      name: 'specifications',
+      relationTo: 'specifications',
+      dictionary: dictionary.tabs.details.fields,
+      width: 1,
+      flags: ['hasMany', 'advanced'],
+    }),
   ),
 ]

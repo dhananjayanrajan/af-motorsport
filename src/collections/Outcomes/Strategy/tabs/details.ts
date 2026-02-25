@@ -7,17 +7,12 @@ import { advanced } from '@/fields/factories/toggles/advanced'
 
 export const detailsFields: Field[] = [
   advanced(
-    {
-      type: 'row',
-      fields: [
-        textareaFieldFactory({
-          name: 'methodology',
-          dictionary: dictionary.tabs.details.fields,
-          width: 1,
-          flags: ['localized', 'advanced'],
-        }),
-      ],
-    }
+    textareaFieldFactory({
+      name: 'methodology',
+      dictionary: dictionary.tabs.details.fields,
+      width: 1,
+      flags: ['localized', 'index', 'advanced'],
+    }),
   ),
   advanced(
     {
@@ -27,14 +22,14 @@ export const detailsFields: Field[] = [
           name: 'decisions',
           relationTo: 'decisions',
           dictionary: dictionary.tabs.details.fields,
-          width: 2,
+          width: 1,
           flags: ['hasMany', 'advanced'],
         }),
         relationshipFieldFactory({
           name: 'impacts',
           relationTo: 'impacts',
           dictionary: dictionary.tabs.details.fields,
-          width: 2,
+          width: 1,
           flags: ['hasMany', 'advanced'],
         }),
       ],

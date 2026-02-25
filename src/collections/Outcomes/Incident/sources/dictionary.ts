@@ -26,7 +26,6 @@ export const dictionary = {
       label: { en: 'Details', es: 'Detalles', pt: 'Detalhes' },
       description: { en: 'Incident decisions and specs.', es: 'Decisiones y especificaciones del incidente.', pt: 'Decisões e especificações do incidente.' },
       fields: {
-        decisions: { label: { en: 'Decisions', es: 'Decisiones', pt: 'Decisões' } },
         specifications: { label: { en: 'Specifications', es: 'Especificaciones', pt: 'Especificações' } },
       },
     },
@@ -35,6 +34,7 @@ export const dictionary = {
       label: { en: 'Traits', es: 'Rasgos', pt: 'Traços' },
       description: { en: 'Incident impacts.', es: 'Impactos del incidente.', pt: 'Impactos do incidente.' },
       fields: {
+        decisions: { label: { en: 'Decisions', es: 'Decisiones', pt: 'Decisões' } },
         impacts: { label: { en: 'Impacts', es: 'Impactos', pt: 'Impactos' } },
       },
     },
@@ -43,6 +43,7 @@ export const dictionary = {
       label: { en: 'Assets', es: 'Activos', pt: 'Ativos' },
       description: { en: 'Incident media and archives.', es: 'Medios y archivos del incidente.', pt: 'Mídia e arquivos do incidente.' },
       fields: {
+        thumbnail: { label: { en: 'Thumbnail', es: 'Miniatura', pt: 'Miniatura' } },
         gallery: { label: { en: 'Gallery', es: 'Galería', pt: 'Galeria' } },
         archive: { label: { en: 'Archive', es: 'Archivo', pt: 'Arquivo' } },
       },

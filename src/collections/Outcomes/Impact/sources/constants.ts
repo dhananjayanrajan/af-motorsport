@@ -14,3 +14,5 @@ export const IMPACT_DEPTH = ['Surface', 'Moderate', 'Deep', 'Fundamental', 'Prof
 export const IMPACT_VELOCITY = ['Immediate', 'Rapid', 'Gradual', 'Delayed']
 export const IMPACT_GRAVITY = ['Catastrophic', 'Severe', 'Moderate', 'Minor', 'Negligible', 'Major']
 export const IMPACT_PERMANENCE = ['Permanent', 'LongTerm', 'Temporary', 'Reversible']
+export const IMPACT_RARITY = ['Common', 'Uncommon', 'Rare', 'VeryRare', 'Unique']
+

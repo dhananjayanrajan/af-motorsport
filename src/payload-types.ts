@@ -2859,11 +2859,11 @@ export interface Highlight {
   /**
    * Enter text value.
    */
-  name?: string | null;
+  name: string;
   /**
    * Select related document(s).
    */
-  type?: (number | null) | Category;
+  type?: (number | Category)[] | null;
   /**
    * Identifying info.
    */
@@ -2930,7 +2930,7 @@ export interface Highlight {
      */
     enable?: boolean | null;
     /**
-     * Select related document(s).
+     * Select an uploaded file.
      */
     thumbnail?: (number | null) | Media;
     /**
@@ -3674,11 +3674,11 @@ export interface Decision {
   /**
    * Enter text value.
    */
-  name?: string | null;
+  name: string;
   /**
    * Select related document(s).
    */
-  type?: (number | null) | Category;
+  type?: (number | Category)[] | null;
   /**
    * Identifying info.
    */
@@ -3755,18 +3755,6 @@ export interface Decision {
     /**
      * Select related document(s).
      */
-    protocols?: (number | Protocol)[] | null;
-    /**
-     * Select related document(s).
-     */
-    preferences?: (number | Preference)[] | null;
-    /**
-     * Select related document(s).
-     */
-    notes?: (number | Note)[] | null;
-    /**
-     * Select related document(s).
-     */
     entities?:
       | (
           | {
@@ -3792,9 +3780,31 @@ export interface Decision {
         )[]
       | null;
     /**
-     * Select related document(s).
+     * Decision operations.
      */
-    impacts?: (number | Impact)[] | null;
+    operations?: {
+      /**
+       * Select related document(s).
+       */
+      protocols?: (number | Protocol)[] | null;
+      /**
+       * Select related document(s).
+       */
+      preferences?: (number | Preference)[] | null;
+    };
+    /**
+     * Decision notes and impacts.
+     */
+    content?: {
+      /**
+       * Select related document(s).
+       */
+      impacts?: (number | Impact)[] | null;
+      /**
+       * Select related document(s).
+       */
+      notes?: (number | Note)[] | null;
+    };
     visibility?: {
       /**
        * Toggle the Contexts section on or off.
@@ -4531,286 +4541,6 @@ export interface Classification {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "preferences".
- */
-export interface Preference {
-  id: number;
-  toggle?: ('simple' | 'advanced') | null;
-  /**
-   * Preference name.
-   */
-  name: string;
-  /**
-   * Preference type.
-   */
-  type?: (number | Category)[] | null;
-  /**
-   * Identifying info.
-   */
-  basics?: {
-    /**
-     * Toggle the Basics section on or off.
-     */
-    enable?: boolean | null;
-    /**
-     * Short description.
-     */
-    description?: string | null;
-    visibility?: {
-      /**
-       * Toggle the Basics section on or off.
-       */
-      show?: boolean | null;
-    };
-  };
-  /**
-   * Characteristics.
-   */
-  traits?: {
-    /**
-     * Toggle the Traits section on or off.
-     */
-    enable?: boolean | null;
-    /**
-     * Appyling conditions.
-     */
-    conditions?: {
-      list?:
-        | {
-            /**
-             * Condition trigger.
-             */
-            trigger?: string | null;
-            /**
-             * Required prerequisite.
-             */
-            prerequisite?: string | null;
-            settings?: {
-              /**
-               * Toggle the Preference entry on or off.
-               */
-              show?: boolean | null;
-              /**
-               * Toggle the Preference entry on or off.
-               */
-              featured?: boolean | null;
-              /**
-               * Toggle the Preference entry on or off.
-               */
-              pinned?: boolean | null;
-            };
-            id?: string | null;
-          }[]
-        | null;
-    };
-    /**
-     * Reasons for preference.
-     */
-    reasons?: {
-      list?:
-        | {
-            /**
-             * The reason.
-             */
-            reason?: string | null;
-            /**
-             * Importance level.
-             */
-            importance?: ('Low' | 'Medium' | 'High' | 'Critical') | null;
-            settings?: {
-              /**
-               * Toggle the Preference entry on or off.
-               */
-              show?: boolean | null;
-              /**
-               * Toggle the Preference entry on or off.
-               */
-              featured?: boolean | null;
-              /**
-               * Toggle the Preference entry on or off.
-               */
-              pinned?: boolean | null;
-            };
-            id?: string | null;
-          }[]
-        | null;
-    };
-    visibility?: {
-      /**
-       * Toggle the Traits section on or off.
-       */
-      show?: boolean | null;
-    };
-  };
-  /**
-   * Contextual information.
-   */
-  contexts?: {
-    /**
-     * Toggle the Contexts section on or off.
-     */
-    enable?: boolean | null;
-    /**
-     * Related principles.
-     */
-    principles?: (number | Principle)[] | null;
-    /**
-     * Related notes.
-     */
-    notes?: (number | Note)[] | null;
-    visibility?: {
-      /**
-       * Toggle the Contexts section on or off.
-       */
-      show?: boolean | null;
-    };
-  };
-  seo?: {
-    title?: string | null;
-    /**
-     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
-     */
-    image?: (number | null) | Media;
-    description?: string | null;
-  };
-  /**
-   * When enabled, the slug will auto-generate from the title field on save and autosave.
-   */
-  generateSlug?: boolean | null;
-  slug?: string | null;
-  /**
-   * Categories that are relevant to the record.
-   */
-  categories?: (number | Category)[] | null;
-  /**
-   * Associated tags for the record.
-   */
-  tags?: (number | Tag)[] | null;
-  /**
-   * Controls who can see this record and under what conditions.
-   */
-  visibility?: {
-    check_publish?: boolean | null;
-    check_featured?: boolean | null;
-    check_pinned?: boolean | null;
-  };
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "principles".
- */
-export interface Principle {
-  id: number;
-  toggle?: ('simple' | 'advanced') | null;
-  /**
-   * Principle name.
-   */
-  name: string;
-  /**
-   * Principle type.
-   */
-  type?: (number | Category)[] | null;
-  /**
-   * Identifying info.
-   */
-  basics?: {
-    /**
-     * Toggle the Basics section on or off.
-     */
-    enable?: boolean | null;
-    /**
-     * Short description.
-     */
-    description?: string | null;
-    /**
-     * Official statement.
-     */
-    statement?: string | null;
-    visibility?: {
-      /**
-       * Toggle the Basics section on or off.
-       */
-      show?: boolean | null;
-    };
-  };
-  /**
-   * Extra data.
-   */
-  details?: {
-    /**
-     * Toggle the Details section on or off.
-     */
-    enable?: boolean | null;
-    /**
-     * Application guide.
-     */
-    application?: string | null;
-    /**
-     * Underlying rationale.
-     */
-    rationale?: string | null;
-    visibility?: {
-      /**
-       * Toggle the Details section on or off.
-       */
-      show?: boolean | null;
-    };
-  };
-  /**
-   * Contextual information.
-   */
-  contexts?: {
-    /**
-     * Toggle the Contexts section on or off.
-     */
-    enable?: boolean | null;
-    /**
-     * Related notes.
-     */
-    notes?: (number | Note)[] | null;
-    visibility?: {
-      /**
-       * Toggle the Contexts section on or off.
-       */
-      show?: boolean | null;
-    };
-  };
-  seo?: {
-    title?: string | null;
-    /**
-     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
-     */
-    image?: (number | null) | Media;
-    description?: string | null;
-  };
-  /**
-   * When enabled, the slug will auto-generate from the title field on save and autosave.
-   */
-  generateSlug?: boolean | null;
-  slug?: string | null;
-  /**
-   * Categories that are relevant to the record.
-   */
-  categories?: (number | Category)[] | null;
-  /**
-   * Associated tags for the record.
-   */
-  tags?: (number | Tag)[] | null;
-  /**
-   * Controls who can see this record and under what conditions.
-   */
-  visibility?: {
-    check_publish?: boolean | null;
-    check_featured?: boolean | null;
-    check_pinned?: boolean | null;
-  };
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "leaders".
  */
 export interface Leader {
@@ -5105,6 +4835,118 @@ export interface Leader {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "principles".
+ */
+export interface Principle {
+  id: number;
+  toggle?: ('simple' | 'advanced') | null;
+  /**
+   * Principle name.
+   */
+  name: string;
+  /**
+   * Principle type.
+   */
+  type?: (number | Category)[] | null;
+  /**
+   * Identifying info.
+   */
+  basics?: {
+    /**
+     * Toggle the Basics section on or off.
+     */
+    enable?: boolean | null;
+    /**
+     * Short description.
+     */
+    description?: string | null;
+    /**
+     * Official statement.
+     */
+    statement?: string | null;
+    visibility?: {
+      /**
+       * Toggle the Basics section on or off.
+       */
+      show?: boolean | null;
+    };
+  };
+  /**
+   * Extra data.
+   */
+  details?: {
+    /**
+     * Toggle the Details section on or off.
+     */
+    enable?: boolean | null;
+    /**
+     * Application guide.
+     */
+    application?: string | null;
+    /**
+     * Underlying rationale.
+     */
+    rationale?: string | null;
+    visibility?: {
+      /**
+       * Toggle the Details section on or off.
+       */
+      show?: boolean | null;
+    };
+  };
+  /**
+   * Contextual information.
+   */
+  contexts?: {
+    /**
+     * Toggle the Contexts section on or off.
+     */
+    enable?: boolean | null;
+    /**
+     * Related notes.
+     */
+    notes?: (number | Note)[] | null;
+    visibility?: {
+      /**
+       * Toggle the Contexts section on or off.
+       */
+      show?: boolean | null;
+    };
+  };
+  seo?: {
+    title?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
+    description?: string | null;
+  };
+  /**
+   * When enabled, the slug will auto-generate from the title field on save and autosave.
+   */
+  generateSlug?: boolean | null;
+  slug?: string | null;
+  /**
+   * Categories that are relevant to the record.
+   */
+  categories?: (number | Category)[] | null;
+  /**
+   * Associated tags for the record.
+   */
+  tags?: (number | Tag)[] | null;
+  /**
+   * Controls who can see this record and under what conditions.
+   */
+  visibility?: {
+    check_publish?: boolean | null;
+    check_featured?: boolean | null;
+    check_pinned?: boolean | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "experiences".
  */
 export interface Experience {
@@ -5113,11 +4955,11 @@ export interface Experience {
   /**
    * Enter text value.
    */
-  name?: string | null;
+  name: string;
   /**
    * Select related document(s).
    */
-  type?: (number | null) | Category;
+  type?: (number | Category)[] | null;
   /**
    * Identifying info.
    */
@@ -5167,19 +5009,16 @@ export interface Experience {
     /**
      * Skills acquired or used.
      */
-    skills?:
-      | {
-          /**
-           * Select related document(s).
-           */
-          skill?: (number | null) | Skill;
-          /**
-           * Select one or more options.
-           */
-          proficiency?: ('Beginner' | 'Intermediate' | 'Advanced' | 'Expert') | null;
-          id?: string | null;
-        }[]
-      | null;
+    skills?: {
+      /**
+       * Select related document(s).
+       */
+      skill?: (number | null) | Skill;
+      /**
+       * Select one or more options.
+       */
+      proficiency?: ('Beginner' | 'Intermediate' | 'Advanced' | 'Expert') | null;
+    };
     visibility?: {
       /**
        * Toggle the Traits section on or off.
@@ -5196,7 +5035,7 @@ export interface Experience {
      */
     enable?: boolean | null;
     /**
-     * Select related document(s).
+     * Select an uploaded file.
      */
     evidence?: (number | Media)[] | null;
     /**
@@ -6152,11 +5991,11 @@ export interface Impact {
   /**
    * Enter text value.
    */
-  name?: string | null;
+  name: string;
   /**
    * Select related document(s).
    */
-  type?: (number | null) | Category;
+  type?: (number | Category)[] | null;
   /**
    * Identifying info.
    */
@@ -6185,6 +6024,10 @@ export interface Impact {
        * Select one or more options.
        */
       depth?: ('Surface' | 'Moderate' | 'Deep' | 'Fundamental' | 'Profound') | null;
+      /**
+       * Select one or more options.
+       */
+      rarity?: ('Common' | 'Uncommon' | 'Rare' | 'VeryRare' | 'Unique') | null;
     };
     visibility?: {
       /**
@@ -6852,11 +6695,11 @@ export interface Award {
   /**
    * Enter text value.
    */
-  name?: string | null;
+  name: string;
   /**
    * Select related document(s).
    */
-  type?: (number | null) | Category;
+  type?: (number | Category)[] | null;
   /**
    * Identifying info.
    */
@@ -6904,13 +6747,13 @@ export interface Award {
      */
     enable?: boolean | null;
     /**
-     * Select related document(s).
+     * Select an uploaded file.
      */
     thumbnail?: (number | null) | Media;
     /**
      * Select related document(s).
      */
-    visualization?: (number | null) | Visualization;
+    visualization?: (number | Visualization)[] | null;
     visibility?: {
       /**
        * Toggle the Assets section on or off.
@@ -6930,18 +6773,21 @@ export interface Award {
      * Select related document(s).
      */
     entities?:
-      | ({
-          relationTo: 'leaders';
-          value: number | Leader;
-        } | null)
-      | ({
-          relationTo: 'organizations';
-          value: number | Organization;
-        } | null)
-      | ({
-          relationTo: 'individuals';
-          value: number | Individual;
-        } | null);
+      | (
+          | {
+              relationTo: 'leaders';
+              value: number | Leader;
+            }
+          | {
+              relationTo: 'organizations';
+              value: number | Organization;
+            }
+          | {
+              relationTo: 'individuals';
+              value: number | Individual;
+            }
+        )[]
+      | null;
     /**
      * Select related document(s).
      */
@@ -6995,11 +6841,11 @@ export interface Strategy {
   /**
    * Enter text value.
    */
-  name?: string | null;
+  name: string;
   /**
    * Select related document(s).
    */
-  type?: (number | null) | Category;
+  type?: (number | Category)[] | null;
   /**
    * Identifying info.
    */
@@ -7057,54 +6903,267 @@ export interface Strategy {
     /**
      * Strategy directives.
      */
-    directives?:
-      | {
-          /**
-           * Enter text value.
-           */
-          phase?: string | null;
-          /**
-           * Enter text value.
-           */
-          action?: string | null;
-          /**
-           * Enter text value.
-           */
-          owner?: string | null;
-          /**
-           * Select a date and/or time.
-           */
-          deadline?: string | null;
-          id?: string | null;
-        }[]
-      | null;
+    directives?: {
+      list?:
+        | {
+            /**
+             * Enter text value.
+             */
+            phase?: string | null;
+            /**
+             * Enter text value.
+             */
+            action?: string | null;
+            /**
+             * Enter text value.
+             */
+            owner?: string | null;
+            /**
+             * Select a date and/or time.
+             */
+            deadline?: string | null;
+            settings?: {
+              /**
+               * Toggle the Directive entry on or off.
+               */
+              show?: boolean | null;
+              /**
+               * Toggle the Directive entry on or off.
+               */
+              featured?: boolean | null;
+              /**
+               * Toggle the Directive entry on or off.
+               */
+              pinned?: boolean | null;
+            };
+            id?: string | null;
+          }[]
+        | null;
+    };
     /**
      * Strategy contingencies.
      */
-    contingencies?:
-      | {
-          /**
-           * Enter text value.
-           */
-          trigger?: string | null;
-          /**
-           * Enter text value.
-           */
-          response?: string | null;
-          /**
-           * Select one or more options.
-           */
-          probability?: ('Low' | 'Medium' | 'High' | 'Certain') | null;
-          /**
-           * Select one or more options.
-           */
-          impact?: ('Minor' | 'Moderate' | 'Major' | 'Critical') | null;
-          id?: string | null;
-        }[]
-      | null;
+    contingencies?: {
+      list?:
+        | {
+            /**
+             * Enter text value.
+             */
+            trigger?: string | null;
+            /**
+             * Select one or more options.
+             */
+            probability?: ('Low' | 'Medium' | 'High' | 'Certain') | null;
+            /**
+             * Enter text value.
+             */
+            response?: string | null;
+            /**
+             * Select one or more options.
+             */
+            impact?: ('Minor' | 'Moderate' | 'Major' | 'Critical') | null;
+            settings?: {
+              /**
+               * Toggle the Contingency entry on or off.
+               */
+              show?: boolean | null;
+              /**
+               * Toggle the Contingency entry on or off.
+               */
+              featured?: boolean | null;
+              /**
+               * Toggle the Contingency entry on or off.
+               */
+              pinned?: boolean | null;
+            };
+            id?: string | null;
+          }[]
+        | null;
+    };
     visibility?: {
       /**
        * Toggle the Traits section on or off.
+       */
+      show?: boolean | null;
+    };
+  };
+  /**
+   * Contextual information.
+   */
+  contexts?: {
+    /**
+     * Toggle the Contexts section on or off.
+     */
+    enable?: boolean | null;
+    /**
+     * Select related document(s).
+     */
+    entities?:
+      | (
+          | {
+              relationTo: 'drivers';
+              value: number | Driver;
+            }
+          | {
+              relationTo: 'members';
+              value: number | Member;
+            }
+          | {
+              relationTo: 'leaders';
+              value: number | Leader;
+            }
+          | {
+              relationTo: 'organizations';
+              value: number | Organization;
+            }
+          | {
+              relationTo: 'kits';
+              value: number | Kit;
+            }
+        )[]
+      | null;
+    /**
+     * Select related document(s).
+     */
+    narrative?: (number | null) | Narrative;
+    visibility?: {
+      /**
+       * Toggle the Contexts section on or off.
+       */
+      show?: boolean | null;
+    };
+  };
+  seo?: {
+    title?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
+    description?: string | null;
+  };
+  /**
+   * When enabled, the slug will auto-generate from the title field on save and autosave.
+   */
+  generateSlug?: boolean | null;
+  slug?: string | null;
+  /**
+   * Categories that are relevant to the record.
+   */
+  categories?: (number | Category)[] | null;
+  /**
+   * Associated tags for the record.
+   */
+  tags?: (number | Tag)[] | null;
+  /**
+   * Controls who can see this record and under what conditions.
+   */
+  visibility?: {
+    check_publish?: boolean | null;
+    check_featured?: boolean | null;
+    check_pinned?: boolean | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "incidents".
+ */
+export interface Incident {
+  id: number;
+  toggle?: ('simple' | 'advanced') | null;
+  /**
+   * Enter text value.
+   */
+  name: string;
+  /**
+   * Select related document(s).
+   */
+  type?: (number | Category)[] | null;
+  /**
+   * Identifying info.
+   */
+  basics?: {
+    /**
+     * Toggle the Basics section on or off.
+     */
+    enable?: boolean | null;
+    /**
+     * Enter text value.
+     */
+    description?: string | null;
+    visibility?: {
+      /**
+       * Toggle the Basics section on or off.
+       */
+      show?: boolean | null;
+    };
+  };
+  /**
+   * Extra data.
+   */
+  details?: {
+    /**
+     * Toggle the Details section on or off.
+     */
+    enable?: boolean | null;
+    /**
+     * Select related document(s).
+     */
+    specifications?: (number | Specification)[] | null;
+    visibility?: {
+      /**
+       * Toggle the Details section on or off.
+       */
+      show?: boolean | null;
+    };
+  };
+  /**
+   * Characteristics.
+   */
+  traits?: {
+    /**
+     * Toggle the Traits section on or off.
+     */
+    enable?: boolean | null;
+    /**
+     * Select related document(s).
+     */
+    decisions?: (number | Decision)[] | null;
+    /**
+     * Select related document(s).
+     */
+    impacts?: (number | Impact)[] | null;
+    visibility?: {
+      /**
+       * Toggle the Traits section on or off.
+       */
+      show?: boolean | null;
+    };
+  };
+  /**
+   * Media files.
+   */
+  assets?: {
+    /**
+     * Toggle the Assets section on or off.
+     */
+    enable?: boolean | null;
+    /**
+     * Select an uploaded file.
+     */
+    thumbnail?: (number | null) | Media;
+    /**
+     * Select related document(s).
+     */
+    gallery?: (number | null) | Gallery;
+    /**
+     * Select related document(s).
+     */
+    archive?: (number | null) | Archive;
+    visibility?: {
+      /**
+       * Toggle the Assets section on or off.
        */
       show?: boolean | null;
     };
@@ -7189,19 +7248,19 @@ export interface Strategy {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "incidents".
+ * via the `definition` "preferences".
  */
-export interface Incident {
+export interface Preference {
   id: number;
   toggle?: ('simple' | 'advanced') | null;
   /**
-   * Enter text value.
+   * Preference name.
    */
-  name?: string | null;
+  name: string;
   /**
-   * Select related document(s).
+   * Preference type.
    */
-  type?: (number | null) | Category;
+  type?: (number | Category)[] | null;
   /**
    * Identifying info.
    */
@@ -7211,35 +7270,12 @@ export interface Incident {
      */
     enable?: boolean | null;
     /**
-     * Enter text value.
+     * Short description.
      */
     description?: string | null;
     visibility?: {
       /**
        * Toggle the Basics section on or off.
-       */
-      show?: boolean | null;
-    };
-  };
-  /**
-   * Extra data.
-   */
-  details?: {
-    /**
-     * Toggle the Details section on or off.
-     */
-    enable?: boolean | null;
-    /**
-     * Select related document(s).
-     */
-    decisions?: (number | Decision)[] | null;
-    /**
-     * Select related document(s).
-     */
-    specifications?: (number | Specification)[] | null;
-    visibility?: {
-      /**
-       * Toggle the Details section on or off.
        */
       show?: boolean | null;
     };
@@ -7253,35 +7289,72 @@ export interface Incident {
      */
     enable?: boolean | null;
     /**
-     * Select related document(s).
+     * Appyling conditions.
      */
-    impacts?: (number | Impact)[] | null;
+    conditions?: {
+      list?:
+        | {
+            /**
+             * Condition trigger.
+             */
+            trigger?: string | null;
+            /**
+             * Required prerequisite.
+             */
+            prerequisite?: string | null;
+            settings?: {
+              /**
+               * Toggle the Preference entry on or off.
+               */
+              show?: boolean | null;
+              /**
+               * Toggle the Preference entry on or off.
+               */
+              featured?: boolean | null;
+              /**
+               * Toggle the Preference entry on or off.
+               */
+              pinned?: boolean | null;
+            };
+            id?: string | null;
+          }[]
+        | null;
+    };
+    /**
+     * Reasons for preference.
+     */
+    reasons?: {
+      list?:
+        | {
+            /**
+             * The reason.
+             */
+            reason?: string | null;
+            /**
+             * Importance level.
+             */
+            importance?: ('Low' | 'Medium' | 'High' | 'Critical') | null;
+            settings?: {
+              /**
+               * Toggle the Preference entry on or off.
+               */
+              show?: boolean | null;
+              /**
+               * Toggle the Preference entry on or off.
+               */
+              featured?: boolean | null;
+              /**
+               * Toggle the Preference entry on or off.
+               */
+              pinned?: boolean | null;
+            };
+            id?: string | null;
+          }[]
+        | null;
+    };
     visibility?: {
       /**
        * Toggle the Traits section on or off.
-       */
-      show?: boolean | null;
-    };
-  };
-  /**
-   * Media files.
-   */
-  assets?: {
-    /**
-     * Toggle the Assets section on or off.
-     */
-    enable?: boolean | null;
-    /**
-     * Select related document(s).
-     */
-    gallery?: (number | null) | Gallery;
-    /**
-     * Select related document(s).
-     */
-    archive?: (number | null) | Archive;
-    visibility?: {
-      /**
-       * Toggle the Assets section on or off.
        */
       show?: boolean | null;
     };
@@ -7295,36 +7368,13 @@ export interface Incident {
      */
     enable?: boolean | null;
     /**
-     * Select related document(s).
+     * Related principles.
      */
-    narrative?: (number | null) | Narrative;
+    principles?: (number | Principle)[] | null;
     /**
-     * Select related document(s).
+     * Related notes.
      */
-    entities?:
-      | (
-          | {
-              relationTo: 'drivers';
-              value: number | Driver;
-            }
-          | {
-              relationTo: 'members';
-              value: number | Member;
-            }
-          | {
-              relationTo: 'leaders';
-              value: number | Leader;
-            }
-          | {
-              relationTo: 'organizations';
-              value: number | Organization;
-            }
-          | {
-              relationTo: 'kits';
-              value: number | Kit;
-            }
-        )[]
-      | null;
+    notes?: (number | Note)[] | null;
     visibility?: {
       /**
        * Toggle the Contexts section on or off.
@@ -15591,7 +15641,6 @@ export interface IncidentsSelect<T extends boolean = true> {
     | T
     | {
         enable?: T;
-        decisions?: T;
         specifications?: T;
         visibility?:
           | T
@@ -15603,6 +15652,7 @@ export interface IncidentsSelect<T extends boolean = true> {
     | T
     | {
         enable?: T;
+        decisions?: T;
         impacts?: T;
         visibility?:
           | T
@@ -15614,6 +15664,7 @@ export interface IncidentsSelect<T extends boolean = true> {
     | T
     | {
         enable?: T;
+        thumbnail?: T;
         gallery?: T;
         archive?: T;
         visibility?:
@@ -15674,6 +15725,7 @@ export interface ImpactsSelect<T extends boolean = true> {
               significance?: T;
               scale?: T;
               depth?: T;
+              rarity?: T;
             };
         visibility?:
           | T
@@ -15775,11 +15827,19 @@ export interface DecisionsSelect<T extends boolean = true> {
     | T
     | {
         enable?: T;
-        protocols?: T;
-        preferences?: T;
-        notes?: T;
         entities?: T;
-        impacts?: T;
+        operations?:
+          | T
+          | {
+              protocols?: T;
+              preferences?: T;
+            };
+        content?:
+          | T
+          | {
+              impacts?: T;
+              notes?: T;
+            };
         visibility?:
           | T
           | {
@@ -15846,20 +15906,42 @@ export interface StrategiesSelect<T extends boolean = true> {
         directives?:
           | T
           | {
-              phase?: T;
-              action?: T;
-              owner?: T;
-              deadline?: T;
-              id?: T;
+              list?:
+                | T
+                | {
+                    phase?: T;
+                    action?: T;
+                    owner?: T;
+                    deadline?: T;
+                    settings?:
+                      | T
+                      | {
+                          show?: T;
+                          featured?: T;
+                          pinned?: T;
+                        };
+                    id?: T;
+                  };
             };
         contingencies?:
           | T
           | {
-              trigger?: T;
-              response?: T;
-              probability?: T;
-              impact?: T;
-              id?: T;
+              list?:
+                | T
+                | {
+                    trigger?: T;
+                    probability?: T;
+                    response?: T;
+                    impact?: T;
+                    settings?:
+                      | T
+                      | {
+                          show?: T;
+                          featured?: T;
+                          pinned?: T;
+                        };
+                    id?: T;
+                  };
             };
         visibility?:
           | T
@@ -15871,8 +15953,8 @@ export interface StrategiesSelect<T extends boolean = true> {
     | T
     | {
         enable?: T;
-        narrative?: T;
         entities?: T;
+        narrative?: T;
         visibility?:
           | T
           | {
@@ -16014,7 +16096,6 @@ export interface ExperiencesSelect<T extends boolean = true> {
           | {
               skill?: T;
               proficiency?: T;
-              id?: T;
             };
         visibility?:
           | T

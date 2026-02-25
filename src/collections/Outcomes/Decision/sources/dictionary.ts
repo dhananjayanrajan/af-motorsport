@@ -44,11 +44,27 @@ export const dictionary = {
       label: { en: 'Contexts', es: 'Contextos', pt: 'Contextos' },
       description: { en: 'Decision contexts and impacts.', es: 'Contextos e impactos de la decisión.', pt: 'Contextos e impactos da decisão.' },
       fields: {
-        protocols: { label: { en: 'Protocols', es: 'Protocolos', pt: 'Protocolos' } },
-        preferences: { label: { en: 'Preferences', es: 'Preferencias', pt: 'Preferências' } },
-        notes: { label: { en: 'Notes', es: 'Notas', pt: 'Notas' } },
         entities: { label: { en: 'Entities', es: 'Entidades', pt: 'Entidades' } },
-        impacts: { label: { en: 'Impacts', es: 'Impactos', pt: 'Impactos' } },
+        operations: {
+          name: 'operations',
+          label: { en: 'Operations', es: 'Operaciones', pt: 'Operações' },
+          description: { en: 'Decision operations.', es: 'Operaciones de la decisión.', pt: 'Operações da decisão.' },
+          entity: { en: 'Operations', es: 'Operaciones', pt: 'Operações' },
+          fields: {
+            protocols: { label: { en: 'Protocols', es: 'Protocolos', pt: 'Protocolos' } },
+            preferences: { label: { en: 'Preferences', es: 'Preferencias', pt: 'Preferências' } },
+          }
+        },
+        content: {
+          name: 'content',
+          label: { en: 'Content', es: 'Contenido', pt: 'Conteúdo' },
+          description: { en: 'Decision notes and impacts.', es: 'Notas e impactos de la decisión.', pt: 'Notas e impactos da decisão.' },
+          entity: { en: 'Content', es: 'Contenido', pt: 'Conteúdo' },
+          fields: {
+            notes: { label: { en: 'Notes', es: 'Notas', pt: 'Notas' } },
+            impacts: { label: { en: 'Impacts', es: 'Impactos', pt: 'Impactos' } },
+          }
+        }
       },
     },
   },
