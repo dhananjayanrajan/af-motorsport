@@ -20,7 +20,6 @@ export const dictionary = {
       fields: {
         clips: { label: { en: 'Clips', es: 'Clips', pt: 'Clipes' } },
         videos: { label: { en: 'Videos', es: 'Vídeos', pt: 'Vídeos' } },
-        narrative: { label: { en: 'Narrative', es: 'Narrativa', pt: 'Narrativa' } },
       },
     },
     traits: {
@@ -32,5 +31,14 @@ export const dictionary = {
         format: { label: { en: 'Format', es: 'Formato', pt: 'Formato' } },
       },
     },
+    contexts: {
+      name: 'contexts',
+      label: { en: 'Contexts', es: 'Contextos', pt: 'Contextos' },
+      entity: { en: 'Playlist', es: 'Lista de reproducción', pt: 'Playlist' },
+      description: { en: 'Related info.', es: 'Info relacionada.', pt: 'Info relacionada.' },
+      fields: {
+        narratives: { label: { en: 'Narratives', es: 'Narrativas', pt: 'Narrativas' } },
+      }
+    }
   },
 } as const

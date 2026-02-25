@@ -35,7 +35,7 @@ export const dictionary = {
     details: {
       name: 'details',
       label: { en: 'Details', es: 'Detalles', pt: 'Detalhes' },
-      description: { en: 'Kit design and functionality.', es: 'Diseño y funcionalidad del kit.', pt: 'Design e funcionalidade do kit.' },
+      description: { en: 'Kit design and appearance.', es: 'Diseño y apariencia del kit.', pt: 'Design e aparência do kit.' },
       fields: {
         design: {
           name: 'design',
@@ -49,15 +49,15 @@ export const dictionary = {
             year: { label: { en: 'Year', es: 'Año', pt: 'Ano' } },
           },
         },
-        functionality: {
-          name: 'functionality',
-          label: { en: 'Functionality', es: 'Funcionalidad', pt: 'Funcionalidade' },
-          entity: { en: 'Functionality', es: 'Funcionalidad', pt: 'Funcionalidade' },
-          description: { en: 'Kit functionality ratings.', es: 'Calificaciones de funcionalidad del kit.', pt: 'Classificações de funcionalidade do kit.' },
+        appearance: {
+          name: 'appearance',
+          label: { en: 'Appearance', es: 'Apariencia', pt: 'Aparência' },
+          entity: { en: 'Appearance', es: 'Apariencia', pt: 'Aparência' },
+          description: { en: 'Visual appearance and branding.', es: 'Apariencia visual y branding.', pt: 'Aparência visual e branding.' },
           fields: {
-            performance: { label: { en: 'Performance', es: 'Rendimiento', pt: 'Desempenho' } },
-            durability: { label: { en: 'Durability', es: 'Durabilidad', pt: 'Durabilidade' } },
-            comfort: { label: { en: 'Comfort', es: 'Comodidad', pt: 'Conforto' } },
+            colors: { label: { en: 'Colors', es: 'Colores', pt: 'Cores' } },
+            branding: { label: { en: 'Branding', es: 'Branding', pt: 'Branding' } },
+            style: { label: { en: 'Style', es: 'Estilo', pt: 'Estilo' } },
           },
         },
       },
@@ -65,7 +65,7 @@ export const dictionary = {
     traits: {
       name: 'traits',
       label: { en: 'Traits', es: 'Rasgos', pt: 'Traços' },
-      description: { en: 'Kit composition and appearance.', es: 'Composición y apariencia del kit.', pt: 'Composição e aparência do kit.' },
+      description: { en: 'Kit materials and functionality.', es: 'Materiales y funcionalidad del kit.', pt: 'Materiais e funcionalidade do kit.' },
       fields: {
         composition: {
           name: 'composition',
@@ -78,6 +78,17 @@ export const dictionary = {
             finish: { label: { en: 'Finish', es: 'Acabado', pt: 'Acabamento' } },
           },
         },
+        functionality: {
+          name: 'functionality',
+          label: { en: 'Functionality', es: 'Funcionalidad', pt: 'Funcionalidade' },
+          entity: { en: 'Functionality', es: 'Funcionalidad', pt: 'Funcionalidade' },
+          description: { en: 'Kit functionality ratings.', es: 'Calificaciones de funcionalidad del kit.', pt: 'Classificações de funcionalidade do kit.' },
+          fields: {
+            performance: { label: { en: 'Performance', es: 'Rendimiento', pt: 'Desempenho' } },
+            durability: { label: { en: 'Durability', es: 'Durabilidad', pt: 'Durabilidade' } },
+            comfort: { label: { en: 'Comfort', es: 'Comodidad', pt: 'Conforto' } },
+          },
+        },
         materials: {
           name: 'materials',
           label: { en: 'Materials', es: 'Materiales', pt: 'Materiais' },
@@ -87,17 +98,6 @@ export const dictionary = {
             type: { label: { en: 'Type', es: 'Tipo', pt: 'Tipo' } },
             specification: { label: { en: 'Specification', es: 'Especificación', pt: 'Especificação' } },
             origin: { label: { en: 'Origin', es: 'Origen', pt: 'Origem' } },
-          },
-        },
-        appearance: {
-          name: 'appearance',
-          label: { en: 'Appearance', es: 'Apariencia', pt: 'Aparência' },
-          entity: { en: 'Appearance', es: 'Apariencia', pt: 'Aparência' },
-          description: { en: 'Visual appearance and branding.', es: 'Apariencia visual y branding.', pt: 'Aparência visual e branding.' },
-          fields: {
-            colors: { label: { en: 'Colors', es: 'Colores', pt: 'Cores' } },
-            branding: { label: { en: 'Branding', es: 'Branding', pt: 'Branding' } },
-            style: { label: { en: 'Style', es: 'Estilo', pt: 'Estilo' } },
           },
         },
       },

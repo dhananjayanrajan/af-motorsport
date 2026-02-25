@@ -7,9 +7,8 @@ import { selectFieldFactory } from '@/fields/factories/fields/selectField'
 import { groupFactory } from '@/fields/factories/blueprint'
 import { advanced } from '@/fields/factories/toggles/advanced'
 import {
-  KIT_FUNCTION_PERFORMANCE,
-  KIT_FUNCTION_DURABILITY,
-  KIT_FUNCTION_COMFORT,
+  KIT_APPEARANCE_BRANDING,
+  KIT_APPEARANCE_STYLE,
 } from '../sources/constants'
 
 export const detailsFields: Field[] = [
@@ -33,11 +32,6 @@ export const detailsFields: Field[] = [
               width: 2,
               flags: ['localized', 'advanced'],
             }),
-          ],
-        },
-        {
-          type: 'row',
-          fields: [
             textFieldFactory({
               name: 'designer',
               dictionary: dictionary.tabs.details.fields.design.fields,
@@ -59,31 +53,35 @@ export const detailsFields: Field[] = [
   ),
   advanced(
     groupFactory(
-      dictionary.tabs.details.fields.functionality,
+      dictionary.tabs.details.fields.appearance,
       dictionary.host,
       [
         {
           type: 'row',
           fields: [
+            textFieldFactory({
+              name: 'colors',
+              dictionary: dictionary.tabs.details.fields.appearance.fields,
+              width: 1,
+              flags: ['advanced'],
+            }),
+          ],
+        },
+        {
+          type: 'row',
+          fields: [
             selectFieldFactory({
-              name: 'performance',
-              options: KIT_FUNCTION_PERFORMANCE,
-              dictionary: dictionary.tabs.details.fields.functionality.fields,
-              width: 3,
+              name: 'branding',
+              options: KIT_APPEARANCE_BRANDING,
+              dictionary: dictionary.tabs.details.fields.appearance.fields,
+              width: 2,
               flags: ['advanced'],
             }),
             selectFieldFactory({
-              name: 'durability',
-              options: KIT_FUNCTION_DURABILITY,
-              dictionary: dictionary.tabs.details.fields.functionality.fields,
-              width: 3,
-              flags: ['advanced'],
-            }),
-            selectFieldFactory({
-              name: 'comfort',
-              options: KIT_FUNCTION_COMFORT,
-              dictionary: dictionary.tabs.details.fields.functionality.fields,
-              width: 3,
+              name: 'style',
+              options: KIT_APPEARANCE_STYLE,
+              dictionary: dictionary.tabs.details.fields.appearance.fields,
+              width: 2,
               flags: ['advanced'],
             }),
           ],

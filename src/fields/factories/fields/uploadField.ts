@@ -15,6 +15,7 @@ type Flag =
   | 'localized'
   | 'index'
   | 'unique'
+  | 'hasMany'
   | 'advanced'
   | 'readonly'
   | 'disabled'
@@ -91,7 +92,7 @@ export const uploadFieldFactory = (opts: UploadFactoryOptions): Field => {
   const localized = flags.has('localized') || dictNode?.localized || DEFAULTS.localized
   const unique = flags.has('unique') || DEFAULTS.unique
   const index = flags.has('index') || DEFAULTS.index
-  const hasMany = opts.hasMany ?? DEFAULTS.hasMany
+  const hasMany = flags.has('hasMany') || (opts.hasMany ?? DEFAULTS.hasMany)
 
   const field: UploadField = {
     name: opts.name,

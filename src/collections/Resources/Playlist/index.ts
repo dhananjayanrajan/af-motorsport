@@ -4,46 +4,48 @@ import { dictionary } from './sources/dictionary'
 import { essentialFields } from './tabs/essentials'
 import { detailsFields } from './tabs/details'
 import { traitsFields } from './tabs/traits'
+import { contextsFields } from './tabs/contexts'
 export const Playlists = collectionFactory(
-{
-slug: 'playlists',
-labels: { singular: dictionary.host, plural: dictionary.hostPlural },
-access: {
-read: ({ req: { user } }) => {
-if (!user || !('roles' in user) || !user.roles) return false
-return user.roles.some((role) =>
-['admin', 'content', 'archive'].includes(role)
-)
-},
-create: ({ req: { user } }) => {
-if (!user || !('roles' in user) || !user.roles) return false
-return user.roles.some((role) =>
-['admin', 'content', 'archive'].includes(role)
-)
-},
-update: ({ req: { user } }) => {
-if (!user || !('roles' in user) || !user.roles) return false
-return user.roles.some((role) =>
-['admin', 'content', 'archive'].includes(role)
-)
-},
-delete: ({ req: { user } }) => {
-if (!user || !('roles' in user) || !user.roles) return false
-return user.roles.some((role) =>
-['admin', 'content', 'archive'].includes(role)
-)
-},
-},
-admin: {
-group: 'Resources',
-useAsTitle: 'name',
-defaultColumns: ['name', 'type', 'updatedAt'],
-},
-},
-essentialFields,
-[
-tabFactory('details', dictionary.host, detailsFields),
-tabFactory('traits', dictionary.host, traitsFields),
-],
-{ host: dictionary.host, hostPlural: dictionary.hostPlural }
+  {
+    slug: 'playlists',
+    labels: { singular: dictionary.host, plural: dictionary.hostPlural },
+    access: {
+      read: ({ req: { user } }) => {
+        if (!user || !('roles' in user) || !user.roles) return false
+        return user.roles.some((role) =>
+          ['admin', 'content', 'archive'].includes(role)
+        )
+      },
+      create: ({ req: { user } }) => {
+        if (!user || !('roles' in user) || !user.roles) return false
+        return user.roles.some((role) =>
+          ['admin', 'content', 'archive'].includes(role)
+        )
+      },
+      update: ({ req: { user } }) => {
+        if (!user || !('roles' in user) || !user.roles) return false
+        return user.roles.some((role) =>
+          ['admin', 'content', 'archive'].includes(role)
+        )
+      },
+      delete: ({ req: { user } }) => {
+        if (!user || !('roles' in user) || !user.roles) return false
+        return user.roles.some((role) =>
+          ['admin', 'content', 'archive'].includes(role)
+        )
+      },
+    },
+    admin: {
+      group: 'Resources',
+      useAsTitle: 'name',
+      defaultColumns: ['name', 'type', 'updatedAt'],
+    },
+  },
+  essentialFields,
+  [
+    tabFactory('details', dictionary.host, detailsFields),
+    tabFactory('traits', dictionary.host, traitsFields),
+    tabFactory('contexts', dictionary.host, contextsFields),
+  ],
+  { host: dictionary.host, hostPlural: dictionary.hostPlural }
 )

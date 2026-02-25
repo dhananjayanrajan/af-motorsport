@@ -6,12 +6,13 @@ import { selectFieldFactory } from '@/fields/factories/fields/selectField'
 import { groupFactory } from '@/fields/factories/blueprint'
 import { advanced } from '@/fields/factories/toggles/advanced'
 import {
+  KIT_MATERIAL_TYPES,
+  KIT_FUNCTION_PERFORMANCE,
+  KIT_FUNCTION_DURABILITY,
+  KIT_FUNCTION_COMFORT,
   KIT_COMPOSITION_CONSTRUCTION,
   KIT_COMPOSITION_ASSEMBLY,
   KIT_COMPOSITION_FINISH,
-  KIT_MATERIAL_TYPES,
-  KIT_APPEARANCE_BRANDING,
-  KIT_APPEARANCE_STYLE,
 } from '../sources/constants'
 
 export const traitsFields: Field[] = [
@@ -51,14 +52,45 @@ export const traitsFields: Field[] = [
     )
   ),
   advanced(
-    {
-      name: 'materials',
-      type: 'array',
-      label: dictionary.tabs.traits.fields.materials.label,
-      admin: {
-        description: dictionary.tabs.traits.fields.materials.description,
-      },
-      fields: [
+    groupFactory(
+      dictionary.tabs.traits.fields.functionality,
+      dictionary.host,
+      [
+        {
+          type: 'row',
+          fields: [
+            selectFieldFactory({
+              name: 'performance',
+              options: KIT_FUNCTION_PERFORMANCE,
+              dictionary: dictionary.tabs.traits.fields.functionality.fields,
+              width: 3,
+              flags: ['advanced'],
+            }),
+            selectFieldFactory({
+              name: 'durability',
+              options: KIT_FUNCTION_DURABILITY,
+              dictionary: dictionary.tabs.traits.fields.functionality.fields,
+              width: 3,
+              flags: ['advanced'],
+            }),
+            selectFieldFactory({
+              name: 'comfort',
+              options: KIT_FUNCTION_COMFORT,
+              dictionary: dictionary.tabs.traits.fields.functionality.fields,
+              width: 3,
+              flags: ['advanced'],
+            }),
+          ],
+        },
+      ],
+      false
+    )
+  ),
+  advanced(
+    groupFactory(
+      dictionary.tabs.traits.fields.materials,
+      dictionary.host,
+      [
         {
           type: 'row',
           fields: [
@@ -82,47 +114,9 @@ export const traitsFields: Field[] = [
               flags: ['advanced'],
             }),
           ],
-        },
+        }
       ],
-    }
-  ),
-  advanced(
-    groupFactory(
-      dictionary.tabs.traits.fields.appearance,
-      dictionary.host,
-      [
-        {
-          type: 'row',
-          fields: [
-            textFieldFactory({
-              name: 'colors',
-              dictionary: dictionary.tabs.traits.fields.appearance.fields,
-              width: 1,
-              flags: ['advanced'],
-            }),
-          ],
-        },
-        {
-          type: 'row',
-          fields: [
-            selectFieldFactory({
-              name: 'branding',
-              options: KIT_APPEARANCE_BRANDING,
-              dictionary: dictionary.tabs.traits.fields.appearance.fields,
-              width: 2,
-              flags: ['advanced'],
-            }),
-            selectFieldFactory({
-              name: 'style',
-              options: KIT_APPEARANCE_STYLE,
-              dictionary: dictionary.tabs.traits.fields.appearance.fields,
-              width: 2,
-              flags: ['advanced'],
-            }),
-          ],
-        },
-      ],
-      false
+      true
     )
   ),
 ]

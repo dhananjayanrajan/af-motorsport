@@ -2,39 +2,25 @@
 import type { Field } from 'payload'
 import { dictionary } from '../sources/dictionary'
 import { relationshipFieldFactory } from '@/fields/factories/fields/relationshipField'
-import { selectFieldFactory } from '@/fields/factories/fields/selectField'
-import { CAR_STATUS } from '../sources/constants'
+import { advanced } from '@/fields/factories/toggles/advanced'
 
 export const traitsFields: Field[] = [
-  {
-    type: 'row',
-    fields: [
-      selectFieldFactory({
-        name: 'status',
-        options: CAR_STATUS,
-        dictionary: dictionary.tabs.traits.fields,
-        width: 1,
-        flags: [],
-      }),
-    ],
-  },
-  {
-    type: 'row',
-    fields: [
-      relationshipFieldFactory({
-        name: 'features',
-        relationTo: 'features',
-        dictionary: dictionary.tabs.traits.fields,
-        width: 2,
-        flags: ['hasMany'],
-      }),
-      relationshipFieldFactory({
-        name: 'specifications',
-        relationTo: 'specifications',
-        dictionary: dictionary.tabs.traits.fields,
-        width: 2,
-        flags: ['hasMany'],
-      }),
-    ],
-  },
+  advanced(
+    relationshipFieldFactory({
+      name: 'features',
+      relationTo: 'features',
+      dictionary: dictionary.tabs.traits.fields,
+      width: 1,
+      flags: ['hasMany', 'advanced'],
+    }),
+  ),
+  advanced(
+    relationshipFieldFactory({
+      name: 'specifications',
+      relationTo: 'specifications',
+      dictionary: dictionary.tabs.traits.fields,
+      width: 1,
+      flags: ['hasMany', 'advanced'],
+    }),
+  ),
 ]

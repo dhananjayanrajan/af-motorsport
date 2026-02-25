@@ -6,21 +6,26 @@ import { relationshipFieldFactory } from '@/fields/factories/fields/relationship
 
 export const essentialFields: Field[] = [
   {
-    type: 'row',
+    type: 'group',
     fields: [
-      textFieldFactory({
-        name: 'name',
-        dictionary: dictionary.essential,
-        width: 2,
-        flags: ['localized', 'index'],
-      }),
-      relationshipFieldFactory({
-        name: 'type',
-        relationTo: 'categories',
-        dictionary: dictionary.essential,
-        width: 2,
-        flags: [],
-      }),
+      {
+        type: 'row',
+        fields: [
+          textFieldFactory({
+            name: 'name',
+            dictionary: dictionary.essential,
+            width: 2,
+            flags: ['required', 'localized', 'index'],
+          }),
+          relationshipFieldFactory({
+            name: 'type',
+            relationTo: 'categories',
+            dictionary: dictionary.essential,
+            width: 2,
+            flags: ['hasMany'],
+          }),
+        ]
+      }
     ],
   },
 ]

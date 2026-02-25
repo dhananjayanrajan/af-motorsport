@@ -18,9 +18,17 @@ export const dictionary = {
       label: { en: 'Details', es: 'Detalles', pt: 'Detalhes' },
       description: { en: 'Gallery images and narrative.', es: 'Imágenes y narrativa de la galería.', pt: 'Imagens e narrativa da galeria.' },
       fields: {
-        images: { label: { en: 'Images', es: 'Imágenes', pt: 'Imagens' } },
-        narrative: { label: { en: 'Narrative', es: 'Narrativa', pt: 'Narrativa' } },
+        images: { label: { en: 'Images', es: 'Imágenes', pt: 'Imagens' } }
       },
     },
+    contexts: {
+      name: 'contexts',
+      label: { en: 'Contexts', es: 'Contextos', pt: 'Contextos' },
+      entity: { en: 'Gallery', es: 'Galería', pt: 'Galeria' },
+      description: { en: 'Related info.', es: 'Info relacionada.', pt: 'Info relacionada.' },
+      fields: {
+        narratives: { label: { en: 'Narratives', es: 'Narrativas', pt: 'Narrativas' } },
+      }
+    }
   },
 } as const

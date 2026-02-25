@@ -20,8 +20,16 @@ export const dictionary = {
       fields: {
         samples: { label: { en: 'Samples', es: 'Muestras', pt: 'Amostras' } },
         documents: { label: { en: 'Documents', es: 'Documentos', pt: 'Documentos' } },
-        narrative: { label: { en: 'Narrative', es: 'Narrativa', pt: 'Narrativa' } },
       },
     },
+    contexts: {
+      name: 'contexts',
+      label: { en: 'Contexts', es: 'Contextos', pt: 'Contextos' },
+      entity: { en: 'Archive', es: 'Archivo', pt: 'Arquivo' },
+      description: { en: 'Related info.', es: 'Info relacionada.', pt: 'Info relacionada.' },
+      fields: {
+        narratives: { label: { en: 'Narratives', es: 'Narrativas', pt: 'Narrativas' } },
+      }
+    }
   },
 } as const

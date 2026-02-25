@@ -7,18 +7,6 @@ export const dictionary = {
       label: { en: 'Name', es: 'Nombre', pt: 'Nome' },
       placeholder: 'e.g. Red Bull RB19',
     },
-    identifiers: {
-      name: 'identifiers',
-      label: { en: 'Identifiers', es: 'Identificadores', pt: 'Identificadores' },
-      entity: { en: 'Identifier', es: 'Identificador', pt: 'Identificador' },
-      description: { en: 'Car identification details.', es: 'Detalles de identificación del coche.', pt: 'Detalhes de identificação do carro.' },
-      fields: {
-        chassis: { label: { en: 'Chassis', es: 'Chasis', pt: 'Chassi' } },
-        model: { label: { en: 'Model', es: 'Modelo', pt: 'Modelo' } },
-        version: { label: { en: 'Version', es: 'Versión', pt: 'Versão' } },
-        code: { label: { en: 'Code', es: 'Código', pt: 'Código' } },
-      },
-    },
     type: {
       label: { en: 'Type', es: 'Tipo', pt: 'Tipo' },
       placeholder: 'Select type',
@@ -30,6 +18,18 @@ export const dictionary = {
       label: { en: 'Basics', es: 'Básicos', pt: 'Básicos' },
       description: { en: 'Car basic details.', es: 'Detalles básicos del coche.', pt: 'Detalhes básicos do carro.' },
       fields: {
+        identifiers: {
+          name: 'identifiers',
+          label: { en: 'Identifiers', es: 'Identificadores', pt: 'Identificadores' },
+          entity: { en: 'Identifier', es: 'Identificador', pt: 'Identificador' },
+          description: { en: 'Car identification details.', es: 'Detalles de identificación del coche.', pt: 'Detalhes de identificação do carro.' },
+          fields: {
+            chassis: { label: { en: 'Chassis', es: 'Chasis', pt: 'Chassi' } },
+            model: { label: { en: 'Model', es: 'Modelo', pt: 'Modelo' } },
+            version: { label: { en: 'Version', es: 'Versión', pt: 'Versão' } },
+            code: { label: { en: 'Code', es: 'Código', pt: 'Código' } },
+          },
+        },
         description: { label: { en: 'Description', es: 'Descripción', pt: 'Descrição' } },
       },
     },
@@ -38,6 +38,7 @@ export const dictionary = {
       label: { en: 'Details', es: 'Detalles', pt: 'Detalhes' },
       description: { en: 'Car classifications and details.', es: 'Clasificaciones y detalles del coche.', pt: 'Classificações e detalhes do carro.' },
       fields: {
+        status: { label: { en: 'Status', es: 'Estado', pt: 'Estado' } },
         classifications: { label: { en: 'Classifications', es: 'Clasificaciones', pt: 'Classificações' } },
       },
     },
@@ -46,9 +47,8 @@ export const dictionary = {
       label: { en: 'Traits', es: 'Rasgos', pt: 'Traços' },
       description: { en: 'Car status and specifications.', es: 'Estado y especificaciones del coche.', pt: 'Status e especificações do carro.' },
       fields: {
-        status: { label: { en: 'Status', es: 'Estado', pt: 'Estado' } },
-        features: { label: { en: 'Features', es: 'Características', pt: 'Características' } },
-        specifications: { label: { en: 'Specifications', es: 'Especificaciones', pt: 'Especificações' } },
+        features: { label: { en: 'Feature', es: 'Característica', pt: 'Característica' } },
+        specifications: { label: { en: 'Specification', es: 'Especificación', pt: 'Especificação' } },
       },
     },
     assets: {
@@ -69,11 +69,19 @@ export const dictionary = {
       label: { en: 'Contexts', es: 'Contextos', pt: 'Contextos' },
       description: { en: 'Car relationships and history.', es: 'Relaciones e historia del coche.', pt: 'Relações e história do carro.' },
       fields: {
-        manufacturers: { label: { en: 'Manufacturers', es: 'Fabricantes', pt: 'Fabricantes' } },
-        drivers: { label: { en: 'Drivers', es: 'Pilotos', pt: 'Pilotos' } },
-        crew: { label: { en: 'Crew', es: 'Tripulación', pt: 'Equipe' } },
-        associations: { label: { en: 'Associations', es: 'Asociaciones', pt: 'Associações' } },
-        histories: { label: { en: 'Histories', es: 'Historias', pt: 'Históricos' } },
+        connections: {
+          name: 'connections',
+          label: { en: 'Connections', es: 'Conexiones', pt: 'Conexões' },
+          description: { en: 'Car relationships.', es: 'Relaciones del coche.', pt: 'Relações do carro.' },
+          entity: { en: 'Connection', es: 'Conexión', pt: 'Conexão' },
+          fields: {
+            manufacturers: { label: { en: 'Manufacturers', es: 'Fabricantes', pt: 'Fabricantes' } },
+            drivers: { label: { en: 'Drivers', es: 'Pilotos', pt: 'Pilotos' } },
+            crew: { label: { en: 'Crew', es: 'Tripulación', pt: 'Equipe' } },
+            associations: { label: { en: 'Associations', es: 'Asociaciones', pt: 'Associações' } },
+          }
+        },
+        history: { label: { en: 'History', es: 'Historia', pt: 'História' } },
       },
     },
   },

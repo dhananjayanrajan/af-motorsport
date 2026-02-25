@@ -9,17 +9,14 @@ import { advanced } from '@/fields/factories/toggles/advanced'
 import { KIT_PURPOSE_APPLICATION } from '../sources/constants'
 
 export const basicsFields: Field[] = [
-  {
-    type: 'row',
-    fields: [
-      textareaFieldFactory({
-        name: 'description',
-        dictionary: dictionary.tabs.basics.fields,
-        width: 1,
-        flags: ['localized'],
-      }),
-    ],
-  },
+  advanced(
+    textareaFieldFactory({
+      name: 'description',
+      dictionary: dictionary.tabs.basics.fields,
+      width: 1,
+      flags: ['localized', 'index', 'advanced'],
+    }),
+  ),
   advanced(
     groupFactory(
       dictionary.tabs.basics.fields.purpose,
@@ -33,7 +30,7 @@ export const basicsFields: Field[] = [
               options: KIT_PURPOSE_APPLICATION,
               dictionary: dictionary.tabs.basics.fields.purpose.fields,
               width: 3,
-              flags: [],
+              flags: ['advanced'],
             }),
             textFieldFactory({
               name: 'context',

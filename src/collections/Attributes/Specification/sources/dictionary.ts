@@ -8,26 +8,6 @@ export const dictionary = {
       placeholder: 'e.g. Max Speed',
       description: { en: 'Spec name.', es: 'Nombre de especificación.', pt: 'Nome da especificação.' }
     },
-    identifier: {
-      name: 'identifier',
-      label: { en: 'Identifier', es: 'Identificador', pt: 'Identificador' },
-      entity: { en: 'Identifier', es: 'Identificador', pt: 'Identificador' },
-      description: { en: 'Unique identifier.', es: 'Identificador único.', pt: 'Identificador único.' },
-      fields: {
-        code: {
-          label: { en: 'Code', es: 'Código', pt: 'Código' },
-          description: { en: 'Spec code.', es: 'Código de especificación.', pt: 'Código da especificação.' }
-        },
-        version: {
-          label: { en: 'Version', es: 'Versión', pt: 'Versão' },
-          description: { en: 'Spec version.', es: 'Versión de especificación.', pt: 'Versão da especificação.' }
-        },
-        revision: {
-          label: { en: 'Revision', es: 'Revisión', pt: 'Revisão' },
-          description: { en: 'Spec revision.', es: 'Revisión de especificación.', pt: 'Revisão da especificação.' }
-        }
-      }
-    },
     type: {
       label: { en: 'Type', es: 'Tipo', pt: 'Tipo' },
       placeholder: 'Select type',
@@ -41,6 +21,26 @@ export const dictionary = {
       entity: { en: 'Specification', es: 'Especificación', pt: 'Especificação' },
       description: { en: 'Basic info.', es: 'Info básica.', pt: 'Info básica.' },
       fields: {
+        identifier: {
+          name: 'identifier',
+          label: { en: 'Identifier', es: 'Identificador', pt: 'Identificador' },
+          entity: { en: 'Identifier', es: 'Identificador', pt: 'Identificador' },
+          description: { en: 'Unique identifier.', es: 'Identificador único.', pt: 'Identificador único.' },
+          fields: {
+            code: {
+              label: { en: 'Code', es: 'Código', pt: 'Código' },
+              description: { en: 'Spec code.', es: 'Código de especificación.', pt: 'Código da especificação.' }
+            },
+            version: {
+              label: { en: 'Version', es: 'Versión', pt: 'Versão' },
+              description: { en: 'Spec version.', es: 'Versión de especificación.', pt: 'Versão da especificação.' }
+            },
+            revision: {
+              label: { en: 'Revision', es: 'Revisión', pt: 'Revisão' },
+              description: { en: 'Spec revision.', es: 'Revisión de especificación.', pt: 'Revisão da especificação.' }
+            }
+          }
+        },
         description: {
           label: { en: 'Description', es: 'Descripción', pt: 'Descrição' },
           placeholder: 'Enter description',

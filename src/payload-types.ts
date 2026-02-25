@@ -1831,30 +1831,45 @@ export interface Gallery {
   /**
    * Enter text value.
    */
-  name?: string | null;
+  name: string;
   /**
    * Select related document(s).
    */
-  type?: (number | null) | Category;
+  type?: (number | Category)[] | null;
   /**
    * Extra data.
    */
-  details: {
+  details?: {
     /**
      * Toggle the Details section on or off.
      */
     enable?: boolean | null;
     /**
-     * Select related document(s).
+     * Select an uploaded file.
      */
-    images: (number | Media)[];
-    /**
-     * Select related document(s).
-     */
-    narrative?: (number | null) | Narrative;
+    images?: (number | Media)[] | null;
     visibility?: {
       /**
        * Toggle the Details section on or off.
+       */
+      show?: boolean | null;
+    };
+  };
+  /**
+   * Contextual information.
+   */
+  contexts?: {
+    /**
+     * Toggle the Contexts section on or off.
+     */
+    enable?: boolean | null;
+    /**
+     * Select related document(s).
+     */
+    narratives?: (number | Narrative)[] | null;
+    visibility?: {
+      /**
+       * Toggle the Contexts section on or off.
        */
       show?: boolean | null;
     };
@@ -2214,31 +2229,27 @@ export interface Playlist {
   /**
    * Enter text value.
    */
-  name?: string | null;
+  name: string;
   /**
    * Select related document(s).
    */
-  type?: (number | null) | Category;
+  type?: (number | Category)[] | null;
   /**
    * Extra data.
    */
-  details?: {
+  details: {
     /**
      * Toggle the Details section on or off.
      */
     enable?: boolean | null;
     /**
-     * Select related document(s).
+     * Select an uploaded file.
      */
     clips?: (number | Media)[] | null;
     /**
-     * Select related document(s).
+     * Select an uploaded file.
      */
-    videos?: (number | Media)[] | null;
-    /**
-     * Select related document(s).
-     */
-    narrative?: (number | null) | Narrative;
+    videos: (number | Media)[];
     visibility?: {
       /**
        * Toggle the Details section on or off.
@@ -2265,6 +2276,25 @@ export interface Playlist {
     visibility?: {
       /**
        * Toggle the Traits section on or off.
+       */
+      show?: boolean | null;
+    };
+  };
+  /**
+   * Contextual information.
+   */
+  contexts?: {
+    /**
+     * Toggle the Contexts section on or off.
+     */
+    enable?: boolean | null;
+    /**
+     * Select related document(s).
+     */
+    narratives?: (number | Narrative)[] | null;
+    visibility?: {
+      /**
+       * Toggle the Contexts section on or off.
        */
       show?: boolean | null;
     };
@@ -2482,23 +2512,6 @@ export interface Specification {
    */
   type?: (number | Category)[] | null;
   /**
-   * Unique identifier.
-   */
-  identifier?: {
-    /**
-     * Spec code.
-     */
-    code?: string | null;
-    /**
-     * Spec version.
-     */
-    version?: string | null;
-    /**
-     * Spec revision.
-     */
-    revision?: string | null;
-  };
-  /**
    * Identifying info.
    */
   basics?: {
@@ -2506,6 +2519,23 @@ export interface Specification {
      * Toggle the Basics section on or off.
      */
     enable?: boolean | null;
+    /**
+     * Unique identifier.
+     */
+    identifier?: {
+      /**
+       * Spec code.
+       */
+      code?: string | null;
+      /**
+       * Spec version.
+       */
+      version?: string | null;
+      /**
+       * Spec revision.
+       */
+      revision?: string | null;
+    };
     /**
      * Spec description.
      */
@@ -3536,34 +3566,49 @@ export interface Archive {
   /**
    * Enter text value.
    */
-  name?: string | null;
+  name: string;
   /**
    * Select related document(s).
    */
-  type?: (number | null) | Category;
+  type?: (number | Category)[] | null;
   /**
    * Extra data.
    */
-  details?: {
+  details: {
     /**
      * Toggle the Details section on or off.
      */
     enable?: boolean | null;
     /**
-     * Select related document(s).
+     * Select an uploaded file.
      */
     samples?: (number | Media)[] | null;
     /**
-     * Select related document(s).
+     * Select an uploaded file.
      */
-    documents?: (number | Media)[] | null;
-    /**
-     * Select related document(s).
-     */
-    narrative?: (number | null) | Narrative;
+    documents: (number | Media)[];
     visibility?: {
       /**
        * Toggle the Details section on or off.
+       */
+      show?: boolean | null;
+    };
+  };
+  /**
+   * Contextual information.
+   */
+  contexts?: {
+    /**
+     * Toggle the Contexts section on or off.
+     */
+    enable?: boolean | null;
+    /**
+     * Select related document(s).
+     */
+    narratives?: (number | Narrative)[] | null;
+    visibility?: {
+      /**
+       * Toggle the Contexts section on or off.
        */
       show?: boolean | null;
     };
@@ -6063,32 +6108,11 @@ export interface Car {
   /**
    * Enter text value.
    */
-  name?: string | null;
+  name: string;
   /**
    * Select related document(s).
    */
-  type?: (number | null) | Category;
-  /**
-   * Car identification details.
-   */
-  identifiers?: {
-    /**
-     * Enter text value.
-     */
-    chassis?: string | null;
-    /**
-     * Enter text value.
-     */
-    model?: string | null;
-    /**
-     * Enter text value.
-     */
-    version?: string | null;
-    /**
-     * Enter text value.
-     */
-    code?: string | null;
-  };
+  type?: (number | Category)[] | null;
   /**
    * Identifying info.
    */
@@ -6097,6 +6121,27 @@ export interface Car {
      * Toggle the Basics section on or off.
      */
     enable?: boolean | null;
+    /**
+     * Car identification details.
+     */
+    identifiers?: {
+      /**
+       * Enter text value.
+       */
+      chassis?: string | null;
+      /**
+       * Enter text value.
+       */
+      model?: string | null;
+      /**
+       * Enter text value.
+       */
+      version?: string | null;
+      /**
+       * Enter text value.
+       */
+      code?: string | null;
+    };
     /**
      * Enter text value.
      */
@@ -6117,6 +6162,10 @@ export interface Car {
      */
     enable?: boolean | null;
     /**
+     * Select one or more options.
+     */
+    status?: ('Active' | 'Retired' | 'Development' | 'Museum' | 'Prototype' | 'Concept') | null;
+    /**
      * Select related document(s).
      */
     classifications?: (number | Classification)[] | null;
@@ -6136,10 +6185,6 @@ export interface Car {
      */
     enable?: boolean | null;
     /**
-     * Select one or more options.
-     */
-    status?: ('Active' | 'Retired' | 'Development' | 'Museum' | 'Prototype' | 'Concept') | null;
-    /**
      * Select related document(s).
      */
     features?: (number | Feature)[] | null;
@@ -6157,17 +6202,17 @@ export interface Car {
   /**
    * Media files.
    */
-  assets?: {
+  assets: {
     /**
      * Toggle the Assets section on or off.
      */
     enable?: boolean | null;
     /**
-     * Select related document(s).
+     * Select an uploaded file.
      */
-    primary?: (number | null) | Media;
+    thumbnail: number | Media;
     /**
-     * Select related document(s).
+     * Select an uploaded file.
      */
     cover?: (number | null) | Media;
     /**
@@ -6185,7 +6230,7 @@ export interface Car {
     /**
      * Select related document(s).
      */
-    documents?: (number | Archive)[] | null;
+    documents?: (number | null) | Archive;
     visibility?: {
       /**
        * Toggle the Assets section on or off.
@@ -6202,36 +6247,41 @@ export interface Car {
      */
     enable?: boolean | null;
     /**
-     * Select related document(s).
+     * Car relationships.
      */
-    manufacturers?: (number | Organization)[] | null;
-    /**
-     * Select related document(s).
-     */
-    drivers?: (number | Driver)[] | null;
-    /**
-     * Select related document(s).
-     */
-    crew?: (number | Member)[] | null;
-    /**
-     * Select related document(s).
-     */
-    associations?:
-      | (
-          | {
-              relationTo: 'organizations';
-              value: number | Organization;
-            }
-          | {
-              relationTo: 'individuals';
-              value: number | Individual;
-            }
-          | {
-              relationTo: 'leaders';
-              value: number | Leader;
-            }
-        )[]
-      | null;
+    connections?: {
+      /**
+       * Select related document(s).
+       */
+      manufacturers?: (number | Organization)[] | null;
+      /**
+       * Select related document(s).
+       */
+      drivers?: (number | Driver)[] | null;
+      /**
+       * Select related document(s).
+       */
+      crew?: (number | Member)[] | null;
+      /**
+       * Select related document(s).
+       */
+      associations?:
+        | (
+            | {
+                relationTo: 'organizations';
+                value: number | Organization;
+              }
+            | {
+                relationTo: 'individuals';
+                value: number | Individual;
+              }
+            | {
+                relationTo: 'leaders';
+                value: number | Leader;
+              }
+          )[]
+        | null;
+    };
     /**
      * Select related document(s).
      */
@@ -6285,11 +6335,11 @@ export interface Visualization {
   /**
    * Enter text value.
    */
-  name?: string | null;
+  name: string;
   /**
    * Select related document(s).
    */
-  type?: (number | null) | Category;
+  type?: (number | Category)[] | null;
   /**
    * Extra data.
    */
@@ -6299,16 +6349,31 @@ export interface Visualization {
      */
     enable?: boolean | null;
     /**
-     * Select related document(s).
+     * Select an uploaded file.
      */
     designs: (number | Media)[];
-    /**
-     * Select related document(s).
-     */
-    narrative?: (number | null) | Narrative;
     visibility?: {
       /**
        * Toggle the Details section on or off.
+       */
+      show?: boolean | null;
+    };
+  };
+  /**
+   * Contextual information.
+   */
+  contexts?: {
+    /**
+     * Toggle the Contexts section on or off.
+     */
+    enable?: boolean | null;
+    /**
+     * Select related document(s).
+     */
+    narratives?: (number | Narrative)[] | null;
+    visibility?: {
+      /**
+       * Toggle the Contexts section on or off.
        */
       show?: boolean | null;
     };
@@ -6355,11 +6420,11 @@ export interface Kit {
   /**
    * Enter text value.
    */
-  name?: string | null;
+  name: string;
   /**
    * Select related document(s).
    */
-  type?: (number | null) | Category;
+  type?: (number | Category)[] | null;
   /**
    * Identifying info.
    */
@@ -6426,21 +6491,21 @@ export interface Kit {
       year?: string | null;
     };
     /**
-     * Kit functionality ratings.
+     * Visual appearance and branding.
      */
-    functionality?: {
+    appearance?: {
+      /**
+       * Enter text value.
+       */
+      colors?: string | null;
       /**
        * Select one or more options.
        */
-      performance?: ('Standard' | 'Enhanced' | 'Maximum') | null;
+      branding?: ('Minimal' | 'Prominent' | 'Full' | 'Heritage') | null;
       /**
        * Select one or more options.
        */
-      durability?: ('Low' | 'Medium' | 'High' | 'Extreme') | null;
-      /**
-       * Select one or more options.
-       */
-      comfort?: ('Basic' | 'Comfortable' | 'Premium') | null;
+      style?: ('Classic' | 'Modern' | 'Futuristic' | 'Retro') | null;
     };
     visibility?: {
       /**
@@ -6475,41 +6540,57 @@ export interface Kit {
       finish?: ('Matte' | 'Glossy' | 'Textured' | 'Coated') | null;
     };
     /**
+     * Kit functionality ratings.
+     */
+    functionality?: {
+      /**
+       * Select one or more options.
+       */
+      performance?: ('Standard' | 'Enhanced' | 'Maximum') | null;
+      /**
+       * Select one or more options.
+       */
+      durability?: ('Low' | 'Medium' | 'High' | 'Extreme') | null;
+      /**
+       * Select one or more options.
+       */
+      comfort?: ('Basic' | 'Comfortable' | 'Premium') | null;
+    };
+    /**
      * Materials used in the kit.
      */
-    materials?:
-      | {
-          /**
-           * Select one or more options.
-           */
-          type?: ('Cotton' | 'Polyester' | 'Nomex' | 'Carbon' | 'Leather' | 'Synthetic') | null;
-          /**
-           * Enter text value.
-           */
-          specification?: string | null;
-          /**
-           * Enter text value.
-           */
-          origin?: string | null;
-          id?: string | null;
-        }[]
-      | null;
-    /**
-     * Visual appearance and branding.
-     */
-    appearance?: {
-      /**
-       * Enter text value.
-       */
-      colors?: string | null;
-      /**
-       * Select one or more options.
-       */
-      branding?: ('Minimal' | 'Prominent' | 'Full' | 'Heritage') | null;
-      /**
-       * Select one or more options.
-       */
-      style?: ('Classic' | 'Modern' | 'Futuristic' | 'Retro') | null;
+    materials?: {
+      list?:
+        | {
+            /**
+             * Select one or more options.
+             */
+            type?: ('Cotton' | 'Polyester' | 'Nomex' | 'Carbon' | 'Leather' | 'Synthetic') | null;
+            /**
+             * Enter text value.
+             */
+            specification?: string | null;
+            /**
+             * Enter text value.
+             */
+            origin?: string | null;
+            settings?: {
+              /**
+               * Toggle the Material entry on or off.
+               */
+              show?: boolean | null;
+              /**
+               * Toggle the Material entry on or off.
+               */
+              featured?: boolean | null;
+              /**
+               * Toggle the Material entry on or off.
+               */
+              pinned?: boolean | null;
+            };
+            id?: string | null;
+          }[]
+        | null;
     };
     visibility?: {
       /**
@@ -6521,17 +6602,17 @@ export interface Kit {
   /**
    * Media files.
    */
-  assets?: {
+  assets: {
     /**
      * Toggle the Assets section on or off.
      */
     enable?: boolean | null;
     /**
-     * Select related document(s).
+     * Select an uploaded file.
      */
-    thumbnail?: (number | null) | Media;
+    thumbnail: number | Media;
     /**
-     * Select related document(s).
+     * Select an uploaded file.
      */
     cover?: (number | null) | Media;
     /**
@@ -6541,7 +6622,7 @@ export interface Kit {
     /**
      * Select related document(s).
      */
-    visualizations?: (number | Visualization)[] | null;
+    visualizations?: (number | null) | Visualization;
     visibility?: {
       /**
        * Toggle the Assets section on or off.
@@ -13927,18 +14008,18 @@ export interface CarsSelect<T extends boolean = true> {
   toggle?: T;
   name?: T;
   type?: T;
-  identifiers?:
-    | T
-    | {
-        chassis?: T;
-        model?: T;
-        version?: T;
-        code?: T;
-      };
   basics?:
     | T
     | {
         enable?: T;
+        identifiers?:
+          | T
+          | {
+              chassis?: T;
+              model?: T;
+              version?: T;
+              code?: T;
+            };
         description?: T;
         visibility?:
           | T
@@ -13950,6 +14031,7 @@ export interface CarsSelect<T extends boolean = true> {
     | T
     | {
         enable?: T;
+        status?: T;
         classifications?: T;
         visibility?:
           | T
@@ -13961,7 +14043,6 @@ export interface CarsSelect<T extends boolean = true> {
     | T
     | {
         enable?: T;
-        status?: T;
         features?: T;
         specifications?: T;
         visibility?:
@@ -13974,7 +14055,7 @@ export interface CarsSelect<T extends boolean = true> {
     | T
     | {
         enable?: T;
-        primary?: T;
+        thumbnail?: T;
         cover?: T;
         gallery?: T;
         playlist?: T;
@@ -13990,10 +14071,14 @@ export interface CarsSelect<T extends boolean = true> {
     | T
     | {
         enable?: T;
-        manufacturers?: T;
-        drivers?: T;
-        crew?: T;
-        associations?: T;
+        connections?:
+          | T
+          | {
+              manufacturers?: T;
+              drivers?: T;
+              crew?: T;
+              associations?: T;
+            };
         histories?: T;
         visibility?:
           | T
@@ -14060,12 +14145,12 @@ export interface KitsSelect<T extends boolean = true> {
               designer?: T;
               year?: T;
             };
-        functionality?:
+        appearance?:
           | T
           | {
-              performance?: T;
-              durability?: T;
-              comfort?: T;
+              colors?: T;
+              branding?: T;
+              style?: T;
             };
         visibility?:
           | T
@@ -14084,20 +14169,31 @@ export interface KitsSelect<T extends boolean = true> {
               assembly?: T;
               finish?: T;
             };
+        functionality?:
+          | T
+          | {
+              performance?: T;
+              durability?: T;
+              comfort?: T;
+            };
         materials?:
           | T
           | {
-              type?: T;
-              specification?: T;
-              origin?: T;
-              id?: T;
-            };
-        appearance?:
-          | T
-          | {
-              colors?: T;
-              branding?: T;
-              style?: T;
+              list?:
+                | T
+                | {
+                    type?: T;
+                    specification?: T;
+                    origin?: T;
+                    settings?:
+                      | T
+                      | {
+                          show?: T;
+                          featured?: T;
+                          pinned?: T;
+                        };
+                    id?: T;
+                  };
             };
         visibility?:
           | T
@@ -14185,7 +14281,17 @@ export interface GalleriesSelect<T extends boolean = true> {
     | {
         enable?: T;
         images?: T;
-        narrative?: T;
+        visibility?:
+          | T
+          | {
+              show?: T;
+            };
+      };
+  contexts?:
+    | T
+    | {
+        enable?: T;
+        narratives?: T;
         visibility?:
           | T
           | {
@@ -14227,7 +14333,6 @@ export interface PlaylistsSelect<T extends boolean = true> {
         enable?: T;
         clips?: T;
         videos?: T;
-        narrative?: T;
         visibility?:
           | T
           | {
@@ -14240,6 +14345,17 @@ export interface PlaylistsSelect<T extends boolean = true> {
         enable?: T;
         quality?: T;
         format?: T;
+        visibility?:
+          | T
+          | {
+              show?: T;
+            };
+      };
+  contexts?:
+    | T
+    | {
+        enable?: T;
+        narratives?: T;
         visibility?:
           | T
           | {
@@ -14281,7 +14397,17 @@ export interface ArchivesSelect<T extends boolean = true> {
         enable?: T;
         samples?: T;
         documents?: T;
-        narrative?: T;
+        visibility?:
+          | T
+          | {
+              show?: T;
+            };
+      };
+  contexts?:
+    | T
+    | {
+        enable?: T;
+        narratives?: T;
         visibility?:
           | T
           | {
@@ -14322,7 +14448,17 @@ export interface VisualizationsSelect<T extends boolean = true> {
     | {
         enable?: T;
         designs?: T;
-        narrative?: T;
+        visibility?:
+          | T
+          | {
+              show?: T;
+            };
+      };
+  contexts?:
+    | T
+    | {
+        enable?: T;
+        narratives?: T;
         visibility?:
           | T
           | {
@@ -15995,17 +16131,17 @@ export interface SpecificationsSelect<T extends boolean = true> {
   toggle?: T;
   name?: T;
   type?: T;
-  identifier?:
-    | T
-    | {
-        code?: T;
-        version?: T;
-        revision?: T;
-      };
   basics?:
     | T
     | {
         enable?: T;
+        identifier?:
+          | T
+          | {
+              code?: T;
+              version?: T;
+              revision?: T;
+            };
         description?: T;
         visibility?:
           | T
