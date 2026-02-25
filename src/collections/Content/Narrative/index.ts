@@ -5,6 +5,7 @@ import { essentialFields } from './tabs/essentials'
 import { basicsFields } from './tabs/basics'
 import { detailsFields } from './tabs/details'
 import { traitsFields } from './tabs/traits'
+import { metricsFields } from './tabs/metrics'
 import { contextsFields } from './tabs/contexts'
 export const Narratives = collectionFactory(
   {
@@ -47,6 +48,7 @@ export const Narratives = collectionFactory(
     tabFactory('basics', dictionary.host, basicsFields),
     tabFactory('details', dictionary.host, detailsFields),
     tabFactory('traits', dictionary.host, traitsFields),
+    tabFactory('metrics', dictionary.host, metricsFields),
     tabFactory('contexts', dictionary.host, contextsFields),
   ],
   { host: dictionary.host, hostPlural: dictionary.hostPlural }

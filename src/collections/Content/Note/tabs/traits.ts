@@ -5,17 +5,14 @@ import { selectFieldFactory } from '@/fields/factories/fields/selectField'
 import { textFieldFactory } from '@/fields/factories/fields/textField'
 import { advanced } from '@/fields/factories/toggles/advanced'
 import { NOTE_INTENTION_TYPE, NOTE_INTENTION_IMPACT } from '../sources/constants'
+import { groupFactory } from '@/fields/factories/blueprint'
 
 export const traitsFields: Field[] = [
   advanced(
-    {
-      name: 'intentions',
-      type: 'array',
-      label: dictionary.tabs.traits.fields.intentions.label,
-      admin: {
-        description: dictionary.tabs.traits.fields.intentions.description,
-      },
-      fields: [
+    groupFactory(
+      dictionary.tabs.traits.fields.intentions,
+      dictionary.host,
+      [
         {
           type: 'row',
           fields: [
@@ -24,24 +21,25 @@ export const traitsFields: Field[] = [
               options: NOTE_INTENTION_TYPE,
               dictionary: dictionary.tabs.traits.fields.intentions.fields,
               width: 3,
-              flags: [],
+              flags: ['localized', 'index', 'advanced'],
             }),
             selectFieldFactory({
               name: 'impact',
               options: NOTE_INTENTION_IMPACT,
               dictionary: dictionary.tabs.traits.fields.intentions.fields,
               width: 3,
-              flags: [],
+              flags: ['localized', 'index', 'advanced'],
             }),
             textFieldFactory({
               name: 'remark',
               dictionary: dictionary.tabs.traits.fields.intentions.fields,
               width: 3,
-              flags: [],
+              flags: ['localized', 'index', 'advanced'],
             }),
           ],
         },
       ],
-    }
+      true
+    )
   ),
 ]

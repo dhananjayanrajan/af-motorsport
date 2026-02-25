@@ -5,23 +5,22 @@ import { relationshipFieldFactory } from '@/fields/factories/fields/relationship
 import { advanced } from '@/fields/factories/toggles/advanced'
 
 export const detailsFields: Field[] = [
-  {
-    type: 'row',
-    fields: [
-      relationshipFieldFactory({
-        name: 'narrative',
-        relationTo: 'narratives',
-        dictionary: dictionary.tabs.details.fields,
-        width: 2,
-        flags: [],
-      }),
-      relationshipFieldFactory({
-        name: 'stories',
-        relationTo: 'stories',
-        dictionary: dictionary.tabs.details.fields,
-        width: 2,
-        flags: ['hasMany', 'advanced'],
-      }),
-    ],
-  },
+  advanced(
+    relationshipFieldFactory({
+      name: 'narrative',
+      relationTo: 'narratives',
+      dictionary: dictionary.tabs.details.fields,
+      width: 1,
+      flags: ['advanced'],
+    }),
+  ),
+  advanced(
+    relationshipFieldFactory({
+      name: 'stories',
+      relationTo: 'stories',
+      dictionary: dictionary.tabs.details.fields,
+      width: 1,
+      flags: ['hasMany', 'advanced'],
+    }),
+  )
 ]

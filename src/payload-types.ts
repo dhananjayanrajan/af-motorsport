@@ -774,7 +774,7 @@ export interface Narrative {
   /**
    * The narrative name.
    */
-  name?: string | null;
+  name: string;
   /**
    * Enter text value.
    */
@@ -862,22 +862,6 @@ export interface Narrative {
        */
       purpose?: string | null;
     };
-    /**
-     * Key moments.
-     */
-    timeline?:
-      | {
-          /**
-           * Select a date and/or time.
-           */
-          date?: string | null;
-          /**
-           * Select one or more options.
-           */
-          type?: ('Event' | 'Milestone' | 'Decision' | 'Incident') | null;
-          id?: string | null;
-        }[]
-      | null;
     visibility?: {
       /**
        * Toggle the Details section on or off.
@@ -905,6 +889,53 @@ export interface Narrative {
     };
   };
   /**
+   * Performance stats.
+   */
+  metrics?: {
+    /**
+     * Toggle the Metrics section on or off.
+     */
+    enable?: boolean | null;
+    /**
+     * Key moments.
+     */
+    timeline?: {
+      list?:
+        | {
+            /**
+             * Select a date and/or time.
+             */
+            date?: string | null;
+            /**
+             * Select one or more options.
+             */
+            type?: ('Event' | 'Milestone' | 'Decision' | 'Incident') | null;
+            settings?: {
+              /**
+               * Toggle the Timeline entry on or off.
+               */
+              show?: boolean | null;
+              /**
+               * Toggle the Timeline entry on or off.
+               */
+              featured?: boolean | null;
+              /**
+               * Toggle the Timeline entry on or off.
+               */
+              pinned?: boolean | null;
+            };
+            id?: string | null;
+          }[]
+        | null;
+    };
+    visibility?: {
+      /**
+       * Toggle the Metrics section on or off.
+       */
+      show?: boolean | null;
+    };
+  };
+  /**
    * Contextual information.
    */
   contexts?: {
@@ -912,14 +943,6 @@ export interface Narrative {
      * Toggle the Contexts section on or off.
      */
     enable?: boolean | null;
-    /**
-     * Select related document(s).
-     */
-    locations?: (number | Location)[] | null;
-    /**
-     * Select related document(s).
-     */
-    notes?: (number | Note)[] | null;
     /**
      * Select related document(s).
      */
@@ -947,6 +970,14 @@ export interface Narrative {
             }
         )[]
       | null;
+    /**
+     * Select related document(s).
+     */
+    locations?: (number | Location)[] | null;
+    /**
+     * Select related document(s).
+     */
+    notes?: (number | Note)[] | null;
     visibility?: {
       /**
        * Toggle the Contexts section on or off.
@@ -1092,239 +1123,6 @@ export interface Tone {
     visibility?: {
       /**
        * Toggle the Traits section on or off.
-       */
-      show?: boolean | null;
-    };
-  };
-  seo?: {
-    title?: string | null;
-    /**
-     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
-     */
-    image?: (number | null) | Media;
-    description?: string | null;
-  };
-  /**
-   * When enabled, the slug will auto-generate from the title field on save and autosave.
-   */
-  generateSlug?: boolean | null;
-  slug?: string | null;
-  /**
-   * Categories that are relevant to the record.
-   */
-  categories?: (number | Category)[] | null;
-  /**
-   * Associated tags for the record.
-   */
-  tags?: (number | Tag)[] | null;
-  /**
-   * Controls who can see this record and under what conditions.
-   */
-  visibility?: {
-    check_publish?: boolean | null;
-    check_featured?: boolean | null;
-    check_pinned?: boolean | null;
-  };
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "locations".
- */
-export interface Location {
-  id: number;
-  toggle?: ('simple' | 'advanced') | null;
-  /**
-   * The name of the location.
-   */
-  name: string;
-  /**
-   * The type of location.
-   */
-  type?: (number | Category)[] | null;
-  /**
-   * Identifying info.
-   */
-  basics?: {
-    /**
-     * Toggle the Basics section on or off.
-     */
-    enable?: boolean | null;
-    /**
-     * A short label.
-     */
-    label?: string | null;
-    /**
-     * Display title.
-     */
-    title?: string | null;
-    /**
-     * Brief description.
-     */
-    description?: string | null;
-    visibility?: {
-      /**
-       * Toggle the Basics section on or off.
-       */
-      show?: boolean | null;
-    };
-  };
-  /**
-   * Extra data.
-   */
-  details?: {
-    /**
-     * Toggle the Details section on or off.
-     */
-    enable?: boolean | null;
-    /**
-     * Full address.
-     */
-    address?: string | null;
-    /**
-     * Geometric data.
-     */
-    geometry?: {
-      /**
-       * Location coordinates.
-       *
-       * @minItems 2
-       * @maxItems 2
-       */
-      coordinates?: [number, number] | null;
-      /**
-       * Geographic bounds.
-       */
-      bounds?: string | null;
-      /**
-       * Total area.
-       */
-      area?: string | null;
-    };
-    visibility?: {
-      /**
-       * Toggle the Details section on or off.
-       */
-      show?: boolean | null;
-    };
-  };
-  /**
-   * Characteristics.
-   */
-  traits?: {
-    /**
-     * Toggle the Traits section on or off.
-     */
-    enable?: boolean | null;
-    /**
-     * Geographic features.
-     */
-    geography?: {
-      /**
-       * Terrain type.
-       */
-      terrain?: string | null;
-      /**
-       * Climate zone.
-       */
-      climate?:
-        | (
-            | 'Temperate'
-            | 'Tropical'
-            | 'Arid'
-            | 'Continental'
-            | 'Polar'
-            | 'Mediterranean'
-            | 'Subtropical'
-            | 'Oceanic'
-            | 'Desert'
-          )
-        | null;
-      /**
-       * Natural features.
-       */
-      features?: string | null;
-    };
-    /**
-     * Infrastructure details.
-     */
-    infrastructure?: {
-      /**
-       * Transport links.
-       */
-      transport?: string | null;
-      /**
-       * On-site facilities.
-       */
-      facilities?: string | null;
-      /**
-       * Visitor amenities.
-       */
-      amenities?: string | null;
-    };
-    /**
-     * Accessibility info.
-     */
-    accessibility?: {
-      /**
-       * Main access route.
-       */
-      approach?: ('PublicRoad' | 'PrivateRoad' | 'Air' | 'Sea' | 'Rail') | null;
-      /**
-       * Access facilities.
-       */
-      facilities?: ('DisabledAccess' | 'VIPEntry' | 'ServiceEntry') | null;
-      /**
-       * Visitor capacity.
-       */
-      capacity?: ('Small' | 'Medium' | 'Large' | 'Massive') | null;
-    };
-    visibility?: {
-      /**
-       * Toggle the Traits section on or off.
-       */
-      show?: boolean | null;
-    };
-  };
-  /**
-   * Contextual information.
-   */
-  contexts?: {
-    /**
-     * Toggle the Contexts section on or off.
-     */
-    enable?: boolean | null;
-    /**
-     * Associated entities.
-     */
-    entities?:
-      | (
-          | {
-              relationTo: 'organizations';
-              value: number | Organization;
-            }
-          | {
-              relationTo: 'individuals';
-              value: number | Individual;
-            }
-          | {
-              relationTo: 'leaders';
-              value: number | Leader;
-            }
-          | {
-              relationTo: 'drivers';
-              value: number | Driver;
-            }
-          | {
-              relationTo: 'members';
-              value: number | Member;
-            }
-        )[]
-      | null;
-    visibility?: {
-      /**
-       * Toggle the Contexts section on or off.
        */
       show?: boolean | null;
     };
@@ -1908,6 +1706,500 @@ export interface Gallery {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "locations".
+ */
+export interface Location {
+  id: number;
+  toggle?: ('simple' | 'advanced') | null;
+  /**
+   * The name of the location.
+   */
+  name: string;
+  /**
+   * The type of location.
+   */
+  type?: (number | Category)[] | null;
+  /**
+   * Identifying info.
+   */
+  basics?: {
+    /**
+     * Toggle the Basics section on or off.
+     */
+    enable?: boolean | null;
+    /**
+     * A short label.
+     */
+    label?: string | null;
+    /**
+     * Display title.
+     */
+    title?: string | null;
+    /**
+     * Brief description.
+     */
+    description?: string | null;
+    visibility?: {
+      /**
+       * Toggle the Basics section on or off.
+       */
+      show?: boolean | null;
+    };
+  };
+  /**
+   * Extra data.
+   */
+  details?: {
+    /**
+     * Toggle the Details section on or off.
+     */
+    enable?: boolean | null;
+    /**
+     * Full address.
+     */
+    address?: string | null;
+    /**
+     * Geometric data.
+     */
+    geometry?: {
+      /**
+       * Location coordinates.
+       *
+       * @minItems 2
+       * @maxItems 2
+       */
+      coordinates?: [number, number] | null;
+      /**
+       * Geographic bounds.
+       */
+      bounds?: string | null;
+      /**
+       * Total area.
+       */
+      area?: string | null;
+    };
+    visibility?: {
+      /**
+       * Toggle the Details section on or off.
+       */
+      show?: boolean | null;
+    };
+  };
+  /**
+   * Characteristics.
+   */
+  traits?: {
+    /**
+     * Toggle the Traits section on or off.
+     */
+    enable?: boolean | null;
+    /**
+     * Geographic features.
+     */
+    geography?: {
+      /**
+       * Terrain type.
+       */
+      terrain?: string | null;
+      /**
+       * Climate zone.
+       */
+      climate?:
+        | (
+            | 'Temperate'
+            | 'Tropical'
+            | 'Arid'
+            | 'Continental'
+            | 'Polar'
+            | 'Mediterranean'
+            | 'Subtropical'
+            | 'Oceanic'
+            | 'Desert'
+          )
+        | null;
+      /**
+       * Natural features.
+       */
+      features?: string | null;
+    };
+    /**
+     * Infrastructure details.
+     */
+    infrastructure?: {
+      /**
+       * Transport links.
+       */
+      transport?: string | null;
+      /**
+       * On-site facilities.
+       */
+      facilities?: string | null;
+      /**
+       * Visitor amenities.
+       */
+      amenities?: string | null;
+    };
+    /**
+     * Accessibility info.
+     */
+    accessibility?: {
+      /**
+       * Main access route.
+       */
+      approach?: ('PublicRoad' | 'PrivateRoad' | 'Air' | 'Sea' | 'Rail') | null;
+      /**
+       * Access facilities.
+       */
+      facilities?: ('DisabledAccess' | 'VIPEntry' | 'ServiceEntry') | null;
+      /**
+       * Visitor capacity.
+       */
+      capacity?: ('Small' | 'Medium' | 'Large' | 'Massive') | null;
+    };
+    visibility?: {
+      /**
+       * Toggle the Traits section on or off.
+       */
+      show?: boolean | null;
+    };
+  };
+  /**
+   * Contextual information.
+   */
+  contexts?: {
+    /**
+     * Toggle the Contexts section on or off.
+     */
+    enable?: boolean | null;
+    /**
+     * Associated entities.
+     */
+    entities?:
+      | (
+          | {
+              relationTo: 'organizations';
+              value: number | Organization;
+            }
+          | {
+              relationTo: 'individuals';
+              value: number | Individual;
+            }
+          | {
+              relationTo: 'leaders';
+              value: number | Leader;
+            }
+          | {
+              relationTo: 'drivers';
+              value: number | Driver;
+            }
+          | {
+              relationTo: 'members';
+              value: number | Member;
+            }
+        )[]
+      | null;
+    visibility?: {
+      /**
+       * Toggle the Contexts section on or off.
+       */
+      show?: boolean | null;
+    };
+  };
+  seo?: {
+    title?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
+    description?: string | null;
+  };
+  /**
+   * When enabled, the slug will auto-generate from the title field on save and autosave.
+   */
+  generateSlug?: boolean | null;
+  slug?: string | null;
+  /**
+   * Categories that are relevant to the record.
+   */
+  categories?: (number | Category)[] | null;
+  /**
+   * Associated tags for the record.
+   */
+  tags?: (number | Tag)[] | null;
+  /**
+   * Controls who can see this record and under what conditions.
+   */
+  visibility?: {
+    check_publish?: boolean | null;
+    check_featured?: boolean | null;
+    check_pinned?: boolean | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "individuals".
+ */
+export interface Individual {
+  id: number;
+  toggle?: ('simple' | 'advanced') | null;
+  /**
+   * Enter text value.
+   */
+  first?: string | null;
+  /**
+   * Enter text value.
+   */
+  middle?: string | null;
+  /**
+   * Enter text value.
+   */
+  last?: string | null;
+  /**
+   * Enter text value.
+   */
+  alias?: string | null;
+  /**
+   * Select related document(s).
+   */
+  type?: (number | null) | Category;
+  /**
+   * Identifying info.
+   */
+  basics?: {
+    /**
+     * Toggle the Basics section on or off.
+     */
+    enable?: boolean | null;
+    /**
+     * Identification data
+     */
+    identifier?: {
+      /**
+       * Enter text value.
+       */
+      nickname?: string | null;
+      /**
+       * Enter text value.
+       */
+      code?: string | null;
+      /**
+       * Enter text value.
+       */
+      number?: string | null;
+    };
+    /**
+     * Personal identity
+     */
+    identity?: {
+      /**
+       * Select one or more options.
+       */
+      gender?: ('Male' | 'Female' | 'NonBinary' | 'Undisclosed') | null;
+      /**
+       * Enter text value.
+       */
+      pronouns?: string | null;
+      /**
+       * Enter text value.
+       */
+      age?: string | null;
+      /**
+       * Enter text value.
+       */
+      nationality?: string | null;
+    };
+    /**
+     * Enter text value.
+     */
+    description?: string | null;
+    visibility?: {
+      /**
+       * Toggle the Basics section on or off.
+       */
+      show?: boolean | null;
+    };
+  };
+  /**
+   * Extra data.
+   */
+  details?: {
+    /**
+     * Toggle the Details section on or off.
+     */
+    enable?: boolean | null;
+    /**
+     * Select related document(s).
+     */
+    narrative?: (number | null) | Narrative;
+    /**
+     * Enter text value.
+     */
+    background?: string | null;
+    /**
+     * Personal interests.
+     */
+    interests?:
+      | {
+          /**
+           * Enter text value.
+           */
+          interest?: string | null;
+          /**
+           * Select one or more options.
+           */
+          level?: ('Casual' | 'Enthusiast' | 'Expert' | 'Professional') | null;
+          /**
+           * Enter text value.
+           */
+          duration?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+    visibility?: {
+      /**
+       * Toggle the Details section on or off.
+       */
+      show?: boolean | null;
+    };
+  };
+  /**
+   * Characteristics.
+   */
+  traits?: {
+    /**
+     * Toggle the Traits section on or off.
+     */
+    enable?: boolean | null;
+    /**
+     * Select related document(s).
+     */
+    channels?: (number | Channel)[] | null;
+    /**
+     * Network influence.
+     */
+    influence?: {
+      /**
+       * Select one or more options.
+       */
+      reach?: ('Local' | 'Regional' | 'National' | 'Global') | null;
+      /**
+       * Select one or more options.
+       */
+      authority?: ('None' | 'Low' | 'Medium' | 'High') | null;
+      /**
+       * Select one or more options.
+       */
+      network?: ('Small' | 'Moderate' | 'Extensive' | 'Vast') | null;
+    };
+    /**
+     * Member benefits.
+     */
+    benefits?:
+      | {
+          /**
+           * Enter text value.
+           */
+          benefit?: string | null;
+          /**
+           * Select one or more options.
+           */
+          type?: ('Access' | 'Discount' | 'Information' | 'Collaboration') | null;
+          /**
+           * Select one or more options.
+           */
+          impact?: ('Minor' | 'Moderate' | 'Significant' | 'Strategic') | null;
+          id?: string | null;
+        }[]
+      | null;
+    visibility?: {
+      /**
+       * Toggle the Traits section on or off.
+       */
+      show?: boolean | null;
+    };
+  };
+  /**
+   * Media files.
+   */
+  assets?: {
+    /**
+     * Toggle the Assets section on or off.
+     */
+    enable?: boolean | null;
+    /**
+     * Select an uploaded file.
+     */
+    avatar?: (number | null) | Media;
+    /**
+     * Select related document(s).
+     */
+    gallery?: (number | Gallery)[] | null;
+    visibility?: {
+      /**
+       * Toggle the Assets section on or off.
+       */
+      show?: boolean | null;
+    };
+  };
+  /**
+   * Contextual information.
+   */
+  contexts?: {
+    /**
+     * Toggle the Contexts section on or off.
+     */
+    enable?: boolean | null;
+    /**
+     * Select related document(s).
+     */
+    history?: (number | null) | History;
+    /**
+     * Select related document(s).
+     */
+    notes?: (number | Note)[] | null;
+    visibility?: {
+      /**
+       * Toggle the Contexts section on or off.
+       */
+      show?: boolean | null;
+    };
+  };
+  seo?: {
+    title?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
+    description?: string | null;
+  };
+  /**
+   * When enabled, the slug will auto-generate from the title field on save and autosave.
+   */
+  generateSlug?: boolean | null;
+  slug?: string | null;
+  /**
+   * Categories that are relevant to the record.
+   */
+  categories?: (number | Category)[] | null;
+  /**
+   * Associated tags for the record.
+   */
+  tags?: (number | Tag)[] | null;
+  /**
+   * Controls who can see this record and under what conditions.
+   */
+  visibility?: {
+    check_publish?: boolean | null;
+    check_featured?: boolean | null;
+    check_pinned?: boolean | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "histories".
  */
 export interface History {
@@ -1916,7 +2208,7 @@ export interface History {
   /**
    * The history name.
    */
-  name?: string | null;
+  name: string;
   /**
    * Enter text value.
    */
@@ -1924,7 +2216,7 @@ export interface History {
   /**
    * The type of history.
    */
-  type?: (number | null) | Category;
+  type?: (number | Category)[] | null;
   /**
    * Extra data.
    */
@@ -2006,6 +2298,10 @@ export interface History {
      */
     enable?: boolean | null;
     /**
+     * Select an uploaded file.
+     */
+    thumbnail?: (number | null) | Media;
+    /**
      * Select related document(s).
      */
     gallery?: (number | null) | Gallery;
@@ -2062,15 +2358,11 @@ export interface Story {
   /**
    * The story name.
    */
-  name?: string | null;
-  /**
-   * Enter text value.
-   */
-  alias?: string | null;
+  name: string;
   /**
    * The type of story.
    */
-  type?: (number | null) | Category;
+  type?: (number | Category)[] | null;
   /**
    * Extra data.
    */
@@ -2079,6 +2371,10 @@ export interface Story {
      * Toggle the Details section on or off.
      */
     enable?: boolean | null;
+    /**
+     * Enter text value.
+     */
+    alias?: string | null;
     /**
      * Primary narrative.
      */
@@ -2101,39 +2397,71 @@ export interface Story {
     /**
      * Story elements.
      */
-    concerns?:
-      | {
-          /**
-           * Enter text value.
-           */
-          conflict?: string | null;
-          /**
-           * Enter text value.
-           */
-          stakes?: string | null;
-          /**
-           * Enter text value.
-           */
-          resolution?: string | null;
-          id?: string | null;
-        }[]
-      | null;
+    concerns?: {
+      list?:
+        | {
+            /**
+             * Enter text value.
+             */
+            conflict?: string | null;
+            /**
+             * Enter text value.
+             */
+            stakes?: string | null;
+            /**
+             * Enter text value.
+             */
+            resolution?: string | null;
+            settings?: {
+              /**
+               * Toggle the Concern entry on or off.
+               */
+              show?: boolean | null;
+              /**
+               * Toggle the Concern entry on or off.
+               */
+              featured?: boolean | null;
+              /**
+               * Toggle the Concern entry on or off.
+               */
+              pinned?: boolean | null;
+            };
+            id?: string | null;
+          }[]
+        | null;
+    };
     /**
      * Character dynamics.
      */
-    interactions?:
-      | {
-          /**
-           * Select one or more options.
-           */
-          dynamics?: ('Cooperative' | 'Competitive' | 'Adversarial' | 'Mentorship') | null;
-          /**
-           * Enter text value.
-           */
-          outcome?: string | null;
-          id?: string | null;
-        }[]
-      | null;
+    interactions?: {
+      list?:
+        | {
+            /**
+             * Select one or more options.
+             */
+            dynamics?: ('Cooperative' | 'Competitive' | 'Adversarial' | 'Mentorship') | null;
+            /**
+             * Enter text value.
+             */
+            outcome?: string | null;
+            settings?: {
+              /**
+               * Toggle the Interaction entry on or off.
+               */
+              show?: boolean | null;
+              /**
+               * Toggle the Interaction entry on or off.
+               */
+              featured?: boolean | null;
+              /**
+               * Toggle the Interaction entry on or off.
+               */
+              pinned?: boolean | null;
+            };
+            id?: string | null;
+          }[]
+        | null;
+    };
     visibility?: {
       /**
        * Toggle the Traits section on or off.
@@ -2150,6 +2478,14 @@ export interface Story {
      */
     enable?: boolean | null;
     /**
+     * Select an uploaded file.
+     */
+    thumbnail?: (number | null) | Media;
+    /**
+     * Select an uploaded file.
+     */
+    cover?: (number | null) | Media;
+    /**
      * Select related document(s).
      */
     gallery?: (number | null) | Gallery;
@@ -2157,6 +2493,14 @@ export interface Story {
      * Select related document(s).
      */
     playlist?: (number | null) | Playlist;
+    /**
+     * Select related document(s).
+     */
+    visualization?: (number | null) | Visualization;
+    /**
+     * Select related document(s).
+     */
+    documents?: (number | null) | Archive;
     visibility?: {
       /**
        * Toggle the Assets section on or off.
@@ -2276,6 +2620,180 @@ export interface Playlist {
     visibility?: {
       /**
        * Toggle the Traits section on or off.
+       */
+      show?: boolean | null;
+    };
+  };
+  /**
+   * Contextual information.
+   */
+  contexts?: {
+    /**
+     * Toggle the Contexts section on or off.
+     */
+    enable?: boolean | null;
+    /**
+     * Select related document(s).
+     */
+    narratives?: (number | Narrative)[] | null;
+    visibility?: {
+      /**
+       * Toggle the Contexts section on or off.
+       */
+      show?: boolean | null;
+    };
+  };
+  seo?: {
+    title?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
+    description?: string | null;
+  };
+  /**
+   * When enabled, the slug will auto-generate from the title field on save and autosave.
+   */
+  generateSlug?: boolean | null;
+  slug?: string | null;
+  /**
+   * Categories that are relevant to the record.
+   */
+  categories?: (number | Category)[] | null;
+  /**
+   * Associated tags for the record.
+   */
+  tags?: (number | Tag)[] | null;
+  /**
+   * Controls who can see this record and under what conditions.
+   */
+  visibility?: {
+    check_publish?: boolean | null;
+    check_featured?: boolean | null;
+    check_pinned?: boolean | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "visualizations".
+ */
+export interface Visualization {
+  id: number;
+  toggle?: ('simple' | 'advanced') | null;
+  /**
+   * Enter text value.
+   */
+  name: string;
+  /**
+   * Select related document(s).
+   */
+  type?: (number | Category)[] | null;
+  /**
+   * Extra data.
+   */
+  details: {
+    /**
+     * Toggle the Details section on or off.
+     */
+    enable?: boolean | null;
+    /**
+     * Select an uploaded file.
+     */
+    designs: (number | Media)[];
+    visibility?: {
+      /**
+       * Toggle the Details section on or off.
+       */
+      show?: boolean | null;
+    };
+  };
+  /**
+   * Contextual information.
+   */
+  contexts?: {
+    /**
+     * Toggle the Contexts section on or off.
+     */
+    enable?: boolean | null;
+    /**
+     * Select related document(s).
+     */
+    narratives?: (number | Narrative)[] | null;
+    visibility?: {
+      /**
+       * Toggle the Contexts section on or off.
+       */
+      show?: boolean | null;
+    };
+  };
+  seo?: {
+    title?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
+    description?: string | null;
+  };
+  /**
+   * When enabled, the slug will auto-generate from the title field on save and autosave.
+   */
+  generateSlug?: boolean | null;
+  slug?: string | null;
+  /**
+   * Categories that are relevant to the record.
+   */
+  categories?: (number | Category)[] | null;
+  /**
+   * Associated tags for the record.
+   */
+  tags?: (number | Tag)[] | null;
+  /**
+   * Controls who can see this record and under what conditions.
+   */
+  visibility?: {
+    check_publish?: boolean | null;
+    check_featured?: boolean | null;
+    check_pinned?: boolean | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "archives".
+ */
+export interface Archive {
+  id: number;
+  toggle?: ('simple' | 'advanced') | null;
+  /**
+   * Enter text value.
+   */
+  name: string;
+  /**
+   * Select related document(s).
+   */
+  type?: (number | Category)[] | null;
+  /**
+   * Extra data.
+   */
+  details: {
+    /**
+     * Toggle the Details section on or off.
+     */
+    enable?: boolean | null;
+    /**
+     * Select an uploaded file.
+     */
+    samples?: (number | Media)[] | null;
+    /**
+     * Select an uploaded file.
+     */
+    documents: (number | Media)[];
+    visibility?: {
+      /**
+       * Toggle the Details section on or off.
        */
       show?: boolean | null;
     };
@@ -2996,11 +3514,11 @@ export interface Journey {
   /**
    * The journey name.
    */
-  name?: string | null;
+  name: string;
   /**
    * The type of journey.
    */
-  type?: (number | null) | Category;
+  type?: (number | Category)[] | null;
   /**
    * Extra data.
    */
@@ -3035,27 +3553,43 @@ export interface Journey {
     /**
      * Key takeaways.
      */
-    lessons?:
-      | {
-          /**
-           * Enter text value.
-           */
-          lesson?: string | null;
-          /**
-           * Select one or more options.
-           */
-          significance?: ('Minor' | 'Notable' | 'Significant' | 'LifeChanging') | null;
-          /**
-           * Enter text value.
-           */
-          application?: string | null;
-          /**
-           * Select one or more options.
-           */
-          impact?: ('Personal' | 'Team' | 'Organizational' | 'Industry') | null;
-          id?: string | null;
-        }[]
-      | null;
+    lessons?: {
+      list?:
+        | {
+            /**
+             * Enter text value.
+             */
+            lesson?: string | null;
+            /**
+             * Enter text value.
+             */
+            application?: string | null;
+            /**
+             * Select one or more options.
+             */
+            significance?: ('Minor' | 'Notable' | 'Significant' | 'LifeChanging') | null;
+            /**
+             * Select one or more options.
+             */
+            impact?: ('Personal' | 'Team' | 'Organizational' | 'Industry') | null;
+            settings?: {
+              /**
+               * Toggle the Lesson entry on or off.
+               */
+              show?: boolean | null;
+              /**
+               * Toggle the Lesson entry on or off.
+               */
+              featured?: boolean | null;
+              /**
+               * Toggle the Lesson entry on or off.
+               */
+              pinned?: boolean | null;
+            };
+            id?: string | null;
+          }[]
+        | null;
+    };
     /**
      * Select related document(s).
      */
@@ -3079,6 +3613,10 @@ export interface Journey {
      * Toggle the Assets section on or off.
      */
     enable?: boolean | null;
+    /**
+     * Select an uploaded file.
+     */
+    thumbnail?: (number | null) | Media;
     /**
      * Select related document(s).
      */
@@ -3442,15 +3980,11 @@ export interface Note {
   /**
    * The note name.
    */
-  name?: string | null;
-  /**
-   * Enter text value.
-   */
-  alias?: string | null;
+  name: string;
   /**
    * The type of note.
    */
-  type?: (number | null) | Category;
+  type?: (number | Category)[] | null;
   /**
    * Extra data.
    */
@@ -3459,6 +3993,10 @@ export interface Note {
      * Toggle the Details section on or off.
      */
     enable?: boolean | null;
+    /**
+     * Enter text value.
+     */
+    alias?: string | null;
     /**
      * Enter text value.
      */
@@ -3481,23 +4019,39 @@ export interface Note {
     /**
      * Communication goals.
      */
-    intentions?:
-      | {
-          /**
-           * Select one or more options.
-           */
-          type?: ('Inform' | 'Persuade' | 'Clarify' | 'Critique' | 'Praise' | 'Evaluate') | null;
-          /**
-           * Select one or more options.
-           */
-          impact?: ('Positive' | 'Neutral' | 'Negative') | null;
-          /**
-           * Enter text value.
-           */
-          remark?: string | null;
-          id?: string | null;
-        }[]
-      | null;
+    intentions?: {
+      list?:
+        | {
+            /**
+             * Select one or more options.
+             */
+            type?: ('Inform' | 'Persuade' | 'Clarify' | 'Critique' | 'Praise' | 'Evaluate') | null;
+            /**
+             * Select one or more options.
+             */
+            impact?: ('Positive' | 'Neutral' | 'Negative') | null;
+            /**
+             * Enter text value.
+             */
+            remark?: string | null;
+            settings?: {
+              /**
+               * Toggle the Intention entry on or off.
+               */
+              show?: boolean | null;
+              /**
+               * Toggle the Intention entry on or off.
+               */
+              featured?: boolean | null;
+              /**
+               * Toggle the Intention entry on or off.
+               */
+              pinned?: boolean | null;
+            };
+            id?: string | null;
+          }[]
+        | null;
+    };
     visibility?: {
       /**
        * Toggle the Traits section on or off.
@@ -3514,101 +4068,20 @@ export interface Note {
      */
     enable?: boolean | null;
     /**
+     * Select an uploaded file.
+     */
+    thumbnail?: (number | null) | Media;
+    /**
      * Select related document(s).
      */
     archive?: (number | null) | Archive;
-    visibility?: {
-      /**
-       * Toggle the Assets section on or off.
-       */
-      show?: boolean | null;
-    };
-  };
-  seo?: {
-    title?: string | null;
-    /**
-     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
-     */
-    image?: (number | null) | Media;
-    description?: string | null;
-  };
-  /**
-   * When enabled, the slug will auto-generate from the title field on save and autosave.
-   */
-  generateSlug?: boolean | null;
-  slug?: string | null;
-  /**
-   * Categories that are relevant to the record.
-   */
-  categories?: (number | Category)[] | null;
-  /**
-   * Associated tags for the record.
-   */
-  tags?: (number | Tag)[] | null;
-  /**
-   * Controls who can see this record and under what conditions.
-   */
-  visibility?: {
-    check_publish?: boolean | null;
-    check_featured?: boolean | null;
-    check_pinned?: boolean | null;
-  };
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "archives".
- */
-export interface Archive {
-  id: number;
-  toggle?: ('simple' | 'advanced') | null;
-  /**
-   * Enter text value.
-   */
-  name: string;
-  /**
-   * Select related document(s).
-   */
-  type?: (number | Category)[] | null;
-  /**
-   * Extra data.
-   */
-  details: {
-    /**
-     * Toggle the Details section on or off.
-     */
-    enable?: boolean | null;
-    /**
-     * Select an uploaded file.
-     */
-    samples?: (number | Media)[] | null;
-    /**
-     * Select an uploaded file.
-     */
-    documents: (number | Media)[];
-    visibility?: {
-      /**
-       * Toggle the Details section on or off.
-       */
-      show?: boolean | null;
-    };
-  };
-  /**
-   * Contextual information.
-   */
-  contexts?: {
-    /**
-     * Toggle the Contexts section on or off.
-     */
-    enable?: boolean | null;
     /**
      * Select related document(s).
      */
-    narratives?: (number | Narrative)[] | null;
+    visualization?: (number | null) | Visualization;
     visibility?: {
       /**
-       * Toggle the Contexts section on or off.
+       * Toggle the Assets section on or off.
        */
       show?: boolean | null;
     };
@@ -4295,267 +4768,6 @@ export interface Principle {
     enable?: boolean | null;
     /**
      * Related notes.
-     */
-    notes?: (number | Note)[] | null;
-    visibility?: {
-      /**
-       * Toggle the Contexts section on or off.
-       */
-      show?: boolean | null;
-    };
-  };
-  seo?: {
-    title?: string | null;
-    /**
-     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
-     */
-    image?: (number | null) | Media;
-    description?: string | null;
-  };
-  /**
-   * When enabled, the slug will auto-generate from the title field on save and autosave.
-   */
-  generateSlug?: boolean | null;
-  slug?: string | null;
-  /**
-   * Categories that are relevant to the record.
-   */
-  categories?: (number | Category)[] | null;
-  /**
-   * Associated tags for the record.
-   */
-  tags?: (number | Tag)[] | null;
-  /**
-   * Controls who can see this record and under what conditions.
-   */
-  visibility?: {
-    check_publish?: boolean | null;
-    check_featured?: boolean | null;
-    check_pinned?: boolean | null;
-  };
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "individuals".
- */
-export interface Individual {
-  id: number;
-  toggle?: ('simple' | 'advanced') | null;
-  /**
-   * Enter text value.
-   */
-  first?: string | null;
-  /**
-   * Enter text value.
-   */
-  middle?: string | null;
-  /**
-   * Enter text value.
-   */
-  last?: string | null;
-  /**
-   * Enter text value.
-   */
-  alias?: string | null;
-  /**
-   * Select related document(s).
-   */
-  type?: (number | null) | Category;
-  /**
-   * Identifying info.
-   */
-  basics?: {
-    /**
-     * Toggle the Basics section on or off.
-     */
-    enable?: boolean | null;
-    /**
-     * Identification data
-     */
-    identifier?: {
-      /**
-       * Enter text value.
-       */
-      nickname?: string | null;
-      /**
-       * Enter text value.
-       */
-      code?: string | null;
-      /**
-       * Enter text value.
-       */
-      number?: string | null;
-    };
-    /**
-     * Personal identity
-     */
-    identity?: {
-      /**
-       * Select one or more options.
-       */
-      gender?: ('Male' | 'Female' | 'NonBinary' | 'Undisclosed') | null;
-      /**
-       * Enter text value.
-       */
-      pronouns?: string | null;
-      /**
-       * Enter text value.
-       */
-      age?: string | null;
-      /**
-       * Enter text value.
-       */
-      nationality?: string | null;
-    };
-    /**
-     * Enter text value.
-     */
-    description?: string | null;
-    visibility?: {
-      /**
-       * Toggle the Basics section on or off.
-       */
-      show?: boolean | null;
-    };
-  };
-  /**
-   * Extra data.
-   */
-  details?: {
-    /**
-     * Toggle the Details section on or off.
-     */
-    enable?: boolean | null;
-    /**
-     * Select related document(s).
-     */
-    narrative?: (number | null) | Narrative;
-    /**
-     * Enter text value.
-     */
-    background?: string | null;
-    /**
-     * Personal interests.
-     */
-    interests?:
-      | {
-          /**
-           * Enter text value.
-           */
-          interest?: string | null;
-          /**
-           * Select one or more options.
-           */
-          level?: ('Casual' | 'Enthusiast' | 'Expert' | 'Professional') | null;
-          /**
-           * Enter text value.
-           */
-          duration?: string | null;
-          id?: string | null;
-        }[]
-      | null;
-    visibility?: {
-      /**
-       * Toggle the Details section on or off.
-       */
-      show?: boolean | null;
-    };
-  };
-  /**
-   * Characteristics.
-   */
-  traits?: {
-    /**
-     * Toggle the Traits section on or off.
-     */
-    enable?: boolean | null;
-    /**
-     * Select related document(s).
-     */
-    channels?: (number | Channel)[] | null;
-    /**
-     * Network influence.
-     */
-    influence?: {
-      /**
-       * Select one or more options.
-       */
-      reach?: ('Local' | 'Regional' | 'National' | 'Global') | null;
-      /**
-       * Select one or more options.
-       */
-      authority?: ('None' | 'Low' | 'Medium' | 'High') | null;
-      /**
-       * Select one or more options.
-       */
-      network?: ('Small' | 'Moderate' | 'Extensive' | 'Vast') | null;
-    };
-    /**
-     * Member benefits.
-     */
-    benefits?:
-      | {
-          /**
-           * Enter text value.
-           */
-          benefit?: string | null;
-          /**
-           * Select one or more options.
-           */
-          type?: ('Access' | 'Discount' | 'Information' | 'Collaboration') | null;
-          /**
-           * Select one or more options.
-           */
-          impact?: ('Minor' | 'Moderate' | 'Significant' | 'Strategic') | null;
-          id?: string | null;
-        }[]
-      | null;
-    visibility?: {
-      /**
-       * Toggle the Traits section on or off.
-       */
-      show?: boolean | null;
-    };
-  };
-  /**
-   * Media files.
-   */
-  assets?: {
-    /**
-     * Toggle the Assets section on or off.
-     */
-    enable?: boolean | null;
-    /**
-     * Select an uploaded file.
-     */
-    avatar?: (number | null) | Media;
-    /**
-     * Select related document(s).
-     */
-    gallery?: (number | Gallery)[] | null;
-    visibility?: {
-      /**
-       * Toggle the Assets section on or off.
-       */
-      show?: boolean | null;
-    };
-  };
-  /**
-   * Contextual information.
-   */
-  contexts?: {
-    /**
-     * Toggle the Contexts section on or off.
-     */
-    enable?: boolean | null;
-    /**
-     * Select related document(s).
-     */
-    history?: (number | null) | History;
-    /**
-     * Select related document(s).
      */
     notes?: (number | Note)[] | null;
     visibility?: {
@@ -6286,91 +6498,6 @@ export interface Car {
      * Select related document(s).
      */
     histories?: (number | null) | History;
-    visibility?: {
-      /**
-       * Toggle the Contexts section on or off.
-       */
-      show?: boolean | null;
-    };
-  };
-  seo?: {
-    title?: string | null;
-    /**
-     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
-     */
-    image?: (number | null) | Media;
-    description?: string | null;
-  };
-  /**
-   * When enabled, the slug will auto-generate from the title field on save and autosave.
-   */
-  generateSlug?: boolean | null;
-  slug?: string | null;
-  /**
-   * Categories that are relevant to the record.
-   */
-  categories?: (number | Category)[] | null;
-  /**
-   * Associated tags for the record.
-   */
-  tags?: (number | Tag)[] | null;
-  /**
-   * Controls who can see this record and under what conditions.
-   */
-  visibility?: {
-    check_publish?: boolean | null;
-    check_featured?: boolean | null;
-    check_pinned?: boolean | null;
-  };
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "visualizations".
- */
-export interface Visualization {
-  id: number;
-  toggle?: ('simple' | 'advanced') | null;
-  /**
-   * Enter text value.
-   */
-  name: string;
-  /**
-   * Select related document(s).
-   */
-  type?: (number | Category)[] | null;
-  /**
-   * Extra data.
-   */
-  details: {
-    /**
-     * Toggle the Details section on or off.
-     */
-    enable?: boolean | null;
-    /**
-     * Select an uploaded file.
-     */
-    designs: (number | Media)[];
-    visibility?: {
-      /**
-       * Toggle the Details section on or off.
-       */
-      show?: boolean | null;
-    };
-  };
-  /**
-   * Contextual information.
-   */
-  contexts?: {
-    /**
-     * Toggle the Contexts section on or off.
-     */
-    enable?: boolean | null;
-    /**
-     * Select related document(s).
-     */
-    narratives?: (number | Narrative)[] | null;
     visibility?: {
       /**
        * Toggle the Contexts section on or off.
@@ -13543,13 +13670,6 @@ export interface NarrativesSelect<T extends boolean = true> {
               perspective?: T;
               purpose?: T;
             };
-        timeline?:
-          | T
-          | {
-              date?: T;
-              type?: T;
-              id?: T;
-            };
         visibility?:
           | T
           | {
@@ -13567,13 +13687,41 @@ export interface NarrativesSelect<T extends boolean = true> {
               show?: T;
             };
       };
+  metrics?:
+    | T
+    | {
+        enable?: T;
+        timeline?:
+          | T
+          | {
+              list?:
+                | T
+                | {
+                    date?: T;
+                    type?: T;
+                    settings?:
+                      | T
+                      | {
+                          show?: T;
+                          featured?: T;
+                          pinned?: T;
+                        };
+                    id?: T;
+                  };
+            };
+        visibility?:
+          | T
+          | {
+              show?: T;
+            };
+      };
   contexts?:
     | T
     | {
         enable?: T;
+        entities?: T;
         locations?: T;
         notes?: T;
-        entities?: T;
         visibility?:
           | T
           | {
@@ -13608,12 +13756,12 @@ export interface NarrativesSelect<T extends boolean = true> {
 export interface StoriesSelect<T extends boolean = true> {
   toggle?: T;
   name?: T;
-  alias?: T;
   type?: T;
   details?:
     | T
     | {
         enable?: T;
+        alias?: T;
         narrative?: T;
         visibility?:
           | T
@@ -13628,17 +13776,39 @@ export interface StoriesSelect<T extends boolean = true> {
         concerns?:
           | T
           | {
-              conflict?: T;
-              stakes?: T;
-              resolution?: T;
-              id?: T;
+              list?:
+                | T
+                | {
+                    conflict?: T;
+                    stakes?: T;
+                    resolution?: T;
+                    settings?:
+                      | T
+                      | {
+                          show?: T;
+                          featured?: T;
+                          pinned?: T;
+                        };
+                    id?: T;
+                  };
             };
         interactions?:
           | T
           | {
-              dynamics?: T;
-              outcome?: T;
-              id?: T;
+              list?:
+                | T
+                | {
+                    dynamics?: T;
+                    outcome?: T;
+                    settings?:
+                      | T
+                      | {
+                          show?: T;
+                          featured?: T;
+                          pinned?: T;
+                        };
+                    id?: T;
+                  };
             };
         visibility?:
           | T
@@ -13650,8 +13820,12 @@ export interface StoriesSelect<T extends boolean = true> {
     | T
     | {
         enable?: T;
+        thumbnail?: T;
+        cover?: T;
         gallery?: T;
         playlist?: T;
+        visualization?: T;
+        documents?: T;
         visibility?:
           | T
           | {
@@ -13740,6 +13914,7 @@ export interface HistoriesSelect<T extends boolean = true> {
     | T
     | {
         enable?: T;
+        thumbnail?: T;
         gallery?: T;
         playlist?: T;
         visibility?:
@@ -13796,11 +13971,22 @@ export interface JourneysSelect<T extends boolean = true> {
         lessons?:
           | T
           | {
-              lesson?: T;
-              significance?: T;
-              application?: T;
-              impact?: T;
-              id?: T;
+              list?:
+                | T
+                | {
+                    lesson?: T;
+                    application?: T;
+                    significance?: T;
+                    impact?: T;
+                    settings?:
+                      | T
+                      | {
+                          show?: T;
+                          featured?: T;
+                          pinned?: T;
+                        };
+                    id?: T;
+                  };
             };
         decisions?: T;
         impacts?: T;
@@ -13814,6 +14000,7 @@ export interface JourneysSelect<T extends boolean = true> {
     | T
     | {
         enable?: T;
+        thumbnail?: T;
         gallery?: T;
         playlist?: T;
         visibility?:
@@ -13850,12 +14037,12 @@ export interface JourneysSelect<T extends boolean = true> {
 export interface NotesSelect<T extends boolean = true> {
   toggle?: T;
   name?: T;
-  alias?: T;
   type?: T;
   details?:
     | T
     | {
         enable?: T;
+        alias?: T;
         description?: T;
         visibility?:
           | T
@@ -13870,10 +14057,21 @@ export interface NotesSelect<T extends boolean = true> {
         intentions?:
           | T
           | {
-              type?: T;
-              impact?: T;
-              remark?: T;
-              id?: T;
+              list?:
+                | T
+                | {
+                    type?: T;
+                    impact?: T;
+                    remark?: T;
+                    settings?:
+                      | T
+                      | {
+                          show?: T;
+                          featured?: T;
+                          pinned?: T;
+                        };
+                    id?: T;
+                  };
             };
         visibility?:
           | T
@@ -13885,7 +14083,9 @@ export interface NotesSelect<T extends boolean = true> {
     | T
     | {
         enable?: T;
+        thumbnail?: T;
         archive?: T;
+        visualization?: T;
         visibility?:
           | T
           | {

@@ -57,14 +57,6 @@ export const dictionary = {
             purpose: { label: { en: 'Purpose', es: 'Propósito', pt: 'Propósito' } },
           },
         },
-        timeline: {
-          label: { en: 'Timeline', es: 'Línea de tiempo', pt: 'Linha do tempo' },
-          description: { en: 'Key moments.', es: 'Momentos clave.', pt: 'Momentos-chave.' },
-          fields: {
-            date: { label: { en: 'Date', es: 'Fecha', pt: 'Data' } },
-            type: { label: { en: 'Type', es: 'Tipo', pt: 'Tipo' } },
-          },
-        },
       },
     },
     traits: {
@@ -78,6 +70,23 @@ export const dictionary = {
         },
       },
     },
+    metrics: {
+      name: 'metrics',
+      label: { en: 'Metrics', es: 'Métricas', pt: 'Métricas' },
+      description: { en: 'Narrative metrics.', es: 'Métricas de la narrativa.', pt: 'Métricas da narrativa.' },
+      fields: {
+        timeline: {
+          name: 'timeline',
+          label: { en: 'Timeline', es: 'Línea de tiempo', pt: 'Linha do tempo' },
+          description: { en: 'Key moments.', es: 'Momentos clave.', pt: 'Momentos-chave.' },
+          entity: { en: 'Timeline', es: 'Línea de tiempo', pt: 'Linha do tempo' },
+          fields: {
+            date: { label: { en: 'Date', es: 'Fecha', pt: 'Data' } },
+            type: { label: { en: 'Type', es: 'Tipo', pt: 'Tipo' } },
+          },
+        },
+      },
+    },
     contexts: {
       name: 'contexts',
       label: { en: 'Contexts', es: 'Contextos', pt: 'Contextos' },
@@ -87,6 +96,6 @@ export const dictionary = {
         notes: { label: { en: 'Notes', es: 'Notas', pt: 'Notas' } },
         entities: { label: { en: 'Entities', es: 'Entidades', pt: 'Entidades' } },
       },
-    },
+    }
   },
 } as const

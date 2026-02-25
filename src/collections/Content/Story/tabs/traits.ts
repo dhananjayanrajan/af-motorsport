@@ -5,17 +5,14 @@ import { textFieldFactory } from '@/fields/factories/fields/textField'
 import { selectFieldFactory } from '@/fields/factories/fields/selectField'
 import { advanced } from '@/fields/factories/toggles/advanced'
 import { STORY_INTERACTION_DYNAMICS } from '../sources/constants'
+import { groupFactory } from '@/fields/factories/blueprint'
 
 export const traitsFields: Field[] = [
   advanced(
-    {
-      name: 'concerns',
-      type: 'array',
-      label: dictionary.tabs.traits.fields.concerns.label,
-      admin: {
-        description: dictionary.tabs.traits.fields.concerns.description,
-      },
-      fields: [
+    groupFactory(
+      dictionary.tabs.traits.fields.concerns,
+      dictionary.host,
+      [
         {
           type: 'row',
           fields: [
@@ -23,34 +20,31 @@ export const traitsFields: Field[] = [
               name: 'conflict',
               dictionary: dictionary.tabs.traits.fields.concerns.fields,
               width: 3,
-              flags: [],
+              flags: ['localized', 'index', 'advanced'],
             }),
             textFieldFactory({
               name: 'stakes',
               dictionary: dictionary.tabs.traits.fields.concerns.fields,
               width: 3,
-              flags: [],
+              flags: ['localized', 'index', 'advanced'],
             }),
             textFieldFactory({
               name: 'resolution',
               dictionary: dictionary.tabs.traits.fields.concerns.fields,
               width: 3,
-              flags: [],
+              flags: ['localized', 'index', 'advanced'],
             }),
           ],
         },
       ],
-    }
+      true
+    )
   ),
   advanced(
-    {
-      name: 'interactions',
-      type: 'array',
-      label: dictionary.tabs.traits.fields.interactions.label,
-      admin: {
-        description: dictionary.tabs.traits.fields.interactions.description,
-      },
-      fields: [
+    groupFactory(
+      dictionary.tabs.traits.fields.interactions,
+      dictionary.host,
+      [
         {
           type: 'row',
           fields: [
@@ -59,17 +53,18 @@ export const traitsFields: Field[] = [
               options: STORY_INTERACTION_DYNAMICS,
               dictionary: dictionary.tabs.traits.fields.interactions.fields,
               width: 2,
-              flags: [],
+              flags: ['localized', 'index', 'advanced'],
             }),
             textFieldFactory({
               name: 'outcome',
               dictionary: dictionary.tabs.traits.fields.interactions.fields,
               width: 2,
-              flags: [],
+              flags: ['localized', 'index', 'advanced'],
             }),
           ],
         },
       ],
-    }
+      true
+    )
   ),
 ]

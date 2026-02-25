@@ -34,8 +34,10 @@ export const dictionary = {
       description: { en: 'Journey traits.', es: 'Rasgos de la trayectoria.', pt: 'Traços da jornada.' },
       fields: {
         lessons: {
+          name: 'lessons',
           label: { en: 'Lessons', es: 'Lecciones', pt: 'Lições' },
           description: { en: 'Key takeaways.', es: 'Lecciones aprendidas.', pt: 'Lições aprendidas.' },
+          entity: { en: 'Lesson', es: 'Lección', pt: 'Lição' },
           fields: {
             lesson: { label: { en: 'Lesson', es: 'Lección', pt: 'Lição' } },
             significance: { label: { en: 'Significance', es: 'Significancia', pt: 'Significância' } },
@@ -56,6 +58,7 @@ export const dictionary = {
       label: { en: 'Assets', es: 'Activos', pt: 'Ativos' },
       description: { en: 'Visual assets.', es: 'Activos visuales.', pt: 'Ativos visuais.' },
       fields: {
+        thumbnail: { label: { en: 'Thumbnail', es: 'Miniatura', pt: 'Miniatura' } },
         gallery: { label: { en: 'Gallery', es: 'Galería', pt: 'Galeria' } },
         playlist: { label: { en: 'Playlist', es: 'Lista de reproducción', pt: 'Playlist' } },
       },

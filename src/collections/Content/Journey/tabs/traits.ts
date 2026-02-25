@@ -6,55 +6,48 @@ import { selectFieldFactory } from '@/fields/factories/fields/selectField'
 import { relationshipFieldFactory } from '@/fields/factories/fields/relationshipField'
 import { advanced } from '@/fields/factories/toggles/advanced'
 import { JOURNEY_LESSON_SIGNIFICANCE, JOURNEY_LESSON_IMPACT } from '../sources/constants'
+import { groupFactory } from '@/fields/factories/blueprint'
 
 export const traitsFields: Field[] = [
   advanced(
-    {
-      name: 'lessons',
-      type: 'array',
-      label: dictionary.tabs.traits.fields.lessons.label,
-      admin: {
-        description: dictionary.tabs.traits.fields.lessons.description,
-      },
-      fields: [
+    groupFactory(
+      dictionary.tabs.traits.fields.lessons,
+      dictionary.host,
+      [
         {
           type: 'row',
           fields: [
             textFieldFactory({
               name: 'lesson',
               dictionary: dictionary.tabs.traits.fields.lessons.fields,
-              width: 3,
-              flags: [],
+              width: 1,
+              flags: ['advanced'],
+            }),
+            textFieldFactory({
+              name: 'application',
+              dictionary: dictionary.tabs.traits.fields.lessons.fields,
+              width: 1,
+              flags: ['advanced'],
             }),
             selectFieldFactory({
               name: 'significance',
               options: JOURNEY_LESSON_SIGNIFICANCE,
               dictionary: dictionary.tabs.traits.fields.lessons.fields,
-              width: 3,
-              flags: [],
-            }),
-          ],
-        },
-        {
-          type: 'row',
-          fields: [
-            textFieldFactory({
-              name: 'application',
-              dictionary: dictionary.tabs.traits.fields.lessons.fields,
-              width: 3,
-              flags: [],
+              width: 2,
+              flags: ['advanced'],
             }),
             selectFieldFactory({
               name: 'impact',
               options: JOURNEY_LESSON_IMPACT,
               dictionary: dictionary.tabs.traits.fields.lessons.fields,
-              width: 3,
-              flags: [],
+              width: 2,
+              flags: ['advanced'],
             }),
           ],
         },
       ],
-    }
+      true
+    )
   ),
   {
     type: 'row',

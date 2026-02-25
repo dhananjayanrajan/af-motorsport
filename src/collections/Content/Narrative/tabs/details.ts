@@ -5,13 +5,11 @@ import { richtextFieldFactory } from '@/fields/factories/fields/richtextField'
 import { groupFactory } from '@/fields/factories/blueprint'
 import { selectFieldFactory } from '@/fields/factories/fields/selectField'
 import { textFieldFactory } from '@/fields/factories/fields/textField'
-import { dateFieldFactory } from '@/fields/factories/fields/dateField'
 import { advanced } from '@/fields/factories/toggles/advanced'
 import {
   NARRATIVE_SCOPE_SIGNIFICANCE,
   NARRATIVE_SCOPE_SCALE,
   NARRATIVE_SCOPE_DEPTH,
-  NARRATIVE_TIMELINE_TYPE,
 } from '../sources/constants'
 
 export const detailsFields: Field[] = [
@@ -103,36 +101,5 @@ export const detailsFields: Field[] = [
       ],
       false
     )
-  ),
-  advanced(
-    {
-      name: 'timeline',
-      type: 'array',
-      label: dictionary.tabs.details.fields.timeline.label,
-      admin: {
-        description: dictionary.tabs.details.fields.timeline.description,
-      },
-      fields: [
-        {
-          type: 'row',
-          fields: [
-            dateFieldFactory({
-              name: 'date',
-              dictionary: dictionary.tabs.details.fields.timeline.fields,
-              width: 2,
-              flags: ['advanced'],
-              pickerAppearance: 'dayOnly',
-            }),
-            selectFieldFactory({
-              name: 'type',
-              options: NARRATIVE_TIMELINE_TYPE,
-              dictionary: dictionary.tabs.details.fields.timeline.fields,
-              width: 2,
-              flags: ['advanced'],
-            }),
-          ],
-        },
-      ],
-    }
-  ),
+  )
 ]

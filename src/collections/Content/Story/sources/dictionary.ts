@@ -8,10 +8,6 @@ export const dictionary = {
       placeholder: 'e.g. The 1976 Season',
       description: { en: 'The story name.', es: 'El nombre de la historia.', pt: 'O nome da história.' },
     },
-    alias: {
-      label: { en: 'Alias', es: 'Alias', pt: 'Alias' },
-      placeholder: 'e.g. 76 Rivalry',
-    },
     type: {
       label: { en: 'Type', es: 'Tipo', pt: 'Tipo' },
       placeholder: 'Select type',
@@ -24,6 +20,10 @@ export const dictionary = {
       label: { en: 'Details', es: 'Detalles', pt: 'Detalhes' },
       description: { en: 'Detailed info.', es: 'Info detallada.', pt: 'Info detalhada.' },
       fields: {
+        alias: {
+          label: { en: 'Alias', es: 'Alias', pt: 'Alias' },
+          placeholder: 'e.g. 76 Rivalry',
+        },
         narrative: {
           label: { en: 'Narrative', es: 'Narrativa', pt: 'Narrativa' },
           description: { en: 'Primary narrative.', es: 'Narrativa principal.', pt: 'Narrativa principal.' },
@@ -36,8 +36,10 @@ export const dictionary = {
       description: { en: 'Story traits.', es: 'Rasgos de la historia.', pt: 'Traços da história.' },
       fields: {
         concerns: {
+          name: 'concerns',
           label: { en: 'Concerns', es: 'Inquietudes', pt: 'Preocupações' },
           description: { en: 'Story elements.', es: 'Elementos de la historia.', pt: 'Elementos da história.' },
+          entity: { en: 'Concern', es: 'Inquietud', pt: 'Preocupação' },
           fields: {
             conflict: { label: { en: 'Conflict', es: 'Conflicto', pt: 'Conflito' } },
             stakes: { label: { en: 'Stakes', es: 'Apuestas', pt: 'Apostas' } },
@@ -45,8 +47,10 @@ export const dictionary = {
           },
         },
         interactions: {
+          name: 'interactions',
           label: { en: 'Interactions', es: 'Interacciones', pt: 'Interações' },
           description: { en: 'Character dynamics.', es: 'Dinámicas de personajes.', pt: 'Dinâmicas de personagens.' },
+          entity: { en: 'Interaction', es: 'Interacción', pt: 'Interação' },
           fields: {
             dynamics: { label: { en: 'Dynamics', es: 'Dinámicas', pt: 'Dinâmicas' } },
             outcome: { label: { en: 'Outcome', es: 'Resultado', pt: 'Resultado' } },
@@ -59,6 +63,8 @@ export const dictionary = {
       label: { en: 'Assets', es: 'Activos', pt: 'Ativos' },
       description: { en: 'Visual assets.', es: 'Activos visuales.', pt: 'Ativos visuais.' },
       fields: {
+        thumbnail: { label: { en: 'Thumbnail', es: 'Miniatura', pt: 'Miniatura' } },
+        cover: { label: { en: 'Cover', es: 'Portada', pt: 'Capa' } },
         gallery: { label: { en: 'Gallery', es: 'Galería', pt: 'Galeria' } },
         playlist: { label: { en: 'Playlist', es: 'Lista de reproducción', pt: 'Playlist' } },
       },

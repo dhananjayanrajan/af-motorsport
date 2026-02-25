@@ -8,10 +8,6 @@ export const dictionary = {
       placeholder: 'e.g. Race Observation',
       description: { en: 'The note name.', es: 'El nombre de la nota.', pt: 'O nome da nota.' },
     },
-    alias: {
-      label: { en: 'Alias', es: 'Alias', pt: 'Alias' },
-      placeholder: 'e.g. Observation 1',
-    },
     type: {
       label: { en: 'Type', es: 'Tipo', pt: 'Tipo' },
       placeholder: 'Select type',
@@ -24,6 +20,10 @@ export const dictionary = {
       label: { en: 'Details', es: 'Detalles', pt: 'Detalhes' },
       description: { en: 'Detailed info.', es: 'Info detallada.', pt: 'Info detalhada.' },
       fields: {
+        alias: {
+          label: { en: 'Alias', es: 'Alias', pt: 'Alias' },
+          placeholder: 'e.g. Observation 1',
+        },
         description: {
           label: { en: 'Description', es: 'Descripción', pt: 'Descrição' },
           placeholder: 'Note content',
@@ -36,8 +36,10 @@ export const dictionary = {
       description: { en: 'Note traits.', es: 'Rasgos de la nota.', pt: 'Traços da nota.' },
       fields: {
         intentions: {
+          name: 'intentions',
           label: { en: 'Intentions', es: 'Intenciones', pt: 'Intenções' },
           description: { en: 'Communication goals.', es: 'Objetivos de comunicación.', pt: 'Objetivos de comunicação.' },
+          entity: { en: 'Intention', es: 'Intención', pt: 'Intenção' },
           fields: {
             type: { label: { en: 'Type', es: 'Tipo', pt: 'Tipo' } },
             impact: { label: { en: 'Impact', es: 'Impacto', pt: 'Impacto' } },
@@ -51,7 +53,9 @@ export const dictionary = {
       label: { en: 'Assets', es: 'Activos', pt: 'Ativos' },
       description: { en: 'Visual assets.', es: 'Activos visuales.', pt: 'Ativos visuais.' },
       fields: {
+        thumbnail: { label: { en: 'Thumbnail', es: 'Miniatura', pt: 'Miniatura' } },
         archive: { label: { en: 'Archive', es: 'Archivo', pt: 'Arquivo' } },
+        visualization: { label: { en: 'Visualization', es: 'Visualización', pt: 'Visualização' } },
       },
     },
   },

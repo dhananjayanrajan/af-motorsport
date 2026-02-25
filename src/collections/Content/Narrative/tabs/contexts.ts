@@ -6,6 +6,15 @@ import { advanced } from '@/fields/factories/toggles/advanced'
 
 export const contextsFields: Field[] = [
   advanced(
+    relationshipFieldFactory({
+      name: 'entities',
+      relationTo: ['organizations', 'individuals', 'leaders', 'drivers', 'members'],
+      dictionary: dictionary.tabs.contexts.fields,
+      width: 1,
+      flags: ['hasMany', 'advanced'],
+    }),
+  ),
+  advanced(
     {
       type: 'row',
       fields: [
@@ -23,21 +32,7 @@ export const contextsFields: Field[] = [
           width: 2,
           flags: ['hasMany', 'advanced'],
         }),
-      ],
-    }
-  ),
-  advanced(
-    {
-      type: 'row',
-      fields: [
-        relationshipFieldFactory({
-          name: 'entities',
-          relationTo: ['organizations', 'individuals', 'leaders', 'drivers', 'members'],
-          dictionary: dictionary.tabs.contexts.fields,
-          width: 1,
-          flags: ['hasMany', 'advanced'],
-        }),
-      ],
+      ]
     }
   ),
 ]
