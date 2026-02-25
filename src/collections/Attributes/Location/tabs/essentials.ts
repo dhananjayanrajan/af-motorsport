@@ -15,28 +15,17 @@ export const essentialFields: Field[] = [
             name: 'name',
             dictionary: dictionary.essential,
             width: 2,
-            flags: ['localized', 'index'],
+            flags: ['required', 'localized', 'index'],
           }),
           relationshipFieldFactory({
             name: 'type',
             relationTo: 'categories',
             dictionary: dictionary.essential,
             width: 2,
-            flags: [],
+            flags: ['hasMany'],
           }),
         ],
-      },
-      {
-        type: 'row',
-        fields: [
-          textFieldFactory({
-            name: 'label',
-            dictionary: dictionary.essential,
-            width: 1,
-            flags: ['localized'],
-          }),
-        ],
-      },
+      }
     ],
   },
 ]

@@ -20,6 +20,71 @@ export const dictionary = {
       label: { en: 'Basics', es: 'Básicos', pt: 'Básicos' },
       entity: { en: 'Channel', es: 'Canal', pt: 'Canal' },
       description: { en: 'Basic properties.', es: 'Propiedades básicas.', pt: 'Propriedades básicas.' },
+      fields: {
+        description: {
+          label: { en: 'Description', es: 'Descripción', pt: 'Descrição' },
+          placeholder: 'Enter description',
+          description: { en: 'Category description.', es: 'Descripción de la categoría.', pt: 'Descrição da categoria.' },
+        },
+      }
+    },
+    traits: {
+      name: 'traits',
+      label: { en: 'Traits', es: 'Rasgos', pt: 'Traços' },
+      entity: { en: 'Channel', es: 'Canal', pt: 'Canal' },
+      description: { en: 'Channel characteristics.', es: 'Características del canal.', pt: 'Características do canal.' },
+      usage: {
+        name: 'usage',
+        label: { en: 'Usage', es: 'Uso', pt: 'Uso' },
+        entity: { en: 'Usage', es: 'Uso', pt: 'Uso' },
+        description: { en: 'Usage constraints.', es: 'Restricciones de uso.', pt: 'Restrições de uso.' },
+        fields: {
+          purpose: {
+            label: { en: 'Purpose', es: 'Propósito', pt: 'Propósito' },
+            placeholder: 'e.g. Public Inquiries',
+            description: { en: 'Intended use.', es: 'Uso previsto.', pt: 'Uso pretendido.' }
+          },
+          role: {
+            label: { en: 'Role', es: 'Rol', pt: 'Papel' },
+            placeholder: 'Select role',
+            description: { en: 'Functional role.', es: 'Rol funcional.', pt: 'Papel funcional.' }
+          },
+          function: {
+            label: { en: 'Function', es: 'Función', pt: 'Função' },
+            placeholder: 'Select function',
+            description: { en: 'Operational function.', es: 'Función operativa.', pt: 'Função operacional.' }
+          }
+        }
+      },
+      validity: {
+        name: 'validity',
+        label: { en: 'Validity', es: 'Validez', pt: 'Validez' },
+        entity: { en: 'Validity', es: 'Validez', pt: 'Validade' },
+        description: { en: 'Validity status.', es: 'Estado de validez.', pt: 'Status de validade.' },
+        fields: {
+          status: {
+            label: { en: 'Status', es: 'Estado', pt: 'Status' },
+            placeholder: 'Select status',
+            description: { en: 'Current status.', es: 'Estado actual.', pt: 'Status atual.' }
+          },
+          condition: {
+            label: { en: 'Condition', es: 'Condición', pt: 'Condição' },
+            placeholder: 'Select condition',
+            description: { en: 'Operational condition.', es: 'Condición operativa.', pt: 'Condição operacional.' }
+          },
+          state: {
+            label: { en: 'State', es: 'Estado', pt: 'Estado' },
+            placeholder: 'Select state',
+            description: { en: 'Connection state.', es: 'Estado de conexión.', pt: 'Estado de conexão.' }
+          }
+        }
+      }
+    },
+    details: {
+      name: 'details',
+      label: { en: 'Details', es: 'Detalles', pt: 'Detalhes' },
+      entity: { en: 'Channel', es: 'Canal', pt: 'Canal' },
+      description: { en: 'Additional details.', es: 'Detalles adicionales.', pt: 'Detalhes adicionais.' },
 
       identifier: {
         name: 'identifier',
@@ -83,71 +148,6 @@ export const dictionary = {
             placeholder: 'e.g. RFC 1234',
             description: { en: 'Technical spec.', es: 'Especificación técnica.', pt: 'Especificação técnica.' }
           }
-        }
-      }
-    },
-    traits: {
-      name: 'traits',
-      label: { en: 'Traits', es: 'Rasgos', pt: 'Traços' },
-      entity: { en: 'Channel', es: 'Canal', pt: 'Canal' },
-      description: { en: 'Channel characteristics.', es: 'Características del canal.', pt: 'Características do canal.' },
-
-      usage: {
-        name: 'usage',
-        label: { en: 'Usage', es: 'Uso', pt: 'Uso' },
-        entity: { en: 'Usage', es: 'Uso', pt: 'Uso' },
-        description: { en: 'Usage constraints.', es: 'Restricciones de uso.', pt: 'Restrições de uso.' },
-        fields: {
-          purpose: {
-            label: { en: 'Purpose', es: 'Propósito', pt: 'Propósito' },
-            placeholder: 'e.g. Public Inquiries',
-            description: { en: 'Intended use.', es: 'Uso previsto.', pt: 'Uso pretendido.' }
-          },
-          role: {
-            label: { en: 'Role', es: 'Rol', pt: 'Papel' },
-            placeholder: 'Select role',
-            description: { en: 'Functional role.', es: 'Rol funcional.', pt: 'Papel funcional.' }
-          },
-          function: {
-            label: { en: 'Function', es: 'Función', pt: 'Função' },
-            placeholder: 'Select function',
-            description: { en: 'Operational function.', es: 'Función operativa.', pt: 'Função operacional.' }
-          }
-        }
-      },
-      validity: {
-        name: 'validity',
-        label: { en: 'Validity', es: 'Validez', pt: 'Validez' },
-        entity: { en: 'Validity', es: 'Validez', pt: 'Validade' },
-        description: { en: 'Validity status.', es: 'Estado de validez.', pt: 'Status de validade.' },
-        fields: {
-          status: {
-            label: { en: 'Status', es: 'Estado', pt: 'Status' },
-            placeholder: 'Select status',
-            description: { en: 'Current status.', es: 'Estado actual.', pt: 'Status atual.' }
-          },
-          condition: {
-            label: { en: 'Condition', es: 'Condición', pt: 'Condição' },
-            placeholder: 'Select condition',
-            description: { en: 'Operational condition.', es: 'Condición operativa.', pt: 'Condição operacional.' }
-          },
-          state: {
-            label: { en: 'State', es: 'Estado', pt: 'Estado' },
-            placeholder: 'Select state',
-            description: { en: 'Connection state.', es: 'Estado de conexión.', pt: 'Estado de conexão.' }
-          }
-        }
-      }
-    },
-    details: {
-      name: 'details',
-      label: { en: 'Details', es: 'Detalles', pt: 'Detalhes' },
-      entity: { en: 'Channel', es: 'Canal', pt: 'Canal' },
-      description: { en: 'Additional details.', es: 'Detalles adicionales.', pt: 'Detalhes adicionais.' },
-      fields: {
-        parent: {
-          label: { en: 'Parent', es: 'Padre', pt: 'Pai' },
-          description: { en: 'Parent category.', es: 'Categoría padre.', pt: 'Categoria pai.' }
         }
       }
     }

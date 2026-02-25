@@ -8,18 +8,6 @@ export const dictionary = {
       placeholder: 'e.g. Racing Categories',
       description: { en: 'The category name.', es: 'El nombre de la categoría.', pt: 'O nome da categoria.' },
     },
-    fields: {
-      label: {
-        label: { en: 'Label', es: 'Etiqueta', pt: 'Rótulo' },
-        placeholder: 'e.g. Formula 1',
-        description: { en: 'Display label.', es: 'Etiqueta de visualización.', pt: 'Rótulo de exibição.' },
-      },
-      value: {
-        label: { en: 'Value', es: 'Valor', pt: 'Valor' },
-        placeholder: 'e.g. formula-1',
-        description: { en: 'Unique value.', es: 'Valor único.', pt: 'Valor único.' },
-      },
-    },
   },
   tabs: {
     basics: {
@@ -41,9 +29,15 @@ export const dictionary = {
       entity: { en: 'Category', es: 'Categoría', pt: 'Categoria' },
       description: { en: 'Category details.', es: 'Detalles de la categoría.', pt: 'Detalhes da categoria.' },
       fields: {
-        parent: {
-          label: { en: 'Parent', es: 'Padre', pt: 'Pai' },
-          description: { en: 'Parent category.', es: 'Categoría padre.', pt: 'Categoria pai.' },
+        label: {
+          label: { en: 'Label', es: 'Etiqueta', pt: 'Rótulo' },
+          placeholder: 'e.g. Formula 1',
+          description: { en: 'Display label.', es: 'Etiqueta de visualización.', pt: 'Rótulo de exibição.' },
+        },
+        value: {
+          label: { en: 'Value', es: 'Valor', pt: 'Valor' },
+          placeholder: 'e.g. formula-1',
+          description: { en: 'Unique value.', es: 'Valor único.', pt: 'Valor único.' },
         },
       },
     },

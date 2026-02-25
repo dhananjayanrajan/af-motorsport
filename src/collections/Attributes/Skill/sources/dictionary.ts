@@ -63,15 +63,6 @@ export const dictionary = {
           placeholder: 'Enter definition',
           description: { en: 'Official definition.', es: 'Definición oficial.', pt: 'Definição oficial.' }
         },
-        methods: {
-          label: { en: 'Methods', es: 'Métodos', pt: 'Métodos' },
-          description: { en: 'Learning methods.', es: 'Métodos de aprendizaje.', pt: 'Métodos de aprendizado.' },
-          fields: {
-            method: { label: { en: 'Method', es: 'Método', pt: 'Método' }, description: { en: 'Method name.', es: 'Nombre del método.', pt: 'Nome do método.' } },
-            type: { label: { en: 'Type', es: 'Tipo', pt: 'Tipo' }, description: { en: 'Method type.', es: 'Tipo de método.', pt: 'Tipo de método.' } },
-            description: { label: { en: 'Description', es: 'Descripción', pt: 'Descrição' }, description: { en: 'Method description.', es: 'Descripción del método.', pt: 'Descrição do método.' } }
-          }
-        },
         features: {
           label: { en: 'Features', es: 'Características', pt: 'Características' },
           description: { en: 'Related features.', es: 'Características relacionadas.', pt: 'Características relacionadas.' }
@@ -79,14 +70,27 @@ export const dictionary = {
         specifications: {
           label: { en: 'Specifications', es: 'Especificaciones', pt: 'Especificações' },
           description: { en: 'Related specs.', es: 'Especificaciones relacionadas.', pt: 'Especificações relacionadas.' }
-        },
-        dependencies: {
-          label: { en: 'Dependencies', es: 'Dependencias', pt: 'Dependências' },
-          description: { en: 'Skill dependencies.', es: 'Dependencias de habilidad.', pt: 'Dependências de habilidade.' },
-          fields: {
-            skill: { label: { en: 'Skill', es: 'Habilidad', pt: 'Habilidade' }, description: { en: 'Dependent skill.', es: 'Habilidad dependiente.', pt: 'Habilidade dependente.' } },
-            type: { label: { en: 'Type', es: 'Tipo', pt: 'Tipo' }, description: { en: 'Dependency type.', es: 'Tipo de dependencia.', pt: 'Tipo de dependência.' } }
-          }
+        }
+      },
+      methods: {
+        name: 'methods',
+        label: { en: 'Methods', es: 'Métodos', pt: 'Métodos' },
+        description: { en: 'Learning methods.', es: 'Métodos de aprendizaje.', pt: 'Métodos de aprendizado.' },
+        entity: { en: 'Skill', es: 'Habilidad', pt: 'Habilidade' },
+        fields: {
+          method: { label: { en: 'Method', es: 'Método', pt: 'Método' }, description: { en: 'Method name.', es: 'Nombre del método.', pt: 'Nome do método.' } },
+          type: { label: { en: 'Type', es: 'Tipo', pt: 'Tipo' }, description: { en: 'Method type.', es: 'Tipo de método.', pt: 'Tipo de método.' } },
+          description: { label: { en: 'Description', es: 'Descripción', pt: 'Descrição' }, description: { en: 'Method description.', es: 'Descripción del método.', pt: 'Descrição do método.' } }
+        }
+      },
+      dependencies: {
+        name: 'dependencies',
+        label: { en: 'Dependencies', es: 'Dependencias', pt: 'Dependências' },
+        description: { en: 'Skill dependencies.', es: 'Dependencias de habilidad.', pt: 'Dependências de habilidade.' },
+        entity: { en: 'Skill', es: 'Habilidad', pt: 'Habilidade' },
+        fields: {
+          skill: { label: { en: 'Skill', es: 'Habilidad', pt: 'Habilidade' }, description: { en: 'Dependent skill.', es: 'Habilidad dependiente.', pt: 'Habilidade dependente.' } },
+          type: { label: { en: 'Type', es: 'Tipo', pt: 'Tipo' }, description: { en: 'Dependency type.', es: 'Tipo de dependencia.', pt: 'Tipo de dependência.' } }
         }
       }
     },

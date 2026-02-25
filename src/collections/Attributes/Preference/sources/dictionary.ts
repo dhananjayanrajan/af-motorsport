@@ -33,33 +33,35 @@ export const dictionary = {
       label: { en: 'Traits', es: 'Rasgos', pt: 'Traços' },
       entity: { en: 'Preference', es: 'Preferencia', pt: 'Preferência' },
       description: { en: 'Traits & conditions.', es: 'Rasgos y condiciones.', pt: 'Traços e condições.' },
-      fields: {
-        conditions: {
-          label: { en: 'Conditions', es: 'Condiciones', pt: 'Condições' },
-          description: { en: 'Appyling conditions.', es: 'Condiciones de aplicación.', pt: 'Condições de aplicação.' },
-          fields: {
-            trigger: {
-              label: { en: 'Trigger', es: 'Disparador', pt: 'Gatilho' },
-              description: { en: 'Condition trigger.', es: 'Disparador de condición.', pt: 'Gatilho da condição.' }
-            },
-            prerequisite: {
-              label: { en: 'Prerequisite', es: 'Prerrequisito', pt: 'Pré-requisito' },
-              description: { en: 'Required prerequisite.', es: 'Prerrequisito requerido.', pt: 'Pré-requisito obrigatório.' }
-            }
+      conditions: {
+        name: 'conditions',
+        label: { en: 'Conditions', es: 'Condiciones', pt: 'Condições' },
+        description: { en: 'Appyling conditions.', es: 'Condiciones de aplicación.', pt: 'Condições de aplicação.' },
+        entity: { en: 'Preference', es: 'Preferencia', pt: 'Preferência' },
+        fields: {
+          trigger: {
+            label: { en: 'Trigger', es: 'Disparador', pt: 'Gatilho' },
+            description: { en: 'Condition trigger.', es: 'Disparador de condición.', pt: 'Gatilho da condição.' }
+          },
+          prerequisite: {
+            label: { en: 'Prerequisite', es: 'Prerrequisito', pt: 'Pré-requisito' },
+            description: { en: 'Required prerequisite.', es: 'Prerrequisito requerido.', pt: 'Pré-requisito obrigatório.' }
           }
-        },
-        reasons: {
-          label: { en: 'Reasons', es: 'Razones', pt: 'Razões' },
-          description: { en: 'Reasons for preference.', es: 'Razones de la preferencia.', pt: 'Razões para a preferência.' },
-          fields: {
-            reason: {
-              label: { en: 'Reason', es: 'Razón', pt: 'Razão' },
-              description: { en: 'The reason.', es: 'La razón.', pt: 'A razão.' }
-            },
-            importance: {
-              label: { en: 'Importance', es: 'Importancia', pt: 'Importância' },
-              description: { en: 'Importance level.', es: 'Nivel de importancia.', pt: 'Nível de importância.' }
-            }
+        }
+      },
+      reasons: {
+        name: 'reasons',
+        label: { en: 'Reasons', es: 'Razones', pt: 'Razões' },
+        description: { en: 'Reasons for preference.', es: 'Razones de la preferencia.', pt: 'Razões para a preferência.' },
+        entity: { en: 'Preference', es: 'Preferencia', pt: 'Preferência' },
+        fields: {
+          reason: {
+            label: { en: 'Reason', es: 'Razón', pt: 'Razão' },
+            description: { en: 'The reason.', es: 'La razón.', pt: 'A razão.' }
+          },
+          importance: {
+            label: { en: 'Importance', es: 'Importancia', pt: 'Importância' },
+            description: { en: 'Importance level.', es: 'Nivel de importancia.', pt: 'Nível de importância.' }
           }
         }
       }

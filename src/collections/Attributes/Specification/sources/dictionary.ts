@@ -78,16 +78,6 @@ export const dictionary = {
       entity: { en: 'Specification', es: 'Especificación', pt: 'Especificação' },
       description: { en: 'Measurement metrics.', es: 'Métricas de medición.', pt: 'Métricas de medição.' },
       fields: {
-        parameters: {
-          label: { en: 'Parameters', es: 'Parámetros', pt: 'Parâmetros' },
-          description: { en: 'Spec parameters.', es: 'Parámetros de especificación.', pt: 'Parâmetros da especificação.' },
-          fields: {
-            parameter: { label: { en: 'Parameter', es: 'Parámetro', pt: 'Parâmetro' }, description: { en: 'Parameter name.', es: 'Nombre del parámetro.', pt: 'Nome do parâmetro.' } },
-            value: { label: { en: 'Value', es: 'Valor', pt: 'Valor' }, description: { en: 'Parameter value.', es: 'Valor del parámetro.', pt: 'Valor do parâmetro.' } },
-            unit: { label: { en: 'Unit', es: 'Unidad', pt: 'Unidade' }, description: { en: 'Measurement unit.', es: 'Unidad de medida.', pt: 'Unidade de medida.' } },
-            tolerance: { label: { en: 'Tolerance', es: 'Tolerancia', pt: 'Tolerância' }, description: { en: 'Allowed tolerance.', es: 'Tolerancia permitida.', pt: 'Tolerância permitida.' } }
-          }
-        },
         measurement: {
           name: 'measurement',
           label: { en: 'Measurement', es: 'Medición', pt: 'Medição' },
@@ -97,6 +87,18 @@ export const dictionary = {
             method: { label: { en: 'Method', es: 'Método', pt: 'Método' }, description: { en: 'Measurement method.', es: 'Método de medición.', pt: 'Método de medição.' } },
             frequency: { label: { en: 'Frequency', es: 'Frecuencia', pt: 'Frequência' }, description: { en: 'Measurement frequency.', es: 'Frecuencia de medición.', pt: 'Frequência de medição.' } },
             accuracy: { label: { en: 'Accuracy', es: 'Precisión', pt: 'Precisão' }, description: { en: 'Measurement accuracy.', es: 'Precisión de medición.', pt: 'Precisão de medição.' } }
+          }
+        },
+        parameters: {
+          name: 'parameters',
+          label: { en: 'Parameters', es: 'Parámetros', pt: 'Parâmetros' },
+          description: { en: 'Spec parameters.', es: 'Parámetros de especificación.', pt: 'Parâmetros da especificação.' },
+          entity: { en: 'Parameter', es: 'Parámetro', pt: 'Parâmetro' },
+          fields: {
+            parameter: { label: { en: 'Parameter', es: 'Parámetro', pt: 'Parâmetro' }, description: { en: 'Parameter name.', es: 'Nombre del parámetro.', pt: 'Nome do parâmetro.' } },
+            value: { label: { en: 'Value', es: 'Valor', pt: 'Valor' }, description: { en: 'Parameter value.', es: 'Valor del parámetro.', pt: 'Valor do parâmetro.' } },
+            unit: { label: { en: 'Unit', es: 'Unidad', pt: 'Unidade' }, description: { en: 'Measurement unit.', es: 'Unidad de medida.', pt: 'Unidade de medida.' } },
+            tolerance: { label: { en: 'Tolerance', es: 'Tolerancia', pt: 'Tolerância' }, description: { en: 'Allowed tolerance.', es: 'Tolerancia permitida.', pt: 'Tolerância permitida.' } }
           }
         }
       }

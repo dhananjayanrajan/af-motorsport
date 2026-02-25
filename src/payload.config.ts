@@ -17,6 +17,8 @@ import { plugins } from './plugins'
 import { searchPlugin } from '@payloadcms/plugin-search'
 import { mcpPlugin } from '@payloadcms/plugin-mcp'
 import { payloadEnhancedSidebar } from '@veiag/payload-enhanced-sidebar'
+import { adminSearchPlugin } from '@jhb.software/payload-admin-search'
+import { calendarPlugin } from 'schedular-calendar-plugin'
 
 import { en } from '@payloadcms/translations/languages/en'
 import { es } from '@payloadcms/translations/languages/es'
@@ -368,11 +370,21 @@ export default buildConfig({
         },
       },
     }),
+    calendarPlugin(),
+    adminSearchPlugin({
+      headerSearchComponentStyle: 'bar',
+    }),
     searchPlugin({
       collections: [
-        "users", "pages",
-        "categories", "tags", "media",
-        "forms"
+        "users", "pages", "forms",
+        'points', 'results', 'entries', 'sessions', 'events', 'seasons', 'series',
+        'meetups', 'initiatives', 'celebrations', 'careers', 'trainings', 'schedules',
+        'duties', 'expectations', 'protocols', 'kits', 'cars', 'awards', 'organizations',
+        'members', 'leaders', 'individuals', 'drivers', 'experiences', 'strategies',
+        'incidents', 'highlights', 'impacts', 'decisions', 'stories', 'journeys',
+        'histories', 'notes', 'narratives', 'archives', 'playlists', 'visualizations',
+        'galleries', 'tones', 'tags', 'specifications', 'skills', 'principles',
+        'locations', 'features', 'preferences', 'classifications', 'channels', 'categories', 'media'
       ],
       defaultPriorities: {
         series: 50,

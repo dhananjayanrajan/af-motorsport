@@ -1,20 +1,35 @@
 import type { Field } from 'payload';
 import { dictionary } from '../sources/dictionary';
-import { relationshipFieldFactory } from '@/fields/factories/fields/relationshipField';
 import { advanced } from '@/fields/factories/toggles/advanced';
+import { textFieldFactory } from '@/fields/factories/fields/textField'
 
 export const detailsFields: Field[] = [
   advanced(
     {
-      type: 'row',
+      name: 'type',
+      type: 'array',
+      label: 'Types',
+      admin: {
+        description: 'Category types with label and value pairs',
+      },
       fields: [
-        relationshipFieldFactory({
-          name: 'parent',
-          relationTo: 'categories',
-          dictionary: dictionary.tabs.details.fields,
-          width: 1,
-          flags: [],
-        }),
+        {
+          type: 'row',
+          fields: [
+            textFieldFactory({
+              name: 'label',
+              dictionary: dictionary.tabs.details.fields.label,
+              width: 1,
+              flags: ['localized'],
+            }),
+            textFieldFactory({
+              name: 'value',
+              dictionary: dictionary.tabs.details.fields.value,
+              width: 1,
+              flags: [],
+            }),
+          ],
+        },
       ],
     }
   ),

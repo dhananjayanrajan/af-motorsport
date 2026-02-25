@@ -66,6 +66,7 @@ const WORKFLOWS: Workflow[] = [
 ]
 
 const card: React.CSSProperties = {
+  width: '50%',
   background: 'var(--theme-elevation-0)',
   border: '1px solid var(--theme-elevation-150)',
   borderRadius: '4px',
@@ -85,7 +86,7 @@ const sectionTitleStyle: React.CSSProperties = {
 
 export async function renderRacingOperationsWorkflow(_payload: any): Promise<React.ReactNode> {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
 
       {/* Header */}
       <div style={{ padding: '0 0 16px 0' }}>
@@ -96,54 +97,57 @@ export async function renderRacingOperationsWorkflow(_payload: any): Promise<Rea
       </div>
 
       {/* Workflow cards */}
-      {WORKFLOWS.map(workflow => (
-        <div key={workflow.title} style={{ ...card, marginBottom: '2px' }}>
-          <div style={sectionTitleStyle}>{workflow.title}</div>
+      <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', gap: '8px' }}>
 
-          {/* Step chain */}
-          <div style={{ display: 'flex', alignItems: 'flex-start', overflowX: 'auto', paddingBottom: '4px' }}>
-            {workflow.steps.map((step, i) => {
-              const isLast = i === workflow.steps.length - 1
-              return (
-                <div key={i} style={{ display: 'flex', alignItems: 'flex-start', flexShrink: 0 }}>
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', width: '80px' }}>
-                    <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: 'var(--theme-elevation-100)', border: '1px solid var(--theme-elevation-200)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '11px', fontWeight: 600, color: 'var(--theme-elevation-600)' }}>
-                      {i + 1}
+        {WORKFLOWS.map(workflow => (
+          <div key={workflow.title} style={{ ...card, marginBottom: '2px' }}>
+            <div style={sectionTitleStyle}>{workflow.title}</div>
+
+            {/* Step chain */}
+            <div style={{ display: 'flex', alignItems: 'flex-start', overflowX: 'auto', paddingBottom: '4px' }}>
+              {workflow.steps.map((step, i) => {
+                const isLast = i === workflow.steps.length - 1
+                return (
+                  <div key={i} style={{ display: 'flex', alignItems: 'flex-start', flexShrink: 0 }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', width: '100px' }}>
+                      <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'var(--theme-elevation-100)', border: '1px solid var(--theme-elevation-200)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '11px', fontWeight: 600, color: 'var(--theme-elevation-600)' }}>
+                        {i + 1}
+                      </div>
+                      <span style={{ fontSize: '10px', color: 'var(--theme-elevation-600)', textAlign: 'center', lineHeight: 1.3, wordBreak: 'break-word' }}>
+                        {step.label}
+                      </span>
+                      {step.collection && (
+                        <Link href={`/admin/collections/${step.collection}`} style={{ fontSize: '9px', fontWeight: 600, color: 'var(--theme-elevation-400)', textDecoration: 'none', textTransform: 'uppercase', letterSpacing: '0.04em', border: '1px solid var(--theme-elevation-200)', padding: '1px 5px', borderRadius: '2px', whiteSpace: 'nowrap' }}>
+                          {step.collection}
+                        </Link>
+                      )}
                     </div>
-                    <span style={{ fontSize: '10px', color: 'var(--theme-elevation-600)', textAlign: 'center', lineHeight: 1.3, wordBreak: 'break-word' }}>
-                      {step.label}
-                    </span>
-                    {step.collection && (
-                      <Link href={`/admin/collections/${step.collection}`} style={{ fontSize: '9px', fontWeight: 600, color: 'var(--theme-elevation-400)', textDecoration: 'none', textTransform: 'uppercase', letterSpacing: '0.04em', border: '1px solid var(--theme-elevation-200)', padding: '1px 5px', borderRadius: '2px', whiteSpace: 'nowrap' }}>
-                        {step.collection}
-                      </Link>
+                    {!isLast && (
+                      <div style={{ width: '24px', flexShrink: 0, height: '1px', background: 'var(--theme-elevation-200)', marginTop: '13px' }} />
                     )}
                   </div>
-                  {!isLast && (
-                    <div style={{ width: '24px', flexShrink: 0, height: '1px', background: 'var(--theme-elevation-200)', marginTop: '13px' }} />
+                )
+              })}
+            </div>
+
+            {/* Step table */}
+            <div style={{ marginTop: '16px', borderTop: '1px solid var(--theme-elevation-100)', paddingTop: '16px' }}>
+              {workflow.steps.map((step, i) => (
+                <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '12px', padding: '7px 0', borderBottom: i === workflow.steps.length - 1 ? 'none' : '1px solid var(--theme-elevation-100)' }}>
+                  <span style={{ fontSize: '10px', fontWeight: 700, color: 'var(--theme-elevation-400)', width: '16px', textAlign: 'right', flexShrink: 0, marginTop: '1px' }}>{i + 1}</span>
+                  <span style={{ fontSize: '12px', fontWeight: 500, color: 'var(--theme-elevation-700)', width: '140px', flexShrink: 0 }}>{step.label}</span>
+                  <span style={{ fontSize: '12px', color: 'var(--theme-elevation-500)', flex: 1 }}>{step.description}</span>
+                  {step.collection && (
+                    <Link href={`/admin/collections/${step.collection}`} style={{ fontSize: '10px', fontWeight: 600, color: 'var(--theme-elevation-0)', background: 'var(--theme-elevation-700)', padding: '2px 8px', borderRadius: '2px', textDecoration: 'none', whiteSpace: 'nowrap', flexShrink: 0 }}>
+                      → {step.collection}
+                    </Link>
                   )}
                 </div>
-              )
-            })}
+              ))}
+            </div>
           </div>
-
-          {/* Step table */}
-          <div style={{ marginTop: '16px', borderTop: '1px solid var(--theme-elevation-100)', paddingTop: '16px' }}>
-            {workflow.steps.map((step, i) => (
-              <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '12px', padding: '7px 0', borderBottom: i === workflow.steps.length - 1 ? 'none' : '1px solid var(--theme-elevation-100)' }}>
-                <span style={{ fontSize: '10px', fontWeight: 700, color: 'var(--theme-elevation-400)', width: '16px', textAlign: 'right', flexShrink: 0, marginTop: '1px' }}>{i + 1}</span>
-                <span style={{ fontSize: '12px', fontWeight: 500, color: 'var(--theme-elevation-700)', width: '140px', flexShrink: 0 }}>{step.label}</span>
-                <span style={{ fontSize: '12px', color: 'var(--theme-elevation-500)', flex: 1 }}>{step.description}</span>
-                {step.collection && (
-                  <Link href={`/admin/collections/${step.collection}`} style={{ fontSize: '10px', fontWeight: 600, color: 'var(--theme-elevation-0)', background: 'var(--theme-elevation-700)', padding: '2px 8px', borderRadius: '2px', textDecoration: 'none', whiteSpace: 'nowrap', flexShrink: 0 }}>
-                    → {step.collection}
-                  </Link>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   )
 }

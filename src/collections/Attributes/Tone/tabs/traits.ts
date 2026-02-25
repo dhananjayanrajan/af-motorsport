@@ -50,14 +50,10 @@ export const traitsFields: Field[] = [
     )
   ),
   advanced(
-    {
-      name: 'qualities',
-      type: 'array',
-      label: dictionary.tabs.traits.qualities.label,
-      admin: {
-        description: dictionary.tabs.traits.qualities.description,
-      },
-      fields: [
+    groupFactory(
+      dictionary.tabs.traits.qualities,
+      dictionary.host,
+      [
         {
           type: 'row',
           fields: [
@@ -65,33 +61,34 @@ export const traitsFields: Field[] = [
               name: 'quality',
               options: TONE_QUALITY,
               dictionary: dictionary.tabs.traits.qualities.fields,
-              width: 4,
+              width: 2,
               flags: ['advanced'],
             }),
             selectFieldFactory({
               name: 'intensity',
               options: TONE_INTENSITY,
               dictionary: dictionary.tabs.traits.qualities.fields,
-              width: 4,
+              width: 2,
               flags: ['advanced'],
             }),
             selectFieldFactory({
               name: 'mood',
               options: TONE_MOOD,
               dictionary: dictionary.tabs.traits.qualities.fields,
-              width: 4,
+              width: 2,
               flags: ['advanced'],
             }),
             selectFieldFactory({
               name: 'scale',
               options: TONE_QUALITY_SCALE,
               dictionary: dictionary.tabs.traits.qualities.fields,
-              width: 4,
+              width: 2,
               flags: ['advanced'],
             }),
-          ],
-        },
+          ]
+        }
       ],
-    }
-  ),
+      true
+    )
+  )
 ]

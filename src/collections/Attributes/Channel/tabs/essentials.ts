@@ -22,7 +22,7 @@ export const essentialFields: Field[] = [
             relationTo: 'categories',
             dictionary: dictionary.essential,
             width: 2,
-            flags: [],
+            flags: ['required', 'hasMany'],
           }),
         ],
       },

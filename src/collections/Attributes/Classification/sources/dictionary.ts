@@ -37,7 +37,6 @@ export const dictionary = {
       label: { en: 'Details', es: 'Detalles', pt: 'Detalhes' },
       entity: { en: 'Classification', es: 'Clasificación', pt: 'Classificação' },
       description: { en: 'Detailed information.', es: 'Información detallada.', pt: 'Informações detalhadas.' },
-
       fields: {
         definition: {
           label: { en: 'Definition', es: 'Definición', pt: 'Definição' },

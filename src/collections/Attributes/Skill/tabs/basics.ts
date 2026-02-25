@@ -13,17 +13,14 @@ import {
 } from '../sources/constants'
 
 export const basicsFields: Field[] = [
-  {
-    type: 'row',
-    fields: [
-      textareaFieldFactory({
-        name: 'description',
-        dictionary: dictionary.tabs.basics.fields,
-        width: 1,
-        flags: ['localized'],
-      }),
-    ],
-  },
+  advanced(
+    textareaFieldFactory({
+      name: 'description',
+      dictionary: dictionary.tabs.basics.fields,
+      width: 1,
+      flags: ['localized', 'index', 'advanced'],
+    }),
+  ),
   advanced(
     groupFactory(
       dictionary.tabs.basics.fields.scope,
@@ -35,28 +32,28 @@ export const basicsFields: Field[] = [
             textFieldFactory({
               name: 'significance',
               dictionary: dictionary.tabs.basics.fields.scope.fields,
-              width: 4,
+              width: 2,
               flags: ['advanced'],
             }),
             selectFieldFactory({
               name: 'scale',
               options: SKILL_SCALE,
               dictionary: dictionary.tabs.basics.fields.scope.fields,
-              width: 4,
+              width: 2,
               flags: ['advanced'],
             }),
             selectFieldFactory({
               name: 'depth',
               options: SKILL_DEPTH,
               dictionary: dictionary.tabs.basics.fields.scope.fields,
-              width: 4,
+              width: 2,
               flags: ['advanced'],
             }),
             selectFieldFactory({
               name: 'rarity',
               options: SKILL_RARITY,
               dictionary: dictionary.tabs.basics.fields.scope.fields,
-              width: 4,
+              width: 2,
               flags: ['advanced'],
             }),
           ],

@@ -8,45 +8,6 @@ import { advanced } from '@/fields/factories/toggles/advanced'
 import { SPEC_FREQUENCY, SPEC_ACCURACY } from '../sources/constants'
 
 export const metricsFields: Field[] = [
-  {
-    name: 'parameters',
-    type: 'array',
-    label: dictionary.tabs.metrics.fields.parameters.label,
-    admin: {
-      description: dictionary.tabs.metrics.fields.parameters.description,
-    },
-    fields: [
-      {
-        type: 'row',
-        fields: [
-          textFieldFactory({
-            name: 'parameter',
-            dictionary: dictionary.tabs.metrics.fields.parameters.fields,
-            width: 4,
-            flags: [],
-          }),
-          textFieldFactory({
-            name: 'value',
-            dictionary: dictionary.tabs.metrics.fields.parameters.fields,
-            width: 4,
-            flags: [],
-          }),
-          textFieldFactory({
-            name: 'unit',
-            dictionary: dictionary.tabs.metrics.fields.parameters.fields,
-            width: 4,
-            flags: [],
-          }),
-          textFieldFactory({
-            name: 'tolerance',
-            dictionary: dictionary.tabs.metrics.fields.parameters.fields,
-            width: 4,
-            flags: ['advanced'],
-          }),
-        ],
-      },
-    ],
-  },
   advanced(
     groupFactory(
       dictionary.tabs.metrics.fields.measurement,
@@ -79,6 +40,44 @@ export const metricsFields: Field[] = [
         },
       ],
       false
+    )
+  ),
+  advanced(
+    groupFactory(
+      dictionary.tabs.metrics.fields.parameters,
+      dictionary.host,
+      [
+        {
+          type: 'row',
+          fields: [
+            textFieldFactory({
+              name: 'parameter',
+              dictionary: dictionary.tabs.metrics.fields.parameters.fields,
+              width: 4,
+              flags: [],
+            }),
+            textFieldFactory({
+              name: 'value',
+              dictionary: dictionary.tabs.metrics.fields.parameters.fields,
+              width: 4,
+              flags: [],
+            }),
+            textFieldFactory({
+              name: 'unit',
+              dictionary: dictionary.tabs.metrics.fields.parameters.fields,
+              width: 4,
+              flags: [],
+            }),
+            textFieldFactory({
+              name: 'tolerance',
+              dictionary: dictionary.tabs.metrics.fields.parameters.fields,
+              width: 4,
+              flags: ['advanced'],
+            }),
+          ]
+        }
+      ],
+      true
     )
   ),
 ]

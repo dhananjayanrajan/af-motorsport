@@ -9,17 +9,14 @@ import { advanced } from '@/fields/factories/toggles/advanced'
 import { SPEC_COMPLIANCE } from '../sources/constants'
 
 export const detailsFields: Field[] = [
-  {
-    type: 'row',
-    fields: [
-      textareaFieldFactory({
-        name: 'definition',
-        dictionary: dictionary.tabs.details.fields,
-        width: 1,
-        flags: ['localized', 'advanced'],
-      }),
-    ],
-  },
+  advanced(
+    textareaFieldFactory({
+      name: 'definition',
+      dictionary: dictionary.tabs.details.fields,
+      width: 1,
+      flags: ['localized', 'advanced'],
+    }),
+  ),
   advanced(
     groupFactory(
       dictionary.tabs.details.fields.conditions,

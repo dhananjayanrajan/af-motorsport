@@ -15,7 +15,7 @@ export const detailsFields: Field[] = [
         name: 'address',
         dictionary: dictionary.tabs.details.fields,
         width: 1,
-        flags: ['localized'],
+        flags: ['localized', 'index'],
       }),
     ],
   },
@@ -31,7 +31,7 @@ export const detailsFields: Field[] = [
               name: 'coordinates',
               dictionary: dictionary.tabs.details.fields.geometry.fields,
               width: 3,
-              flags: [],
+              flags: ['advanced'],
             }),
             textFieldFactory({
               name: 'bounds',

@@ -15,9 +15,9 @@ export const dictionary = {
     }
   },
   tabs: {
-    details: {
-      name: 'details',
-      label: { en: 'Details', es: 'Detalles', pt: 'Detalhes' },
+    basics: {
+      name: 'basics',
+      label: { en: 'Basics', es: 'Básicos', pt: 'Básicos' },
       entity: { en: 'Tag', es: 'Etiqueta', pt: 'Etiqueta' },
       description: { en: 'Detail info.', es: 'Info detallada.', pt: 'Info detalhada.' },
       fields: {

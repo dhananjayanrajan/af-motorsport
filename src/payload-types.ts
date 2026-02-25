@@ -577,23 +577,7 @@ export interface Category {
   /**
    * The category name.
    */
-  name?: string | null;
-  /**
-   * Category types with label and value pairs
-   */
-  type?:
-    | {
-        /**
-         * Display label.
-         */
-        label?: string | null;
-        /**
-         * Unique value.
-         */
-        value?: string | null;
-        id?: string | null;
-      }[]
-    | null;
+  name: string;
   /**
    * Identifying info.
    */
@@ -622,9 +606,21 @@ export interface Category {
      */
     enable?: boolean | null;
     /**
-     * Parent category.
+     * Category types with label and value pairs
      */
-    parent?: (number | null) | Category;
+    type?:
+      | {
+          /**
+           * Enter text value.
+           */
+          label?: string | null;
+          /**
+           * Enter text value.
+           */
+          value?: string | null;
+          id?: string | null;
+        }[]
+      | null;
     visibility?: {
       /**
        * Toggle the Details section on or off.
@@ -708,17 +704,17 @@ export interface Tag {
   /**
    * Tag name.
    */
-  name?: string | null;
+  name: string;
   /**
    * Tag type.
    */
-  type?: (number | null) | Category;
+  type?: (number | Category)[] | null;
   /**
-   * Extra data.
+   * Identifying info.
    */
-  details?: {
+  basics?: {
     /**
-     * Toggle the Details section on or off.
+     * Toggle the Basics section on or off.
      */
     enable?: boolean | null;
     /**
@@ -731,7 +727,7 @@ export interface Tag {
     context?: string | null;
     visibility?: {
       /**
-       * Toggle the Details section on or off.
+       * Toggle the Basics section on or off.
        */
       show?: boolean | null;
     };
@@ -1000,15 +996,11 @@ export interface Tone {
   /**
    * Tone name.
    */
-  name?: string | null;
-  /**
-   * Tone alias.
-   */
-  alias?: string | null;
+  name: string;
   /**
    * Tone type.
    */
-  type?: (number | null) | Category;
+  type?: (number | Category)[] | null;
   /**
    * Identifying info.
    */
@@ -1017,6 +1009,10 @@ export interface Tone {
      * Toggle the Basics section on or off.
      */
     enable?: boolean | null;
+    /**
+     * Enter text value.
+     */
+    alias?: string | null;
     /**
      * Tone description.
      */
@@ -1056,27 +1052,43 @@ export interface Tone {
     /**
      * Tonal qualities.
      */
-    qualities?:
-      | {
-          /**
-           * Quality type.
-           */
-          quality?: ('Positive' | 'Neutral' | 'Negative' | 'Mixed') | null;
-          /**
-           * Intensity level.
-           */
-          intensity?: ('Low' | 'Medium' | 'High' | 'Extreme') | null;
-          /**
-           * Associated mood.
-           */
-          mood?: ('Optimistic' | 'Somber' | 'Energetic' | 'Calm' | 'Tense' | 'Celebratory') | null;
-          /**
-           * Quality scale.
-           */
-          scale?: ('Minute' | 'Moderate' | 'Grand' | 'Epic') | null;
-          id?: string | null;
-        }[]
-      | null;
+    qualities?: {
+      list?:
+        | {
+            /**
+             * Quality type.
+             */
+            quality?: ('Positive' | 'Neutral' | 'Negative' | 'Mixed') | null;
+            /**
+             * Intensity level.
+             */
+            intensity?: ('Low' | 'Medium' | 'High' | 'Extreme') | null;
+            /**
+             * Associated mood.
+             */
+            mood?: ('Optimistic' | 'Somber' | 'Energetic' | 'Calm' | 'Tense' | 'Celebratory') | null;
+            /**
+             * Quality scale.
+             */
+            scale?: ('Minute' | 'Moderate' | 'Grand' | 'Epic') | null;
+            settings?: {
+              /**
+               * Toggle the Quality entry on or off.
+               */
+              show?: boolean | null;
+              /**
+               * Toggle the Quality entry on or off.
+               */
+              featured?: boolean | null;
+              /**
+               * Toggle the Quality entry on or off.
+               */
+              pinned?: boolean | null;
+            };
+            id?: string | null;
+          }[]
+        | null;
+    };
     visibility?: {
       /**
        * Toggle the Traits section on or off.
@@ -1126,15 +1138,11 @@ export interface Location {
   /**
    * The name of the location.
    */
-  name?: string | null;
+  name: string;
   /**
    * The type of location.
    */
-  type?: (number | null) | Category;
-  /**
-   * A short label.
-   */
-  label?: string | null;
+  type?: (number | Category)[] | null;
   /**
    * Identifying info.
    */
@@ -1143,6 +1151,10 @@ export interface Location {
      * Toggle the Basics section on or off.
      */
     enable?: boolean | null;
+    /**
+     * A short label.
+     */
+    label?: string | null;
     /**
      * Display title.
      */
@@ -1608,13 +1620,32 @@ export interface Channel {
   /**
    * Category of the channel.
    */
-  type?: (number | null) | Category;
+  type: (number | Category)[];
   /**
    * Identifying info.
    */
   basics?: {
     /**
      * Toggle the Basics section on or off.
+     */
+    enable?: boolean | null;
+    /**
+     * Category description.
+     */
+    description?: string | null;
+    visibility?: {
+      /**
+       * Toggle the Basics section on or off.
+       */
+      show?: boolean | null;
+    };
+  };
+  /**
+   * Extra data.
+   */
+  details?: {
+    /**
+     * Toggle the Details section on or off.
      */
     enable?: boolean | null;
     /**
@@ -1666,7 +1697,7 @@ export interface Channel {
     };
     visibility?: {
       /**
-       * Toggle the Basics section on or off.
+       * Toggle the Details section on or off.
        */
       show?: boolean | null;
     };
@@ -2445,11 +2476,11 @@ export interface Specification {
   /**
    * Spec name.
    */
-  name?: string | null;
+  name: string;
   /**
    * Spec type.
    */
-  type?: (number | null) | Category;
+  type?: (number | Category)[] | null;
   /**
    * Unique identifier.
    */
@@ -2531,30 +2562,6 @@ export interface Specification {
      */
     enable?: boolean | null;
     /**
-     * Spec parameters.
-     */
-    parameters?:
-      | {
-          /**
-           * Parameter name.
-           */
-          parameter?: string | null;
-          /**
-           * Parameter value.
-           */
-          value?: string | null;
-          /**
-           * Measurement unit.
-           */
-          unit?: string | null;
-          /**
-           * Allowed tolerance.
-           */
-          tolerance?: string | null;
-          id?: string | null;
-        }[]
-      | null;
-    /**
      * Measurement method.
      */
     measurement?: {
@@ -2570,6 +2577,46 @@ export interface Specification {
        * Measurement accuracy.
        */
       accuracy?: ('Low' | 'Medium' | 'High' | 'Precision') | null;
+    };
+    /**
+     * Spec parameters.
+     */
+    parameters?: {
+      list?:
+        | {
+            /**
+             * Parameter name.
+             */
+            parameter?: string | null;
+            /**
+             * Parameter value.
+             */
+            value?: string | null;
+            /**
+             * Measurement unit.
+             */
+            unit?: string | null;
+            /**
+             * Allowed tolerance.
+             */
+            tolerance?: string | null;
+            settings?: {
+              /**
+               * Toggle the Parameter entry on or off.
+               */
+              show?: boolean | null;
+              /**
+               * Toggle the Parameter entry on or off.
+               */
+              featured?: boolean | null;
+              /**
+               * Toggle the Parameter entry on or off.
+               */
+              pinned?: boolean | null;
+            };
+            id?: string | null;
+          }[]
+        | null;
     };
     visibility?: {
       /**
@@ -3229,11 +3276,11 @@ export interface Feature {
   /**
    * The name of the feature.
    */
-  name?: string | null;
+  name: string;
   /**
    * The category of the feature.
    */
-  type?: (number | null) | Category;
+  type?: (number | Category)[] | null;
   /**
    * Identifying info.
    */
@@ -3866,11 +3913,11 @@ export interface Classification {
   /**
    * The name of the classification.
    */
-  name?: string | null;
+  name: string;
   /**
    * The category type.
    */
-  type?: (number | null) | Category;
+  type?: (number | Category)[] | null;
   /**
    * Identifying info.
    */
@@ -3974,11 +4021,11 @@ export interface Preference {
   /**
    * Preference name.
    */
-  name?: string | null;
+  name: string;
   /**
    * Preference type.
    */
-  type?: (number | null) | Category;
+  type?: (number | Category)[] | null;
   /**
    * Identifying info.
    */
@@ -4009,35 +4056,67 @@ export interface Preference {
     /**
      * Appyling conditions.
      */
-    conditions?:
-      | {
-          /**
-           * Condition trigger.
-           */
-          trigger?: string | null;
-          /**
-           * Required prerequisite.
-           */
-          prerequisite?: string | null;
-          id?: string | null;
-        }[]
-      | null;
+    conditions?: {
+      list?:
+        | {
+            /**
+             * Condition trigger.
+             */
+            trigger?: string | null;
+            /**
+             * Required prerequisite.
+             */
+            prerequisite?: string | null;
+            settings?: {
+              /**
+               * Toggle the Preference entry on or off.
+               */
+              show?: boolean | null;
+              /**
+               * Toggle the Preference entry on or off.
+               */
+              featured?: boolean | null;
+              /**
+               * Toggle the Preference entry on or off.
+               */
+              pinned?: boolean | null;
+            };
+            id?: string | null;
+          }[]
+        | null;
+    };
     /**
      * Reasons for preference.
      */
-    reasons?:
-      | {
-          /**
-           * The reason.
-           */
-          reason?: string | null;
-          /**
-           * Importance level.
-           */
-          importance?: ('Low' | 'Medium' | 'High' | 'Critical') | null;
-          id?: string | null;
-        }[]
-      | null;
+    reasons?: {
+      list?:
+        | {
+            /**
+             * The reason.
+             */
+            reason?: string | null;
+            /**
+             * Importance level.
+             */
+            importance?: ('Low' | 'Medium' | 'High' | 'Critical') | null;
+            settings?: {
+              /**
+               * Toggle the Preference entry on or off.
+               */
+              show?: boolean | null;
+              /**
+               * Toggle the Preference entry on or off.
+               */
+              featured?: boolean | null;
+              /**
+               * Toggle the Preference entry on or off.
+               */
+              pinned?: boolean | null;
+            };
+            id?: string | null;
+          }[]
+        | null;
+    };
     visibility?: {
       /**
        * Toggle the Traits section on or off.
@@ -4110,11 +4189,11 @@ export interface Principle {
   /**
    * Principle name.
    */
-  name?: string | null;
+  name: string;
   /**
    * Principle type.
    */
-  type?: (number | null) | Category;
+  type?: (number | Category)[] | null;
   /**
    * Identifying info.
    */
@@ -4970,11 +5049,11 @@ export interface Skill {
   /**
    * Skill name.
    */
-  name?: string | null;
+  name: string;
   /**
    * Skill type.
    */
-  type?: (number | null) | Category;
+  type?: (number | Category)[] | null;
   /**
    * Identifying info.
    */
@@ -5028,26 +5107,6 @@ export interface Skill {
      */
     definition?: string | null;
     /**
-     * Learning methods.
-     */
-    methods?:
-      | {
-          /**
-           * Method name.
-           */
-          method?: string | null;
-          /**
-           * Method type.
-           */
-          type?: ('Theoretical' | 'Practical' | 'Simulation' | 'Field') | null;
-          /**
-           * Method description.
-           */
-          description?: string | null;
-          id?: string | null;
-        }[]
-      | null;
-    /**
      * Related features.
      */
     features?: (number | Feature)[] | null;
@@ -5056,21 +5115,73 @@ export interface Skill {
      */
     specifications?: (number | Specification)[] | null;
     /**
+     * Learning methods.
+     */
+    methods?: {
+      list?:
+        | {
+            /**
+             * Method name.
+             */
+            method?: string | null;
+            /**
+             * Method type.
+             */
+            type?: ('Theoretical' | 'Practical' | 'Simulation' | 'Field') | null;
+            /**
+             * Method description.
+             */
+            description?: string | null;
+            settings?: {
+              /**
+               * Toggle the Skill entry on or off.
+               */
+              show?: boolean | null;
+              /**
+               * Toggle the Skill entry on or off.
+               */
+              featured?: boolean | null;
+              /**
+               * Toggle the Skill entry on or off.
+               */
+              pinned?: boolean | null;
+            };
+            id?: string | null;
+          }[]
+        | null;
+    };
+    /**
      * Skill dependencies.
      */
-    dependencies?:
-      | {
-          /**
-           * Dependent skill.
-           */
-          skill?: (number | null) | Skill;
-          /**
-           * Dependency type.
-           */
-          type?: ('Prerequisite' | 'Corequisite' | 'Recommended') | null;
-          id?: string | null;
-        }[]
-      | null;
+    dependencies?: {
+      list?:
+        | {
+            /**
+             * Dependent skill.
+             */
+            skill?: (number | null) | Skill;
+            /**
+             * Dependency type.
+             */
+            type?: ('Prerequisite' | 'Corequisite' | 'Recommended') | null;
+            settings?: {
+              /**
+               * Toggle the Skill entry on or off.
+               */
+              show?: boolean | null;
+              /**
+               * Toggle the Skill entry on or off.
+               */
+              featured?: boolean | null;
+              /**
+               * Toggle the Skill entry on or off.
+               */
+              pinned?: boolean | null;
+            };
+            id?: string | null;
+          }[]
+        | null;
+    };
     visibility?: {
       /**
        * Toggle the Details section on or off.
@@ -10368,20 +10479,212 @@ export interface Search {
         value: number | Page;
       }
     | {
-        relationTo: 'categories';
-        value: number | Category;
+        relationTo: 'forms';
+        value: number | Form;
+      }
+    | {
+        relationTo: 'points';
+        value: number | Point;
+      }
+    | {
+        relationTo: 'results';
+        value: number | Result;
+      }
+    | {
+        relationTo: 'entries';
+        value: number | Entry;
+      }
+    | {
+        relationTo: 'sessions';
+        value: number | Session;
+      }
+    | {
+        relationTo: 'events';
+        value: number | Event;
+      }
+    | {
+        relationTo: 'seasons';
+        value: number | Season;
+      }
+    | {
+        relationTo: 'series';
+        value: number | Series;
+      }
+    | {
+        relationTo: 'meetups';
+        value: number | Meetup;
+      }
+    | {
+        relationTo: 'initiatives';
+        value: number | Initiative;
+      }
+    | {
+        relationTo: 'celebrations';
+        value: number | Celebration;
+      }
+    | {
+        relationTo: 'careers';
+        value: number | Career;
+      }
+    | {
+        relationTo: 'trainings';
+        value: number | Training;
+      }
+    | {
+        relationTo: 'schedules';
+        value: number | Schedule;
+      }
+    | {
+        relationTo: 'duties';
+        value: number | Duty;
+      }
+    | {
+        relationTo: 'expectations';
+        value: number | Expectation;
+      }
+    | {
+        relationTo: 'protocols';
+        value: number | Protocol;
+      }
+    | {
+        relationTo: 'kits';
+        value: number | Kit;
+      }
+    | {
+        relationTo: 'cars';
+        value: number | Car;
+      }
+    | {
+        relationTo: 'awards';
+        value: number | Award;
+      }
+    | {
+        relationTo: 'organizations';
+        value: number | Organization;
+      }
+    | {
+        relationTo: 'members';
+        value: number | Member;
+      }
+    | {
+        relationTo: 'leaders';
+        value: number | Leader;
+      }
+    | {
+        relationTo: 'individuals';
+        value: number | Individual;
+      }
+    | {
+        relationTo: 'drivers';
+        value: number | Driver;
+      }
+    | {
+        relationTo: 'experiences';
+        value: number | Experience;
+      }
+    | {
+        relationTo: 'strategies';
+        value: number | Strategy;
+      }
+    | {
+        relationTo: 'incidents';
+        value: number | Incident;
+      }
+    | {
+        relationTo: 'highlights';
+        value: number | Highlight;
+      }
+    | {
+        relationTo: 'impacts';
+        value: number | Impact;
+      }
+    | {
+        relationTo: 'decisions';
+        value: number | Decision;
+      }
+    | {
+        relationTo: 'stories';
+        value: number | Story;
+      }
+    | {
+        relationTo: 'journeys';
+        value: number | Journey;
+      }
+    | {
+        relationTo: 'histories';
+        value: number | History;
+      }
+    | {
+        relationTo: 'notes';
+        value: number | Note;
+      }
+    | {
+        relationTo: 'narratives';
+        value: number | Narrative;
+      }
+    | {
+        relationTo: 'archives';
+        value: number | Archive;
+      }
+    | {
+        relationTo: 'playlists';
+        value: number | Playlist;
+      }
+    | {
+        relationTo: 'visualizations';
+        value: number | Visualization;
+      }
+    | {
+        relationTo: 'galleries';
+        value: number | Gallery;
+      }
+    | {
+        relationTo: 'tones';
+        value: number | Tone;
       }
     | {
         relationTo: 'tags';
         value: number | Tag;
       }
     | {
-        relationTo: 'media';
-        value: number | Media;
+        relationTo: 'specifications';
+        value: number | Specification;
       }
     | {
-        relationTo: 'forms';
-        value: number | Form;
+        relationTo: 'skills';
+        value: number | Skill;
+      }
+    | {
+        relationTo: 'principles';
+        value: number | Principle;
+      }
+    | {
+        relationTo: 'locations';
+        value: number | Location;
+      }
+    | {
+        relationTo: 'features';
+        value: number | Feature;
+      }
+    | {
+        relationTo: 'preferences';
+        value: number | Preference;
+      }
+    | {
+        relationTo: 'classifications';
+        value: number | Classification;
+      }
+    | {
+        relationTo: 'channels';
+        value: number | Channel;
+      }
+    | {
+        relationTo: 'categories';
+        value: number | Category;
+      }
+    | {
+        relationTo: 'media';
+        value: number | Media;
       };
   updatedAt: string;
   createdAt: string;
@@ -15437,13 +15740,6 @@ export interface ExperiencesSelect<T extends boolean = true> {
 export interface CategoriesSelect<T extends boolean = true> {
   toggle?: T;
   name?: T;
-  type?:
-    | T
-    | {
-        label?: T;
-        value?: T;
-        id?: T;
-      };
   basics?:
     | T
     | {
@@ -15459,7 +15755,13 @@ export interface CategoriesSelect<T extends boolean = true> {
     | T
     | {
         enable?: T;
-        parent?: T;
+        type?:
+          | T
+          | {
+              label?: T;
+              value?: T;
+              id?: T;
+            };
         visibility?:
           | T
           | {
@@ -15495,7 +15797,7 @@ export interface TagsSelect<T extends boolean = true> {
   toggle?: T;
   name?: T;
   type?: T;
-  details?:
+  basics?:
     | T
     | {
         enable?: T;
@@ -15535,12 +15837,12 @@ export interface TagsSelect<T extends boolean = true> {
 export interface TonesSelect<T extends boolean = true> {
   toggle?: T;
   name?: T;
-  alias?: T;
   type?: T;
   basics?:
     | T
     | {
         enable?: T;
+        alias?: T;
         description?: T;
         visibility?:
           | T
@@ -15562,11 +15864,22 @@ export interface TonesSelect<T extends boolean = true> {
         qualities?:
           | T
           | {
-              quality?: T;
-              intensity?: T;
-              mood?: T;
-              scale?: T;
-              id?: T;
+              list?:
+                | T
+                | {
+                    quality?: T;
+                    intensity?: T;
+                    mood?: T;
+                    scale?: T;
+                    settings?:
+                      | T
+                      | {
+                          show?: T;
+                          featured?: T;
+                          pinned?: T;
+                        };
+                    id?: T;
+                  };
             };
         visibility?:
           | T
@@ -15722,21 +16035,32 @@ export interface SpecificationsSelect<T extends boolean = true> {
     | T
     | {
         enable?: T;
-        parameters?:
-          | T
-          | {
-              parameter?: T;
-              value?: T;
-              unit?: T;
-              tolerance?: T;
-              id?: T;
-            };
         measurement?:
           | T
           | {
               method?: T;
               frequency?: T;
               accuracy?: T;
+            };
+        parameters?:
+          | T
+          | {
+              list?:
+                | T
+                | {
+                    parameter?: T;
+                    value?: T;
+                    unit?: T;
+                    tolerance?: T;
+                    settings?:
+                      | T
+                      | {
+                          show?: T;
+                          featured?: T;
+                          pinned?: T;
+                        };
+                    id?: T;
+                  };
             };
         visibility?:
           | T
@@ -15860,22 +16184,44 @@ export interface SkillsSelect<T extends boolean = true> {
     | {
         enable?: T;
         definition?: T;
+        features?: T;
+        specifications?: T;
         methods?:
           | T
           | {
-              method?: T;
-              type?: T;
-              description?: T;
-              id?: T;
+              list?:
+                | T
+                | {
+                    method?: T;
+                    type?: T;
+                    description?: T;
+                    settings?:
+                      | T
+                      | {
+                          show?: T;
+                          featured?: T;
+                          pinned?: T;
+                        };
+                    id?: T;
+                  };
             };
-        features?: T;
-        specifications?: T;
         dependencies?:
           | T
           | {
-              skill?: T;
-              type?: T;
-              id?: T;
+              list?:
+                | T
+                | {
+                    skill?: T;
+                    type?: T;
+                    settings?:
+                      | T
+                      | {
+                          show?: T;
+                          featured?: T;
+                          pinned?: T;
+                        };
+                    id?: T;
+                  };
             };
         visibility?:
           | T
@@ -16024,16 +16370,38 @@ export interface PreferencesSelect<T extends boolean = true> {
         conditions?:
           | T
           | {
-              trigger?: T;
-              prerequisite?: T;
-              id?: T;
+              list?:
+                | T
+                | {
+                    trigger?: T;
+                    prerequisite?: T;
+                    settings?:
+                      | T
+                      | {
+                          show?: T;
+                          featured?: T;
+                          pinned?: T;
+                        };
+                    id?: T;
+                  };
             };
         reasons?:
           | T
           | {
-              reason?: T;
-              importance?: T;
-              id?: T;
+              list?:
+                | T
+                | {
+                    reason?: T;
+                    importance?: T;
+                    settings?:
+                      | T
+                      | {
+                          show?: T;
+                          featured?: T;
+                          pinned?: T;
+                        };
+                    id?: T;
+                  };
             };
         visibility?:
           | T
@@ -16083,6 +16451,17 @@ export interface ChannelsSelect<T extends boolean = true> {
   name?: T;
   type?: T;
   basics?:
+    | T
+    | {
+        enable?: T;
+        description?: T;
+        visibility?:
+          | T
+          | {
+              show?: T;
+            };
+      };
+  details?:
     | T
     | {
         enable?: T;
@@ -16189,11 +16568,11 @@ export interface LocationsSelect<T extends boolean = true> {
   toggle?: T;
   name?: T;
   type?: T;
-  label?: T;
   basics?:
     | T
     | {
         enable?: T;
+        label?: T;
         title?: T;
         description?: T;
         visibility?:

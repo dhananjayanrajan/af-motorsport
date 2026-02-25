@@ -8,11 +8,6 @@ export const dictionary = {
       placeholder: 'e.g. Formal',
       description: { en: 'Tone name.', es: 'Nombre del tono.', pt: 'Nome do tom.' }
     },
-    alias: {
-      label: { en: 'Alias', es: 'Alias', pt: 'Alias' },
-      placeholder: 'e.g. Official',
-      description: { en: 'Tone alias.', es: 'Alias del tono.', pt: 'Alias do tom.' }
-    },
     type: {
       label: { en: 'Type', es: 'Tipo', pt: 'Tipo' },
       placeholder: 'Select type',
@@ -26,6 +21,11 @@ export const dictionary = {
       entity: { en: 'Tone', es: 'Tono', pt: 'Tom' },
       description: { en: 'Basic info.', es: 'Info básica.', pt: 'Info básica.' },
       fields: {
+        alias: {
+          label: { en: 'Alias', es: 'Alias', pt: 'Alias' },
+          placeholder: 'e.g. Official',
+          description: { en: 'Tone alias.', es: 'Alias del tono.', pt: 'Alias do tom.' }
+        },
         description: {
           label: { en: 'Description', es: 'Descripción', pt: 'Descrição' },
           placeholder: 'Enter description',
@@ -50,8 +50,10 @@ export const dictionary = {
         }
       },
       qualities: {
+        name: 'qualities',
         label: { en: 'Qualities', es: 'Cualidades', pt: 'Qualidades' },
         description: { en: 'Tonal qualities.', es: 'Cualidades tonales.', pt: 'Qualidades tonais.' },
+        entity: { en: 'Quality', es: 'Cualidad', pt: 'Qualidade' },
         fields: {
           quality: { label: { en: 'Quality', es: 'Cualidad', pt: 'Qualidade' }, description: { en: 'Quality type.', es: 'Tipo de cualidad.', pt: 'Tipo de qualidade.' } },
           intensity: { label: { en: 'Intensity', es: 'Intensidad', pt: 'Intensidade' }, description: { en: 'Intensity level.', es: 'Nivel de intensidad.', pt: 'Nível de intensidade.' } },
