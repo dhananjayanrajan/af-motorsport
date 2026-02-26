@@ -141,7 +141,7 @@ export default buildConfig({
   admin: {
     user: Users.slug,
     components: {
-      afterDashboard: ['@/widgets/DashboardOrchestrator'],
+      // afterDashboard: ['@/widgets/DashboardOrchestrator'],
     },
     suppressHydrationWarning: true,
   },

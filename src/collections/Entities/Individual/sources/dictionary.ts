@@ -40,6 +40,39 @@ export const dictionary = {
             number: { label: { en: 'Number', es: 'Número', pt: 'Número' } },
           },
         },
+      },
+    },
+    details: {
+      name: 'details',
+      label: { en: 'Details', es: 'Detalles', pt: 'Detalhes' },
+      fields: {
+        interests: {
+          name: 'interests',
+          label: { en: 'Interests', es: 'Intereses', pt: 'Interesses' },
+          description: { en: 'Personal interests.', es: 'Intereses personales.', pt: 'Interesses pessoais.' },
+          entity: { en: 'Interest', es: 'Interés', pt: 'Interesse' },
+          fields: {
+            interest: { label: { en: 'Interest', es: 'Interés', pt: 'Interesse' } },
+            level: { label: { en: 'Level', es: 'Nivel', pt: 'Nível' } },
+            duration: { label: { en: 'Duration', es: 'Duración', pt: 'Duração' } },
+          },
+        },
+        about: {
+          name: 'about',
+          label: { en: 'About', es: 'Sobre', pt: 'Sobre' },
+          entity: { en: 'About', es: 'Sobre', pt: 'Sobre' },
+          description: { en: 'About information', es: 'Información sobre', pt: 'Informações sobre' },
+          fields: {
+            narrative: { label: { en: 'Narrative', es: 'Narrativa', pt: 'Narrativa' } },
+            background: { label: { en: 'Background', es: 'Antecedentes', pt: 'Antecedentes' } },
+          },
+        },
+      },
+    },
+    traits: {
+      name: 'traits',
+      label: { en: 'Traits', es: 'Rasgos', pt: 'Traços' },
+      fields: {
         identity: {
           name: 'identity',
           label: { en: 'Identity', es: 'Identidad', pt: 'Identidade' },
@@ -52,30 +85,15 @@ export const dictionary = {
             nationality: { label: { en: 'Nationality', es: 'Nacionalidad', pt: 'Nacionalidade' } },
           },
         },
-      },
-    },
-    details: {
-      name: 'details',
-      label: { en: 'Details', es: 'Detalles', pt: 'Detalhes' },
-      fields: {
-        narrative: { label: { en: 'Narrative', es: 'Narrativa', pt: 'Narrativa' } },
-        background: { label: { en: 'Background', es: 'Antecedentes', pt: 'Antecedentes' } },
-        interests: {
-          label: { en: 'Interests', es: 'Intereses', pt: 'Interesses' },
-          description: { en: 'Personal interests.', es: 'Intereses personales.', pt: 'Interesses pessoais.' },
+        communication: {
+          name: 'communication',
+          label: { en: 'Communication', es: 'Comunicación', pt: 'Comunicação' },
+          entity: { en: 'Communication', es: 'Comunicación', pt: 'Comunicação' },
+          description: { en: 'Communication information', es: 'Información de comunicación', pt: 'Informações de comunicação' },
           fields: {
-            interest: { label: { en: 'Interest', es: 'Interés', pt: 'Interesse' } },
-            level: { label: { en: 'Level', es: 'Nivel', pt: 'Nível' } },
-            duration: { label: { en: 'Duration', es: 'Duración', pt: 'Duração' } },
+            channels: { label: { en: 'Channels', es: 'Canales', pt: 'Canais' } },
           },
         },
-      },
-    },
-    traits: {
-      name: 'traits',
-      label: { en: 'Traits', es: 'Rasgos', pt: 'Traços' },
-      fields: {
-        channels: { label: { en: 'Channels', es: 'Canales', pt: 'Canais' } },
         influence: {
           name: 'influence',
           label: { en: 'Influence', es: 'Influencia', pt: 'Influência' },
@@ -87,9 +105,17 @@ export const dictionary = {
             network: { label: { en: 'Network', es: 'Red', pt: 'Rede' } },
           },
         },
+      },
+    },
+    metrics: {
+      name: 'metrics',
+      label: { en: 'Metrics', es: 'Métricas', pt: 'Métricas' },
+      fields: {
         benefits: {
+          name: 'benefits',
           label: { en: 'Benefits', es: 'Beneficios', pt: 'Benefícios' },
           description: { en: 'Member benefits.', es: 'Beneficios de miembro.', pt: 'Benefícios de membro.' },
+          entity: { en: 'Benefit', es: 'Beneficio', pt: 'Benefício' },
           fields: {
             benefit: { label: { en: 'Benefit', es: 'Beneficio', pt: 'Benefício' } },
             type: { label: { en: 'Type', es: 'Tipo', pt: 'Tipo' } },

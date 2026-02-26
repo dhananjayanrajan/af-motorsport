@@ -41,6 +41,12 @@ export const dictionary = {
             badge: { label: { en: 'Badge', es: 'Insignia', pt: 'Distintivo' } },
           },
         },
+      },
+    },
+    details: {
+      name: 'details',
+      label: { en: 'Details', es: 'Detalles', pt: 'Detalhes' },
+      fields: {
         identity: {
           name: 'identity',
           label: { en: 'Identity', es: 'Identidad', pt: 'Identidade' },
@@ -51,6 +57,17 @@ export const dictionary = {
             pronouns: { label: { en: 'Pronouns', es: 'Pronombres', pt: 'Pronomes' } },
             age: { label: { en: 'Age', es: 'Edad', pt: 'Idade' } },
             nationality: { label: { en: 'Nationality', es: 'Nacionalidad', pt: 'Nacionalidade' } },
+          },
+        },
+        departments: { label: { en: 'Departments', es: 'Departamentos', pt: 'Departamentos' } },
+        about: {
+          name: 'about',
+          label: { en: 'About', es: 'Sobre', pt: 'Sobre' },
+          entity: { en: 'About', es: 'Sobre', pt: 'Sobre' },
+          description: { en: 'About information', es: 'Información sobre', pt: 'Informações sobre' },
+          fields: {
+            narrative: { label: { en: 'Narrative', es: 'Narrativa', pt: 'Narrativa' } },
+            background: { label: { en: 'Background', es: 'Antecedentes', pt: 'Antecedentes' } },
           },
         },
         chronology: {
@@ -66,32 +83,48 @@ export const dictionary = {
         },
       },
     },
-    details: {
-      name: 'details',
-      label: { en: 'Details', es: 'Detalles', pt: 'Detalhes' },
-      fields: {
-        narrative: { label: { en: 'Narrative', es: 'Narrativa', pt: 'Narrativa' } },
-        background: { label: { en: 'Background', es: 'Antecedentes', pt: 'Antecedentes' } },
-        departments: { label: { en: 'Departments', es: 'Departamentos', pt: 'Departamentos' } },
-      },
-    },
     traits: {
       name: 'traits',
       label: { en: 'Traits', es: 'Rasgos', pt: 'Traços' },
       fields: {
-        channels: { label: { en: 'Channels', es: 'Canales', pt: 'Canais' } },
+        communication: {
+          name: 'communication',
+          label: { en: 'Communication', es: 'Comunicación', pt: 'Comunicação' },
+          entity: { en: 'Communication', es: 'Comunicación', pt: 'Comunicação' },
+          description: { en: 'Communication information', es: 'Información de comunicación', pt: 'Informações de comunicação' },
+          fields: {
+            channels: { label: { en: 'Channels', es: 'Canales', pt: 'Canais' } },
+          }
+        },
         personalities: { label: { en: 'Personalities', es: 'Personalidades', pt: 'Personalidades' } },
-        duties: { label: { en: 'Duties', es: 'Deberes', pt: 'Deveres' } },
-        skills: { label: { en: 'Skills', es: 'Habilidades', pt: 'Habilidades' } },
-        trainings: { label: { en: 'Trainings', es: 'Entrenamientos', pt: 'Treinamentos' } },
       },
     },
     metrics: {
       name: 'metrics',
       label: { en: 'Metrics', es: 'Métricas', pt: 'Métricas' },
       fields: {
-        impacts: { label: { en: 'Impacts', es: 'Impactos', pt: 'Impactos' } },
-        awards: { label: { en: 'Awards', es: 'Premios', pt: 'Prêmios' } },
+        qualifications: {
+          name: 'qualifications',
+          label: { en: 'Qualifications', es: 'Calificaciones', pt: 'Qualificações' },
+          entity: { en: 'Qualification', es: 'Calificación', pt: 'Qualificação' },
+          description: { en: 'Qualification data', es: 'Datos de calificación', pt: 'Dados de qualificação' },
+          fields: {
+            duties: { label: { en: 'Duties', es: 'Deberes', pt: 'Deveres' } },
+            skills: { label: { en: 'Skills', es: 'Habilidades', pt: 'Habilidades' } },
+            trainings: { label: { en: 'Trainings', es: 'Entrenamientos', pt: 'Treinamentos' } },
+            certifications: { label: { en: 'Certifications', es: 'Certificaciones', pt: 'Certificações' } },
+          },
+        },
+        outcomes: {
+          name: 'outcomes',
+          label: { en: 'Outcomes', es: 'Resultados', pt: 'Resultados' },
+          entity: { en: 'Outcome', es: 'Resultado', pt: 'Resultado' },
+          description: { en: 'Outcome information', es: 'Información de resultados', pt: 'Informações de resultados' },
+          fields: {
+            impacts: { label: { en: 'Impacts', es: 'Impactos', pt: 'Impactos' } },
+            awards: { label: { en: 'Awards', es: 'Premios', pt: 'Prêmios' } },
+          }
+        },
       },
     },
     assets: {
@@ -101,16 +134,31 @@ export const dictionary = {
         thumbnail: { label: { en: 'Thumbnail', es: 'Miniatura', pt: 'Miniatura' } },
         cover: { label: { en: 'Cover', es: 'Portada', pt: 'Capa' } },
         gallery: { label: { en: 'Gallery', es: 'Galería', pt: 'Galeria' } },
-        certifications: { label: { en: 'Certifications', es: 'Certificaciones', pt: 'Certificações' } },
       },
     },
     contexts: {
       name: 'contexts',
       label: { en: 'Contexts', es: 'Contextos', pt: 'Contextos' },
       fields: {
-        mentors: { label: { en: 'Mentors', es: 'Mentores', pt: 'Mentores' } },
-        crew: { label: { en: 'Crew', es: 'Equipo', pt: 'Equipe' } },
-        cars: { label: { en: 'Cars', es: 'Autos', pt: 'Carros' } },
+        connections: {
+          name: 'connections',
+          label: { en: 'Connections', es: 'Conexiones', pt: 'Conexões' },
+          entity: { en: 'Connection', es: 'Conexión', pt: 'Conexão' },
+          description: { en: 'Connection information', es: 'Información de conexión', pt: 'Informações de conexão' },
+          fields: {
+            mentors: { label: { en: 'Mentors', es: 'Mentores', pt: 'Mentores' } },
+            crew: { label: { en: 'Crew', es: 'Equipo', pt: 'Equipe' } },
+          },
+        },
+        associations: {
+          name: 'associations',
+          label: { en: 'Associations', es: 'Asociaciones', pt: 'Associações' },
+          entity: { en: 'Association', es: 'Asociación', pt: 'Associação' },
+          description: { en: 'Association information', es: 'Información de asociación', pt: 'Informações de associação' },
+          fields: {
+            cars: { label: { en: 'Cars', es: 'Autos', pt: 'Carros' } },
+          }
+        }
       },
     },
   },

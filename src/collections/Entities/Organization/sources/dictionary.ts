@@ -40,9 +40,16 @@ export const dictionary = {
       name: 'details',
       label: { en: 'Details', es: 'Detalles', pt: 'Detalhes' },
       fields: {
-        narrative: { label: { en: 'Narrative', es: 'Narrativa', pt: 'Narrativa' } },
-        background: { label: { en: 'Background', es: 'Antecedentes', pt: 'Antecedentes' } },
-        parent: { label: { en: 'Parent', es: 'Padre', pt: 'Pai' } },
+        about: {
+          name: 'about',
+          label: { en: 'About', es: 'Sobre', pt: 'Sobre' },
+          entity: { en: 'About', es: 'Sobre', pt: 'Sobre' },
+          description: { en: 'About information', es: 'Información sobre', pt: 'Informações sobre' },
+          fields: {
+            narrative: { label: { en: 'Narrative', es: 'Narrativa', pt: 'Narrativa' } },
+            background: { label: { en: 'Background', es: 'Antecedentes', pt: 'Antecedentes' } },
+          },
+        },
         evolution: {
           name: 'evolution',
           label: { en: 'Evolution', es: 'Evolución', pt: 'Evolução' },
@@ -55,13 +62,13 @@ export const dictionary = {
             defunct: { label: { en: 'Defunct', es: 'Defuncto', pt: 'Extinto' } },
           },
         },
+        headquarters: { label: { en: 'Headquarters', es: 'Sede', pt: 'Sede' } },
       },
     },
     traits: {
       name: 'traits',
       label: { en: 'Traits', es: 'Rasgos', pt: 'Traços' },
       fields: {
-        channels: { label: { en: 'Channels', es: 'Canales', pt: 'Canais' } },
         reputation: {
           name: 'reputation',
           label: { en: 'Reputation', es: 'Reputación', pt: 'Reputação' },
@@ -73,9 +80,26 @@ export const dictionary = {
             innovation: { label: { en: 'Innovation', es: 'Innovación', pt: 'Inovação' } },
           },
         },
+        communication: {
+          name: 'communication',
+          label: { en: 'Communication', es: 'Comunicación', pt: 'Comunicação' },
+          entity: { en: 'Communication', es: 'Comunicación', pt: 'Comunicação' },
+          description: { en: 'Communication information', es: 'Información de comunicación', pt: 'Informações de comunicação' },
+          fields: {
+            channels: { label: { en: 'Channels', es: 'Canales', pt: 'Canais' } },
+          }
+        },
+      },
+    },
+    metrics: {
+      name: 'metrics',
+      label: { en: 'Metrics', es: 'Métricas', pt: 'Métricas' },
+      fields: {
         benefits: {
+          name: 'benefits',
           label: { en: 'Benefits', es: 'Beneficios', pt: 'Benefícios' },
           description: { en: 'Partner benefits.', es: 'Beneficios de socio.', pt: 'Benefícios de parceiro.' },
+          entity: { en: 'Benefit', es: 'Beneficio', pt: 'Benefício' },
           fields: {
             benefit: { label: { en: 'Benefit', es: 'Beneficio', pt: 'Benefício' } },
             type: { label: { en: 'Type', es: 'Tipo', pt: 'Tipo' } },
@@ -96,9 +120,18 @@ export const dictionary = {
       name: 'contexts',
       label: { en: 'Contexts', es: 'Contextos', pt: 'Contextos' },
       fields: {
-        headquarters: { label: { en: 'Headquarters', es: 'Sede', pt: 'Sede' } },
+        associations: {
+          name: 'associations',
+          label: { en: 'Associations', es: 'Asociaciones', pt: 'Associações' },
+          entity: { en: 'Association', es: 'Asociación', pt: 'Associação' },
+          description: { en: 'Associations information', es: 'Información de asociaciones', pt: 'Informações de associações' },
+          fields: {
+            branch: { label: { en: 'Branch', es: 'Sucursal', pt: 'Filial' } },
+            parent: { label: { en: 'Parent Organization', es: 'Organización Padre', pt: 'Organização Mãe' } },
+          }
+        },
         history: { label: { en: 'History', es: 'Historia', pt: 'História' } },
-        notes: { label: { en: 'Notes', es: 'Notas', pt: 'Notas' } },
+        notes: { label: { en: 'Notes', es: 'Notas', pt: 'Notas' } }
       },
     },
   },

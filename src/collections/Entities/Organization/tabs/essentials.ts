@@ -12,25 +12,20 @@ export const essentialFields: Field[] = [
         name: 'name',
         dictionary: dictionary.essential,
         width: 2,
-        flags: ['localized', 'index'],
+        flags: ['required', 'localized', 'index'],
       }),
       textFieldFactory({
         name: 'alias',
         dictionary: dictionary.essential,
         width: 2,
-        flags: ['localized'],
+        flags: ['localized', 'index', 'advanced'],
       }),
-    ],
-  },
-  {
-    type: 'row',
-    fields: [
       relationshipFieldFactory({
         name: 'type',
         relationTo: 'categories',
         dictionary: dictionary.essential,
         width: 1,
-        flags: [],
+        flags: ['hasMany'],
       }),
     ],
   },

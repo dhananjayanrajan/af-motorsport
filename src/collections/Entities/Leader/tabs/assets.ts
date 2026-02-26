@@ -6,18 +6,13 @@ import { uploadFieldFactory } from '@/fields/factories/fields/uploadField'
 import { advanced } from '@/fields/factories/toggles/advanced'
 
 export const assetsFields: Field[] = [
-  {
-    type: 'row',
-    fields: [
-      uploadFieldFactory({
-        name: 'avatar',
-        relationTo: 'media',
-        dictionary: dictionary.tabs.assets.fields,
-        width: 1,
-        flags: [],
-      }),
-    ]
-  },
+  uploadFieldFactory({
+    name: 'avatar',
+    relationTo: 'media',
+    dictionary: dictionary.tabs.assets.fields,
+    width: 1,
+    flags: ['required'],
+  }),
   advanced(
     {
       type: 'row',

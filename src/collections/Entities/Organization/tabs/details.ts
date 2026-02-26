@@ -9,44 +9,14 @@ import { advanced } from '@/fields/factories/toggles/advanced'
 
 export const detailsFields: Field[] = [
   advanced(
-    {
-      type: 'row',
-      fields: [
-        relationshipFieldFactory({
-          name: 'narrative',
-          relationTo: 'narratives',
-          dictionary: dictionary.tabs.details.fields,
-          width: 1,
-          flags: ['advanced'],
-        }),
-      ],
-    }
+    relationshipFieldFactory({
+      name: 'headquarters',
+      relationTo: 'locations',
+      dictionary: dictionary.tabs.details.fields,
+      width: 1,
+      flags: ['hasMany', 'advanced'],
+    })
   ),
-  advanced(
-    {
-      type: 'row',
-      fields: [
-        textareaFieldFactory({
-          name: 'background',
-          dictionary: dictionary.tabs.details.fields,
-          width: 1,
-          flags: ['localized', 'advanced'],
-        }),
-      ],
-    }
-  ),
-  {
-    type: 'row',
-    fields: [
-      relationshipFieldFactory({
-        name: 'parent',
-        relationTo: 'organizations',
-        dictionary: dictionary.tabs.details.fields,
-        width: 1,
-        flags: ['advanced'],
-      }),
-    ],
-  },
   advanced(
     groupFactory(
       dictionary.tabs.details.fields.evolution,
@@ -59,7 +29,7 @@ export const detailsFields: Field[] = [
               name: 'founded',
               dictionary: dictionary.tabs.details.fields.evolution.fields,
               width: 2,
-              flags: [],
+              flags: ['advanced'],
               pickerAppearance: 'dayOnly',
             }),
             dateFieldFactory({
@@ -69,11 +39,6 @@ export const detailsFields: Field[] = [
               flags: ['advanced'],
               pickerAppearance: 'dayOnly',
             }),
-          ],
-        },
-        {
-          type: 'row',
-          fields: [
             dateFieldFactory({
               name: 'rebranded',
               dictionary: dictionary.tabs.details.fields.evolution.fields,
@@ -87,6 +52,33 @@ export const detailsFields: Field[] = [
               width: 2,
               flags: ['advanced'],
               pickerAppearance: 'dayOnly',
+            }),
+          ],
+        },
+      ],
+      false
+    )
+  ),
+  advanced(
+    groupFactory(
+      dictionary.tabs.details.fields.about,
+      dictionary.host,
+      [
+        {
+          type: 'row',
+          fields: [
+            textareaFieldFactory({
+              name: 'background',
+              dictionary: dictionary.tabs.details.fields.about.fields,
+              width: 1,
+              flags: ['localized', 'advanced'],
+            }),
+            relationshipFieldFactory({
+              name: 'narrative',
+              relationTo: 'narratives',
+              dictionary: dictionary.tabs.details.fields.about.fields,
+              width: 1,
+              flags: ['advanced'],
             }),
           ],
         },

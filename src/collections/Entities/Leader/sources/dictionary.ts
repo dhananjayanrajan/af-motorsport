@@ -40,18 +40,32 @@ export const dictionary = {
           },
         },
         description: { label: { en: 'Description', es: 'Descripción', pt: 'Descrição' } },
-        identity: {
-          name: 'identity',
-          label: { en: 'Identity', es: 'Identidad', pt: 'Identidade' },
-          entity: { en: 'Identity', es: 'Identidad', pt: 'Identidade' },
-          description: { en: 'Personal identity', es: 'Identidad personal', pt: 'Identidade pessoal' },
+      },
+    },
+    details: {
+      name: 'details',
+      label: { en: 'Details', es: 'Detalles', pt: 'Detalhes' },
+      fields: {
+        about: {
+          name: 'about',
+          label: { en: 'About', es: 'Sobre', pt: 'Sobre' },
+          entity: { en: 'About', es: 'Sobre', pt: 'Sobre' },
+          description: { en: 'About information', es: 'Información sobre', pt: 'Informações sobre' },
           fields: {
-            gender: { label: { en: 'Gender', es: 'Género', pt: 'Gênero' } },
-            pronouns: { label: { en: 'Pronouns', es: 'Pronombres', pt: 'Pronomes' } },
-            age: { label: { en: 'Age', es: 'Edad', pt: 'Idade' } },
-            nationality: { label: { en: 'Nationality', es: 'Nacionalidad', pt: 'Nacionalidade' } },
+            narrative: { label: { en: 'Narrative', es: 'Narrativa', pt: 'Narrativa' } },
+            biography: { label: { en: 'Biography', es: 'Biografía', pt: 'Biografia' } },
           },
         },
+        vision: {
+          name: 'vision',
+          label: { en: 'Vision', es: 'Visión', pt: 'Visão' },
+          entity: { en: 'Vision', es: 'Visión', pt: 'Visão' },
+          description: { en: 'Guiding principles', es: 'Principios rectores', pt: 'Princípios orientadores' },
+          fields: {
+            principles: { label: { en: 'Principles', es: 'Principios', pt: 'Principios' } },
+          },
+        },
+        departments: { label: { en: 'Departments', es: 'Departamentos', pt: 'Departamentos' } },
         chronology: {
           name: 'chronology',
           label: { en: 'Chronology', es: 'Cronología', pt: 'Cronologia' },
@@ -65,32 +79,58 @@ export const dictionary = {
         },
       },
     },
-    details: {
-      name: 'details',
-      label: { en: 'Details', es: 'Detalles', pt: 'Detalhes' },
-      fields: {
-        narrative: { label: { en: 'Narrative', es: 'Narrativa', pt: 'Narrativa' } },
-        biography: { label: { en: 'Biography', es: 'Biografía', pt: 'Biografia' } },
-        vision: { label: { en: 'Vision', es: 'Visión', pt: 'Visão' } },
-        departments: { label: { en: 'Departments', es: 'Departamentos', pt: 'Departamentos' } },
-      },
-    },
     traits: {
       name: 'traits',
       label: { en: 'Traits', es: 'Rasgos', pt: 'Traços' },
       fields: {
-        channels: { label: { en: 'Channels', es: 'Canales', pt: 'Canais' } },
+        identity: {
+          name: 'identity',
+          label: { en: 'Identity', es: 'Identidad', pt: 'Identidade' },
+          entity: { en: 'Identity', es: 'Identidad', pt: 'Identidade' },
+          description: { en: 'Personal identity', es: 'Identidad personal', pt: 'Identidade pessoal' },
+          fields: {
+            gender: { label: { en: 'Gender', es: 'Género', pt: 'Gênero' } },
+            pronouns: { label: { en: 'Pronouns', es: 'Pronombres', pt: 'Pronomes' } },
+            age: { label: { en: 'Age', es: 'Edad', pt: 'Idade' } },
+            nationality: { label: { en: 'Nationality', es: 'Nacionalidad', pt: 'Nacionalidade' } },
+          },
+        },
+        communication: {
+          name: 'communication',
+          label: { en: 'Communication', es: 'Comunicación', pt: 'Comunicação' },
+          entity: { en: 'Communication', es: 'Comunicación', pt: 'Comunicação' },
+          description: { en: 'Communication information', es: 'Información de comunicación', pt: 'Informações de comunicação' },
+          fields: {
+            channels: { label: { en: 'Channels', es: 'Canales', pt: 'Canais' } },
+          }
+        },
         personalities: { label: { en: 'Personalities', es: 'Personalidades', pt: 'Personalidades' } },
-        achievements: { label: { en: 'Achievements', es: 'Logros', pt: 'Conquistas' } },
-        strategies: { label: { en: 'Strategies', es: 'Estrategias', pt: 'Estratégias' } },
       },
     },
     metrics: {
       name: 'metrics',
       label: { en: 'Metrics', es: 'Métricas', pt: 'Métricas' },
       fields: {
-        impacts: { label: { en: 'Impacts', es: 'Impactos', pt: 'Impactos' } },
-        awards: { label: { en: 'Awards', es: 'Premios', pt: 'Prêmios' } },
+        operations: {
+          name: 'operations',
+          label: { en: 'Operations', es: 'Operaciones', pt: 'Operações' },
+          entity: { en: 'Operation', es: 'Operación', pt: 'Operação' },
+          description: { en: 'Operational information', es: 'Información operacional', pt: 'Informações operacionais' },
+          fields: {
+            achievements: { label: { en: 'Achievements', es: 'Logros', pt: 'Conquistas' } },
+            impacts: { label: { en: 'Impacts', es: 'Impactos', pt: 'Impactos' } },
+          }
+        },
+        outcomes: {
+          name: 'outcomes',
+          label: { en: 'Outcomes', es: 'Resultados', pt: 'Resultados' },
+          entity: { en: 'Outcome', es: 'Resultado', pt: 'Resultado' },
+          description: { en: 'Outcome information', es: 'Información de resultados', pt: 'Informações de resultados' },
+          fields: {
+            strategies: { label: { en: 'Strategies', es: 'Estrategias', pt: 'Estratégias' } },
+            awards: { label: { en: 'Awards', es: 'Premios', pt: 'Prêmios' } },
+          }
+        },
       },
     },
     assets: {
@@ -106,8 +146,16 @@ export const dictionary = {
       name: 'contexts',
       label: { en: 'Contexts', es: 'Contextos', pt: 'Contextos' },
       fields: {
-        peers: { label: { en: 'Peers', es: 'Pares', pt: 'Pares' } },
-        crew: { label: { en: 'Crew', es: 'Equipo', pt: 'Equipe' } },
+        connections: {
+          name: 'connections',
+          label: { en: 'Connections', es: 'Conexiones', pt: 'Conexões' },
+          entity: { en: 'Connection', es: 'Conexión', pt: 'Conexão' },
+          description: { en: 'Connection information', es: 'Información de conexión', pt: 'Informações de conexão' },
+          fields: {
+            peers: { label: { en: 'Peers', es: 'Pares', pt: 'Pares' } },
+            crew: { label: { en: 'Crew', es: 'Equipo', pt: 'Equipe' } },
+          }
+        },
         anecdotes: { label: { en: 'Anecdotes', es: 'Anécdotas', pt: 'Anedotas' } },
       },
     },
