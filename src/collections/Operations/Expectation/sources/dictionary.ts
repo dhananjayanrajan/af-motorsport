@@ -26,6 +26,8 @@ export const dictionary = {
       label: { en: 'Details', es: 'Detalles', pt: 'Detalhes' },
       description: { en: 'Expectation criteria and details.', es: 'Criterios y detalles de la expectativa.', pt: 'Critérios e detalhes da expectativa.' },
       fields: {
+        specifications: { label: { en: 'Specifications', es: 'Especificaciones', pt: 'Especificações' } },
+        protocols: { label: { en: 'Protocols', es: 'Protocolos', pt: 'Protocolos' } },
         criteria: { label: { en: 'Criteria', es: 'Criterios', pt: 'Critérios' } },
       },
     },
@@ -44,8 +46,6 @@ export const dictionary = {
       label: { en: 'Contexts', es: 'Contextos', pt: 'Contextos' },
       description: { en: 'Expectation specifications and protocols.', es: 'Especificaciones y protocolos de la expectativa.', pt: 'Especificações e protocolos da expectativa.' },
       fields: {
-        specifications: { label: { en: 'Specifications', es: 'Especificaciones', pt: 'Especificações' } },
-        protocols: { label: { en: 'Protocols', es: 'Protocolos', pt: 'Protocolos' } },
         notes: { label: { en: 'Notes', es: 'Notas', pt: 'Notas' } },
       },
     },

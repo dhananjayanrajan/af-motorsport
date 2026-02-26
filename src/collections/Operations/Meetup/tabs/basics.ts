@@ -7,17 +7,6 @@ import { relationshipFieldFactory } from '@/fields/factories/fields/relationship
 import { advanced } from '@/fields/factories/toggles/advanced'
 
 export const basicsFields: Field[] = [
-  {
-    type: 'row',
-    fields: [
-      textareaFieldFactory({
-        name: 'description',
-        dictionary: dictionary.tabs.basics.fields,
-        width: 1,
-        flags: ['localized'],
-      }),
-    ],
-  },
   advanced(
     {
       type: 'row',
@@ -26,7 +15,7 @@ export const basicsFields: Field[] = [
           name: 'date',
           dictionary: dictionary.tabs.basics.fields,
           width: 2,
-          flags: [],
+          flags: ['advanced'],
           pickerAppearance: 'dayAndTime',
         }),
         relationshipFieldFactory({
@@ -39,4 +28,12 @@ export const basicsFields: Field[] = [
       ],
     }
   ),
+  advanced(
+    textareaFieldFactory({
+      name: 'description',
+      dictionary: dictionary.tabs.basics.fields,
+      width: 1,
+      flags: ['localized', 'index', 'advanced'],
+    }),
+  )
 ]

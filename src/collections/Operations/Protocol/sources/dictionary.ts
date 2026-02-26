@@ -7,17 +7,6 @@ export const dictionary = {
       label: { en: 'Name', es: 'Nombre', pt: 'Nome' },
       placeholder: 'e.g. Engine Warm-up Protocol',
     },
-    identifier: {
-      name: 'identifier',
-      label: { en: 'Identifier', es: 'Identificador', pt: 'Identificador' },
-      entity: { en: 'Identifier', es: 'Identificador', pt: 'Identificador' },
-      description: { en: 'Protocol identification details.', es: 'Detalles de identificación del protocolo.', pt: 'Detalhes de identificação do protocolo.' },
-      fields: {
-        code: { label: { en: 'Code', es: 'Código', pt: 'Código' } },
-        version: { label: { en: 'Version', es: 'Versión', pt: 'Versão' } },
-        revision: { label: { en: 'Revision', es: 'Revisión', pt: 'Revisão' } },
-      },
-    },
     type: {
       label: { en: 'Type', es: 'Tipo', pt: 'Tipo' },
       placeholder: 'Select type',
@@ -29,6 +18,17 @@ export const dictionary = {
       label: { en: 'Basics', es: 'Básicos', pt: 'Básicos' },
       description: { en: 'Protocol basic objectives.', es: 'Objetivos básicos del protocolo.', pt: 'Objetivos básicos do protocolo.' },
       fields: {
+        identifier: {
+          name: 'identifier',
+          label: { en: 'Identifier', es: 'Identificador', pt: 'Identificador' },
+          entity: { en: 'Identifier', es: 'Identificador', pt: 'Identificador' },
+          description: { en: 'Protocol identification details.', es: 'Detalles de identificación del protocolo.', pt: 'Detalhes de identificação do protocolo.' },
+          fields: {
+            code: { label: { en: 'Code', es: 'Código', pt: 'Código' } },
+            version: { label: { en: 'Version', es: 'Versión', pt: 'Versão' } },
+            revision: { label: { en: 'Revision', es: 'Revisión', pt: 'Revisão' } },
+          },
+        },
         description: { label: { en: 'Description', es: 'Descripción', pt: 'Descrição' } },
         objective: { label: { en: 'Objective', es: 'Objetivo', pt: 'Objetivo' } },
       },

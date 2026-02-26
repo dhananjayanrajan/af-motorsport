@@ -26,17 +26,7 @@ export const dictionary = {
       label: { en: 'Details', es: 'Detalles', pt: 'Detalhes' },
       description: { en: 'Career narrative and organization.', es: 'Narrativa y organización de la carrera.', pt: 'Narrativa e organização da carreira.' },
       fields: {
-        narrative: { label: { en: 'Narrative', es: 'Narrativa', pt: 'Narrativa' } },
-        organization: { label: { en: 'Organization', es: 'Organización', pt: 'Organização' } },
-        expectations: { label: { en: 'Expectations', es: 'Expectativas', pt: 'Expectativas' } },
-        awards: { label: { en: 'Awards', es: 'Premios', pt: 'Prêmios' } },
-      },
-    },
-    traits: {
-      name: 'traits',
-      label: { en: 'Traits', es: 'Rasgos', pt: 'Traços' },
-      description: { en: 'Career positions and contract.', es: 'Posiciones y contrato de la carrera.', pt: 'Posições e contrato da carreira.' },
-      fields: {
+        contract: { label: { en: 'Contract', es: 'Contrato', pt: 'Contrato' } },
         positions: {
           name: 'positions',
           label: { en: 'Positions', es: 'Posiciones', pt: 'Posições' },
@@ -48,7 +38,24 @@ export const dictionary = {
             end: { label: { en: 'End Date', es: 'Fecha de fin', pt: 'Data de término' } },
           },
         },
-        contract: { label: { en: 'Contract', es: 'Contrato', pt: 'Contrato' } },
+        narrative: { label: { en: 'Narrative', es: 'Narrativa', pt: 'Narrativa' } },
+      },
+    },
+    traits: {
+      name: 'traits',
+      label: { en: 'Traits', es: 'Rasgos', pt: 'Traços' },
+      description: { en: 'Career positions and contract.', es: 'Posiciones y contrato de la carrera.', pt: 'Posições e contrato da carreira.' },
+      fields: {
+        outcomes: {
+          name: 'outcomes',
+          label: { en: 'Outcomes', es: 'Resultados', pt: 'Resultados' },
+          entity: { en: 'Outcome', es: 'Resultado', pt: 'Resultado' },
+          description: { en: 'Outcome information', es: 'Información de resultados', pt: 'Informações de resultados' },
+          fields: {
+            expectations: { label: { en: 'Expectations', es: 'Expectativas', pt: 'Expectativas' } },
+            awards: { label: { en: 'Awards', es: 'Premios', pt: 'Prêmios' } },
+          }
+        },
       },
     },
     contexts: {
@@ -56,7 +63,28 @@ export const dictionary = {
       label: { en: 'Contexts', es: 'Contextos', pt: 'Contextos' },
       description: { en: 'Career associations and stories.', es: 'Asociaciones e historias de la carrera.', pt: 'Associações e histórias da carreira.' },
       fields: {
-        entities: { label: { en: 'Entities', es: 'Entidades', pt: 'Entidades' } },
+        connections: {
+          name: 'connections',
+          label: { en: 'Connections', es: 'Conexiones', pt: 'Conexões' },
+          entity: { en: 'Connection', es: 'Conexión', pt: 'Conexão' },
+          description: { en: 'Connection information', es: 'Información de conexión', pt: 'Informações de conexão' },
+          fields: {
+            drivers: { label: { en: 'Drivers', es: 'Pilotos', pt: 'Pilotos' } },
+            members: { label: { en: 'Members', es: 'Miembros', pt: 'Membros' } },
+            leaders: { label: { en: 'Leaders', es: 'Líderes', pt: 'Líderes' } },
+            individuals: { label: { en: 'Individuals', es: 'Individuos', pt: 'Indivíduos' } },
+          }
+        },
+        associations: {
+          name: 'associations',
+          label: { en: 'Associations', es: 'Asociaciones', pt: 'Associações' },
+          entity: { en: 'Association', es: 'Asociación', pt: 'Associação' },
+          description: { en: 'Association information', es: 'Información de asociación', pt: 'Informações de associação' },
+          fields: {
+            organizations: { label: { en: 'Organizations', es: 'Organizaciones', pt: 'Organizações' } },
+            cars: { label: { en: 'Cars', es: 'Coches', pt: 'Carros' } },
+          }
+        },
         highlights: { label: { en: 'Highlights', es: 'Destacados', pt: 'Destaques' } },
         stories: { label: { en: 'Stories', es: 'Historias', pt: 'Histórias' } },
       },

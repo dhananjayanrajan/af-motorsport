@@ -1,60 +1,37 @@
 // FILE: src/collections/Operations/Careers/tabs/traits.ts
 import type { Field } from 'payload'
 import { dictionary } from '../sources/dictionary'
-import { textFieldFactory } from '@/fields/factories/fields/textField'
-import { dateFieldFactory } from '@/fields/factories/fields/dateField'
-import { selectFieldFactory } from '@/fields/factories/fields/selectField'
 import { advanced } from '@/fields/factories/toggles/advanced'
-import { CAREER_CONTRACT_TYPES } from '../sources/constants'
+import { groupFactory } from '@/fields/factories/blueprint'
+import { relationshipFieldFactory } from '@/fields/factories/fields/relationshipField'
 
 export const traitsFields: Field[] = [
   advanced(
-    {
-      name: 'positions',
-      type: 'array',
-      label: dictionary.tabs.traits.fields.positions.label,
-      admin: {
-        description: dictionary.tabs.traits.fields.positions.description,
-      },
-      fields: [
+    groupFactory(
+      dictionary.tabs.traits.fields.outcomes,
+      dictionary.host,
+      [
         {
           type: 'row',
           fields: [
-            textFieldFactory({
-              name: 'title',
-              dictionary: dictionary.tabs.traits.fields.positions.fields,
+            relationshipFieldFactory({
+              name: 'expectations',
+              relationTo: 'expectations',
+              dictionary: dictionary.tabs.traits.fields.outcomes.fields,
               width: 2,
-              flags: [],
+              flags: ['hasMany', 'advanced'],
             }),
-            dateFieldFactory({
-              name: 'start',
-              dictionary: dictionary.tabs.traits.fields.positions.fields,
+            relationshipFieldFactory({
+              name: 'awards',
+              relationTo: 'awards',
+              dictionary: dictionary.tabs.traits.fields.outcomes.fields,
               width: 2,
-              flags: [],
-              pickerAppearance: 'dayOnly',
-            }),
-            dateFieldFactory({
-              name: 'end',
-              dictionary: dictionary.tabs.traits.fields.positions.fields,
-              width: 1,
-              flags: [],
-              pickerAppearance: 'dayOnly',
+              flags: ['hasMany', 'advanced'],
             }),
           ],
         },
       ],
-    }
+      false
+    )
   ),
-  {
-    type: 'row',
-    fields: [
-      selectFieldFactory({
-        name: 'contract',
-        options: CAREER_CONTRACT_TYPES,
-        dictionary: dictionary.tabs.traits.fields,
-        width: 1,
-        flags: ['advanced'],
-      }),
-    ],
-  },
 ]

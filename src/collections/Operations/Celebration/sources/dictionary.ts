@@ -26,9 +26,9 @@ export const dictionary = {
       label: { en: 'Details', es: 'Detalles', pt: 'Detalhes' },
       description: { en: 'Celebration narrative and stories.', es: 'Narrativa e historias de la celebración.', pt: 'Narrativa e histórias da celebração.' },
       fields: {
+        prestige: { label: { en: 'Prestige', es: 'Prestigio', pt: 'Prestígio' } },
+        exclusivity: { label: { en: 'Exclusivity', es: 'Exclusividad', pt: 'Exclusividade' } },
         narrative: { label: { en: 'Narrative', es: 'Narrativa', pt: 'Narrativa' } },
-        expectations: { label: { en: 'Expectations', es: 'Expectativas', pt: 'Expectativas' } },
-        stories: { label: { en: 'Stories', es: 'Historias', pt: 'Histórias' } },
       },
     },
     traits: {
@@ -36,8 +36,16 @@ export const dictionary = {
       label: { en: 'Traits', es: 'Rasgos', pt: 'Traços' },
       description: { en: 'Celebration prestige and exclusivity.', es: 'Prestigio y exclusividad de la celebración.', pt: 'Prestígio e exclusividade da celebração.' },
       fields: {
-        prestige: { label: { en: 'Prestige', es: 'Prestigio', pt: 'Prestígio' } },
-        exclusivity: { label: { en: 'Exclusivity', es: 'Exclusividad', pt: 'Exclusividade' } },
+        outcomes: {
+          name: 'outcomes',
+          label: { en: 'Outcomes', es: 'Resultados', pt: 'Resultados' },
+          entity: { en: 'Outcome', es: 'Resultado', pt: 'Resultado' },
+          description: { en: 'Outcome information', es: 'Información de resultados', pt: 'Informações de resultados' },
+          fields: {
+            expectations: { label: { en: 'Expectations', es: 'Expectativas', pt: 'Expectativas' } },
+            stories: { label: { en: 'Stories', es: 'Historias', pt: 'Histórias' } },
+          },
+        },
       },
     },
     assets: {
@@ -55,7 +63,19 @@ export const dictionary = {
       label: { en: 'Contexts', es: 'Contextos', pt: 'Contextos' },
       description: { en: 'Celebration beneficiaries and notes.', es: 'Beneficiarios y notas de la celebración.', pt: 'Beneficiários e notas da celebração.' },
       fields: {
-        beneficiaries: { label: { en: 'Beneficiaries', es: 'Beneficiarios', pt: 'Beneficiários' } },
+        beneficiaries: {
+          name: 'beneficiaries',
+          label: { en: 'Beneficiaries', es: 'Beneficiarios', pt: 'Beneficiários' },
+          entity: { en: 'Beneficiary', es: 'Beneficiario', pt: 'Beneficiário' },
+          description: { en: 'Beneficiary information', es: 'Información de beneficiarios', pt: 'Informações de beneficiários' },
+          fields: {
+            drivers: { label: { en: 'Drivers', es: 'Pilotos', pt: 'Pilotos' } },
+            members: { label: { en: 'Members', es: 'Miembros', pt: 'Membros' } },
+            leaders: { label: { en: 'Leaders', es: 'Líderes', pt: 'Líderes' } },
+            individuals: { label: { en: 'Individuals', es: 'Individuos', pt: 'Indivíduos' } },
+            organizations: { label: { en: 'Organizations', es: 'Organizaciones', pt: 'Organizações' } },
+          },
+        },
         notes: { label: { en: 'Notes', es: 'Notas', pt: 'Notas' } },
       },
     },

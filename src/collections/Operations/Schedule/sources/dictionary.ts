@@ -85,8 +85,31 @@ export const dictionary = {
       label: { en: 'Contexts', es: 'Contextos', pt: 'Contextos' },
       description: { en: 'Schedule occurrences and entities.', es: 'Ocurrencias y entidades del horario.', pt: 'Ocorrências e entidades do cronograma.' },
       fields: {
-        occurrences: { label: { en: 'Occurrences', es: 'Ocurrencias', pt: 'Ocorrências' } },
-        entities: { label: { en: 'Entities', es: 'Entidades', pt: 'Entidades' } },
+        connections: {
+          name: 'connections',
+          label: { en: 'Connections', es: 'Conexiones', pt: 'Conexões' },
+          entity: { en: 'Connection', es: 'Conexión', pt: 'Conexão' },
+          description: { en: 'Schedule connections.', es: 'Conexiones del horario.', pt: 'Conexões do cronograma.' },
+          fields: {
+            leaders: { label: { en: 'Leaders', es: 'Lideres', pt: 'Líderes' } },
+            drivers: { label: { en: 'Drivers', es: 'Conductores', pt: 'Condutores' } },
+            members: { label: { en: 'Members', es: 'Miembros', pt: 'Membros' } },
+            individuals: { label: { en: 'Individuals', es: 'Individuos', pt: 'Indivíduos' } },
+            organizations: { label: { en: 'Organizations', es: 'Organizaciones', pt: 'Organizações' } },
+          }
+        },
+        occurrences: {
+          name: 'occurrences',
+          label: { en: 'Occurrences', es: 'Ocurrencias', pt: 'Ocorrências' },
+          entity: { en: 'Occurrence', es: 'Ocurrencia', pt: 'Ocorrência' },
+          description: { en: 'Schedule occurrences.', es: 'Ocurrencias del horario.', pt: 'Ocorrências do cronograma.' },
+          fields: {
+            trainings: { label: { en: 'Trainings', es: 'Entrenamientos', pt: 'Treinamentos' } },
+            meetups: { label: { en: 'Meetups', es: 'Reuniones', pt: 'Reuniões' } },
+            initiatives: { label: { en: 'Initiatives', es: 'Iniciativas', pt: 'Iniciativas' } },
+            celebrations: { label: { en: 'Celebrations', es: 'Celebraciones', pt: 'Celebrações' } },
+          }
+        },
       },
     },
   },

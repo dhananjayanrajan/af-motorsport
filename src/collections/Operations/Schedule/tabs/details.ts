@@ -7,6 +7,9 @@ import { textFieldFactory } from '@/fields/factories/fields/textField'
 import { groupFactory } from '@/fields/factories/blueprint'
 import { advanced } from '@/fields/factories/toggles/advanced'
 import { SCHEDULE_CHRONOLOGY_TYPE } from '../sources/constants'
+import { numberFieldFactory } from '@/fields/factories/fields/numberField'
+import { relationship } from 'payload/shared'
+import { relationshipFieldFactory } from '@/fields/factories/fields/relationshipField'
 
 export const detailsFields: Field[] = [
   advanced(
@@ -21,7 +24,7 @@ export const detailsFields: Field[] = [
               name: 'date',
               dictionary: dictionary.tabs.details.fields.chronology.fields,
               width: 2,
-              flags: [],
+              flags: ['advanced'],
               pickerAppearance: 'dayOnly',
             }),
             selectFieldFactory({
@@ -38,57 +41,52 @@ export const detailsFields: Field[] = [
     )
   ),
   advanced(
-    {
-      name: 'slots',
-      type: 'array',
-      label: dictionary.tabs.details.fields.slots.label,
-      admin: {
-        description: dictionary.tabs.details.fields.slots.description,
-      },
-      fields: [
+    groupFactory(
+      dictionary.tabs.details.fields.slots,
+      dictionary.host,
+      [
         {
           type: 'row',
           fields: [
             textFieldFactory({
               name: 'activity',
               dictionary: dictionary.tabs.details.fields.slots.fields,
-              width: 2,
-              flags: [],
+              width: 1,
+              flags: ['advanced'],
             }),
             dateFieldFactory({
               name: 'start',
               dictionary: dictionary.tabs.details.fields.slots.fields,
               width: 2,
-              flags: [],
+              flags: ['advanced'],
               pickerAppearance: 'dayAndTime',
             }),
             dateFieldFactory({
               name: 'end',
               dictionary: dictionary.tabs.details.fields.slots.fields,
               width: 2,
-              flags: [],
+              flags: ['advanced'],
               pickerAppearance: 'dayAndTime',
             }),
-          ],
-        },
-        {
-          type: 'row',
-          fields: [
-            textFieldFactory({
+            numberFieldFactory({
               name: 'duration',
               dictionary: dictionary.tabs.details.fields.slots.fields,
               width: 2,
-              flags: [],
+              step: 0.1,
+              min: 0.1,
+              flags: ['advanced'],
             }),
-            textFieldFactory({
+            relationshipFieldFactory({
               name: 'location',
+              relationTo: 'locations',
               dictionary: dictionary.tabs.details.fields.slots.fields,
               width: 2,
-              flags: [],
+              flags: ['advanced'],
             }),
           ],
-        },
+        }
       ],
-    }
+      true
+    )
   ),
 ]

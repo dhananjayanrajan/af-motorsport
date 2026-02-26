@@ -4279,11 +4279,11 @@ export interface Expectation {
   /**
    * Enter text value.
    */
-  name?: string | null;
+  name: string;
   /**
    * Select related document(s).
    */
-  type?: (number | null) | Category;
+  type?: (number | Category)[] | null;
   /**
    * Identifying info.
    */
@@ -4311,6 +4311,14 @@ export interface Expectation {
      * Toggle the Details section on or off.
      */
     enable?: boolean | null;
+    /**
+     * Select related document(s).
+     */
+    specifications?: (number | Specification)[] | null;
+    /**
+     * Select related document(s).
+     */
+    protocols?: (number | Protocol)[] | null;
     /**
      * Enter text value.
      */
@@ -4357,14 +4365,6 @@ export interface Expectation {
      * Toggle the Contexts section on or off.
      */
     enable?: boolean | null;
-    /**
-     * Select related document(s).
-     */
-    specifications?: (number | Specification)[] | null;
-    /**
-     * Select related document(s).
-     */
-    protocols?: (number | Protocol)[] | null;
     /**
      * Select related document(s).
      */
@@ -4418,28 +4418,11 @@ export interface Protocol {
   /**
    * Enter text value.
    */
-  name?: string | null;
+  name: string;
   /**
    * Select related document(s).
    */
-  type?: (number | null) | Category;
-  /**
-   * Protocol identification details.
-   */
-  identifier?: {
-    /**
-     * Enter text value.
-     */
-    code?: string | null;
-    /**
-     * Enter text value.
-     */
-    version?: string | null;
-    /**
-     * Enter text value.
-     */
-    revision?: string | null;
-  };
+  type?: (number | Category)[] | null;
   /**
    * Identifying info.
    */
@@ -4449,13 +4432,30 @@ export interface Protocol {
      */
     enable?: boolean | null;
     /**
-     * Enter text value.
+     * Protocol identification details.
      */
-    description?: string | null;
+    identifier?: {
+      /**
+       * Enter text value.
+       */
+      code?: string | null;
+      /**
+       * Enter text value.
+       */
+      version?: string | null;
+      /**
+       * Enter text value.
+       */
+      revision?: string | null;
+    };
     /**
      * Enter text value.
      */
     objective?: string | null;
+    /**
+     * Enter text value.
+     */
+    description?: string | null;
     visibility?: {
       /**
        * Toggle the Basics section on or off.
@@ -4478,23 +4478,39 @@ export interface Protocol {
     /**
      * Step-by-step instructions.
      */
-    steps?:
-      | {
-          /**
-           * Enter text value.
-           */
-          step?: string | null;
-          /**
-           * Enter text value.
-           */
-          instruction?: string | null;
-          /**
-           * Enter text value.
-           */
-          requirement?: string | null;
-          id?: string | null;
-        }[]
-      | null;
+    steps?: {
+      list?:
+        | {
+            /**
+             * Enter text value.
+             */
+            step?: string | null;
+            /**
+             * Enter text value.
+             */
+            instruction?: string | null;
+            /**
+             * Enter text value.
+             */
+            requirement?: string | null;
+            settings?: {
+              /**
+               * Toggle the Step entry on or off.
+               */
+              show?: boolean | null;
+              /**
+               * Toggle the Step entry on or off.
+               */
+              featured?: boolean | null;
+              /**
+               * Toggle the Step entry on or off.
+               */
+              pinned?: boolean | null;
+            };
+            id?: string | null;
+          }[]
+        | null;
+    };
     visibility?: {
       /**
        * Toggle the Details section on or off.
@@ -5853,11 +5869,11 @@ export interface Duty {
   /**
    * Enter text value.
    */
-  name?: string | null;
+  name: string;
   /**
    * Select related document(s).
    */
-  type?: (number | null) | Category;
+  type?: (number | Category)[] | null;
   /**
    * Identifying info.
    */
@@ -5886,22 +5902,13 @@ export interface Duty {
      */
     enable?: boolean | null;
     /**
-     * Detailed duties and authority.
+     * Select related document(s).
      */
-    obligation?: {
-      /**
-       * Enter text value.
-       */
-      tasks?: string | null;
-      /**
-       * Enter text value.
-       */
-      reporting?: string | null;
-      /**
-       * Enter text value.
-       */
-      authority?: string | null;
-    };
+    protocols?: (number | Protocol)[] | null;
+    /**
+     * Select related document(s).
+     */
+    expectations?: (number | Expectation)[] | null;
     visibility?: {
       /**
        * Toggle the Details section on or off.
@@ -5917,14 +5924,6 @@ export interface Duty {
      * Toggle the Contexts section on or off.
      */
     enable?: boolean | null;
-    /**
-     * Select related document(s).
-     */
-    protocols?: (number | Protocol)[] | null;
-    /**
-     * Select related document(s).
-     */
-    expectations?: (number | Expectation)[] | null;
     /**
      * Select related document(s).
      */
@@ -6219,11 +6218,11 @@ export interface Training {
   /**
    * Enter text value.
    */
-  name?: string | null;
+  name: string;
   /**
    * Select related document(s).
    */
-  type?: (number | null) | Category;
+  type?: (number | Category)[] | null;
   /**
    * Identifying info.
    */
@@ -6321,40 +6320,43 @@ export interface Training {
      */
     enable?: boolean | null;
     /**
-     * Select related document(s).
+     * Connection information
      */
-    entities?:
-      | (
-          | {
-              relationTo: 'drivers';
-              value: number | Driver;
-            }
-          | {
-              relationTo: 'members';
-              value: number | Member;
-            }
-          | {
-              relationTo: 'leaders';
-              value: number | Leader;
-            }
-          | {
-              relationTo: 'individuals';
-              value: number | Individual;
-            }
-          | {
-              relationTo: 'organizations';
-              value: number | Organization;
-            }
-        )[]
-      | null;
+    connections?: {
+      /**
+       * Select related document(s).
+       */
+      drivers?: (number | Driver)[] | null;
+      /**
+       * Select related document(s).
+       */
+      members?: (number | Member)[] | null;
+      /**
+       * Select related document(s).
+       */
+      leaders?: (number | Leader)[] | null;
+      /**
+       * Select related document(s).
+       */
+      individuals?: (number | Individual)[] | null;
+      /**
+       * Select related document(s).
+       */
+      organizations?: (number | Organization)[] | null;
+    };
     /**
-     * Select related document(s).
+     * Association information
      */
-    strategies?: (number | Strategy)[] | null;
-    /**
-     * Select related document(s).
-     */
-    skills?: (number | Skill)[] | null;
+    associations?: {
+      /**
+       * Select related document(s).
+       */
+      strategies?: (number | Strategy)[] | null;
+      /**
+       * Select related document(s).
+       */
+      skills?: (number | Skill)[] | null;
+    };
     /**
      * Select related document(s).
      */
@@ -9129,11 +9131,11 @@ export interface Schedule {
   /**
    * Enter text value.
    */
-  name?: string | null;
+  name: string;
   /**
    * Select related document(s).
    */
-  type?: (number | null) | Category;
+  type?: (number | Category)[] | null;
   /**
    * Identifying info.
    */
@@ -9142,10 +9144,6 @@ export interface Schedule {
      * Toggle the Basics section on or off.
      */
     enable?: boolean | null;
-    /**
-     * Enter text value.
-     */
-    agenda?: string | null;
     /**
      * Significance and scale of the schedule.
      */
@@ -9163,6 +9161,10 @@ export interface Schedule {
        */
       depth?: ('Overview' | 'Detailed' | 'Comprehensive') | null;
     };
+    /**
+     * Enter text value.
+     */
+    agenda?: string | null;
     visibility?: {
       /**
        * Toggle the Basics section on or off.
@@ -9194,31 +9196,47 @@ export interface Schedule {
     /**
      * Timeline of activities.
      */
-    slots?:
-      | {
-          /**
-           * Enter text value.
-           */
-          activity?: string | null;
-          /**
-           * Select a date and/or time.
-           */
-          start?: string | null;
-          /**
-           * Select a date and/or time.
-           */
-          end?: string | null;
-          /**
-           * Enter text value.
-           */
-          duration?: string | null;
-          /**
-           * Enter text value.
-           */
-          location?: string | null;
-          id?: string | null;
-        }[]
-      | null;
+    slots?: {
+      list?:
+        | {
+            /**
+             * Enter text value.
+             */
+            activity?: string | null;
+            /**
+             * Select a date and/or time.
+             */
+            start?: string | null;
+            /**
+             * Select a date and/or time.
+             */
+            end?: string | null;
+            /**
+             * Enter numeric value.
+             */
+            duration?: number | null;
+            /**
+             * Select related document(s).
+             */
+            location?: (number | null) | Location;
+            settings?: {
+              /**
+               * Toggle the Slot entry on or off.
+               */
+              show?: boolean | null;
+              /**
+               * Toggle the Slot entry on or off.
+               */
+              featured?: boolean | null;
+              /**
+               * Toggle the Slot entry on or off.
+               */
+              pinned?: boolean | null;
+            };
+            id?: string | null;
+          }[]
+        | null;
+    };
     visibility?: {
       /**
        * Toggle the Details section on or off.
@@ -9237,23 +9255,39 @@ export interface Schedule {
     /**
      * Factors limiting the schedule.
      */
-    constraints?:
-      | {
-          /**
-           * Enter text value.
-           */
-          constraint?: string | null;
-          /**
-           * Select one or more options.
-           */
-          type?: ('Time' | 'Resource' | 'Weather' | 'Regulation') | null;
-          /**
-           * Select one or more options.
-           */
-          impact?: ('Low' | 'Medium' | 'High' | 'Blocking') | null;
-          id?: string | null;
-        }[]
-      | null;
+    constraints?: {
+      list?:
+        | {
+            /**
+             * Enter text value.
+             */
+            constraint?: string | null;
+            /**
+             * Select one or more options.
+             */
+            type?: ('Time' | 'Resource' | 'Weather' | 'Regulation') | null;
+            /**
+             * Select one or more options.
+             */
+            impact?: ('Low' | 'Medium' | 'High' | 'Blocking') | null;
+            settings?: {
+              /**
+               * Toggle the Constraint entry on or off.
+               */
+              show?: boolean | null;
+              /**
+               * Toggle the Constraint entry on or off.
+               */
+              featured?: boolean | null;
+              /**
+               * Toggle the Constraint entry on or off.
+               */
+              pinned?: boolean | null;
+            };
+            id?: string | null;
+          }[]
+        | null;
+    };
     visibility?: {
       /**
        * Toggle the Traits section on or off.
@@ -9270,55 +9304,51 @@ export interface Schedule {
      */
     enable?: boolean | null;
     /**
-     * Select related document(s).
+     * Schedule connections.
      */
-    occurrences?:
-      | (
-          | {
-              relationTo: 'trainings';
-              value: number | Training;
-            }
-          | {
-              relationTo: 'meetups';
-              value: number | Meetup;
-            }
-          | {
-              relationTo: 'initiatives';
-              value: number | Initiative;
-            }
-          | {
-              relationTo: 'celebrations';
-              value: number | Celebration;
-            }
-        )[]
-      | null;
+    connections?: {
+      /**
+       * Select related document(s).
+       */
+      drivers?: (number | Driver)[] | null;
+      /**
+       * Select related document(s).
+       */
+      members?: (number | Member)[] | null;
+      /**
+       * Select related document(s).
+       */
+      leaders?: (number | Leader)[] | null;
+      /**
+       * Select related document(s).
+       */
+      individuals?: (number | Individual)[] | null;
+      /**
+       * Select related document(s).
+       */
+      organizations?: (number | Organization)[] | null;
+    };
     /**
-     * Select related document(s).
+     * Schedule occurrences.
      */
-    entities?:
-      | (
-          | {
-              relationTo: 'leaders';
-              value: number | Leader;
-            }
-          | {
-              relationTo: 'drivers';
-              value: number | Driver;
-            }
-          | {
-              relationTo: 'members';
-              value: number | Member;
-            }
-          | {
-              relationTo: 'individuals';
-              value: number | Individual;
-            }
-          | {
-              relationTo: 'organizations';
-              value: number | Organization;
-            }
-        )[]
-      | null;
+    occurrences?: {
+      /**
+       * Select related document(s).
+       */
+      trainings?: (number | Training)[] | null;
+      /**
+       * Select related document(s).
+       */
+      meetups?: (number | Meetup)[] | null;
+      /**
+       * Select related document(s).
+       */
+      initiatives?: (number | Initiative)[] | null;
+      /**
+       * Select related document(s).
+       */
+      celebrations?: (number | Celebration)[] | null;
+    };
     visibility?: {
       /**
        * Toggle the Contexts section on or off.
@@ -9368,11 +9398,11 @@ export interface Meetup {
   /**
    * Enter text value.
    */
-  name?: string | null;
+  name: string;
   /**
    * Select related document(s).
    */
-  type?: (number | null) | Category;
+  type?: (number | Category)[] | null;
   /**
    * Identifying info.
    */
@@ -9382,10 +9412,6 @@ export interface Meetup {
      */
     enable?: boolean | null;
     /**
-     * Enter text value.
-     */
-    description?: string | null;
-    /**
      * Select a date and/or time.
      */
     date?: string | null;
@@ -9393,6 +9419,10 @@ export interface Meetup {
      * Select related document(s).
      */
     location?: (number | null) | Location;
+    /**
+     * Enter text value.
+     */
+    description?: string | null;
     visibility?: {
       /**
        * Toggle the Basics section on or off.
@@ -9411,11 +9441,15 @@ export interface Meetup {
     /**
      * Select related document(s).
      */
-    narrative?: (number | null) | Narrative;
+    features?: (number | Feature)[] | null;
     /**
      * Select related document(s).
      */
-    features?: (number | Feature)[] | null;
+    schedules?: (number | Schedule)[] | null;
+    /**
+     * Select related document(s).
+     */
+    narrative?: (number | null) | Narrative;
     visibility?: {
       /**
        * Toggle the Details section on or off.
@@ -9432,10 +9466,6 @@ export interface Meetup {
      */
     enable?: boolean | null;
     /**
-     * Select related document(s).
-     */
-    specifications?: (number | Specification)[] | null;
-    /**
      * Select one or more options.
      */
     format?: ('InPerson' | 'Virtual' | 'Hybrid') | null;
@@ -9443,6 +9473,10 @@ export interface Meetup {
      * Select one or more options.
      */
     access?: ('Public' | 'InviteOnly' | 'Private' | 'Exclusive') | null;
+    /**
+     * Select related document(s).
+     */
+    specifications?: (number | Specification)[] | null;
     visibility?: {
       /**
        * Toggle the Traits section on or off.
@@ -9453,15 +9487,15 @@ export interface Meetup {
   /**
    * Media files.
    */
-  assets?: {
+  assets: {
     /**
      * Toggle the Assets section on or off.
      */
     enable?: boolean | null;
     /**
-     * Select related document(s).
+     * Select an uploaded file.
      */
-    primary?: (number | null) | Media;
+    primary: number | Media;
     /**
      * Select related document(s).
      */
@@ -9473,7 +9507,7 @@ export interface Meetup {
     /**
      * Select related document(s).
      */
-    materials?: (number | Archive)[] | null;
+    materials?: (number | null) | Archive;
     visibility?: {
       /**
        * Toggle the Assets section on or off.
@@ -9490,70 +9524,60 @@ export interface Meetup {
      */
     enable?: boolean | null;
     /**
-     * Select related document(s).
+     * Host information
      */
-    hosts?:
-      | (
-          | {
-              relationTo: 'organizations';
-              value: number | Organization;
-            }
-          | {
-              relationTo: 'leaders';
-              value: number | Leader;
-            }
-          | {
-              relationTo: 'individuals';
-              value: number | Individual;
-            }
-        )[]
-      | null;
+    hosts?: {
+      /**
+       * Select related document(s).
+       */
+      organizations?: (number | Organization)[] | null;
+      /**
+       * Select related document(s).
+       */
+      leaders?: (number | Leader)[] | null;
+      /**
+       * Select related document(s).
+       */
+      individuals?: (number | Individual)[] | null;
+    };
     /**
-     * Select related document(s).
+     * Attendee information
      */
-    attendees?:
-      | (
-          | {
-              relationTo: 'drivers';
-              value: number | Driver;
-            }
-          | {
-              relationTo: 'members';
-              value: number | Member;
-            }
-          | {
-              relationTo: 'leaders';
-              value: number | Leader;
-            }
-          | {
-              relationTo: 'individuals';
-              value: number | Individual;
-            }
-          | {
-              relationTo: 'organizations';
-              value: number | Organization;
-            }
-        )[]
-      | null;
+    attendees?: {
+      /**
+       * Select related document(s).
+       */
+      drivers?: (number | Driver)[] | null;
+      /**
+       * Select related document(s).
+       */
+      members?: (number | Member)[] | null;
+      /**
+       * Select related document(s).
+       */
+      leaders?: (number | Leader)[] | null;
+      /**
+       * Select related document(s).
+       */
+      individuals?: (number | Individual)[] | null;
+      /**
+       * Select related document(s).
+       */
+      organizations?: (number | Organization)[] | null;
+    };
     /**
-     * Select related document(s).
+     * Reference information
      */
-    schedules?: (number | Schedule)[] | null;
-    /**
-     * Select related document(s).
-     */
-    references?:
-      | (
-          | {
-              relationTo: 'initiatives';
-              value: number | Initiative;
-            }
-          | {
-              relationTo: 'celebrations';
-              value: number | Celebration;
-            }
-        )[]
-      | null;
+    references?: {
+      /**
+       * Select related document(s).
+       */
+      initiatives?: (number | Initiative)[] | null;
+      /**
+       * Select related document(s).
+       */
+      celebrations?: (number | Celebration)[] | null;
+    };
     /**
      * Select related document(s).
      */
@@ -9607,11 +9631,11 @@ export interface Initiative {
   /**
    * Enter text value.
    */
-  name?: string | null;
+  name: string;
   /**
    * Select related document(s).
    */
-  type?: (number | null) | Category;
+  type?: (number | Category)[] | null;
   /**
    * Identifying info.
    */
@@ -9623,11 +9647,11 @@ export interface Initiative {
     /**
      * Enter text value.
      */
-    description?: string | null;
+    mission?: string | null;
     /**
      * Enter text value.
      */
-    mission?: string | null;
+    description?: string | null;
     visibility?: {
       /**
        * Toggle the Basics section on or off.
@@ -9644,21 +9668,17 @@ export interface Initiative {
      */
     enable?: boolean | null;
     /**
+     * Select one or more options.
+     */
+    status?: ('Proposed' | 'Active' | 'Paused' | 'Completed' | 'Archived') | null;
+    /**
+     * Select related document(s).
+     */
+    classifications?: (number | null) | Classification;
+    /**
      * Select related document(s).
      */
     narrative?: (number | null) | Narrative;
-    /**
-     * Select related document(s).
-     */
-    strategies?: (number | Strategy)[] | null;
-    /**
-     * Select related document(s).
-     */
-    expectations?: (number | Expectation)[] | null;
-    /**
-     * Select related document(s).
-     */
-    insights?: (number | Note)[] | null;
     visibility?: {
       /**
        * Toggle the Details section on or off.
@@ -9675,9 +9695,22 @@ export interface Initiative {
      */
     enable?: boolean | null;
     /**
-     * Select one or more options.
+     * Select related document(s).
      */
-    status?: ('Proposed' | 'Active' | 'Paused' | 'Completed' | 'Archived') | null;
+    schedules?: (number | Schedule)[] | null;
+    /**
+     * Outcome information
+     */
+    outcomes?: {
+      /**
+       * Select related document(s).
+       */
+      strategies?: (number | Strategy)[] | null;
+      /**
+       * Select related document(s).
+       */
+      expectations?: (number | Expectation)[] | null;
+    };
     visibility?: {
       /**
        * Toggle the Traits section on or off.
@@ -9688,15 +9721,15 @@ export interface Initiative {
   /**
    * Media files.
    */
-  assets?: {
+  assets: {
     /**
      * Toggle the Assets section on or off.
      */
     enable?: boolean | null;
     /**
-     * Select related document(s).
+     * Select an uploaded file.
      */
-    primary?: (number | null) | Media;
+    primary: number | Media;
     /**
      * Select related document(s).
      */
@@ -9704,7 +9737,7 @@ export interface Initiative {
     /**
      * Select related document(s).
      */
-    document?: (number | Archive)[] | null;
+    documents?: (number | null) | Archive;
     visibility?: {
       /**
        * Toggle the Assets section on or off.
@@ -9721,51 +9754,43 @@ export interface Initiative {
      */
     enable?: boolean | null;
     /**
-     * Select related document(s).
+     * Connection information
      */
-    classifications?: (number | null) | Classification;
+    connections?: {
+      /**
+       * Select related document(s).
+       */
+      organizations?: (number | Organization)[] | null;
+      /**
+       * Select related document(s).
+       */
+      leaders?: (number | Leader)[] | null;
+      /**
+       * Select related document(s).
+       */
+      individuals?: (number | Individual)[] | null;
+    };
     /**
-     * Select related document(s).
+     * Reference information
      */
-    entities?:
-      | (
-          | {
-              relationTo: 'organizations';
-              value: number | Organization;
-            }
-          | {
-              relationTo: 'leaders';
-              value: number | Leader;
-            }
-          | {
-              relationTo: 'individuals';
-              value: number | Individual;
-            }
-        )[]
-      | null;
-    /**
-     * Select related document(s).
-     */
-    schedules?: (number | Schedule)[] | null;
-    /**
-     * Select related document(s).
-     */
-    references?:
-      | (
-          | {
-              relationTo: 'incidents';
-              value: number | Incident;
-            }
-          | {
-              relationTo: 'celebrations';
-              value: number | Celebration;
-            }
-        )[]
-      | null;
+    references?: {
+      /**
+       * Select related document(s).
+       */
+      incidents?: (number | Incident)[] | null;
+      /**
+       * Select related document(s).
+       */
+      celebrations?: (number | Celebration)[] | null;
+    };
     /**
      * Select related document(s).
      */
     histories?: (number | History)[] | null;
+    /**
+     * Select related document(s).
+     */
+    insights?: (number | Note)[] | null;
     visibility?: {
       /**
        * Toggle the Contexts section on or off.
@@ -9815,11 +9840,11 @@ export interface Celebration {
   /**
    * Enter text value.
    */
-  name?: string | null;
+  name: string;
   /**
    * Select related document(s).
    */
-  type?: (number | null) | Category;
+  type?: (number | Category)[] | null;
   /**
    * Identifying info.
    */
@@ -9848,17 +9873,17 @@ export interface Celebration {
      */
     enable?: boolean | null;
     /**
+     * Select one or more options.
+     */
+    prestige?: ('Intimate' | 'Notable' | 'Prestigious' | 'Iconic') | null;
+    /**
+     * Select one or more options.
+     */
+    exclusivity?: ('Public' | 'InviteOnly' | 'Private' | 'TeamOnly') | null;
+    /**
      * Select related document(s).
      */
     narrative?: (number | null) | Narrative;
-    /**
-     * Select related document(s).
-     */
-    expectations?: (number | Expectation)[] | null;
-    /**
-     * Select related document(s).
-     */
-    stories?: (number | Story)[] | null;
     visibility?: {
       /**
        * Toggle the Details section on or off.
@@ -9875,13 +9900,18 @@ export interface Celebration {
      */
     enable?: boolean | null;
     /**
-     * Select one or more options.
+     * Outcome information
      */
-    prestige?: ('Intimate' | 'Notable' | 'Prestigious' | 'Iconic') | null;
-    /**
-     * Select one or more options.
-     */
-    exclusivity?: ('Public' | 'InviteOnly' | 'Private' | 'TeamOnly') | null;
+    outcomes?: {
+      /**
+       * Select related document(s).
+       */
+      expectations?: (number | Expectation)[] | null;
+      /**
+       * Select related document(s).
+       */
+      stories?: (number | Story)[] | null;
+    };
     visibility?: {
       /**
        * Toggle the Traits section on or off.
@@ -9892,15 +9922,15 @@ export interface Celebration {
   /**
    * Media files.
    */
-  assets?: {
+  assets: {
     /**
      * Toggle the Assets section on or off.
      */
     enable?: boolean | null;
     /**
-     * Select related document(s).
+     * Select an uploaded file.
      */
-    primary?: (number | null) | Media;
+    primary: number | Media;
     /**
      * Select related document(s).
      */
@@ -9925,32 +9955,30 @@ export interface Celebration {
      */
     enable?: boolean | null;
     /**
-     * Select related document(s).
+     * Beneficiary information
      */
-    beneficiaries?:
-      | (
-          | {
-              relationTo: 'drivers';
-              value: number | Driver;
-            }
-          | {
-              relationTo: 'members';
-              value: number | Member;
-            }
-          | {
-              relationTo: 'leaders';
-              value: number | Leader;
-            }
-          | {
-              relationTo: 'organizations';
-              value: number | Organization;
-            }
-          | {
-              relationTo: 'individuals';
-              value: number | Individual;
-            }
-        )[]
-      | null;
+    beneficiaries?: {
+      /**
+       * Select related document(s).
+       */
+      drivers?: (number | Driver)[] | null;
+      /**
+       * Select related document(s).
+       */
+      members?: (number | Member)[] | null;
+      /**
+       * Select related document(s).
+       */
+      leaders?: (number | Leader)[] | null;
+      /**
+       * Select related document(s).
+       */
+      organizations?: (number | Organization)[] | null;
+      /**
+       * Select related document(s).
+       */
+      individuals?: (number | Individual)[] | null;
+    };
     /**
      * Select related document(s).
      */
@@ -10551,11 +10579,11 @@ export interface Career {
   /**
    * Enter text value.
    */
-  name?: string | null;
+  name: string;
   /**
    * Select related document(s).
    */
-  type?: (number | null) | Category;
+  type?: (number | Category)[] | null;
   /**
    * Identifying info.
    */
@@ -10584,21 +10612,49 @@ export interface Career {
      */
     enable?: boolean | null;
     /**
+     * Select one or more options.
+     */
+    contract?: ('FullTime' | 'PartTime' | 'Reserve' | 'Test' | 'Loan' | 'Guest') | null;
+    /**
+     * Historical positions held.
+     */
+    positions?: {
+      list?:
+        | {
+            /**
+             * Enter text value.
+             */
+            title?: string | null;
+            /**
+             * Select a date and/or time.
+             */
+            start?: string | null;
+            /**
+             * Select a date and/or time.
+             */
+            end?: string | null;
+            settings?: {
+              /**
+               * Toggle the Position entry on or off.
+               */
+              show?: boolean | null;
+              /**
+               * Toggle the Position entry on or off.
+               */
+              featured?: boolean | null;
+              /**
+               * Toggle the Position entry on or off.
+               */
+              pinned?: boolean | null;
+            };
+            id?: string | null;
+          }[]
+        | null;
+    };
+    /**
      * Select related document(s).
      */
     narrative?: (number | null) | Narrative;
-    /**
-     * Select related document(s).
-     */
-    organization?: (number | null) | Organization;
-    /**
-     * Select related document(s).
-     */
-    expectations?: (number | Expectation)[] | null;
-    /**
-     * Select related document(s).
-     */
-    awards?: (number | Award)[] | null;
     visibility?: {
       /**
        * Toggle the Details section on or off.
@@ -10615,29 +10671,18 @@ export interface Career {
      */
     enable?: boolean | null;
     /**
-     * Historical positions held.
+     * Outcome information
      */
-    positions?:
-      | {
-          /**
-           * Enter text value.
-           */
-          title?: string | null;
-          /**
-           * Select a date and/or time.
-           */
-          start?: string | null;
-          /**
-           * Select a date and/or time.
-           */
-          end?: string | null;
-          id?: string | null;
-        }[]
-      | null;
-    /**
-     * Select one or more options.
-     */
-    contract?: ('FullTime' | 'PartTime' | 'Reserve' | 'Test' | 'Loan' | 'Guest') | null;
+    outcomes?: {
+      /**
+       * Select related document(s).
+       */
+      expectations?: (number | Expectation)[] | null;
+      /**
+       * Select related document(s).
+       */
+      awards?: (number | Award)[] | null;
+    };
     visibility?: {
       /**
        * Toggle the Traits section on or off.
@@ -10654,32 +10699,39 @@ export interface Career {
      */
     enable?: boolean | null;
     /**
-     * Select related document(s).
+     * Connection information
      */
-    entities?:
-      | (
-          | {
-              relationTo: 'leaders';
-              value: number | Leader;
-            }
-          | {
-              relationTo: 'drivers';
-              value: number | Driver;
-            }
-          | {
-              relationTo: 'members';
-              value: number | Member;
-            }
-          | {
-              relationTo: 'individuals';
-              value: number | Individual;
-            }
-          | {
-              relationTo: 'cars';
-              value: number | Car;
-            }
-        )[]
-      | null;
+    connections?: {
+      /**
+       * Select related document(s).
+       */
+      drivers?: (number | Driver)[] | null;
+      /**
+       * Select related document(s).
+       */
+      members?: (number | Member)[] | null;
+      /**
+       * Select related document(s).
+       */
+      leaders?: (number | Leader)[] | null;
+      /**
+       * Select related document(s).
+       */
+      individuals?: (number | Individual)[] | null;
+    };
+    /**
+     * Association information
+     */
+    associations?: {
+      /**
+       * Select related document(s).
+       */
+      organizations?: (number | Organization)[] | null;
+      /**
+       * Select related document(s).
+       */
+      cars?: (number | Car)[] | null;
+    };
     /**
      * Select related document(s).
      */
@@ -15096,7 +15148,6 @@ export interface SchedulesSelect<T extends boolean = true> {
     | T
     | {
         enable?: T;
-        agenda?: T;
         scope?:
           | T
           | {
@@ -15104,6 +15155,7 @@ export interface SchedulesSelect<T extends boolean = true> {
               scale?: T;
               depth?: T;
             };
+        agenda?: T;
         visibility?:
           | T
           | {
@@ -15123,12 +15175,23 @@ export interface SchedulesSelect<T extends boolean = true> {
         slots?:
           | T
           | {
-              activity?: T;
-              start?: T;
-              end?: T;
-              duration?: T;
-              location?: T;
-              id?: T;
+              list?:
+                | T
+                | {
+                    activity?: T;
+                    start?: T;
+                    end?: T;
+                    duration?: T;
+                    location?: T;
+                    settings?:
+                      | T
+                      | {
+                          show?: T;
+                          featured?: T;
+                          pinned?: T;
+                        };
+                    id?: T;
+                  };
             };
         visibility?:
           | T
@@ -15143,10 +15206,21 @@ export interface SchedulesSelect<T extends boolean = true> {
         constraints?:
           | T
           | {
-              constraint?: T;
-              type?: T;
-              impact?: T;
-              id?: T;
+              list?:
+                | T
+                | {
+                    constraint?: T;
+                    type?: T;
+                    impact?: T;
+                    settings?:
+                      | T
+                      | {
+                          show?: T;
+                          featured?: T;
+                          pinned?: T;
+                        };
+                    id?: T;
+                  };
             };
         visibility?:
           | T
@@ -15158,8 +15232,23 @@ export interface SchedulesSelect<T extends boolean = true> {
     | T
     | {
         enable?: T;
-        occurrences?: T;
-        entities?: T;
+        connections?:
+          | T
+          | {
+              drivers?: T;
+              members?: T;
+              leaders?: T;
+              individuals?: T;
+              organizations?: T;
+            };
+        occurrences?:
+          | T
+          | {
+              trainings?: T;
+              meetups?: T;
+              initiatives?: T;
+              celebrations?: T;
+            };
         visibility?:
           | T
           | {
@@ -15246,9 +15335,21 @@ export interface TrainingsSelect<T extends boolean = true> {
     | T
     | {
         enable?: T;
-        entities?: T;
-        strategies?: T;
-        skills?: T;
+        connections?:
+          | T
+          | {
+              drivers?: T;
+              members?: T;
+              leaders?: T;
+              individuals?: T;
+              organizations?: T;
+            };
+        associations?:
+          | T
+          | {
+              strategies?: T;
+              skills?: T;
+            };
         stories?: T;
         visibility?:
           | T
@@ -15300,10 +15401,27 @@ export interface CareersSelect<T extends boolean = true> {
     | T
     | {
         enable?: T;
+        contract?: T;
+        positions?:
+          | T
+          | {
+              list?:
+                | T
+                | {
+                    title?: T;
+                    start?: T;
+                    end?: T;
+                    settings?:
+                      | T
+                      | {
+                          show?: T;
+                          featured?: T;
+                          pinned?: T;
+                        };
+                    id?: T;
+                  };
+            };
         narrative?: T;
-        organization?: T;
-        expectations?: T;
-        awards?: T;
         visibility?:
           | T
           | {
@@ -15314,15 +15432,12 @@ export interface CareersSelect<T extends boolean = true> {
     | T
     | {
         enable?: T;
-        positions?:
+        outcomes?:
           | T
           | {
-              title?: T;
-              start?: T;
-              end?: T;
-              id?: T;
+              expectations?: T;
+              awards?: T;
             };
-        contract?: T;
         visibility?:
           | T
           | {
@@ -15333,7 +15448,20 @@ export interface CareersSelect<T extends boolean = true> {
     | T
     | {
         enable?: T;
-        entities?: T;
+        connections?:
+          | T
+          | {
+              drivers?: T;
+              members?: T;
+              leaders?: T;
+              individuals?: T;
+            };
+        associations?:
+          | T
+          | {
+              organizations?: T;
+              cars?: T;
+            };
         highlights?: T;
         stories?: T;
         visibility?:
@@ -15375,8 +15503,8 @@ export interface InitiativesSelect<T extends boolean = true> {
     | T
     | {
         enable?: T;
-        description?: T;
         mission?: T;
+        description?: T;
         visibility?:
           | T
           | {
@@ -15387,10 +15515,9 @@ export interface InitiativesSelect<T extends boolean = true> {
     | T
     | {
         enable?: T;
+        status?: T;
+        classifications?: T;
         narrative?: T;
-        strategies?: T;
-        expectations?: T;
-        insights?: T;
         visibility?:
           | T
           | {
@@ -15401,7 +15528,13 @@ export interface InitiativesSelect<T extends boolean = true> {
     | T
     | {
         enable?: T;
-        status?: T;
+        schedules?: T;
+        outcomes?:
+          | T
+          | {
+              strategies?: T;
+              expectations?: T;
+            };
         visibility?:
           | T
           | {
@@ -15414,7 +15547,7 @@ export interface InitiativesSelect<T extends boolean = true> {
         enable?: T;
         primary?: T;
         gallery?: T;
-        document?: T;
+        documents?: T;
         visibility?:
           | T
           | {
@@ -15425,11 +15558,21 @@ export interface InitiativesSelect<T extends boolean = true> {
     | T
     | {
         enable?: T;
-        classifications?: T;
-        entities?: T;
-        schedules?: T;
-        references?: T;
+        connections?:
+          | T
+          | {
+              organizations?: T;
+              leaders?: T;
+              individuals?: T;
+            };
+        references?:
+          | T
+          | {
+              incidents?: T;
+              celebrations?: T;
+            };
         histories?: T;
+        insights?: T;
         visibility?:
           | T
           | {
@@ -15469,9 +15612,9 @@ export interface MeetupsSelect<T extends boolean = true> {
     | T
     | {
         enable?: T;
-        description?: T;
         date?: T;
         location?: T;
+        description?: T;
         visibility?:
           | T
           | {
@@ -15482,8 +15625,9 @@ export interface MeetupsSelect<T extends boolean = true> {
     | T
     | {
         enable?: T;
-        narrative?: T;
         features?: T;
+        schedules?: T;
+        narrative?: T;
         visibility?:
           | T
           | {
@@ -15494,9 +15638,9 @@ export interface MeetupsSelect<T extends boolean = true> {
     | T
     | {
         enable?: T;
-        specifications?: T;
         format?: T;
         access?: T;
+        specifications?: T;
         visibility?:
           | T
           | {
@@ -15521,10 +15665,28 @@ export interface MeetupsSelect<T extends boolean = true> {
     | T
     | {
         enable?: T;
-        hosts?: T;
-        attendees?: T;
-        schedules?: T;
-        references?: T;
+        hosts?:
+          | T
+          | {
+              organizations?: T;
+              leaders?: T;
+              individuals?: T;
+            };
+        attendees?:
+          | T
+          | {
+              drivers?: T;
+              members?: T;
+              leaders?: T;
+              individuals?: T;
+              organizations?: T;
+            };
+        references?:
+          | T
+          | {
+              initiatives?: T;
+              celebrations?: T;
+            };
         notes?: T;
         visibility?:
           | T
@@ -15576,9 +15738,9 @@ export interface CelebrationsSelect<T extends boolean = true> {
     | T
     | {
         enable?: T;
+        prestige?: T;
+        exclusivity?: T;
         narrative?: T;
-        expectations?: T;
-        stories?: T;
         visibility?:
           | T
           | {
@@ -15589,8 +15751,12 @@ export interface CelebrationsSelect<T extends boolean = true> {
     | T
     | {
         enable?: T;
-        prestige?: T;
-        exclusivity?: T;
+        outcomes?:
+          | T
+          | {
+              expectations?: T;
+              stories?: T;
+            };
         visibility?:
           | T
           | {
@@ -15614,7 +15780,15 @@ export interface CelebrationsSelect<T extends boolean = true> {
     | T
     | {
         enable?: T;
-        beneficiaries?: T;
+        beneficiaries?:
+          | T
+          | {
+              drivers?: T;
+              members?: T;
+              leaders?: T;
+              organizations?: T;
+              individuals?: T;
+            };
         notes?: T;
         visibility?:
           | T
@@ -15651,19 +15825,19 @@ export interface ProtocolsSelect<T extends boolean = true> {
   toggle?: T;
   name?: T;
   type?: T;
-  identifier?:
-    | T
-    | {
-        code?: T;
-        version?: T;
-        revision?: T;
-      };
   basics?:
     | T
     | {
         enable?: T;
-        description?: T;
+        identifier?:
+          | T
+          | {
+              code?: T;
+              version?: T;
+              revision?: T;
+            };
         objective?: T;
+        description?: T;
         visibility?:
           | T
           | {
@@ -15678,10 +15852,21 @@ export interface ProtocolsSelect<T extends boolean = true> {
         steps?:
           | T
           | {
-              step?: T;
-              instruction?: T;
-              requirement?: T;
-              id?: T;
+              list?:
+                | T
+                | {
+                    step?: T;
+                    instruction?: T;
+                    requirement?: T;
+                    settings?:
+                      | T
+                      | {
+                          show?: T;
+                          featured?: T;
+                          pinned?: T;
+                        };
+                    id?: T;
+                  };
             };
         visibility?:
           | T
@@ -15755,13 +15940,8 @@ export interface DutiesSelect<T extends boolean = true> {
     | T
     | {
         enable?: T;
-        obligation?:
-          | T
-          | {
-              tasks?: T;
-              reporting?: T;
-              authority?: T;
-            };
+        protocols?: T;
+        expectations?: T;
         visibility?:
           | T
           | {
@@ -15772,8 +15952,6 @@ export interface DutiesSelect<T extends boolean = true> {
     | T
     | {
         enable?: T;
-        protocols?: T;
-        expectations?: T;
         notes?: T;
         visibility?:
           | T
@@ -15825,6 +16003,8 @@ export interface ExpectationsSelect<T extends boolean = true> {
     | T
     | {
         enable?: T;
+        specifications?: T;
+        protocols?: T;
         criteria?: T;
         visibility?:
           | T
@@ -15849,8 +16029,6 @@ export interface ExpectationsSelect<T extends boolean = true> {
     | T
     | {
         enable?: T;
-        specifications?: T;
-        protocols?: T;
         notes?: T;
         visibility?:
           | T

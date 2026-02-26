@@ -3,51 +3,34 @@ import type { Field } from 'payload'
 import { dictionary } from '../sources/dictionary'
 import { relationshipFieldFactory } from '@/fields/factories/fields/relationshipField'
 import { advanced } from '@/fields/factories/toggles/advanced'
+import { selectFieldFactory } from '@/fields/factories/fields/selectField'
+import { INITIATIVE_STATUS } from '../sources/constants'
 
 export const detailsFields: Field[] = [
-  {
-    type: 'row',
-    fields: [
-      relationshipFieldFactory({
-        name: 'narrative',
-        relationTo: 'narratives',
-        dictionary: dictionary.tabs.details.fields,
-        width: 1,
-        flags: [],
-      }),
-    ],
-  },
   advanced(
     {
       type: 'row',
       fields: [
-        relationshipFieldFactory({
-          name: 'strategies',
-          relationTo: 'strategies',
+        selectFieldFactory({
+          name: 'status',
+          options: INITIATIVE_STATUS,
           dictionary: dictionary.tabs.details.fields,
           width: 1,
-          flags: ['hasMany', 'advanced'],
-        }),
-      ],
-    }
-  ),
-  advanced(
-    {
-      type: 'row',
-      fields: [
-        relationshipFieldFactory({
-          name: 'expectations',
-          relationTo: 'expectations',
-          dictionary: dictionary.tabs.details.fields,
-          width: 2,
-          flags: ['hasMany', 'advanced'],
+          flags: ['advanced'],
         }),
         relationshipFieldFactory({
-          name: 'insights',
-          relationTo: 'notes',
+          name: 'classifications',
+          relationTo: 'classifications',
           dictionary: dictionary.tabs.details.fields,
-          width: 2,
-          flags: ['hasMany', 'advanced'],
+          width: 1,
+          flags: ['advanced'],
+        }),
+        relationshipFieldFactory({
+          name: 'narrative',
+          relationTo: 'narratives',
+          dictionary: dictionary.tabs.details.fields,
+          width: 1,
+          flags: ['advanced'],
         }),
       ],
     }

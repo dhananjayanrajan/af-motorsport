@@ -53,9 +53,29 @@ export const dictionary = {
       label: { en: 'Contexts', es: 'Contextos', pt: 'Contextos' },
       description: { en: 'Training strategies and skills.', es: 'Estrategias y habilidades del entrenamiento.', pt: 'Estratégias e habilidades do treinamento.' },
       fields: {
-        entities: { label: { en: 'Entities', es: 'Entidades', pt: 'Entidades' } },
-        strategies: { label: { en: 'Strategies', es: 'Estrategias', pt: 'Estratégias' } },
-        skills: { label: { en: 'Skills', es: 'Habilidades', pt: 'Habilidades' } },
+        connections: {
+          name: 'connections',
+          label: { en: 'Connections', es: 'Conexiones', pt: 'Conexões' },
+          entity: { en: 'Connection', es: 'Conexión', pt: 'Conexão' },
+          description: { en: 'Connection information', es: 'Información de conexiones', pt: 'Informações de conexões' },
+          fields: {
+            drivers: { label: { en: 'Drivers', es: 'Pilotos', pt: 'Pilotos' } },
+            members: { label: { en: 'Members', es: 'Miembros', pt: 'Membros' } },
+            leaders: { label: { en: 'Leaders', es: 'Líderes', pt: 'Líderes' } },
+            individuals: { label: { en: 'Individuals', es: 'Individuos', pt: 'Indivíduos' } },
+            organizations: { label: { en: 'Organizations', es: 'Organizaciones', pt: 'Organizações' } }
+          },
+        },
+        associations: {
+          name: 'associations',
+          label: { en: 'Associations', es: 'Asociaciones', pt: 'Associações' },
+          entity: { en: 'Association', es: 'Asociación', pt: 'Associação' },
+          description: { en: 'Association information', es: 'Información de asociaciones', pt: 'Informações de associações' },
+          fields: {
+            strategies: { label: { en: 'Strategies', es: 'Estrategias', pt: 'Estratégias' } },
+            skills: { label: { en: 'Skills', es: 'Habilidades', pt: 'Habilidades' } },
+          },
+        },
         stories: { label: { en: 'Stories', es: 'Historias', pt: 'Histórias' } },
       },
     },

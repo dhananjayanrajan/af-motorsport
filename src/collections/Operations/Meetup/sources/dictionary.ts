@@ -30,6 +30,7 @@ export const dictionary = {
       fields: {
         narrative: { label: { en: 'Narrative', es: 'Narrativa', pt: 'Narrativa' } },
         features: { label: { en: 'Features', es: 'Características', pt: 'Características' } },
+        schedules: { label: { en: 'Schedules', es: 'Horarios', pt: 'Cronogramas' } },
       },
     },
     traits: {
@@ -58,10 +59,40 @@ export const dictionary = {
       label: { en: 'Contexts', es: 'Contextos', pt: 'Contextos' },
       description: { en: 'Meetup hosts and attendees.', es: 'Anfitriones y asistentes del encuentro.', pt: 'Anfitriões e participantes do meetup.' },
       fields: {
-        hosts: { label: { en: 'Hosts', es: 'Anfitriones', pt: 'Anfitriões' } },
-        attendees: { label: { en: 'Attendees', es: 'Asistentes', pt: 'Participantes' } },
-        schedules: { label: { en: 'Schedules', es: 'Horarios', pt: 'Cronogramas' } },
-        references: { label: { en: 'References', es: 'Referencias', pt: 'Referências' } },
+        hosts: {
+          name: 'hosts',
+          label: { en: 'Hosts', es: 'Anfitriones', pt: 'Anfitriões' },
+          entity: { en: 'Host', es: 'Anfitrión', pt: 'Anfitrião' },
+          description: { en: 'Host information', es: 'Información de anfitrión', pt: 'Informações de anfitrião' },
+          fields: {
+            organizations: { label: { en: 'Organizations', es: 'Organizaciones', pt: 'Organizações' } },
+            leaders: { label: { en: 'Leaders', es: 'Líderes', pt: 'Líderes' } },
+            individuals: { label: { en: 'Individuals', es: 'Individuos', pt: 'Indivíduos' } },
+          }
+        },
+        attendees: {
+          name: 'attendees',
+          label: { en: 'Attendees', es: 'Asistentes', pt: 'Participantes' },
+          entity: { en: 'Attendee', es: 'Asistente', pt: 'Participante' },
+          description: { en: 'Attendee information', es: 'Información de asistente', pt: 'Informações de participante' },
+          fields: {
+            drivers: { label: { en: 'Drivers', es: 'Pilotos', pt: 'Pilotos' } },
+            members: { label: { en: 'Members', es: 'Miembros', pt: 'Membros' } },
+            leaders: { label: { en: 'Leaders', es: 'Líderes', pt: 'Líderes' } },
+            individuals: { label: { en: 'Individuals', es: 'Individuos', pt: 'Indivíduos' } },
+            organizations: { label: { en: 'Organizations', es: 'Organizaciones', pt: 'Organizações' } },
+          }
+        },
+        references: {
+          name: 'references',
+          label: { en: 'References', es: 'Referencias', pt: 'Referências' },
+          entity: { en: 'Reference', es: 'Referencia', pt: 'Referência' },
+          description: { en: 'Reference information', es: 'Información de referencia', pt: 'Informações de referência' },
+          fields: {
+            initiatives: { label: { en: 'Initiatives', es: 'Iniciativas', pt: 'Iniciativas' } },
+            celebrations: { label: { en: 'Celebrations', es: 'Celebraciones', pt: 'Celebrações' } },
+          }
+        },
         notes: { label: { en: 'Notes', es: 'Notas', pt: 'Notas' } },
       },
     },

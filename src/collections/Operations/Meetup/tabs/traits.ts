@@ -11,6 +11,20 @@ export const traitsFields: Field[] = [
     {
       type: 'row',
       fields: [
+        selectFieldFactory({
+          name: 'format',
+          options: MEETUP_FORMAT,
+          dictionary: dictionary.tabs.traits.fields,
+          width: 2,
+          flags: ['advanced'],
+        }),
+        selectFieldFactory({
+          name: 'access',
+          options: MEETUP_ACCESS,
+          dictionary: dictionary.tabs.traits.fields,
+          width: 2,
+          flags: ['advanced'],
+        }),
         relationshipFieldFactory({
           name: 'specifications',
           relationTo: 'specifications',
@@ -21,23 +35,4 @@ export const traitsFields: Field[] = [
       ],
     }
   ),
-  {
-    type: 'row',
-    fields: [
-      selectFieldFactory({
-        name: 'format',
-        options: MEETUP_FORMAT,
-        dictionary: dictionary.tabs.traits.fields,
-        width: 2,
-        flags: [],
-      }),
-      selectFieldFactory({
-        name: 'access',
-        options: MEETUP_ACCESS,
-        dictionary: dictionary.tabs.traits.fields,
-        width: 2,
-        flags: [],
-      }),
-    ],
-  },
 ]

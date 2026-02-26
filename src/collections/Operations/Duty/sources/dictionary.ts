@@ -26,6 +26,15 @@ export const dictionary = {
       label: { en: 'Details', es: 'Detalles', pt: 'Detalhes' },
       description: { en: 'Duty obligations and tasks.', es: 'Obligaciones y tareas del deber.', pt: 'Obrigações e tarefas do dever.' },
       fields: {
+        protocols: { label: { en: 'Protocols', es: 'Protocolos', pt: 'Protocolos' } },
+        expectations: { label: { en: 'Expectations', es: 'Expectativas', pt: 'Expectativas' } },
+      },
+    },
+    traits: {
+      name: 'traits',
+      label: { en: 'Traits', es: 'Rasgos', pt: 'Traços' },
+      description: { en: 'Duty traits.', es: 'Rasgos del deber.', pt: 'Traços do dever.' },
+      fields: {
         obligation: {
           name: 'obligation',
           label: { en: 'Obligation', es: 'Obligación', pt: 'Obrigação' },
@@ -44,8 +53,6 @@ export const dictionary = {
       label: { en: 'Contexts', es: 'Contextos', pt: 'Contextos' },
       description: { en: 'Duty protocols and expectations.', es: 'Protocolos y expectativas del deber.', pt: 'Protocolos e expectativas do dever.' },
       fields: {
-        protocols: { label: { en: 'Protocols', es: 'Protocolos', pt: 'Protocolos' } },
-        expectations: { label: { en: 'Expectations', es: 'Expectativas', pt: 'Expectativas' } },
         notes: { label: { en: 'Notes', es: 'Notas', pt: 'Notas' } },
       },
     },

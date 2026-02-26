@@ -8,48 +8,48 @@ import { traitsFields } from './tabs/traits'
 import { assetsFields } from './tabs/assets'
 import { contextsFields } from './tabs/contexts'
 export const Trainings = collectionFactory(
-{
-slug: 'trainings',
-labels: { singular: dictionary.host, plural: dictionary.hostPlural },
-access: {
-read: ({ req: { user } }) => {
-if (!user || !('roles' in user) || !user.roles) return false
-return user.roles.some((role) =>
-['admin', 'hr'].includes(role)
-)
-},
-create: ({ req: { user } }) => {
-if (!user || !('roles' in user) || !user.roles) return false
-return user.roles.some((role) =>
-['admin', 'hr'].includes(role)
-)
-},
-update: ({ req: { user } }) => {
-if (!user || !('roles' in user) || !user.roles) return false
-return user.roles.some((role) =>
-['admin', 'hr'].includes(role)
-)
-},
-delete: ({ req: { user } }) => {
-if (!user || !('roles' in user) || !user.roles) return false
-return user.roles.some((role) =>
-['admin', 'hr'].includes(role)
-)
-},
-},
-admin: {
-group: 'Operations',
-useAsTitle: 'name',
-defaultColumns: ['name', 'type', 'updatedAt'],
-},
-},
-essentialFields,
-[
-tabFactory('basics', dictionary.host, basicsFields),
-tabFactory('details', dictionary.host, detailsFields),
-tabFactory('traits', dictionary.host, traitsFields),
-tabFactory('assets', dictionary.host, assetsFields),
-tabFactory('contexts', dictionary.host, contextsFields),
-],
-{ host: dictionary.host, hostPlural: dictionary.hostPlural }
+  {
+    slug: 'trainings',
+    labels: { singular: dictionary.host, plural: dictionary.hostPlural },
+    access: {
+      read: ({ req: { user } }) => {
+        if (!user || !('roles' in user) || !user.roles) return false
+        return user.roles.some((role) =>
+          ['admin', 'hr'].includes(role)
+        )
+      },
+      create: ({ req: { user } }) => {
+        if (!user || !('roles' in user) || !user.roles) return false
+        return user.roles.some((role) =>
+          ['admin', 'hr'].includes(role)
+        )
+      },
+      update: ({ req: { user } }) => {
+        if (!user || !('roles' in user) || !user.roles) return false
+        return user.roles.some((role) =>
+          ['admin', 'hr'].includes(role)
+        )
+      },
+      delete: ({ req: { user } }) => {
+        if (!user || !('roles' in user) || !user.roles) return false
+        return user.roles.some((role) =>
+          ['admin', 'hr'].includes(role)
+        )
+      },
+    },
+    admin: {
+      group: 'Operations',
+      useAsTitle: 'name',
+      defaultColumns: ['name', 'type', 'updatedAt'],
+    },
+  },
+  essentialFields,
+  [
+    tabFactory('basics', dictionary.host, basicsFields),
+    tabFactory('details', dictionary.host, detailsFields),
+    tabFactory('traits', dictionary.host, traitsFields),
+    tabFactory('assets', dictionary.host, assetsFields),
+    tabFactory('contexts', dictionary.host, contextsFields),
+  ],
+  { host: dictionary.host, hostPlural: dictionary.hostPlural }
 )

@@ -1,30 +1,37 @@
 // FILE: src/collections/Operations/Celebrations/tabs/traits.ts
 import type { Field } from 'payload'
 import { dictionary } from '../sources/dictionary'
-import { selectFieldFactory } from '@/fields/factories/fields/selectField'
 import { advanced } from '@/fields/factories/toggles/advanced'
-import { CELEBRATION_PRESTIGE, CELEBRATION_EXCLUSIVITY } from '../sources/constants'
+import { relationshipFieldFactory } from '@/fields/factories/fields/relationshipField'
+import { groupFactory } from '@/fields/factories/blueprint'
 
 export const traitsFields: Field[] = [
   advanced(
-    {
-      type: 'row',
-      fields: [
-        selectFieldFactory({
-          name: 'prestige',
-          options: CELEBRATION_PRESTIGE,
-          dictionary: dictionary.tabs.traits.fields,
-          width: 2,
-          flags: ['advanced'],
-        }),
-        selectFieldFactory({
-          name: 'exclusivity',
-          options: CELEBRATION_EXCLUSIVITY,
-          dictionary: dictionary.tabs.traits.fields,
-          width: 2,
-          flags: ['advanced'],
-        }),
+    groupFactory(
+      dictionary.tabs.traits.fields.outcomes,
+      dictionary.host,
+      [
+        {
+          type: 'row',
+          fields: [
+            relationshipFieldFactory({
+              name: 'expectations',
+              relationTo: 'expectations',
+              dictionary: dictionary.tabs.traits.fields.outcomes.fields,
+              width: 2,
+              flags: ['hasMany'],
+            }),
+            relationshipFieldFactory({
+              name: 'stories',
+              relationTo: 'stories',
+              dictionary: dictionary.tabs.traits.fields.outcomes.fields,
+              width: 2,
+              flags: ['hasMany'],
+            }),
+          ],
+        }
       ],
-    }
+      false
+    )
   ),
 ]
