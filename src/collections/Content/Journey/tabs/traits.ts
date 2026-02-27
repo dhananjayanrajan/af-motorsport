@@ -49,23 +49,32 @@ export const traitsFields: Field[] = [
       true
     )
   ),
-  {
-    type: 'row',
-    fields: [
-      relationshipFieldFactory({
-        name: 'decisions',
-        relationTo: 'decisions',
-        dictionary: dictionary.tabs.traits.fields,
-        width: 2,
-        flags: ['hasMany', 'advanced'],
-      }),
-      relationshipFieldFactory({
-        name: 'impacts',
-        relationTo: 'impacts',
-        dictionary: dictionary.tabs.traits.fields,
-        width: 2,
-        flags: ['hasMany', 'advanced'],
-      }),
-    ],
-  },
+  advanced(
+    groupFactory(
+      dictionary.tabs.traits.fields.outcomes,
+      dictionary.host,
+      [
+        {
+          type: 'row',
+          fields: [
+            relationshipFieldFactory({
+              name: 'decisions',
+              relationTo: 'decisions',
+              dictionary: dictionary.tabs.traits.fields.outcomes.fields,
+              width: 2,
+              flags: ['hasMany', 'advanced'],
+            }),
+            relationshipFieldFactory({
+              name: 'impacts',
+              relationTo: 'impacts',
+              dictionary: dictionary.tabs.traits.fields.outcomes.fields,
+              width: 2,
+              flags: ['hasMany', 'advanced'],
+            }),
+          ],
+        },
+      ],
+      false
+    )
+  ),
 ]

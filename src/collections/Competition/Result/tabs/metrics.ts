@@ -5,8 +5,39 @@ import { groupFactory } from '@/fields/factories/blueprint'
 import { numberFieldFactory } from '@/fields/factories/fields/numberField'
 import { textFieldFactory } from '@/fields/factories/fields/textField'
 import { advanced } from '@/fields/factories/toggles/advanced'
+import { relationshipFieldFactory } from '@/fields/factories/fields/relationshipField'
 
 export const metricsFields: Field[] = [
+  groupFactory(
+    dictionary.tabs.metrics.fields.position,
+    dictionary.host,
+    [
+      {
+        type: 'row',
+        fields: [
+          numberFieldFactory({
+            name: 'overall',
+            dictionary: dictionary.tabs.metrics.fields.position.fields,
+            width: 3,
+            flags: ['advanced'],
+          }),
+          numberFieldFactory({
+            name: 'class',
+            dictionary: dictionary.tabs.metrics.fields.position.fields,
+            width: 3,
+            flags: ['advanced'],
+          }),
+          numberFieldFactory({
+            name: 'order',
+            dictionary: dictionary.tabs.metrics.fields.position.fields,
+            width: 3,
+            flags: ['advanced'],
+          }),
+        ],
+      },
+    ],
+    false
+  ),
   advanced(
     groupFactory(
       dictionary.tabs.metrics.fields.performance,
@@ -19,30 +50,25 @@ export const metricsFields: Field[] = [
               name: 'laps',
               dictionary: dictionary.tabs.metrics.fields.performance.fields,
               width: 2,
-              flags: [],
+              flags: ['advanced'],
             }),
             textFieldFactory({
               name: 'time',
               dictionary: dictionary.tabs.metrics.fields.performance.fields,
               width: 2,
-              flags: [],
+              flags: ['advanced'],
             }),
-          ],
-        },
-        {
-          type: 'row',
-          fields: [
             textFieldFactory({
               name: 'speed',
               dictionary: dictionary.tabs.metrics.fields.performance.fields,
               width: 2,
-              flags: [],
+              flags: ['advanced'],
             }),
             textFieldFactory({
               name: 'distance',
               dictionary: dictionary.tabs.metrics.fields.performance.fields,
               width: 2,
-              flags: [],
+              flags: ['advanced'],
             }),
           ],
         },
@@ -65,13 +91,13 @@ export const metricsFields: Field[] = [
             textFieldFactory({
               name: 'reason',
               dictionary: dictionary.tabs.metrics.fields.stoppages.fields,
-              width: 4,
+              width: 1,
               flags: ['advanced'],
             }),
-            textFieldFactory({
+            numberFieldFactory({
               name: 'duration',
               dictionary: dictionary.tabs.metrics.fields.stoppages.fields,
-              width: 4,
+              width: 2,
               flags: ['advanced'],
             }),
             numberFieldFactory({

@@ -14,14 +14,6 @@ import {
 
 export const basicsFields: Field[] = [
   advanced(
-    textareaFieldFactory({
-      name: 'description',
-      dictionary: dictionary.tabs.basics.fields,
-      width: 1,
-      flags: ['localized', 'index', 'advanced'],
-    }),
-  ),
-  advanced(
     groupFactory(
       dictionary.tabs.basics.fields.scope,
       dictionary.host,
@@ -61,5 +53,13 @@ export const basicsFields: Field[] = [
       ],
       false
     )
+  ),
+  advanced(
+    textareaFieldFactory({
+      name: 'description',
+      dictionary: dictionary.tabs.basics.fields,
+      width: 1,
+      flags: ['localized', 'index', 'advanced'],
+    }),
   ),
 ]

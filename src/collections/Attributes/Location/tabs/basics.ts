@@ -12,7 +12,7 @@ export const basicsFields: Field[] = [
       textFieldFactory({
         name: 'label',
         dictionary: dictionary.essential,
-        width: 1,
+        width: 2,
         flags: ['localized', 'index'],
       }),
       textFieldFactory({

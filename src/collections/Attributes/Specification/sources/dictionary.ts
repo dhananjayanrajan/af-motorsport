@@ -58,7 +58,15 @@ export const dictionary = {
           label: { en: 'Definition', es: 'Definición', pt: 'Definição' },
           placeholder: 'Enter definition',
           description: { en: 'Spec definition.', es: 'Definición de especificación.', pt: 'Definição da especificação.' }
-        },
+        }
+      }
+    },
+    traits: {
+      name: 'traits',
+      label: { en: 'Traits', es: 'Rasgos', pt: 'Traços' },
+      entity: { en: 'Specification', es: 'Especificación', pt: 'Especificação' },
+      description: { en: 'Specification characteristics.', es: 'Características de la especificación.', pt: 'Características da especificação.' },
+      fields: {
         conditions: {
           name: 'conditions',
           label: { en: 'Conditions', es: 'Condiciones', pt: 'Condições' },

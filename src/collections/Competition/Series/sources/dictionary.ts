@@ -25,11 +25,6 @@ export const dictionary = {
       label: { en: 'Basics', es: 'Básicos', pt: 'Básicos' },
       description: { en: 'Basic info.', es: 'Info básica.', pt: 'Info básica.' },
       fields: {
-        description: {
-          label: { en: 'Description', es: 'Descripción', pt: 'Descrição' },
-          placeholder: 'Brief description',
-          description: { en: 'Short description.', es: 'Descripción corta.', pt: 'Descrição curta.' },
-        },
         identifiers: {
           name: 'identifiers',
           label: { en: 'Identifiers', es: 'Identificadores', pt: 'Identificadores' },
@@ -50,9 +45,10 @@ export const dictionary = {
           label: { en: 'Tagline', es: 'Eslogan', pt: 'Slogan' },
           placeholder: 'Enter tagline',
         },
-        status: {
-          label: { en: 'Status', es: 'Estado', pt: 'Status' },
-          description: { en: 'Series status.', es: 'Estado de la serie.', pt: 'Status da série.' },
+        description: {
+          label: { en: 'Description', es: 'Descripción', pt: 'Descrição' },
+          placeholder: 'Brief description',
+          description: { en: 'Short description.', es: 'Descripción corta.', pt: 'Descrição curta.' },
         },
       },
     },
@@ -61,21 +57,37 @@ export const dictionary = {
       label: { en: 'Details', es: 'Detalles', pt: 'Detalhes' },
       description: { en: 'Series details.', es: 'Detalles de la serie.', pt: 'Detalhes da série.' },
       fields: {
-        narrative: {
-          label: { en: 'Narrative', es: 'Narrativa', pt: 'Narrativa' },
+        status: {
+          label: { en: 'Status', es: 'Estado', pt: 'Status' },
+          description: { en: 'Series status.', es: 'Estado de la serie.', pt: 'Status da série.' },
         },
-        history: {
-          label: { en: 'History', es: 'Historia', pt: 'História' },
+        attributes: {
+          name: 'attributes',
+          label: { en: 'Attributes', es: 'Atributos', pt: 'Atributos' },
+          entity: { en: 'Attribute', es: 'Atributo', pt: 'Atributo' },
+          description: { en: 'Series attributes.', es: 'Atributos de la serie.', pt: 'Atributos da série.' },
+          fields: {
+            classification: {
+              label: { en: 'Classification', es: 'Clasificación', pt: 'Classificação' },
+            },
+            features: {
+              label: { en: 'Features', es: 'Características', pt: 'Características' },
+            },
+          },
         },
-        organization: {
-          label: { en: 'Organization', es: 'Organización', pt: 'Organização' },
-          description: { en: 'Governing bodies.', es: 'Cuerpos de gobierno.', pt: 'Órgãos governamentais.' },
-        },
-        classification: {
-          label: { en: 'Classification', es: 'Clasificación', pt: 'Classificação' },
-        },
-        features: {
-          label: { en: 'Features', es: 'Características', pt: 'Características' },
+        content: {
+          name: 'content',
+          label: { en: 'Content', es: 'Contenido', pt: 'Conteúdo' },
+          entity: { en: 'Content', es: 'Contenido', pt: 'Conteúdo' },
+          description: { en: 'Content information', es: 'Información de contenido', pt: 'Informações de conteúdo' },
+          fields: {
+            history: {
+              label: { en: 'History', es: 'Historia', pt: 'História' },
+            },
+            narrative: {
+              label: { en: 'Narrative', es: 'Narrativa', pt: 'Narrativa' },
+            },
+          },
         },
       },
     },
@@ -84,6 +96,9 @@ export const dictionary = {
       label: { en: 'Traits', es: 'Rasgos', pt: 'Traços' },
       description: { en: 'Series traits.', es: 'Rasgos de la serie.', pt: 'Traços da série.' },
       fields: {
+        specifications: {
+          label: { en: 'Specifications', es: 'Especificaciones', pt: 'Especificações' },
+        },
         heritage: {
           name: 'heritage',
           label: { en: 'Heritage', es: 'Herencia', pt: 'Herança' },
@@ -94,12 +109,6 @@ export const dictionary = {
             successor: { label: { en: 'Successor', es: 'Sucesor', pt: 'Sucessor' } },
           },
         },
-        specifications: {
-          label: { en: 'Specifications', es: 'Especificaciones', pt: 'Especificações' },
-        },
-        schedule: {
-          label: { en: 'Schedule', es: 'Calendario', pt: 'Calendário' },
-        },
       },
     },
     metrics: {
@@ -107,6 +116,10 @@ export const dictionary = {
       label: { en: 'Metrics', es: 'Métricas', pt: 'Métricas' },
       description: { en: 'Series counts.', es: 'Contadores de serie.', pt: 'Contadores da série.' },
       fields: {
+        schedule: {
+          label: { en: 'Schedule', es: 'Calendario', pt: 'Calendário' },
+        },
+        locations: { label: { en: 'Locations', es: 'Ubicaciones', pt: 'Localizações' } },
         counts: {
           name: 'counts',
           label: { en: 'Counts', es: 'Contadores', pt: 'Contadores' },
@@ -135,8 +148,20 @@ export const dictionary = {
       label: { en: 'Contexts', es: 'Contextos', pt: 'Contextos' },
       description: { en: 'Related info.', es: 'Info relacionada.', pt: 'Info relacionada.' },
       fields: {
-        locations: { label: { en: 'Locations', es: 'Ubicaciones', pt: 'Localizações' } },
-        authorities: { label: { en: 'Authorities', es: 'Autoridades', pt: 'Autoridades' } },
+        connections: {
+          name: 'connections',
+          label: { en: 'Connections', es: 'Conexiones', pt: 'Conexões' },
+          entity: { en: 'Connection', es: 'Conexión', pt: 'Conexão' },
+          description: { en: 'Connection information', es: 'Información de conexiones', pt: 'Informações de conexões' },
+          fields: {
+            organizations: {
+              label: { en: 'Organizations', es: 'Organizaciones', pt: 'Organizações' },
+            },
+            individuals: {
+              label: { en: 'Individuals', es: 'Individuos', pt: 'Indivíduos' },
+            },
+          },
+        },
         notes: { label: { en: 'Notes', es: 'Notas', pt: 'Notas' } },
       },
     },

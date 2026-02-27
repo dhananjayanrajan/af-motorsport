@@ -27,8 +27,16 @@ export const dictionary = {
       description: { en: 'Strategy methodology and impacts.', es: 'Metodología e impactos de la estrategia.', pt: 'Metodologia e impactos da estratégia.' },
       fields: {
         methodology: { label: { en: 'Methodology', es: 'Metodología', pt: 'Metodologia' } },
-        decisions: { label: { en: 'Decisions', es: 'Decisiones', pt: 'Decisões' } },
-        impacts: { label: { en: 'Impacts', es: 'Impactos', pt: 'Impactos' } },
+        outcomes: {
+          name: 'outcomes',
+          label: { en: 'Outcomes', es: 'Resultados', pt: 'Resultados' },
+          entity: { en: 'Outcome', es: 'Resultado', pt: 'Resultado' },
+          description: { en: 'Strategy outcomes.', es: 'Resultados de la estrategia.', pt: 'Resultados da estratégia.' },
+          fields: {
+            decisions: { label: { en: 'Decisions', es: 'Decisiones', pt: 'Decisões' } },
+            impacts: { label: { en: 'Impacts', es: 'Impactos', pt: 'Impactos' } },
+          },
+        },
       },
     },
     traits: {
@@ -67,8 +75,27 @@ export const dictionary = {
       label: { en: 'Contexts', es: 'Contextos', pt: 'Contextos' },
       description: { en: 'Strategy narrative and entities.', es: 'Narrativa y entidades de la estrategia.', pt: 'Narrativa e entidades da estratégia.' },
       fields: {
-        narrative: { label: { en: 'Narrative', es: 'Narrativa', pt: 'Narrativa' } },
         entities: { label: { en: 'Entities', es: 'Entidades', pt: 'Entidades' } },
+        associations: {
+          name: 'associations',
+          label: { en: 'Associations', es: 'Asociaciones', pt: 'Associações' },
+          entity: { en: 'Association', es: 'Asociación', pt: 'Associação' },
+          description: { en: 'Strategy associations.', es: 'Asociaciones de la estrategia.', pt: 'Associações da estratégia.' },
+          fields: {
+            leaders: { label: { en: 'Leaders', es: 'Líderes', pt: 'Líderes' } },
+            organizations: { label: { en: 'Organizations', es: 'Organizaciones', pt: 'Organizações' } },
+            individuals: { label: { en: 'Individuals', es: 'Individuos', pt: 'Indivíduos' } },
+          },
+        },
+        content: {
+          name: 'content',
+          label: { en: 'Content', es: 'Contenido', pt: 'Conteúdo' },
+          entity: { en: 'Content', es: 'Contenido', pt: 'Conteúdo' },
+          description: { en: 'Strategy content.', es: 'Contenido de la estrategia.', pt: 'Conteúdo da estratégia.' },
+          fields: {
+            narrative: { label: { en: 'Narrative', es: 'Narrativa', pt: 'Narrativa' } },
+          },
+        },
       },
     },
   },

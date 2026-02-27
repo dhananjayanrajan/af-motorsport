@@ -130,8 +130,16 @@ export const dictionary = {
             parent: { label: { en: 'Parent Organization', es: 'Organización Padre', pt: 'Organização Mãe' } },
           }
         },
-        history: { label: { en: 'History', es: 'Historia', pt: 'História' } },
-        notes: { label: { en: 'Notes', es: 'Notas', pt: 'Notas' } }
+        content: {
+          name: 'content',
+          label: { en: 'Content', es: 'Contenido', pt: 'Conteúdo' },
+          entity: { en: 'Content', es: 'Contenido', pt: 'Conteúdo' },
+          description: { en: 'Content information', es: 'Información de contenido', pt: 'Informações de conteúdo' },
+          fields: {
+            history: { label: { en: 'History', es: 'Historia', pt: 'História' } },
+            notes: { label: { en: 'Notes', es: 'Notas', pt: 'Notas' } }
+          }
+        }
       },
     },
   },

@@ -35,24 +35,31 @@ export const contextsFields: Field[] = [
     )
   ),
   advanced(
-    {
-      type: 'row',
-      fields: [
-        relationshipFieldFactory({
-          name: 'history',
-          relationTo: 'histories',
-          dictionary: dictionary.tabs.contexts.fields,
-          width: 2,
-          flags: ['advanced'],
-        }),
-        relationshipFieldFactory({
-          name: 'notes',
-          relationTo: 'notes',
-          dictionary: dictionary.tabs.contexts.fields,
-          width: 2,
-          flags: ['hasMany', 'advanced'],
-        }),
+    groupFactory(
+      dictionary.tabs.contexts.fields.content,
+      dictionary.host,
+      [
+        {
+          type: 'row',
+          fields: [
+            relationshipFieldFactory({
+              name: 'history',
+              relationTo: 'histories',
+              dictionary: dictionary.tabs.contexts.fields.content.fields,
+              width: 2,
+              flags: ['advanced'],
+            }),
+            relationshipFieldFactory({
+              name: 'notes',
+              relationTo: 'notes',
+              dictionary: dictionary.tabs.contexts.fields.content.fields,
+              width: 2,
+              flags: ['hasMany', 'advanced'],
+            }),
+          ],
+        }
       ],
-    }
+      false
+    )
   )
 ]

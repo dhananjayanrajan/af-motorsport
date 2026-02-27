@@ -76,7 +76,15 @@ export const dictionary = {
             organizations: { label: { en: 'Organizations', es: 'Organizaciones', pt: 'Organizações' } },
           },
         },
-        notes: { label: { en: 'Notes', es: 'Notas', pt: 'Notas' } },
+        content: {
+          name: 'content',
+          label: { en: 'Content', es: 'Contenido', pt: 'Conteúdo' },
+          description: { en: 'Content.', es: 'Contenido.', pt: 'Conteúdo.' },
+          entity: { en: 'Content', es: 'Contenido', pt: 'Conteúdo' },
+          fields: {
+            notes: { label: { en: 'Notes', es: 'Notas', pt: 'Notas' } },
+          }
+        },
       },
     },
   },

@@ -6,21 +6,23 @@ import { groupFactory } from '@/fields/factories/blueprint'
 import { textFieldFactory } from '@/fields/factories/fields/textField'
 import { numberFieldFactory } from '@/fields/factories/fields/numberField'
 import { advanced } from '@/fields/factories/toggles/advanced'
+import { selectFieldFactory } from '@/fields/factories/fields/selectField'
+import { SESSION_STATUS, SESSION_ACCESS } from '../sources/constants'
 
 export const detailsFields: Field[] = [
   {
     type: 'row',
     fields: [
-      relationshipFieldFactory({
-        name: 'narrative',
-        relationTo: 'narratives',
+      selectFieldFactory({
+        name: 'status',
+        options: SESSION_STATUS,
         dictionary: dictionary.tabs.details.fields,
         width: 2,
-        flags: ['advanced'],
+        flags: [],
       }),
-      relationshipFieldFactory({
-        name: 'event',
-        relationTo: 'events',
+      selectFieldFactory({
+        name: 'access',
+        options: SESSION_ACCESS,
         dictionary: dictionary.tabs.details.fields,
         width: 2,
         flags: [],
@@ -29,40 +31,25 @@ export const detailsFields: Field[] = [
   },
   advanced(
     groupFactory(
-      dictionary.tabs.details.fields.format,
+      dictionary.tabs.details.fields.attributes,
       dictionary.host,
       [
         {
           type: 'row',
           fields: [
-            textFieldFactory({
-              name: 'segment',
-              dictionary: dictionary.tabs.details.fields.format.fields,
+            relationshipFieldFactory({
+              name: 'classifications',
+              relationTo: 'classifications',
+              dictionary: dictionary.tabs.details.fields.attributes.fields,
               width: 2,
-              flags: [],
+              flags: ['hasMany', 'advanced'],
             }),
-            numberFieldFactory({
-              name: 'duration',
-              dictionary: dictionary.tabs.details.fields.format.fields,
+            relationshipFieldFactory({
+              name: 'features',
+              relationTo: 'features',
+              dictionary: dictionary.tabs.details.fields.attributes.fields,
               width: 2,
-              flags: [],
-            }),
-          ],
-        },
-        {
-          type: 'row',
-          fields: [
-            numberFieldFactory({
-              name: 'interval',
-              dictionary: dictionary.tabs.details.fields.format.fields,
-              width: 2,
-              flags: [],
-            }),
-            textFieldFactory({
-              name: 'specification',
-              dictionary: dictionary.tabs.details.fields.format.fields,
-              width: 2,
-              flags: ['advanced'],
+              flags: ['hasMany', 'advanced'],
             }),
           ],
         },
@@ -70,42 +57,67 @@ export const detailsFields: Field[] = [
       false
     )
   ),
-  {
-    type: 'row',
-    fields: [
-      relationshipFieldFactory({
-        name: 'classifications',
-        relationTo: 'classifications',
-        dictionary: dictionary.tabs.details.fields,
-        width: 2,
-        flags: ['hasMany', 'advanced'],
-      }),
-      relationshipFieldFactory({
-        name: 'features',
-        relationTo: 'features',
-        dictionary: dictionary.tabs.details.fields,
-        width: 2,
-        flags: ['hasMany', 'advanced'],
-      }),
-    ],
-  },
-  {
-    type: 'row',
-    fields: [
-      relationshipFieldFactory({
-        name: 'protocols',
-        relationTo: 'protocols',
-        dictionary: dictionary.tabs.details.fields,
-        width: 2,
-        flags: ['hasMany', 'advanced'],
-      }),
-      relationshipFieldFactory({
-        name: 'strategies',
-        relationTo: 'strategies',
-        dictionary: dictionary.tabs.details.fields,
-        width: 2,
-        flags: ['hasMany', 'advanced'],
-      }),
-    ],
-  },
+  advanced(
+    groupFactory(
+      dictionary.tabs.details.fields.operations,
+      dictionary.host,
+      [
+        {
+          type: 'row',
+          fields: [
+            relationshipFieldFactory({
+              name: 'protocols',
+              relationTo: 'protocols',
+              dictionary: dictionary.tabs.details.fields.operations.fields,
+              width: 2,
+              flags: ['hasMany', 'advanced'],
+            }),
+            relationshipFieldFactory({
+              name: 'strategies',
+              relationTo: 'strategies',
+              dictionary: dictionary.tabs.details.fields.operations.fields,
+              width: 2,
+              flags: ['hasMany', 'advanced'],
+            }),
+          ],
+        },
+      ],
+      false
+    )
+  ),
+  advanced(
+    groupFactory(
+      dictionary.tabs.details.fields.content,
+      dictionary.host,
+      [
+        {
+          type: 'row',
+          fields: [
+            relationshipFieldFactory({
+              name: 'narrative',
+              relationTo: 'narratives',
+              dictionary: dictionary.tabs.details.fields.content.fields,
+              width: 3,
+              flags: ['advanced'],
+            }),
+            relationshipFieldFactory({
+              name: 'history',
+              relationTo: 'histories',
+              dictionary: dictionary.tabs.details.fields.content.fields,
+              width: 3,
+              flags: ['advanced'],
+            }),
+            relationshipFieldFactory({
+              name: 'insights',
+              relationTo: 'notes',
+              dictionary: dictionary.tabs.details.fields.content.fields,
+              width: 3,
+              flags: ['hasMany', 'advanced'],
+            }),
+          ],
+        },
+      ],
+      false
+    )
+  ),
 ]

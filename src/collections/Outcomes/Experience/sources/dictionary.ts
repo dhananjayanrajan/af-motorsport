@@ -26,7 +26,16 @@ export const dictionary = {
       label: { en: 'Details', es: 'Detalles', pt: 'Detalhes' },
       description: { en: 'Experience narrative and details.', es: 'Narrativa y detalles de la experiencia.', pt: 'Narrativa e detalhes da experiência.' },
       fields: {
-        narrative: { label: { en: 'Narrative', es: 'Narrativa', pt: 'Narrativa' } },
+        content: {
+          name: 'content',
+          label: { en: 'Content', es: 'Contenido', pt: 'Conteúdo' },
+          entity: { en: 'Content', es: 'Contenido', pt: 'Conteúdo' },
+          description: { en: 'Experience content.', es: 'Contenido de la experiencia.', pt: 'Conteúdo da experiência.' },
+          fields: {
+            narrative: { label: { en: 'Narrative', es: 'Narrativa', pt: 'Narrativa' } },
+            journey: { label: { en: 'Journey', es: 'Trayectoria', pt: 'Jornada' } },
+          },
+        },
       },
     },
     traits: {
@@ -46,6 +55,23 @@ export const dictionary = {
         },
       },
     },
+    metrics: {
+      name: 'metrics',
+      label: { en: 'Metrics', es: 'Métricas', pt: 'Métricas' },
+      description: { en: 'Experience metrics.', es: 'Métricas de la experiencia.', pt: 'Métricas da experiência.' },
+      fields: {
+        outcomes: {
+          name: 'outcomes',
+          label: { en: 'Outcomes', es: 'Resultados', pt: 'Resultados' },
+          entity: { en: 'Outcome', es: 'Resultado', pt: 'Resultado' },
+          description: { en: 'Outcomes of the experience.', es: 'Resultados de la experiencia.', pt: 'Resultados da experiência.' },
+          fields: {
+            highlights: { label: { en: 'Highlights', es: 'Destacados', pt: 'Destaques' } },
+            incidents: { label: { en: 'Incidents', es: 'Incidentes', pt: 'Incidentes' } },
+          },
+        },
+      },
+    },
     assets: {
       name: 'assets',
       label: { en: 'Assets', es: 'Activos', pt: 'Ativos' },
@@ -60,10 +86,27 @@ export const dictionary = {
       label: { en: 'Contexts', es: 'Contextos', pt: 'Contextos' },
       description: { en: 'Experience contexts and relationships.', es: 'Contextos y relaciones de la experiencia.', pt: 'Contextos e relações da experiência.' },
       fields: {
-        entities: { label: { en: 'Entities', es: 'Entidades', pt: 'Entidades' } },
-        highlights: { label: { en: 'Highlights', es: 'Destacados', pt: 'Destaques' } },
-        incidents: { label: { en: 'Incidents', es: 'Incidentes', pt: 'Incidentes' } },
-        journey: { label: { en: 'Journey', es: 'Trayectoria', pt: 'Jornada' } },
+        connections: {
+          name: 'connections',
+          label: { en: 'Connections', es: 'Conexiones', pt: 'Conexões' },
+          entity: { en: 'Connection', es: 'Conexión', pt: 'Conexão' },
+          description: { en: 'Connections of the experience.', es: 'Conexiones de la experiencia.', pt: 'Conexões da experiência.' },
+          fields: {
+            drivers: { label: { en: 'Drivers', es: 'Conductores', pt: 'Condutor' } },
+            members: { label: { en: 'Members', es: 'Miembros', pt: 'Membros' } },
+            leaders: { label: { en: 'Leaders', es: 'Líderes', pt: 'Líderes' } },
+          },
+        },
+        associations: {
+          name: 'associations',
+          label: { en: 'Associations', es: 'Asociaciones', pt: 'Associações' },
+          entity: { en: 'Association', es: 'Asociación', pt: 'Associação' },
+          description: { en: 'Associations of the experience.', es: 'Asociaciones de la experiencia.', pt: 'Associações da experiência.' },
+          fields: {
+            organizations: { label: { en: 'Organizations', es: 'Organizaciones', pt: 'Organizações' } },
+            individuals: { label: { en: 'Individuals', es: 'Individuos', pt: 'Individuos' } },
+          },
+        }
       },
     },
   },

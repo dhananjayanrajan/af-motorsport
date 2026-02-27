@@ -37,7 +37,15 @@ export const dictionary = {
       entity: { en: 'Playlist', es: 'Lista de reproducción', pt: 'Playlist' },
       description: { en: 'Related info.', es: 'Info relacionada.', pt: 'Info relacionada.' },
       fields: {
-        narratives: { label: { en: 'Narratives', es: 'Narrativas', pt: 'Narrativas' } },
+        content: {
+          name: 'content',
+          label: { en: 'Content', es: 'Contenido', pt: 'Conteúdo' },
+          description: { en: 'Content.', es: 'Contenido.', pt: 'Conteúdo.' },
+          entity: { en: 'Content', es: 'Contenido', pt: 'Conteúdo' },
+          fields: {
+            narratives: { label: { en: 'Narratives', es: 'Narrativas', pt: 'Narrativas' } },
+          }
+        }
       }
     }
   },

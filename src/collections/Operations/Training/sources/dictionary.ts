@@ -76,7 +76,15 @@ export const dictionary = {
             skills: { label: { en: 'Skills', es: 'Habilidades', pt: 'Habilidades' } },
           },
         },
-        stories: { label: { en: 'Stories', es: 'Historias', pt: 'Histórias' } },
+        content: {
+          name: 'content',
+          label: { en: 'Content', es: 'Contenido', pt: 'Conteúdo' },
+          description: { en: 'Content.', es: 'Contenido.', pt: 'Conteúdo.' },
+          entity: { en: 'Content', es: 'Contenido', pt: 'Conteúdo' },
+          fields: {
+            stories: { label: { en: 'Stories', es: 'Historias', pt: 'Histórias' } },
+          }
+        }
       },
     },
   },

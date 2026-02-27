@@ -7,6 +7,20 @@ import { advanced } from '@/fields/factories/toggles/advanced'
 
 export const traitsFields: Field[] = [
   advanced(
+    {
+      type: 'row',
+      fields: [
+        relationshipFieldFactory({
+          name: 'specifications',
+          relationTo: 'specifications',
+          dictionary: dictionary.tabs.traits.fields,
+          width: 1,
+          flags: ['hasMany', 'advanced'],
+        }),
+      ]
+    }
+  ),
+  advanced(
     groupFactory(
       dictionary.tabs.traits.fields.heritage,
       dictionary.host,
@@ -26,31 +40,12 @@ export const traitsFields: Field[] = [
               relationTo: 'series',
               dictionary: dictionary.tabs.traits.fields.heritage.fields,
               width: 2,
-              flags: [],
+              flags: ['advanced'],
             }),
           ],
         },
       ],
       false
     )
-  ),
-  {
-    type: 'row',
-    fields: [
-      relationshipFieldFactory({
-        name: 'specifications',
-        relationTo: 'specifications',
-        dictionary: dictionary.tabs.traits.fields,
-        width: 2,
-        flags: ['hasMany', 'advanced'],
-      }),
-      relationshipFieldFactory({
-        name: 'schedule',
-        relationTo: 'schedules',
-        dictionary: dictionary.tabs.traits.fields,
-        width: 2,
-        flags: [],
-      }),
-    ],
-  },
+  )
 ]

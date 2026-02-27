@@ -118,9 +118,37 @@ export const dictionary = {
       label: { en: 'Contexts', es: 'Contextos', pt: 'Contextos' },
       description: { en: 'Kit relationships and notes.', es: 'Relaciones y notas del kit.', pt: 'Relações e notas do kit.' },
       fields: {
-        entities: { label: { en: 'Entities', es: 'Entidades', pt: 'Entidades' } },
-        associations: { label: { en: 'Associations', es: 'Asociaciones', pt: 'Associações' } },
-        notes: { label: { en: 'Notes', es: 'Notas', pt: 'Notas' } },
+        connections: {
+          name: 'connections',
+          label: { en: 'Connections', es: 'Conexiones', pt: 'Conexões' },
+          entity: { en: 'Connection', es: 'Conexión', pt: 'Conexão' },
+          description: { en: 'Connection information', es: 'Información de conexión', pt: 'Informações de conexão' },
+          fields: {
+            drivers: { label: { en: 'Drivers', es: 'Pilotos', pt: 'Pilotos' } },
+            members: { label: { en: 'Members', es: 'Miembros', pt: 'Membros' } },
+            leaders: { label: { en: 'Leaders', es: 'Líderes', pt: 'Líderes' } },
+            individuals: { label: { en: 'Individuals', es: 'Individuos', pt: 'Indivíduos' } },
+          }
+        },
+        associations: {
+          name: 'associations',
+          label: { en: 'Associations', es: 'Asociaciones', pt: 'Associações' },
+          entity: { en: 'Association', es: 'Asociación', pt: 'Associação' },
+          description: { en: 'Association information', es: 'Información de asociación', pt: 'Informações de associação' },
+          fields: {
+            organizations: { label: { en: 'Organizations', es: 'Organizaciones', pt: 'Organizações' } },
+            individuals: { label: { en: 'Individuals', es: 'Individuos', pt: 'Indivíduos' } },
+          }
+        },
+        content: {
+          name: 'content',
+          label: { en: 'Content', es: 'Contenido', pt: 'Conteúdo' },
+          description: { en: 'Content.', es: 'Contenido.', pt: 'Conteúdo.' },
+          entity: { en: 'Content', es: 'Contenido', pt: 'Conteúdo' },
+          fields: {
+            notes: { label: { en: 'Notes', es: 'Notas', pt: 'Notas' } },
+          }
+        }
       },
     },
   },

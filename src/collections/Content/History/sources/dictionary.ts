@@ -24,13 +24,21 @@ export const dictionary = {
       label: { en: 'Details', es: 'Detalles', pt: 'Detalhes' },
       description: { en: 'Detailed info.', es: 'Info detallada.', pt: 'Info detalhada.' },
       fields: {
-        narrative: {
-          label: { en: 'Narrative', es: 'Narrativa', pt: 'Narrativa' },
-          description: { en: 'Primary narrative.', es: 'Narrativa principal.', pt: 'Narrativa principal.' },
-        },
-        stories: {
-          label: { en: 'Stories', es: 'Historias', pt: 'Histórias' },
-          description: { en: 'Related stories.', es: 'Historias relacionadas.', pt: 'Histórias relacionadas.' },
+        content: {
+          name: 'content',
+          label: { en: 'Content', es: 'Contenido', pt: 'Conteúdo' },
+          description: { en: 'Content of the feature.', es: 'Contenido de la característica.', pt: 'Conteúdo do recurso.' },
+          entity: { en: 'Content', es: 'Contenido', pt: 'Conteúdo' },
+          fields: {
+            narrative: {
+              label: { en: 'Narrative', es: 'Narrativa', pt: 'Narrativa' },
+              description: { en: 'Primary narrative.', es: 'Narrativa principal.', pt: 'Narrativa principal.' },
+            },
+            stories: {
+              label: { en: 'Stories', es: 'Historias', pt: 'Histórias' },
+              description: { en: 'Related stories.', es: 'Historias relacionadas.', pt: 'Histórias relacionadas.' },
+            },
+          }
         },
       },
     },

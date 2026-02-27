@@ -78,10 +78,28 @@ export const dictionary = {
             manufacturers: { label: { en: 'Manufacturers', es: 'Fabricantes', pt: 'Fabricantes' } },
             drivers: { label: { en: 'Drivers', es: 'Pilotos', pt: 'Pilotos' } },
             crew: { label: { en: 'Crew', es: 'Tripulación', pt: 'Equipe' } },
-            associations: { label: { en: 'Associations', es: 'Asociaciones', pt: 'Associações' } },
           }
         },
-        history: { label: { en: 'History', es: 'Historia', pt: 'História' } },
+        associations: {
+          name: 'associations',
+          label: { en: 'Associations', es: 'Asociaciones', pt: 'Associações' },
+          entity: { en: 'Association', es: 'Asociación', pt: 'Associação' },
+          description: { en: 'Association information', es: 'Información de asociación', pt: 'Informações de associação' },
+          fields: {
+            organizations: { label: { en: 'Organizations', es: 'Organizaciones', pt: 'Organizações' } },
+            leaders: { label: { en: 'Leaders', es: 'Líderes', pt: 'Líderes' } },
+            individuals: { label: { en: 'Individuals', es: 'Individuos', pt: 'Indivíduos' } },
+          }
+        },
+        content: {
+          name: 'content',
+          label: { en: 'Content', es: 'Contenido', pt: 'Conteúdo' },
+          description: { en: 'Content.', es: 'Contenido.', pt: 'Conteúdo.' },
+          entity: { en: 'Content', es: 'Contenido', pt: 'Conteúdo' },
+          fields: {
+            history: { label: { en: 'History', es: 'Historia', pt: 'História' } },
+          }
+        }
       },
     },
   },

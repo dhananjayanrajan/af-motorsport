@@ -1,20 +1,23 @@
 // FILE: src/collections/Attributes/Skills/tabs/details.ts
 import type { Field } from 'payload'
 import { dictionary } from '../sources/dictionary'
-import { groupFactory } from '@/fields/factories/blueprint'
-import { textareaFieldFactory } from '@/fields/factories/fields/textareaField'
 import { textFieldFactory } from '@/fields/factories/fields/textField'
-import { selectFieldFactory } from '@/fields/factories/fields/selectField'
 import { relationshipFieldFactory } from '@/fields/factories/fields/relationshipField'
 import { advanced } from '@/fields/factories/toggles/advanced'
-import { SKILL_METHOD_TYPE, SKILL_DEPENDENCY_TYPE } from '../sources/constants'
 
 export const detailsFields: Field[] = [
   advanced(
     {
       type: 'row',
       fields: [
-        textareaFieldFactory({
+        relationshipFieldFactory({
+          name: 'classifications',
+          relationTo: 'classifications',
+          dictionary: dictionary.tabs.details.fields,
+          width: 1,
+          flags: ['hasMany', 'advanced'],
+        }),
+        textFieldFactory({
           name: 'definition',
           dictionary: dictionary.tabs.details.fields,
           width: 1,
@@ -36,66 +39,5 @@ export const detailsFields: Field[] = [
         }),
       ],
     },
-  ),
-  advanced(
-    groupFactory(
-      dictionary.tabs.details.methods,
-      dictionary.host,
-      [
-        {
-          type: 'row',
-          fields: [
-            textFieldFactory({
-              name: 'method',
-              dictionary: dictionary.tabs.details.methods.fields,
-              width: 2,
-              flags: ['advanced'],
-            }),
-            selectFieldFactory({
-              name: 'type',
-              options: SKILL_METHOD_TYPE,
-              dictionary: dictionary.tabs.details.methods.fields,
-              width: 2,
-              flags: ['advanced'],
-            }),
-            textareaFieldFactory({
-              name: 'description',
-              dictionary: dictionary.tabs.details.methods.fields,
-              width: 1,
-              flags: ['advanced'],
-            }),
-          ],
-        },
-      ],
-      true
-    )
-  ),
-  advanced(
-    groupFactory(
-      dictionary.tabs.details.dependencies,
-      dictionary.host,
-      [
-        {
-          type: 'row',
-          fields: [
-            relationshipFieldFactory({
-              name: 'skill',
-              relationTo: 'skills',
-              dictionary: dictionary.tabs.details.dependencies.fields,
-              width: 2,
-              flags: ['advanced'],
-            }),
-            selectFieldFactory({
-              name: 'type',
-              options: SKILL_DEPENDENCY_TYPE,
-              dictionary: dictionary.tabs.details.dependencies.fields,
-              width: 2,
-              flags: ['advanced'],
-            }),
-          ],
-        },
-      ],
-      true
-    )
   )
 ]

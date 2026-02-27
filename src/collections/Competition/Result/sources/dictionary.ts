@@ -8,6 +8,7 @@ export const dictionary = {
       placeholder: 'e.g. Race Results',
       description: { en: 'The result name.', es: 'El nombre del resultado.', pt: 'O nome do resultado.' },
     },
+    entry: { label: { en: 'Entry', es: 'Entrada', pt: 'Entrada' }, placeholder: 'Select entry', description: { en: 'The entry of the result.', es: 'La entrada del resultado.', pt: 'A entrada do resultado.' } },
     type: {
       label: { en: 'Type', es: 'Tipo', pt: 'Tipo' },
       placeholder: 'Select type',
@@ -25,10 +26,6 @@ export const dictionary = {
           placeholder: 'Brief description',
           description: { en: 'Short description.', es: 'Descripción corta.', pt: 'Descrição curta.' },
         },
-        status: {
-          label: { en: 'Status', es: 'Estado', pt: 'Status' },
-          description: { en: 'Result status.', es: 'Estado del resultado.', pt: 'Status do resultado.' },
-        },
       },
     },
     details: {
@@ -36,17 +33,32 @@ export const dictionary = {
       label: { en: 'Details', es: 'Detalles', pt: 'Detalhes' },
       description: { en: 'Result details.', es: 'Detalles del resultado.', pt: 'Detalhes do resultado.' },
       fields: {
-        narrative: {
-          label: { en: 'Narrative', es: 'Narrativa', pt: 'Narrativa' },
+        status: {
+          label: { en: 'Status', es: 'Estado', pt: 'Status' },
+          description: { en: 'Result status.', es: 'Estado del resultado.', pt: 'Status do resultado.' },
         },
-        classification: {
-          label: { en: 'Classification', es: 'Clasificación', pt: 'Classificação' },
+        attributes: {
+          name: 'attributes',
+          label: { en: 'Attributes', es: 'Atributos', pt: 'Atributos' },
+          entity: { en: 'Attribute', es: 'Atributo', pt: 'Atributo' },
+          description: { en: 'Result attributes.', es: 'Atributos del resultado.', pt: 'Atributos do resultado.' },
+          fields: {
+            classification: {
+              label: { en: 'Classification', es: 'Clasificación', pt: 'Classificação' },
+            },
+          }
         },
-        highlights: {
-          label: { en: 'Highlights', es: 'Destacados', pt: 'Destaques' },
-        },
-        incidents: {
-          label: { en: 'Incidents', es: 'Incidentes', pt: 'Incidentes' },
+        content: {
+          name: 'content',
+          label: { en: 'Content', es: 'Contenido', pt: 'Conteúdo' },
+          entity: { en: 'Content', es: 'Contenido', pt: 'Conteúdo' },
+          description: { en: 'Result content.', es: 'Contenido del resultado.', pt: 'Conteúdo do resultado.' },
+          fields: {
+            narrative: {
+              label: { en: 'Narrative', es: 'Narrativa', pt: 'Narrativa' },
+            },
+            notes: { label: { en: 'Notes', es: 'Notas', pt: 'Notas' } },
+          },
         },
       },
     },
@@ -55,20 +67,23 @@ export const dictionary = {
       label: { en: 'Traits', es: 'Rasgos', pt: 'Traços' },
       description: { en: 'Result traits.', es: 'Rasgos del resultado.', pt: 'Traços do resultado.' },
       fields: {
-        position: {
-          name: 'position',
-          label: { en: 'Position', es: 'Posición', pt: 'Posição' },
-          entity: { en: 'Position', es: 'Posición', pt: 'Posição' },
-          description: { en: 'Final positions.', es: 'Posiciones finales.', pt: 'Posições finais.' },
+        outcomes: {
+          name: 'outcomes',
+          label: { en: 'Outcomes', es: 'Resultados', pt: 'Resultados' },
+          entity: { en: 'Outcome', es: 'Resultado', pt: 'Resultado' },
+          description: { en: 'Result outcomes.', es: 'Resultados del resultado.', pt: 'Resultados do resultado.' },
           fields: {
-            overall: { label: { en: 'Overall', es: 'General', pt: 'Geral' } },
-            class: { label: { en: 'Class', es: 'Clase', pt: 'Classe' } },
-            order: { label: { en: 'Order', es: 'Orden', pt: 'Ordem' } },
-          },
+            highlights: {
+              label: { en: 'Highlights', es: 'Destacados', pt: 'Destaques' },
+            },
+            incidents: {
+              label: { en: 'Incidents', es: 'Incidentes', pt: 'Incidentes' },
+            },
+          }
         },
-        achievement: {
-          name: 'achievement',
-          label: { en: 'Achievement', es: 'Logro', pt: 'Conquista' },
+        achievements: {
+          name: 'achievements',
+          label: { en: 'Achievements', es: 'Logros', pt: 'Conquistas' },
           entity: { en: 'Achievement', es: 'Logro', pt: 'Conquista' },
           description: { en: 'Achievement details.', es: 'Detalles del logro.', pt: 'Detalhes da conquista.' },
           fields: {
@@ -84,6 +99,17 @@ export const dictionary = {
       label: { en: 'Metrics', es: 'Métricas', pt: 'Métricas' },
       description: { en: 'Result metrics.', es: 'Métricas del resultado.', pt: 'Métricas do resultado.' },
       fields: {
+        position: {
+          name: 'position',
+          label: { en: 'Position', es: 'Posición', pt: 'Posição' },
+          entity: { en: 'Position', es: 'Posición', pt: 'Posição' },
+          description: { en: 'Final positions.', es: 'Posiciones finales.', pt: 'Posições finais.' },
+          fields: {
+            overall: { label: { en: 'Overall', es: 'General', pt: 'Geral' } },
+            class: { label: { en: 'Class', es: 'Clase', pt: 'Classe' } },
+            order: { label: { en: 'Order', es: 'Orden', pt: 'Ordem' } },
+          },
+        },
         performance: {
           name: 'performance',
           label: { en: 'Performance', es: 'Rendimiento', pt: 'Desempenho' },
@@ -114,15 +140,6 @@ export const dictionary = {
       fields: {
         visualization: { label: { en: 'Visualization', es: 'Visualización', pt: 'Visualização' } },
       },
-    },
-    contexts: {
-      name: 'contexts',
-      label: { en: 'Contexts', es: 'Contextos', pt: 'Contextos' },
-      description: { en: 'Related info.', es: 'Info relacionada.', pt: 'Info relacionada.' },
-      fields: {
-        entry: { label: { en: 'Entry', es: 'Entrada', pt: 'Entrada' } },
-        notes: { label: { en: 'Notes', es: 'Notas', pt: 'Notas' } },
-      },
-    },
+    }
   },
 } as const

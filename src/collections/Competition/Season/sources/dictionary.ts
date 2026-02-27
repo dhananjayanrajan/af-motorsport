@@ -24,11 +24,6 @@ export const dictionary = {
       label: { en: 'Basics', es: 'Básicos', pt: 'Básicos' },
       description: { en: 'Basic info.', es: 'Info básica.', pt: 'Info básica.' },
       fields: {
-        description: {
-          label: { en: 'Description', es: 'Descripción', pt: 'Descrição' },
-          placeholder: 'Brief description',
-          description: { en: 'Short description.', es: 'Descripción corta.', pt: 'Descrição curta.' },
-        },
         identifiers: {
           name: 'identifiers',
           label: { en: 'Identifiers', es: 'Identificadores', pt: 'Identificadores' },
@@ -45,6 +40,11 @@ export const dictionary = {
             },
           },
         },
+        description: {
+          label: { en: 'Description', es: 'Descripción', pt: 'Descrição' },
+          placeholder: 'Brief description',
+          description: { en: 'Short description.', es: 'Descripción corta.', pt: 'Descrição curta.' },
+        },
       },
     },
     details: {
@@ -52,21 +52,39 @@ export const dictionary = {
       label: { en: 'Details', es: 'Detalles', pt: 'Detalhes' },
       description: { en: 'Season details.', es: 'Detalles de la temporada.', pt: 'Detalhes da temporada.' },
       fields: {
-        narrative: {
-          label: { en: 'Narrative', es: 'Narrativa', pt: 'Narrativa' },
+        attributes: {
+          name: 'attributes',
+          label: { en: 'Attributes', es: 'Atributos', pt: 'Atributos' },
+          entity: { en: 'Attribute', es: 'Atributo', pt: 'Atributo' },
+          description: { en: 'Series attributes.', es: 'Atributos de la serie.', pt: 'Atributos da série.' },
+          fields: {
+            classifications: {
+              label: { en: 'Classifications', es: 'Clasificaciones', pt: 'Classificações' },
+            },
+            regulations: {
+              label: { en: 'Regulations', es: 'Reglamentos', pt: 'Regulamentação' },
+            },
+            schedules: {
+              label: { en: 'Schedules', es: 'Calendarios', pt: 'Calendários' },
+              description: { en: 'Season schedules.', es: 'Calendarios de la temporada.', pt: 'Calendários da temporada.' },
+            },
+          },
         },
-        history: {
-          label: { en: 'History', es: 'Historia', pt: 'História' },
-        },
-        schedule: {
-          label: { en: 'Schedule', es: 'Calendario', pt: 'Calendário' },
-          description: { en: 'Season schedule.', es: 'Calendario de la temporada.', pt: 'Calendário da temporada.' },
-        },
-        classifications: {
-          label: { en: 'Classifications', es: 'Clasificaciones', pt: 'Classificações' },
-        },
-        regulations: {
-          label: { en: 'Regulations', es: 'Reglamentos', pt: 'Regulamentação' },
+        content: {
+          name: 'content',
+          label: { en: 'Content', es: 'Contenido', pt: 'Conteúdo' },
+          entity: { en: 'Content', es: 'Contenido', pt: 'Conteúdo' },
+          description: { en: 'Content information', es: 'Información de contenido', pt: 'Informações de conteúdo' },
+          fields: {
+            narrative: {
+              label: { en: 'Narrative', es: 'Narrativa', pt: 'Narrativa' },
+              description: { en: 'Season narrative.', es: 'Narrativa de la temporada.', pt: 'Narrativa da temporada.' },
+            },
+            history: {
+              label: { en: 'History', es: 'Historia', pt: 'História' },
+              description: { en: 'Season history.', es: 'Historia de la temporada.', pt: 'História da temporada.' },
+            },
+          },
         },
       },
     },
@@ -104,9 +122,34 @@ export const dictionary = {
       label: { en: 'Contexts', es: 'Contextos', pt: 'Contextos' },
       description: { en: 'Related info.', es: 'Info relacionada.', pt: 'Info relacionada.' },
       fields: {
-        authorities: { label: { en: 'Authorities', es: 'Autoridades', pt: 'Autoridades' } },
-        teams: { label: { en: 'Teams', es: 'Equipos', pt: 'Equipes' } },
-        participants: { label: { en: 'Participants', es: 'Participantes', pt: 'Participantes' } },
+        authorities: {
+          name: 'authorities',
+          label: { en: 'Authorities', es: 'Autoridades', pt: 'Autoridades' },
+          entity: { en: 'Authority', es: 'Autoridad', pt: 'Autoridade' },
+          description: { en: 'Authority information', es: 'Información de autoridades', pt: 'Informações de autoridades' },
+          fields: {
+            organizations: {
+              label: { en: 'Organizations', es: 'Organizaciones', pt: 'Organizações' },
+            },
+            individuals: {
+              label: { en: 'Individuals', es: 'Individuos', pt: 'Indivíduos' },
+            },
+          },
+        },
+        associations: {
+          name: 'associations',
+          label: { en: 'Associations', es: 'Asociaciones', pt: 'Associações' },
+          entity: { en: 'Association', es: 'Asociación', pt: 'Associação' },
+          description: { en: 'Association information', es: 'Información de asociaciones', pt: 'Informações de associações' },
+          fields: {
+            teams: {
+              label: { en: 'Teams', es: 'Equipos', pt: 'Equipes' },
+            },
+            participants: {
+              label: { en: 'Participants', es: 'Participantes', pt: 'Participantes' },
+            },
+          },
+        },
         notes: { label: { en: 'Notes', es: 'Notas', pt: 'Notas' } },
       },
     },

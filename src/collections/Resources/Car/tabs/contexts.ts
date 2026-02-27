@@ -35,30 +35,64 @@ export const contextsFields: Field[] = [
               width: 3,
               flags: ['hasMany', 'advanced'],
             }),
-            relationshipFieldFactory({
-              name: 'associations',
-              relationTo: ['organizations', 'individuals', 'leaders'],
-              dictionary: dictionary.tabs.contexts.fields.connections.fields.associations,
-              width: 1,
-              flags: ['hasMany', 'advanced'],
-            }),
           ]
         }
       ]
     )
   ),
   advanced(
-    {
-      type: 'row',
-      fields: [
-        relationshipFieldFactory({
-          name: 'histories',
-          relationTo: 'histories',
-          dictionary: dictionary.tabs.contexts.fields.history,
-          width: 1,
-          flags: ['advanced'],
-        }),
-      ]
-    }
+    groupFactory(
+      dictionary.tabs.contexts.fields.associations,
+      dictionary.host,
+      [
+        {
+          type: 'row',
+          fields: [
+            relationshipFieldFactory({
+              name: 'organizations',
+              relationTo: 'organizations',
+              dictionary: dictionary.tabs.contexts.fields.associations.fields,
+              width: 3,
+              flags: ['hasMany', 'advanced'],
+            }),
+            relationshipFieldFactory({
+              name: 'leaders',
+              relationTo: 'leaders',
+              dictionary: dictionary.tabs.contexts.fields.associations.fields,
+              width: 3,
+              flags: ['hasMany', 'advanced'],
+            }),
+            relationshipFieldFactory({
+              name: 'individuals',
+              relationTo: 'individuals',
+              dictionary: dictionary.tabs.contexts.fields.associations.fields,
+              width: 3,
+              flags: ['hasMany', 'advanced'],
+            }),
+          ],
+        },
+      ],
+      false
+    )
   ),
+  advanced(
+    groupFactory(
+      dictionary.tabs.contexts.fields.content,
+      dictionary.host,
+      [
+        {
+          type: 'row',
+          fields: [
+            relationshipFieldFactory({
+              name: 'histories',
+              relationTo: 'histories',
+              dictionary: dictionary.tabs.contexts.fields.content.fields,
+              width: 1,
+              flags: ['advanced'],
+            }),
+          ]
+        }
+      ]
+    )
+  )
 ]

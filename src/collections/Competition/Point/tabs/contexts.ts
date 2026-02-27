@@ -2,44 +2,36 @@
 import type { Field } from 'payload'
 import { dictionary } from '../sources/dictionary'
 import { relationshipFieldFactory } from '@/fields/factories/fields/relationshipField'
+import { advanced } from '@/fields/factories/toggles/advanced'
+import { groupFactory } from '@/fields/factories/blueprint'
 
 export const contextsFields: Field[] = [
-  {
-    type: 'row',
-    fields: [
-      relationshipFieldFactory({
-        name: 'authorities',
-        relationTo: 'organizations',
-        dictionary: dictionary.tabs.contexts.fields,
-        width: 2,
-        flags: ['hasMany', 'advanced'],
-      }),
-      relationshipFieldFactory({
-        name: 'entries',
-        relationTo: 'entries',
-        dictionary: dictionary.tabs.contexts.fields,
-        width: 2,
-        flags: ['hasMany', 'advanced'],
-      }),
-    ],
-  },
-  {
-    type: 'row',
-    fields: [
-      relationshipFieldFactory({
-        name: 'drivers',
-        relationTo: 'drivers',
-        dictionary: dictionary.tabs.contexts.fields,
-        width: 2,
-        flags: ['hasMany', 'advanced'],
-      }),
-      relationshipFieldFactory({
-        name: 'insights',
-        relationTo: 'notes',
-        dictionary: dictionary.tabs.contexts.fields,
-        width: 2,
-        flags: ['hasMany', 'advanced'],
-      }),
-    ],
-  },
+  advanced(
+    groupFactory(
+      dictionary.tabs.contexts.fields.connections,
+      dictionary.host,
+      [
+        {
+          type: 'row',
+          fields: [
+            relationshipFieldFactory({
+              name: 'authorities',
+              relationTo: ['organizations', 'individuals'],
+              dictionary: dictionary.tabs.contexts.fields.connections.fields,
+              width: 2,
+              flags: ['hasMany', 'advanced'],
+            }),
+            relationshipFieldFactory({
+              name: 'participants',
+              relationTo: 'drivers',
+              dictionary: dictionary.tabs.contexts.fields.connections.fields,
+              width: 2,
+              flags: ['advanced'],
+            }),
+          ],
+        },
+      ],
+      false
+    )
+  )
 ]

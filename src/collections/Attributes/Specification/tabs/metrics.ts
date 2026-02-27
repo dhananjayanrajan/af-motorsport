@@ -53,25 +53,25 @@ export const metricsFields: Field[] = [
             textFieldFactory({
               name: 'parameter',
               dictionary: dictionary.tabs.metrics.fields.parameters.fields,
-              width: 4,
-              flags: [],
+              width: 2,
+              flags: ['advanced'],
             }),
             textFieldFactory({
               name: 'value',
               dictionary: dictionary.tabs.metrics.fields.parameters.fields,
-              width: 4,
-              flags: [],
+              width: 2,
+              flags: ['advanced'],
             }),
             textFieldFactory({
               name: 'unit',
               dictionary: dictionary.tabs.metrics.fields.parameters.fields,
-              width: 4,
-              flags: [],
+              width: 2,
+              flags: ['advanced'],
             }),
             textFieldFactory({
               name: 'tolerance',
               dictionary: dictionary.tabs.metrics.fields.parameters.fields,
-              width: 4,
+              width: 2,
               flags: ['advanced'],
             }),
           ]

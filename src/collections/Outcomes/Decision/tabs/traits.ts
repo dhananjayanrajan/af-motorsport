@@ -23,13 +23,6 @@ export const traitsFields: Field[] = [
           width: 2,
           flags: ['hasMany', 'advanced'],
         }),
-        relationshipFieldFactory({
-          name: 'expectations',
-          relationTo: 'expectations',
-          dictionary: dictionary.tabs.traits.fields,
-          width: 1,
-          flags: ['hasMany', 'advanced'],
-        }),
       ],
     }
   ),

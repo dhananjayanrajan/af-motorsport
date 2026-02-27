@@ -9,18 +9,15 @@ import { advanced } from '@/fields/factories/toggles/advanced'
 import { ENTRY_ROLE } from '../sources/constants'
 
 export const traitsFields: Field[] = [
-  {
-    type: 'row',
-    fields: [
-      selectFieldFactory({
-        name: 'role',
-        options: ENTRY_ROLE,
-        dictionary: dictionary.tabs.traits.fields,
-        width: 1,
-        flags: ['advanced'],
-      }),
-    ],
-  },
+  advanced(
+    selectFieldFactory({
+      name: 'role',
+      options: ENTRY_ROLE,
+      dictionary: dictionary.tabs.traits.fields,
+      width: 1,
+      flags: ['advanced'],
+    }),
+  ),
   advanced(
     groupFactory(
       dictionary.tabs.traits.fields.eligibility,
@@ -33,7 +30,7 @@ export const traitsFields: Field[] = [
               name: 'license',
               dictionary: dictionary.tabs.traits.fields.eligibility.fields,
               width: 3,
-              flags: [],
+              flags: ['advanced'],
             }),
             textFieldFactory({
               name: 'waiver',
@@ -45,31 +42,12 @@ export const traitsFields: Field[] = [
               name: 'restriction',
               dictionary: dictionary.tabs.traits.fields.eligibility.fields,
               width: 3,
-              flags: [],
+              flags: ['advanced'],
             }),
           ],
         },
       ],
       false
     )
-  ),
-  {
-    type: 'row',
-    fields: [
-      relationshipFieldFactory({
-        name: 'preferences',
-        relationTo: 'preferences',
-        dictionary: dictionary.tabs.traits.fields,
-        width: 2,
-        flags: ['hasMany', 'advanced'],
-      }),
-      relationshipFieldFactory({
-        name: 'specifications',
-        relationTo: 'specifications',
-        dictionary: dictionary.tabs.traits.fields,
-        width: 2,
-        flags: ['hasMany', 'advanced'],
-      }),
-    ],
-  },
+  )
 ]

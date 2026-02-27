@@ -86,8 +86,16 @@ export const dictionary = {
             celebrations: { label: { en: 'Celebrations', es: 'Celebraciones', pt: 'Celebrações' } },
           },
         },
-        histories: { label: { en: 'Histories', es: 'Historias', pt: 'Históricos' } },
-        insights: { label: { en: 'Insights', es: 'Perspectivas', pt: 'Perspectivas' } },
+        content: {
+          name: 'content',
+          label: { en: 'Content', es: 'Contenido', pt: 'Conteúdo' },
+          description: { en: 'Content.', es: 'Contenido.', pt: 'Conteúdo.' },
+          entity: { en: 'Content', es: 'Contenido', pt: 'Conteúdo' },
+          fields: {
+            histories: { label: { en: 'Histories', es: 'Historias', pt: 'Históricos' } },
+            insights: { label: { en: 'Insights', es: 'Perspectivas', pt: 'Perspectivas' } },
+          }
+        }
       },
     },
   },

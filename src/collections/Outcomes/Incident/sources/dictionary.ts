@@ -26,7 +26,24 @@ export const dictionary = {
       label: { en: 'Details', es: 'Detalles', pt: 'Detalhes' },
       description: { en: 'Incident decisions and specs.', es: 'Decisiones y especificaciones del incidente.', pt: 'Decisões e especificações do incidente.' },
       fields: {
-        specifications: { label: { en: 'Specifications', es: 'Especificaciones', pt: 'Especificações' } },
+        attributes: {
+          name: 'attributes',
+          label: { en: 'Attributes', es: 'Atributos', pt: 'Atributos' },
+          entity: { en: 'Attribute', es: 'Atributo', pt: 'Atributo' },
+          description: { en: 'Incident attributes.', es: 'Atributos del incidente.', pt: 'Atributos do incidente.' },
+          fields: {
+            specifications: { label: { en: 'Specifications', es: 'Especificaciones', pt: 'Especificações' } },
+          },
+        },
+        content: {
+          name: 'content',
+          label: { en: 'Content', es: 'Contenido', pt: 'Conteúdo' },
+          entity: { en: 'Content', es: 'Contenido', pt: 'Conteúdo' },
+          description: { en: 'Incident content.', es: 'Contenido del incidente.', pt: 'Conteúdo do incidente.' },
+          fields: {
+            narrative: { label: { en: 'Narrative', es: 'Narrativa', pt: 'Narrativa' } },
+          },
+        },
       },
     },
     traits: {
@@ -34,8 +51,16 @@ export const dictionary = {
       label: { en: 'Traits', es: 'Rasgos', pt: 'Traços' },
       description: { en: 'Incident impacts.', es: 'Impactos del incidente.', pt: 'Impactos do incidente.' },
       fields: {
-        decisions: { label: { en: 'Decisions', es: 'Decisiones', pt: 'Decisões' } },
-        impacts: { label: { en: 'Impacts', es: 'Impactos', pt: 'Impactos' } },
+        outcomes: {
+          name: 'outcomes',
+          label: { en: 'Outcomes', es: 'Resultados', pt: 'Resultados' },
+          entity: { en: 'Outcome', es: 'Resultado', pt: 'Resultado' },
+          description: { en: 'Incident outcomes.', es: 'Resultados del incidente.', pt: 'Resultados do incidente.' },
+          fields: {
+            decisions: { label: { en: 'Decisions', es: 'Decisiones', pt: 'Decisões' } },
+            impacts: { label: { en: 'Impacts', es: 'Impactos', pt: 'Impactos' } },
+          },
+        },
       },
     },
     assets: {
@@ -53,8 +78,37 @@ export const dictionary = {
       label: { en: 'Contexts', es: 'Contextos', pt: 'Contextos' },
       description: { en: 'Incident narrative and entities.', es: 'Narrativa y entidades del incidente.', pt: 'Narrativa e entidades do incidente.' },
       fields: {
-        narrative: { label: { en: 'Narrative', es: 'Narrativa', pt: 'Narrativa' } },
-        entities: { label: { en: 'Entities', es: 'Entidades', pt: 'Entidades' } },
+        connections: {
+          name: 'connections',
+          label: { en: 'Connections', es: 'Conexiones', pt: 'Conexões' },
+          entity: { en: 'Connection', es: 'Conexión', pt: 'Conexão' },
+          description: { en: 'Connections of the experience.', es: 'Conexiones de la experiencia.', pt: 'Conexões da experiência.' },
+          fields: {
+            drivers: { label: { en: 'Drivers', es: 'Conductores', pt: 'Condutor' } },
+            members: { label: { en: 'Members', es: 'Miembros', pt: 'Membros' } },
+            leaders: { label: { en: 'Leaders', es: 'Líderes', pt: 'Líderes' } },
+          },
+        },
+        associations: {
+          name: 'associations',
+          label: { en: 'Associations', es: 'Asociaciones', pt: 'Associações' },
+          entity: { en: 'Association', es: 'Asociación', pt: 'Associação' },
+          description: { en: 'Associations of the experience.', es: 'Asociaciones de la experiencia.', pt: 'Associações da experiência.' },
+          fields: {
+            organizations: { label: { en: 'Organizations', es: 'Organizaciones', pt: 'Organizações' } },
+            individuals: { label: { en: 'Individuals', es: 'Individuos', pt: 'Individuos' } },
+          },
+        },
+        references: {
+          name: 'references',
+          label: { en: 'References', es: 'Referencias', pt: 'Referências' },
+          entity: { en: 'Reference', es: 'Referencia', pt: 'Referência' },
+          description: { en: 'References of the experience.', es: 'Referencias de la experiencia.', pt: 'Referências da experiência.' },
+          fields: {
+            cars: { label: { en: 'Cars', es: 'Autos', pt: 'Carros' } },
+            kits: { label: { en: 'Kits', es: 'Kit', pt: 'Kit' } },
+          }
+        }
       },
     },
   },

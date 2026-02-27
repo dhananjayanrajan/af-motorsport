@@ -8,51 +8,49 @@ import { textFieldFactory } from '@/fields/factories/fields/textField'
 import { advanced } from '@/fields/factories/toggles/advanced'
 
 export const metricsFields: Field[] = [
-  groupFactory(
-    dictionary.tabs.metrics.fields.positions,
-    dictionary.host,
-    [
-      {
-        type: 'row',
-        fields: [
-          numberFieldFactory({
-            name: 'grid',
-            dictionary: dictionary.tabs.metrics.fields.positions.fields,
-            width: 4,
-            flags: [],
-          }),
-          numberFieldFactory({
-            name: 'start',
-            dictionary: dictionary.tabs.metrics.fields.positions.fields,
-            width: 4,
-            flags: [],
-          }),
-          numberFieldFactory({
-            name: 'finish',
-            dictionary: dictionary.tabs.metrics.fields.positions.fields,
-            width: 4,
-            flags: [],
-          }),
-          numberFieldFactory({
-            name: 'laps',
-            dictionary: dictionary.tabs.metrics.fields.positions.fields,
-            width: 4,
-            flags: [],
-          }),
-        ],
-      },
-    ],
-    false
+  advanced(
+    groupFactory(
+      dictionary.tabs.metrics.fields.positions,
+      dictionary.host,
+      [
+        {
+          type: 'row',
+          fields: [
+            numberFieldFactory({
+              name: 'grid',
+              dictionary: dictionary.tabs.metrics.fields.positions.fields,
+              width: 2,
+              flags: ['index', 'advanced'],
+            }),
+            numberFieldFactory({
+              name: 'laps',
+              dictionary: dictionary.tabs.metrics.fields.positions.fields,
+              width: 2,
+              flags: ['index', 'advanced'],
+            }),
+            numberFieldFactory({
+              name: 'start',
+              dictionary: dictionary.tabs.metrics.fields.positions.fields,
+              width: 2,
+              flags: ['index', 'advanced'],
+            }),
+            numberFieldFactory({
+              name: 'finish',
+              dictionary: dictionary.tabs.metrics.fields.positions.fields,
+              width: 2,
+              flags: ['index', 'advanced'],
+            }),
+          ],
+        },
+      ],
+      false
+    )
   ),
   advanced(
-    {
-      name: 'parameters',
-      type: 'array',
-      label: dictionary.tabs.metrics.fields.parameters.label,
-      admin: {
-        description: dictionary.tabs.metrics.fields.parameters.description,
-      },
-      fields: [
+    groupFactory(
+      dictionary.tabs.metrics.fields.parameters,
+      dictionary.host,
+      [
         {
           type: 'row',
           fields: [
@@ -78,6 +76,7 @@ export const metricsFields: Field[] = [
           ],
         },
       ],
-    }
+      false
+    )
   ),
 ]

@@ -52,7 +52,6 @@ export const dictionary = {
       label: { en: 'Traits', es: 'Rasgos', pt: 'Traços' },
       entity: { en: 'Feature', es: 'Característica', pt: 'Recurso' },
       description: { en: 'Feature characteristics.', es: 'Características de la característica.', pt: 'Características do recurso.' },
-
       nature: {
         name: 'nature',
         label: { en: 'Nature', es: 'Naturaleza', pt: 'Natureza' },
@@ -83,12 +82,19 @@ export const dictionary = {
       label: { en: 'Contexts', es: 'Contextos', pt: 'Contextos' },
       entity: { en: 'Feature', es: 'Característica', pt: 'Recurso' },
       description: { en: 'Relationships.', es: 'Relaciones.', pt: 'Relacionamentos.' },
-
       fields: {
-        notes: {
-          label: { en: 'Notes', es: 'Notas', pt: 'Notas' },
-          description: { en: 'Related notes.', es: 'Notas relacionadas.', pt: 'Notas relacionadas.' }
-        }
+        content: {
+          name: 'content',
+          label: { en: 'Content', es: 'Contenido', pt: 'Conteúdo' },
+          description: { en: 'Content of the feature.', es: 'Contenido de la característica.', pt: 'Conteúdo do recurso.' },
+          entity: { en: 'Content', es: 'Contenido', pt: 'Conteúdo' },
+          fields: {
+            notes: {
+              label: { en: 'Notes', es: 'Notas', pt: 'Notas' },
+              description: { en: 'Related notes.', es: 'Notas relacionadas.', pt: 'Notas relacionadas.' }
+            }
+          }
+        },
       }
     }
   }

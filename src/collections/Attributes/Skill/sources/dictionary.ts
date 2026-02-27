@@ -18,7 +18,7 @@ export const dictionary = {
     basics: {
       name: 'basics',
       label: { en: 'Basics', es: 'Básicos', pt: 'Básicos' },
-      entity: { en: 'Skill', es: 'Habilidad', pt: 'Habilidade' },
+      entity: { en: 'Add Basic Details', es: 'Añadir Detalles Básicos', pt: 'Adicionar Detalhes Básicos' },
       description: { en: 'Basic info.', es: 'Info básica.', pt: 'Info básica.' },
       fields: {
         description: {
@@ -29,7 +29,7 @@ export const dictionary = {
         scope: {
           name: 'scope',
           label: { en: 'Scope', es: 'Alcance', pt: 'Escopo' },
-          entity: { en: 'Scope', es: 'Alcance', pt: 'Escopo' },
+          entity: { en: 'Add a new Scope', es: 'Añadir un nuevo Alcance', pt: 'Adicionar um novo Escopo' },
           description: { en: 'Skill scope.', es: 'Alcance de habilidad.', pt: 'Escopo da habilidade.' },
           fields: {
             significance: {
@@ -55,7 +55,7 @@ export const dictionary = {
     details: {
       name: 'details',
       label: { en: 'Details', es: 'Detalles', pt: 'Detalhes' },
-      entity: { en: 'Skill', es: 'Habilidad', pt: 'Habilidade' },
+      entity: { en: 'Add a new Detail', es: 'Añadir un nuevo Detalle', pt: 'Adicionar um novo Detalhe' },
       description: { en: 'Detailed info.', es: 'Info detallada.', pt: 'Info detalhada.' },
       fields: {
         definition: {
@@ -63,6 +63,7 @@ export const dictionary = {
           placeholder: 'Enter definition',
           description: { en: 'Official definition.', es: 'Definición oficial.', pt: 'Definição oficial.' }
         },
+        classifications: { label: { en: 'Classifications', es: 'Clasificaciones', pt: 'Classificações' }, description: { en: 'Related classifications.', es: 'Clasificaciones relacionadas.', pt: 'Classificações relacionadas.' } },
         features: {
           label: { en: 'Features', es: 'Características', pt: 'Características' },
           description: { en: 'Related features.', es: 'Características relacionadas.', pt: 'Características relacionadas.' }
@@ -71,33 +72,12 @@ export const dictionary = {
           label: { en: 'Specifications', es: 'Especificaciones', pt: 'Especificações' },
           description: { en: 'Related specs.', es: 'Especificaciones relacionadas.', pt: 'Especificações relacionadas.' }
         }
-      },
-      methods: {
-        name: 'methods',
-        label: { en: 'Methods', es: 'Métodos', pt: 'Métodos' },
-        description: { en: 'Learning methods.', es: 'Métodos de aprendizaje.', pt: 'Métodos de aprendizado.' },
-        entity: { en: 'Skill', es: 'Habilidad', pt: 'Habilidade' },
-        fields: {
-          method: { label: { en: 'Method', es: 'Método', pt: 'Método' }, description: { en: 'Method name.', es: 'Nombre del método.', pt: 'Nome do método.' } },
-          type: { label: { en: 'Type', es: 'Tipo', pt: 'Tipo' }, description: { en: 'Method type.', es: 'Tipo de método.', pt: 'Tipo de método.' } },
-          description: { label: { en: 'Description', es: 'Descripción', pt: 'Descrição' }, description: { en: 'Method description.', es: 'Descripción del método.', pt: 'Descrição do método.' } }
-        }
-      },
-      dependencies: {
-        name: 'dependencies',
-        label: { en: 'Dependencies', es: 'Dependencias', pt: 'Dependências' },
-        description: { en: 'Skill dependencies.', es: 'Dependencias de habilidad.', pt: 'Dependências de habilidade.' },
-        entity: { en: 'Skill', es: 'Habilidad', pt: 'Habilidade' },
-        fields: {
-          skill: { label: { en: 'Skill', es: 'Habilidad', pt: 'Habilidade' }, description: { en: 'Dependent skill.', es: 'Habilidad dependiente.', pt: 'Habilidade dependente.' } },
-          type: { label: { en: 'Type', es: 'Tipo', pt: 'Tipo' }, description: { en: 'Dependency type.', es: 'Tipo de dependencia.', pt: 'Tipo de dependência.' } }
-        }
       }
     },
     traits: {
       name: 'traits',
       label: { en: 'Traits', es: 'Rasgos', pt: 'Traços' },
-      entity: { en: 'Skill', es: 'Habilidad', pt: 'Habilidade' },
+      entity: { en: 'Add a new Trait', es: 'Añadir un nuevo Rasgo', pt: 'Adicionar um novo Traço' },
       description: { en: 'Nature of skill.', es: 'Naturaleza de habilidad.', pt: 'Natureza da habilidade.' },
       nature: {
         name: 'nature',
@@ -109,17 +89,48 @@ export const dictionary = {
           visibility: { label: { en: 'Visibility', es: 'Visibilidad', pt: 'Visibilidade' }, description: { en: 'Skill visibility.', es: 'Visibilidad de habilidad.', pt: 'Visibilidade da habilidade.' } },
           impact: { label: { en: 'Impact', es: 'Impacto', pt: 'Impacto' }, description: { en: 'Skill impact.', es: 'Impacto de habilidad.', pt: 'Impacto da habilidade.' } }
         }
+      },
+      methods: {
+        name: 'methods',
+        label: { en: 'Methods', es: 'Métodos', pt: 'Métodos' },
+        description: { en: 'Learning methods.', es: 'Métodos de aprendizaje.', pt: 'Métodos de aprendizado.' },
+        entity: { en: 'Add a new Method', es: 'Añadir un nuevo Método', pt: 'Adicionar um novo Método' },
+        fields: {
+          method: { label: { en: 'Method', es: 'Método', pt: 'Método' }, description: { en: 'Method name.', es: 'Nombre del método.', pt: 'Nome do método.' } },
+          type: { label: { en: 'Type', es: 'Tipo', pt: 'Tipo' }, description: { en: 'Method type.', es: 'Tipo de método.', pt: 'Tipo de método.' } },
+          description: { label: { en: 'Description', es: 'Descripción', pt: 'Descrição' }, description: { en: 'Method description.', es: 'Descripción del método.', pt: 'Descrição do método.' } }
+        }
+      },
+      dependencies: {
+        name: 'dependencies',
+        label: { en: 'Dependencies', es: 'Dependencias', pt: 'Dependências' },
+        description: { en: 'Skill dependencies.', es: 'Dependencias de habilidad.', pt: 'Dependências de habilidade.' },
+        entity: { en: 'Add a new Dependency', es: 'Añadir una nueva Dependencia', pt: 'Adicionar uma nova Dependência' },
+        fields: {
+          skill: { label: { en: 'Skill', es: 'Habilidad', pt: 'Habilidade' }, description: { en: 'Dependent skill.', es: 'Habilidad dependiente.', pt: 'Habilidade dependente.' } },
+          type: { label: { en: 'Type', es: 'Tipo', pt: 'Tipo' }, description: { en: 'Dependency type.', es: 'Tipo de dependencia.', pt: 'Tipo de dependência.' } }
+        }
       }
     },
     contexts: {
       name: 'contexts',
       label: { en: 'Contexts', es: 'Contextos', pt: 'Contextos' },
-      entity: { en: 'Skill', es: 'Habilidad', pt: 'Habilidade' },
+      entity: { en: 'Add a new Context', es: 'Añadir un nuevo Contexto', pt: 'Adicionar um novo Contexto' },
       description: { en: 'Context info.', es: 'Info contextual.', pt: 'Info contextual.' },
       fields: {
-        classifications: { label: { en: 'Classifications', es: 'Clasificaciones', pt: 'Classificações' }, description: { en: 'Related classifications.', es: 'Clasificaciones relacionadas.', pt: 'Classificações relacionadas.' } },
         trainings: { label: { en: 'Trainings', es: 'Entrenamientos', pt: 'Treinamentos' }, description: { en: 'Related trainings.', es: 'Entrenamientos relacionados.', pt: 'Treinamentos relacionados.' } },
-        notes: { label: { en: 'Notes', es: 'Notas', pt: 'Notas' }, description: { en: 'Related notes.', es: 'Notas relacionadas.', pt: 'Notas relacionadas.' } }
+        content: {
+          name: 'content',
+          label: { en: 'Content', es: 'Contenido', pt: 'Conteúdo' },
+          description: { en: 'Content of the feature.', es: 'Contenido de la característica.', pt: 'Conteúdo do recurso.' },
+          entity: { en: 'Content', es: 'Contenido', pt: 'Conteúdo' },
+          fields: {
+            notes: {
+              label: { en: 'Notes', es: 'Notas', pt: 'Notas' },
+              description: { en: 'Related notes.', es: 'Notas relacionadas.', pt: 'Notas relacionadas.' }
+            }
+          }
+        },
       }
     }
   }

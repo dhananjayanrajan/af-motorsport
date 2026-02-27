@@ -93,8 +93,46 @@ export const dictionary = {
       description: { en: 'Connections.', es: 'Conexiones.', pt: 'Conexões.' },
       fields: {
         locations: { label: { en: 'Locations', es: 'Ubicaciones', pt: 'Localizações' } },
-        notes: { label: { en: 'Notes', es: 'Notas', pt: 'Notas' } },
-        entities: { label: { en: 'Entities', es: 'Entidades', pt: 'Entidades' } },
+        connections: {
+          name: 'connections',
+          label: { en: 'Connections', es: 'Conexiones', pt: 'Conexões' },
+          description: { en: 'Connections of the location.', es: 'Conexiones de la ubicación.', pt: 'Conexões da localização.' },
+          entity: { en: 'Connection', es: 'Conexión', pt: 'Conexão' },
+          fields: {
+            drivers: {
+              label: { en: 'Drivers', es: 'Drivers', pt: 'Pilotos' },
+              description: { en: 'Associated drivers.', es: 'Drivers asociados.', pt: 'Pilotos associados.' }
+            },
+            members: {
+              label: { en: 'Members', es: 'Miembros', pt: 'Membros' },
+              description: { en: 'Associated members.', es: 'Miembros asociados.', pt: 'Membros associados.' }
+            },
+            leaders: {
+              label: { en: 'Leaders', es: 'Líderes', pt: 'Líderes' },
+              description: { en: 'Associated leaders.', es: 'Líderes asociados.', pt: 'Líderes associados.' }
+            },
+            organizations: {
+              label: { en: 'Organizations', es: 'Organizaciones', pt: 'Organizações' },
+              description: { en: 'Associated organizations.', es: 'Organizaciones asociadas.', pt: 'Organizações associadas.' }
+            },
+            individuals: {
+              label: { en: 'Individuals', es: 'Individuos', pt: 'Indivíduos' },
+              description: { en: 'Associated individuals.', es: 'Individuos asociados.', pt: 'Indivíduos associados.' }
+            }
+          }
+        },
+        content: {
+          name: 'content',
+          label: { en: 'Content', es: 'Contenido', pt: 'Conteúdo' },
+          description: { en: 'Content of the feature.', es: 'Contenido de la característica.', pt: 'Conteúdo do recurso.' },
+          entity: { en: 'Content', es: 'Contenido', pt: 'Conteúdo' },
+          fields: {
+            notes: {
+              label: { en: 'Notes', es: 'Notas', pt: 'Notas' },
+              description: { en: 'Related notes.', es: 'Notas relacionadas.', pt: 'Notas relacionadas.' }
+            }
+          }
+        },
       },
     }
   },

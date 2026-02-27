@@ -26,7 +26,16 @@ export const dictionary = {
       label: { en: 'Details', es: 'Detalles', pt: 'Detalhes' },
       description: { en: 'Award narrative and details.', es: 'Narrativa y detalles del premio.', pt: 'Narrativa e detalhes do prêmio.' },
       fields: {
-        narrative: { label: { en: 'Narrative', es: 'Narrativa', pt: 'Narrativa' } },
+        content: {
+          name: 'content',
+          label: { en: 'Content', es: 'Contenido', pt: 'Conteúdo' },
+          description: { en: 'Content.', es: 'Contenido.', pt: 'Conteúdo.' },
+          entity: { en: 'Content', es: 'Contenido', pt: 'Conteúdo' },
+          fields: {
+            narrative: { label: { en: 'Narrative', es: 'Narrativa', pt: 'Narrativa' } },
+            stories: { label: { en: 'Stories', es: 'Historias', pt: 'Histórias' } },
+          }
+        }
       },
     },
     assets: {
@@ -43,8 +52,17 @@ export const dictionary = {
       label: { en: 'Contexts', es: 'Contextos', pt: 'Contextos' },
       description: { en: 'Award relationships and stories.', es: 'Relaciones e historias del premio.', pt: 'Relações e histórias do prêmio.' },
       fields: {
-        entities: { label: { en: 'Entities', es: 'Entidades', pt: 'Entidades' } },
-        story: { label: { en: 'Story', es: 'Historia', pt: 'História' } },
+        associations: {
+          name: 'associations',
+          label: { en: 'Associations', es: 'Asociaciones', pt: 'Associações' },
+          description: { en: 'Associations.', es: 'Asociaciones.', pt: 'Associações.' },
+          entity: { en: 'Association', es: 'Asociación', pt: 'Associação' },
+          fields: {
+            leaders: { label: { en: 'Leaders', es: 'Líderes', pt: 'Líderes' } },
+            organizations: { label: { en: 'Organizations', es: 'Organizaciones', pt: 'Organizações' } },
+            individuals: { label: { en: 'Individuals', es: 'Individuos', pt: 'Indivíduos' } },
+          }
+        }
       },
     },
   },

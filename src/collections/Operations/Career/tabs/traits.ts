@@ -22,6 +22,13 @@ export const traitsFields: Field[] = [
               flags: ['hasMany', 'advanced'],
             }),
             relationshipFieldFactory({
+              name: 'highlights',
+              relationTo: 'highlights',
+              dictionary: dictionary.tabs.traits.fields.outcomes.fields,
+              width: 2,
+              flags: ['hasMany', 'advanced'],
+            }),
+            relationshipFieldFactory({
               name: 'awards',
               relationTo: 'awards',
               dictionary: dictionary.tabs.traits.fields.outcomes.fields,

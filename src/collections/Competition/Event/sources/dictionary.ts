@@ -8,6 +8,11 @@ export const dictionary = {
       placeholder: 'e.g. Monaco Grand Prix',
       description: { en: 'The event name.', es: 'El nombre del evento.', pt: 'O nome do evento.' },
     },
+    season: {
+      label: { en: 'Season', es: 'Temporada', pt: 'Temporada' },
+      placeholder: 'e.g. 2026',
+      description: { en: 'The season of the event.', es: 'La temporada del evento.', pt: 'A temporada do evento.' },
+    },
     type: {
       label: { en: 'Type', es: 'Tipo', pt: 'Tipo' },
       placeholder: 'Select type',
@@ -20,11 +25,6 @@ export const dictionary = {
       label: { en: 'Basics', es: 'Básicos', pt: 'Básicos' },
       description: { en: 'Basic info.', es: 'Info básica.', pt: 'Info básica.' },
       fields: {
-        description: {
-          label: { en: 'Description', es: 'Descripción', pt: 'Descrição' },
-          placeholder: 'Brief description',
-          description: { en: 'Short description.', es: 'Descripción corta.', pt: 'Descrição curta.' },
-        },
         identifiers: {
           name: 'identifiers',
           label: { en: 'Identifiers', es: 'Identificadores', pt: 'Identificadores' },
@@ -41,13 +41,10 @@ export const dictionary = {
             },
           },
         },
-        status: {
-          label: { en: 'Status', es: 'Estado', pt: 'Status' },
-          description: { en: 'Event status.', es: 'Estado del evento.', pt: 'Status do evento.' },
-        },
-        access: {
-          label: { en: 'Access', es: 'Acceso', pt: 'Acesso' },
-          description: { en: 'Event access.', es: 'Acceso al evento.', pt: 'Acesso ao evento.' },
+        description: {
+          label: { en: 'Description', es: 'Descripción', pt: 'Descrição' },
+          placeholder: 'Brief description',
+          description: { en: 'Short description.', es: 'Descripción corta.', pt: 'Descrição curta.' },
         },
       },
     },
@@ -56,28 +53,46 @@ export const dictionary = {
       label: { en: 'Details', es: 'Detalles', pt: 'Detalhes' },
       description: { en: 'Event details.', es: 'Detalles del evento.', pt: 'Detalhes do evento.' },
       fields: {
-        narrative: {
-          label: { en: 'Narrative', es: 'Narrativa', pt: 'Narrativa' },
+        status: {
+          label: { en: 'Status', es: 'Estado', pt: 'Status' },
+          description: { en: 'Event status.', es: 'Estado del evento.', pt: 'Status do evento.' },
         },
-        story: {
-          label: { en: 'Story', es: 'Historia', pt: 'História' },
+        access: {
+          label: { en: 'Access', es: 'Acceso', pt: 'Acesso' },
+          description: { en: 'Event access.', es: 'Acceso al evento.', pt: 'Acesso ao evento.' },
         },
-        season: {
-          label: { en: 'Season', es: 'Temporada', pt: 'Temporada' },
-          description: { en: 'Associated season.', es: 'Temporada asociada.', pt: 'Temporada associada.' },
+        content: {
+          name: 'content',
+          label: { en: 'Content', es: 'Contenido', pt: 'Conteúdo' },
+          entity: { en: 'Content', es: 'Contenido', pt: 'Conteúdo' },
+          description: { en: 'Content information', es: 'Información de contenido', pt: 'Informações de conteúdo' },
+          fields: {
+            narrative: {
+              label: { en: 'Narrative', es: 'Narrativa', pt: 'Narrativa' },
+              description: { en: 'Event narrative.', es: 'Narrativa del evento.', pt: 'Narrativa do evento.' },
+            },
+            history: {
+              label: { en: 'History', es: 'Historia', pt: 'História' },
+              description: { en: 'Event history.', es: 'Historia del evento.', pt: 'História do evento.' },
+            },
+          },
         },
-        location: {
-          label: { en: 'Location', es: 'Ubicación', pt: 'Localização' },
-          description: { en: 'Event location.', es: 'Ubicación del evento.', pt: 'Localização do evento.' },
-        },
-        classification: {
-          label: { en: 'Classification', es: 'Clasificación', pt: 'Classificação' },
-        },
-        features: {
-          label: { en: 'Features', es: 'Características', pt: 'Características' },
-        },
-        regulations: {
-          label: { en: 'Regulations', es: 'Reglamentos', pt: 'Regulamentação' },
+        attributes: {
+          name: 'attributes',
+          label: { en: 'Attributes', es: 'Atributos', pt: 'Atributos' },
+          entity: { en: 'Attribute', es: 'Atributo', pt: 'Atributo' },
+          description: { en: 'Event attributes.', es: 'Atributos del evento.', pt: 'Atributos do evento.' },
+          fields: {
+            classification: {
+              label: { en: 'Classification', es: 'Clasificación', pt: 'Classificação' },
+            },
+            features: {
+              label: { en: 'Features', es: 'Características', pt: 'Características' },
+            },
+            regulations: {
+              label: { en: 'Regulations', es: 'Reglamentos', pt: 'Regulamentação' },
+            },
+          },
         },
       },
     },
@@ -98,7 +113,16 @@ export const dictionary = {
           },
         },
         format: {
+          name: 'format',
           label: { en: 'Format', es: 'Formato', pt: 'Formato' },
+          entity: { en: 'Format', es: 'Formato', pt: 'Formato' },
+          description: { en: 'Session format.', es: 'Formato de la sesión.', pt: 'Formato da sessão.' },
+          fields: {
+            segment: { label: { en: 'Segment', es: 'Segmento', pt: 'Segmento' } },
+            duration: { label: { en: 'Duration', es: 'Duración', pt: 'Duração' } },
+            interval: { label: { en: 'Interval', es: 'Intervalo', pt: 'Intervalo' } },
+            specification: { label: { en: 'Specification', es: 'Especificación', pt: 'Especificação' } },
+          },
         },
       },
     },
@@ -107,7 +131,19 @@ export const dictionary = {
       label: { en: 'Metrics', es: 'Métricas', pt: 'Métricas' },
       description: { en: 'Event metrics.', es: 'Métricas del evento.', pt: 'Métricas do evento.' },
       fields: {
-        specifications: { label: { en: 'Specifications', es: 'Especificaciones', pt: 'Especificações' } },
+        attributes: {
+          name: 'attributes',
+          label: { en: 'Attributes', es: 'Atributos', pt: 'Atributos' },
+          entity: { en: 'Attribute', es: 'Atributo', pt: 'Atributo' },
+          description: { en: 'Event attributes.', es: 'Atributos del evento.', pt: 'Atributos do evento.' },
+          fields: {
+            specifications: { label: { en: 'Specifications', es: 'Especificaciones', pt: 'Especificações' } },
+            location: {
+              label: { en: 'Location', es: 'Ubicación', pt: 'Localização' },
+              description: { en: 'Event location.', es: 'Ubicación del evento.', pt: 'Localização do evento.' },
+            },
+          },
+        },
       },
     },
     assets: {
@@ -127,8 +163,16 @@ export const dictionary = {
       label: { en: 'Contexts', es: 'Contextos', pt: 'Contextos' },
       description: { en: 'Related info.', es: 'Info relacionada.', pt: 'Info relacionada.' },
       fields: {
-        highlights: { label: { en: 'Highlights', es: 'Destacados', pt: 'Destaques' } },
-        insights: { label: { en: 'Insights', es: 'Perspectivas', pt: 'Insights' } },
+        references: {
+          name: 'references',
+          label: { en: 'References', es: 'Referencias', pt: 'Referências' },
+          entity: { en: 'Reference', es: 'Referencia', pt: 'Referência' },
+          description: { en: 'Reference information', es: 'Información de referencia', pt: 'Informações de referência' },
+          fields: {
+            highlights: { label: { en: 'Highlights', es: 'Destacados', pt: 'Destaques' } },
+            insights: { label: { en: 'Insights', es: 'Perspectivas', pt: 'Insights' } },
+          }
+        },
       },
     },
   },

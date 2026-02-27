@@ -26,7 +26,16 @@ export const dictionary = {
       label: { en: 'Details', es: 'Detalles', pt: 'Detalhes' },
       description: { en: 'Decision narrative and features.', es: 'Narrativa y características de la decisión.', pt: 'Narrativa e características da decisão.' },
       fields: {
-        narrative: { label: { en: 'Narrative', es: 'Narrativa', pt: 'Narrativa' } },
+        content: {
+          name: 'content',
+          label: { en: 'Content', es: 'Contenido', pt: 'Conteúdo' },
+          description: { en: 'Content.', es: 'Contenido.', pt: 'Conteúdo.' },
+          entity: { en: 'Content', es: 'Contenido', pt: 'Conteúdo' },
+          fields: {
+            narrative: { label: { en: 'Narrative', es: 'Narrativa', pt: 'Narrativa' } },
+            notes: { label: { en: 'Notes', es: 'Notas', pt: 'Notas' } },
+          }
+        }
       },
     },
     traits: {
@@ -36,7 +45,23 @@ export const dictionary = {
       fields: {
         features: { label: { en: 'Features', es: 'Características', pt: 'Características' } },
         specifications: { label: { en: 'Specifications', es: 'Especificaciones', pt: 'Especificações' } },
-        expectations: { label: { en: 'Expectations', es: 'Expectativas', pt: 'Expectativas' } },
+      },
+    },
+    metrics: {
+      name: 'metrics',
+      label: { en: 'Metrics', es: 'Métricas', pt: 'Métricas' },
+      description: { en: 'Decision metrics and statistics.', es: 'Métricas y estadísticas de la decisión.', pt: 'Métricas e estatísticas da decisão.' },
+      fields: {
+        outcomes: {
+          name: 'outcomes',
+          label: { en: 'Outcomes', es: 'Resultados', pt: 'Resultados' },
+          description: { en: 'Outcomes.', es: 'Resultados.', pt: 'Resultados.' },
+          entity: { en: 'Outcome', es: 'Resultado', pt: 'Resultado' },
+          fields: {
+            expectations: { label: { en: 'Expectations', es: 'Expectativas', pt: 'Expectativas' } },
+            impacts: { label: { en: 'Impacts', es: 'Impactos', pt: 'Impactos' } },
+          }
+        }
       },
     },
     contexts: {
@@ -45,6 +70,19 @@ export const dictionary = {
       description: { en: 'Decision contexts and impacts.', es: 'Contextos e impactos de la decisión.', pt: 'Contextos e impactos da decisão.' },
       fields: {
         entities: { label: { en: 'Entities', es: 'Entidades', pt: 'Entidades' } },
+        connections: {
+          name: 'connections',
+          label: { en: 'Connections', es: 'Conexiones', pt: 'Conexões' },
+          description: { en: 'Decision connections.', es: 'Conexiones de la decisión.', pt: 'Conexões da decisão.' },
+          entity: { en: 'Connections', es: 'Conexiones', pt: 'Conexões' },
+          fields: {
+            drivers: { label: { en: 'Drivers', es: 'Drivers', pt: 'Drivers' } },
+            members: { label: { en: 'Members', es: 'Miembros', pt: 'Membros' } },
+            leaders: { label: { en: 'Leaders', es: 'Líderes', pt: 'Líderes' } },
+            organizations: { label: { en: 'Organizations', es: 'Organizaciones', pt: 'Organizações' } },
+            individuals: { label: { en: 'Individuals', es: 'Individuos', pt: 'Indivíduos' } }
+          }
+        },
         operations: {
           name: 'operations',
           label: { en: 'Operations', es: 'Operaciones', pt: 'Operações' },
@@ -53,16 +91,6 @@ export const dictionary = {
           fields: {
             protocols: { label: { en: 'Protocols', es: 'Protocolos', pt: 'Protocolos' } },
             preferences: { label: { en: 'Preferences', es: 'Preferencias', pt: 'Preferências' } },
-          }
-        },
-        content: {
-          name: 'content',
-          label: { en: 'Content', es: 'Contenido', pt: 'Conteúdo' },
-          description: { en: 'Decision notes and impacts.', es: 'Notas e impactos de la decisión.', pt: 'Notas e impactos da decisão.' },
-          entity: { en: 'Content', es: 'Contenido', pt: 'Conteúdo' },
-          fields: {
-            notes: { label: { en: 'Notes', es: 'Notas', pt: 'Notas' } },
-            impacts: { label: { en: 'Impacts', es: 'Impactos', pt: 'Impactos' } },
           }
         }
       },

@@ -4,22 +4,9 @@ import { dictionary } from '../sources/dictionary'
 import { textareaFieldFactory } from '@/fields/factories/fields/textareaField'
 import { groupFactory } from '@/fields/factories/blueprint'
 import { textFieldFactory } from '@/fields/factories/fields/textField'
-import { selectFieldFactory } from '@/fields/factories/fields/selectField'
 import { advanced } from '@/fields/factories/toggles/advanced'
-import { ENTRY_STATUS } from '../sources/constants'
 
 export const basicsFields: Field[] = [
-  {
-    type: 'row',
-    fields: [
-      textareaFieldFactory({
-        name: 'description',
-        dictionary: dictionary.tabs.basics.fields,
-        width: 1,
-        flags: ['localized'],
-      }),
-    ],
-  },
   advanced(
     groupFactory(
       dictionary.tabs.basics.fields.identifiers,
@@ -32,13 +19,13 @@ export const basicsFields: Field[] = [
               name: 'number',
               dictionary: dictionary.tabs.basics.fields.identifiers.fields,
               width: 2,
-              flags: ['index'],
+              flags: ['index', 'advanced'],
             }),
             textFieldFactory({
               name: 'plate',
               dictionary: dictionary.tabs.basics.fields.identifiers.fields,
               width: 2,
-              flags: ['advanced'],
+              flags: ['index', 'advanced'],
             }),
           ],
         },
@@ -46,16 +33,12 @@ export const basicsFields: Field[] = [
       false
     )
   ),
-  {
-    type: 'row',
-    fields: [
-      selectFieldFactory({
-        name: 'status',
-        options: ENTRY_STATUS,
-        dictionary: dictionary.tabs.basics.fields,
-        width: 1,
-        flags: [],
-      }),
-    ],
-  },
+  advanced(
+    textareaFieldFactory({
+      name: 'description',
+      dictionary: dictionary.tabs.basics.fields,
+      width: 1,
+      flags: ['localized', 'index', 'advanced'],
+    }),
+  )
 ]

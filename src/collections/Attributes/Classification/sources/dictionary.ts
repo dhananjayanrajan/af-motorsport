@@ -58,10 +58,18 @@ export const dictionary = {
       description: { en: 'Relationships.', es: 'Relaciones.', pt: 'Relacionamentos.' },
 
       fields: {
-        notes: {
-          label: { en: 'Notes', es: 'Notas', pt: 'Notas' },
-          description: { en: 'Related notes.', es: 'Notas relacionadas.', pt: 'Notas relacionadas.' }
-        }
+        content: {
+          name: 'content',
+          label: { en: 'Content', es: 'Contenido', pt: 'Conteúdo' },
+          description: { en: 'Content of the feature.', es: 'Contenido de la característica.', pt: 'Conteúdo do recurso.' },
+          entity: { en: 'Content', es: 'Contenido', pt: 'Conteúdo' },
+          fields: {
+            notes: {
+              label: { en: 'Notes', es: 'Notas', pt: 'Notas' },
+              description: { en: 'Related notes.', es: 'Notas relacionadas.', pt: 'Notas relacionadas.' }
+            }
+          }
+        },
       }
     }
   }

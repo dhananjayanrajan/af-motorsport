@@ -1,23 +1,30 @@
-// FILE: src/collections/Operations/Expectations/tabs/contexts.ts
+// FILE: src/collections/Entities/Drivers/tabs/metrics.ts
 import type { Field } from 'payload'
 import { dictionary } from '../sources/dictionary'
 import { relationshipFieldFactory } from '@/fields/factories/fields/relationshipField'
 import { advanced } from '@/fields/factories/toggles/advanced'
 import { groupFactory } from '@/fields/factories/blueprint'
 
-export const contextsFields: Field[] = [
+export const metricsFields: Field[] = [
   advanced(
     groupFactory(
-      dictionary.tabs.contexts.fields.content,
+      dictionary.tabs.metrics.fields.outcomes,
       dictionary.host,
       [
         {
           type: 'row',
           fields: [
             relationshipFieldFactory({
-              name: 'notes',
-              relationTo: 'notes',
-              dictionary: dictionary.tabs.contexts.fields.content.fields,
+              name: 'highlights',
+              relationTo: 'highlights',
+              dictionary: dictionary.tabs.metrics.fields.outcomes.fields,
+              width: 2,
+              flags: ['hasMany', 'advanced'],
+            }),
+            relationshipFieldFactory({
+              name: 'incidents',
+              relationTo: 'incidents',
+              dictionary: dictionary.tabs.metrics.fields.outcomes.fields,
               width: 2,
               flags: ['hasMany', 'advanced'],
             }),
@@ -26,5 +33,5 @@ export const contextsFields: Field[] = [
       ],
       false
     )
-  )
+  ),
 ]

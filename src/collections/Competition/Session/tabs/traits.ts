@@ -4,17 +4,53 @@ import { dictionary } from '../sources/dictionary'
 import { relationshipFieldFactory } from '@/fields/factories/fields/relationshipField'
 import { textFieldFactory } from '@/fields/factories/fields/textField'
 import { advanced } from '@/fields/factories/toggles/advanced'
+import { groupFactory } from '@/fields/factories/blueprint'
+import { numberFieldFactory } from '@/fields/factories/fields/numberField'
 
 export const traitsFields: Field[] = [
   advanced(
-    {
-      name: 'constraints',
-      type: 'array',
-      label: dictionary.tabs.traits.fields.constraints.label,
-      admin: {
-        description: dictionary.tabs.traits.fields.constraints.description,
-      },
-      fields: [
+    groupFactory(
+      dictionary.tabs.traits.fields.format,
+      dictionary.host,
+      [
+        {
+          type: 'row',
+          fields: [
+            textFieldFactory({
+              name: 'segment',
+              dictionary: dictionary.tabs.traits.fields.format.fields,
+              width: 2,
+              flags: ['advanced'],
+            }),
+            numberFieldFactory({
+              name: 'duration',
+              dictionary: dictionary.tabs.traits.fields.format.fields,
+              width: 2,
+              flags: ['advanced'],
+            }),
+            numberFieldFactory({
+              name: 'interval',
+              dictionary: dictionary.tabs.traits.fields.format.fields,
+              width: 2,
+              flags: ['advanced'],
+            }),
+            textFieldFactory({
+              name: 'specification',
+              dictionary: dictionary.tabs.traits.fields.format.fields,
+              width: 2,
+              flags: ['advanced'],
+            }),
+          ],
+        },
+      ],
+      false
+    )
+  ),
+  advanced(
+    groupFactory(
+      dictionary.tabs.traits.fields.constraints,
+      dictionary.host,
+      [
         {
           type: 'row',
           fields: [
@@ -40,17 +76,14 @@ export const traitsFields: Field[] = [
           ],
         },
       ],
-    }
+      false
+    )
   ),
   advanced(
-    {
-      name: 'parameters',
-      type: 'array',
-      label: dictionary.tabs.traits.fields.parameters.label,
-      admin: {
-        description: dictionary.tabs.traits.fields.parameters.description,
-      },
-      fields: [
+    groupFactory(
+      dictionary.tabs.traits.fields.parameters,
+      dictionary.host,
+      [
         {
           type: 'row',
           fields: [
@@ -76,18 +109,16 @@ export const traitsFields: Field[] = [
           ],
         },
       ],
-    }
+      true
+    )
   ),
-  {
-    type: 'row',
-    fields: [
-      relationshipFieldFactory({
-        name: 'specifications',
-        relationTo: 'specifications',
-        dictionary: dictionary.tabs.traits.fields,
-        width: 1,
-        flags: ['hasMany', 'advanced'],
-      }),
-    ],
-  },
+  advanced(
+    relationshipFieldFactory({
+      name: 'specifications',
+      relationTo: 'specifications',
+      dictionary: dictionary.tabs.traits.fields,
+      width: 1,
+      flags: ['hasMany', 'advanced'],
+    }),
+  )
 ]

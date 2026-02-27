@@ -5,50 +5,80 @@ import { groupFactory } from '@/fields/factories/blueprint'
 import { dateFieldFactory } from '@/fields/factories/fields/dateField'
 import { textFieldFactory } from '@/fields/factories/fields/textField'
 import { relationshipFieldFactory } from '@/fields/factories/fields/relationshipField'
+import { advanced } from '@/fields/factories/toggles/advanced'
+import { numberFieldFactory } from '@/fields/factories/fields/numberField'
 
 export const traitsFields: Field[] = [
-  groupFactory(
-    dictionary.tabs.traits.fields.chronology,
-    dictionary.host,
-    [
-      {
-        type: 'row',
-        fields: [
-          dateFieldFactory({
-            name: 'start',
-            dictionary: dictionary.tabs.traits.fields.chronology.fields,
-            width: 3,
-            flags: [],
-            pickerAppearance: 'dayAndTime',
-          }),
-          dateFieldFactory({
-            name: 'end',
-            dictionary: dictionary.tabs.traits.fields.chronology.fields,
-            width: 3,
-            flags: [],
-            pickerAppearance: 'dayAndTime',
-          }),
-          textFieldFactory({
-            name: 'timezone',
-            dictionary: dictionary.tabs.traits.fields.chronology.fields,
-            width: 3,
-            flags: [],
-          }),
-        ],
-      },
-    ],
-    false
+  advanced(
+    groupFactory(
+      dictionary.tabs.traits.fields.chronology,
+      dictionary.host,
+      [
+        {
+          type: 'row',
+          fields: [
+            dateFieldFactory({
+              name: 'start',
+              dictionary: dictionary.tabs.traits.fields.chronology.fields,
+              width: 3,
+              flags: ['index', 'advanced'],
+              pickerAppearance: 'dayAndTime',
+            }),
+            dateFieldFactory({
+              name: 'end',
+              dictionary: dictionary.tabs.traits.fields.chronology.fields,
+              width: 3,
+              flags: ['index', 'advanced'],
+              pickerAppearance: 'dayAndTime',
+            }),
+            textFieldFactory({
+              name: 'timezone',
+              dictionary: dictionary.tabs.traits.fields.chronology.fields,
+              width: 3,
+              flags: ['index', 'advanced'],
+            }),
+          ],
+        },
+      ],
+      false
+    )
   ),
-  {
-    type: 'row',
-    fields: [
-      relationshipFieldFactory({
-        name: 'format',
-        relationTo: 'categories',
-        dictionary: dictionary.tabs.traits.fields,
-        width: 1,
-        flags: [],
-      }),
-    ],
-  },
+  advanced(
+    groupFactory(
+      dictionary.tabs.traits.fields.format,
+      dictionary.host,
+      [
+        {
+          type: 'row',
+          fields: [
+            textFieldFactory({
+              name: 'segment',
+              dictionary: dictionary.tabs.traits.fields.format.fields,
+              width: 2,
+              flags: ['advanced'],
+            }),
+            numberFieldFactory({
+              name: 'duration',
+              dictionary: dictionary.tabs.traits.fields.format.fields,
+              width: 2,
+              flags: ['advanced'],
+            }),
+            numberFieldFactory({
+              name: 'interval',
+              dictionary: dictionary.tabs.traits.fields.format.fields,
+              width: 2,
+              flags: ['advanced'],
+            }),
+            textFieldFactory({
+              name: 'specification',
+              dictionary: dictionary.tabs.traits.fields.format.fields,
+              width: 2,
+              flags: ['advanced'],
+            }),
+          ],
+        },
+      ],
+      false
+    )
+  ),
 ]

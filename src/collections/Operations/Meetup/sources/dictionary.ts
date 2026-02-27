@@ -28,9 +28,9 @@ export const dictionary = {
       label: { en: 'Details', es: 'Detalles', pt: 'Detalhes' },
       description: { en: 'Meetup narrative and features.', es: 'Narrativa y características del encuentro.', pt: 'Narrativa e características do meetup.' },
       fields: {
-        narrative: { label: { en: 'Narrative', es: 'Narrativa', pt: 'Narrativa' } },
         features: { label: { en: 'Features', es: 'Características', pt: 'Características' } },
         schedules: { label: { en: 'Schedules', es: 'Horarios', pt: 'Cronogramas' } },
+        narrative: { label: { en: 'Narrative', es: 'Narrativa', pt: 'Narrativa' } },
       },
     },
     traits: {
@@ -93,7 +93,15 @@ export const dictionary = {
             celebrations: { label: { en: 'Celebrations', es: 'Celebraciones', pt: 'Celebrações' } },
           }
         },
-        notes: { label: { en: 'Notes', es: 'Notas', pt: 'Notas' } },
+        content: {
+          name: 'content',
+          label: { en: 'Content', es: 'Contenido', pt: 'Conteúdo' },
+          description: { en: 'Content.', es: 'Contenido.', pt: 'Conteúdo.' },
+          entity: { en: 'Content', es: 'Contenido', pt: 'Conteúdo' },
+          fields: {
+            notes: { label: { en: 'Notes', es: 'Notas', pt: 'Notas' } },
+          }
+        }
       },
     },
   },

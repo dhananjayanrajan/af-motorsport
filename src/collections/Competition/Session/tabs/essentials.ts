@@ -15,19 +15,14 @@ export const essentialFields: Field[] = [
             name: 'name',
             dictionary: dictionary.essential,
             width: 2,
-            flags: ['localized', 'index'],
+            flags: ['required', 'localized', 'index'],
           }),
           textFieldFactory({
             name: 'alias',
             dictionary: dictionary.essential,
             width: 2,
-            flags: ['localized'],
+            flags: ['localized', 'advanced'],
           }),
-        ],
-      },
-      {
-        type: 'row',
-        fields: [
           textFieldFactory({
             name: 'code',
             dictionary: dictionary.essential,
@@ -39,7 +34,7 @@ export const essentialFields: Field[] = [
             relationTo: 'categories',
             dictionary: dictionary.essential,
             width: 2,
-            flags: [],
+            flags: ['hasMany'],
           }),
         ],
       },

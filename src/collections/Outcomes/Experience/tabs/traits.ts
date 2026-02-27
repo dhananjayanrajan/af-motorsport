@@ -32,7 +32,8 @@ export const traitsFields: Field[] = [
             }),
           ],
         },
-      ]
+      ],
+      true
     )
   ),
 ]

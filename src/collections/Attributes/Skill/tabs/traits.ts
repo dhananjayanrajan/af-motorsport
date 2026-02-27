@@ -8,7 +8,13 @@ import {
   NATURE_COMPLEXITY,
   NATURE_VISIBILITY,
   NATURE_IMPACT,
+  SKILL_METHOD_TYPE,
+  SKILL_DEPENDENCY_TYPE
 } from '../sources/constants'
+import { relationshipFieldFactory } from '@/fields/factories/fields/relationshipField'
+import { textFieldFactory } from '@/fields/factories/fields/textField'
+import { textareaFieldFactory } from '@/fields/factories/fields/textareaField'
+
 
 export const traitsFields: Field[] = [
   advanced(
@@ -46,4 +52,65 @@ export const traitsFields: Field[] = [
       false
     )
   ),
+  advanced(
+    groupFactory(
+      dictionary.tabs.traits.methods,
+      dictionary.host,
+      [
+        {
+          type: 'row',
+          fields: [
+            textFieldFactory({
+              name: 'method',
+              dictionary: dictionary.tabs.traits.methods.fields,
+              width: 2,
+              flags: ['advanced'],
+            }),
+            selectFieldFactory({
+              name: 'type',
+              options: SKILL_METHOD_TYPE,
+              dictionary: dictionary.tabs.traits.methods.fields,
+              width: 2,
+              flags: ['advanced'],
+            }),
+            textareaFieldFactory({
+              name: 'description',
+              dictionary: dictionary.tabs.traits.methods.fields,
+              width: 1,
+              flags: ['advanced'],
+            }),
+          ],
+        },
+      ],
+      true
+    )
+  ),
+  advanced(
+    groupFactory(
+      dictionary.tabs.traits.dependencies,
+      dictionary.host,
+      [
+        {
+          type: 'row',
+          fields: [
+            relationshipFieldFactory({
+              name: 'skill',
+              relationTo: 'skills',
+              dictionary: dictionary.tabs.traits.dependencies.fields,
+              width: 2,
+              flags: ['advanced'],
+            }),
+            selectFieldFactory({
+              name: 'type',
+              options: SKILL_DEPENDENCY_TYPE,
+              dictionary: dictionary.tabs.traits.dependencies.fields,
+              width: 2,
+              flags: ['advanced'],
+            }),
+          ],
+        },
+      ],
+      true
+    )
+  )
 ]

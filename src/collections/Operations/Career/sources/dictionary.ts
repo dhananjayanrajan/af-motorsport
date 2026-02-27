@@ -52,6 +52,7 @@ export const dictionary = {
           entity: { en: 'Outcome', es: 'Resultado', pt: 'Resultado' },
           description: { en: 'Outcome information', es: 'Información de resultados', pt: 'Informações de resultados' },
           fields: {
+            highlights: { label: { en: 'Highlights', es: 'Destacados', pt: 'Destaques' } },
             expectations: { label: { en: 'Expectations', es: 'Expectativas', pt: 'Expectativas' } },
             awards: { label: { en: 'Awards', es: 'Premios', pt: 'Prêmios' } },
           }
@@ -85,8 +86,15 @@ export const dictionary = {
             cars: { label: { en: 'Cars', es: 'Coches', pt: 'Carros' } },
           }
         },
-        highlights: { label: { en: 'Highlights', es: 'Destacados', pt: 'Destaques' } },
-        stories: { label: { en: 'Stories', es: 'Historias', pt: 'Histórias' } },
+        content: {
+          name: 'content',
+          label: { en: 'Content', es: 'Contenido', pt: 'Conteúdo' },
+          description: { en: 'Content.', es: 'Contenido.', pt: 'Conteúdo.' },
+          entity: { en: 'Content', es: 'Contenido', pt: 'Conteúdo' },
+          fields: {
+            stories: { label: { en: 'Stories', es: 'Historias', pt: 'Histórias' } },
+          }
+        },
       },
     },
   },

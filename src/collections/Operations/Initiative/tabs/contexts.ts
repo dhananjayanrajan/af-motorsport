@@ -69,23 +69,32 @@ export const contextsFields: Field[] = [
       false
     )
   ),
-  {
-    type: 'row',
-    fields: [
-      relationshipFieldFactory({
-        name: 'histories',
-        relationTo: 'histories',
-        dictionary: dictionary.tabs.contexts.fields,
-        width: 2,
-        flags: ['hasMany', 'advanced'],
-      }),
-      relationshipFieldFactory({
-        name: 'insights',
-        relationTo: 'notes',
-        dictionary: dictionary.tabs.contexts.fields,
-        width: 2,
-        flags: ['hasMany', 'advanced'],
-      }),
-    ],
-  },
+  advanced(
+    groupFactory(
+      dictionary.tabs.contexts.fields.content,
+      dictionary.host,
+      [
+        {
+          type: 'row',
+          fields: [
+            relationshipFieldFactory({
+              name: 'histories',
+              relationTo: 'histories',
+              dictionary: dictionary.tabs.contexts.fields.content.fields,
+              width: 2,
+              flags: ['hasMany', 'advanced'],
+            }),
+            relationshipFieldFactory({
+              name: 'insights',
+              relationTo: 'notes',
+              dictionary: dictionary.tabs.contexts.fields,
+              width: 2,
+              flags: ['hasMany', 'advanced'],
+            }),
+          ]
+        }
+      ],
+      false
+    )
+  )
 ]

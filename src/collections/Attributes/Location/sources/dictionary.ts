@@ -34,7 +34,7 @@ export const dictionary = {
         description: {
           label: { en: 'Description', es: 'Descripción', pt: 'Descrição' },
           placeholder: 'Enter description',
-          description: { en: 'Brief description.', es: 'Breve descripción.', pt: 'Breve descrição.' } // Corrected to text description per generic
+          description: { en: 'Brief description.', es: 'Breve descripción.', pt: 'Breve descrição.' }
         }
       }
     },
@@ -154,9 +154,33 @@ export const dictionary = {
       entity: { en: 'Location', es: 'Ubicación', pt: 'Localização' },
       description: { en: 'Related entities.', es: 'Entidades relacionadas.', pt: 'Entidades relacionadas.' },
       fields: {
-        entities: {
-          label: { en: 'Entities', es: 'Entidades', pt: 'Entidades' },
-          description: { en: 'Associated entities.', es: 'Entidades asociadas.', pt: 'Entidades associadas.' }
+        connections: {
+          name: 'connections',
+          label: { en: 'Connections', es: 'Conexiones', pt: 'Conexões' },
+          description: { en: 'Connections of the location.', es: 'Conexiones de la ubicación.', pt: 'Conexões da localização.' },
+          entity: { en: 'Connection', es: 'Conexión', pt: 'Conexão' },
+          fields: {
+            drivers: {
+              label: { en: 'Drivers', es: 'Drivers', pt: 'Pilotos' },
+              description: { en: 'Associated drivers.', es: 'Drivers asociados.', pt: 'Pilotos associados.' }
+            },
+            members: {
+              label: { en: 'Members', es: 'Miembros', pt: 'Membros' },
+              description: { en: 'Associated members.', es: 'Miembros asociados.', pt: 'Membros associados.' }
+            },
+            leaders: {
+              label: { en: 'Leaders', es: 'Líderes', pt: 'Líderes' },
+              description: { en: 'Associated leaders.', es: 'Líderes asociados.', pt: 'Líderes associados.' }
+            },
+            organizations: {
+              label: { en: 'Organizations', es: 'Organizaciones', pt: 'Organizações' },
+              description: { en: 'Associated organizations.', es: 'Organizaciones asociadas.', pt: 'Organizações associadas.' }
+            },
+            individuals: {
+              label: { en: 'Individuals', es: 'Individuos', pt: 'Indivíduos' },
+              description: { en: 'Associated individuals.', es: 'Individuos asociados.', pt: 'Indivíduos associados.' }
+            }
+          }
         }
       }
     }

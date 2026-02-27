@@ -119,12 +119,24 @@ export const contextsFields: Field[] = [
     )
   ),
   advanced(
-    relationshipFieldFactory({
-      name: 'notes',
-      relationTo: 'notes',
-      dictionary: dictionary.tabs.contexts.fields,
-      width: 3,
-      flags: ['hasMany'],
-    }),
+    groupFactory(
+      dictionary.tabs.contexts.fields.content,
+      dictionary.host,
+      [
+        {
+          type: 'row',
+          fields: [
+            relationshipFieldFactory({
+              name: 'notes',
+              relationTo: 'notes',
+              dictionary: dictionary.tabs.contexts.fields.content.fields,
+              width: 3,
+              flags: ['hasMany', 'advanced'],
+            }),
+          ],
+        },
+      ],
+      false
+    )
   )
 ]

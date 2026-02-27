@@ -46,7 +46,15 @@ export const dictionary = {
       label: { en: 'Contexts', es: 'Contextos', pt: 'Contextos' },
       description: { en: 'Expectation specifications and protocols.', es: 'Especificaciones y protocolos de la expectativa.', pt: 'Especificações e protocolos da expectativa.' },
       fields: {
-        notes: { label: { en: 'Notes', es: 'Notas', pt: 'Notas' } },
+        content: {
+          name: 'content',
+          label: { en: 'Content', es: 'Contenido', pt: 'Conteúdo' },
+          description: { en: 'Content.', es: 'Contenido.', pt: 'Conteúdo.' },
+          entity: { en: 'Content', es: 'Contenido', pt: 'Conteúdo' },
+          fields: {
+            notes: { label: { en: 'Notes', es: 'Notas', pt: 'Notas' } },
+          }
+        },
       },
     },
   },
