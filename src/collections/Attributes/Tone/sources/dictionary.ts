@@ -8,6 +8,11 @@ export const dictionary = {
       placeholder: 'e.g. Formal',
       description: { en: 'Tone name.', es: 'Nombre del tono.', pt: 'Nome do tom.' }
     },
+    alias: {
+      label: { en: 'Alias', es: 'Alias', pt: 'Alias' },
+      placeholder: 'e.g. Official',
+      description: { en: 'Tone alias.', es: 'Alias del tono.', pt: 'Alias do tom.' }
+    },
     type: {
       label: { en: 'Type', es: 'Tipo', pt: 'Tipo' },
       placeholder: 'Select type',
@@ -21,11 +26,6 @@ export const dictionary = {
       entity: { en: 'Tone', es: 'Tono', pt: 'Tom' },
       description: { en: 'Basic info.', es: 'Info básica.', pt: 'Info básica.' },
       fields: {
-        alias: {
-          label: { en: 'Alias', es: 'Alias', pt: 'Alias' },
-          placeholder: 'e.g. Official',
-          description: { en: 'Tone alias.', es: 'Alias del tono.', pt: 'Alias do tom.' }
-        },
         description: {
           label: { en: 'Description', es: 'Descripción', pt: 'Descrição' },
           placeholder: 'Enter description',

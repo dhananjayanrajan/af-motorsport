@@ -39,6 +39,10 @@ export const dictionary = {
             code: { label: { en: 'Code', es: 'Código', pt: 'Código' } },
           },
         },
+        tagline: {
+          label: { en: 'Tagline', es: 'Lema', pt: 'Lema' },
+          placeholder: { en: 'e.g. The Hammer', es: 'e.g. El Martillo', pt: 'e.g. O Martelo' },
+        },
         description: { label: { en: 'Description', es: 'Descripción', pt: 'Descrição' } },
       },
     },

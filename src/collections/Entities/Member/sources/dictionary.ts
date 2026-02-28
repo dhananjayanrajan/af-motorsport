@@ -28,6 +28,10 @@ export const dictionary = {
       name: 'basics',
       label: { en: 'Basics', es: 'Básicos', pt: 'Básicos' },
       fields: {
+        tagline: {
+          label: { en: 'Tagline', es: 'Lema', pt: 'Lema' },
+          placeholder: { en: 'e.g. The Hammer', es: 'e.g. El Martillo', pt: 'e.g. O Martelo' },
+        },
         description: { label: { en: 'Description', es: 'Descripción', pt: 'Descrição' } },
         identifier: {
           name: 'identifier',

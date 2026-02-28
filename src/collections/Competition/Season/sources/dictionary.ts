@@ -40,6 +40,10 @@ export const dictionary = {
             },
           },
         },
+        tagline: {
+          label: { en: 'Tagline', es: 'Lema', pt: 'Lema' },
+          placeholder: { en: 'e.g. The Hammer', es: 'e.g. El Martillo', pt: 'e.g. O Martelo' },
+        },
         description: {
           label: { en: 'Description', es: 'Descripción', pt: 'Descrição' },
           placeholder: 'Brief description',

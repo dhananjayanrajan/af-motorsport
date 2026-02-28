@@ -8,6 +8,10 @@ export const dictionary = {
       placeholder: 'e.g. Race Observation',
       description: { en: 'The note name.', es: 'El nombre de la nota.', pt: 'O nome da nota.' },
     },
+    alias: {
+      label: { en: 'Alias', es: 'Alias', pt: 'Alias' },
+      placeholder: 'e.g. Observation 1',
+    },
     type: {
       label: { en: 'Type', es: 'Tipo', pt: 'Tipo' },
       placeholder: 'Select type',
@@ -15,15 +19,11 @@ export const dictionary = {
     },
   },
   tabs: {
-    details: {
-      name: 'details',
-      label: { en: 'Details', es: 'Detalles', pt: 'Detalhes' },
-      description: { en: 'Detailed info.', es: 'Info detallada.', pt: 'Info detalhada.' },
+    basics: {
+      name: 'basics',
+      label: { en: 'Basics', es: 'Básicos', pt: 'Básicos' },
+      description: { en: 'Basic info.', es: 'Info básica.', pt: 'Info básica.' },
       fields: {
-        alias: {
-          label: { en: 'Alias', es: 'Alias', pt: 'Alias' },
-          placeholder: 'e.g. Observation 1',
-        },
         description: {
           label: { en: 'Description', es: 'Descripción', pt: 'Descrição' },
           placeholder: 'Note content',

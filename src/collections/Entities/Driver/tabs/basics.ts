@@ -46,11 +46,22 @@ export const basicsFields: Field[] = [
     )
   ),
   advanced(
-    textareaFieldFactory({
-      name: 'description',
-      dictionary: dictionary.tabs.basics.fields,
-      width: 1,
-      flags: ['localized', 'index', 'advanced'],
-    }),
+    {
+      type: 'row',
+      fields: [
+        textFieldFactory({
+          name: 'tagline',
+          dictionary: dictionary.tabs.basics.fields,
+          width: 1,
+          flags: ['localized', 'index'],
+        }),
+        textareaFieldFactory({
+          name: 'description',
+          dictionary: dictionary.tabs.basics.fields,
+          width: 1,
+          flags: ['localized', 'index', 'advanced'],
+        }),
+      ],
+    }
   ),
 ]

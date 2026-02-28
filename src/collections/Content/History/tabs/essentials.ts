@@ -23,11 +23,6 @@ export const essentialFields: Field[] = [
             width: 2,
             flags: ['localized', 'index'],
           }),
-        ],
-      },
-      {
-        type: 'row',
-        fields: [
           relationshipFieldFactory({
             name: 'type',
             relationTo: 'categories',

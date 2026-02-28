@@ -22,7 +22,6 @@ export const dictionary = {
       label: { en: 'Basics', es: 'Básicos', pt: 'Básicos' },
       entity: { en: 'Classification', es: 'Clasificación', pt: 'Classificação' },
       description: { en: 'Basic information.', es: 'Información básica.', pt: 'Informações básicas.' },
-
       fields: {
         description: {
           label: { en: 'Description', es: 'Descripción', pt: 'Descrição' },
@@ -56,7 +55,6 @@ export const dictionary = {
       label: { en: 'Contexts', es: 'Contextos', pt: 'Contextos' },
       entity: { en: 'Classification', es: 'Clasificación', pt: 'Classificação' },
       description: { en: 'Relationships.', es: 'Relaciones.', pt: 'Relacionamentos.' },
-
       fields: {
         content: {
           name: 'content',

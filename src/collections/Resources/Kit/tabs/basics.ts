@@ -10,14 +10,6 @@ import { KIT_PURPOSE_APPLICATION } from '../sources/constants'
 
 export const basicsFields: Field[] = [
   advanced(
-    textareaFieldFactory({
-      name: 'description',
-      dictionary: dictionary.tabs.basics.fields,
-      width: 1,
-      flags: ['localized', 'index', 'advanced'],
-    }),
-  ),
-  advanced(
     groupFactory(
       dictionary.tabs.basics.fields.purpose,
       dictionary.host,
@@ -49,5 +41,24 @@ export const basicsFields: Field[] = [
       ],
       false
     )
+  ),
+  advanced(
+    {
+      type: 'row',
+      fields: [
+        textFieldFactory({
+          name: 'tagline',
+          dictionary: dictionary.tabs.basics.fields,
+          width: 1,
+          flags: ['localized', 'index'],
+        }),
+        textareaFieldFactory({
+          name: 'description',
+          dictionary: dictionary.tabs.basics.fields,
+          width: 1,
+          flags: ['localized', 'index', 'advanced'],
+        }),
+      ],
+    }
   ),
 ]

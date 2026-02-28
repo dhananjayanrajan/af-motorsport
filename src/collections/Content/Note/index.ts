@@ -2,7 +2,7 @@
 import { collectionFactory, tabFactory } from '@/fields/factories/blueprint'
 import { dictionary } from './sources/dictionary'
 import { essentialFields } from './tabs/essentials'
-import { detailsFields } from './tabs/details'
+import { basicsFields } from './tabs/basics'
 import { traitsFields } from './tabs/traits'
 import { assetsFields } from './tabs/assets'
 export const Notes = collectionFactory(
@@ -43,7 +43,7 @@ export const Notes = collectionFactory(
   },
   essentialFields,
   [
-    tabFactory('details', dictionary.host, detailsFields),
+    tabFactory('basics', dictionary.host, basicsFields),
     tabFactory('traits', dictionary.host, traitsFields),
     tabFactory('assets', dictionary.host, assetsFields),
   ],

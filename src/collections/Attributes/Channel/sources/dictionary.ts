@@ -28,58 +28,6 @@ export const dictionary = {
         },
       }
     },
-    traits: {
-      name: 'traits',
-      label: { en: 'Traits', es: 'Rasgos', pt: 'Traços' },
-      entity: { en: 'Channel', es: 'Canal', pt: 'Canal' },
-      description: { en: 'Channel characteristics.', es: 'Características del canal.', pt: 'Características do canal.' },
-      usage: {
-        name: 'usage',
-        label: { en: 'Usage', es: 'Uso', pt: 'Uso' },
-        entity: { en: 'Usage', es: 'Uso', pt: 'Uso' },
-        description: { en: 'Usage constraints.', es: 'Restricciones de uso.', pt: 'Restrições de uso.' },
-        fields: {
-          purpose: {
-            label: { en: 'Purpose', es: 'Propósito', pt: 'Propósito' },
-            placeholder: 'e.g. Public Inquiries',
-            description: { en: 'Intended use.', es: 'Uso previsto.', pt: 'Uso pretendido.' }
-          },
-          role: {
-            label: { en: 'Role', es: 'Rol', pt: 'Papel' },
-            placeholder: 'Select role',
-            description: { en: 'Functional role.', es: 'Rol funcional.', pt: 'Papel funcional.' }
-          },
-          function: {
-            label: { en: 'Function', es: 'Función', pt: 'Função' },
-            placeholder: 'Select function',
-            description: { en: 'Operational function.', es: 'Función operativa.', pt: 'Função operacional.' }
-          }
-        }
-      },
-      validity: {
-        name: 'validity',
-        label: { en: 'Validity', es: 'Validez', pt: 'Validez' },
-        entity: { en: 'Validity', es: 'Validez', pt: 'Validade' },
-        description: { en: 'Validity status.', es: 'Estado de validez.', pt: 'Status de validade.' },
-        fields: {
-          status: {
-            label: { en: 'Status', es: 'Estado', pt: 'Status' },
-            placeholder: 'Select status',
-            description: { en: 'Current status.', es: 'Estado actual.', pt: 'Status atual.' }
-          },
-          condition: {
-            label: { en: 'Condition', es: 'Condición', pt: 'Condição' },
-            placeholder: 'Select condition',
-            description: { en: 'Operational condition.', es: 'Condición operativa.', pt: 'Condição operacional.' }
-          },
-          state: {
-            label: { en: 'State', es: 'Estado', pt: 'Estado' },
-            placeholder: 'Select state',
-            description: { en: 'Connection state.', es: 'Estado de conexión.', pt: 'Estado de conexão.' }
-          }
-        }
-      }
-    },
     details: {
       name: 'details',
       label: { en: 'Details', es: 'Detalles', pt: 'Detalhes' },
@@ -150,6 +98,58 @@ export const dictionary = {
           }
         }
       }
-    }
+    },
+    traits: {
+      name: 'traits',
+      label: { en: 'Traits', es: 'Rasgos', pt: 'Traços' },
+      entity: { en: 'Channel', es: 'Canal', pt: 'Canal' },
+      description: { en: 'Channel characteristics.', es: 'Características del canal.', pt: 'Características do canal.' },
+      usage: {
+        name: 'usage',
+        label: { en: 'Usage', es: 'Uso', pt: 'Uso' },
+        entity: { en: 'Usage', es: 'Uso', pt: 'Uso' },
+        description: { en: 'Usage constraints.', es: 'Restricciones de uso.', pt: 'Restrições de uso.' },
+        fields: {
+          purpose: {
+            label: { en: 'Purpose', es: 'Propósito', pt: 'Propósito' },
+            placeholder: 'e.g. Public Inquiries',
+            description: { en: 'Intended use.', es: 'Uso previsto.', pt: 'Uso pretendido.' }
+          },
+          role: {
+            label: { en: 'Role', es: 'Rol', pt: 'Papel' },
+            placeholder: 'Select role',
+            description: { en: 'Functional role.', es: 'Rol funcional.', pt: 'Papel funcional.' }
+          },
+          function: {
+            label: { en: 'Function', es: 'Función', pt: 'Função' },
+            placeholder: 'Select function',
+            description: { en: 'Operational function.', es: 'Función operativa.', pt: 'Função operacional.' }
+          }
+        }
+      },
+      validity: {
+        name: 'validity',
+        label: { en: 'Validity', es: 'Validez', pt: 'Validez' },
+        entity: { en: 'Validity', es: 'Validez', pt: 'Validade' },
+        description: { en: 'Validity status.', es: 'Estado de validez.', pt: 'Status de validade.' },
+        fields: {
+          status: {
+            label: { en: 'Status', es: 'Estado', pt: 'Status' },
+            placeholder: 'Select status',
+            description: { en: 'Current status.', es: 'Estado actual.', pt: 'Status atual.' }
+          },
+          condition: {
+            label: { en: 'Condition', es: 'Condición', pt: 'Condição' },
+            placeholder: 'Select condition',
+            description: { en: 'Operational condition.', es: 'Condición operativa.', pt: 'Condição operacional.' }
+          },
+          state: {
+            label: { en: 'State', es: 'Estado', pt: 'Estado' },
+            placeholder: 'Select state',
+            description: { en: 'Connection state.', es: 'Estado de conexión.', pt: 'Estado de conexão.' }
+          }
+        }
+      }
+    },
   }
 } as const

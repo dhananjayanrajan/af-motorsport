@@ -8,6 +8,10 @@ export const dictionary = {
       placeholder: 'e.g. The 1976 Season',
       description: { en: 'The story name.', es: 'El nombre de la historia.', pt: 'O nome da história.' },
     },
+    alias: {
+      label: { en: 'Alias', es: 'Alias', pt: 'Alias' },
+      placeholder: 'e.g. 76 Rivalry',
+    },
     type: {
       label: { en: 'Type', es: 'Tipo', pt: 'Tipo' },
       placeholder: 'Select type',
@@ -15,15 +19,22 @@ export const dictionary = {
     },
   },
   tabs: {
+    basics: {
+      name: 'basics',
+      label: { en: 'Basics', es: 'Básicos', pt: 'Básicos' },
+      description: { en: 'Basic info.', es: 'Info básica.', pt: 'Info básica.' },
+      fields: {
+        description: {
+          label: { en: 'Description', es: 'Descripción', pt: 'Descrição' },
+          placeholder: 'Enter description',
+        },
+      },
+    },
     details: {
       name: 'details',
       label: { en: 'Details', es: 'Detalles', pt: 'Detalhes' },
       description: { en: 'Detailed info.', es: 'Info detallada.', pt: 'Info detalhada.' },
       fields: {
-        alias: {
-          label: { en: 'Alias', es: 'Alias', pt: 'Alias' },
-          placeholder: 'e.g. 76 Rivalry',
-        },
         narrative: {
           label: { en: 'Narrative', es: 'Narrativa', pt: 'Narrativa' },
           description: { en: 'Primary narrative.', es: 'Narrativa principal.', pt: 'Narrativa principal.' },

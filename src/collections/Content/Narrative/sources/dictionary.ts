@@ -12,6 +12,11 @@ export const dictionary = {
       label: { en: 'Alias', es: 'Alias', pt: 'Alias' },
       placeholder: 'e.g. Era Overview',
     },
+    type: {
+      label: { en: 'Type', es: 'Tipo', pt: 'Tipo' },
+      placeholder: 'Select type',
+      description: { en: 'The type of history.', es: 'El tipo de historia.', pt: 'O tipo da história.' },
+    },
   },
   tabs: {
     basics: {

@@ -18,6 +18,10 @@ export const dictionary = {
       label: { en: 'Basics', es: 'Básicos', pt: 'Básicos' },
       description: { en: 'Kit basic details and purpose.', es: 'Detalles básicos y propósito del kit.', pt: 'Detalhes básicos e propósito do kit.' },
       fields: {
+        tagline: {
+          label: { en: 'Tagline', es: 'Lema', pt: 'Lema' },
+          placeholder: { en: 'e.g. The Hammer', es: 'e.g. El Martillo', pt: 'e.g. O Martelo' },
+        },
         description: { label: { en: 'Description', es: 'Descripción', pt: 'Descrição' } },
         purpose: {
           name: 'purpose',
