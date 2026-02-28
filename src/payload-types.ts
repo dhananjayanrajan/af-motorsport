@@ -893,28 +893,28 @@ export interface Note {
    */
   name: string;
   /**
+   * Enter text value.
+   */
+  alias?: string | null;
+  /**
    * The type of note.
    */
   type?: (number | Category)[] | null;
   /**
-   * Extra data.
+   * Identifying info.
    */
-  details?: {
+  basics?: {
     /**
-     * Toggle the Details section on or off.
+     * Toggle the Basics section on or off.
      */
     enable?: boolean | null;
-    /**
-     * Enter text value.
-     */
-    alias?: string | null;
     /**
      * Enter text value.
      */
     description?: string | null;
     visibility?: {
       /**
-       * Toggle the Details section on or off.
+       * Toggle the Basics section on or off.
        */
       show?: boolean | null;
     };
@@ -1045,6 +1045,25 @@ export interface Archive {
    */
   type?: (number | Category)[] | null;
   /**
+   * Identifying info.
+   */
+  basics?: {
+    /**
+     * Toggle the Basics section on or off.
+     */
+    enable?: boolean | null;
+    /**
+     * Enter text value.
+     */
+    description?: string | null;
+    visibility?: {
+      /**
+       * Toggle the Basics section on or off.
+       */
+      show?: boolean | null;
+    };
+  };
+  /**
    * Extra data.
    */
   details: {
@@ -1138,6 +1157,10 @@ export interface Narrative {
    * Enter text value.
    */
   alias?: string | null;
+  /**
+   * The type of history.
+   */
+  type?: (number | Category)[] | null;
   /**
    * Identifying info.
    */
@@ -1391,6 +1414,10 @@ export interface Tone {
    */
   name: string;
   /**
+   * Tone alias.
+   */
+  alias?: string | null;
+  /**
    * Tone type.
    */
   type?: (number | Category)[] | null;
@@ -1402,10 +1429,6 @@ export interface Tone {
      * Toggle the Basics section on or off.
      */
     enable?: boolean | null;
-    /**
-     * Enter text value.
-     */
-    alias?: string | null;
     /**
      * Tone description.
      */
@@ -1811,6 +1834,10 @@ export interface Driver {
     /**
      * Enter text value.
      */
+    tagline?: string | null;
+    /**
+     * Enter text value.
+     */
     description?: string | null;
     visibility?: {
       /**
@@ -2105,6 +2132,25 @@ export interface History {
    */
   type?: (number | Category)[] | null;
   /**
+   * Identifying info.
+   */
+  basics?: {
+    /**
+     * Toggle the Basics section on or off.
+     */
+    enable?: boolean | null;
+    /**
+     * Enter text value.
+     */
+    description?: string | null;
+    visibility?: {
+      /**
+       * Toggle the Basics section on or off.
+       */
+      show?: boolean | null;
+    };
+  };
+  /**
    * Extra data.
    */
   details?: {
@@ -2252,9 +2298,32 @@ export interface Story {
    */
   name: string;
   /**
+   * Enter text value.
+   */
+  alias?: string | null;
+  /**
    * The type of story.
    */
   type?: (number | Category)[] | null;
+  /**
+   * Identifying info.
+   */
+  basics?: {
+    /**
+     * Toggle the Basics section on or off.
+     */
+    enable?: boolean | null;
+    /**
+     * Enter text value.
+     */
+    description?: string | null;
+    visibility?: {
+      /**
+       * Toggle the Basics section on or off.
+       */
+      show?: boolean | null;
+    };
+  };
   /**
    * Extra data.
    */
@@ -2471,6 +2540,25 @@ export interface Gallery {
    */
   type?: (number | Category)[] | null;
   /**
+   * Identifying info.
+   */
+  basics?: {
+    /**
+     * Toggle the Basics section on or off.
+     */
+    enable?: boolean | null;
+    /**
+     * Enter text value.
+     */
+    description?: string | null;
+    visibility?: {
+      /**
+       * Toggle the Basics section on or off.
+       */
+      show?: boolean | null;
+    };
+  };
+  /**
    * Extra data.
    */
   details?: {
@@ -2560,6 +2648,25 @@ export interface Playlist {
    * Select related document(s).
    */
   type?: (number | Category)[] | null;
+  /**
+   * Identifying info.
+   */
+  basics?: {
+    /**
+     * Toggle the Basics section on or off.
+     */
+    enable?: boolean | null;
+    /**
+     * Enter text value.
+     */
+    description?: string | null;
+    visibility?: {
+      /**
+       * Toggle the Basics section on or off.
+       */
+      show?: boolean | null;
+    };
+  };
   /**
    * Extra data.
    */
@@ -2677,6 +2784,25 @@ export interface Visualization {
    * Select related document(s).
    */
   type?: (number | Category)[] | null;
+  /**
+   * Identifying info.
+   */
+  basics?: {
+    /**
+     * Toggle the Basics section on or off.
+     */
+    enable?: boolean | null;
+    /**
+     * Enter text value.
+     */
+    description?: string | null;
+    visibility?: {
+      /**
+       * Toggle the Basics section on or off.
+       */
+      show?: boolean | null;
+    };
+  };
   /**
    * Extra data.
    */
@@ -3194,6 +3320,10 @@ export interface Car {
        */
       code?: string | null;
     };
+    /**
+     * Enter text value.
+     */
+    tagline?: string | null;
     /**
      * Enter text value.
      */
@@ -4111,6 +4241,10 @@ export interface Member {
        */
       badge?: string | null;
     };
+    /**
+     * Enter text value.
+     */
+    tagline?: string | null;
     /**
      * Enter text value.
      */
@@ -5311,6 +5445,10 @@ export interface Leader {
     /**
      * Enter text value.
      */
+    tagline?: string | null;
+    /**
+     * Enter text value.
+     */
     description?: string | null;
     visibility?: {
       /**
@@ -6175,6 +6313,10 @@ export interface Individual {
     /**
      * Enter text value.
      */
+    tagline?: string | null;
+    /**
+     * Enter text value.
+     */
     description?: string | null;
     visibility?: {
       /**
@@ -6816,10 +6958,6 @@ export interface Kit {
      */
     enable?: boolean | null;
     /**
-     * Enter text value.
-     */
-    description?: string | null;
-    /**
      * Kit usage purpose.
      */
     purpose?: {
@@ -6836,6 +6974,14 @@ export interface Kit {
        */
       conditions?: string | null;
     };
+    /**
+     * Enter text value.
+     */
+    tagline?: string | null;
+    /**
+     * Enter text value.
+     */
+    description?: string | null;
     visibility?: {
       /**
        * Toggle the Basics section on or off.
@@ -7350,6 +7496,25 @@ export interface Journey {
    * The type of journey.
    */
   type?: (number | Category)[] | null;
+  /**
+   * Identifying info.
+   */
+  basics?: {
+    /**
+     * Toggle the Basics section on or off.
+     */
+    enable?: boolean | null;
+    /**
+     * Enter text value.
+     */
+    description?: string | null;
+    visibility?: {
+      /**
+       * Toggle the Basics section on or off.
+       */
+      show?: boolean | null;
+    };
+  };
   /**
    * Extra data.
    */
@@ -9285,6 +9450,10 @@ export interface Season {
       abbreviation?: string | null;
     };
     /**
+     * Enter text value.
+     */
+    tagline?: string | null;
+    /**
      * Short description.
      */
     description?: string | null;
@@ -9520,6 +9689,10 @@ export interface Event {
        */
       round?: string | null;
     };
+    /**
+     * Enter text value.
+     */
+    tagline?: string | null;
     /**
      * Short description.
      */
@@ -12978,6 +13151,7 @@ export interface SeasonsSelect<T extends boolean = true> {
               code?: T;
               abbreviation?: T;
             };
+        tagline?: T;
         description?: T;
         visibility?:
           | T
@@ -13102,6 +13276,7 @@ export interface EventsSelect<T extends boolean = true> {
               code?: T;
               round?: T;
             };
+        tagline?: T;
         description?: T;
         visibility?:
           | T
@@ -13819,6 +13994,7 @@ export interface DriversSelect<T extends boolean = true> {
               competition?: T;
               callsign?: T;
             };
+        tagline?: T;
         description?: T;
         visibility?:
           | T
@@ -13978,6 +14154,7 @@ export interface LeadersSelect<T extends boolean = true> {
               title?: T;
               code?: T;
             };
+        tagline?: T;
         description?: T;
         visibility?:
           | T
@@ -14134,6 +14311,7 @@ export interface MembersSelect<T extends boolean = true> {
               callsign?: T;
               badge?: T;
             };
+        tagline?: T;
         description?: T;
         visibility?:
           | T
@@ -14290,6 +14468,7 @@ export interface IndividualsSelect<T extends boolean = true> {
               code?: T;
               number?: T;
             };
+        tagline?: T;
         description?: T;
         visibility?:
           | T
@@ -14630,6 +14809,7 @@ export interface NarrativesSelect<T extends boolean = true> {
   toggle?: T;
   name?: T;
   alias?: T;
+  type?: T;
   basics?:
     | T
     | {
@@ -14759,7 +14939,19 @@ export interface NarrativesSelect<T extends boolean = true> {
 export interface StoriesSelect<T extends boolean = true> {
   toggle?: T;
   name?: T;
+  alias?: T;
   type?: T;
+  basics?:
+    | T
+    | {
+        enable?: T;
+        description?: T;
+        visibility?:
+          | T
+          | {
+              show?: T;
+            };
+      };
   details?:
     | T
     | {
@@ -14877,6 +15069,17 @@ export interface HistoriesSelect<T extends boolean = true> {
   name?: T;
   alias?: T;
   type?: T;
+  basics?:
+    | T
+    | {
+        enable?: T;
+        description?: T;
+        visibility?:
+          | T
+          | {
+              show?: T;
+            };
+      };
   details?:
     | T
     | {
@@ -14959,6 +15162,17 @@ export interface JourneysSelect<T extends boolean = true> {
   toggle?: T;
   name?: T;
   type?: T;
+  basics?:
+    | T
+    | {
+        enable?: T;
+        description?: T;
+        visibility?:
+          | T
+          | {
+              show?: T;
+            };
+      };
   details?:
     | T
     | {
@@ -15052,12 +15266,12 @@ export interface JourneysSelect<T extends boolean = true> {
 export interface NotesSelect<T extends boolean = true> {
   toggle?: T;
   name?: T;
+  alias?: T;
   type?: T;
-  details?:
+  basics?:
     | T
     | {
         enable?: T;
-        alias?: T;
         description?: T;
         visibility?:
           | T
@@ -15235,6 +15449,7 @@ export interface CarsSelect<T extends boolean = true> {
               version?: T;
               code?: T;
             };
+        tagline?: T;
         description?: T;
         visibility?:
           | T
@@ -15344,7 +15559,6 @@ export interface KitsSelect<T extends boolean = true> {
     | T
     | {
         enable?: T;
-        description?: T;
         purpose?:
           | T
           | {
@@ -15352,6 +15566,8 @@ export interface KitsSelect<T extends boolean = true> {
               context?: T;
               conditions?: T;
             };
+        tagline?: T;
+        description?: T;
         visibility?:
           | T
           | {
@@ -15516,6 +15732,17 @@ export interface GalleriesSelect<T extends boolean = true> {
   toggle?: T;
   name?: T;
   type?: T;
+  basics?:
+    | T
+    | {
+        enable?: T;
+        description?: T;
+        visibility?:
+          | T
+          | {
+              show?: T;
+            };
+      };
   details?:
     | T
     | {
@@ -15571,6 +15798,17 @@ export interface PlaylistsSelect<T extends boolean = true> {
   toggle?: T;
   name?: T;
   type?: T;
+  basics?:
+    | T
+    | {
+        enable?: T;
+        description?: T;
+        visibility?:
+          | T
+          | {
+              show?: T;
+            };
+      };
   details?:
     | T
     | {
@@ -15639,6 +15877,17 @@ export interface ArchivesSelect<T extends boolean = true> {
   toggle?: T;
   name?: T;
   type?: T;
+  basics?:
+    | T
+    | {
+        enable?: T;
+        description?: T;
+        visibility?:
+          | T
+          | {
+              show?: T;
+            };
+      };
   details?:
     | T
     | {
@@ -15695,6 +15944,17 @@ export interface VisualizationsSelect<T extends boolean = true> {
   toggle?: T;
   name?: T;
   type?: T;
+  basics?:
+    | T
+    | {
+        enable?: T;
+        description?: T;
+        visibility?:
+          | T
+          | {
+              show?: T;
+            };
+      };
   details?:
     | T
     | {
@@ -17573,12 +17833,12 @@ export interface TagsSelect<T extends boolean = true> {
 export interface TonesSelect<T extends boolean = true> {
   toggle?: T;
   name?: T;
+  alias?: T;
   type?: T;
   basics?:
     | T
     | {
         enable?: T;
-        alias?: T;
         description?: T;
         visibility?:
           | T

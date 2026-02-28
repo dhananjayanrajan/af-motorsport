@@ -19,7 +19,7 @@ export const dictionary = {
       name: 'basics',
       label: { en: 'Basics', es: 'Básicos', pt: 'Básicos' },
       entity: { en: 'Specification', es: 'Especificación', pt: 'Especificação' },
-      description: { en: 'Basic info.', es: 'Info básica.', pt: 'Info básica.' },
+      description: { en: 'Basic Information', es: 'Información básica', pt: 'Informação básica' },
       fields: {
         identifier: {
           name: 'identifier',
