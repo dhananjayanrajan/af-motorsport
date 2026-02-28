@@ -1,3 +1,4 @@
+// FILE: src/collections/Competition/Series/seeders/types.ts
 export interface Series {
   id: number;
   toggle?: ('simple' | 'advanced') | null;
@@ -92,6 +93,8 @@ export interface Series {
   updatedAt: string;
   createdAt: string;
 }
+
+// FILE: src/collections/Attributes/Category/seeders/types.ts
 export interface Category {
   id: number;
   toggle?: ('simple' | 'advanced') | null;
@@ -133,6 +136,8 @@ export interface Category {
   updatedAt: string;
   createdAt: string;
 }
+
+// FILE: src/collections/Resources/Media/seeders/types.ts
 export interface Media {
   id: number;
   alt?: string | null;
@@ -163,6 +168,8 @@ export interface Media {
   focalX?: number | null;
   focalY?: number | null;
 }
+
+// FILE: src/collections/Attributes/Tag/seeders/types.ts
 export interface Tag {
   id: number;
   toggle?: ('simple' | 'advanced') | null;
@@ -193,6 +200,8 @@ export interface Tag {
   updatedAt: string;
   createdAt: string;
 }
+
+// FILE: src/collections/Attributes/Classification/seeders/types.ts
 export interface Classification {
   id: number;
   toggle?: ('simple' | 'advanced') | null;
@@ -239,6 +248,8 @@ export interface Classification {
   updatedAt: string;
   createdAt: string;
 }
+
+// FILE: src/collections/Content/Note/seeders/types.ts
 export interface Note {
   id: number;
   toggle?: ('simple' | 'advanced') | null;
@@ -299,6 +310,8 @@ export interface Note {
   updatedAt: string;
   createdAt: string;
 }
+
+// FILE: src/collections/Resources/Archive/seeders/types.ts
 export interface Archive {
   id: number;
   toggle?: ('simple' | 'advanced') | null;
@@ -345,6 +358,8 @@ export interface Archive {
   updatedAt: string;
   createdAt: string;
 }
+
+// FILE: src/collections/Content/Narrative/seeders/types.ts
 export interface Narrative {
   id: number;
   toggle?: ('simple' | 'advanced') | null;
@@ -451,6 +466,8 @@ export interface Narrative {
   updatedAt: string;
   createdAt: string;
 }
+
+// FILE: src/collections/Attributes/Tone/seeders/types.ts
 export interface Tone {
   id: number;
   toggle?: ('simple' | 'advanced') | null;
@@ -508,6 +525,8 @@ export interface Tone {
   updatedAt: string;
   createdAt: string;
 }
+
+// FILE: src/collections/Attributes/Location/seeders/types.ts
 export interface Location {
   id: number;
   toggle?: ('simple' | 'advanced') | null;
@@ -597,6 +616,8 @@ export interface Location {
   updatedAt: string;
   createdAt: string;
 }
+
+// FILE: src/collections/Entities/Driver/seeders/types.ts
 export interface Driver {
   id: number;
   toggle?: ('simple' | 'advanced') | null;
@@ -720,6 +741,8 @@ export interface Driver {
   updatedAt: string;
   createdAt: string;
 }
+
+// FILE: src/collections/Content/History/seeders/types.ts
 export interface History {
   id: number;
   toggle?: ('simple' | 'advanced') | null;
@@ -785,6 +808,8 @@ export interface History {
   updatedAt: string;
   createdAt: string;
 }
+
+// FILE: src/collections/Content/Story/seeders/types.ts
 export interface Story {
   id: number;
   toggle?: ('simple' | 'advanced') | null;
@@ -878,6 +903,8 @@ export interface Story {
   updatedAt: string;
   createdAt: string;
 }
+
+// FILE: src/collections/Resources/Gallery/seeders/types.ts
 export interface Gallery {
   id: number;
   toggle?: ('simple' | 'advanced') | null;
@@ -923,6 +950,8 @@ export interface Gallery {
   updatedAt: string;
   createdAt: string;
 }
+
+// FILE: src/collections/Resources/Playlist/seeders/types.ts
 export interface Playlist {
   id: number;
   toggle?: ('simple' | 'advanced') | null;
@@ -977,6 +1006,8 @@ export interface Playlist {
   updatedAt: string;
   createdAt: string;
 }
+
+// FILE: src/collections/Resources/Visualization/seeders/types.ts
 export interface Visualization {
   id: number;
   toggle?: ('simple' | 'advanced') | null;
@@ -1022,6 +1053,8 @@ export interface Visualization {
   updatedAt: string;
   createdAt: string;
 }
+
+// FILE: src/collections/Outcomes/Highlight/seeders/types.ts
 export interface Highlight {
   id: number;
   toggle?: ('simple' | 'advanced') | null;
@@ -1089,6 +1122,8 @@ export interface Highlight {
   updatedAt: string;
   createdAt: string;
 }
+
+// FILE: src/collections/Attributes/Specification/seeders/types.ts
 export interface Specification {
   id: number;
   toggle?: ('simple' | 'advanced') | null;
@@ -1178,6 +1213,8 @@ export interface Specification {
   updatedAt: string;
   createdAt: string;
 }
+
+// FILE: src/collections/Resources/Car/seeders/types.ts
 export interface Car {
   id: number;
   toggle?: ('simple' | 'advanced') | null;
@@ -1261,6 +1298,8 @@ export interface Car {
   updatedAt: string;
   createdAt: string;
 }
+
+// FILE: src/collections/Attributes/Feature/seeders/types.ts
 export interface Feature {
   id: number;
   toggle?: ('simple' | 'advanced') | null;
@@ -1317,6 +1356,8 @@ export interface Feature {
   updatedAt: string;
   createdAt: string;
 }
+
+// FILE: src/collections/Entities/Organization/seeders/types.ts
 export interface Organization {
   id: number;
   toggle?: ('simple' | 'advanced') | null;
@@ -1437,6 +1478,8 @@ export interface Organization {
   updatedAt: string;
   createdAt: string;
 }
+
+// FILE: src/collections/Attributes/Channel/seeders/types.ts
 export interface Channel {
   id: number;
   toggle?: ('simple' | 'advanced') | null;
@@ -1522,6 +1565,8 @@ export interface Channel {
   updatedAt: string;
   createdAt: string;
 }
+
+// FILE: src/collections/Entities/Member/seeders/types.ts
 export interface Member {
   id: number;
   toggle?: ('simple' | 'advanced') | null;
@@ -1642,6 +1687,8 @@ export interface Member {
   updatedAt: string;
   createdAt: string;
 }
+
+// FILE: src/collections/Operations/Duty/seeders/types.ts
 export interface Duty {
   id: number;
   toggle?: ('simple' | 'advanced') | null;
@@ -1688,6 +1735,8 @@ export interface Duty {
   updatedAt: string;
   createdAt: string;
 }
+
+// FILE: src/collections/Operations/Protocol/seeders/types.ts
 export interface Protocol {
   id: number;
   toggle?: ('simple' | 'advanced') | null;
@@ -1759,6 +1808,8 @@ export interface Protocol {
   updatedAt: string;
   createdAt: string;
 }
+
+// FILE: src/collections/Operations/Expectation/seeders/types.ts
 export interface Expectation {
   id: number;
   toggle?: ('simple' | 'advanced') | null;
@@ -1815,6 +1866,8 @@ export interface Expectation {
   updatedAt: string;
   createdAt: string;
 }
+
+// FILE: src/collections/Attributes/Skill/seeders/types.ts
 export interface Skill {
   id: number;
   toggle?: ('simple' | 'advanced') | null;
@@ -1910,6 +1963,8 @@ export interface Skill {
   updatedAt: string;
   createdAt: string;
 }
+
+// FILE: src/collections/Operations/Training/seeders/types.ts
 export interface Training {
   id: number;
   toggle?: ('simple' | 'advanced') | null;
@@ -1983,6 +2038,8 @@ export interface Training {
   updatedAt: string;
   createdAt: string;
 }
+
+// FILE: src/collections/Entities/Leader/seeders/types.ts
 export interface Leader {
   id: number;
   toggle?: ('simple' | 'advanced') | null;
@@ -2112,6 +2169,8 @@ export interface Leader {
   updatedAt: string;
   createdAt: string;
 }
+
+// FILE: src/collections/Attributes/Principle/seeders/types.ts
 export interface Principle {
   id: number;
   toggle?: ('simple' | 'advanced') | null;
@@ -2159,6 +2218,8 @@ export interface Principle {
   updatedAt: string;
   createdAt: string;
 }
+
+// FILE: src/collections/Outcomes/Strategy/seeders/types.ts
 export interface Strategy {
   id: number;
   toggle?: ('simple' | 'advanced') | null;
@@ -2261,6 +2322,8 @@ export interface Strategy {
   updatedAt: string;
   createdAt: string;
 }
+
+// FILE: src/collections/Outcomes/Decision/seeders/types.ts
 export interface Decision {
   id: number;
   toggle?: ('simple' | 'advanced') | null;
@@ -2325,6 +2388,8 @@ export interface Decision {
   updatedAt: string;
   createdAt: string;
 }
+
+// FILE: src/collections/Entities/Individual/seeders/types.ts
 export interface Individual {
   id: number;
   toggle?: ('simple' | 'advanced') | null;
@@ -2435,6 +2500,8 @@ export interface Individual {
   updatedAt: string;
   createdAt: string;
 }
+
+// FILE: src/collections/Attributes/Preference/seeders/types.ts
 export interface Preference {
   id: number;
   toggle?: ('simple' | 'advanced') | null;
@@ -2508,6 +2575,8 @@ export interface Preference {
   updatedAt: string;
   createdAt: string;
 }
+
+// FILE: src/collections/Outcomes/Impact/seeders/types.ts
 export interface Impact {
   id: number;
   toggle?: ('simple' | 'advanced') | null;
@@ -2581,6 +2650,8 @@ export interface Impact {
   updatedAt: string;
   createdAt: string;
 }
+
+// FILE: src/collections/Resources/Kit/seeders/types.ts
 export interface Kit {
   id: number;
   toggle?: ('simple' | 'advanced') | null;
@@ -2692,6 +2763,8 @@ export interface Kit {
   updatedAt: string;
   createdAt: string;
 }
+
+// FILE: src/collections/Outcomes/Experience/seeders/types.ts
 export interface Experience {
   id: number;
   toggle?: ('simple' | 'advanced') | null;
@@ -2784,6 +2857,8 @@ export interface Experience {
   updatedAt: string;
   createdAt: string;
 }
+
+// FILE: src/collections/Content/Journey/seeders/types.ts
 export interface Journey {
   id: number;
   toggle?: ('simple' | 'advanced') | null;
@@ -2858,6 +2933,8 @@ export interface Journey {
   updatedAt: string;
   createdAt: string;
 }
+
+// FILE: src/collections/Outcomes/Incident/seeders/types.ts
 export interface Incident {
   id: number;
   toggle?: ('simple' | 'advanced') | null;
@@ -2937,6 +3014,8 @@ export interface Incident {
   updatedAt: string;
   createdAt: string;
 }
+
+// FILE: src/collections/Outcomes/Award/seeders/types.ts
 export interface Award {
   id: number;
   toggle?: ('simple' | 'advanced') | null;
@@ -2995,6 +3074,8 @@ export interface Award {
   updatedAt: string;
   createdAt: string;
 }
+
+// FILE: src/collections/Competition/Point/seeders/types.ts
 export interface Point {
   id: number;
   toggle?: ('simple' | 'advanced') | null;
@@ -3086,6 +3167,8 @@ export interface Point {
   updatedAt: string;
   createdAt: string;
 }
+
+// FILE: src/collections/Competition/Result/seeders/types.ts
 export interface Result {
   id: number;
   toggle?: ('simple' | 'advanced') | null;
@@ -3176,6 +3259,8 @@ export interface Result {
   updatedAt: string;
   createdAt: string;
 }
+
+// FILE: src/collections/Operations/Schedule/seeders/types.ts
 export interface Schedule {
   id: number;
   toggle?: ('simple' | 'advanced') | null;
@@ -3277,6 +3362,8 @@ export interface Schedule {
   updatedAt: string;
   createdAt: string;
 }
+
+// FILE: src/collections/Operations/Meetup/seeders/types.ts
 export interface Meetup {
   id: number;
   toggle?: ('simple' | 'advanced') | null;
@@ -3361,6 +3448,8 @@ export interface Meetup {
   updatedAt: string;
   createdAt: string;
 }
+
+// FILE: src/collections/Operations/Initiative/seeders/types.ts
 export interface Initiative {
   id: number;
   toggle?: ('simple' | 'advanced') | null;
@@ -3439,6 +3528,8 @@ export interface Initiative {
   updatedAt: string;
   createdAt: string;
 }
+
+// FILE: src/collections/Operations/Celebration/seeders/types.ts
 export interface Celebration {
   id: number;
   toggle?: ('simple' | 'advanced') | null;
@@ -3512,6 +3603,8 @@ export interface Celebration {
   updatedAt: string;
   createdAt: string;
 }
+
+// FILE: src/collections/Competition/Season/seeders/types.ts
 export interface Season {
   id: number;
   toggle?: ('simple' | 'advanced') | null;
@@ -3598,6 +3691,8 @@ export interface Season {
   updatedAt: string;
   createdAt: string;
 }
+
+// FILE: src/collections/Competition/Event/seeders/types.ts
 export interface Event {
   id: number;
   toggle?: ('simple' | 'advanced') | null;
@@ -3698,6 +3793,8 @@ export interface Event {
   updatedAt: string;
   createdAt: string;
 }
+
+// FILE: src/collections/Competition/Session/seeders/types.ts
 export interface Session {
   id: number;
   toggle?: ('simple' | 'advanced') | null;
@@ -3845,6 +3942,8 @@ export interface Session {
   updatedAt: string;
   createdAt: string;
 }
+
+// FILE: src/collections/Competition/Entry/seeders/types.ts
 export interface Entry {
   id: number;
   toggle?: ('simple' | 'advanced') | null;

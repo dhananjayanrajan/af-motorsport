@@ -3984,7 +3984,7 @@ export interface Channel {
   /**
    * Category of the channel.
    */
-  type: (number | Category)[];
+  type?: (number | Category)[] | null;
   /**
    * Identifying info.
    */

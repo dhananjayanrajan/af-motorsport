@@ -1,3 +1,4 @@
+// FILE: src/collections/Attributes/Category/tabs/details.ts
 import type { Field } from 'payload';
 import { dictionary } from '../sources/dictionary';
 import { advanced } from '@/fields/factories/toggles/advanced';

@@ -1,3 +1,4 @@
+// FILE: src/fields/factories/blueprint.ts
 import type { CollectionConfig, Tab, Field, StaticLabel, CollectionSlug } from 'payload'
 import { enable, show, visibilityGroup } from './toggles/visibility'
 import { createToggleGroup } from '@/fields/common/toggle'

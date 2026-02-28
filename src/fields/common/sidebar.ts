@@ -1,3 +1,4 @@
+// FILE: src/fields/common/sidebar.ts
 import type { Field } from 'payload'
 import { slugField } from 'payload'
 

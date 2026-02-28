@@ -412,73 +412,73 @@ export const script = async (config: SanitizedConfig) => {
   payload.logger.info('TRUNCATION COMPLETE')
   payload.logger.info('STARTING FULL DATABASE SEED')
 
-  await seedCollection({ slug: 'categories', data: PRELOAD_CATEGORY })
-  const { docs: categories } = await payload.find({ collection: 'categories', limit: 1000 })
-  const categoriesIds = categories.map(c => c.id)
+  // await seedCollection({ slug: 'categories', data: PRELOAD_CATEGORY })
+  // const { docs: categories } = await payload.find({ collection: 'categories', limit: 1000 })
+  // const categoriesIds = categories.map(c => c.id)
 
-  const mediaIds = await seedMedia()
+  // const mediaIds = await seedMedia()
 
-  await seedCollection({ slug: 'tones', data: PRELOAD_TONE(categoriesIds) })
-  const { docs: tones } = await payload.find({ collection: 'tones', limit: 1000 })
-  const tonesIds = tones.map(t => t.id)
+  // await seedCollection({ slug: 'tones', data: PRELOAD_TONE(categoriesIds) })
+  // const { docs: tones } = await payload.find({ collection: 'tones', limit: 1000 })
+  // const tonesIds = tones.map(t => t.id)
 
-  await seedCollection({ slug: 'locations', data: PRELOAD_LOCATION(categoriesIds) })
-  const { docs: locations } = await payload.find({ collection: 'locations', limit: 1000 })
-  const locationIds = locations.map(l => l.id)
+  // await seedCollection({ slug: 'locations', data: PRELOAD_LOCATION(categoriesIds) })
+  // const { docs: locations } = await payload.find({ collection: 'locations', limit: 1000 })
+  // const locationIds = locations.map(l => l.id)
 
-  await seedCollection({ slug: 'narratives', data: PRELOAD_NARRATIVE(categoriesIds, tonesIds, locationIds) })
-  const { docs: narratives } = await payload.find({ collection: 'narratives', limit: 1000 })
-  const narrativesIds = narratives.map(n => n.id)
+  // await seedCollection({ slug: 'narratives', data: PRELOAD_NARRATIVE(categoriesIds, tonesIds, locationIds) })
+  // const { docs: narratives } = await payload.find({ collection: 'narratives', limit: 1000 })
+  // const narrativesIds = narratives.map(n => n.id)
 
   const collections: SeedEntry[] = [
-    { slug: 'channels', data: PRELOAD_CHANNEL(categoriesIds) },
-    { slug: 'classifications', data: PRELOAD_CLASSIFICATION(categoriesIds) },
-    { slug: 'preferences', data: PRELOAD_PREFERENCE(categoriesIds) },
-    { slug: 'features', data: PRELOAD_FEATURE(categoriesIds) },
-    { slug: 'principles', data: PRELOAD_PRINCIPLE(categoriesIds) },
-    { slug: 'skills', data: PRELOAD_SKILL(categoriesIds) },
-    { slug: 'specifications', data: PRELOAD_SPECIFICATION(categoriesIds) },
-    { slug: 'tags', data: PRELOAD_TAG(categoriesIds) },
-    { slug: 'galleries', data: PRELOAD_GALLERY(categoriesIds, mediaIds) },
-    { slug: 'visualizations', data: PRELOAD_VISUALIZATION(categoriesIds, mediaIds) },
-    { slug: 'playlists', data: PRELOAD_PLAYLIST(categoriesIds) },
-    { slug: 'notes', data: PRELOAD_NOTE(categoriesIds) },
-    { slug: 'journeys', data: PRELOAD_JOURNEY(categoriesIds, narrativesIds) },
-    { slug: 'histories', data: PRELOAD_HISTORY(categoriesIds, narrativesIds) },
-    { slug: 'stories', data: PRELOAD_STORY(categoriesIds, narrativesIds) },
-    { slug: 'archives', data: PRELOAD_ARCHIVE(categoriesIds, narrativesIds) },
-    { slug: 'decisions', data: PRELOAD_DECISION(categoriesIds, narrativesIds) },
-    { slug: 'impacts', data: PRELOAD_IMPACT(categoriesIds) },
-    { slug: 'highlights', data: PRELOAD_HIGHLIGHT(categoriesIds, narrativesIds) },
-    { slug: 'incidents', data: PRELOAD_INCIDENT(categoriesIds, narrativesIds) },
-    { slug: 'strategies', data: PRELOAD_STRATEGY(categoriesIds) },
-    { slug: 'experiences', data: PRELOAD_EXPERIENCE(categoriesIds, narrativesIds) },
+    { slug: 'channels', data: PRELOAD_CHANNEL() },
+    // { slug: 'classifications', data: PRELOAD_CLASSIFICATION(categoriesIds) },
+    // { slug: 'preferences', data: PRELOAD_PREFERENCE(categoriesIds) },
+    // { slug: 'features', data: PRELOAD_FEATURE(categoriesIds) },
+    // { slug: 'principles', data: PRELOAD_PRINCIPLE(categoriesIds) },
+    // { slug: 'skills', data: PRELOAD_SKILL(categoriesIds) },
+    // { slug: 'specifications', data: PRELOAD_SPECIFICATION(categoriesIds) },
+    // { slug: 'tags', data: PRELOAD_TAG(categoriesIds) },
+    // { slug: 'galleries', data: PRELOAD_GALLERY(categoriesIds, mediaIds) },
+    // { slug: 'visualizations', data: PRELOAD_VISUALIZATION(categoriesIds, mediaIds) },
+    // { slug: 'playlists', data: PRELOAD_PLAYLIST(categoriesIds) },
+    // { slug: 'notes', data: PRELOAD_NOTE(categoriesIds) },
+    // { slug: 'journeys', data: PRELOAD_JOURNEY(categoriesIds, narrativesIds) },
+    // { slug: 'histories', data: PRELOAD_HISTORY(categoriesIds, narrativesIds) },
+    // { slug: 'stories', data: PRELOAD_STORY(categoriesIds, narrativesIds) },
+    // { slug: 'archives', data: PRELOAD_ARCHIVE(categoriesIds, narrativesIds) },
+    // { slug: 'decisions', data: PRELOAD_DECISION(categoriesIds, narrativesIds) },
+    // { slug: 'impacts', data: PRELOAD_IMPACT(categoriesIds) },
+    // { slug: 'highlights', data: PRELOAD_HIGHLIGHT(categoriesIds, narrativesIds) },
+    // { slug: 'incidents', data: PRELOAD_INCIDENT(categoriesIds, narrativesIds) },
+    // { slug: 'strategies', data: PRELOAD_STRATEGY(categoriesIds) },
+    // { slug: 'experiences', data: PRELOAD_EXPERIENCE(categoriesIds, narrativesIds) },
 
-    { slug: 'drivers', data: PRELOAD_DRIVER(categoriesIds) },
-    { slug: 'leaders', data: PRELOAD_LEADER(categoriesIds, narrativesIds) },
-    { slug: 'members', data: PRELOAD_MEMBER(categoriesIds, narrativesIds) },
-    { slug: 'individuals', data: PRELOAD_INDIVIDUAL(categoriesIds) },
-    { slug: 'organizations', data: PRELOAD_ORGANIZATION(categoriesIds) },
+    // { slug: 'drivers', data: PRELOAD_DRIVER(categoriesIds) },
+    // { slug: 'leaders', data: PRELOAD_LEADER(categoriesIds, narrativesIds) },
+    // { slug: 'members', data: PRELOAD_MEMBER(categoriesIds, narrativesIds) },
+    // { slug: 'individuals', data: PRELOAD_INDIVIDUAL(categoriesIds) },
+    // { slug: 'organizations', data: PRELOAD_ORGANIZATION(categoriesIds) },
 
-    { slug: 'awards', data: PRELOAD_AWARD(categoriesIds, narrativesIds) },
-    { slug: 'cars', data: PRELOAD_CAR(categoriesIds) },
-    { slug: 'kits', data: PRELOAD_KIT(categoriesIds) },
-    { slug: 'protocols', data: PRELOAD_PROTOCOL(categoriesIds) },
-    { slug: 'expectations', data: PRELOAD_EXPECTATION(categoriesIds) },
-    { slug: 'duties', data: PRELOAD_DUTY(categoriesIds) },
-    { slug: 'schedules', data: PRELOAD_SCHEDULE(categoriesIds) },
-    { slug: 'trainings', data: PRELOAD_TRAINING(categoriesIds, narrativesIds) },
-    { slug: 'careers', data: PRELOAD_CAREER(categoriesIds, narrativesIds) },
-    { slug: 'celebrations', data: PRELOAD_CELEBRATION(categoriesIds, narrativesIds) },
-    { slug: 'initiatives', data: PRELOAD_INITIATIVE(categoriesIds, narrativesIds) },
-    { slug: 'meetups', data: PRELOAD_MEETUP(categoriesIds, narrativesIds) },
-    { slug: 'series', data: PRELOAD_SERIES(categoriesIds) },
-    { slug: 'seasons', data: PRELOAD_SEASON(categoriesIds) },
-    { slug: 'events', data: PRELOAD_EVENT(categoriesIds) },
-    { slug: 'sessions', data: PRELOAD_SESSION(categoriesIds) },
-    { slug: 'entries', data: PRELOAD_ENTRY(categoriesIds) },
-    { slug: 'results', data: PRELOAD_RESULT(categoriesIds) },
-    { slug: 'points', data: PRELOAD_POINT(categoriesIds) },
+    // { slug: 'awards', data: PRELOAD_AWARD(categoriesIds, narrativesIds) },
+    // { slug: 'cars', data: PRELOAD_CAR(categoriesIds) },
+    // { slug: 'kits', data: PRELOAD_KIT(categoriesIds) },
+    // { slug: 'protocols', data: PRELOAD_PROTOCOL(categoriesIds) },
+    // { slug: 'expectations', data: PRELOAD_EXPECTATION(categoriesIds) },
+    // { slug: 'duties', data: PRELOAD_DUTY(categoriesIds) },
+    // { slug: 'schedules', data: PRELOAD_SCHEDULE(categoriesIds) },
+    // { slug: 'trainings', data: PRELOAD_TRAINING(categoriesIds, narrativesIds) },
+    // { slug: 'careers', data: PRELOAD_CAREER(categoriesIds, narrativesIds) },
+    // { slug: 'celebrations', data: PRELOAD_CELEBRATION(categoriesIds, narrativesIds) },
+    // { slug: 'initiatives', data: PRELOAD_INITIATIVE(categoriesIds, narrativesIds) },
+    // { slug: 'meetups', data: PRELOAD_MEETUP(categoriesIds, narrativesIds) },
+    // { slug: 'series', data: PRELOAD_SERIES(categoriesIds) },
+    // { slug: 'seasons', data: PRELOAD_SEASON(categoriesIds) },
+    // { slug: 'events', data: PRELOAD_EVENT(categoriesIds) },
+    // { slug: 'sessions', data: PRELOAD_SESSION(categoriesIds) },
+    // { slug: 'entries', data: PRELOAD_ENTRY(categoriesIds) },
+    // { slug: 'results', data: PRELOAD_RESULT(categoriesIds) },
+    // { slug: 'points', data: PRELOAD_POINT(categoriesIds) },
   ]
 
   for (const collection of collections) {
