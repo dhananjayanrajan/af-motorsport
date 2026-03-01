@@ -1,1141 +1,785 @@
-# Payload CMS Development Rules
+# AGENTS.md — AF Motorsport Project Knowledge Base
 
-You are an expert Payload CMS developer. When working with Payload projects, follow these rules:
+> **Purpose**: This file is the single source of truth for any AI agent (GitHub Copilot, Cursor, Claude, Gemini, MCP tools, etc.) or new developer working in this repository. Reading this file alone is sufficient to understand the entire project without diving into individual source files. **Do NOT modify or delete any file based on reading this document — use it only for orientation and generation.**
 
-## Core Principles
+---
 
-1. **TypeScript-First**: Always use TypeScript with proper types from Payload
-2. **Security-Critical**: Follow all security patterns, especially access control
-3. **Type Generation**: Run `generate:types` script after schema changes
-4. **Transaction Safety**: Always pass `req` to nested operations in hooks
-5. **Access Control**: Understand Local API bypasses access control by default
-6. **Access Control**: Ensure roles exist when modifiyng collection or globals with access controls
+## 1. Project Identity
 
-### Code Validation
+**Client**: AF Motorsport — a car racing brand that majorly participates in **Porsche** championship series.
 
-- To validate typescript correctness after modifying code run `tsc --noEmit`
-- Generate import maps after creating or modifying components.
+**Purpose**: A domain-driven relational content architecture built on **Payload CMS v3** (Next.js App Router). It powers:
+- A cinematic brand-identity website
+- Competitive archives
+- Team identity and culture
+- eCommerce (products, variants, orders, carts, transactions)
+- AI-assisted content management via MCP
 
-## Project Structure
+**Core philosophy**:
+1. **Semantic clarity** — collections are named after real motorsport concepts, not UI components.
+2. **Relational completeness** — every driver, car, event, and outcome is explicitly connected.
+3. **Context-first rendering** — pages pull a complete entity + all its relationships; they never assemble scattered fragments.
+4. **No Blocks** — the project deliberately avoids Payload Blocks. All structured content is handled through Groups, Arrays, and Relationships inside tabs.
+5. **The frontend never changes** — the client adds backend content; the universe expands automatically.
+
+---
+
+## 2. Technology Stack
+
+| Layer | Technology |
+|---|---|
+| CMS | Payload CMS v3 (TypeScript) |
+| Database | PostgreSQL via `@payloadcms/db-postgres` |
+| Frontend Framework | Next.js (App Router) |
+| Rich Text | Lexical Editor (`@payloadcms/richtext-lexical`) |
+| Localization | English (`en`), Spanish (`es`), Portuguese (`pt`) |
+| Search | `@payloadcms/plugin-search` + `@jhb.software/payload-admin-search` |
+| MCP Integration | `@payloadcms/plugin-mcp` — all major collections are MCP-enabled |
+| Sidebar | `@veiag/payload-enhanced-sidebar` — tabbed domain navigation |
+| Calendar | `schedular-calendar-plugin` |
+| eCommerce | Payload ecommerce plugin (products, variants, orders, carts, transactions, addresses) |
+| Type Output | Auto-generated `src/payload-types.ts` — never edit by hand |
+
+---
+
+## 3. Backend Domain Structure
+
+All collections are organized into **seven logical domains**. Each domain maps to an admin sidebar tab.
+
+### 3.1 Domain Map
 
 ```
-src/
-├── app/
-│   ├── (frontend)/          # Frontend routes
-│   └── (payload)/           # Payload admin routes
-├── collections/             # Collection configs
-├── globals/                 # Global configs
-├── components/              # Custom React components
-├── hooks/                   # Hook functions
-├── access/                  # Access control functions
-└── payload.config.ts        # Main config
+Attributes   → Categories, Tags, Tones, Features, Specifications, Classifications,
+               Skills, Principles, Preferences, Channels, Locations
+
+Competition  → Series, Seasons, Events, Sessions, Entries, Results, Points
+
+Content      → Narratives, Stories, Histories, Journeys, Notes, Pages
+
+Entities     → Drivers, Leaders, Members, Individuals, Organizations, Users
+
+Operations   → Schedules, Trainings, Careers, Initiatives, Meetups,
+               Celebrations, Protocols, Duties, Expectations
+
+Outcomes     → Highlights, Incidents, Impacts, Decisions, Strategies, Awards, Experiences
+
+Resources    → Cars, Kits, Media, Galleries, Playlists, Archives, Visualizations
 ```
 
-## Configuration
+### 3.2 Globals
 
-### Minimal Config Pattern
+```
+Configurations  → Header, Footer
+Branding        → Identity, Policies
+Connectivity    → Socials, Announcements, Questions
+```
 
-```typescript
-import { buildConfig } from 'payload'
-import { mongooseAdapter } from '@payloadcms/db-mongodb'
-import { lexicalEditor } from '@payloadcms/richtext-lexical'
-import path from 'path'
-import { fileURLToPath } from 'url'
+### 3.3 eCommerce Collections (plugin-managed)
 
-const filename = fileURLToPath(import.meta.url)
-const dirname = path.dirname(filename)
+```
+Products, Variants, VariantTypes, VariantOptions,
+Carts, Orders, Transactions, Addresses
+```
 
-export default buildConfig({
-  admin: {
-    user: 'users',
-    importMap: {
-      baseDir: path.resolve(dirname),
-    },
-  },
-  collections: [Users, Media],
-  editor: lexicalEditor(),
-  secret: process.env.PAYLOAD_SECRET,
-  typescript: {
-    outputFile: path.resolve(dirname, 'payload-types.ts'),
-  },
-  db: mongooseAdapter({
-    url: process.env.DATABASE_URL,
-  }),
+### 3.4 System Collections (auto-generated by Payload)
+
+```
+forms, form-submissions, search, payload-mcp-api-keys,
+payload-kv, payload-locked-documents, payload-preferences, payload-migrations
+```
+
+---
+
+## 4. Universal Field Structure
+
+Every non-trivial collection follows this **standardized field pattern**:
+
+```
+Collection
+├── toggle                    (group) — 'simple' | 'advanced' mode switch
+├── name                      (text, required) — primary identifier
+├── alias                     (text, optional) — alternate name
+├── type                      (relationship → categories[]) — classification
+│
+├── Tab: basics               Identifying info
+│   ├── enable                (checkbox) — section on/off toggle
+│   ├── [identifiers group]   code, abbreviation, etc.
+│   ├── tagline               (text)
+│   ├── description           (text)
+│   └── visibility.show       (checkbox) — frontend display toggle
+│
+├── Tab: details              Extra data
+│   ├── enable
+│   ├── status                (select) — collection-specific status enum
+│   ├── attributes            (relationship groups — classification, features)
+│   ├── content               (relationship to narrative, history)
+│   └── visibility.show
+│
+├── Tab: traits               Characteristics
+│   ├── enable
+│   ├── specifications        (relationship → specifications[])
+│   ├── [domain-specific groups]
+│   └── visibility.show
+│
+├── Tab: metrics              Performance stats
+│   ├── enable
+│   ├── counts / stats        (number fields)
+│   ├── schedule              (relationship)
+│   └── visibility.show
+│
+├── Tab: assets               Media files
+│   ├── enable
+│   ├── logo / cover / thumbnail (upload → media)
+│   ├── archive               (relationship → archives[])
+│   └── visibility.show
+│
+├── Tab: contexts             Contextual information
+│   ├── enable
+│   ├── connections           (relationship groups — organizations, individuals)
+│   ├── notes                 (relationship → notes[])
+│   └── visibility.show
+│
+└── Tab: seo                  SEO metadata
+    ├── title
+    ├── image → media
+    └── description
+
+Sidebar Fields (always present):
+├── generateSlug              (checkbox)
+├── slug                      (text, auto-generated)
+├── categories                (relationship → categories[])
+├── tags                      (relationship → tags[])
+└── visibility
+    ├── check_publish         (boolean)
+    ├── check_featured        (boolean)
+    └── check_pinned          (boolean)
+```
+
+**Key rules**:
+- `toggle?: 'simple' | 'advanced'` is on every collection. Simple hides advanced fields.
+- Every tab starts with an `enable` boolean and ends with a `visibility.show` boolean.
+- Relationship fields inside tabs use `depth: 1` for admin display.
+- All text/rich-text fields support localization (en/es/pt).
+
+---
+
+## 5. Collection-by-Collection Reference
+
+### 5.1 Competition Hierarchy
+
+The racing data model is strictly hierarchical:
+
+```
+Series → Season → Event → Session → Entry → Result → Point
+```
+
+| Collection | Key Fields | Notable Relationships |
+|---|---|---|
+| `series` | name, alias, type[], status | seasons, organizations, locations, specifications, history, narrative |
+| `seasons` | name, type, status | series, events, points, awards, specifications |
+| `events` | name, type, status, format | season, location, sessions, entries, results, schedules |
+| `sessions` | name, type, status, format | event, entries, results, incidents, strategies |
+| `entries` | name, type, status | session, driver, car, crew (members), classifications |
+| `results` | name, type, status, position | entry, incident, visualization, narrative |
+| `points` | name, type, value, scale | result, entry, classifications, specification |
+
+### 5.2 Entities
+
+| Collection | Key Fields | Notable Relationships |
+|---|---|---|
+| `drivers` | name, alias, type (via categories), traits (nationality, pronouns, gender) | cars, kits, entries, results, awards, teams, organizations, narratives, journeys |
+| `leaders` | name, alias, title, department | members, drivers, decisions, strategies, initiatives |
+| `members` | name, alias, job, department, certifications | duties, skills, trainings, cars, sessions |
+| `individuals` | name, alias, type | interests, influences, benefits, histories |
+| `organizations` | name, alias, type, background, reputation | locations, parents, benefits, channels, histories |
+| `users` | email, password (auth collection) | orders, cart, addresses (via joins) |
+
+### 5.3 Content
+
+| Collection | Purpose |
+|---|---|
+| `narratives` | Narrative prose attached to other entities |
+| `stories` | Fully authored editorial pieces with concerns, interactions |
+| `histories` | Historical records with evolution, lineage, legacy |
+| `journeys` | Career/personal arcs — lessons, decisions, impacts |
+| `notes` | Contextual short-form annotations |
+| `pages` | Static page definitions for the frontend |
+
+### 5.4 Resources
+
+| Collection | Purpose |
+|---|---|
+| `cars` | Full car profiles — manufacturer, specs, driver connections, build history |
+| `kits` | Equipment/gear — material, design, composition, appearance |
+| `media` | Uploaded files (images, video) — Payload's default upload collection |
+| `galleries` | Curated photo collections — entity-tagged, location-mapped |
+| `playlists` | Video collections — quality, format, entity-connected |
+| `archives` | Document/file archives — sample uploads, entity-tagged |
+| `visualizations` | Design files, renders, blueprints — entity-linked |
+
+### 5.5 Operations
+
+| Collection | Purpose |
+|---|---|
+| `schedules` | Time-based activity schedules with slots and constraints |
+| `trainings` | Training programs — intensity, format, skills, participants |
+| `careers` | Career opportunity postings — duties, expectations, awards |
+| `initiatives` | R&D or strategic projects — mission, roadmap, partners |
+| `meetups` | Community gatherings — location, features, access, hosts |
+| `celebrations` | Recognition events — narrative, prestige, exclusivity |
+| `protocols` | Documented procedures — steps, requirements, archive |
+| `duties` | Assigned obligations — obligation, protocol, expectation |
+| `expectations` | Standards/criteria — direction, priority, flexibility |
+
+### 5.6 Outcomes
+
+| Collection | Purpose |
+|---|---|
+| `highlights` | Notable moments — narrative, specification, media |
+| `incidents` | On/off-track events — decision, specification, impact |
+| `impacts` | Consequence records — scope, tone, velocity, gravity, permanence |
+| `decisions` | Documented decisions — narrative, features, specifications |
+| `strategies` | Strategic frameworks — methodology, directives, contingencies |
+| `awards` | Recognition records — narrative, entity assignment, visualization |
+| `experiences` | Experiential records — narrative, skills, evidence, journey |
+
+### 5.7 Attributes
+
+These are **reusable taxonomy/descriptor collections** referenced across every domain:
+
+| Collection | Purpose |
+|---|---|
+| `categories` | Primary classification; every collection has `type → categories[]` |
+| `tags` | Freeform tagging with context |
+| `tones` | Emotional/stylistic descriptors |
+| `features` | Functional characteristics — with nature and capability |
+| `specifications` | Technical parameters — identifier, definition, measurement |
+| `classifications` | Structured taxonomy — criteria, framework, parent |
+| `skills` | Capabilities — method, dependencies, training connection |
+| `principles` | Values/beliefs — application, rationale |
+| `preferences` | Conditional preferences — condition, reason |
+| `channels` | Communication channels — identifier, address, protocol |
+| `locations` | Geographic records — address, geometry, geography, infrastructure |
+
+---
+
+## 6. Admin Sidebar Navigation
+
+The sidebar uses `@veiag/payload-enhanced-sidebar` with the following tabs:
+
+```
+Dashboard    → /         (link)
+Attributes   → Categories, Channels, Classifications, Features, Locations,
+               Preferences, Principles, Skills, Specifications, Tags, Tones
+Competition  → Entries, Events, Points, Results, Seasons, Series, Sessions
+Content      → Histories, Journeys, Narratives, Notes, Pages, Stories
+Entities     → Drivers, Individuals, Leaders, Members, Organizations, Users
+Operations   → Careers, Celebrations, Duties, Expectations, Initiatives,
+               Meetups, Protocols, Schedules, Trainings
+Outcomes     → Awards, Decisions, Experiences, Highlights, Impacts,
+               Incidents, Strategies
+Resources    → Archives, Cars, Galleries, Kits, Media, Playlists, Visualizations
+Settings     → Header, Footer, Identity, Policies, Socials, Announcements,
+               Questions, Documentation (external), API Keys
+```
+
+**Badges**: Stories collection shows a warning badge for draft count.
+
+---
+
+## 7. Frontend Page Structure (Cinematic Universe)
+
+Pages are **never tied to single collections**. Each page is a "cinema" assembled from multiple domain collections simultaneously. The frontend is **static in template, infinite in content**.
+
+### 7.1 URL Architecture
+
+```
+/glory/[driver-slug]          → Driver as legend (Driver + Awards + Points + Cars + Strategy…)
+/glory/[event-slug]           → Event as battle legend
+/glory/[award-slug]           → Award as living story
+/glory/hall-of-fame           → All-time aggregated glory
+
+/pursuit/[series-slug]        → Championship organism
+/pursuit/[season-slug]        → Year's dramatic arc
+/pursuit/[season-slug]/[event-slug]          → Race weekend
+/pursuit/[season-slug]/[event-slug]/[session-slug] → The moment (session level)
+
+/craft/[car-slug]             → Machine as masterpiece
+/craft/[kit-slug]             → Equipment as precision instrument
+/craft/[initiative-slug]      → R&D project (also at /ambition)
+/craft/engineering-philosophy → Aggregated tech philosophy
+
+/tribe/[driver-slug]          → Person behind the racing number (human lens)
+/tribe/[leader-slug]          → Leader as human being
+/tribe/[member-slug]          → Specialist's human story
+/tribe/culture-code           → Organization soul
+
+/alliance/[organization-slug] → Partnership as complete story
+/alliance/network             → Full ecosystem map
+
+/chronicle/[story-slug]       → Authored story
+/chronicle/[journey-slug]     → Career or personal arc
+/chronicle/[history-slug]     → Historical record
+
+/ambition/[initiative-slug]   → Future-facing project
+/ambition/[celebration-slug]  → Moment of recognition
+/ambition/[meetup-slug]       → Invitation to enter the world
+/ambition/[career-slug]       → Role opportunity
+/ambition/[training-slug]     → Development program
+```
+
+### 7.2 Page Section Pattern
+
+Every page URL is a **context collection** (e.g., `drivers`) that acts as the key unlocking a universe of connected entities. A page is divided into **Sections** (fixed templates), each containing a **Block** of 3–5 related collections assembled together. No block ever exposes raw data — it always delivers an emotional/narrative assembly.
+
+**Example — `/glory/[driver-slug]`**:
+
+| Section | Collections Assembled |
+|---|---|
+| The Legend | Driver + Awards + Highlights + Points |
+| The Conquests | Driver + Events + Sessions + Entries |
+| The Glory Numbers | Driver + Points + Results |
+| The Rivals Overcome | Driver + Teammates + Incidents + Decisions |
+| The Machines | Driver + Cars + Kits |
+| The Team | Driver + Crew + Leaders + Organizations |
+| The Strategy | Driver + Strategies + Decisions + Impacts |
+| The Celebrations | Driver + Awards + Celebrations + Stories |
+| The Voice | Driver + Narratives + Notes |
+| The Visual Monument | Driver + Galleries + Playlists + Archives |
+
+Standard pages (Home, About, Contact, Store, Blog, Forms, Opportunities, Legal) exist **outside** this cinematic architecture. Store, Blog, and Forms are Payload plugin-driven.
+
+---
+
+## 8. Field Factories System
+
+Located in `src/fields/factories/`. These are **factory functions** that generate consistent Payload field configurations. **Never write raw field objects when a factory exists.**
+
+### 8.1 Core Factories (`src/fields/factories/blueprint.ts`)
+
+#### `collectionFactory(config, essentials, tabs, hostLabels)`
+
+The **top-level assembler** for every collection. Produces a complete `CollectionConfig` with:
+- `toggle` group (simple/advanced mode)
+- `essentials` fields (name, alias, type — pre-tabs)
+- `tabs` array (from `tabFactory`)
+- SEO tab (auto-appended)
+- Sidebar fields (slug, categories, tags, visibility flags)
+- Consistent `admin` defaults: `useAsTitle`, `defaultColumns`, `pagination`
+- `timestamps: true`
+- `dbName: config.slug`
+
+```ts
+// Usage pattern:
+export const MyCollection = collectionFactory(
+  { slug: 'my-collection', admin: { useAsTitle: 'name' }, ... },
+  essentialFields,    // [nameField, aliasField, typeField]
+  [basicsTab, detailsTab, traitsTab, metricsTab, assetsTab, contextsTab],
+  { host: { en: 'My Record' }, hostPlural: { en: 'My Records' } }
+)
+```
+
+#### `tabFactory(type, host, groups)`
+
+Creates one of the **six standard tabs**. `type` must be one of:
+`'basics' | 'details' | 'traits' | 'metrics' | 'assets' | 'contexts'`
+
+Each tab auto-wraps in:
+- `enable` toggle at the top
+- `visibility.show` at the bottom
+- Correct localized labels and descriptions
+
+```ts
+const basicsTab = tabFactory('basics', hostLabel, [identifiersGroup, taglineField, descriptionField])
+```
+
+#### `groupFactory(groupLabels, host, fields, isArray?)`
+
+Creates a named `group` field. If `isArray = true`, wraps fields in an array with a `list` name, adding `visibility` to each list item. If all contained fields are `advanced`, auto-wraps the group in an `advanced()` condition so it only shows in advanced mode.
+
+#### `groupFieldFactory(opts)`
+
+Thin wrapper over `groupFactory` that pulls labels and descriptions from a **dictionary** file rather than hardcoding them inline.
+
+```ts
+groupFieldFactory({
+  name: 'identifiers',
+  dictionary: DRIVER_DICT,
+  hostLabel: { en: 'Driver' },
+  fields: [codeField, abbreviationField],
 })
 ```
 
-## Collections
+#### `connectFactory(opts, isArray?)`
 
-### Basic Collection
+Creates a **connect group** — a standardized pattern for linking one entity to another with relationship + `context` text + `caption` text fields. Used when a relationship needs annotation beyond just the reference.
 
-```typescript
-import type { CollectionConfig } from 'payload'
-
-export const Posts: CollectionConfig = {
-  slug: 'posts',
-  admin: {
-    useAsTitle: 'title',
-    defaultColumns: ['title', 'author', 'status', 'createdAt'],
-  },
-  fields: [
-    { name: 'title', type: 'text', required: true },
-    { name: 'slug', type: 'text', unique: true, index: true },
-    { name: 'content', type: 'richText' },
-    { name: 'author', type: 'relationship', relationTo: 'users' },
-  ],
-  timestamps: true,
-}
+```ts
+connectFactory({
+  name: 'teammates',
+  relationTo: 'drivers',
+  dictionary: DRIVER_DICT,
+  hostLabel: { en: 'Driver' },
+  flags: ['hasMany'],
+})
 ```
 
-### Auth Collection with RBAC
+### 8.2 Field-Level Factories (`src/fields/factories/fields/`)
 
-```typescript
-export const Users: CollectionConfig = {
-  slug: 'users',
-  auth: true,
-  fields: [
-    {
-      name: 'roles',
-      type: 'select',
-      hasMany: true,
-      options: ['admin', 'editor', 'user'],
-      defaultValue: ['user'],
-      required: true,
-      saveToJWT: true, // Include in JWT for fast access checks
-      access: {
-        update: ({ req: { user } }) => user?.roles?.includes('admin'),
-      },
-    },
-  ],
-}
+| Factory | Creates |
+|---|---|
+| `textFieldFactory` | `text` field from dictionary |
+| `numberFieldFactory` | `number` field from dictionary |
+| `richTextFieldFactory` | `richText` (Lexical) field |
+| `selectFieldFactory` | `select` field with options from dictionary |
+| `uploadFieldFactory` | `upload` (media) field |
+| `relationshipFieldFactory` | `relationship` field to one or many collections |
+| `checkboxFieldFactory` | `checkbox` field |
+| `dateFieldFactory` | `date` field |
+| `jsonFieldFactory` | `json` field |
+| `arrayFieldFactory` | `array` field |
+
+### 8.3 Toggle Factories (`src/fields/factories/toggles/`)
+
+| Factory | Purpose |
+|---|---|
+| `enable(opts)` | Checkbox at start of each tab — "enable this section" |
+| `show(opts)` | Checkbox at end of each tab — "show this section on frontend" |
+| `visibilityGroup(opts)` | Group wrapping `show` inside array items |
+| `advanced(field)` | Wraps any field with `admin.condition` that checks `toggle === 'advanced'` |
+
+### 8.4 Common Fields (`src/fields/common/`)
+
+| File | Provides |
+|---|---|
+| `toggle.ts` | `createToggleGroup()` — the top-level simple/advanced mode switcher for every collection |
+| `sidebar.ts` | `createSidebarFields()` — slug, categories, tags, visibility (publish/featured/pinned) |
+| `seo.ts` | `createSeoTab()` — standard SEO tab appended to every collection |
+
+### 8.5 Dictionary Pattern
+
+Every collection has a **dictionary file** (e.g., `src/collections/Entities/Driver/dictionary.ts`) containing:
+- Group labels (multilingual: `{ en, es, pt }`)
+- Entity labels
+- Descriptions
+
+Dictionaries are imported into the tab files and passed to `groupFieldFactory` and `textFieldFactory` etc. via the `dictionary` parameter. This ensures labels are consistent without hardcoding strings at the field level.
+
+---
+
+## 9. Collection Directory Structure
+
+```
+src/collections/
+├── Attributes/
+│   ├── Category/index.ts
+│   ├── Tag/index.ts
+│   ├── Tone/index.ts
+│   ├── Feature/index.ts
+│   ├── Specification/index.ts
+│   ├── Classification/index.ts
+│   ├── Skill/index.ts
+│   ├── Principle/index.ts
+│   ├── Preference/index.ts
+│   ├── Channel/index.ts
+│   └── Location/index.ts
+├── Competition/
+│   ├── Series/
+│   │   ├── index.ts
+│   │   ├── dictionary.ts
+│   │   └── tabs/ (basics.ts, details.ts, traits.ts, metrics.ts, assets.ts, contexts.ts)
+│   ├── Season/, Event/, Session/, Entry/, Result/, Point/
+├── Content/
+│   ├── Narrative/, Story/, History/, Journey/, Note/, Pages/
+├── Entities/
+│   ├── Driver/, Leader/, Member/, Individual/, Organization/, User/
+├── Operations/
+│   ├── Schedule/, Training/, Career/, Initiative/, Meetup/,
+│       Celebration/, Protocol/, Duty/, Expectation/
+├── Outcomes/
+│   ├── Highlight/, Incident/, Impact/, Decision/, Strategy/, Award/, Experience/
+└── Resources/
+    ├── Car/, Kit/, Media/, Gallery/, Playlist/, Archive/, Visualization/
 ```
 
-## Fields
+Each complex collection follows:
+```
+CollectionName/
+├── index.ts          ← calls collectionFactory(); exports the collection config
+├── dictionary.ts     ← multilingual labels for all groups/fields in the collection
+└── tabs/
+    ├── basics.ts
+    ├── details.ts
+    ├── traits.ts
+    ├── metrics.ts
+    ├── assets.ts
+    └── contexts.ts
+```
 
-### Common Patterns
+---
 
-```typescript
-// Auto-generate slugs
-import { slugField } from 'payload'
-slugField({ fieldToUse: 'title' })
+## 10. Dashboard Widget System
 
-// Relationship with filtering
+Located in `src/widgets/`. Currently **commented out** in `payload.config.ts` (`afterDashboard`) but fully implemented and ready to activate.
+
+### 10.1 Architecture
+
+```
+payload.config.ts
+  └── createXxx() factory calls → AnyWidgetConfig objects
+        └── WIDGET_REGISTRY (widgetRegistry.ts) → ordered array of widget configs
+
+DashboardOrchestrator.tsx (server component)
+  ├── Reads user session for role-based access (requiredRoles filter)
+  ├── Groups widgets by _section or leaves them ungrouped
+  ├── Renders a 3-column bento grid (responsive: 1 column on mobile)
+  └── Calls widgetRenderers.tsx for each widget type
+```
+
+### 10.2 Widget Types
+
+All widgets are created by **factory functions exported from `src/widgets/index.ts`**:
+
+| Widget | Factory | Span | What it shows |
+|---|---|---|---|
+| `StatsBar` | `createStatsBar()` | 3 (full) | Total count, published/unpublished/featured/pinned counts, publish-rate ring, 6-month trend sparkline |
+| `RecentActivityFeed` | `createRecentActivityFeed()` | 1 | Last N updated records with name, type, days-ago, publish pill, completion bar |
+| `TypeBreakdownChart` | `createTypeBreakdownChart()` | 1 | Per-type counts + publish rates as horizontal bars with best/worst callouts |
+| `CompletionScore` | `createCompletionScore()` | 2 | Average completion % ring, distribution histogram, worst-5 / best-5 records |
+| `ToggleDistribution` | `createToggleDistribution()` | 1 | simple vs. advanced mode split with proportional bar and per-mode avg completion |
+| `RelationshipDensity` | `createRelationshipDensity()` | 2 | Per-tab relationship fill %, heatmap tiles, worst-N records with per-tab breakdown |
+| `TopTagsCategories` | `createTopTagsCategories()` | 1 | Tag cloud + category cloud with coverage % bars |
+| `PublishingPipeline` | `createPublishingPipeline()` | 2 | Draft/Published/Featured/Pinned lane view with stale draft detection |
+| `SlugHealth` | `createSlugHealth()` | 1 | Missing/duplicate/drifted slug audit with health score ring |
+| `Timeline` | `createTimeline()` | 2 | Monthly bar chart + cumulative overlay + this-month vs last-month delta |
+| `Custom` | `createCustomWidget()` | configurable | Looks up renderer from `CUSTOM_WIDGET_REGISTRY` by component name |
+
+### 10.3 Widget Config Options
+
+Every factory call accepts:
+
+```ts
 {
-  name: 'category',
-  type: 'relationship',
-  relationTo: 'categories',
-  filterOptions: { active: { equals: true } },
-}
-
-// Conditional field
-{
-  name: 'featuredImage',
-  type: 'upload',
-  relationTo: 'media',
-  admin: {
-    condition: (data) => data.featured === true,
-  },
-}
-
-// Virtual field
-{
-  name: 'fullName',
-  type: 'text',
-  virtual: true,
-  hooks: {
-    afterRead: [({ siblingData }) => `${siblingData.firstName} ${siblingData.lastName}`],
-  },
+  collectionSlug: string       // target Payload collection
+  title?: string               // widget header label
+  cacheTTL?: number            // seconds to cache Payload query result
+  requiredRoles?: string[]     // e.g. ['admin', 'editor'] — hide for other roles
+  span?: 1 | 2 | 3            // bento grid column span (default: type-specific)
+  _section?: string            // group widgets under a named heading
+  // Widget-specific extras:
+  limit?: number               // RecentActivityFeed, RelationshipDensity
+  sections?: string[]          // CompletionScore — which tabs to score
+  relationGroups?: string[]    // RelationshipDensity — which tabs to scan
+  dateField?: string           // Timeline — which date field to chart
+  tagLimit?: number            // TopTagsCategories
+  categoryLimit?: number       // TopTagsCategories
 }
 ```
 
-## CRITICAL SECURITY PATTERNS
+### 10.4 Completion Score Calculation
 
-### 1. Local API Access Control (MOST IMPORTANT)
+The `calculateCompletionScore(doc, sections)` utility (`widgetUtils.ts`) checks how many fields within each section tab (basics, details, traits, metrics, assets, contexts) are non-empty. The score is a percentage of filled fields across all scanned sections. Used by RecentActivityFeed, CompletionScore, ToggleDistribution, RelationshipDensity.
 
-```typescript
-// ❌ SECURITY BUG: Access control bypassed
-await payload.find({
-  collection: 'posts',
-  user: someUser, // Ignored! Operation runs with ADMIN privileges
-})
+### 10.5 Caching
 
-// ✅ SECURE: Enforces user permissions
-await payload.find({
-  collection: 'posts',
-  user: someUser,
-  overrideAccess: false, // REQUIRED
-})
+`widgetCache.ts` uses an in-memory TTL cache keyed by `buildCacheKey(slug, widgetType, extras)`. Each widget populates the cache on first call and returns the cached value until TTL expires. TTLs are configurable per widget instance.
 
-// ✅ Administrative operation (intentional bypass)
-await payload.find({
-  collection: 'posts',
-  // No user, overrideAccess defaults to true
-})
-```
+### 10.6 Design Tokens
 
-**Rule**: When passing `user` to Local API, ALWAYS set `overrideAccess: false`
+Widget renderers use **Payload's native CSS variables** only — no custom CSS classes:
 
-### 2. Transaction Safety in Hooks
-
-```typescript
-// ❌ DATA CORRUPTION RISK: Separate transaction
-hooks: {
-  afterChange: [
-    async ({ doc, req }) => {
-      await req.payload.create({
-        collection: 'audit-log',
-        data: { docId: doc.id },
-        // Missing req - runs in separate transaction!
-      })
-    },
-  ],
-}
-
-// ✅ ATOMIC: Same transaction
-hooks: {
-  afterChange: [
-    async ({ doc, req }) => {
-      await req.payload.create({
-        collection: 'audit-log',
-        data: { docId: doc.id },
-        req, // Maintains atomicity
-      })
-    },
-  ],
+```ts
+const C = {
+  bg:      'var(--theme-elevation-0)',
+  surface: 'var(--theme-elevation-50)',
+  border:  'var(--theme-elevation-150)',
+  success: 'var(--theme-success-500)',
+  warn:    'var(--theme-warning-500)',
+  error:   'var(--theme-error-500)',
+  // ...
 }
 ```
 
-**Rule**: ALWAYS pass `req` to nested operations in hooks
+This ensures widgets match the current Payload admin theme (light/dark) automatically.
 
-### 3. Prevent Infinite Hook Loops
+### 10.7 Currently Configured Widget Instances
 
-```typescript
-// ❌ INFINITE LOOP
-hooks: {
-  afterChange: [
-    async ({ doc, req }) => {
-      await req.payload.update({
-        collection: 'posts',
-        id: doc.id,
-        data: { views: doc.views + 1 },
-        req,
-      }) // Triggers afterChange again!
-    },
-  ],
-}
+Pre-wired in `payload.config.ts` (ready to add to WIDGET_REGISTRY):
 
-// ✅ SAFE: Use context flag
-hooks: {
-  afterChange: [
-    async ({ doc, req, context }) => {
-      if (context.skipHooks) return
-
-      await req.payload.update({
-        collection: 'posts',
-        id: doc.id,
-        data: { views: doc.views + 1 },
-        context: { skipHooks: true },
-        req,
-      })
-    },
-  ],
-}
+```
+Drivers:       StatsBar, RecentActivityFeed, TypeBreakdownChart, CompletionScore,
+               ToggleDistribution, RelationshipDensity, TopTagsCategories,
+               PublishingPipeline, SlugHealth, Timeline
+Kits:          StatsBar, RecentActivityFeed, PublishingPipeline, CompletionScore
+Series:        StatsBar
+Seasons:       StatsBar
+Events:        Timeline, PublishingPipeline
+Members:       RecentActivityFeed
+Organizations: StatsBar
+Stories:       Timeline
+Narratives:    StatsBar
+Media:         StatsBar
+Cars:          RecentActivityFeed
 ```
 
-## Access Control
+---
 
-### Collection-Level Access
+## 11. Workflow Mapping
 
-```typescript
-import type { Access } from 'payload'
+All workflows in `workflow_mapping.md` are executable with **existing collections and fields only**. No new collections or fields are introduced by workflows.
 
-// Boolean return
-const authenticated: Access = ({ req: { user } }) => Boolean(user)
+### 11.1 Racing Operations
+- **Championship Management**: Series → Season → Event → Session → Entry → Result → Points
+- **Event Execution**: Planning → Location → Schedule → Protocol → Sessions → Entries → Results → Highlights
+- **Competition Recording**: Session preparation through Official Classification
+- **Race Weekend Documentation**: Setup → Practice → Qualifying → Race → Reports → Highlights → Review
 
-// Query constraint (row-level security)
-const ownPostsOnly: Access = ({ req: { user } }) => {
-  if (!user) return false
-  if (user?.roles?.includes('admin')) return true
+### 11.2 Content Creation
+- Story Development, History Documentation, Journey Tracking, Media Production
 
-  return {
-    author: { equals: user.id },
-  }
-}
+### 11.3 Entity Management
+- Driver Onboarding, Team Member Integration, Leadership Documentation, Organization Setup
 
-// Async access check
-const projectMemberAccess: Access = async ({ req, id }) => {
-  const { user, payload } = req
+### 11.4 Technical Documentation
+- Car Development, Kit Design, Technical Specification, Feature Documentation
 
-  if (!user) return false
-  if (user.roles?.includes('admin')) return true
+### 11.5 Deep Workflows (key sequences)
 
-  const project = await payload.findByID({
-    collection: 'projects',
-    id: id as string,
-    depth: 0,
-  })
-
-  return project.members?.includes(user.id)
-}
+**Complete Driver Profile**:
+```
+Driver → Identity → Biography → Chronology → Classification → Narrative →
+Journey → Skills → Training → Experience → Results → Points → Awards →
+Gallery → Team → Car → Kit
 ```
 
-### Field-Level Access
-
-```typescript
-// Field access ONLY returns boolean (no query constraints)
-{
-  name: 'salary',
-  type: 'number',
-  access: {
-    read: ({ req: { user }, doc }) => {
-      // Self can read own salary
-      if (user?.id === doc?.id) return true
-      // Admin can read all
-      return user?.roles?.includes('admin')
-    },
-    update: ({ req: { user } }) => {
-      // Only admins can update
-      return user?.roles?.includes('admin')
-    },
-  },
-}
+**Complete Series Setup**:
+```
+Series → Type → Identity → Description → Status → Organizations →
+Classifications → Features → Heritage → Specifications → Schedule →
+History → Logo → Archives → Locations → Authority
 ```
 
-### Common Access Patterns
-
-```typescript
-// Anyone
-export const anyone: Access = () => true
-
-// Authenticated only
-export const authenticated: Access = ({ req: { user } }) => Boolean(user)
-
-// Admin only
-export const adminOnly: Access = ({ req: { user } }) => {
-  return user?.roles?.includes('admin')
-}
-
-// Admin or self
-export const adminOrSelf: Access = ({ req: { user } }) => {
-  if (user?.roles?.includes('admin')) return true
-  return { id: { equals: user?.id } }
-}
-
-// Published or authenticated
-export const authenticatedOrPublished: Access = ({ req: { user } }) => {
-  if (user) return true
-  return { _status: { equals: 'published' } }
-}
+**Complete Event Production**:
+```
+Event → Type → Identity → Description → Status → Season → Location →
+Chronology → Format → Classifications → Features → Regulations →
+Sessions → Highlights → Stories → Media → Archives
 ```
 
-## Hooks
-
-### Common Hook Patterns
-
-```typescript
-import type { CollectionConfig } from 'payload'
-
-export const Posts: CollectionConfig = {
-  slug: 'posts',
-  hooks: {
-    // Before validation - format data
-    beforeValidate: [
-      async ({ data, operation }) => {
-        if (operation === 'create') {
-          data.slug = slugify(data.title)
-        }
-        return data
-      },
-    ],
-
-    // Before save - business logic
-    beforeChange: [
-      async ({ data, req, operation, originalDoc }) => {
-        if (operation === 'update' && data.status === 'published') {
-          data.publishedAt = new Date()
-        }
-        return data
-      },
-    ],
-
-    // After save - side effects
-    afterChange: [
-      async ({ doc, req, operation, previousDoc, context }) => {
-        // Check context to prevent loops
-        if (context.skipNotification) return
-
-        if (operation === 'create') {
-          await sendNotification(doc)
-        }
-        return doc
-      },
-    ],
-
-    // After read - computed fields
-    afterRead: [
-      async ({ doc, req }) => {
-        doc.viewCount = await getViewCount(doc.id)
-        return doc
-      },
-    ],
-
-    // Before delete - cascading deletes
-    beforeDelete: [
-      async ({ req, id }) => {
-        await req.payload.delete({
-          collection: 'comments',
-          where: { post: { equals: id } },
-          req, // Important for transaction
-        })
-      },
-    ],
-  },
-}
+**Complete Entry Processing**:
+```
+Entry → Type → Identity → Status → Session → Driver → Crew →
+Car → Classification → Role → Eligibility → Preferences →
+Specifications → Position → Parameters → Gallery → Playlist
 ```
 
-## Queries
-
-### Local API
-
-```typescript
-// Find with complex query
-const posts = await payload.find({
-  collection: 'posts',
-  where: {
-    and: [{ status: { equals: 'published' } }, { 'author.name': { contains: 'john' } }],
-  },
-  depth: 2, // Populate relationships
-  limit: 10,
-  sort: '-createdAt',
-  select: {
-    title: true,
-    author: true,
-  },
-})
-
-// Find by ID
-const post = await payload.findByID({
-  collection: 'posts',
-  id: '123',
-  depth: 2,
-})
-
-// Create
-const newPost = await payload.create({
-  collection: 'posts',
-  data: {
-    title: 'New Post',
-    status: 'draft',
-  },
-})
-
-// Update
-await payload.update({
-  collection: 'posts',
-  id: '123',
-  data: { status: 'published' },
-})
-
-// Delete
-await payload.delete({
-  collection: 'posts',
-  id: '123',
-})
-```
-
-### Query Operators
-
-```typescript
-// Equals
-{ status: { equals: 'published' } }
-
-// Not equals
-{ status: { not_equals: 'draft' } }
-
-// Greater than / less than
-{ price: { greater_than: 100 } }
-{ age: { less_than_equal: 65 } }
-
-// Contains (case-insensitive)
-{ title: { contains: 'payload' } }
-
-// Like (all words present)
-{ description: { like: 'cms headless' } }
-
-// In array
-{ category: { in: ['tech', 'news'] } }
-
-// Exists
-{ image: { exists: true } }
-
-// Near (geospatial)
-{ location: { near: [-122.4194, 37.7749, 10000] } }
-```
-
-### AND/OR Logic
-
-```typescript
-{
-  or: [
-    { status: { equals: 'published' } },
-    { author: { equals: user.id } },
-  ],
-}
-
-{
-  and: [
-    { status: { equals: 'published' } },
-    { featured: { equals: true } },
-  ],
-}
-```
-
-## Getting Payload Instance
-
-```typescript
-// In API routes (Next.js)
-import { getPayload } from 'payload'
-import config from '@payload-config'
-
-export async function GET() {
-  const payload = await getPayload({ config })
-
-  const posts = await payload.find({
-    collection: 'posts',
-  })
-
-  return Response.json(posts)
-}
-
-// In Server Components
-import { getPayload } from 'payload'
-import config from '@payload-config'
-
-export default async function Page() {
-  const payload = await getPayload({ config })
-  const { docs } = await payload.find({ collection: 'posts' })
-
-  return <div>{docs.map(post => <h1 key={post.id}>{post.title}</h1>)}</div>
-}
-```
-
-## Components
-
-The Admin Panel can be extensively customized using React Components. Custom Components can be Server Components (default) or Client Components.
-
-### Defining Components
-
-Components are defined using **file paths** (not direct imports) in your config:
-
-**Component Path Rules:**
-
-- Paths are relative to project root or `config.admin.importMap.baseDir`
-- Named exports: use `#ExportName` suffix or `exportName` property
-- Default exports: no suffix needed
-- File extensions can be omitted
-
-```typescript
-import { buildConfig } from 'payload'
-
-export default buildConfig({
-  admin: {
-    components: {
-      // Logo and branding
-      graphics: {
-        Logo: '/components/Logo',
-        Icon: '/components/Icon',
-      },
-
-      // Navigation
-      Nav: '/components/CustomNav',
-      beforeNavLinks: ['/components/CustomNavItem'],
-      afterNavLinks: ['/components/NavFooter'],
-
-      // Header
-      header: ['/components/AnnouncementBanner'],
-      actions: ['/components/ClearCache', '/components/Preview'],
-
-      // Dashboard
-      beforeDashboard: ['/components/WelcomeMessage'],
-      afterDashboard: ['/components/Analytics'],
-
-      // Auth
-      beforeLogin: ['/components/SSOButtons'],
-      logout: { Button: '/components/LogoutButton' },
-
-      // Settings
-      settingsMenu: ['/components/SettingsMenu'],
-
-      // Views
-      views: {
-        dashboard: { Component: '/components/CustomDashboard' },
-      },
-    },
-  },
-})
-```
-
-**Component Path Rules:**
-
-- Paths are relative to project root or `config.admin.importMap.baseDir`
-- Named exports: use `#ExportName` suffix or `exportName` property
-- Default exports: no suffix needed
-- File extensions can be omitted
-
-### Component Types
-
-1. **Root Components** - Global Admin Panel (logo, nav, header)
-2. **Collection Components** - Collection-specific (edit view, list view)
-3. **Global Components** - Global document views
-4. **Field Components** - Custom field UI and cells
-
-### Component Types
-
-1. **Root Components** - Global Admin Panel (logo, nav, header)
-2. **Collection Components** - Collection-specific (edit view, list view)
-3. **Global Components** - Global document views
-4. **Field Components** - Custom field UI and cells
-
-### Server vs Client Components
-
-**All components are Server Components by default** (can use Local API directly):
-
-```tsx
-// Server Component (default)
-import type { Payload } from 'payload'
-
-async function MyServerComponent({ payload }: { payload: Payload }) {
-  const posts = await payload.find({ collection: 'posts' })
-  return <div>{posts.totalDocs} posts</div>
-}
-
-export default MyServerComponent
-```
-
-**Client Components** need the `'use client'` directive:
-
-```tsx
-'use client'
-import { useState } from 'react'
-import { useAuth } from '@payloadcms/ui'
-
-export function MyClientComponent() {
-  const [count, setCount] = useState(0)
-  const { user } = useAuth()
-
-  return (
-    <button onClick={() => setCount(count + 1)}>
-      {user?.email}: Clicked {count} times
-    </button>
-  )
-}
-```
-
-### Using Hooks (Client Components Only)
-
-```tsx
-'use client'
-import {
-  useAuth, // Current user
-  useConfig, // Payload config (client-safe)
-  useDocumentInfo, // Document info (id, collection, etc.)
-  useField, // Field value and setter
-  useForm, // Form state
-  useFormFields, // Multiple field values (optimized)
-  useLocale, // Current locale
-  useTranslation, // i18n translations
-  usePayload, // Local API methods
-} from '@payloadcms/ui'
-
-export function MyComponent() {
-  const { user } = useAuth()
-  const { config } = useConfig()
-  const { id, collection } = useDocumentInfo()
-  const locale = useLocale()
-  const { t } = useTranslation()
-
-  return <div>Hello {user?.email}</div>
-}
-```
-
-### Collection/Global Components
-
-```typescript
-export const Posts: CollectionConfig = {
-  slug: 'posts',
-  admin: {
-    components: {
-      // Edit view
-      edit: {
-        PreviewButton: '/components/PostPreview',
-        SaveButton: '/components/CustomSave',
-        SaveDraftButton: '/components/SaveDraft',
-        PublishButton: '/components/Publish',
-      },
-
-      // List view
-      list: {
-        Header: '/components/ListHeader',
-        beforeList: ['/components/BulkActions'],
-        afterList: ['/components/ListFooter'],
-      },
-    },
-  },
-}
-```
-
-### Field Components
-
-```typescript
-{
-  name: 'status',
-  type: 'select',
-  options: ['draft', 'published'],
-  admin: {
-    components: {
-      // Edit view field
-      Field: '/components/StatusField',
-      // List view cell
-      Cell: '/components/StatusCell',
-      // Field label
-      Label: '/components/StatusLabel',
-      // Field description
-      Description: '/components/StatusDescription',
-      // Error message
-      Error: '/components/StatusError',
-    },
-  },
-}
-```
-
-**UI Field** (presentational only, no data):
-
-```typescript
-{
-  name: 'refundButton',
-  type: 'ui',
-  admin: {
-    components: {
-      Field: '/components/RefundButton',
-    },
-  },
-}
-```
-
-### Performance Best Practices
-
-1. **Import correctly:**
-
-   - Admin Panel: `import { Button } from '@payloadcms/ui'`
-   - Frontend: `import { Button } from '@payloadcms/ui/elements/Button'`
-
-2. **Optimize re-renders:**
-
-   ```tsx
-   // ❌ BAD: Re-renders on every form change
-   const { fields } = useForm()
-
-   // ✅ GOOD: Only re-renders when specific field changes
-   const value = useFormFields(([fields]) => fields[path])
-   ```
-
-3. **Prefer Server Components** - Only use Client Components when you need:
-
-   - State (useState, useReducer)
-   - Effects (useEffect)
-   - Event handlers (onClick, onChange)
-   - Browser APIs (localStorage, window)
-
-4. **Minimize serialized props** - Server Components serialize props sent to client
-
-### Styling Components
-
-```tsx
-import './styles.scss'
-
-export function MyComponent() {
-  return <div className="my-component">Content</div>
-}
-```
-
-```scss
-// Use Payload's CSS variables
-.my-component {
-  background-color: var(--theme-elevation-500);
-  color: var(--theme-text);
-  padding: var(--base);
-  border-radius: var(--border-radius-m);
-}
-
-// Import Payload's SCSS library
-@import '~@payloadcms/ui/scss';
-
-.my-component {
-  @include mid-break {
-    background-color: var(--theme-elevation-900);
-  }
-}
-```
-
-### Type Safety
-
-```tsx
-import type {
-  TextFieldServerComponent,
-  TextFieldClientComponent,
-  TextFieldCellComponent,
-  SelectFieldServerComponent,
-  // ... etc
-} from 'payload'
-
-export const MyField: TextFieldClientComponent = (props) => {
-  // Fully typed props
-}
-```
-
-### Import Map
-
-Payload auto-generates `app/(payload)/admin/importMap.js` to resolve component paths.
-
-**Regenerate manually:**
-
-```bash
-payload generate:importmap
-```
-
-**Set custom location:**
-
-```typescript
-export default buildConfig({
-  admin: {
-    importMap: {
-      baseDir: path.resolve(dirname, 'src'),
-      importMapFile: path.resolve(dirname, 'app', 'custom-import-map.js'),
-    },
-  },
-})
-```
-
-## Custom Endpoints
-
-```typescript
-import type { Endpoint } from 'payload'
-import { APIError } from 'payload'
-
-// Always check authentication
-export const protectedEndpoint: Endpoint = {
-  path: '/protected',
-  method: 'get',
-  handler: async (req) => {
-    if (!req.user) {
-      throw new APIError('Unauthorized', 401)
-    }
-
-    // Use req.payload for database operations
-    const data = await req.payload.find({
-      collection: 'posts',
-      where: { author: { equals: req.user.id } },
-    })
-
-    return Response.json(data)
-  },
-}
-
-// Route parameters
-export const trackingEndpoint: Endpoint = {
-  path: '/:id/tracking',
-  method: 'get',
-  handler: async (req) => {
-    const { id } = req.routeParams
-
-    const tracking = await getTrackingInfo(id)
-
-    if (!tracking) {
-      return Response.json({ error: 'not found' }, { status: 404 })
-    }
-
-    return Response.json(tracking)
-  },
-}
-```
-
-## Drafts & Versions
-
-```typescript
-export const Pages: CollectionConfig = {
-  slug: 'pages',
-  versions: {
-    drafts: {
-      autosave: true,
-      schedulePublish: true,
-      validate: false, // Don't validate drafts
-    },
-    maxPerDoc: 100,
-  },
-  access: {
-    read: ({ req: { user } }) => {
-      // Public sees only published
-      if (!user) return { _status: { equals: 'published' } }
-      // Authenticated sees all
-      return true
-    },
-  },
-}
-
-// Create draft
-await payload.create({
-  collection: 'pages',
-  data: { title: 'Draft Page' },
-  draft: true, // Skips required field validation
-})
-
-// Read with drafts
-const page = await payload.findByID({
-  collection: 'pages',
-  id: '123',
-  draft: true, // Returns draft if available
-})
-```
-
-## Field Type Guards
-
-```typescript
-import {
-  fieldAffectsData,
-  fieldHasSubFields,
-  fieldIsArrayType,
-  fieldIsBlockType,
-  fieldSupportsMany,
-  fieldHasMaxDepth,
-} from 'payload'
-
-function processField(field: Field) {
-  // Check if field stores data
-  if (fieldAffectsData(field)) {
-    console.log(field.name) // Safe to access
-  }
-
-  // Check if field has nested fields
-  if (fieldHasSubFields(field)) {
-    field.fields.forEach(processField) // Safe to access
-  }
-
-  // Check field type
-  if (fieldIsArrayType(field)) {
-    console.log(field.minRows, field.maxRows)
-  }
-
-  // Check capabilities
-  if (fieldSupportsMany(field) && field.hasMany) {
-    console.log('Multiple values supported')
-  }
-}
-```
-
-## Plugins
-
-### Using Plugins
-
-```typescript
-import { seoPlugin } from '@payloadcms/plugin-seo'
-import { redirectsPlugin } from '@payloadcms/plugin-redirects'
-
-export default buildConfig({
-  plugins: [
-    seoPlugin({
-      collections: ['posts', 'pages'],
-    }),
-    redirectsPlugin({
-      collections: ['pages'],
-    }),
-  ],
-})
-```
-
-### Creating Plugins
-
-```typescript
-import type { Config, Plugin } from 'payload'
-
-interface MyPluginConfig {
-  collections?: string[]
-  enabled?: boolean
-}
-
-export const myPlugin =
-  (options: MyPluginConfig): Plugin =>
-  (config: Config): Config => ({
-    ...config,
-    collections: config.collections?.map((collection) => {
-      if (options.collections?.includes(collection.slug)) {
-        return {
-          ...collection,
-          fields: [...collection.fields, { name: 'pluginField', type: 'text' }],
-        }
-      }
-      return collection
-    }),
-  })
-```
-
-## Best Practices
-
-### Security
-
-1. Always set `overrideAccess: false` when passing `user` to Local API
-2. Field-level access only returns boolean (no query constraints)
-3. Default to restrictive access, gradually add permissions
-4. Never trust client-provided data
-5. Use `saveToJWT: true` for roles to avoid database lookups
-
-### Performance
-
-1. Index frequently queried fields
-2. Use `select` to limit returned fields
-3. Set `maxDepth` on relationships to prevent over-fetching
-4. Use query constraints over async operations in access control
-5. Cache expensive operations in `req.context`
-
-### Data Integrity
-
-1. Always pass `req` to nested operations in hooks
-2. Use context flags to prevent infinite hook loops
-3. Enable transactions for MongoDB (requires replica set) and Postgres
-4. Use `beforeValidate` for data formatting
-5. Use `beforeChange` for business logic
-
-### Type Safety
-
-1. Run `generate:types` after schema changes
-2. Import types from generated `payload-types.ts`
-3. Type your user object: `import type { User } from '@/payload-types'`
-4. Use `as const` for field options
-5. Use field type guards for runtime type checking
-
-### Organization
-
-1. Keep collections in separate files
-2. Extract access control to `access/` directory
-3. Extract hooks to `hooks/` directory
-4. Use reusable field factories for common patterns
-5. Document complex access control with comments
-
-## Common Gotchas
-
-1. **Local API Default**: Access control bypassed unless `overrideAccess: false`
-2. **Transaction Safety**: Missing `req` in nested operations breaks atomicity
-3. **Hook Loops**: Operations in hooks can trigger the same hooks
-4. **Field Access**: Cannot use query constraints, only boolean
-5. **Relationship Depth**: Default depth is 2, set to 0 for IDs only
-6. **Draft Status**: `_status` field auto-injected when drafts enabled
-7. **Type Generation**: Types not updated until `generate:types` runs
-8. **MongoDB Transactions**: Require replica set configuration
-9. **SQLite Transactions**: Disabled by default, enable with `transactionOptions: {}`
-10. **Point Fields**: Not supported in SQLite
-
-## Additional Context Files
-
-For deeper exploration of specific topics, refer to the context files located in `.cursor/rules/`:
-
-### Available Context Files
-
-1. **`payload-overview.md`** - High-level architecture and core concepts
-
-   - Payload structure and initialization
-   - Configuration fundamentals
-   - Database adapters overview
-
-2. **`security-critical.md`** - Critical security patterns (⚠️ IMPORTANT)
-
-   - Local API access control
-   - Transaction safety in hooks
-   - Preventing infinite hook loops
-
-3. **`collections.md`** - Collection configurations
-
-   - Basic collection patterns
-   - Auth collections with RBAC
-   - Upload collections
-   - Drafts and versioning
-   - Globals
-
-4. **`fields.md`** - Field types and patterns
-
-   - All field types with examples
-   - Conditional fields
-   - Virtual fields
-   - Field validation
-   - Common field patterns
-
-5. **`field-type-guards.md`** - TypeScript field type utilities
-
-   - Field type checking utilities
-   - Safe type narrowing
-   - Runtime field validation
-
-6. **`access-control.md`** - Permission patterns
-
-   - Collection-level access
-   - Field-level access
-   - Row-level security
-   - RBAC patterns
-   - Multi-tenant access control
-
-7. **`access-control-advanced.md`** - Complex access patterns
-
-   - Nested document access
-   - Cross-collection permissions
-   - Dynamic role hierarchies
-   - Performance optimization
-
-8. **`hooks.md`** - Lifecycle hooks
-
-   - Collection hooks
-   - Field hooks
-   - Hook context patterns
-   - Common hook recipes
-
-9. **`queries.md`** - Database operations
-
-   - Local API usage
-   - Query operators
-   - Complex queries with AND/OR
-   - Performance optimization
-
-10. **`endpoints.md`** - Custom API endpoints
-
-    - REST endpoint patterns
-    - Authentication in endpoints
-    - Error handling
-    - Route parameters
-
-11. **`adapters.md`** - Database and storage adapters
-
-    - MongoDB, PostgreSQL, SQLite patterns
-    - Storage adapter usage (S3, Azure, GCS, etc.)
-    - Custom adapter development
-
-12. **`plugin-development.md`** - Creating plugins
-
-    - Plugin architecture
-    - Modifying configuration
-    - Plugin hooks
-    - Best practices
-
-13. **`components.md`** - Custom Components
-
-    - Component types (Root, Collection, Global, Field)
-    - Server vs Client Components
-    - Component paths and definition
-    - Default and custom props
-    - Using hooks
-    - Performance best practices
-    - Styling components
-
-## Resources
-
-- Docs: https://payloadcms.com/docs
-- LLM Context: https://payloadcms.com/llms-full.txt
-- GitHub: https://github.com/payloadcms/payload
-- Examples: https://github.com/payloadcms/payload/tree/main/examples
-- Templates: https://github.com/payloadcms/payload/tree/main/templates
+### 11.6 Validation Workflows
+- Data Quality Assurance, Content Consistency, Narrative Coherence, Archive Integrity
+
+---
+
+## 12. Payload Config Summary (`src/payload.config.ts`)
+
+Key configuration decisions:
+
+| Setting | Value |
+|---|---|
+| Database | `postgresAdapter` via `DATABASE_URL` env var |
+| Auth collection | `users` |
+| Locales | `en` (default), `es`, `pt` — with fallback |
+| Rich text | Lexical with Bold, Italic, Underline, OL, UL, Link, Indent, Table |
+| Link field | Custom — requires `url` for external links; enables `pages` collection for internal |
+| Typescript output | `src/payload-types.ts` |
+| Seed script | `src/seed.ts` (registered as `payload seed` bin) |
+| MCP | Enabled on all major collections |
+| Search | All collections at priority 50 |
+| `hydrationWarning` | Suppressed |
+
+---
+
+## 13. Generated Types Reference (`src/payload-types.ts`)
+
+> **Never edit this file manually.** Regenerate with `payload generate:types`.
+
+The `Config` interface maps all collections, globals, joins, and select types. Key interfaces to know:
+
+| Interface | Collection |
+|---|---|
+| `Series` | `series` |
+| `Season` | `seasons` |
+| `Event` | `events` |
+| `Driver` | `drivers` |
+| `Member` | `members` |
+| `Organization` | `organizations` |
+| `Car` | `cars` |
+| `Kit` | `kits` |
+| `Story` | `stories` |
+| `Media` | `media` |
+| `Category` | `categories` |
+| `Header`, `Footer` | globals |
+| `Identity`, `Policy` | globals |
+| `Social`, `Announcement`, `Question` | globals |
+| `Product`, `Order`, `Cart`, `Transaction` | ecommerce |
+
+Every domain collection interface includes:
+- `id: number`
+- `toggle?: 'simple' | 'advanced' | null`
+- `name: string`
+- Tab objects (`basics`, `details`, `traits`, `metrics`, `assets`, `contexts`) each with `enable`, fields, and `visibility.show`
+- `seo?: { title, image, description }`
+- `generateSlug?: boolean`
+- `slug?: string`
+- `categories?: (number | Category)[]`
+- `tags?: (number | Tag)[]`
+- `visibility?: { check_publish, check_featured, check_pinned }`
+- `updatedAt: string`, `createdAt: string`
+
+---
+
+## 14. Developer Rules & Constraints
+
+1. **No Blocks** — never use Payload `blocks` field type. Use groups, arrays, and relationships inside tabs.
+2. **Always use factories** — use `collectionFactory`, `tabFactory`, `groupFieldFactory`, `connectFactory` etc. Never write raw collection config from scratch.
+3. **Always use dictionaries** — every new collection needs a `dictionary.ts` file. Labels come from dictionaries, not inline strings.
+4. **Never skip the toggle** — every collection must have the `simple`/`advanced` toggle created by `createToggleGroup()`.
+5. **Sidebar fields are automatic** — `createSidebarFields()` is called by `collectionFactory`; do not add slug/categories/tags/visibility manually.
+6. **SEO tab is automatic** — `createSeoTab()` is appended by `collectionFactory`.
+7. **No new collections without updating** `payload.config.ts` — add to both `collections` array and sidebar plugin config.
+8. **eCommerce is plugin-managed** — do not modify products, orders, carts, variants manually.
+9. **`payload-types.ts` is read-only** — regenerate, never edit.
+10. **Field flags** — relationship fields support flags: `'required' | 'localized' | 'index' | 'unique' | 'hasMany' | 'advanced' | 'readonly' | 'disabled' | 'hidden'`
+
+---
+
+## 15. File Locations Quick Reference
+
+| What | Where |
+|---|---|
+| Payload config | `src/payload.config.ts` |
+| Generated types | `src/payload-types.ts` |
+| All collections | `src/collections/[Domain]/[Name]/` |
+| All globals | `src/globals/[Domain]/[Name].ts` |
+| Field factories | `src/fields/factories/blueprint.ts` + `src/fields/factories/fields/` |
+| Toggle factories | `src/fields/factories/toggles/` |
+| Common fields | `src/fields/common/` |
+| Dashboard widgets | `src/widgets/` |
+| Frontend pages | `src/app/` (Next.js App Router) |
+| Project docs | `README.md`, `page_structure.md`, `workflow_mapping.md`, `field_structure.md` |
+| Plugins config | `src/plugins/` |
+| Seed script | `src/seed.ts` |
+
+---
+
+## 16. Key Documents in This Repository
+
+| File | Purpose |
+|---|---|
+| `README.md` | High-level project overview and philosophy |
+| `page_structure.md` | Complete cinematic URL structure with section/block mappings |
+| `workflow_mapping.md` | All client and operational workflows v2.0 |
+| `field_structure.md` | Detailed field-by-field documentation for every collection (source of truth for field flags) |
+| `AGENTS.md` | **This file** — AI/agent knowledge transfer document |
+
+---
+
+*Last updated: 2026-03-01. Reflects AF Motorsport Field Structure v1.0 and Workflow Mapping v2.0.*
