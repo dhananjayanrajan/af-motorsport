@@ -1,92 +1,163 @@
 # AF Motorsport
 
-**AF Motorsport** is a high-performance content and ecommerce platform built with **Next.js 15**, **Payload CMS 3.0**, and **Tailwind CSS**. It serves as a digital hub for a motorsport entity, designed specifically to prioritize visual brand presentation and storytelling over raw statistical data or internal management.
+AF Motorsport is a domain-driven content architecture built on Payload CMS.  
+It models the complete motorsport ecosystem of a brand as a structured, relational content graph rather than a traditional page-based CMS.
+
+This project is designed to power a cinematic brand presence, competitive archives, team identity, and ecommerce operations from a single, unified source of truth.
 
 ---
 
-## 🏎️ Project Philosophy: The Hybrid Approach
+## Overview
 
-**This project is NOT:**
-*   A pure race data statistics website (like Wikipedia or a timing screen).
-*   An internal backend ERP or management system for the team.
+AF Motorsport is not built around pages.  
+It is built around domain entities.
 
-**This project IS:**
-*   A hybrid platform where the end goal is purely **Visual Brand Presentation**.
-*   The backend exists **solely** to power the visual content of the frontend "brand identity" website.
+Drivers, Cars, Events, Organizations, Strategies, Stories, and Results are treated as first-class concepts with explicit relationships between them. Pages simply render these connected entities.
 
-### Core Principles
-1.  **Visual First**: Data is collected only if it fuels a frontend visual experience.
-2.  **Client Control**: Fields should be toggleable and decidable by the end client for display purposes.
-3.  **"Wow" Factor**: The priority is user engagement and emotional resonance, not just archival storage.
+The result is a system where every piece of content exists as part of a larger, interconnected narrative structure.
 
 ---
 
-## ⚠️ Technical Constraints & Rules
+## Domain Structure
 
-1.  **NO Blocks Feature**: We do **not** utilize the Blocks feature provided by Payload CMS. Content structure is handled via fixed, semantic fields and tabs to ensure strict data shape and maintainability.
-2.  **Protect E-commerce**: We do **not** disturb any features, operational logic, or collections provided by the PayloadCMS E-commerce plugin/template. These functionalities (Products, Carts, Orders, Transactions) are kept intact and secure.
+The backend is organized into seven logical domains:
 
----
+**Attributes**  
+Reusable descriptors such as Categories, Tags, Features, Specifications, Skills, Principles, Classifications, Preferences, Channels, and Locations.
 
-## 🛠️ Technology Stack
+**Competition**  
+Series, Seasons, Events, Sessions, Entries, Results, and Points. This models the full racing hierarchy.
 
-### Backend
-*   **Core**: Payload CMS 3.73 (Headless TypeScript CMS)
-*   **Database**: PostgreSQL (via `@payloadcms/db-postgres`)
-*   **Dependencies**: Relies entirely on the tech stack provided by PayloadCMS.
+**Entities**  
+Drivers, Leaders, Members, Individuals, Organizations, and Users.
 
-### Frontend
-*   **Current State**: Next.js 15 (App Router) using Payload's default stack.
-*   **Future Vision**: A completely rebuilt high-performance frontend featuring:
-    *   **UI Components**: ShadCn UI, React Bits, MagicUI, Aceternity UI.
-    *   **Animations**: Framer Motion, GSAP, Lenis, Anime JS, React Spring.
-    *   **3D Experiences**: Three.js, React Three Fiber.
-    *   **State & Validation**: Zustand, Zod, React Hook Forms.
+**Content**  
+Narratives, Stories, Histories, Journeys, Notes, and Pages.
 
----
+**Operations**  
+Schedules, Trainings, Careers, Initiatives, Meetups, Celebrations, Protocols, Duties, and Expectations.
 
-## 🏗️ Data Architecture
+**Outcomes**  
+Strategies, Decisions, Highlights, Incidents, Impacts, Awards, and Experiences.
 
-The project data is structured to support rich storytelling and detailed brand narratives. Use the `data_dictionary.md` for deep semantic definitions of every field.
+**Resources**  
+Cars, Kits, Media, Galleries, Playlists, Archives, and Visualizations.
 
-### Globals
-*   **Configurations**: Header, Footer, Social (Brand assets & navigation)
-*   **Identity**: Sustainability, Identity, Values, Vision, Leadership (Brand DNA)
-*   **Connectivity**: Communities, Channels, Feeds, Announcements, Questions (Engagement)
-*   **Policies**: Terms, Legal, Privacy, Cookies, Transactions, Returns, Refunds (Compliance)
-
-### Collections Strategy
-Collections are grouped by their semantic role in the racing narrative, not just alphabetical order:
-
-*   **Race**: The competitive structure (`Series`, `Seasons`, `Events`, `Sessions`, `Entries`).
-*   **Performances**: The dynamic action (`Positions`, `Strategies`).
-*   **Occurrences**: The key race moments (`Turnings`, `Incidents`).
-*   **Statistics**: The numbers behind the sport (`Points`, `Schedules`, `Timelines`, `Engagements`).
-*   **Outcomes**: The finalized results (`Results`, `Standings`).
-*   **Directives**: The official governance (`Decisions`, `References`).
-*   **Moments**: The emotional highlights (`Celebrations`, `Highlights`, `Awards`).
-*   **Feedback**: User interaction (`Forms`, `Form Submissions`).
-*   **Team**: The human element (`Drivers`, `Leaders`, `Members`, `Users`).
-*   **Network**: External relationships (`Organizations`, `Individuals`).
-*   **Opportunities**: Growth & participation (`Careers`, `Meetups`, `Initiatives`).
-*   **Competencies**: Skills & background (`Skills`, `Educations`, `Preferences`, `Trainings`, `Experiences`).
-*   **Obligations**: Rules & requirements (`Expectations`, `Duties`, `Rules`, `Standards`, `Compliances`, `Technicals`).
-*   **Specifications**: Details & distinctions (`Medicals`, `Classifications`, `Features`, `Rivalries`).
-*   **Contacts**: Connection points (`Channels`, `Endpoints`, `Demographics`).
-*   **Editorial**: Written content (`Articles`, `Pages`).
-*   **Narratives**: The story layers (`Histories`, `Stories`, `Journeys`, `Aspirations`).
-*   **Descriptions**: Editorial depth (`Notes`, `Tones`).
-*   **Resources**: Assets & machines (`Cars`, `Kits`, `Galleries`, `Footages`, `Archives`, `Visualizations`).
-*   **Ecommerce**: Commercial operations (`Products`, `Carts`, `Orders`, `Transactions`).
-*   **Meta**: Organization & assets (`Categories`, `Tags`, `Media`).
+In addition, the system includes site-wide Globals and a full Ecommerce layer.
 
 ---
 
-## 📚 Documentation
-For detailed development guidelines and definitions, refer to the internal documentation artifacts:
-*   **Project Overview**: Detailed breakdown of workflows and relational mappings.
-*   **Data Dictionary**: Comprehensive semantic definitions for every collection and global.
-*   **Implementation Plan**: Roadmap for codebase changes.
+## Core Philosophy
+
+The system follows three core principles:
+
+**Semantic clarity**  
+Collections are named after real motorsport concepts, not UI components.
+
+**Relational completeness**  
+Connections between drivers, cars, teams, events, and outcomes are explicitly modeled.
+
+**Context-first rendering**  
+Pages retrieve a complete entity and its relationships rather than assembling scattered fragments.
+
+This ensures consistency, reusability, and long-term scalability.
 
 ---
+
+## Narrative Architecture
+
+Storytelling is structured, not improvised.
+
+The system separates:
+
+- Narrative prose
+- Structured stories
+- Historical records
+- Career journeys
+- Contextual notes
+
+This allows brand storytelling, competitive documentation, and institutional memory to coexist within a coherent framework.
+
+---
+
+## Competition Model
+
+The racing structure is hierarchical:
+
+Series → Season → Event → Session → Entry
+
+Entries connect Drivers and Cars to Sessions and Results, forming the backbone of competitive data.
+
+This enables complete driver profiles, event histories, and performance summaries to be generated from structured relationships.
+
+---
+
+## Commerce Integration
+
+The ecommerce layer supports:
+
+- Products
+- Variants
+- Orders
+- Carts
+- Transactions
+- Customer accounts
+
+Commerce remains structurally separate from brand narrative while sharing taxonomy for consistent categorization.
+
+---
+
+## Localization
+
+The platform supports:
+
+- English
+- Spanish
+- Portuguese
+
+All content is localizable with fallback support.
+
+---
+
+## Editorial Experience
+
+The admin interface is organized by domain rather than by raw collection list.  
+Each collection includes structured sections and editorial controls to manage complexity.
+
+The system is designed for domain experts in motorsport, not just developers.
+
+---
+
+## AI Compatibility
+
+The entire content graph is structured and machine-queryable.  
+This enables AI-assisted workflows and structured data access without bypassing the domain model.
+
+---
+
+## Purpose
+
+AF Motorsport is more than a marketing website backend.
+
+It is a structured motorsport knowledge system capable of supporting:
+
+- Brand storytelling
+- Competitive archives
+- Sponsorship narratives
+- Team operations
+- Ecommerce
+- AI-assisted content management
+
+It provides a single, scalable foundation for both narrative and operational intelligence.
+
+---
+
+## Summary
+
+AF Motorsport is a domain-driven relational content architecture that models the full ecosystem of a motorsport brand.  
+
+It prioritizes structure over pages, relationships over fragments, and long-term semantic integrity over short-term layout convenience.
+
+---
+
 *Created for AF Motorsport.*
