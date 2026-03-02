@@ -1,11 +1,10 @@
-import type { GlobalConfig } from 'payload'
 import { adminOrPublishedStatus } from '@/access/adminOrPublishedStatus'
-
 import {
   FixedToolbarFeature,
   InlineToolbarFeature,
   lexicalEditor,
 } from '@payloadcms/richtext-lexical'
+import type { GlobalConfig } from 'payload'
 
 export const Questions: GlobalConfig = {
   slug: 'questions',
@@ -15,26 +14,73 @@ export const Questions: GlobalConfig = {
   },
   admin: {
     group: 'Connectivity',
-    description: 'Defines the questions of the entire brand.',
+    description: 'Frequently asked questions — organized by category and rendered as an FAQ across the site.',
   },
   fields: [
     {
-      label: 'What are the questions of the entire brand?',
-      name: 'questions',
-      type: 'richText',
-      required: true,
-      localized: true,
-      admin: {
-        description: 'Detailed questions of the entire brand.',
-        readOnly: true,
-      },
-      editor: lexicalEditor({
-        features: ({ rootFeatures }) => [
-          ...rootFeatures,
-          FixedToolbarFeature(),
-          InlineToolbarFeature(),
-        ],
-      }),
-    }
+      name: 'categories',
+      label: 'FAQ Categories',
+      type: 'array',
+      fields: [
+        {
+          name: 'label',
+          label: 'Category Label',
+          type: 'text',
+          required: true,
+          localized: true,
+          admin: {
+            description: 'E.g. "About AF Motorsport", "Race Weekend", "Store & Orders", "Careers"',
+          },
+        },
+        {
+          name: 'items',
+          label: 'Questions',
+          type: 'array',
+          fields: [
+            {
+              name: 'question',
+              label: 'Question',
+              type: 'text',
+              required: true,
+              localized: true,
+            },
+            {
+              name: 'answer',
+              label: 'Answer',
+              type: 'richText',
+              required: true,
+              localized: true,
+              editor: lexicalEditor({
+                features: ({ rootFeatures }) => [
+                  ...rootFeatures,
+                  FixedToolbarFeature(),
+                  InlineToolbarFeature(),
+                ],
+              }),
+            },
+            {
+              name: 'relatedPage',
+              label: 'Related Page URL',
+              type: 'text',
+              admin: {
+                description: 'Optional link to a page where the visitor can read more.',
+              },
+            },
+            {
+              name: 'visible',
+              label: 'Visible',
+              type: 'checkbox',
+              defaultValue: true,
+            },
+          ],
+        },
+        {
+          name: 'visible',
+          label: 'Visible',
+          type: 'checkbox',
+          defaultValue: true,
+        },
+      ],
+    },
   ],
 }

@@ -764,9 +764,8 @@ Every domain collection interface includes:
 | Common fields | `src/fields/common/` |
 | Dashboard widgets | `src/widgets/` |
 | Frontend pages | `src/app/` (Next.js App Router) |
-| Frontend page sections | `src/pages/[universe]/[context]/sections/` |
-| Frontend component library | `src/components/` (see Section 17) |
-| Payload query functions | `src/lib/payload/` |
+| Frontend page sections | `src/app/[universe]/[context]/sections/` |
+| Frontend components | `src/components/` (see Section 17) |
 | Shared types | `src/lib/types/` |
 | Shared utilities | `src/lib/utils/` |
 | Global styles / tokens | `src/styles/` |
@@ -778,13 +777,13 @@ Every domain collection interface includes:
 
 ## 16. Key Documents in This Repository
 
-> This section is superseded by Section 20 below which reflects the full updated document list. Kept here as a section anchor for backward compatibility.
+> This section is superseded by Section 19 below which reflects the full updated document list. Kept here as a section anchor for backward compatibility.
 
 ---
 
 ## 17. Frontend Component Library Stack
 
-The frontend uses a **curated, layered component library strategy**. Every external library has a fixed home directory that is **never modified directly**. All customization happens exclusively inside `src/components/custom/`.
+The frontend uses a **curated, layered component library strategy**. All shadcn-powered libraries drop their files directly into `src/components/ui/` via their respective add commands — this is intentional and expected. All customization happens exclusively inside `src/components/custom/`. Animation and 3D libraries are npm packages imported directly into code — they have no folder presence.
 
 ### 17.1 Library Sources
 
@@ -798,120 +797,73 @@ The frontend uses a **curated, layered component library strategy**. Every exter
 | Video Components | Limeplay | https://limeplay.winoffrg.dev/ |
 | Audio Components | SoundCN | https://www.soundcn.xyz/ |
 | Animated Components | ReactBits | https://reactbits.dev/ |
-| 3D Animation | React Three Fiber (R3F) + Three.js | https://r3f.docs.pmnd.rs/ · https://threejs.org/ |
-| Micro Animation | Motion (Framer Motion v11) + React Spring | https://motion.dev/ · https://react-spring.dev/ |
+| 3D Animation | React Three Fiber + Three.js | https://r3f.docs.pmnd.rs/ · https://threejs.org/ |
+| Micro Animation | Motion + React Spring | https://motion.dev/ · https://react-spring.dev/ |
 | Scroll Animation | GSAP + Lenis | https://gsap.com/ · https://github.com/darkroomengineering/lenis/ |
 | Animated Icons | Lucide Animated + Heroicons Animated | https://lucide-animated.com/ · https://www.heroicons-animated.com/ |
 
 ### 17.2 Component Directory Structure
-
 ```
 src/components/
 │
-├── ui/
-│   ├── base/              # shadcn/ui — NEVER modified directly
-│   └── supportive/        # Tripled UI — NEVER modified directly
+├── ui/                    # All shadcn-powered library files land here automatically
+│                          # shadcn/ui · Tripled UI · UI Layouts · ShadcnSpace
+│                          # MapCN · Limeplay · SoundCN · ReactBits
+│                          # Lucide Animated · Heroicons Animated
+│                          # NEVER modified directly — re-generated on every update
 │
-├── layout/
-│   ├── sections/          # UI Layouts — NEVER modified directly
-│   └── blocks/            # ShadcnSpace — NEVER modified directly
-│
-├── map/                   # MapCN — NEVER modified directly
-│
-├── media/
-│   ├── video/             # Limeplay — NEVER modified directly
-│   └── audio/             # SoundCN — NEVER modified directly
-│
-├── animation/
-│   ├── components/        # ReactBits — NEVER modified directly
-│   ├── three/             # R3F + Three.js — NEVER modified directly
-│   ├── micro/             # Motion + React Spring — NEVER modified directly
-│   ├── scroll/            # GSAP + Lenis — NEVER modified directly
-│   └── icons/             # Lucide Animated + Heroicons Animated — NEVER modified directly
-│
-└── custom/                # THE ONLY LAYER THAT GETS BUILT / MODIFIED
-    ├── ui/                # Wrapped/extended shadcn + Tripled components
-    ├── layout/            # Wrapped/extended layout + block components
+└── custom/                # THE ONLY LAYER THAT GETS BUILT OR MODIFIED
+    ├── ui/                # Wrapped/extended base UI components
+    ├── layout/            # Wrapped/extended layout and block components
     ├── map/               # Wrapped/extended map components
     ├── media/             # Wrapped/extended media components
-    ├── animation/         # Wrapped/extended animation components
+    ├── animation/         # Wrapped/extended animated components and icon components
     └── composite/         # Components combining multiple library sources
 ```
 
-### 17.3 Component Import Rules
+### 17.3 Animation and 3D Libraries
 
-1. **Page sections import from `custom/` only** — unless a library component requires zero customization, in which case it may be imported directly from its library source.
-2. **`custom/` wraps, never copies** — a custom component imports the original and extends/composes it; it never duplicates library source code.
-3. **`composite/` is for cross-library combinations** — when a section needs, e.g., a ReactBits animation wrapping a shadcn card with a Lenis scroll trigger, that assembled component lives in `custom/composite/`.
-4. **Library directories are read-only to agents** — do not generate code that writes into `ui/base/`, `ui/supportive/`, `layout/sections/`, `layout/blocks/`, `map/`, `media/video/`, `media/audio/`, `animation/components/`, `animation/three/`, `animation/micro/`, `animation/scroll/`, or `animation/icons/`.
+React Three Fiber, Three.js, Motion, React Spring, GSAP, and Lenis are **npm packages only**. They have no folder presence in the project. They are imported directly into `src/components/custom/` components or into section files where needed. They are never abstracted into a separate directory.
 
----
+### 17.4 Component Import Rules
 
-## 18. Frontend Data Layer (`src/lib/`)
-
-All Payload CMS queries for the frontend are centralized in `src/lib/payload/`. Each file maps to one **context collection** — the primary entity that a cinematic page route is built around.
-
-```
-src/lib/
-│
-├── payload/               # One file per context collection
-│   ├── drivers.ts         # getDriver(slug), getDriverGlory(slug), getDriverTribe(slug)
-│   ├── leaders.ts
-│   ├── members.ts
-│   ├── organizations.ts
-│   ├── cars.ts
-│   ├── kits.ts
-│   ├── series.ts
-│   ├── seasons.ts
-│   ├── events.ts
-│   ├── sessions.ts
-│   ├── awards.ts
-│   ├── stories.ts
-│   ├── journeys.ts
-│   ├── histories.ts
-│   ├── initiatives.ts
-│   ├── celebrations.ts
-│   ├── meetups.ts
-│   ├── careers.ts
-│   ├── trainings.ts
-│   └── aggregate.ts       # Hall of Fame, network, culture-code — multi-collection aggregates
-│
-├── types/                 # TypeScript types derived from Payload schema
-└── utils/                 # Shared utility functions
-```
-
-**Query conventions**:
-- Each file exports named async functions, e.g. `getDriver(slug: string)`, `getDriverGlory(slug: string)`.
-- Functions always specify `depth` appropriate to the section consuming them.
-- The `aggregate.ts` file handles pages that pull from multiple unrelated collections simultaneously (hall-of-fame, network map, culture code).
+1. **Page sections import from `custom/` only** — unless a library component requires zero customization, in which case it may be imported directly from `src/components/ui/` or from its npm package.
+2. **`custom/` wraps, never copies** — a custom component imports the original from `src/components/ui/` and extends or composes it. It never duplicates source code.
+3. **`composite/` is for cross-library combinations** — when a section needs a ReactBits animation wrapping a shadcn card with a Lenis scroll trigger, that assembled component lives in `custom/composite/`.
+4. **`src/components/ui/` is read-only to agents** — never generate code that modifies any file inside `src/components/ui/`. All files there are owned by their respective libraries and regenerated on update.
+5. **Animation libraries are stateless tools** — Motion, React Spring, GSAP, Lenis, R3F, and Three.js are imported as needed. No wrapper folders, no abstraction layers unless a composite component specifically requires one.
 
 ---
 
-## 19. Frontend Page & Section File Structure
+## 18. Frontend Page & Section File Structure
 
-Every cinematic page lives in `src/pages/` and follows a strict pattern:
+The project runs on **Next.js App Router powered by Payload CMS**. All pages live inside `src/app/` following the Next.js App Router convention. There is no `src/pages/` directory. All pages are equal — there is no structural separation between cinematic universe pages and standard pages.
 
+Each page owns its sections locally. There are no global sections. Each section file is fully self-contained — it fetches its own data directly from the backend, imports what it needs from `src/components/`, and has no dependencies on other sections or pages. This makes any section portable by copy-paste with zero side effects.
 ```
-src/pages/[universe]/[context]/
-├── index.tsx          # Page component — fetches data, composes sections
+src/app/[universe]/[context]/
+├── page.tsx               # Page component — composes sections
 └── sections/
-    ├── [SectionName]Section.tsx   # One file per section
+    ├── [SectionName]Section.tsx   # One file per section — self-contained, fetches own data
     └── ...
 ```
 
-**Rules**:
-- `index.tsx` is a server component that calls the relevant `src/lib/payload/` query function and passes data to section components.
-- Each `*Section.tsx` receives typed props and imports its visuals from `src/components/custom/`.
-- Section file names match the section title from `page_structure.md` in PascalCase with the `Section` suffix.
-
-### 19.1 Complete Page & Section Tree
-
+### 18.1 Full App Directory Structure
 ```
-src/pages/
+src/app/
+│
+├── page.tsx                                              # /
+├── about/page.tsx                                        # /about
+├── contact/page.tsx                                      # /contact
+├── store/page.tsx                                        # /store
+├── blog/page.tsx                                         # /blog
+├── forms/page.tsx                                        # /forms
+├── opportunities/page.tsx                                # /opportunities
+├── legal/page.tsx                                        # /legal
 │
 ├── glory/
-│   ├── driver/
-│   │   ├── index.tsx
+│   ├── [driver-slug]/
+│   │   ├── page.tsx
 │   │   └── sections/
 │   │       ├── LegendSection.tsx
 │   │       ├── ConquestsSection.tsx
@@ -924,8 +876,8 @@ src/pages/
 │   │       ├── VoiceOfAChampionSection.tsx
 │   │       └── VisualMonumentSection.tsx
 │   │
-│   ├── event/
-│   │   ├── index.tsx
+│   ├── [event-slug]/
+│   │   ├── page.tsx
 │   │   └── sections/
 │   │       ├── StageSetSection.tsx
 │   │       ├── AtmosphereSection.tsx
@@ -937,8 +889,8 @@ src/pages/
 │   │       ├── LegendItBuiltSection.tsx
 │   │       └── VisualEvidenceSection.tsx
 │   │
-│   ├── award/
-│   │   ├── index.tsx
+│   ├── [award-slug]/
+│   │   ├── page.tsx
 │   │   └── sections/
 │   │       ├── PrizeSection.tsx
 │   │       ├── WeightOfItSection.tsx
@@ -951,7 +903,7 @@ src/pages/
 │   │       └── VisualLegacySection.tsx
 │   │
 │   └── hall-of-fame/
-│       ├── index.tsx
+│       ├── page.tsx
 │       └── sections/
 │           ├── GreatestMomentsSection.tsx
 │           ├── RecordBreakersSection.tsx
@@ -967,8 +919,8 @@ src/pages/
 │           └── VisualArchiveSection.tsx
 │
 ├── pursuit/
-│   ├── series/
-│   │   ├── index.tsx
+│   ├── [series-slug]/
+│   │   ├── page.tsx
 │   │   └── sections/
 │   │       ├── OriginAndPowerSection.tsx
 │   │       ├── GovernanceStructureSection.tsx
@@ -981,46 +933,46 @@ src/pages/
 │   │       ├── InsideStorySection.tsx
 │   │       └── VisualChronicleSection.tsx
 │   │
-│   ├── season/
-│   │   ├── index.tsx
-│   │   └── sections/
-│   │       ├── ChampionshipStorySection.tsx
-│   │       ├── CalendarSection.tsx
-│   │       ├── ChampionshipFightSection.tsx
-│   │       ├── TechnicalLandscapeSection.tsx
-│   │       ├── KeyTurningPointsSection.tsx
-│   │       ├── MachinesOfThisYearSection.tsx
-│   │       ├── InsideStorySection.tsx
-│   │       └── VisualChronicleSection.tsx
-│   │
-│   ├── event/
-│   │   ├── index.tsx
-│   │   └── sections/
-│   │       ├── WeekendBriefSection.tsx
-│   │       ├── EntryListSection.tsx
-│   │       ├── SessionBreakdownSection.tsx
-│   │       ├── WeatherAndConditionsSection.tsx
-│   │       ├── OperationalDecisionsSection.tsx
-│   │       ├── CrewOnTheGroundSection.tsx
-│   │       ├── ResultsSection.tsx
-│   │       └── VisualRecordSection.tsx
-│   │
-│   └── session/
-│       ├── index.tsx
-│       └── sections/
-│           ├── SessionSection.tsx
-│           ├── ParametersSection.tsx
-│           ├── EntriesSection.tsx
-│           ├── LapDataSection.tsx
-│           ├── IncidentsSection.tsx
-│           ├── StrategyEmployedSection.tsx
-│           ├── CrewOperationSection.tsx
-│           ├── HighlightsSection.tsx
-│           └── VisualRecordSection.tsx
+│   ├── [season-slug]/
+│   │   ├── page.tsx
+│   │   ├── sections/
+│   │   │   ├── ChampionshipStorySection.tsx
+│   │   │   ├── CalendarSection.tsx
+│   │   │   ├── ChampionshipFightSection.tsx
+│   │   │   ├── TechnicalLandscapeSection.tsx
+│   │   │   ├── KeyTurningPointsSection.tsx
+│   │   │   ├── MachinesOfThisYearSection.tsx
+│   │   │   ├── InsideStorySection.tsx
+│   │   │   └── VisualChronicleSection.tsx
+│   │   │
+│   │   └── [event-slug]/
+│   │       ├── page.tsx
+│   │       ├── sections/
+│   │       │   ├── WeekendBriefSection.tsx
+│   │       │   ├── EntryListSection.tsx
+│   │       │   ├── SessionBreakdownSection.tsx
+│   │       │   ├── WeatherAndConditionsSection.tsx
+│   │       │   ├── OperationalDecisionsSection.tsx
+│   │       │   ├── CrewOnTheGroundSection.tsx
+│   │       │   ├── ResultsSection.tsx
+│   │       │   └── VisualRecordSection.tsx
+│   │       │
+│   │       └── [session-slug]/
+│   │           ├── page.tsx
+│   │           └── sections/
+│   │               ├── SessionSection.tsx
+│   │               ├── ParametersSection.tsx
+│   │               ├── EntriesSection.tsx
+│   │               ├── LapDataSection.tsx
+│   │               ├── IncidentsSection.tsx
+│   │               ├── StrategyEmployedSection.tsx
+│   │               ├── CrewOperationSection.tsx
+│   │               ├── HighlightsSection.tsx
+│   │               └── VisualRecordSection.tsx
 │
 ├── craft/
-│   ├── car/
-│   │   ├── index.tsx
+│   ├── [car-slug]/
+│   │   ├── page.tsx
 │   │   └── sections/
 │   │       ├── BlueprintSection.tsx
 │   │       ├── EngineeringPhilosophySection.tsx
@@ -1032,8 +984,8 @@ src/pages/
 │   │       ├── PerformanceRecordSection.tsx
 │   │       └── TechnicalVisualArchiveSection.tsx
 │   │
-│   ├── kit/
-│   │   ├── index.tsx
+│   ├── [kit-slug]/
+│   │   ├── page.tsx
 │   │   └── sections/
 │   │       ├── MaterialScienceSection.tsx
 │   │       ├── DesignIntentSection.tsx
@@ -1044,8 +996,8 @@ src/pages/
 │   │       ├── TechnicalPartnersSection.tsx
 │   │       └── TechnicalVisualArchiveSection.tsx
 │   │
-│   ├── initiative/
-│   │   ├── index.tsx
+│   ├── [initiative-slug]/
+│   │   ├── page.tsx
 │   │   └── sections/
 │   │       ├── TechnicalMissionSection.tsx
 │   │       ├── InnovationBeingPursuedSection.tsx
@@ -1057,7 +1009,7 @@ src/pages/
 │   │       └── TechnicalVisualRecordSection.tsx
 │   │
 │   └── engineering-philosophy/
-│       ├── index.tsx
+│       ├── page.tsx
 │       └── sections/
 │           ├── EngineeringCreedSection.tsx
 │           ├── EvolutionOfThinkingSection.tsx
@@ -1070,8 +1022,8 @@ src/pages/
 │           └── TechnicalVisualWorldSection.tsx
 │
 ├── tribe/
-│   ├── driver/
-│   │   ├── index.tsx
+│   ├── [driver-slug]/
+│   │   ├── page.tsx
 │   │   └── sections/
 │   │       ├── HumanBeingSection.tsx
 │   │       ├── InnerWorldSection.tsx
@@ -1082,8 +1034,8 @@ src/pages/
 │   │       ├── HumanSideOfNumbersSection.tsx
 │   │       └── VisualHumanStorySection.tsx
 │   │
-│   ├── leader/
-│   │   ├── index.tsx
+│   ├── [leader-slug]/
+│   │   ├── page.tsx
 │   │   └── sections/
 │   │       ├── PersonSection.tsx
 │   │       ├── InnerWorldSection.tsx
@@ -1095,8 +1047,8 @@ src/pages/
 │   │       ├── VoiceSection.tsx
 │   │       └── VisualHumanStorySection.tsx
 │   │
-│   ├── member/
-│   │   ├── index.tsx
+│   ├── [member-slug]/
+│   │   ├── page.tsx
 │   │   └── sections/
 │   │       ├── PersonSection.tsx
 │   │       ├── CraftAsIdentitySection.tsx
@@ -1108,7 +1060,7 @@ src/pages/
 │   │       └── VisualHumanStorySection.tsx
 │   │
 │   └── culture-code/
-│       ├── index.tsx
+│       ├── page.tsx
 │       └── sections/
 │           ├── BeliefSystemSection.tsx
 │           ├── DailyRealitySection.tsx
@@ -1121,8 +1073,8 @@ src/pages/
 │           └── VisualCultureSection.tsx
 │
 ├── alliance/
-│   ├── organization/
-│   │   ├── index.tsx
+│   ├── [organization-slug]/
+│   │   ├── page.tsx
 │   │   └── sections/
 │   │       ├── OrganizationIdentitySection.tsx
 │   │       ├── OriginOfPartnershipSection.tsx
@@ -1136,7 +1088,7 @@ src/pages/
 │   │       └── VisualPartnershipStorySection.tsx
 │   │
 │   └── network/
-│       ├── index.tsx
+│       ├── page.tsx
 │       └── sections/
 │           ├── EcosystemOverviewSection.tsx
 │           ├── StrategicPartnersSection.tsx
@@ -1149,8 +1101,8 @@ src/pages/
 │           └── VisualNetworkSection.tsx
 │
 ├── chronicle/
-│   ├── story/
-│   │   ├── index.tsx
+│   ├── [story-slug]/
+│   │   ├── page.tsx
 │   │   └── sections/
 │   │       ├── OpeningSection.tsx
 │   │       ├── CharactersSection.tsx
@@ -1163,8 +1115,8 @@ src/pages/
 │   │       ├── RelatedStoriesSection.tsx
 │   │       └── VisualNarrativeSection.tsx
 │   │
-│   ├── journey/
-│   │   ├── index.tsx
+│   ├── [journey-slug]/
+│   │   ├── page.tsx
 │   │   └── sections/
 │   │       ├── BeginningSection.tsx
 │   │       ├── PeopleWhoShapedItSection.tsx
@@ -1177,8 +1129,8 @@ src/pages/
 │   │       ├── LegacySection.tsx
 │   │       └── VisualArcSection.tsx
 │   │
-│   └── history/
-│       ├── index.tsx
+│   └── [history-slug]/
+│       ├── page.tsx
 │       └── sections/
 │           ├── OriginSection.tsx
 │           ├── LineageSection.tsx
@@ -1190,151 +1142,341 @@ src/pages/
 │           ├── EchoInThePresentSection.tsx
 │           └── ArtifactRecordSection.tsx
 │
-├── ambition/
-│   ├── initiative/
-│   │   ├── index.tsx
-│   │   └── sections/
-│   │       ├── MissionSection.tsx
-│   │       ├── OpportunityItCreatesSection.tsx
-│   │       ├── RoadmapSection.tsx
-│   │       ├── TeamBuildingItSection.tsx
-│   │       ├── FutureMachinesSection.tsx
-│   │       ├── PartnersMakingItPossibleSection.tsx
-│   │       ├── ProgressSoFarSection.tsx
-│   │       ├── HowToBePartOfItSection.tsx
-│   │       └── VisualStorySection.tsx
-│   │
-│   ├── celebration/
-│   │   ├── index.tsx
-│   │   └── sections/
-│   │       ├── OccasionSection.tsx
-│   │       ├── PeopleBeingCelebratedSection.tsx
-│   │       ├── AchievementBehindItSection.tsx
-│   │       ├── JourneyThatLedHereSection.tsx
-│   │       ├── CommunityThatCelebratedSection.tsx
-│   │       ├── WhatThisCelebrationSignalsSection.tsx
-│   │       └── VisualMemorySection.tsx
-│   │
-│   ├── meetup/
-│   │   ├── index.tsx
-│   │   └── sections/
-│   │       ├── EventSection.tsx
-│   │       ├── LocationSection.tsx
-│   │       ├── WhoWillBeThere.tsx
-│   │       ├── AgendaSection.tsx
-│   │       ├── MachinesOnShowSection.tsx
-│   │       ├── InitiativesConnectedSection.tsx
-│   │       ├── PartnersInvolvedSection.tsx
-│   │       ├── HowToBePartOfItSection.tsx
-│   │       └── VisualAtmosphereSection.tsx
-│   │
-│   ├── career/
-│   │   ├── index.tsx
-│   │   └── sections/
-│   │       ├── WhyThisRoleExistsSection.tsx
-│   │       ├── WhatItDemandsSection.tsx
-│   │       ├── GrowthThisRoleOffersSection.tsx
-│   │       ├── PeopleYouWillWorkWithSection.tsx
-│   │       ├── MachinesYouWillWorkOnSection.tsx
-│   │       ├── InitiativesYouWillDriveSection.tsx
-│   │       ├── LifeInsideSection.tsx
-│   │       ├── PartnersAroundYouSection.tsx
-│   │       └── ApplySection.tsx
-│   │
-│   └── training/
-│       ├── index.tsx
-│       └── sections/
-│           ├── ProgramSection.tsx
-│           ├── SkillsItBuildsSection.tsx
-│           ├── MethodsSection.tsx
-│           ├── MachinesUsedSection.tsx
-│           ├── PeopleWhoDeliverItSection.tsx
-│           ├── CohortSection.tsx
-│           ├── ScheduleSection.tsx
-│           ├── SuccessStoriesSection.tsx
-│           ├── HowToJoinSection.tsx
-│           └── VisualWorldSection.tsx
-│
-└── standard/              # Standard pages — outside the cinematic architecture
-    ├── home/
-    │   ├── index.tsx
+└── ambition/
+    ├── [initiative-slug]/
+    │   ├── page.tsx
     │   └── sections/
-    ├── about/
-    │   ├── index.tsx
+    │       ├── MissionSection.tsx
+    │       ├── OpportunityItCreatesSection.tsx
+    │       ├── RoadmapSection.tsx
+    │       ├── TeamBuildingItSection.tsx
+    │       ├── FutureMachinesSection.tsx
+    │       ├── PartnersMakingItPossibleSection.tsx
+    │       ├── ProgressSoFarSection.tsx
+    │       ├── HowToBePartOfItSection.tsx
+    │       └── VisualStorySection.tsx
+    │
+    ├── [celebration-slug]/
+    │   ├── page.tsx
     │   └── sections/
-    ├── contact/
-    │   ├── index.tsx
+    │       ├── OccasionSection.tsx
+    │       ├── PeopleBeingCelebratedSection.tsx
+    │       ├── AchievementBehindItSection.tsx
+    │       ├── JourneyThatLedHereSection.tsx
+    │       ├── CommunityThatCelebratedSection.tsx
+    │       ├── WhatThisCelebrationSignalsSection.tsx
+    │       └── VisualMemorySection.tsx
+    │
+    ├── [meetup-slug]/
+    │   ├── page.tsx
     │   └── sections/
-    ├── store/             # Payload ecommerce plugin-driven
-    │   ├── index.tsx
+    │       ├── EventSection.tsx
+    │       ├── LocationSection.tsx
+    │       ├── WhoWillBeThere.tsx
+    │       ├── AgendaSection.tsx
+    │       ├── MachinesOnShowSection.tsx
+    │       ├── InitiativesConnectedSection.tsx
+    │       ├── PartnersInvolvedSection.tsx
+    │       ├── HowToBePartOfItSection.tsx
+    │       └── VisualAtmosphereSection.tsx
+    │
+    ├── [career-slug]/
+    │   ├── page.tsx
     │   └── sections/
-    ├── blog/              # Payload plugin-driven
-    │   ├── index.tsx
-    │   └── sections/
-    ├── forms/             # Payload forms plugin-driven
-    │   ├── index.tsx
-    │   └── sections/
-    ├── opportunities/
-    │   ├── index.tsx
-    │   └── sections/
-    └── legal/
-        ├── index.tsx
+    │       ├── WhyThisRoleExistsSection.tsx
+    │       ├── WhatItDemandsSection.tsx
+    │       ├── GrowthThisRoleOffersSection.tsx
+    │       ├── PeopleYouWillWorkWithSection.tsx
+    │       ├── MachinesYouWillWorkOnSection.tsx
+    │       ├── InitiativesYouWillDriveSection.tsx
+    │       ├── LifeInsideSection.tsx
+    │       ├── PartnersAroundYouSection.tsx
+    │       └── ApplySection.tsx
+    │
+    └── [training-slug]/
+        ├── page.tsx
         └── sections/
+            ├── ProgramSection.tsx
+            ├── SkillsItBuildsSection.tsx
+            ├── MethodsSection.tsx
+            ├── MachinesUsedSection.tsx
+            ├── PeopleWhoDeliverItSection.tsx
+            ├── CohortSection.tsx
+            ├── ScheduleSection.tsx
+            ├── SuccessStoriesSection.tsx
+            ├── HowToJoinSection.tsx
+            └── VisualWorldSection.tsx
 ```
 
-### 19.2 Cinematic Universe → Page File Mapping
+### 18.2 Cinematic Universe → Page File Mapping
 
-| URL Pattern | Page Universe | Context | index.tsx Path |
+| URL Pattern | Series | Context | page.tsx Path |
 |---|---|---|---|
-| `/glory/[driver-slug]` | glory | driver | `src/pages/glory/driver/index.tsx` |
-| `/glory/[event-slug]` | glory | event | `src/pages/glory/event/index.tsx` |
-| `/glory/[award-slug]` | glory | award | `src/pages/glory/award/index.tsx` |
-| `/glory/hall-of-fame` | glory | hall-of-fame | `src/pages/glory/hall-of-fame/index.tsx` |
-| `/pursuit/[series-slug]` | pursuit | series | `src/pages/pursuit/series/index.tsx` |
-| `/pursuit/[season-slug]` | pursuit | season | `src/pages/pursuit/season/index.tsx` |
-| `/pursuit/[season-slug]/[event-slug]` | pursuit | event | `src/pages/pursuit/event/index.tsx` |
-| `/pursuit/[season-slug]/[event-slug]/[session-slug]` | pursuit | session | `src/pages/pursuit/session/index.tsx` |
-| `/craft/[car-slug]` | craft | car | `src/pages/craft/car/index.tsx` |
-| `/craft/[kit-slug]` | craft | kit | `src/pages/craft/kit/index.tsx` |
-| `/craft/[initiative-slug]` | craft | initiative | `src/pages/craft/initiative/index.tsx` |
-| `/craft/engineering-philosophy` | craft | engineering-philosophy | `src/pages/craft/engineering-philosophy/index.tsx` |
-| `/tribe/[driver-slug]` | tribe | driver | `src/pages/tribe/driver/index.tsx` |
-| `/tribe/[leader-slug]` | tribe | leader | `src/pages/tribe/leader/index.tsx` |
-| `/tribe/[member-slug]` | tribe | member | `src/pages/tribe/member/index.tsx` |
-| `/tribe/culture-code` | tribe | culture-code | `src/pages/tribe/culture-code/index.tsx` |
-| `/alliance/[organization-slug]` | alliance | organization | `src/pages/alliance/organization/index.tsx` |
-| `/alliance/network` | alliance | network | `src/pages/alliance/network/index.tsx` |
-| `/chronicle/[story-slug]` | chronicle | story | `src/pages/chronicle/story/index.tsx` |
-| `/chronicle/[journey-slug]` | chronicle | journey | `src/pages/chronicle/journey/index.tsx` |
-| `/chronicle/[history-slug]` | chronicle | history | `src/pages/chronicle/history/index.tsx` |
-| `/ambition/[initiative-slug]` | ambition | initiative | `src/pages/ambition/initiative/index.tsx` |
-| `/ambition/[celebration-slug]` | ambition | celebration | `src/pages/ambition/celebration/index.tsx` |
-| `/ambition/[meetup-slug]` | ambition | meetup | `src/pages/ambition/meetup/index.tsx` |
-| `/ambition/[career-slug]` | ambition | career | `src/pages/ambition/career/index.tsx` |
-| `/ambition/[training-slug]` | ambition | training | `src/pages/ambition/training/index.tsx` |
+| `/glory/[driver-slug]` | glory | driver | `src/app/glory/[driver-slug]/page.tsx` |
+| `/glory/[event-slug]` | glory | event | `src/app/glory/[event-slug]/page.tsx` |
+| `/glory/[award-slug]` | glory | award | `src/app/glory/[award-slug]/page.tsx` |
+| `/glory/hall-of-fame` | glory | hall-of-fame | `src/app/glory/hall-of-fame/page.tsx` |
+| `/pursuit/[series-slug]` | pursuit | series | `src/app/pursuit/[series-slug]/page.tsx` |
+| `/pursuit/[season-slug]` | pursuit | season | `src/app/pursuit/[season-slug]/page.tsx` |
+| `/pursuit/[season-slug]/[event-slug]` | pursuit | event | `src/app/pursuit/[season-slug]/[event-slug]/page.tsx` |
+| `/pursuit/[season-slug]/[event-slug]/[session-slug]` | pursuit | session | `src/app/pursuit/[season-slug]/[event-slug]/[session-slug]/page.tsx` |
+| `/craft/[car-slug]` | craft | car | `src/app/craft/[car-slug]/page.tsx` |
+| `/craft/[kit-slug]` | craft | kit | `src/app/craft/[kit-slug]/page.tsx` |
+| `/craft/[initiative-slug]` | craft | initiative | `src/app/craft/[initiative-slug]/page.tsx` |
+| `/craft/engineering-philosophy` | craft | engineering-philosophy | `src/app/craft/engineering-philosophy/page.tsx` |
+| `/tribe/[driver-slug]` | tribe | driver | `src/app/tribe/[driver-slug]/page.tsx` |
+| `/tribe/[leader-slug]` | tribe | leader | `src/app/tribe/[leader-slug]/page.tsx` |
+| `/tribe/[member-slug]` | tribe | member | `src/app/tribe/[member-slug]/page.tsx` |
+| `/tribe/culture-code` | tribe | culture-code | `src/app/tribe/culture-code/page.tsx` |
+| `/alliance/[organization-slug]` | alliance | organization | `src/app/alliance/[organization-slug]/page.tsx` |
+| `/alliance/network` | alliance | network | `src/app/alliance/network/page.tsx` |
+| `/chronicle/[story-slug]` | chronicle | story | `src/app/chronicle/[story-slug]/page.tsx` |
+| `/chronicle/[journey-slug]` | chronicle | journey | `src/app/chronicle/[journey-slug]/page.tsx` |
+| `/chronicle/[history-slug]` | chronicle | history | `src/app/chronicle/[history-slug]/page.tsx` |
+| `/ambition/[initiative-slug]` | ambition | initiative | `src/app/ambition/[initiative-slug]/page.tsx` |
+| `/ambition/[celebration-slug]` | ambition | celebration | `src/app/ambition/[celebration-slug]/page.tsx` |
+| `/ambition/[meetup-slug]` | ambition | meetup | `src/app/ambition/[meetup-slug]/page.tsx` |
+| `/ambition/[career-slug]` | ambition | career | `src/app/ambition/[career-slug]/page.tsx` |
+| `/ambition/[training-slug]` | ambition | training | `src/app/ambition/[training-slug]/page.tsx` |
 
-### 19.3 Frontend Developer Rules
+### 18.3 Frontend Developer Rules
 
-1. **Never modify library directories** — `ui/base/`, `ui/supportive/`, `layout/sections/`, `layout/blocks/`, `map/`, `media/video/`, `media/audio/`, and all `animation/` sub-directories are **read-only**.
+1. **`src/components/ui/` is read-only** — all files there are owned by their respective libraries and regenerated on update. Never modify them directly.
 2. **Always create in `custom/`** — any modification, extension, or composition of library components must live in the matching `custom/` subdirectory.
-3. **`composite/` for cross-library work** — when combining components from different libraries, the result goes into `custom/composite/`, not into individual category directories.
-4. **One section = one file** — each section listed in `page_structure.md` maps to exactly one `*Section.tsx` file in the page's `sections/` folder.
-5. **Sections are dumb** — section components receive fully resolved data as props; they do not call Payload directly.
-6. **`index.tsx` owns data fetching** — all `src/lib/payload/` calls happen in the page `index.tsx` server component; section components only render.
-7. **Standard pages are separate** — Home, About, Contact, Store, Blog, Forms, Opportunities, and Legal live in `src/pages/standard/` and are **outside** the cinematic universe architecture.
-8. **Naming convention** — section files are PascalCase ending in `Section.tsx`; the name mirrors the section title from `page_structure.md` verbatim.
+3. **`composite/` for cross-library work** — when combining components from different libraries, the result goes into `custom/composite/`.
+4. **One section = one file** — each section maps to exactly one `*Section.tsx` file in the page's `sections/` folder.
+5. **Sections are self-contained** — each section fetches its own data directly from the backend. It has no dependencies on sibling sections or the parent page.
+6. **Sections are portable** — because each section owns its own data fetching and imports, moving a section to another page is a copy-paste operation with no side effects.
+7. **Naming convention** — section files are PascalCase ending in `Section.tsx`; the name mirrors the section title from `page_structure.md` verbatim.
 
 ---
 
-## 20. Key Documents in This Repository
+## 19. Key Documents in This Repository
 
 | File | Purpose |
 |---|---|
 | `README.md` | High-level project overview and philosophy |
 | `page_structure.md` | Complete cinematic URL structure with section/block mappings |
-| `workflow_mapping.md` | All client and operational workflows v2.0 |
+| `workflow_mapping.md` | All client and operational workflows |
 | `field_structure.md` | Detailed field-by-field documentation for every collection (source of truth for field flags) |
 | `AGENTS.md` | **This file** — AI/agent knowledge transfer document |
+
+## 20. Header & Footer Nav Items
+
+---
+
+### 20.1 HEADER NAV
+
+#### Series Navigation (Mega Menu)
+
+---
+
+##### GLORY — "The victories that define us."
+*Panel description: "Every triumph, every trophy, every moment that became legend — this is where glory lives."*
+
+| Cinema Label | Cinema Description | URL |
+|---|---|---|
+| The Legends | Every driver who carried the flag | `/glory/[driver-slug]` — featured entries |
+| The Battles | Races that became history | `/glory/[event-slug]` — featured entries |
+| The Trophies | Awards and the stories behind them | `/glory/[award-slug]` — featured entries |
+| Hall of Fame | The eternal record of AF Motorsport | `/glory/hall-of-fame` |
+
+**Spotlight:** Featured Driver (relationship → `drivers`) — label: "Current Champion"
+
+---
+
+##### PURSUIT — "The championship engine."
+*Panel description: "The relentless machinery of racing — championships, seasons, race weekends, and the sessions that decided everything."*
+
+| Cinema Label | Cinema Description | URL |
+|---|---|---|
+| The Championships | Series we compete in | `/pursuit/[series-slug]` — featured entries |
+| The Seasons | Every year's complete arc | `/pursuit/[season-slug]` — featured entries |
+| Race Weekends | Round by round, event by event | `/pursuit/[season-slug]/[event-slug]` — featured entries |
+| The Sessions | The moments within the moments | `/pursuit/[season-slug]/[event-slug]/[session-slug]` — featured entries |
+
+**Spotlight:** Featured Season (relationship → `seasons`) — label: "Current Season"
+
+---
+
+##### CRAFT — "The machines and the minds."
+*Panel description: "Every car built, every kit designed, every engineering decision made — the technical obsession that drives everything."*
+
+| Cinema Label | Cinema Description | URL |
+|---|---|---|
+| The Machines | Every car we have ever fielded | `/craft/[car-slug]` — featured entries |
+| The Equipment | Precision instruments, meticulously designed | `/craft/[kit-slug]` — featured entries |
+| R&D Projects | The innovations we are building | `/craft/[initiative-slug]` — featured entries |
+| Engineering Philosophy | The belief system behind it all | `/craft/engineering-philosophy` |
+
+**Spotlight:** Featured Car (relationship → `cars`) — label: "Current Machine"
+
+---
+
+##### TRIBE — "The people behind the numbers."
+*Panel description: "Not who won — who they are. The drivers, leaders, specialists, and the culture that connects them all."*
+
+| Cinema Label | Cinema Description | URL |
+|---|---|---|
+| The Drivers | The people behind the racing numbers | `/tribe/[driver-slug]` — featured entries |
+| The Leaders | The humans who lead | `/tribe/[leader-slug]` — featured entries |
+| The Specialists | The crew who make it possible | `/tribe/[member-slug]` — featured entries |
+| Culture Code | The soul of AF Motorsport | `/tribe/culture-code` |
+
+**Spotlight:** Featured Member (relationship → `members`) — label: "Spotlight: The Team"
+
+---
+
+##### ALLIANCE — "The partnerships that power us."
+*Panel description: "No team races alone. The organizations, people, and ecosystem that make AF Motorsport possible."*
+
+| Cinema Label | Cinema Description | URL |
+|---|---|---|
+| Our Partners | The organizations we work with | `/alliance/[organization-slug]` — featured entries |
+| The Network | The complete ecosystem map | `/alliance/network` |
+
+**Spotlight:** Featured Organization (relationship → `organizations`) — label: "Strategic Partner"
+
+---
+
+##### CHRONICLE — "The stories we carry."
+*Panel description: "Authored journalism, career arcs, and historical records — the universe told in full narrative form."*
+
+| Cinema Label | Cinema Description | URL |
+|---|---|---|
+| Stories | Authored features and deep dives | `/chronicle/[story-slug]` — featured entries |
+| Journeys | Career arcs and personal chapters | `/chronicle/[journey-slug]` — featured entries |
+| Histories | The documented historical record | `/chronicle/[history-slug]` — featured entries |
+
+**Spotlight:** Featured Story (relationship → `stories`) — label: "Latest Story"
+
+---
+
+##### AMBITION — "What we are building next."
+*Panel description: "The future in motion — projects, celebrations, gatherings, roles, and programs. How to be part of what comes next."*
+
+| Cinema Label | Cinema Description | URL |
+|---|---|---|
+| Initiatives | Projects shaping the future | `/ambition/[initiative-slug]` — featured entries |
+| Celebrations | Moments of recognition | `/ambition/[celebration-slug]` — featured entries |
+| Meetups | Events and gatherings | `/ambition/[meetup-slug]` — featured entries |
+| Careers | Open roles at AF Motorsport | `/ambition/[career-slug]` — featured entries |
+| Training Programs | Development programs we run | `/ambition/[training-slug]` — featured entries |
+
+**Spotlight:** Featured Career (relationship → `careers`) — label: "We're Hiring"
+
+---
+
+#### Utility Navigation
+
+| Label | URL |
+|---|---|
+| Store | `/store` |
+| About | `/about` |
+| Contact | `/contact` |
+
+#### Primary CTA Button
+
+| Label | URL |
+|---|---|
+| Join the Team | `/ambition` |
+
+---
+
+### 20.2 FOOTER NAV
+
+#### Brand Block
+
+> **Tagline:** "Built to race. Built to last."
+> **Description:** "AF Motorsport is a competitive racing team with an obsession for craft, culture, and the pursuit of glory. We build machines, develop people, and tell the stories that endure."
+
+---
+
+#### Navigation Columns
+
+---
+
+##### Column 1 — Universe
+
+| Label | URL |
+|---|---|
+| Glory | `/glory` |
+| Pursuit | `/pursuit` |
+| Craft | `/craft` |
+| Tribe | `/tribe` |
+| Alliance | `/alliance` |
+| Chronicle | `/chronicle` |
+| Ambition | `/ambition` |
+
+---
+
+##### Column 2 — The Team
+
+| Label | URL |
+|---|---|
+| Drivers | `/tribe` |
+| Leaders | `/tribe` |
+| Specialists | `/tribe` |
+| Culture Code | `/tribe/culture-code` |
+| Hall of Fame | `/glory/hall-of-fame` |
+
+---
+
+##### Column 3 — The Machines
+
+| Label | URL |
+|---|---|
+| Our Cars | `/craft` |
+| Our Equipment | `/craft` |
+| Engineering Philosophy | `/craft/engineering-philosophy` |
+| R&D Projects | `/craft` |
+| Technical Partnerships | `/alliance/network` |
+
+---
+
+##### Column 4 — Join Us
+
+| Label | URL |
+|---|---|
+| Open Careers | `/ambition` |
+| Training Programs | `/ambition` |
+| Upcoming Meetups | `/ambition` |
+| Current Initiatives | `/ambition` |
+| Partner With Us | `/contact` |
+
+---
+
+##### Column 5 — Company
+
+| Label | URL |
+|---|---|
+| About AF Motorsport | `/about` |
+| Contact | `/contact` |
+| Store | `/store` |
+| Opportunities | `/opportunities` |
+| The Network | `/alliance/network` |
+
+---
+
+#### Bottom CTA Block
+
+> **Headline:** "Ready to be part of the story?"
+> **Subtext:** "Whether you race, engineer, design, or simply believe in what we build — there is a place for you inside AF Motorsport."
+> **Button:** "Explore Ambition" → `/ambition`
+
+---
+
+#### Legal Links
+
+| Label | URL |
+|---|---|
+| Privacy Policy | `/legal` |
+| Terms of Use | `/legal` |
+| Cookie Policy | `/legal` |
+
+#### Copyright
+
+`© 2025 AF Motorsport. All rights reserved.`
 
 ---
 

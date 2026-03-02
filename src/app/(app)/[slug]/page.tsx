@@ -1,39 +1,37 @@
-import type { Metadata } from 'next'
-
 import { RenderBlocks } from '@/blocks/RenderBlocks'
+import { homeStaticData } from '@/endpoints/seed/home-static'
 import { RenderHero } from '@/heros/RenderHero'
+import type { Page as PageType } from '@/payload-types'
 import { generateMeta } from '@/utilities/generateMeta'
 import configPromise from '@payload-config'
-import { getPayload } from 'payload'
+import type { Metadata } from 'next'
 import { draftMode } from 'next/headers'
-import { homeStaticData } from '@/endpoints/seed/home-static'
-import React from 'react'
-
-import type { Page } from '@/payload-types'
 import { notFound } from 'next/navigation'
+import { getPayload } from 'payload'
 
 export async function generateStaticParams() {
-  const payload = await getPayload({ config: configPromise })
-  const pages = await payload.find({
-    collection: 'pages',
-    draft: false,
-    limit: 1000,
-    overrideAccess: false,
-    pagination: false,
-    select: {
-      slug: true,
-    },
-  })
-
-  const params = pages.docs
-    ?.filter((doc) => {
-      return doc.slug !== 'home'
-    })
-    .map(({ slug }) => {
-      return { slug }
+  try {
+    const payload = await getPayload({ config: configPromise })
+    const pages = await payload.find({
+      collection: 'pages',
+      draft: false,
+      limit: 1000,
+      overrideAccess: true,
+      pagination: false,
+      select: {
+        slug: true,
+      },
     })
 
-  return params
+    if (!pages?.docs) return []
+
+    return pages.docs
+      .filter((doc) => doc.slug !== 'home')
+      .map(({ slug }) => ({ slug }))
+  } catch (error) {
+    console.error('Error generating static params:', error)
+    return []
+  }
 }
 
 type Args = {
@@ -44,63 +42,58 @@ type Args = {
 
 export default async function Page({ params }: Args) {
   const { slug = 'home' } = await params
-  const url = '/' + slug
+  const { isEnabled: draft } = await draftMode()
 
-  let page = await queryPageBySlug({
+  const page = await queryPageBySlug({
     slug,
+    draft,
   })
 
-  // Remove this code once your website is seeded
-  if (!page && slug === 'home') {
-    page = homeStaticData() as Page
-  }
+  const finalPage = page || (slug === 'home' ? (homeStaticData() as PageType) : null)
 
-  if (!page) {
+  if (!finalPage) {
     return notFound()
   }
 
-  const { hero, layout } = page
-
   return (
     <article className="pt-16 pb-24">
-      <RenderHero {...hero} />
-      <RenderBlocks blocks={layout} />
+      <RenderHero {...(finalPage as any).hero} />
+      <RenderBlocks blocks={(finalPage as any).layout} />
     </article>
   )
 }
 
 export async function generateMetadata({ params }: Args): Promise<Metadata> {
   const { slug = 'home' } = await params
+  const { isEnabled: draft } = await draftMode()
 
   const page = await queryPageBySlug({
     slug,
+    draft,
   })
+
+  if (!page) {
+    return {}
+  }
 
   return generateMeta({ doc: page })
 }
 
-const queryPageBySlug = async ({ slug }: { slug: string }) => {
-  const { isEnabled: draft } = await draftMode()
-
+const queryPageBySlug = async ({ slug, draft }: { slug: string; draft: boolean }): Promise<PageType | null> => {
   const payload = await getPayload({ config: configPromise })
 
   const result = await payload.find({
     collection: 'pages',
     draft,
     limit: 1,
-    overrideAccess: draft,
+    overrideAccess: true,
     pagination: false,
     where: {
-      and: [
-        {
-          slug: {
-            equals: slug,
-          },
-        },
-        ...(draft ? [] : [{ _status: { equals: 'published' } }]),
-      ],
+      slug: {
+        equals: slug,
+      },
     },
   })
 
-  return result.docs?.[0] || null
+  return (result.docs?.[0] as PageType) || null
 }

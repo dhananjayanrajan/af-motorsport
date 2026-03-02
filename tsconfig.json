@@ -38,7 +38,7 @@
       ],
       "@/payload-types": [
         "./src/payload-types.ts"
-      ],
+      ]
     }
   },
   "include": [

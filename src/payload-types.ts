@@ -11568,68 +11568,136 @@ export interface Search {
   priority?: number | null;
   doc:
     | {
-        relationTo: 'users';
-        value: number | User;
-      }
-    | {
-        relationTo: 'pages';
-        value: number | Page;
-      }
-    | {
-        relationTo: 'forms';
-        value: number | Form;
-      }
-    | {
-        relationTo: 'points';
-        value: number | Point;
-      }
-    | {
-        relationTo: 'results';
-        value: number | Result;
-      }
-    | {
-        relationTo: 'entries';
-        value: number | Entry;
-      }
-    | {
-        relationTo: 'sessions';
-        value: number | Session;
-      }
-    | {
-        relationTo: 'events';
-        value: number | Event;
+        relationTo: 'series';
+        value: number | Series;
       }
     | {
         relationTo: 'seasons';
         value: number | Season;
       }
     | {
-        relationTo: 'series';
-        value: number | Series;
+        relationTo: 'events';
+        value: number | Event;
       }
     | {
-        relationTo: 'meetups';
-        value: number | Meetup;
+        relationTo: 'sessions';
+        value: number | Session;
       }
     | {
-        relationTo: 'initiatives';
-        value: number | Initiative;
+        relationTo: 'entries';
+        value: number | Entry;
       }
     | {
-        relationTo: 'celebrations';
-        value: number | Celebration;
+        relationTo: 'results';
+        value: number | Result;
       }
     | {
-        relationTo: 'careers';
-        value: number | Career;
+        relationTo: 'points';
+        value: number | Point;
+      }
+    | {
+        relationTo: 'drivers';
+        value: number | Driver;
+      }
+    | {
+        relationTo: 'leaders';
+        value: number | Leader;
+      }
+    | {
+        relationTo: 'members';
+        value: number | Member;
+      }
+    | {
+        relationTo: 'individuals';
+        value: number | Individual;
+      }
+    | {
+        relationTo: 'organizations';
+        value: number | Organization;
+      }
+    | {
+        relationTo: 'users';
+        value: number | User;
+      }
+    | {
+        relationTo: 'narratives';
+        value: number | Narrative;
+      }
+    | {
+        relationTo: 'stories';
+        value: number | Story;
+      }
+    | {
+        relationTo: 'histories';
+        value: number | History;
+      }
+    | {
+        relationTo: 'journeys';
+        value: number | Journey;
+      }
+    | {
+        relationTo: 'notes';
+        value: number | Note;
+      }
+    | {
+        relationTo: 'pages';
+        value: number | Page;
+      }
+    | {
+        relationTo: 'cars';
+        value: number | Car;
+      }
+    | {
+        relationTo: 'kits';
+        value: number | Kit;
+      }
+    | {
+        relationTo: 'media';
+        value: number | Media;
+      }
+    | {
+        relationTo: 'galleries';
+        value: number | Gallery;
+      }
+    | {
+        relationTo: 'playlists';
+        value: number | Playlist;
+      }
+    | {
+        relationTo: 'archives';
+        value: number | Archive;
+      }
+    | {
+        relationTo: 'visualizations';
+        value: number | Visualization;
+      }
+    | {
+        relationTo: 'schedules';
+        value: number | Schedule;
       }
     | {
         relationTo: 'trainings';
         value: number | Training;
       }
     | {
-        relationTo: 'schedules';
-        value: number | Schedule;
+        relationTo: 'careers';
+        value: number | Career;
+      }
+    | {
+        relationTo: 'initiatives';
+        value: number | Initiative;
+      }
+    | {
+        relationTo: 'meetups';
+        value: number | Meetup;
+      }
+    | {
+        relationTo: 'celebrations';
+        value: number | Celebration;
+      }
+    | {
+        relationTo: 'protocols';
+        value: number | Protocol;
       }
     | {
         relationTo: 'duties';
@@ -11640,56 +11708,12 @@ export interface Search {
         value: number | Expectation;
       }
     | {
-        relationTo: 'protocols';
-        value: number | Protocol;
-      }
-    | {
-        relationTo: 'kits';
-        value: number | Kit;
-      }
-    | {
-        relationTo: 'cars';
-        value: number | Car;
-      }
-    | {
-        relationTo: 'awards';
-        value: number | Award;
-      }
-    | {
-        relationTo: 'organizations';
-        value: number | Organization;
-      }
-    | {
-        relationTo: 'members';
-        value: number | Member;
-      }
-    | {
-        relationTo: 'leaders';
-        value: number | Leader;
-      }
-    | {
-        relationTo: 'individuals';
-        value: number | Individual;
-      }
-    | {
-        relationTo: 'drivers';
-        value: number | Driver;
-      }
-    | {
-        relationTo: 'experiences';
-        value: number | Experience;
-      }
-    | {
-        relationTo: 'strategies';
-        value: number | Strategy;
+        relationTo: 'highlights';
+        value: number | Highlight;
       }
     | {
         relationTo: 'incidents';
         value: number | Incident;
-      }
-    | {
-        relationTo: 'highlights';
-        value: number | Highlight;
       }
     | {
         relationTo: 'impacts';
@@ -11700,52 +11724,40 @@ export interface Search {
         value: number | Decision;
       }
     | {
-        relationTo: 'stories';
-        value: number | Story;
+        relationTo: 'strategies';
+        value: number | Strategy;
       }
     | {
-        relationTo: 'journeys';
-        value: number | Journey;
+        relationTo: 'awards';
+        value: number | Award;
       }
     | {
-        relationTo: 'histories';
-        value: number | History;
+        relationTo: 'experiences';
+        value: number | Experience;
       }
     | {
-        relationTo: 'notes';
-        value: number | Note;
-      }
-    | {
-        relationTo: 'narratives';
-        value: number | Narrative;
-      }
-    | {
-        relationTo: 'archives';
-        value: number | Archive;
-      }
-    | {
-        relationTo: 'playlists';
-        value: number | Playlist;
-      }
-    | {
-        relationTo: 'visualizations';
-        value: number | Visualization;
-      }
-    | {
-        relationTo: 'galleries';
-        value: number | Gallery;
-      }
-    | {
-        relationTo: 'tones';
-        value: number | Tone;
+        relationTo: 'categories';
+        value: number | Category;
       }
     | {
         relationTo: 'tags';
         value: number | Tag;
       }
     | {
+        relationTo: 'tones';
+        value: number | Tone;
+      }
+    | {
+        relationTo: 'features';
+        value: number | Feature;
+      }
+    | {
         relationTo: 'specifications';
         value: number | Specification;
+      }
+    | {
+        relationTo: 'classifications';
+        value: number | Classification;
       }
     | {
         relationTo: 'skills';
@@ -11756,32 +11768,16 @@ export interface Search {
         value: number | Principle;
       }
     | {
-        relationTo: 'locations';
-        value: number | Location;
-      }
-    | {
-        relationTo: 'features';
-        value: number | Feature;
-      }
-    | {
         relationTo: 'preferences';
         value: number | Preference;
-      }
-    | {
-        relationTo: 'classifications';
-        value: number | Classification;
       }
     | {
         relationTo: 'channels';
         value: number | Channel;
       }
     | {
-        relationTo: 'categories';
-        value: number | Category;
-      }
-    | {
-        relationTo: 'media';
-        value: number | Media;
+        relationTo: 'locations';
+        value: number | Location;
       };
   updatedAt: string;
   createdAt: string;
@@ -12040,6 +12036,24 @@ export interface PayloadMcpApiKey {
      */
     delete?: boolean | null;
   };
+  narratives?: {
+    /**
+     * Allow clients to find narratives.
+     */
+    find?: boolean | null;
+    /**
+     * Allow clients to create narratives.
+     */
+    create?: boolean | null;
+    /**
+     * Allow clients to update narratives.
+     */
+    update?: boolean | null;
+    /**
+     * Allow clients to delete narratives.
+     */
+    delete?: boolean | null;
+  };
   stories?: {
     /**
      * Allow clients to find stories.
@@ -12202,6 +12216,24 @@ export interface PayloadMcpApiKey {
      */
     delete?: boolean | null;
   };
+  playlists?: {
+    /**
+     * Allow clients to find playlists.
+     */
+    find?: boolean | null;
+    /**
+     * Allow clients to create playlists.
+     */
+    create?: boolean | null;
+    /**
+     * Allow clients to update playlists.
+     */
+    update?: boolean | null;
+    /**
+     * Allow clients to delete playlists.
+     */
+    delete?: boolean | null;
+  };
   archives?: {
     /**
      * Allow clients to find archives.
@@ -12346,6 +12378,24 @@ export interface PayloadMcpApiKey {
      */
     delete?: boolean | null;
   };
+  protocols?: {
+    /**
+     * Allow clients to find protocols.
+     */
+    find?: boolean | null;
+    /**
+     * Allow clients to create protocols.
+     */
+    create?: boolean | null;
+    /**
+     * Allow clients to update protocols.
+     */
+    update?: boolean | null;
+    /**
+     * Allow clients to delete protocols.
+     */
+    delete?: boolean | null;
+  };
   duties?: {
     /**
      * Allow clients to find duties.
@@ -12415,6 +12465,24 @@ export interface PayloadMcpApiKey {
     update?: boolean | null;
     /**
      * Allow clients to delete incidents.
+     */
+    delete?: boolean | null;
+  };
+  impacts?: {
+    /**
+     * Allow clients to find impacts.
+     */
+    find?: boolean | null;
+    /**
+     * Allow clients to create impacts.
+     */
+    create?: boolean | null;
+    /**
+     * Allow clients to update impacts.
+     */
+    update?: boolean | null;
+    /**
+     * Allow clients to delete impacts.
      */
     delete?: boolean | null;
   };
@@ -12562,6 +12630,24 @@ export interface PayloadMcpApiKey {
      */
     delete?: boolean | null;
   };
+  specifications?: {
+    /**
+     * Allow clients to find specifications.
+     */
+    find?: boolean | null;
+    /**
+     * Allow clients to create specifications.
+     */
+    create?: boolean | null;
+    /**
+     * Allow clients to update specifications.
+     */
+    update?: boolean | null;
+    /**
+     * Allow clients to delete specifications.
+     */
+    delete?: boolean | null;
+  };
   classifications?: {
     /**
      * Allow clients to find classifications.
@@ -12595,6 +12681,24 @@ export interface PayloadMcpApiKey {
     update?: boolean | null;
     /**
      * Allow clients to delete skills.
+     */
+    delete?: boolean | null;
+  };
+  principles?: {
+    /**
+     * Allow clients to find principles.
+     */
+    find?: boolean | null;
+    /**
+     * Allow clients to create principles.
+     */
+    create?: boolean | null;
+    /**
+     * Allow clients to update principles.
+     */
+    update?: boolean | null;
+    /**
+     * Allow clients to delete principles.
      */
     delete?: boolean | null;
   };
@@ -12634,21 +12738,21 @@ export interface PayloadMcpApiKey {
      */
     delete?: boolean | null;
   };
-  forms?: {
+  locations?: {
     /**
-     * Allow clients to find forms.
+     * Allow clients to find locations.
      */
     find?: boolean | null;
     /**
-     * Allow clients to create forms.
+     * Allow clients to create locations.
      */
     create?: boolean | null;
     /**
-     * Allow clients to update forms.
+     * Allow clients to update locations.
      */
     update?: boolean | null;
     /**
-     * Allow clients to delete forms.
+     * Allow clients to delete locations.
      */
     delete?: boolean | null;
   };
@@ -19247,6 +19351,14 @@ export interface PayloadMcpApiKeysSelect<T extends boolean = true> {
         update?: T;
         delete?: T;
       };
+  narratives?:
+    | T
+    | {
+        find?: T;
+        create?: T;
+        update?: T;
+        delete?: T;
+      };
   stories?:
     | T
     | {
@@ -19319,6 +19431,14 @@ export interface PayloadMcpApiKeysSelect<T extends boolean = true> {
         update?: T;
         delete?: T;
       };
+  playlists?:
+    | T
+    | {
+        find?: T;
+        create?: T;
+        update?: T;
+        delete?: T;
+      };
   archives?:
     | T
     | {
@@ -19383,6 +19503,14 @@ export interface PayloadMcpApiKeysSelect<T extends boolean = true> {
         update?: T;
         delete?: T;
       };
+  protocols?:
+    | T
+    | {
+        find?: T;
+        create?: T;
+        update?: T;
+        delete?: T;
+      };
   duties?:
     | T
     | {
@@ -19408,6 +19536,14 @@ export interface PayloadMcpApiKeysSelect<T extends boolean = true> {
         delete?: T;
       };
   incidents?:
+    | T
+    | {
+        find?: T;
+        create?: T;
+        update?: T;
+        delete?: T;
+      };
+  impacts?:
     | T
     | {
         find?: T;
@@ -19479,6 +19615,14 @@ export interface PayloadMcpApiKeysSelect<T extends boolean = true> {
         update?: T;
         delete?: T;
       };
+  specifications?:
+    | T
+    | {
+        find?: T;
+        create?: T;
+        update?: T;
+        delete?: T;
+      };
   classifications?:
     | T
     | {
@@ -19488,6 +19632,14 @@ export interface PayloadMcpApiKeysSelect<T extends boolean = true> {
         delete?: T;
       };
   skills?:
+    | T
+    | {
+        find?: T;
+        create?: T;
+        update?: T;
+        delete?: T;
+      };
+  principles?:
     | T
     | {
         find?: T;
@@ -19511,7 +19663,7 @@ export interface PayloadMcpApiKeysSelect<T extends boolean = true> {
         update?: T;
         delete?: T;
       };
-  forms?:
+  locations?:
     | T
     | {
         find?: T;
@@ -19566,7 +19718,7 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   createdAt?: T;
 }
 /**
- * Defines the global top-level navigation and brand entry points.
+ * Defines the global mega menu navigation — primary nav items, sub-links, spotlights, utility nav, and the primary CTA.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "header".
@@ -19575,6 +19727,112 @@ export interface Header {
   id: number;
   navItems?:
     | {
+        label: string;
+        tagline?: string | null;
+        description?: string | null;
+        subItems?:
+          | {
+              label: string;
+              description?: string | null;
+              link: {
+                type?: ('reference' | 'custom') | null;
+                newTab?: boolean | null;
+                reference?: {
+                  relationTo: 'pages';
+                  value: number | Page;
+                } | null;
+                url?: string | null;
+                label: string;
+              };
+              isFeatured?: boolean | null;
+              id?: string | null;
+            }[]
+          | null;
+        spotlight?: {
+          enable?: boolean | null;
+          label?: string | null;
+          entity?:
+            | ({
+                relationTo: 'drivers';
+                value: number | Driver;
+              } | null)
+            | ({
+                relationTo: 'leaders';
+                value: number | Leader;
+              } | null)
+            | ({
+                relationTo: 'members';
+                value: number | Member;
+              } | null)
+            | ({
+                relationTo: 'cars';
+                value: number | Car;
+              } | null)
+            | ({
+                relationTo: 'kits';
+                value: number | Kit;
+              } | null)
+            | ({
+                relationTo: 'series';
+                value: number | Series;
+              } | null)
+            | ({
+                relationTo: 'seasons';
+                value: number | Season;
+              } | null)
+            | ({
+                relationTo: 'events';
+                value: number | Event;
+              } | null)
+            | ({
+                relationTo: 'awards';
+                value: number | Award;
+              } | null)
+            | ({
+                relationTo: 'stories';
+                value: number | Story;
+              } | null)
+            | ({
+                relationTo: 'journeys';
+                value: number | Journey;
+              } | null)
+            | ({
+                relationTo: 'histories';
+                value: number | History;
+              } | null)
+            | ({
+                relationTo: 'initiatives';
+                value: number | Initiative;
+              } | null)
+            | ({
+                relationTo: 'celebrations';
+                value: number | Celebration;
+              } | null)
+            | ({
+                relationTo: 'meetups';
+                value: number | Meetup;
+              } | null)
+            | ({
+                relationTo: 'careers';
+                value: number | Career;
+              } | null)
+            | ({
+                relationTo: 'trainings';
+                value: number | Training;
+              } | null)
+            | ({
+                relationTo: 'organizations';
+                value: number | Organization;
+              } | null);
+          overrideUrl?: string | null;
+        };
+        visible?: boolean | null;
+        id?: string | null;
+      }[]
+    | null;
+  utilityNav?:
+    | {
+        label: string;
         link: {
           type?: ('reference' | 'custom') | null;
           newTab?: boolean | null;
@@ -19585,22 +19843,84 @@ export interface Header {
           url?: string | null;
           label: string;
         };
+        visible?: boolean | null;
         id?: string | null;
       }[]
     | null;
+  cta: {
+    enable?: boolean | null;
+    label?: string | null;
+    link: {
+      type?: ('reference' | 'custom') | null;
+      newTab?: boolean | null;
+      reference?: {
+        relationTo: 'pages';
+        value: number | Page;
+      } | null;
+      url?: string | null;
+      label: string;
+    };
+  };
   updatedAt?: string | null;
   createdAt?: string | null;
 }
 /**
- * Defines the global bottom-level navigation and legal references.
+ * Defines the global footer — brand block, navigation columns, bottom CTA, legal links, and copyright.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "footer".
  */
 export interface Footer {
   id: number;
-  navItems?:
+  brand?: {
+    enable?: boolean | null;
+    logo?: (number | null) | Media;
+    tagline?: string | null;
+    description?: string | null;
+  };
+  columns?:
     | {
+        label: string;
+        links?:
+          | {
+              label: string;
+              link: {
+                type?: ('reference' | 'custom') | null;
+                newTab?: boolean | null;
+                reference?: {
+                  relationTo: 'pages';
+                  value: number | Page;
+                } | null;
+                url?: string | null;
+                label: string;
+              };
+              visible?: boolean | null;
+              id?: string | null;
+            }[]
+          | null;
+        visible?: boolean | null;
+        id?: string | null;
+      }[]
+    | null;
+  cta: {
+    enable?: boolean | null;
+    headline?: string | null;
+    subtext?: string | null;
+    buttonLabel?: string | null;
+    link: {
+      type?: ('reference' | 'custom') | null;
+      newTab?: boolean | null;
+      reference?: {
+        relationTo: 'pages';
+        value: number | Page;
+      } | null;
+      url?: string | null;
+      label: string;
+    };
+  };
+  legal?:
+    | {
+        label: string;
         link: {
           type?: ('reference' | 'custom') | null;
           newTab?: boolean | null;
@@ -19611,14 +19931,16 @@ export interface Footer {
           url?: string | null;
           label: string;
         };
+        visible?: boolean | null;
         id?: string | null;
       }[]
     | null;
+  copyright?: string | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
 /**
- * Defines the identity of the entire brand.
+ * The complete brand identity of AF Motorsport — vision, values, voice, leadership, and visual identity.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "identity".
@@ -19626,75 +19948,109 @@ export interface Footer {
 export interface Identity {
   id: number;
   /**
-   * Detailed identity of the entire brand.
+   * The single sentence that defines what AF Motorsport exists to achieve.
    */
-  identity: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
+  vision?: string | null;
+  /**
+   * How AF Motorsport pursues its vision — the operational purpose.
+   */
+  mission?: string | null;
+  /**
+   * The authored narrative that tells the origin and founding story of AF Motorsport.
+   */
+  story?: (number | null) | Narrative;
+  values?:
+    | {
+        value: string;
+        description?: string | null;
+        /**
+         * The principle collection record that backs this value.
+         */
+        principle?: (number | null) | Principle;
+        id?: string | null;
+      }[]
+    | null;
+  voice?: {
+    /**
+     * The tones that define how AF Motorsport communicates.
+     */
+    tones?: (number | Tone)[] | null;
+    /**
+     * How the brand speaks — the character, register, and style of all communication.
+     */
+    description?: string | null;
+  };
+  /**
+   * The leaders who represent and embody the brand publicly.
+   */
+  leadership?: (number | Leader)[] | null;
+  sustainability?: {
+    /**
+     * AF Motorsport's position and commitments on sustainability.
+     */
+    stance?: string | null;
+    /**
+     * Active initiatives that support the sustainability stance.
+     */
+    initiatives?: (number | Initiative)[] | null;
+  };
+  visual?: {
+    logo?: (number | null) | Media;
+    /**
+     * Logo variant for dark backgrounds.
+     */
+    logoInverted?: (number | null) | Media;
+    wordmark?: (number | null) | Media;
+    favicon?: (number | null) | Media;
+    /**
+     * Hex value. E.g. #C0392B
+     */
+    primaryColour?: string | null;
+    /**
+     * Hex value.
+     */
+    secondaryColour?: string | null;
+    /**
+     * Brand guidelines document or PDF.
+     */
+    guidelines?: (number | null) | Media;
   };
   updatedAt?: string | null;
   createdAt?: string | null;
 }
 /**
- * Defines the policies of the entire brand.
+ * All legal and operational policies — privacy, terms, cookies, returns, refunds, and transactions.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "policies".
  */
 export interface Policy {
   id: number;
-  /**
-   * Detailed policies of the entire brand.
-   */
-  policies: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  };
-  updatedAt?: string | null;
-  createdAt?: string | null;
-}
-/**
- * Defines the global social media links.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "socials".
- */
-export interface Social {
-  id: number;
-  socials?:
+  documents?:
     | {
-        link: {
-          type?: ('reference' | 'custom') | null;
-          newTab?: boolean | null;
-          reference?: {
-            relationTo: 'pages';
-            value: number | Page;
-          } | null;
-          url?: string | null;
-          label: string;
+        type: 'privacy' | 'terms' | 'cookies' | 'returns' | 'refunds' | 'transactions' | 'legal';
+        title: string;
+        /**
+         * E.g. v1.2 or 2025-01
+         */
+        version?: string | null;
+        lastUpdated?: string | null;
+        body: {
+          root: {
+            type: string;
+            children: {
+              type: any;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
         };
+        visible?: boolean | null;
         id?: string | null;
       }[]
     | null;
@@ -19702,60 +20058,130 @@ export interface Social {
   createdAt?: string | null;
 }
 /**
- * Defines the announcements of the entire brand.
+ * All social media and external platform presences for AF Motorsport.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "socials".
+ */
+export interface Social {
+  id: number;
+  accounts?:
+    | {
+        platform:
+          | 'instagram'
+          | 'x'
+          | 'facebook'
+          | 'youtube'
+          | 'linkedin'
+          | 'tiktok'
+          | 'threads'
+          | 'snapchat'
+          | 'pinterest'
+          | 'discord'
+          | 'twitch'
+          | 'whatsapp'
+          | 'telegram'
+          | 'github'
+          | 'spotify'
+          | 'other';
+        /**
+         * Optional override label. Defaults to platform name if left empty.
+         */
+        label?: string | null;
+        /**
+         * E.g. @afmotorsport
+         */
+        handle?: string | null;
+        url: string;
+        /**
+         * Optional link to the corresponding Channels collection record.
+         */
+        channel?: (number | null) | Channel;
+        visible?: boolean | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Site-wide announcements — banners, alerts, and notifications rendered across the frontend.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "announcements".
  */
 export interface Announcement {
   id: number;
-  /**
-   * Detailed announcements of the entire brand.
-   */
-  announcements: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  };
+  items?:
+    | {
+        type: 'info' | 'warning' | 'urgent' | 'celebration';
+        title: string;
+        message: string;
+        link?: {
+          enable?: boolean | null;
+          label?: string | null;
+          url?: string | null;
+        };
+        schedule?: {
+          from?: string | null;
+          until?: string | null;
+        };
+        audience?: ('all' | 'authenticated' | 'guest') | null;
+        /**
+         * Allow visitors to close this announcement.
+         */
+        dismissible?: boolean | null;
+        visible?: boolean | null;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
 /**
- * Defines the questions of the entire brand.
+ * Frequently asked questions — organized by category and rendered as an FAQ across the site.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "questions".
  */
 export interface Question {
   id: number;
-  /**
-   * Detailed questions of the entire brand.
-   */
-  questions: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  };
+  categories?:
+    | {
+        /**
+         * E.g. "About AF Motorsport", "Race Weekend", "Store & Orders", "Careers"
+         */
+        label: string;
+        items?:
+          | {
+              question: string;
+              answer: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              };
+              /**
+               * Optional link to a page where the visitor can read more.
+               */
+              relatedPage?: string | null;
+              visible?: boolean | null;
+              id?: string | null;
+            }[]
+          | null;
+        visible?: boolean | null;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -19767,6 +20193,41 @@ export interface HeaderSelect<T extends boolean = true> {
   navItems?:
     | T
     | {
+        label?: T;
+        tagline?: T;
+        description?: T;
+        subItems?:
+          | T
+          | {
+              label?: T;
+              description?: T;
+              link?:
+                | T
+                | {
+                    type?: T;
+                    newTab?: T;
+                    reference?: T;
+                    url?: T;
+                    label?: T;
+                  };
+              isFeatured?: T;
+              id?: T;
+            };
+        spotlight?:
+          | T
+          | {
+              enable?: T;
+              label?: T;
+              entity?: T;
+              overrideUrl?: T;
+            };
+        visible?: T;
+        id?: T;
+      };
+  utilityNav?:
+    | T
+    | {
+        label?: T;
         link?:
           | T
           | {
@@ -19776,7 +20237,23 @@ export interface HeaderSelect<T extends boolean = true> {
               url?: T;
               label?: T;
             };
+        visible?: T;
         id?: T;
+      };
+  cta?:
+    | T
+    | {
+        enable?: T;
+        label?: T;
+        link?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              reference?: T;
+              url?: T;
+              label?: T;
+            };
       };
   updatedAt?: T;
   createdAt?: T;
@@ -19787,9 +20264,44 @@ export interface HeaderSelect<T extends boolean = true> {
  * via the `definition` "footer_select".
  */
 export interface FooterSelect<T extends boolean = true> {
-  navItems?:
+  brand?:
     | T
     | {
+        enable?: T;
+        logo?: T;
+        tagline?: T;
+        description?: T;
+      };
+  columns?:
+    | T
+    | {
+        label?: T;
+        links?:
+          | T
+          | {
+              label?: T;
+              link?:
+                | T
+                | {
+                    type?: T;
+                    newTab?: T;
+                    reference?: T;
+                    url?: T;
+                    label?: T;
+                  };
+              visible?: T;
+              id?: T;
+            };
+        visible?: T;
+        id?: T;
+      };
+  cta?:
+    | T
+    | {
+        enable?: T;
+        headline?: T;
+        subtext?: T;
+        buttonLabel?: T;
         link?:
           | T
           | {
@@ -19799,8 +20311,24 @@ export interface FooterSelect<T extends boolean = true> {
               url?: T;
               label?: T;
             };
+      };
+  legal?:
+    | T
+    | {
+        label?: T;
+        link?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              reference?: T;
+              url?: T;
+              label?: T;
+            };
+        visible?: T;
         id?: T;
       };
+  copyright?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
@@ -19810,7 +20338,41 @@ export interface FooterSelect<T extends boolean = true> {
  * via the `definition` "identity_select".
  */
 export interface IdentitySelect<T extends boolean = true> {
-  identity?: T;
+  vision?: T;
+  mission?: T;
+  story?: T;
+  values?:
+    | T
+    | {
+        value?: T;
+        description?: T;
+        principle?: T;
+        id?: T;
+      };
+  voice?:
+    | T
+    | {
+        tones?: T;
+        description?: T;
+      };
+  leadership?: T;
+  sustainability?:
+    | T
+    | {
+        stance?: T;
+        initiatives?: T;
+      };
+  visual?:
+    | T
+    | {
+        logo?: T;
+        logoInverted?: T;
+        wordmark?: T;
+        favicon?: T;
+        primaryColour?: T;
+        secondaryColour?: T;
+        guidelines?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
@@ -19820,7 +20382,17 @@ export interface IdentitySelect<T extends boolean = true> {
  * via the `definition` "policies_select".
  */
 export interface PoliciesSelect<T extends boolean = true> {
-  policies?: T;
+  documents?:
+    | T
+    | {
+        type?: T;
+        title?: T;
+        version?: T;
+        lastUpdated?: T;
+        body?: T;
+        visible?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
@@ -19830,18 +20402,15 @@ export interface PoliciesSelect<T extends boolean = true> {
  * via the `definition` "socials_select".
  */
 export interface SocialsSelect<T extends boolean = true> {
-  socials?:
+  accounts?:
     | T
     | {
-        link?:
-          | T
-          | {
-              type?: T;
-              newTab?: T;
-              reference?: T;
-              url?: T;
-              label?: T;
-            };
+        platform?: T;
+        label?: T;
+        handle?: T;
+        url?: T;
+        channel?: T;
+        visible?: T;
         id?: T;
       };
   updatedAt?: T;
@@ -19853,7 +20422,30 @@ export interface SocialsSelect<T extends boolean = true> {
  * via the `definition` "announcements_select".
  */
 export interface AnnouncementsSelect<T extends boolean = true> {
-  announcements?: T;
+  items?:
+    | T
+    | {
+        type?: T;
+        title?: T;
+        message?: T;
+        link?:
+          | T
+          | {
+              enable?: T;
+              label?: T;
+              url?: T;
+            };
+        schedule?:
+          | T
+          | {
+              from?: T;
+              until?: T;
+            };
+        audience?: T;
+        dismissible?: T;
+        visible?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
@@ -19863,7 +20455,22 @@ export interface AnnouncementsSelect<T extends boolean = true> {
  * via the `definition` "questions_select".
  */
 export interface QuestionsSelect<T extends boolean = true> {
-  questions?: T;
+  categories?:
+    | T
+    | {
+        label?: T;
+        items?:
+          | T
+          | {
+              question?: T;
+              answer?: T;
+              relatedPage?: T;
+              visible?: T;
+              id?: T;
+            };
+        visible?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

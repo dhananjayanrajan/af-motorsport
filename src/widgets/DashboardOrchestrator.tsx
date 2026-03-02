@@ -1,13 +1,18 @@
+import { Gutter } from '@payloadcms/ui'
 import React from 'react'
-import { getPayload } from 'payload'
-import config from '@payload-config'
-import type { AnyWidgetConfig } from './widgetTypes'
-import { WIDGET_REGISTRY } from './widgetRegistry'
 import { CUSTOM_WIDGET_REGISTRY } from './customWidgetRegistry'
+import { WIDGET_REGISTRY } from './widgetRegistry'
 import {
-  renderStatsBar, renderRecentActivityFeed, renderTypeBreakdownChart,
-  renderCompletionScore, renderToggleDistribution, renderRelationshipDensity,
-  renderTopTagsCategories, renderPublishingPipeline, renderSlugHealth, renderTimeline,
+  renderCompletionScore,
+  renderPublishingPipeline,
+  renderRecentActivityFeed,
+  renderRelationshipDensity,
+  renderSlugHealth,
+  renderStatsBar,
+  renderTimeline,
+  renderToggleDistribution,
+  renderTopTagsCategories,
+  renderTypeBreakdownChart,
 } from './widgetRenderers'
 import { hasRequiredRoles } from './widgetUtils'
 
@@ -26,7 +31,7 @@ function WidgetError({ type, slug }: { type: string; slug?: string }) {
   )
 }
 
-async function renderWidget(widgetConfig: AnyWidgetConfig, payload: any): Promise<React.ReactNode> {
+async function renderWidget(widgetConfig: any, payload: any): Promise<React.ReactNode> {
   try {
     switch (widgetConfig.type) {
       case 'StatsBar': return await renderStatsBar(widgetConfig, payload)
@@ -41,35 +46,25 @@ async function renderWidget(widgetConfig: AnyWidgetConfig, payload: any): Promis
       case 'Timeline': return await renderTimeline(widgetConfig, payload)
       case 'Custom': {
         const renderer = CUSTOM_WIDGET_REGISTRY.get(widgetConfig.component)
-        if (!renderer) {
-          console.warn(`[Orchestrator] No renderer for: "${widgetConfig.component}"`)
-          return null
-        }
+        if (!renderer) return null
         return await renderer(payload)
       }
       default: return null
     }
   } catch (err) {
-    console.error('[DashboardOrchestrator] Widget render error:', (widgetConfig as any).type, err)
-    const slug = 'collectionSlug' in widgetConfig ? (widgetConfig as any).collectionSlug : undefined
-    return <WidgetError type={(widgetConfig as any).type} slug={slug} />
+    return <WidgetError type={widgetConfig.type} slug={widgetConfig.collectionSlug} />
   }
 }
 
-type SectionedWidget = AnyWidgetConfig & { _section?: string }
+export default async function DashboardOrchestrator({ initPageResult }: any) {
+  const { req } = initPageResult
+  const { payload, user } = req
 
-export default async function DashboardOrchestrator(props: any) {
-  const payload = await getPayload({ config })
-  const user = props?.req?.user ?? props?.user ?? null
+  const accessible = WIDGET_REGISTRY.filter((w: any) => hasRequiredRoles(user, w.requiredRoles))
 
-  const accessible = (WIDGET_REGISTRY as SectionedWidget[]).filter(w => {
-    const roles = ('requiredRoles' in w) ? (w as any).requiredRoles : undefined
-    return hasRequiredRoles(user, roles)
-  })
+  const sectionMap = new Map<string, any[]>()
+  const ungrouped: any[] = []
 
-  // Group into ordered sections
-  const sectionMap = new Map<string, SectionedWidget[]>()
-  const ungrouped: SectionedWidget[] = []
   for (const w of accessible) {
     if (w._section) {
       if (!sectionMap.has(w._section)) sectionMap.set(w._section, [])
@@ -79,28 +74,19 @@ export default async function DashboardOrchestrator(props: any) {
     }
   }
 
-  // Render a flat list of widgets into a bento grid
-  const renderBentoGrid = async (widgets: SectionedWidget[]) => {
+  const renderBentoGrid = async (widgets: any[]) => {
     const rendered = await Promise.all(widgets.map(w => renderWidget(w, payload)))
     return (
       <div className="bento-grid" style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(3, 1fr)',
         gap: '12px',
-        alignItems: 'stretch', // ← changed from 'start' to 'stretch' for consistent heights
+        alignItems: 'stretch',
       }}>
         {rendered.map((node, i) => {
           if (!node) return null
-          const span = (widgets[i] as any).span ?? 3
           return (
-            <div
-              key={i}
-              style={{
-                gridColumn: `span ${span}`,
-                display: 'flex',
-                flexDirection: 'column',
-              }}
-            >
+            <div key={i} style={{ gridColumn: `span ${widgets[i].span ?? 3}`, display: 'flex', flexDirection: 'column' }}>
               {node}
             </div>
           )
@@ -110,23 +96,20 @@ export default async function DashboardOrchestrator(props: any) {
   }
 
   return (
-    <>
+    <Gutter>
       <style>{`
+        .bento-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 12px;
+        }
         @media (max-width: 768px) {
-          .bento-grid {
-            grid-template-columns: 1fr !important;
-          }
-          .bento-grid > div {
-            grid-column: span 1 !important;
-          }
+          .bento-grid { grid-template-columns: 1fr !important; }
+          .bento-grid > div { grid-column: span 1 !important; }
         }
       `}</style>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '32px', padding: '8px 0' }}>
-
-        {/* Ungrouped widgets */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '32px', padding: '24px 0' }}>
         {ungrouped.length > 0 && await renderBentoGrid(ungrouped)}
-
-        {/* Sectioned widgets */}
         {await Promise.all(Array.from(sectionMap.entries()).map(async ([heading, widgets]) => {
           const grid = await renderBentoGrid(widgets)
           return (
@@ -134,7 +117,7 @@ export default async function DashboardOrchestrator(props: any) {
               <div style={{
                 fontSize: '11px', fontWeight: 700, textTransform: 'uppercase',
                 letterSpacing: '0.08em', color: 'var(--theme-elevation-500)',
-                marginBottom: '12px', paddingBottom: '8px',
+                marginBottom: '12px', paddingBottom: '8px', borderBottom: '1px solid var(--theme-elevation-150)'
               }}>
                 {heading}
               </div>
@@ -143,6 +126,6 @@ export default async function DashboardOrchestrator(props: any) {
           )
         }))}
       </div>
-    </>
+    </Gutter>
   )
 }
