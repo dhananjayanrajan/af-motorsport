@@ -4,6 +4,7 @@ import { ClippedInput } from '@/components/Custom/ui/ClippedInput'
 import { FormError } from '@/components/forms/FormError'
 import { FormItem } from '@/components/forms/FormItem'
 import { Message } from '@/components/Message'
+import ShinyText from '@/components/Reactbits/shiny-text'
 import { useAuth } from '@/providers/Auth'
 import { motion, useReducedMotion } from 'framer-motion'
 import { ChevronRight } from 'lucide-react'
@@ -76,7 +77,7 @@ export const CreateAccountForm: React.FC = () => {
       initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-      className="w-full max-w-lg overflow-hidden border border-zinc-800 bg-zinc-950 p-8 md:p-12 backdrop-blur-3xl relative shadow-2xl"
+      className="w-full max-w-lg overflow-hidden border border-zinc-800 bg-zinc-950 p-8 md:p-12 backdrop-blur-3xl relative shadow-2xl mx-auto"
       style={{ clipPath: 'polygon(5% 0%, 100% 0%, 95% 100%, 0% 100%)' }}
     >
       <div className="absolute inset-0 bg-gradient-to-br from-red-600/5 via-transparent to-transparent opacity-50 pointer-events-none" />
@@ -88,8 +89,19 @@ export const CreateAccountForm: React.FC = () => {
             Registration Protocol
           </span>
         </div>
-        <h1 className="text-4xl font-black text-white italic uppercase tracking-tighter leading-none">
-          Create Account
+        <h1 className="text-4xl font-black italic uppercase tracking-tighter leading-none">
+          <ShinyText
+            text="Create Account"
+            speed={2}
+            delay={0}
+            color="#27272a"
+            shineColor="#ffffff"
+            spread={150}
+            direction="left"
+            yoyo={false}
+            pauseOnHover={false}
+            disabled={false}
+          />
         </h1>
         <p className="text-[10px] text-zinc-500 uppercase tracking-widest font-bold">
           Join the AF Motorsport network

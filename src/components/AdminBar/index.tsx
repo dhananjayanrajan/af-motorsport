@@ -2,11 +2,13 @@
 
 import type { PayloadAdminBarProps } from '@payloadcms/admin-bar'
 
-import { cn } from '@/utilities/cn'
-import { useSelectedLayoutSegments } from 'next/navigation'
-import { PayloadAdminBar } from '@payloadcms/admin-bar'
-import React, { useState } from 'react'
+import ShinyText from '@/components/Reactbits/shiny-text'
 import { User } from '@/payload-types'
+import { cn } from '@/utilities/cn'
+import { PayloadAdminBar } from '@payloadcms/admin-bar'
+import { Terminal } from 'lucide-react'
+import { useSelectedLayoutSegments } from 'next/navigation'
+import React, { useState } from 'react'
 
 const collectionLabels = {
   pages: {
@@ -23,7 +25,25 @@ const collectionLabels = {
   },
 }
 
-const Title: React.FC = () => <span>Dashboard</span>
+const Title: React.FC = () => (
+  <div className="flex items-center gap-2">
+    <Terminal className="h-3 w-3 text-red-600" />
+    <span className="text-[10px] font-black uppercase tracking-[0.3em] italic">
+      <ShinyText
+        text="Terminal"
+        speed={1}
+        delay={0}
+        color="#52525b"
+        shineColor="#ffffff"
+        spread={150}
+        direction="left"
+        yoyo={false}
+        pauseOnHover={false}
+        disabled={false}
+      />
+    </span>
+  </div>
+)
 
 export const AdminBar: React.FC<{
   adminBarProps?: PayloadAdminBarProps
@@ -43,19 +63,19 @@ export const AdminBar: React.FC<{
 
   return (
     <div
-      className={cn('py-2 bg-black text-white', {
+      className={cn('py-1 bg-zinc-950 border-b border-zinc-900 sticky top-0 z-[100]', {
         block: show,
         hidden: !show,
       })}
     >
-      <div className="container">
+      <div className="container max-w-none px-6">
         <PayloadAdminBar
           {...adminBarProps}
-          className="py-2 text-white"
+          className="py-1 text-white"
           classNames={{
-            controls: 'font-medium text-white',
-            logo: 'text-white',
-            user: 'text-white',
+            controls: 'text-[9px] font-black uppercase tracking-widest text-zinc-400',
+            logo: 'flex items-center mr-8',
+            user: 'text-[9px] font-mono text-zinc-500 uppercase tracking-tighter',
           }}
           cmsURL={process.env.NEXT_PUBLIC_SERVER_URL}
           collectionLabels={{

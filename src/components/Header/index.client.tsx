@@ -5,7 +5,7 @@ import { OpenCartButton } from '@/components/Cart/OpenCart'
 import { ClippedButton } from '@/components/Custom/ui/ClippedButton'
 import { CMSLink } from '@/components/Link'
 import { Media } from '@/components/Media'
-import { ChevronDown } from 'lucide-react'
+import { ChevronDown, LogIn, LogOut, User, UserPlus } from 'lucide-react'
 import { AnimatePresence, motion } from 'motion/react'
 import Link from 'next/link'
 import React, { Suspense, useEffect, useRef, useState } from 'react'
@@ -14,6 +14,7 @@ import type { Header, Social } from 'src/payload-types'
 import { MobileMenu } from './MobileMenu'
 
 import { LogoIcon } from '@/components/icons/logo'
+import { useAuth } from '@/providers/Auth'
 import { cn } from '@/utilities/cn'
 import { usePathname } from 'next/navigation'
 
@@ -87,11 +88,16 @@ const MegaMenuItem = ({ item, isOpen, onMouseEnter, onMouseLeave, onClose }: any
       <button
         className={cn(
           'relative flex items-center gap-1 text-sm font-light py-2 px-3 overflow-hidden group',
-          isOpen && 'text-red-600 dark:text-red-500'
+          isOpen && 'text-red-600 dark:text-red-500',
         )}
       >
         <span className="relative z-10">{label}</span>
-        <ChevronDown className={cn('h-4 w-4 relative z-10 transition-transform duration-200', isOpen && 'rotate-180')} />
+        <ChevronDown
+          className={cn(
+            'h-4 w-4 relative z-10 transition-transform duration-200',
+            isOpen && 'rotate-180',
+          )}
+        />
         <motion.span
           className="absolute bottom-0 left-0 w-full h-0.5 bg-red-600 dark:bg-red-500 origin-left"
           initial={{ scaleX: 0 }}
@@ -127,7 +133,8 @@ const MegaMenuItem = ({ item, isOpen, onMouseEnter, onMouseLeave, onClose }: any
                       key={subItem.id}
                       className={cn(
                         'space-y-1 p-2 rounded-none transition-colors',
-                        subItem.isFeatured && 'bg-neutral-50 dark:bg-neutral-900 border-l-2 border-red-500 pl-3'
+                        subItem.isFeatured &&
+                        'bg-neutral-50 dark:bg-neutral-900 border-l-2 border-red-500 pl-3',
                       )}
                     >
                       <CMSLink
@@ -135,7 +142,7 @@ const MegaMenuItem = ({ item, isOpen, onMouseEnter, onMouseLeave, onClose }: any
                         label={subItem.label || subItem.link.label}
                         className={cn(
                           'text-sm font-light hover:text-red-600 dark:hover:text-red-500 transition-colors',
-                          subItem.isFeatured && 'font-light text-red-600 dark:text-red-500'
+                          subItem.isFeatured && 'font-light text-red-600 dark:text-red-500',
                         )}
                       />
                       {subItem.description && (
@@ -198,13 +205,123 @@ const MegaMenuItem = ({ item, isOpen, onMouseEnter, onMouseLeave, onClose }: any
   )
 }
 
+const AuthComboButton = () => {
+  const { user, logout } = useAuth()
+  const [isHovered, setIsHovered] = useState(false)
+
+  if (user) {
+    return (
+      <div
+        className="hidden md:flex relative items-center"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
+        <div
+          className="group relative flex items-center h-7 min-w-[140px] bg-zinc-950 border border-zinc-800 transition-all duration-300 overflow-hidden"
+          style={{ clipPath: 'polygon(8% 0%, 100% 0%, 92% 100%, 0% 100%)' }}
+        >
+          <div className="flex w-full items-center justify-center gap-2 px-3 z-10 transition-colors duration-300">
+            <User
+              className={cn(
+                'h-3 w-3 transition-colors duration-300',
+                isHovered ? 'text-red-600' : 'text-zinc-500',
+              )}
+            />
+            <span className="text-[10px] font-black uppercase tracking-widest italic text-zinc-400">
+              Account
+            </span>
+          </div>
+
+          <motion.div
+            initial={false}
+            animate={{ x: isHovered ? 0 : '100%' }}
+            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+            className="absolute inset-0 flex items-center bg-zinc-900 z-20"
+          >
+            <Link
+              href="/account"
+              className="flex-1 flex items-center justify-center gap-1.5 h-full px-2 hover:bg-zinc-800 transition-colors border-r border-zinc-800"
+            >
+              <User className="h-3 w-3 text-red-600" />
+              <span className="text-[9px] font-black uppercase tracking-tighter italic text-white whitespace-nowrap">
+                Profile
+              </span>
+            </Link>
+            <button
+              onClick={logout}
+              className="flex-1 flex items-center justify-center gap-1.5 h-full px-2 hover:bg-red-600 transition-colors"
+            >
+              <LogOut className="h-3 w-3 text-white" />
+              <span className="text-[9px] font-black uppercase tracking-tighter italic text-white whitespace-nowrap">
+                Exit
+              </span>
+            </button>
+          </motion.div>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div
+      className="hidden md:flex relative items-center"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      <div
+        className="group relative flex items-center h-7 min-w-[140px] bg-zinc-950 border border-zinc-800 transition-all duration-300 overflow-hidden"
+        style={{ clipPath: 'polygon(8% 0%, 100% 0%, 92% 100%, 0% 100%)' }}
+      >
+        <div className="flex w-full items-center justify-center gap-2 px-3 z-10 transition-colors duration-300">
+          <User
+            className={cn(
+              'h-3 w-3 transition-colors duration-300',
+              isHovered ? 'text-red-600' : 'text-zinc-500',
+            )}
+          />
+          <span className="text-[10px] font-black uppercase tracking-widest italic text-zinc-400">
+            Account
+          </span>
+        </div>
+
+        <motion.div
+          initial={false}
+          animate={{ x: isHovered ? 0 : '100%' }}
+          transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+          className="absolute inset-0 flex items-center bg-zinc-900 z-20"
+        >
+          <Link
+            href="/login"
+            className="flex-1 flex items-center justify-center gap-1.5 h-full px-2 hover:bg-zinc-800 transition-colors border-r border-zinc-800"
+          >
+            <LogIn className="h-3 w-3 text-red-600" />
+            <span className="text-[9px] font-black uppercase tracking-tighter italic text-white whitespace-nowrap">
+              Login
+            </span>
+          </Link>
+          <Link
+            href="/create-account"
+            className="flex-1 flex items-center justify-center gap-1.5 h-full px-2 hover:bg-red-600 transition-colors"
+          >
+            <UserPlus className="h-3 w-3 text-white" />
+            <span className="text-[9px] font-black uppercase tracking-tighter italic text-white whitespace-nowrap">
+              Join
+            </span>
+          </Link>
+        </motion.div>
+      </div>
+    </div>
+  )
+}
+
 export function HeaderClient({ header, socials }: Props) {
-  const navItems = header.navItems?.filter((item) => item.visible !== false) || []
-  const utilityNav = header.utilityNav?.filter((item) => item.visible !== false) || []
+  const { user } = useAuth()
+  const navItems = header.navItems?.filter((item: any) => item.visible !== false) || []
+  const utilityNav = header.utilityNav?.filter((item: any) => item.visible !== false) || []
   const cta = header.cta
   const pathname = usePathname()
 
-  const socialAccounts = socials?.accounts?.filter(acc => acc.visible !== false) || []
+  const socialAccounts = socials?.accounts?.filter((acc: any) => acc.visible !== false) || []
 
   const [activeIndex, setActiveIndex] = useState<number | null>(null)
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
@@ -233,7 +350,7 @@ export function HeaderClient({ header, socials }: Props) {
           <div className="flex justify-between items-center py-2 px-4 text-xs uppercase tracking-[0.15em] font-light text-neutral-600 dark:text-neutral-400 border-b border-neutral-100 dark:border-zinc-900">
             {socials && socialAccounts.length > 0 && (
               <div className="hidden md:flex items-center gap-5">
-                {socialAccounts.map((account) => {
+                {socialAccounts.map((account: any) => {
                   const Icon = socialIcons[account.platform] || Link2
                   return (
                     <motion.a
@@ -254,22 +371,32 @@ export function HeaderClient({ header, socials }: Props) {
             )}
 
             <div className="flex items-center gap-6 ml-auto">
-              {utilityNav.map((item) => (
+              {utilityNav.map((item: any) => (
                 <CMSLink
                   key={item.id}
                   {...item.link}
                   className={cn(
                     'relative text-xs font-light py-1 overflow-hidden group',
-                    pathname === item.link.url ? 'text-black dark:text-white' : 'text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white'
+                    pathname === item.link.url
+                      ? 'text-black dark:text-white'
+                      : 'text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white',
                   )}
                 />
               ))}
+              <div className="flex items-center gap-4 pl-4 border-l border-neutral-100 dark:border-zinc-900">
+                {user && (
+                  <Suspense fallback={<OpenCartButton />}>
+                    <Cart />
+                  </Suspense>
+                )}
+                <AuthComboButton />
+              </div>
             </div>
           </div>
 
-          <div className="flex items-center justify-between py-2 px-4">
+          <div className="flex items-center justify-between py-2 px-4 flex-1">
             <ul className="hidden md:flex items-center gap-1">
-              {navItems.map((item, index) => (
+              {navItems.map((item: any, index: number) => (
                 <li key={item.id} className="relative">
                   <MegaMenuItem
                     item={item}
@@ -294,9 +421,6 @@ export function HeaderClient({ header, socials }: Props) {
                   <CMSLink {...cta.link} label={cta.label || cta.link.label} />
                 </ClippedButton>
               )}
-              <Suspense fallback={<OpenCartButton />}>
-                <Cart />
-              </Suspense>
             </div>
           </div>
         </div>

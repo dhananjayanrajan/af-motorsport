@@ -3,7 +3,6 @@
 import type { Header, Social } from '@/payload-types'
 
 import { CMSLink } from '@/components/Link'
-import { Button } from '@/components/ui/button'
 import {
   Sheet,
   SheetContent,
@@ -14,8 +13,8 @@ import {
 } from '@/components/ui/sheet'
 import { useAuth } from '@/providers/Auth'
 import { cn } from '@/utilities/cn'
-import { ChevronDown, MenuIcon } from 'lucide-react'
-import { motion } from 'motion/react'
+import { ChevronDown, ChevronRight, LogIn, LogOut, MenuIcon, Shield, UserPlus } from 'lucide-react'
+import { AnimatePresence, motion } from 'motion/react'
 import Link from 'next/link'
 import { usePathname, useSearchParams } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
@@ -55,8 +54,6 @@ const socialIcons: Record<string, React.ElementType> = {
   other: Link2,
 }
 
-const diamondClip = 'polygon(12% 0%, 88% 0%, 100% 50%, 88% 100%, 12% 100%, 0% 50%)'
-
 interface Props {
   menu: Header['navItems']
   socials: Social['accounts']
@@ -91,123 +88,150 @@ export function MobileMenu({ menu, socials }: Props) {
 
   return (
     <Sheet onOpenChange={setIsOpen} open={isOpen}>
-      <SheetTrigger className="relative flex h-11 w-11 items-center justify-center rounded-none border border-neutral-200 text-black transition-colors dark:border-neutral-700 dark:bg-black dark:text-white">
-        <MenuIcon className="h-4" />
+      <SheetTrigger className="relative flex h-10 w-10 items-center justify-center bg-black border border-zinc-800 text-white transition-all active:scale-95 group">
+        <MenuIcon className="h-4 w-4 group-hover:text-red-600 transition-colors" />
       </SheetTrigger>
 
-      <SheetContent side="left" className="px-0 overflow-y-auto flex flex-col h-full">
-        <SheetHeader className="px-6 pt-6 pb-2">
-          <SheetTitle className="text-left">AF Motorsport</SheetTitle>
-          <SheetDescription />
+      <SheetContent side="left" className="flex flex-col bg-zinc-950 border-r border-zinc-800 text-white w-full max-w-[300px] p-0">
+        <SheetHeader className="p-8 border-b border-zinc-900 bg-black/50">
+          <div className="flex items-center gap-3 mb-2">
+            <Shield className="h-4 w-4 text-red-600 animate-pulse" />
+            <SheetTitle className="text-xs font-black uppercase tracking-[0.5em] text-white">Mainframe</SheetTitle>
+          </div>
+          <SheetDescription className="text-[9px] uppercase font-bold text-zinc-500 tracking-widest leading-relaxed">
+            Navigation interface active. Select a sector to engage.
+          </SheetDescription>
         </SheetHeader>
 
-        <div className="flex-1 px-6">
+        <div className="flex-1 overflow-y-auto custom-scrollbar">
           {menu?.length ? (
-            <ul className="flex w-full flex-col">
+            <ul className="flex flex-col divide-y divide-zinc-900/50">
               {menu.map(item => (
-                <li className="py-3 border-b border-neutral-100 dark:border-neutral-800" key={item.id}>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm font-light">{item.label}</span>
+                <li key={item.id} className="group">
+                  <div className="flex items-center justify-between p-6 transition-colors hover:bg-zinc-900/30">
+                    <span className="text-[11px] font-black uppercase tracking-[0.3em] italic group-hover:text-red-500 transition-colors">
+                      {item.label}
+                    </span>
                     {item.subItems && item.subItems.length > 0 && (
-                      <button onClick={() => toggleExpand(item.id!)} className="p-1">
+                      <button
+                        onClick={() => toggleExpand(item.id!)}
+                        className="p-2 bg-zinc-900 border border-zinc-800 active:scale-90 transition-transform"
+                      >
                         <ChevronDown
                           className={cn(
-                            'h-4 w-4 transition-transform',
-                            expandedItems.includes(item.id!) && 'rotate-180'
+                            'h-3 w-3 text-zinc-500 transition-transform duration-300',
+                            expandedItems.includes(item.id!) && 'rotate-180 text-red-600'
                           )}
                         />
                       </button>
                     )}
                   </div>
-                  {expandedItems.includes(item.id!) && item.subItems && (
-                    <ul className="pl-4 mt-3 space-y-3">
-                      {item.subItems.map(sub => (
-                        <li key={sub.id}>
-                          <CMSLink
-                            {...sub.link}
-                            label={sub.label || sub.link.label}
-                            className="text-sm text-neutral-600 dark:text-neutral-400"
-                          />
-                          {sub.description && (
-                            <p className="text-xs text-neutral-500 dark:text-neutral-500 mt-0.5">
-                              {sub.description}
-                            </p>
-                          )}
-                        </li>
-                      ))}
-                    </ul>
-                  )}
+
+                  <AnimatePresence>
+                    {expandedItems.includes(item.id!) && item.subItems && (
+                      <motion.ul
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        className="overflow-hidden bg-black/40 border-t border-zinc-900/50"
+                      >
+                        {item.subItems.map(sub => (
+                          <li key={sub.id} className="border-b border-zinc-900/30 last:border-none">
+                            <CMSLink
+                              {...sub.link}
+                              label={sub.label || sub.link.label}
+                              className="flex flex-col px-8 py-4 hover:bg-zinc-900/50 transition-colors"
+                            >
+                              <span className="text-[10px] font-bold text-white uppercase tracking-wider">{sub.label || sub.link.label}</span>
+                              {sub.description && (
+                                <span className="text-[8px] text-zinc-600 uppercase font-medium tracking-widest mt-1">{sub.description}</span>
+                              )}
+                            </CMSLink>
+                          </li>
+                        ))}
+                      </motion.ul>
+                    )}
+                  </AnimatePresence>
                 </li>
               ))}
             </ul>
           ) : null}
         </div>
 
-        <div className="px-6 pt-6 border-t border-neutral-200 dark:border-neutral-800">
-          <h3 className="text-[10px] uppercase tracking-[0.2em] font-black mb-4 text-neutral-400">My account</h3>
-          <div className="space-y-4">
-            {user ? (
-              <>
-                <Link href="/orders" className="block text-sm font-light">Orders</Link>
-                <Link href="/account" className="block text-sm font-light">Manage account</Link>
-                <div className="group relative">
-                  <Button asChild size="lg" className="relative w-full h-12 bg-zinc-100 dark:bg-zinc-800 text-black dark:text-white rounded-none overflow-hidden border-none" style={{ clipPath: diamondClip }}>
-                    <Link href="/logout">
-                      <span className="absolute inset-0 translate-x-[-101%] group-hover:translate-x-0 transition-transform duration-500 ease-[cubic-bezier(0.87,0,0.13,1)] bg-red-600" style={{ clipPath: diamondClip }} />
-                      <span className="relative z-10 group-hover:text-white transition-colors duration-300 group-hover:italic font-black uppercase tracking-widest text-[10px]">Log out</span>
-                    </Link>
-                  </Button>
-                </div>
-              </>
-            ) : (
-              <div className="flex flex-col gap-4">
-                <div className="group relative">
-                  <Button asChild size="lg" className="relative w-full h-12 bg-zinc-100 dark:bg-zinc-800 text-black dark:text-white rounded-none overflow-hidden border-none" style={{ clipPath: diamondClip }}>
-                    <Link href="/login">
-                      <span className="absolute inset-0 translate-x-[-101%] group-hover:translate-x-0 transition-transform duration-500 ease-[cubic-bezier(0.87,0,0.13,1)] bg-zinc-950" style={{ clipPath: diamondClip }} />
-                      <span className="relative z-10 group-hover:text-white transition-colors duration-300 group-hover:italic font-black uppercase tracking-widest text-[10px]">Log in</span>
-                    </Link>
-                  </Button>
-                </div>
-                <div className="group relative">
-                  <Button asChild size="lg" className="relative w-full h-12 bg-red-600 text-white rounded-none overflow-hidden border-none" style={{ clipPath: diamondClip }}>
-                    <Link href="/create-account">
-                      <span className="absolute inset-0 translate-x-[-101%] group-hover:translate-x-0 transition-transform duration-500 ease-[cubic-bezier(0.87,0,0.13,1)] bg-zinc-950" style={{ clipPath: diamondClip }} />
-                      <span className="relative z-10 group-hover:italic font-black uppercase tracking-widest text-[10px]">Create account</span>
-                    </Link>
-                  </Button>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {validSocials.length > 0 && (
-          <div className="px-6 py-6 mt-2 border-t border-neutral-200 dark:border-neutral-800">
-            <h3 className="text-xs uppercase tracking-wider font-light text-neutral-500 dark:text-neutral-500 mb-4">
-              Follow us
-            </h3>
-            <div className="flex flex-wrap gap-4">
-              {validSocials.map(account => {
-                const Icon = socialIcons[account.platform] || Link2
-                return (
-                  <motion.a
-                    key={account.id}
-                    href={account.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-neutral-500 dark:text-neutral-500 hover:text-red-600 dark:hover:text-red-500 transition-colors"
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.95 }}
-                    title={account.label || account.handle || account.platform}
+        <div className="p-8 bg-black/80 border-t border-zinc-900 space-y-8">
+          <div>
+            <span className="text-[8px] font-black uppercase tracking-[0.5em] text-zinc-700 block mb-6">Identity Systems</span>
+            <div className="flex flex-col gap-4">
+              {user ? (
+                <>
+                  <Link
+                    href="/account"
+                    className="flex items-center justify-between group py-2"
                   >
-                    <Icon className="h-5 w-5" />
-                  </motion.a>
-                )
-              })}
+                    <span className="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-400 group-hover:text-white transition-colors">Manage Profile</span>
+                    <ChevronRight className="h-3 w-3 text-zinc-800 group-hover:text-red-600 transition-colors" />
+                  </Link>
+                  <Link
+                    href="/logout"
+                    className="relative group flex items-center justify-center w-full h-12 bg-zinc-900 text-white overflow-hidden transition-all active:scale-95 border border-zinc-800"
+                    style={{ clipPath: 'polygon(5% 0%, 100% 0%, 95% 100%, 0% 100%)' }}
+                  >
+                    <div className="absolute inset-0 bg-red-600 translate-x-[-101%] group-hover:translate-x-0 transition-transform duration-500" />
+                    <span className="relative z-10 text-[9px] font-black uppercase tracking-[0.5em] italic flex items-center gap-2">
+                      <LogOut className="h-3 w-3" /> Terminate Session
+                    </span>
+                  </Link>
+                </>
+              ) : (
+                <div className="flex flex-col gap-4">
+                  <Link
+                    href="/login"
+                    className="relative group flex items-center justify-center w-full h-12 bg-white text-black overflow-hidden transition-all active:scale-95"
+                    style={{ clipPath: 'polygon(5% 0%, 100% 0%, 95% 100%, 0% 100%)' }}
+                  >
+                    <div className="absolute inset-0 bg-zinc-800 translate-x-[-101%] group-hover:translate-x-0 transition-transform duration-500" />
+                    <span className="relative z-10 text-[9px] font-black uppercase tracking-[0.5em] italic flex items-center gap-2 group-hover:text-white transition-colors">
+                      <LogIn className="h-3 w-3" /> Authorize
+                    </span>
+                  </Link>
+                  <Link
+                    href="/create-account"
+                    className="relative group flex items-center justify-center w-full h-12 bg-red-600 text-white overflow-hidden transition-all active:scale-95"
+                    style={{ clipPath: 'polygon(5% 0%, 100% 0%, 95% 100%, 0% 100%)' }}
+                  >
+                    <div className="absolute inset-0 bg-black translate-x-[-101%] group-hover:translate-x-0 transition-transform duration-500" />
+                    <span className="relative z-10 text-[9px] font-black uppercase tracking-[0.5em] italic flex items-center gap-2">
+                      <UserPlus className="h-3 w-3" /> Join Initiative
+                    </span>
+                  </Link>
+                </div>
+              )}
             </div>
           </div>
-        )}
+
+          {validSocials.length > 0 && (
+            <div className="pt-6 border-t border-zinc-900/50">
+              <div className="flex flex-wrap gap-5 justify-center">
+                {validSocials.map(account => {
+                  const Icon = socialIcons[account.platform] || Link2
+                  return (
+                    <motion.a
+                      key={account.id}
+                      href={account.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-zinc-600 hover:text-red-600 transition-colors"
+                      whileHover={{ scale: 1.2, y: -2 }}
+                      whileTap={{ scale: 0.9 }}
+                    >
+                      <Icon className="h-4 w-4" />
+                    </motion.a>
+                  )
+                })}
+              </div>
+            </div>
+          )}
+        </div>
       </SheetContent>
     </Sheet>
   )

@@ -4,6 +4,7 @@ import { ClippedInput } from '@/components/Custom/ui/ClippedInput'
 import { FormError } from '@/components/forms/FormError'
 import { FormItem } from '@/components/forms/FormItem'
 import { Message } from '@/components/Message'
+import ShinyText from '@/components/Reactbits/shiny-text'
 import { useAuth } from '@/providers/Auth'
 import { motion, useReducedMotion } from 'framer-motion'
 import { ChevronRight } from 'lucide-react'
@@ -63,8 +64,19 @@ export const LoginForm: React.FC = () => {
             Secure Access
           </span>
         </div>
-        <h1 className="text-4xl font-black text-white italic uppercase tracking-tighter leading-none">
-          Identity Protocol
+        <h1 className="text-4xl font-black italic uppercase tracking-tighter leading-none">
+          <ShinyText
+            text="Identity Protocol"
+            speed={2}
+            delay={0}
+            color="#27272a"
+            shineColor="#ffffff"
+            spread={150}
+            direction="left"
+            yoyo={false}
+            pauseOnHover={false}
+            disabled={false}
+          />
         </h1>
         <p className="text-[10px] text-zinc-500 uppercase tracking-widest font-bold">
           Enter your credentials to synchronize
@@ -119,7 +131,7 @@ export const LoginForm: React.FC = () => {
 
           <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-widest px-2">
             <Link
-              href={`/recover-password${allParams}`}
+              href={`/forgot-password${allParams}`}
               className="text-zinc-600 hover:text-red-600 transition-colors"
             >
               Forgot Password?
