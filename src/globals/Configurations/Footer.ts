@@ -1,3 +1,4 @@
+// FILE: /src/globals/Configurations/Footer.ts
 import { link } from '@/fields/common/link'
 import type { GlobalConfig } from 'payload'
 

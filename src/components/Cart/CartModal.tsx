@@ -10,28 +10,22 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet'
 import { useCart } from '@payloadcms/plugin-ecommerce/client/react'
-import { ShoppingCart } from 'lucide-react'
+import { ChevronRight, ShoppingCart } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import React, { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import { DeleteItemButton } from './DeleteItemButton'
 import { EditItemQuantityButton } from './EditItemQuantityButton'
 import { OpenCartButton } from './OpenCart'
-import { Button } from '@/components/ui/button'
-import { Product } from '@/payload-types'
 
 export function CartModal() {
   const { cart } = useCart()
   const [isOpen, setIsOpen] = useState(false)
-
   const pathname = usePathname()
 
-  useEffect(() => {
-    // Close the cart modal when the pathname changes.
-    setIsOpen(false)
-  }, [pathname])
+  useEffect(() => { setIsOpen(false) }, [pathname])
 
   const totalQuantity = useMemo(() => {
     if (!cart || !cart.items || !cart.items.length) return undefined
@@ -44,143 +38,103 @@ export function CartModal() {
         <OpenCartButton quantity={totalQuantity} />
       </SheetTrigger>
 
-      <SheetContent className="flex flex-col">
-        <SheetHeader>
-          <SheetTitle>My Cart</SheetTitle>
-
-          <SheetDescription>Manage your cart here, add items to view the total.</SheetDescription>
+      <SheetContent className="flex flex-col bg-zinc-950 border-l border-zinc-800 text-white w-full sm:max-w-md p-0">
+        <SheetHeader className="p-8 border-b border-zinc-900 bg-black/50">
+          <div className="flex items-center gap-3 mb-2">
+            <ShoppingCart className="h-4 w-4 text-red-600" />
+            <SheetTitle className="text-xs font-black uppercase tracking-[0.5em] text-white">My Cart</SheetTitle>
+          </div>
+          <SheetDescription className="text-[10px] uppercase font-bold text-zinc-500 tracking-widest leading-relaxed">
+            Manage your selected items and finalize your order.
+          </SheetDescription>
         </SheetHeader>
 
         {!cart || cart?.items?.length === 0 ? (
-          <div className="text-center flex flex-col items-center gap-2">
-            <ShoppingCart className="h-16" />
-            <p className="text-center text-2xl font-bold">Your cart is empty.</p>
+          <div className="grow flex flex-col items-center justify-center gap-6 p-8 grayscale opacity-20">
+            <ShoppingCart className="h-12 w-12 stroke-[1px]" />
+            <p className="text-[10px] font-black uppercase tracking-[0.4em]">Cart is empty</p>
           </div>
         ) : (
-          <div className="grow flex px-4">
-            <div className="flex flex-col justify-between w-full">
-              <ul className="grow overflow-auto py-4">
-                {cart?.items?.map((item, i) => {
-                  const product = item.product
-                  const variant = item.variant
+          <div className="grow flex flex-col overflow-hidden">
+            <ul className="grow overflow-auto py-4 px-6 space-y-4">
+              {cart?.items?.map((item, i) => {
+                const product = item.product
+                const variant = item.variant
+                if (typeof product !== 'object' || !item || !product || !product.slug) return null
 
-                  if (typeof product !== 'object' || !item || !product || !product.slug)
-                    return <React.Fragment key={i} />
+                const metaImage = product.meta?.image && typeof product.meta?.image === 'object' ? product.meta.image : undefined
+                const firstGalleryImage = typeof product.gallery?.[0]?.image === 'object' ? product.gallery?.[0]?.image : undefined
+                let image = firstGalleryImage || metaImage
+                let price = product.priceInUSD
+                const isVariant = Boolean(variant) && typeof variant === 'object'
 
-                  const metaImage =
-                    product.meta?.image && typeof product.meta?.image === 'object'
-                      ? product.meta.image
-                      : undefined
+                if (isVariant) {
+                  price = (variant as any)?.priceInUSD
+                  const imageVariant = product.gallery?.find((g) => {
+                    const vID = typeof g.variantOption === 'object' ? g.variantOption.id : g.variantOption
+                    return (variant as any)?.options?.some((o: any) => (typeof o === 'object' ? o.id === vID : o === vID))
+                  })
+                  if (imageVariant && typeof imageVariant.image === 'object') image = imageVariant.image
+                }
 
-                  const firstGalleryImage =
-                    typeof product.gallery?.[0]?.image === 'object'
-                      ? product.gallery?.[0]?.image
-                      : undefined
-
-                  let image = firstGalleryImage || metaImage
-                  let price = product.priceInUSD
-
-                  const isVariant = Boolean(variant) && typeof variant === 'object'
-
-                  if (isVariant) {
-                    price = variant?.priceInUSD
-
-                    const imageVariant = product.gallery?.find((item) => {
-                      if (!item.variantOption) return false
-                      const variantOptionID =
-                        typeof item.variantOption === 'object'
-                          ? item.variantOption.id
-                          : item.variantOption
-
-                      const hasMatch = variant?.options?.some((option) => {
-                        if (typeof option === 'object') return option.id === variantOptionID
-                        else return option === variantOptionID
-                      })
-
-                      return hasMatch
-                    })
-
-                    if (imageVariant && typeof imageVariant.image === 'object') {
-                      image = imageVariant.image
-                    }
-                  }
-
-                  return (
-                    <li className="flex w-full flex-col" key={i}>
-                      <div className="relative flex w-full flex-row justify-between px-1 py-4">
-                        <div className="absolute z-40 -mt-2 ml-[55px]">
-                          <DeleteItemButton item={item} />
-                        </div>
-                        <Link
-                          className="z-30 flex flex-row space-x-4"
-                          href={`/products/${(item.product as Product)?.slug}`}
-                        >
-                          <div className="relative h-16 w-16 cursor-pointer overflow-hidden rounded-md border border-neutral-300 bg-neutral-300 dark:border-neutral-700 dark:bg-neutral-900 dark:hover:bg-neutral-800">
-                            {image?.url && (
-                              <Image
-                                alt={image?.alt || product?.title || ''}
-                                className="h-full w-full object-cover"
-                                height={94}
-                                src={image.url}
-                                width={94}
-                              />
-                            )}
-                          </div>
-
-                          <div className="flex flex-1 flex-col text-base">
-                            <span className="leading-tight">{product?.title}</span>
-                            {isVariant && variant ? (
-                              <p className="text-sm text-neutral-500 dark:text-neutral-400 capitalize">
-                                {variant.options
-                                  ?.map((option) => {
-                                    if (typeof option === 'object') return option.label
-                                    return null
-                                  })
-                                  .join(', ')}
-                              </p>
-                            ) : null}
-                          </div>
-                        </Link>
-                        <div className="flex h-16 flex-col justify-between">
-                          {typeof price === 'number' && (
-                            <Price
-                              amount={price}
-                              className="flex justify-end space-y-2 text-right text-sm"
-                            />
-                          )}
-                          <div className="ml-auto flex h-9 flex-row items-center rounded-lg border">
-                            <EditItemQuantityButton item={item} type="minus" />
-                            <p className="w-6 text-center">
-                              <span className="w-full text-sm">{item.quantity}</span>
+                return (
+                  <li key={i} className="group relative bg-zinc-900/30 border border-zinc-900 p-4 transition-all hover:bg-zinc-900/50">
+                    <div className="absolute top-2 right-2 z-50">
+                      <DeleteItemButton item={item} />
+                    </div>
+                    <div className="flex gap-4">
+                      <div
+                        className="relative h-20 w-20 flex-shrink-0 bg-black border border-zinc-800 overflow-hidden"
+                        style={{ clipPath: 'polygon(15% 0%, 100% 0%, 85% 100%, 0% 100%)' }}
+                      >
+                        {image?.url && (
+                          <Image alt={product.title} className="object-cover" fill src={image.url} />
+                        )}
+                      </div>
+                      <div className="flex flex-col justify-between py-1">
+                        <div>
+                          <h4 className="text-[11px] font-black uppercase tracking-wider text-white italic line-clamp-1">{product.title}</h4>
+                          {isVariant && (
+                            <p className="text-[9px] text-zinc-500 font-bold uppercase tracking-widest mt-1">
+                              Variant: {(variant as any).options?.map((o: any) => o.label).join(' | ')}
                             </p>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-4 mt-2">
+                          <Price amount={price || 0} className="text-xs font-mono font-bold text-red-600" />
+                          <div className="flex items-center bg-black border border-zinc-800 h-7">
+                            <EditItemQuantityButton item={item} type="minus" />
+                            <span className="w-8 text-center text-[10px] font-mono border-x border-zinc-800">{item.quantity}</span>
                             <EditItemQuantityButton item={item} type="plus" />
                           </div>
                         </div>
                       </div>
-                    </li>
-                  )
-                })}
-              </ul>
-
-              <div className="px-4">
-                <div className="py-4 text-sm text-neutral-500 dark:text-neutral-400">
-                  {typeof cart?.subtotal === 'number' && (
-                    <div className="mb-3 flex items-center justify-between border-b border-neutral-200 pb-1 pt-1 dark:border-neutral-700">
-                      <p>Total</p>
-                      <Price
-                        amount={cart?.subtotal}
-                        className="text-right text-base text-black dark:text-white"
-                      />
                     </div>
-                  )}
+                  </li>
+                )
+              })}
+            </ul>
 
-                  <Button asChild>
-                    <Link className="w-full" href="/checkout">
-                      Proceed to Checkout
-                    </Link>
-                  </Button>
+            <div className="p-8 bg-black border-t border-zinc-900">
+              {typeof cart?.subtotal === 'number' && (
+                <div className="flex items-end justify-between mb-8">
+                  <div className="flex flex-col">
+                    <span className="text-[9px] font-black uppercase tracking-[0.4em] text-zinc-500">Total Amount</span>
+                    <span className="text-[10px] font-mono text-zinc-700">Order Summary</span>
+                  </div>
+                  <Price amount={cart?.subtotal} className="text-2xl font-black italic tracking-tighter text-white" />
                 </div>
-              </div>
+              )}
+
+              <Link
+                href="/checkout"
+                className="relative group flex items-center justify-center w-full h-14 bg-white text-black overflow-hidden transition-transform active:scale-95"
+                style={{ clipPath: 'polygon(5% 0%, 100% 0%, 95% 100%, 0% 100%)' }}
+              >
+                <span className="relative z-10 text-[11px] font-black uppercase tracking-[0.5em] italic flex items-center gap-2">
+                  Proceed To Checkout <ChevronRight className="h-4 w-4" />
+                </span>
+              </Link>
             </div>
           </div>
         )}

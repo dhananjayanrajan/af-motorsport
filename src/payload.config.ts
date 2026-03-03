@@ -97,20 +97,6 @@ export default buildConfig({
   },
   plugins: [
     ...customPlugins,
-    payloadEnhancedSidebar({
-      tabs: [
-        { id: 'dashboard', type: 'link', href: '/', icon: 'LayoutDashboard', label: { en: 'Dashboard', es: 'Panel', pt: 'Painel' } },
-        { id: 'attributes', type: 'tab', icon: 'Cog', label: { en: 'Attributes', es: 'Atributos', pt: 'Atributos' }, collections: ['categories', 'channels', 'classifications', 'features', 'locations', 'preferences', 'principles', 'skills', 'specifications', 'tags', 'tones'] },
-        { id: 'competition', type: 'tab', icon: 'Trophy', label: { en: 'Competition', es: 'Competición', pt: 'Competição' }, collections: ['entries', 'events', 'points', 'results', 'seasons', 'series', 'sessions'] },
-        { id: 'content', type: 'tab', icon: 'FileText', label: { en: 'Content', es: 'Contenido', pt: 'Conteúdo' }, collections: ['histories', 'journeys', 'narratives', 'notes', 'pages', 'stories'] },
-        { id: 'entities', type: 'tab', icon: 'Users', label: { en: 'Entities', es: 'Entidades', pt: 'Entidades' }, collections: ['drivers', 'individuals', 'leaders', 'members', 'organizations', 'users'] },
-        { id: 'operations', type: 'tab', icon: 'Zap', label: { en: 'Operations', es: 'Operaciones', pt: 'Operações' }, collections: ['careers', 'celebrations', 'duties', 'expectations', 'initiatives', 'meetups', 'protocols', 'schedules', 'trainings'] },
-        { id: 'outcomes', type: 'tab', icon: 'Target', label: { en: 'Outcomes', es: 'Resultados', pt: 'Resultados' }, collections: ['awards', 'decisions', 'experiences', 'highlights', 'impacts', 'incidents', 'strategies'] },
-        { id: 'resources', type: 'tab', icon: 'Package', label: { en: 'Resources', es: 'Recursos', pt: 'Recursos' }, collections: ['archives', 'cars', 'galleries', 'kits', 'media', 'playlists', 'visualizations'] },
-        { id: 'settings', type: 'tab', icon: 'Settings', label: { en: 'Settings', es: 'Ajustes', pt: 'Configurações' }, globals: ['header', 'footer', 'identity', 'policies', 'socials', 'announcements', 'questions'] },
-      ],
-      showLogout: true,
-    }),
     calendarPlugin(),
     adminSearchPlugin({ headerSearchComponentStyle: 'bar' }),
     searchPlugin({
@@ -118,7 +104,21 @@ export default buildConfig({
       defaultPriorities: Object.fromEntries(rawCollections.map(c => [c.slug, 50])),
     }),
     mcpPlugin({
-      collections: Object.fromEntries(rawCollections.map(c => [c.slug, { enabled: true }]))
+      globals: Object.fromEntries(globals.map(g => [g.slug, { enabled: true }]))
+    }),
+    payloadEnhancedSidebar({
+      tabs: [
+        { id: 'dashboard', type: 'link', href: '/', icon: 'LayoutDashboard', label: { en: 'Dashboard', es: 'Panel', pt: 'Painel' } },
+        { id: 'attributes', type: 'tab', icon: 'Cog', label: { en: 'Attributes', es: 'Atributos', pt: 'Atributos' }, collections: ['categories', 'channels', 'classifications', 'features', 'locations', 'preferences', 'principles', 'skills', 'specifications', 'tags', 'tones'] },
+        { id: 'competition', type: 'tab', icon: 'Trophy', label: { en: 'Competition', es: 'Competición', pt: 'Competição' }, collections: ['entries', 'events', 'points', 'results', 'seasons', 'series', 'sessions'] },
+        { id: 'content', type: 'tab', icon: 'FileText', label: { en: 'Content', es: 'Contenido', pt: 'Conteúdo' }, collections: ['histories', 'journeys', 'narratives', 'notes', 'pages', 'stories', 'search'] },
+        { id: 'entities', type: 'tab', icon: 'Users', label: { en: 'Entities', es: 'Entidades', pt: 'Entidades' }, collections: ['drivers', 'individuals', 'leaders', 'members', 'organizations', 'users'] },
+        { id: 'operations', type: 'tab', icon: 'Zap', label: { en: 'Operations', es: 'Operaciones', pt: 'Operações' }, collections: ['careers', 'celebrations', 'duties', 'expectations', 'initiatives', 'meetups', 'protocols', 'schedules', 'trainings', 'mcp-api-keys' as any] },
+        { id: 'outcomes', type: 'tab', icon: 'Target', label: { en: 'Outcomes', es: 'Resultados', pt: 'Resultados' }, collections: ['awards', 'decisions', 'experiences', 'highlights', 'impacts', 'incidents', 'strategies'] },
+        { id: 'resources', type: 'tab', icon: 'Package', label: { en: 'Resources', es: 'Recursos', pt: 'Recursos' }, collections: ['archives', 'cars', 'galleries', 'kits', 'media', 'playlists', 'visualizations'] },
+        { id: 'settings', type: 'tab', icon: 'Settings', label: { en: 'Settings', es: 'Ajustes', pt: 'Configurações' }, globals: ['header', 'footer', 'identity', 'policies', 'socials', 'announcements', 'questions'] },
+      ],
+      showLogout: true,
     }),
   ],
   secret: process.env.PAYLOAD_SECRET || '',

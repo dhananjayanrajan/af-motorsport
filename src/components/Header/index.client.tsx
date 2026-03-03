@@ -1,66 +1,306 @@
 'use client'
-import { CMSLink } from '@/components/Link'
+
 import { Cart } from '@/components/Cart'
 import { OpenCartButton } from '@/components/Cart/OpenCart'
+import { ClippedButton } from '@/components/Custom/ui/ClippedButton'
+import { CMSLink } from '@/components/Link'
+import { Media } from '@/components/Media'
+import { ChevronDown } from 'lucide-react'
+import { AnimatePresence, motion } from 'motion/react'
 import Link from 'next/link'
-import React, { Suspense } from 'react'
+import React, { Suspense, useEffect, useRef, useState } from 'react'
 
+import type { Header, Social } from 'src/payload-types'
 import { MobileMenu } from './MobileMenu'
-import type { Header } from 'src/payload-types'
 
 import { LogoIcon } from '@/components/icons/logo'
-import { usePathname } from 'next/navigation'
 import { cn } from '@/utilities/cn'
+import { usePathname } from 'next/navigation'
+
+import {
+  Camera,
+  Disc,
+  Facebook,
+  Github,
+  Instagram,
+  Link2,
+  Linkedin,
+  MessageCircle,
+  Music,
+  Phone,
+  Send,
+  Twitch,
+  Twitter,
+  Youtube,
+} from 'lucide-react'
+
+const socialIcons: Record<string, React.ElementType> = {
+  instagram: Instagram,
+  x: Twitter,
+  facebook: Facebook,
+  youtube: Youtube,
+  linkedin: Linkedin,
+  tiktok: Music,
+  threads: MessageCircle,
+  snapchat: Camera,
+  discord: Disc,
+  twitch: Twitch,
+  whatsapp: Phone,
+  telegram: Send,
+  github: Github,
+  spotify: Music,
+  other: Link2,
+}
 
 type Props = {
   header: Header
+  socials: Social
 }
 
-export function HeaderClient({ header }: Props) {
-  const menu = header.navItems || []
-  const pathname = usePathname()
+const MegaMenuItem = ({ item, isOpen, onMouseEnter, onMouseLeave, onClose }: any) => {
+  const { label, tagline, description, subItems, spotlight } = item
+  const dropdownRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isOpen) onClose()
+    }
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [isOpen, onClose])
+
+  if (!subItems || subItems.length === 0) {
+    return (
+      <span className="text-sm font-light py-2 px-3 text-neutral-700 dark:text-neutral-300">
+        {label}
+      </span>
+    )
+  }
 
   return (
-    <div className="relative z-20 border-b">
-      <nav className="flex items-center md:items-end justify-between container pt-2">
-        <div className="block flex-none md:hidden">
-          <Suspense fallback={null}>
-            <MobileMenu menu={menu} />
-          </Suspense>
+    <div
+      className="relative"
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+      ref={dropdownRef}
+    >
+      <button
+        className={cn(
+          'relative flex items-center gap-1 text-sm font-light py-2 px-3 overflow-hidden group',
+          isOpen && 'text-red-600 dark:text-red-500'
+        )}
+      >
+        <span className="relative z-10">{label}</span>
+        <ChevronDown className={cn('h-4 w-4 relative z-10 transition-transform duration-200', isOpen && 'rotate-180')} />
+        <motion.span
+          className="absolute bottom-0 left-0 w-full h-0.5 bg-red-600 dark:bg-red-500 origin-left"
+          initial={{ scaleX: 0 }}
+          animate={{ scaleX: isOpen ? 1 : 0 }}
+          transition={{ duration: 0.2 }}
+        />
+      </button>
+
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -5 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -5 }}
+            transition={{ duration: 0.15 }}
+            className="absolute left-1/2 top-full mt-2 w-screen max-w-5xl -translate-x-1/2 bg-white dark:bg-zinc-950 border border-neutral-200 dark:border-zinc-800 rounded-none shadow-xl p-6 z-50"
+          >
+            <div className="grid grid-cols-3 gap-8">
+              <div className="col-span-2">
+                {tagline && (
+                  <p className="text-xs uppercase tracking-wider font-light text-neutral-500 dark:text-neutral-400 mb-2">
+                    {tagline}
+                  </p>
+                )}
+                {description && (
+                  <p className="text-sm font-light text-neutral-600 dark:text-neutral-300 mb-6">
+                    {description}
+                  </p>
+                )}
+                <div className="grid grid-cols-2 gap-4">
+                  {subItems?.map((subItem: any) => (
+                    <div
+                      key={subItem.id}
+                      className={cn(
+                        'space-y-1 p-2 rounded-none transition-colors',
+                        subItem.isFeatured && 'bg-neutral-50 dark:bg-neutral-900 border-l-2 border-red-500 pl-3'
+                      )}
+                    >
+                      <CMSLink
+                        {...subItem.link}
+                        label={subItem.label || subItem.link.label}
+                        className={cn(
+                          'text-sm font-light hover:text-red-600 dark:hover:text-red-500 transition-colors',
+                          subItem.isFeatured && 'font-light text-red-600 dark:text-red-500'
+                        )}
+                      />
+                      {subItem.description && (
+                        <p className="text-xs font-light text-neutral-500 dark:text-neutral-400">
+                          {subItem.description}
+                        </p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {spotlight?.enable && (
+                <div className="col-span-1 border-l border-neutral-200 dark:border-zinc-800 pl-6">
+                  <p className="text-xs uppercase tracking-wider font-light text-neutral-500 dark:text-neutral-400 mb-2">
+                    {spotlight.label || 'Spotlight'}
+                  </p>
+                  {spotlight.entity && (
+                    <div className="space-y-3">
+                      {(() => {
+                        const entity = spotlight.entity.value
+                        const relation = spotlight.entity.relationTo
+                        let name = ''
+                        let image = null
+                        let url = spotlight.overrideUrl || '#'
+
+                        if (entity && typeof entity === 'object') {
+                          name = entity.name || entity.title || ''
+                          image = entity.logo || entity.cover || entity.thumbnail || null
+                          if (!spotlight.overrideUrl) {
+                            if (relation === 'drivers') url = `/glory/${entity.slug}`
+                            else if (relation === 'cars') url = `/craft/${entity.slug}`
+                            else if (relation === 'series') url = `/pursuit/${entity.slug}`
+                          }
+                        }
+
+                        return (
+                          <Link href={url} className="block group">
+                            {image && typeof image === 'object' && (
+                              <Media
+                                resource={image}
+                                className="w-full h-32 object-cover rounded-none mb-2 group-hover:opacity-90 transition"
+                              />
+                            )}
+                            <h4 className="font-light text-sm group-hover:text-red-600 transition">
+                              {name}
+                            </h4>
+                          </Link>
+                        )
+                      })()}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  )
+}
+
+export function HeaderClient({ header, socials }: Props) {
+  const navItems = header.navItems?.filter((item) => item.visible !== false) || []
+  const utilityNav = header.utilityNav?.filter((item) => item.visible !== false) || []
+  const cta = header.cta
+  const pathname = usePathname()
+
+  const socialAccounts = socials?.accounts?.filter(acc => acc.visible !== false) || []
+
+  const [activeIndex, setActiveIndex] = useState<number | null>(null)
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null)
+
+  const handleMouseEnter = (index: number) => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current)
+    setActiveIndex(index)
+  }
+
+  const handleMouseLeave = () => {
+    timeoutRef.current = setTimeout(() => setActiveIndex(null), 100)
+  }
+
+  const closeDropdown = () => setActiveIndex(null)
+
+  return (
+    <header className="sticky top-0 z-50 backdrop-blur-md bg-white/70 dark:bg-zinc-950/70 border-b border-neutral-200 dark:border-zinc-800 transition-colors duration-500">
+      <div className="container flex items-stretch min-h-[88px]">
+        <div className="flex items-center pr-8 border-r border-neutral-200 dark:border-zinc-800">
+          <Link href="/" className="block">
+            <LogoIcon className="h-8 w-auto md:h-10" />
+          </Link>
         </div>
-        <div className="flex w-full items-end justify-between">
-          <div className="flex w-full items-end gap-6 md:w-1/3">
-            <Link className="flex w-full items-center justify-center pt-4 pb-4 md:w-auto" href="/">
-              <LogoIcon className="w-6 h-auto" />
-            </Link>
-            {menu.length ? (
-              <ul className="hidden gap-4 text-sm md:flex md:items-center">
-                {menu.map((item) => (
-                  <li key={item.id}>
-                    <CMSLink
-                      {...item.link}
-                      size={'clear'}
-                      className={cn('relative navLink', {
-                        active:
-                          item.link.url && item.link.url !== '/'
-                            ? pathname.includes(item.link.url)
-                            : false,
-                      })}
-                      appearance="nav"
-                    />
-                  </li>
-                ))}
-              </ul>
-            ) : null}
+
+        <div className="flex-1 flex flex-col">
+          <div className="flex justify-between items-center py-2 px-4 text-xs uppercase tracking-[0.15em] font-light text-neutral-600 dark:text-neutral-400 border-b border-neutral-100 dark:border-zinc-900">
+            {socials && socialAccounts.length > 0 && (
+              <div className="hidden md:flex items-center gap-5">
+                {socialAccounts.map((account) => {
+                  const Icon = socialIcons[account.platform] || Link2
+                  return (
+                    <motion.a
+                      key={account.id}
+                      href={account.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-neutral-500 dark:text-neutral-500 hover:text-red-600 dark:hover:text-red-500 transition-colors"
+                      whileHover={{ scale: 1.2 }}
+                      whileTap={{ scale: 0.9 }}
+                      title={account.label || account.handle || account.platform}
+                    >
+                      <Icon className="h-4 w-4" />
+                    </motion.a>
+                  )
+                })}
+              </div>
+            )}
+
+            <div className="flex items-center gap-6 ml-auto">
+              {utilityNav.map((item) => (
+                <CMSLink
+                  key={item.id}
+                  {...item.link}
+                  className={cn(
+                    'relative text-xs font-light py-1 overflow-hidden group',
+                    pathname === item.link.url ? 'text-black dark:text-white' : 'text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white'
+                  )}
+                />
+              ))}
+            </div>
           </div>
 
-          <div className="flex justify-end md:w-1/3 gap-4">
-            <Suspense fallback={<OpenCartButton />}>
-              <Cart />
-            </Suspense>
+          <div className="flex items-center justify-between py-2 px-4">
+            <ul className="hidden md:flex items-center gap-1">
+              {navItems.map((item, index) => (
+                <li key={item.id} className="relative">
+                  <MegaMenuItem
+                    item={item}
+                    isOpen={activeIndex === index}
+                    onMouseEnter={() => handleMouseEnter(index)}
+                    onMouseLeave={handleMouseLeave}
+                    onClose={closeDropdown}
+                  />
+                </li>
+              ))}
+            </ul>
+
+            <div className="md:hidden">
+              <Suspense fallback={null}>
+                <MobileMenu menu={navItems} socials={socialAccounts} />
+              </Suspense>
+            </div>
+
+            <div className="flex items-center gap-4">
+              {cta?.enable && cta.link && (
+                <ClippedButton size="sm" label={cta.label || cta.link.label}>
+                  <CMSLink {...cta.link} label={cta.label || cta.link.label} />
+                </ClippedButton>
+              )}
+              <Suspense fallback={<OpenCartButton />}>
+                <Cart />
+              </Suspense>
+            </div>
           </div>
         </div>
-      </nav>
-    </div>
+      </div>
+    </header>
   )
 }

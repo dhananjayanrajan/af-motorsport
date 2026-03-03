@@ -1,69 +1,49 @@
-import type { Metadata } from 'next'
-
-import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
-import { headers as getHeaders } from 'next/headers.js'
-import configPromise from '@payload-config'
-import { Order } from '@/payload-types'
-import { getPayload } from 'payload'
-import { redirect } from 'next/navigation'
 import { AddressListing } from '@/components/addresses/AddressListing'
-import { CreateAddressModal } from '@/components/addresses/CreateAddressModal'
+import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
+import configPromise from '@payload-config'
+import { MapPin } from 'lucide-react'
+import type { Metadata } from 'next'
+import { headers as getHeaders } from 'next/headers.js'
+import { redirect } from 'next/navigation'
+import { getPayload } from 'payload'
 
 export default async function AddressesPage() {
   const headers = await getHeaders()
   const payload = await getPayload({ config: configPromise })
   const { user } = await payload.auth({ headers })
 
-  let orders: Order[] | null = null
-
   if (!user) {
-    redirect(
-      `/login?warning=${encodeURIComponent('Please login to access your account settings.')}`,
-    )
-  }
-
-  try {
-    const ordersResult = await payload.find({
-      collection: 'orders',
-      limit: 5,
-      user,
-      overrideAccess: false,
-      pagination: false,
-      where: {
-        customer: {
-          equals: user?.id,
-        },
-      },
-    })
-
-    orders = ordersResult?.docs || []
-  } catch (error) {
-    // when deploying this template on Payload Cloud, this page needs to build before the APIs are live
-    // so swallow the error here and simply render the page with fallback data where necessary
-    // in production you may want to redirect to a 404  page or at least log the error somewhere
-    // console.error(error)
+    redirect(`/login?warning=${encodeURIComponent('Please login to access your account settings.')}`)
   }
 
   return (
-    <>
-      <div className="border p-8 rounded-lg bg-primary-foreground">
-        <h1 className="text-3xl font-medium mb-8">Addresses</h1>
-
-        <div className="mb-8">
-          <AddressListing />
+    <div className="min-h-screen bg-black text-white pt-12 pb-32 px-8 max-w-7xl mx-auto">
+      <section className="space-y-16">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 border-b border-zinc-900 pb-10">
+          <div className="space-y-3">
+            <div className="flex items-center gap-3">
+              <MapPin className="h-3 w-3 text-red-600" />
+              <span className="text-[10px] font-black uppercase tracking-[0.5em] text-red-600 leading-none">Logistics Protocol</span>
+            </div>
+            <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tighter italic leading-none">
+              Shipping <span className="text-zinc-800">/ Registry</span>
+            </h1>
+          </div>
+          <div className="max-w-xs text-right hidden md:block">
+            <p className="text-[10px] font-bold text-zinc-700 uppercase tracking-widest leading-relaxed">
+              Manage deployment locations and delivery coordinates.
+            </p>
+          </div>
         </div>
 
-        <CreateAddressModal />
-      </div>
-    </>
+        <AddressListing />
+      </section>
+    </div>
   )
 }
 
 export const metadata: Metadata = {
   description: 'Manage your addresses.',
-  openGraph: mergeOpenGraph({
-    title: 'Addresses',
-    url: '/account/addresses',
-  }),
+  openGraph: mergeOpenGraph({ title: 'Addresses', url: '/account/addresses' }),
   title: 'Addresses',
 }

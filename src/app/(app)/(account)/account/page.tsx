@@ -1,15 +1,14 @@
-import type { Metadata } from 'next'
-
-import { Button } from '@/components/ui/button'
-import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
-import Link from 'next/link'
-import { headers as getHeaders } from 'next/headers.js'
-import configPromise from '@payload-config'
 import { AccountForm } from '@/components/forms/AccountForm'
-import { Order } from '@/payload-types'
 import { OrderItem } from '@/components/OrderItem'
-import { getPayload } from 'payload'
+import { Order } from '@/payload-types'
+import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
+import configPromise from '@payload-config'
+import { ChevronRight, History, Settings } from 'lucide-react'
+import type { Metadata } from 'next'
+import { headers as getHeaders } from 'next/headers.js'
+import Link from 'next/link'
 import { redirect } from 'next/navigation'
+import { getPayload } from 'payload'
 
 export default async function AccountPage() {
   const headers = await getHeaders()
@@ -19,9 +18,7 @@ export default async function AccountPage() {
   let orders: Order[] | null = null
 
   if (!user) {
-    redirect(
-      `/login?warning=${encodeURIComponent('Please login to access your account settings.')}`,
-    )
+    redirect(`/login?warning=${encodeURIComponent('Please login to access your account.')}`)
   }
 
   try {
@@ -31,65 +28,71 @@ export default async function AccountPage() {
       user,
       overrideAccess: false,
       pagination: false,
-      where: {
-        customer: {
-          equals: user?.id,
-        },
-      },
+      where: { customer: { equals: user?.id } },
     })
-
     orders = ordersResult?.docs || []
-  } catch (error) {
-    // when deploying this template on Payload Cloud, this page needs to build before the APIs are live
-    // so swallow the error here and simply render the page with fallback data where necessary
-    // in production you may want to redirect to a 404  page or at least log the error somewhere
-    // console.error(error)
-  }
+  } catch (error) { }
 
   return (
-    <>
-      <div className="border p-8 rounded-lg bg-primary-foreground">
-        <h1 className="text-3xl font-medium mb-8">Account settings</h1>
+    <div className="min-h-screen bg-black text-white pt-32 pb-32 px-8 max-w-7xl mx-auto space-y-48">
+
+      <section className="space-y-16">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 border-b border-zinc-900 pb-10">
+          <div className="space-y-3">
+            <div className="flex items-center gap-3">
+              <Settings className="h-3 w-3 text-red-600" />
+              <span className="text-[10px] font-black uppercase tracking-[0.5em] text-red-600 leading-none">Identity Protocol</span>
+            </div>
+            <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tighter italic leading-none">
+              Account <span className="text-zinc-800">/ Profile</span>
+            </h1>
+          </div>
+          <div className="max-w-xs text-right hidden md:block">
+            <p className="text-[10px] font-bold text-zinc-700 uppercase tracking-widest leading-relaxed">
+              Verify your designation and active communication channels.
+            </p>
+          </div>
+        </div>
         <AccountForm />
-      </div>
+      </section>
 
-      <div className=" border p-8 rounded-lg bg-primary-foreground">
-        <h2 className="text-3xl font-medium mb-8">Recent Orders</h2>
-
-        <div className="prose dark:prose-invert mb-8">
-          <p>
-            These are the most recent orders you have placed. Each order is associated with an
-            payment. As you place more orders, they will appear in your orders list.
-          </p>
+      <section className="space-y-16">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 border-b border-zinc-900 pb-10">
+          <div className="space-y-3">
+            <div className="flex items-center gap-3">
+              <History className="h-3 w-3 text-zinc-700" />
+              <span className="text-[10px] font-black uppercase tracking-[0.5em] text-zinc-700 leading-none">Mission History</span>
+            </div>
+            <h2 className="text-4xl md:text-5xl font-black uppercase tracking-tighter italic text-white leading-none">
+              Recent <span className="text-zinc-800">/ Orders</span>
+            </h2>
+          </div>
+          <Link href="/orders" className="flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.4em] text-zinc-500 hover:text-red-600 transition-colors mb-2">
+            Archive Access <ChevronRight className="h-3 w-3" />
+          </Link>
         </div>
 
-        {(!orders || !Array.isArray(orders) || orders?.length === 0) && (
-          <p className="mb-8">You have no orders.</p>
-        )}
-
-        {orders && orders.length > 0 && (
-          <ul className="flex flex-col gap-6 mb-8">
-            {orders?.map((order, index) => (
-              <li key={order.id}>
+        <div className="divide-y divide-zinc-900">
+          {(!orders || orders.length === 0) ? (
+            <div className="py-24 text-center">
+              <span className="text-[10px] font-black uppercase tracking-[0.8em] text-zinc-900 italic">No mission data available</span>
+            </div>
+          ) : (
+            orders.map((order) => (
+              <div key={order.id} className="py-6 transition-colors hover:bg-zinc-950/50">
                 <OrderItem order={order} />
-              </li>
-            ))}
-          </ul>
-        )}
+              </div>
+            ))
+          )}
+        </div>
+      </section>
 
-        <Button asChild variant="default">
-          <Link href="/orders">View all orders</Link>
-        </Button>
-      </div>
-    </>
+    </div>
   )
 }
 
 export const metadata: Metadata = {
-  description: 'Create an account or log in to your existing account.',
-  openGraph: mergeOpenGraph({
-    title: 'Account',
-    url: '/account',
-  }),
+  description: 'Manage your AF Motorsport profile.',
+  openGraph: mergeOpenGraph({ title: 'Account', url: '/account' }),
   title: 'Account',
 }

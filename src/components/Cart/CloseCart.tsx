@@ -1,11 +1,13 @@
-import clsx from 'clsx'
-import { XIcon } from 'lucide-react'
-import React from 'react'
+import { cn } from '@/utilities/cn'
+import { X } from 'lucide-react'
 
 export function CloseCart({ className }: { className?: string }) {
   return (
-    <div className="relative flex h-11 w-11 items-center justify-center rounded-md border border-neutral-200 text-black transition-colors dark:border-neutral-700 dark:text-white">
-      <XIcon className={clsx('h-6 transition-all ease-in-out hover:scale-110 ', className)} />
+    <div className={cn(
+      "relative flex h-10 w-10 items-center justify-center border border-zinc-800 bg-black text-white transition-all hover:border-red-600 group",
+      className
+    )}>
+      <X className="h-4 w-4 group-hover:rotate-90 transition-transform duration-300" />
     </div>
   )
 }
