@@ -1,4 +1,3 @@
-import { adminSearchPlugin } from '@jhb.software/payload-admin-search'
 import { postgresAdapter } from '@payloadcms/db-postgres'
 import { mcpPlugin } from '@payloadcms/plugin-mcp'
 import { searchPlugin } from '@payloadcms/plugin-search'
@@ -98,12 +97,13 @@ export default buildConfig({
   plugins: [
     ...customPlugins,
     calendarPlugin(),
-    adminSearchPlugin({ headerSearchComponentStyle: 'bar' }),
+    // adminSearchPlugin({ headerSearchComponentStyle: 'bar' }),
     searchPlugin({
       collections: rawCollections.map(c => c.slug),
       defaultPriorities: Object.fromEntries(rawCollections.map(c => [c.slug, 50])),
     }),
     mcpPlugin({
+      collections: Object.fromEntries(collections.map(c => [c.slug, { enabled: true }])),
       globals: Object.fromEntries(globals.map(g => [g.slug, { enabled: true }]))
     }),
     payloadEnhancedSidebar({

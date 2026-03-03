@@ -13,7 +13,7 @@ interface CheckeredBackgroundProps {
 export const CheckeredBackground = ({
   mode = 'horizontal',
   direction = 'forward',
-  speed = 5,
+  speed = 10,
   opacity = 0.15,
   className = '',
 }: CheckeredBackgroundProps) => {

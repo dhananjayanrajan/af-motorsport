@@ -16,7 +16,7 @@ const nextConfig = {
       }),
     ],
   },
-  reactStrictMode: true,
+  reactStrictMode: false,
   redirects,
   eslint: {
     ignoreDuringBuilds: true,
@@ -24,7 +24,7 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-  output: 'standalone', // Add this
+  output: 'standalone',
   webpack: (webpackConfig) => {
     webpackConfig.resolve.extensionAlias = {
       '.cjs': ['.cts', '.cjs'],

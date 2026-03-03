@@ -71,7 +71,7 @@ export const CustomFooter = ({ footer, socials, organizations = [], questions, a
       )}
 
       {cta?.enable && (
-        <div className="relative z-30 mb-[-12rem]">
+        <div className="relative z-30">
           <CTA
             headline={cta.headline || 'Ready to be part of the story?'}
             subtext={cta.subtext || 'Whether you race, engineer, design, or simply believe in what we build — there is a place for you inside AF Motorsport.'}
@@ -85,7 +85,7 @@ export const CustomFooter = ({ footer, socials, organizations = [], questions, a
       )}
 
       <footer
-        className="relative bg-white dark:bg-zinc-950 text-black dark:text-white pt-64 border-t border-gray-100 dark:border-zinc-900 transition-colors duration-500 font-sans overflow-hidden"
+        className="relative bg-white dark:bg-zinc-950 text-black dark:text-white pt-20 border-t border-gray-100 dark:border-zinc-900 transition-colors duration-500 font-sans overflow-hidden"
       >
         <div
           className="absolute inset-0 z-0 opacity-40 dark:opacity-60 transition-opacity duration-700"
@@ -103,7 +103,7 @@ export const CustomFooter = ({ footer, socials, organizations = [], questions, a
         >
           <CheckeredBackground
             mode="horizontal"
-            speed={15}
+            speed={2}
             opacity={0.18}
           />
         </div>

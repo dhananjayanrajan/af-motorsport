@@ -294,38 +294,38 @@ Pages are **never tied to single collections**. Each page is a "cinema" assemble
 ### 7.1 URL Architecture
 
 ```
-/glory/[driver-slug]          → Driver as legend (Driver + Awards + Points + Cars + Strategy…)
-/glory/[event-slug]           → Event as battle legend
-/glory/[award-slug]           → Award as living story
+/glory/drivers               → Driver as legend (Driver + Awards + Points + Cars + Strategy…)
+/glory/events                → Event as battle legend
+/glory/awards                → Award as living story
 /glory/hall-of-fame           → All-time aggregated glory
 
-/pursuit/[series-slug]        → Championship organism
-/pursuit/[season-slug]        → Year's dramatic arc
-/pursuit/[season-slug]/[event-slug]          → Race weekend
-/pursuit/[season-slug]/[event-slug]/[session-slug] → The moment (session level)
+/pursuit/series               → Championship organism
+/pursuit/seasons              → Year's dramatic arc
+/pursuit/events               → Race weekend
+/pursuit/sessions             → The moment (session level)
 
-/craft/[car-slug]             → Machine as masterpiece
-/craft/[kit-slug]             → Equipment as precision instrument
-/craft/[initiative-slug]      → R&D project (also at /ambition)
+/craft/cars                  → Machine as masterpiece
+/craft/kits                  → Equipment as precision instrument
+/craft/initiatives           → R&D project (also at /ambition)
 /craft/engineering-philosophy → Aggregated tech philosophy
 
-/tribe/[driver-slug]          → Person behind the racing number (human lens)
-/tribe/[leader-slug]          → Leader as human being
-/tribe/[member-slug]          → Specialist's human story
+/tribe/drivers               → Person behind the racing number (human lens)
+/tribe/leaders               → Leader as human being
+/tribe/members               → Specialist's human story
 /tribe/culture-code           → Organization soul
 
-/alliance/[organization-slug] → Partnership as complete story
+/alliance/organizations      → Partnership as complete story
 /alliance/network             → Full ecosystem map
 
-/chronicle/[story-slug]       → Authored story
-/chronicle/[journey-slug]     → Career or personal arc
-/chronicle/[history-slug]     → Historical record
+/chronicle/stories           → Authored story
+/chronicle/journeys          → Career or personal arc
+/chronicle/histories         → Historical record
 
-/ambition/[initiative-slug]   → Future-facing project
-/ambition/[celebration-slug]  → Moment of recognition
-/ambition/[meetup-slug]       → Invitation to enter the world
-/ambition/[career-slug]       → Role opportunity
-/ambition/[training-slug]     → Development program
+/ambition/initiatives        → Future-facing project
+/ambition/celebrations       → Moment of recognition
+/ambition/meetups            → Invitation to enter the world
+/ambition/careers            → Role opportunity
+/ambition/trainings          → Development program
 ```
 
 ### 7.2 Page Section Pattern
@@ -862,45 +862,48 @@ src/app/
 ├── legal/page.tsx                                        # /legal
 │
 ├── glory/
-│   ├── [driver-slug]/
-│   │   ├── page.tsx
-│   │   └── sections/
-│   │       ├── LegendSection.tsx
-│   │       ├── ConquestsSection.tsx
-│   │       ├── GloryNumbersSection.tsx
-│   │       ├── RivalsOvercomeSection.tsx
-│   │       ├── MachinesThatCarriedThemSection.tsx
-│   │       ├── TeamBehindTheGlorySection.tsx
-│   │       ├── DefiningStrategySection.tsx
-│   │       ├── CelebrationsSection.tsx
-│   │       ├── VoiceOfAChampionSection.tsx
-│   │       └── VisualMonumentSection.tsx
+│   ├── drivers/
+│   │   └── [driver-slug]/
+│   │       ├── page.tsx
+│   │       └── sections/
+│   │           ├── LegendSection.tsx
+│   │           ├── ConquestsSection.tsx
+│   │           ├── GloryNumbersSection.tsx
+│   │           ├── RivalsOvercomeSection.tsx
+│   │           ├── MachinesThatCarriedThemSection.tsx
+│   │           ├── TeamBehindTheGlorySection.tsx
+│   │           ├── DefiningStrategySection.tsx
+│   │           ├── CelebrationsSection.tsx
+│   │           ├── VoiceOfAChampionSection.tsx
+│   │           └── VisualMonumentSection.tsx
 │   │
-│   ├── [event-slug]/
-│   │   ├── page.tsx
-│   │   └── sections/
-│   │       ├── StageSetSection.tsx
-│   │       ├── AtmosphereSection.tsx
-│   │       ├── TurningPointSection.tsx
-│   │       ├── StrategyWarSection.tsx
-│   │       ├── MachinesInBattleSection.tsx
-│   │       ├── PodiumSection.tsx
-│   │       ├── AftermathSection.tsx
-│   │       ├── LegendItBuiltSection.tsx
-│   │       └── VisualEvidenceSection.tsx
+│   ├── events/
+│   │   └── [event-slug]/
+│   │       ├── page.tsx
+│   │       └── sections/
+│   │           ├── StageSetSection.tsx
+│   │           ├── AtmosphereSection.tsx
+│   │           ├── TurningPointSection.tsx
+│   │           ├── StrategyWarSection.tsx
+│   │           ├── MachinesInBattleSection.tsx
+│   │           ├── PodiumSection.tsx
+│   │           ├── AftermathSection.tsx
+│   │           ├── LegendItBuiltSection.tsx
+│   │           └── VisualEvidenceSection.tsx
 │   │
-│   ├── [award-slug]/
-│   │   ├── page.tsx
-│   │   └── sections/
-│   │       ├── PrizeSection.tsx
-│   │       ├── WeightOfItSection.tsx
-│   │       ├── RollOfHonourSection.tsx
-│   │       ├── WhatItTookSection.tsx
-│   │       ├── MachinesThatWonItSection.tsx
-│   │       ├── DecisionsThatEarnedItSection.tsx
-│   │       ├── CelebrationsItSparkedSection.tsx
-│   │       ├── PartnersWhoBelievedSection.tsx
-│   │       └── VisualLegacySection.tsx
+│   ├── awards/
+│   │   └── [award-slug]/
+│   │       ├── page.tsx
+│   │       └── sections/
+│   │           ├── PrizeSection.tsx
+│   │           ├── WeightOfItSection.tsx
+│   │           ├── RollOfHonourSection.tsx
+│   │           ├── WhatItTookSection.tsx
+│   │           ├── MachinesThatWonItSection.tsx
+│   │           ├── DecisionsThatEarnedItSection.tsx
+│   │           ├── CelebrationsItSparkedSection.tsx
+│   │           ├── PartnersWhoBelievedSection.tsx
+│   │           └── VisualLegacySection.tsx
 │   │
 │   └── hall-of-fame/
 │       ├── page.tsx
@@ -919,94 +922,101 @@ src/app/
 │           └── VisualArchiveSection.tsx
 │
 ├── pursuit/
-│   ├── [series-slug]/
-│   │   ├── page.tsx
-│   │   └── sections/
-│   │       ├── OriginAndPowerSection.tsx
-│   │       ├── GovernanceStructureSection.tsx
-│   │       ├── BattlegroundsSection.tsx
-│   │       ├── PowerHierarchySection.tsx
-│   │       ├── MachinesItDemandsSection.tsx
-│   │       ├── ChampionshipHistorySection.tsx
-│   │       ├── RivalriesItProducedSection.tsx
-│   │       ├── EvolutionOfRulesSection.tsx
-│   │       ├── InsideStorySection.tsx
-│   │       └── VisualChronicleSection.tsx
+│   ├── series/
+│   │   └── [series-slug]/
+│   │       ├── page.tsx
+│   │       └── sections/
+│   │           ├── OriginAndPowerSection.tsx
+│   │           ├── GovernanceStructureSection.tsx
+│   │           ├── BattlegroundsSection.tsx
+│   │           ├── PowerHierarchySection.tsx
+│   │           ├── MachinesItDemandsSection.tsx
+│   │           ├── ChampionshipHistorySection.tsx
+│   │           ├── RivalriesItProducedSection.tsx
+│   │           ├── EvolutionOfRulesSection.tsx
+│   │           ├── InsideStorySection.tsx
+│   │           └── VisualChronicleSection.tsx
 │   │
-│   ├── [season-slug]/
-│   │   ├── page.tsx
-│   │   ├── sections/
-│   │   │   ├── ChampionshipStorySection.tsx
-│   │   │   ├── CalendarSection.tsx
-│   │   │   ├── ChampionshipFightSection.tsx
-│   │   │   ├── TechnicalLandscapeSection.tsx
-│   │   │   ├── KeyTurningPointsSection.tsx
-│   │   │   ├── MachinesOfThisYearSection.tsx
-│   │   │   ├── InsideStorySection.tsx
-│   │   │   └── VisualChronicleSection.tsx
-│   │   │
-│   │   └── [event-slug]/
+│   ├── seasons/
+│   │   └── [season-slug]/
 │   │       ├── page.tsx
 │   │       ├── sections/
-│   │       │   ├── WeekendBriefSection.tsx
-│   │       │   ├── EntryListSection.tsx
-│   │       │   ├── SessionBreakdownSection.tsx
-│   │       │   ├── WeatherAndConditionsSection.tsx
-│   │       │   ├── OperationalDecisionsSection.tsx
-│   │       │   ├── CrewOnTheGroundSection.tsx
-│   │       │   ├── ResultsSection.tsx
-│   │       │   └── VisualRecordSection.tsx
+│   │       │   ├── ChampionshipStorySection.tsx
+│   │       │   ├── CalendarSection.tsx
+│   │       │   ├── ChampionshipFightSection.tsx
+│   │       │   ├── TechnicalLandscapeSection.tsx
+│   │       │   ├── KeyTurningPointsSection.tsx
+│   │       │   ├── MachinesOfThisYearSection.tsx
+│   │       │   ├── InsideStorySection.tsx
+│   │       │   └── VisualChronicleSection.tsx
 │   │       │
-│   │       └── [session-slug]/
-│   │           ├── page.tsx
-│   │           └── sections/
-│   │               ├── SessionSection.tsx
-│   │               ├── ParametersSection.tsx
-│   │               ├── EntriesSection.tsx
-│   │               ├── LapDataSection.tsx
-│   │               ├── IncidentsSection.tsx
-│   │               ├── StrategyEmployedSection.tsx
-│   │               ├── CrewOperationSection.tsx
-│   │               ├── HighlightsSection.tsx
-│   │               └── VisualRecordSection.tsx
+│   │       └── events/
+│   │           └── [event-slug]/
+│   │               ├── page.tsx
+│   │               ├── sections/
+│   │               │   ├── WeekendBriefSection.tsx
+│   │               │   ├── EntryListSection.tsx
+│   │               │   ├── SessionBreakdownSection.tsx
+│   │               │   ├── WeatherAndConditionsSection.tsx
+│   │               │   ├── OperationalDecisionsSection.tsx
+│   │               │   ├── CrewOnTheGroundSection.tsx
+│   │               │   ├── ResultsSection.tsx
+│   │               │   └── VisualRecordSection.tsx
+│   │               │
+│   │               └── sessions/
+│   │                   └── [session-slug]/
+│   │                       ├── page.tsx
+│   │                       └── sections/
+│   │                           ├── SessionSection.tsx
+│   │                           ├── ParametersSection.tsx
+│   │                           ├── EntriesSection.tsx
+│   │                           ├── LapDataSection.tsx
+│   │                           ├── IncidentsSection.tsx
+│   │                           ├── StrategyEmployedSection.tsx
+│   │                           ├── CrewOperationSection.tsx
+│   │                           ├── HighlightsSection.tsx
+│   │                           └── VisualRecordSection.tsx
 │
 ├── craft/
-│   ├── [car-slug]/
-│   │   ├── page.tsx
-│   │   └── sections/
-│   │       ├── BlueprintSection.tsx
-│   │       ├── EngineeringPhilosophySection.tsx
-│   │       ├── DevelopmentLogSection.tsx
-│   │       ├── CrewWhoBuildItSection.tsx
-│   │       ├── BattleScarsSection.tsx
-│   │       ├── DriversWhoTrustedItSection.tsx
-│   │       ├── TechnicalPartnershipsSection.tsx
-│   │       ├── PerformanceRecordSection.tsx
-│   │       └── TechnicalVisualArchiveSection.tsx
+│   ├── cars/
+│   │   └── [car-slug]/
+│   │       ├── page.tsx
+│   │       └── sections/
+│   │           ├── BlueprintSection.tsx
+│   │           ├── EngineeringPhilosophySection.tsx
+│   │           ├── DevelopmentLogSection.tsx
+│   │           ├── CrewWhoBuildItSection.tsx
+│   │           ├── BattleScarsSection.tsx
+│   │           ├── DriversWhoTrustedItSection.tsx
+│   │           ├── TechnicalPartnershipsSection.tsx
+│   │           ├── PerformanceRecordSection.tsx
+│   │           └── TechnicalVisualArchiveSection.tsx
 │   │
-│   ├── [kit-slug]/
-│   │   ├── page.tsx
-│   │   └── sections/
-│   │       ├── MaterialScienceSection.tsx
-│   │       ├── DesignIntentSection.tsx
-│   │       ├── PerformanceDataSection.tsx
-│   │       ├── DevelopmentHistorySection.tsx
-│   │       ├── MakersSection.tsx
-│   │       ├── InActionSection.tsx
-│   │       ├── TechnicalPartnersSection.tsx
-│   │       └── TechnicalVisualArchiveSection.tsx
+│   ├── kits/
+│   │   └── [kit-slug]/
+│   │       ├── page.tsx
+│   │       └── sections/
+│   │           ├── MaterialScienceSection.tsx
+│   │           ├── DesignIntentSection.tsx
+│   │           ├── PerformanceDataSection.tsx
+│   │           ├── DevelopmentHistorySection.tsx
+│   │           ├── MakersSection.tsx
+│   │           ├── InActionSection.tsx
+│   │           ├── TechnicalPartnersSection.tsx
+│   │           └── TechnicalVisualArchiveSection.tsx
 │   │
-│   ├── [initiative-slug]/
-│   │   ├── page.tsx
-│   │   └── sections/
-│   │       ├── TechnicalMissionSection.tsx
-│   │       ├── InnovationBeingPursuedSection.tsx
-│   │       ├── EngineeringRoadmapSection.tsx
-│   │       ├── EngineeringTeamSection.tsx
-│   │       ├── MachinesItWillShapeSection.tsx
-│   │       ├── TechnicalPartnersSection.tsx
-│   │       ├── ProgressAndResultsSection.tsx
-│   │       └── TechnicalVisualRecordSection.tsx
+│   ├── initiatives/
+│   │   └── [initiative-slug]/
+│   │       ├── page.tsx
+│   │       └── sections/
+│   │           ├── TechnicalMissionSection.tsx
+│   │           ├── InnovationBeingPursuedSection.tsx
+│   │           ├── EngineeringRoadmapSection.tsx
+│   │           ├── EngineeringTeamSection.tsx
+│   │           ├── MachinesItWillShapeSection.tsx
+│   │           ├── TechnicalPartnersSection.tsx
+│   │           ├── ProgressAndResultsSection.tsx
+│   │           └── TechnicalVisualRecordSection.tsx
 │   │
 │   └── engineering-philosophy/
 │       ├── page.tsx
@@ -1022,42 +1032,45 @@ src/app/
 │           └── TechnicalVisualWorldSection.tsx
 │
 ├── tribe/
-│   ├── [driver-slug]/
-│   │   ├── page.tsx
-│   │   └── sections/
-│   │       ├── HumanBeingSection.tsx
-│   │       ├── InnerWorldSection.tsx
-│   │       ├── JourneyThatShapedThemSection.tsx
-│   │       ├── RelationshipsThatDefineThemSection.tsx
-│   │       ├── SkillsTheyCarrySection.tsx
-│   │       ├── VoiceSection.tsx
-│   │       ├── HumanSideOfNumbersSection.tsx
-│   │       └── VisualHumanStorySection.tsx
+│   ├── drivers/
+│   │   └── [driver-slug]/
+│   │       ├── page.tsx
+│   │       └── sections/
+│   │           ├── HumanBeingSection.tsx
+│   │           ├── InnerWorldSection.tsx
+│   │           ├── JourneyThatShapedThemSection.tsx
+│   │           ├── RelationshipsThatDefineThemSection.tsx
+│   │           ├── SkillsTheyCarrySection.tsx
+│   │           ├── VoiceSection.tsx
+│   │           ├── HumanSideOfNumbersSection.tsx
+│   │           └── VisualHumanStorySection.tsx
 │   │
-│   ├── [leader-slug]/
-│   │   ├── page.tsx
-│   │   └── sections/
-│   │       ├── PersonSection.tsx
-│   │       ├── InnerWorldSection.tsx
-│   │       ├── JourneyThatMadeThemSection.tsx
-│   │       ├── CommandAsRelationshipSection.tsx
-│   │       ├── DecisionsAsCharacterSection.tsx
-│   │       ├── RelationshipsTheyCultivateSection.tsx
-│   │       ├── InitiativesTheyChampionSection.tsx
-│   │       ├── VoiceSection.tsx
-│   │       └── VisualHumanStorySection.tsx
+│   ├── leaders/
+│   │   └── [leader-slug]/
+│   │       ├── page.tsx
+│   │       └── sections/
+│   │           ├── PersonSection.tsx
+│   │           ├── InnerWorldSection.tsx
+│   │           ├── JourneyThatMadeThemSection.tsx
+│   │           ├── CommandAsRelationshipSection.tsx
+│   │           ├── DecisionsAsCharacterSection.tsx
+│   │           ├── RelationshipsTheyCultivateSection.tsx
+│   │           ├── InitiativesTheyChampionSection.tsx
+│   │           ├── VoiceSection.tsx
+│   │           └── VisualHumanStorySection.tsx
 │   │
-│   ├── [member-slug]/
-│   │   ├── page.tsx
-│   │   └── sections/
-│   │       ├── PersonSection.tsx
-│   │       ├── CraftAsIdentitySection.tsx
-│   │       ├── JourneyIntoCraftSection.tsx
-│   │       ├── TrainingThatBuiltThemSection.tsx
-│   │       ├── RelationshipsInThePitLaneSection.tsx
-│   │       ├── AssignmentsThatShapedThemSection.tsx
-│   │       ├── VoiceSection.tsx
-│   │       └── VisualHumanStorySection.tsx
+│   ├── members/
+│   │   └── [member-slug]/
+│   │       ├── page.tsx
+│   │       └── sections/
+│   │           ├── PersonSection.tsx
+│   │           ├── CraftAsIdentitySection.tsx
+│   │           ├── JourneyIntoCraftSection.tsx
+│   │           ├── TrainingThatBuiltThemSection.tsx
+│   │           ├── RelationshipsInThePitLaneSection.tsx
+│   │           ├── AssignmentsThatShapedThemSection.tsx
+│   │           ├── VoiceSection.tsx
+│   │           └── VisualHumanStorySection.tsx
 │   │
 │   └── culture-code/
 │       ├── page.tsx
@@ -1073,19 +1086,20 @@ src/app/
 │           └── VisualCultureSection.tsx
 │
 ├── alliance/
-│   ├── [organization-slug]/
-│   │   ├── page.tsx
-│   │   └── sections/
-│   │       ├── OrganizationIdentitySection.tsx
-│   │       ├── OriginOfPartnershipSection.tsx
-│   │       ├── PeopleBridgingTwoWorldsSection.tsx
-│   │       ├── SharedWorkSection.tsx
-│   │       ├── TechnicalContributionSection.tsx
-│   │       ├── SharedVictoriesSection.tsx
-│   │       ├── ImpactOfAllianceSection.tsx
-│   │       ├── EvolutionTogetherSection.tsx
-│   │       ├── PartnershipVoiceSection.tsx
-│   │       └── VisualPartnershipStorySection.tsx
+│   ├── organizations/
+│   │   └── [organization-slug]/
+│   │       ├── page.tsx
+│   │       └── sections/
+│   │           ├── OrganizationIdentitySection.tsx
+│   │           ├── OriginOfPartnershipSection.tsx
+│   │           ├── PeopleBridgingTwoWorldsSection.tsx
+│   │           ├── SharedWorkSection.tsx
+│   │           ├── TechnicalContributionSection.tsx
+│   │           ├── SharedVictoriesSection.tsx
+│   │           ├── ImpactOfAllianceSection.tsx
+│   │           ├── EvolutionTogetherSection.tsx
+│   │           ├── PartnershipVoiceSection.tsx
+│   │           └── VisualPartnershipStorySection.tsx
 │   │
 │   └── network/
 │       ├── page.tsx
@@ -1101,143 +1115,151 @@ src/app/
 │           └── VisualNetworkSection.tsx
 │
 ├── chronicle/
-│   ├── [story-slug]/
-│   │   ├── page.tsx
-│   │   └── sections/
-│   │       ├── OpeningSection.tsx
-│   │       ├── CharactersSection.tsx
-│   │       ├── WorldItInhabitsSection.tsx
-│   │       ├── ConflictSection.tsx
-│   │       ├── StakesSection.tsx
-│   │       ├── ResolutionSection.tsx
-│   │       ├── MachinesInTheStorySection.tsx
-│   │       ├── StorysPlaceInHistorySection.tsx
-│   │       ├── RelatedStoriesSection.tsx
-│   │       └── VisualNarrativeSection.tsx
+│   ├── stories/
+│   │   └── [story-slug]/
+│   │       ├── page.tsx
+│   │       └── sections/
+│   │           ├── OpeningSection.tsx
+│   │           ├── CharactersSection.tsx
+│   │           ├── WorldItInhabitsSection.tsx
+│   │           ├── ConflictSection.tsx
+│   │           ├── StakesSection.tsx
+│   │           ├── ResolutionSection.tsx
+│   │           ├── MachinesInTheStorySection.tsx
+│   │           ├── StorysPlaceInHistorySection.tsx
+│   │           ├── RelatedStoriesSection.tsx
+│   │           └── VisualNarrativeSection.tsx
 │   │
-│   ├── [journey-slug]/
-│   │   ├── page.tsx
-│   │   └── sections/
-│   │       ├── BeginningSection.tsx
-│   │       ├── PeopleWhoShapedItSection.tsx
-│   │       ├── MachinesThatWerePartOfItSection.tsx
-│   │       ├── BattlesAlongTheWaySection.tsx
-│   │       ├── TurningPointsSection.tsx
-│   │       ├── GrowthSection.tsx
-│   │       ├── AchievementsSection.tsx
-│   │       ├── RelationshipsItBuiltSection.tsx
-│   │       ├── LegacySection.tsx
-│   │       └── VisualArcSection.tsx
+│   ├── journeys/
+│   │   └── [journey-slug]/
+│   │       ├── page.tsx
+│   │       └── sections/
+│   │           ├── BeginningSection.tsx
+│   │           ├── PeopleWhoShapedItSection.tsx
+│   │           ├── MachinesThatWerePartOfItSection.tsx
+│   │           ├── BattlesAlongTheWaySection.tsx
+│   │           ├── TurningPointsSection.tsx
+│   │           ├── GrowthSection.tsx
+│   │           ├── AchievementsSection.tsx
+│   │           ├── RelationshipsItBuiltSection.tsx
+│   │           ├── LegacySection.tsx
+│   │           └── VisualArcSection.tsx
 │   │
-│   └── [history-slug]/
-│       ├── page.tsx
-│       └── sections/
-│           ├── OriginSection.tsx
-│           ├── LineageSection.tsx
-│           ├── PeopleWhoMadeItSection.tsx
-│           ├── MachinesInvolvedSection.tsx
-│           ├── EventsThatDefinedItSection.tsx
-│           ├── DecisionsThatShapedItSection.tsx
-│           ├── MemoryAndLegacySection.tsx
-│           ├── EchoInThePresentSection.tsx
-│           └── ArtifactRecordSection.tsx
+│   └── histories/
+│       └── [history-slug]/
+│           ├── page.tsx
+│           └── sections/
+│               ├── OriginSection.tsx
+│               ├── LineageSection.tsx
+│               ├── PeopleWhoMadeItSection.tsx
+│               ├── MachinesInvolvedSection.tsx
+│               ├── EventsThatDefinedItSection.tsx
+│               ├── DecisionsThatShapedItSection.tsx
+│               ├── MemoryAndLegacySection.tsx
+│               ├── EchoInThePresentSection.tsx
+│               └── ArtifactRecordSection.tsx
 │
 └── ambition/
-    ├── [initiative-slug]/
-    │   ├── page.tsx
-    │   └── sections/
-    │       ├── MissionSection.tsx
-    │       ├── OpportunityItCreatesSection.tsx
-    │       ├── RoadmapSection.tsx
-    │       ├── TeamBuildingItSection.tsx
-    │       ├── FutureMachinesSection.tsx
-    │       ├── PartnersMakingItPossibleSection.tsx
-    │       ├── ProgressSoFarSection.tsx
-    │       ├── HowToBePartOfItSection.tsx
-    │       └── VisualStorySection.tsx
+    ├── initiatives/
+    │   └── [initiative-slug]/
+    │       ├── page.tsx
+    │       └── sections/
+    │           ├── MissionSection.tsx
+    │           ├── OpportunityItCreatesSection.tsx
+    │           ├── RoadmapSection.tsx
+    │           ├── TeamBuildingItSection.tsx
+    │           ├── FutureMachinesSection.tsx
+    │           ├── PartnersMakingItPossibleSection.tsx
+    │           ├── ProgressSoFarSection.tsx
+    │           ├── HowToBePartOfItSection.tsx
+    │           └── VisualStorySection.tsx
     │
-    ├── [celebration-slug]/
-    │   ├── page.tsx
-    │   └── sections/
-    │       ├── OccasionSection.tsx
-    │       ├── PeopleBeingCelebratedSection.tsx
-    │       ├── AchievementBehindItSection.tsx
-    │       ├── JourneyThatLedHereSection.tsx
-    │       ├── CommunityThatCelebratedSection.tsx
-    │       ├── WhatThisCelebrationSignalsSection.tsx
-    │       └── VisualMemorySection.tsx
+    ├── celebrations/
+    │   └── [celebration-slug]/
+    │       ├── page.tsx
+    │       └── sections/
+    │           ├── OccasionSection.tsx
+    │           ├── PeopleBeingCelebratedSection.tsx
+    │           ├── AchievementBehindItSection.tsx
+    │           ├── JourneyThatLedHereSection.tsx
+    │           ├── CommunityThatCelebratedSection.tsx
+    │           ├── WhatThisCelebrationSignalsSection.tsx
+    │           └── VisualMemorySection.tsx
     │
-    ├── [meetup-slug]/
-    │   ├── page.tsx
-    │   └── sections/
-    │       ├── EventSection.tsx
-    │       ├── LocationSection.tsx
-    │       ├── WhoWillBeThere.tsx
-    │       ├── AgendaSection.tsx
-    │       ├── MachinesOnShowSection.tsx
-    │       ├── InitiativesConnectedSection.tsx
-    │       ├── PartnersInvolvedSection.tsx
-    │       ├── HowToBePartOfItSection.tsx
-    │       └── VisualAtmosphereSection.tsx
+    ├── meetups/
+    │   └── [meetup-slug]/
+    │       ├── page.tsx
+    │       └── sections/
+    │           ├── EventSection.tsx
+    │           ├── LocationSection.tsx
+    │           ├── WhoWillBeThere.tsx
+    │           ├── AgendaSection.tsx
+    │           ├── MachinesOnShowSection.tsx
+    │           ├── InitiativesConnectedSection.tsx
+    │           ├── PartnersInvolvedSection.tsx
+    │           ├── HowToBePartOfItSection.tsx
+    │           └── VisualAtmosphereSection.tsx
     │
-    ├── [career-slug]/
-    │   ├── page.tsx
-    │   └── sections/
-    │       ├── WhyThisRoleExistsSection.tsx
-    │       ├── WhatItDemandsSection.tsx
-    │       ├── GrowthThisRoleOffersSection.tsx
-    │       ├── PeopleYouWillWorkWithSection.tsx
-    │       ├── MachinesYouWillWorkOnSection.tsx
-    │       ├── InitiativesYouWillDriveSection.tsx
-    │       ├── LifeInsideSection.tsx
-    │       ├── PartnersAroundYouSection.tsx
-    │       └── ApplySection.tsx
+    ├── careers/
+    │   └── [career-slug]/
+    │       ├── page.tsx
+    │       └── sections/
+    │           ├── WhyThisRoleExistsSection.tsx
+    │           ├── WhatItDemandsSection.tsx
+    │           ├── GrowthThisRoleOffersSection.tsx
+    │           ├── PeopleYouWillWorkWithSection.tsx
+    │           ├── MachinesYouWillWorkOnSection.tsx
+    │           ├── InitiativesYouWillDriveSection.tsx
+    │           ├── LifeInsideSection.tsx
+    │           ├── PartnersAroundYouSection.tsx
+    │           └── ApplySection.tsx
     │
-    └── [training-slug]/
-        ├── page.tsx
-        └── sections/
-            ├── ProgramSection.tsx
-            ├── SkillsItBuildsSection.tsx
-            ├── MethodsSection.tsx
-            ├── MachinesUsedSection.tsx
-            ├── PeopleWhoDeliverItSection.tsx
-            ├── CohortSection.tsx
-            ├── ScheduleSection.tsx
-            ├── SuccessStoriesSection.tsx
-            ├── HowToJoinSection.tsx
-            └── VisualWorldSection.tsx
+    └── trainings/
+        └── [training-slug]/
+            ├── page.tsx
+            └── sections/
+                ├── ProgramSection.tsx
+                ├── SkillsItBuildsSection.tsx
+                ├── MethodsSection.tsx
+                ├── MachinesUsedSection.tsx
+                ├── PeopleWhoDeliverItSection.tsx
+                ├── CohortSection.tsx
+                ├── ScheduleSection.tsx
+                ├── SuccessStoriesSection.tsx
+                ├── HowToJoinSection.tsx
+                └── VisualWorldSection.tsx
 ```
 
 ### 18.2 Cinematic Universe → Page File Mapping
 
 | URL Pattern | Series | Context | page.tsx Path |
 |---|---|---|---|
-| `/glory/[driver-slug]` | glory | driver | `src/app/glory/[driver-slug]/page.tsx` |
-| `/glory/[event-slug]` | glory | event | `src/app/glory/[event-slug]/page.tsx` |
-| `/glory/[award-slug]` | glory | award | `src/app/glory/[award-slug]/page.tsx` |
+| `/glory/drivers` | glory | driver | `src/app/glory/drivers/[driver-slug]/page.tsx` |
+| `/glory/events` | glory | event | `src/app/glory/events/[event-slug]/page.tsx` |
+| `/glory/awards` | glory | award | `src/app/glory/awards/[award-slug]/page.tsx` |
 | `/glory/hall-of-fame` | glory | hall-of-fame | `src/app/glory/hall-of-fame/page.tsx` |
-| `/pursuit/[series-slug]` | pursuit | series | `src/app/pursuit/[series-slug]/page.tsx` |
-| `/pursuit/[season-slug]` | pursuit | season | `src/app/pursuit/[season-slug]/page.tsx` |
-| `/pursuit/[season-slug]/[event-slug]` | pursuit | event | `src/app/pursuit/[season-slug]/[event-slug]/page.tsx` |
-| `/pursuit/[season-slug]/[event-slug]/[session-slug]` | pursuit | session | `src/app/pursuit/[season-slug]/[event-slug]/[session-slug]/page.tsx` |
-| `/craft/[car-slug]` | craft | car | `src/app/craft/[car-slug]/page.tsx` |
-| `/craft/[kit-slug]` | craft | kit | `src/app/craft/[kit-slug]/page.tsx` |
-| `/craft/[initiative-slug]` | craft | initiative | `src/app/craft/[initiative-slug]/page.tsx` |
+| `/pursuit/series` | pursuit | series | `src/app/pursuit/series/[series-slug]/page.tsx` |
+| `/pursuit/seasons` | pursuit | season | `src/app/pursuit/seasons/[season-slug]/page.tsx` |
+| `/pursuit/events` | pursuit | event | `src/app/pursuit/seasons/[season-slug]/events/[event-slug]/page.tsx` |
+| `/pursuit/sessions` | pursuit | session | `src/app/pursuit/seasons/[season-slug]/events/[event-slug]/sessions/[session-slug]/page.tsx` |
+| `/craft/cars` | craft | car | `src/app/craft/cars/[car-slug]/page.tsx` |
+| `/craft/kits` | craft | kit | `src/app/craft/kits/[kit-slug]/page.tsx` |
+| `/craft/initiatives` | craft | initiative | `src/app/craft/initiatives/[initiative-slug]/page.tsx` |
 | `/craft/engineering-philosophy` | craft | engineering-philosophy | `src/app/craft/engineering-philosophy/page.tsx` |
-| `/tribe/[driver-slug]` | tribe | driver | `src/app/tribe/[driver-slug]/page.tsx` |
-| `/tribe/[leader-slug]` | tribe | leader | `src/app/tribe/[leader-slug]/page.tsx` |
-| `/tribe/[member-slug]` | tribe | member | `src/app/tribe/[member-slug]/page.tsx` |
+| `/tribe/drivers` | tribe | driver | `src/app/tribe/drivers/[driver-slug]/page.tsx` |
+| `/tribe/leaders` | tribe | leader | `src/app/tribe/leaders/[leader-slug]/page.tsx` |
+| `/tribe/members` | tribe | member | `src/app/tribe/members/[member-slug]/page.tsx` |
 | `/tribe/culture-code` | tribe | culture-code | `src/app/tribe/culture-code/page.tsx` |
-| `/alliance/[organization-slug]` | alliance | organization | `src/app/alliance/[organization-slug]/page.tsx` |
+| `/alliance/organizations` | alliance | organization | `src/app/alliance/organizations/[organization-slug]/page.tsx` |
 | `/alliance/network` | alliance | network | `src/app/alliance/network/page.tsx` |
-| `/chronicle/[story-slug]` | chronicle | story | `src/app/chronicle/[story-slug]/page.tsx` |
-| `/chronicle/[journey-slug]` | chronicle | journey | `src/app/chronicle/[journey-slug]/page.tsx` |
-| `/chronicle/[history-slug]` | chronicle | history | `src/app/chronicle/[history-slug]/page.tsx` |
-| `/ambition/[initiative-slug]` | ambition | initiative | `src/app/ambition/[initiative-slug]/page.tsx` |
-| `/ambition/[celebration-slug]` | ambition | celebration | `src/app/ambition/[celebration-slug]/page.tsx` |
-| `/ambition/[meetup-slug]` | ambition | meetup | `src/app/ambition/[meetup-slug]/page.tsx` |
-| `/ambition/[career-slug]` | ambition | career | `src/app/ambition/[career-slug]/page.tsx` |
-| `/ambition/[training-slug]` | ambition | training | `src/app/ambition/[training-slug]/page.tsx` |
+| `/chronicle/stories` | chronicle | story | `src/app/chronicle/stories/[story-slug]/page.tsx` |
+| `/chronicle/journeys` | chronicle | journey | `src/app/chronicle/journeys/[journey-slug]/page.tsx` |
+| `/chronicle/histories` | chronicle | history | `src/app/chronicle/histories/[history-slug]/page.tsx` |
+| `/ambition/initiatives` | ambition | initiative | `src/app/ambition/initiatives/[initiative-slug]/page.tsx` |
+| `/ambition/celebrations` | ambition | celebration | `src/app/ambition/celebrations/[celebration-slug]/page.tsx` |
+| `/ambition/meetups` | ambition | meetup | `src/app/ambition/meetups/[meetup-slug]/page.tsx` |
+| `/ambition/careers` | ambition | career | `src/app/ambition/careers/[career-slug]/page.tsx` |
+| `/ambition/trainings` | ambition | training | `src/app/ambition/trainings/[training-slug]/page.tsx` |
 
 ### 18.3 Frontend Developer Rules
 
@@ -1276,9 +1298,9 @@ src/app/
 
 | Cinema Label | Cinema Description | URL |
 |---|---|---|
-| The Legends | Every driver who carried the flag | `/glory/[driver-slug]` — featured entries |
-| The Battles | Races that became history | `/glory/[event-slug]` — featured entries |
-| The Trophies | Awards and the stories behind them | `/glory/[award-slug]` — featured entries |
+| The Legends | Every driver who carried the flag | `/glory/drivers` — featured entries |
+| The Battles | Races that became history | `/glory/events` — featured entries |
+| The Trophies | Awards and the stories behind them | `/glory/awards` — featured entries |
 | Hall of Fame | The eternal record of AF Motorsport | `/glory/hall-of-fame` |
 
 **Spotlight:** Featured Driver (relationship → `drivers`) — label: "Current Champion"
@@ -1290,10 +1312,10 @@ src/app/
 
 | Cinema Label | Cinema Description | URL |
 |---|---|---|
-| The Championships | Series we compete in | `/pursuit/[series-slug]` — featured entries |
-| The Seasons | Every year's complete arc | `/pursuit/[season-slug]` — featured entries |
-| Race Weekends | Round by round, event by event | `/pursuit/[season-slug]/[event-slug]` — featured entries |
-| The Sessions | The moments within the moments | `/pursuit/[season-slug]/[event-slug]/[session-slug]` — featured entries |
+| The Championships | Series we compete in | `/pursuit/series` — featured entries |
+| The Seasons | Every year's complete arc | `/pursuit/seasons` — featured entries |
+| Race Weekends | Round by round, event by event | `/pursuit/events` — featured entries |
+| The Sessions | The moments within the moments | `/pursuit/sessions` — featured entries |
 
 **Spotlight:** Featured Season (relationship → `seasons`) — label: "Current Season"
 
@@ -1304,9 +1326,9 @@ src/app/
 
 | Cinema Label | Cinema Description | URL |
 |---|---|---|
-| The Machines | Every car we have ever fielded | `/craft/[car-slug]` — featured entries |
-| The Equipment | Precision instruments, meticulously designed | `/craft/[kit-slug]` — featured entries |
-| R&D Projects | The innovations we are building | `/craft/[initiative-slug]` — featured entries |
+| The Machines | Every car we have ever fielded | `/craft/cars` — featured entries |
+| The Equipment | Precision instruments, meticulously designed | `/craft/kits` — featured entries |
+| R&D Projects | The innovations we are building | `/craft/initiatives` — featured entries |
 | Engineering Philosophy | The belief system behind it all | `/craft/engineering-philosophy` |
 
 **Spotlight:** Featured Car (relationship → `cars`) — label: "Current Machine"
@@ -1318,9 +1340,9 @@ src/app/
 
 | Cinema Label | Cinema Description | URL |
 |---|---|---|
-| The Drivers | The people behind the racing numbers | `/tribe/[driver-slug]` — featured entries |
-| The Leaders | The humans who lead | `/tribe/[leader-slug]` — featured entries |
-| The Specialists | The crew who make it possible | `/tribe/[member-slug]` — featured entries |
+| The Drivers | The people behind the racing numbers | `/tribe/drivers` — featured entries |
+| The Leaders | The humans who lead | `/tribe/leaders` — featured entries |
+| The Specialists | The crew who make it possible | `/tribe/members` — featured entries |
 | Culture Code | The soul of AF Motorsport | `/tribe/culture-code` |
 
 **Spotlight:** Featured Member (relationship → `members`) — label: "Spotlight: The Team"
@@ -1332,7 +1354,7 @@ src/app/
 
 | Cinema Label | Cinema Description | URL |
 |---|---|---|
-| Our Partners | The organizations we work with | `/alliance/[organization-slug]` — featured entries |
+| Our Partners | The organizations we work with | `/alliance/organizations` — featured entries |
 | The Network | The complete ecosystem map | `/alliance/network` |
 
 **Spotlight:** Featured Organization (relationship → `organizations`) — label: "Strategic Partner"
@@ -1344,9 +1366,9 @@ src/app/
 
 | Cinema Label | Cinema Description | URL |
 |---|---|---|
-| Stories | Authored features and deep dives | `/chronicle/[story-slug]` — featured entries |
-| Journeys | Career arcs and personal chapters | `/chronicle/[journey-slug]` — featured entries |
-| Histories | The documented historical record | `/chronicle/[history-slug]` — featured entries |
+| Stories | Authored features and deep dives | `/chronicle/stories` — featured entries |
+| Journeys | Career arcs and personal chapters | `/chronicle/journeys` — featured entries |
+| Histories | The documented historical record | `/chronicle/histories` — featured entries |
 
 **Spotlight:** Featured Story (relationship → `stories`) — label: "Latest Story"
 
@@ -1357,11 +1379,11 @@ src/app/
 
 | Cinema Label | Cinema Description | URL |
 |---|---|---|
-| Initiatives | Projects shaping the future | `/ambition/[initiative-slug]` — featured entries |
-| Celebrations | Moments of recognition | `/ambition/[celebration-slug]` — featured entries |
-| Meetups | Events and gatherings | `/ambition/[meetup-slug]` — featured entries |
-| Careers | Open roles at AF Motorsport | `/ambition/[career-slug]` — featured entries |
-| Training Programs | Development programs we run | `/ambition/[training-slug]` — featured entries |
+| Initiatives | Projects shaping the future | `/ambition/initiatives` — featured entries |
+| Celebrations | Moments of recognition | `/ambition/celebrations` — featured entries |
+| Meetups | Events and gatherings | `/ambition/meetups` — featured entries |
+| Careers | Open roles at AF Motorsport | `/ambition/careers` — featured entries |
+| Training Programs | Development programs we run | `/ambition/trainings` — featured entries |
 
 **Spotlight:** Featured Career (relationship → `careers`) — label: "We're Hiring"
 
@@ -1480,4 +1502,4 @@ src/app/
 
 ---
 
-*Last updated: 2026-03-02. Reflects AF Motorsport Field Structure v1.0, Workflow Mapping v2.0, and Frontend Development Plan v1.0.*
+*Last updated: 2026-03-04. Reflects AF Motorsport Field Structure v1.0, Workflow Mapping v2.0, and Frontend Development Plan v1.0.*

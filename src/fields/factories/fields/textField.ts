@@ -1,6 +1,6 @@
 // fields/factories/fields/textField.ts
-import type { TextField, Field, StaticLabel } from 'payload'
 import { advanced } from '@/fields/factories/toggles/advanced'
+import type { Field, StaticLabel, TextField } from 'payload'
 
 type DictLeaf = {
   label?: StaticLabel
@@ -42,7 +42,7 @@ interface TextFactoryOptions {
 const WIDTH_MAP = {
   1: '100%',
   2: '50%',
-  3: '33.334%',
+  3: '33.333%',
   4: '25%',
   5: '20%',
 } as const
