@@ -20,6 +20,12 @@
     font-weight: unset;
     font-size: unset;
   }
+  .maplibregl-popup-content {
+    @apply bg-transparent! shadow-none! p-0! rounded-none!;
+  }
+  .maplibregl-popup-tip {
+    @apply hidden!;
+  }
 }
 
 @plugin "@tailwindcss/typography";

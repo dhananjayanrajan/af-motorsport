@@ -1,9 +1,9 @@
 // FILE: src/collections/Entities/Drivers/tabs/assets.ts
-import type { Field } from 'payload'
-import { dictionary } from '../sources/dictionary'
 import { relationshipFieldFactory } from '@/fields/factories/fields/relationshipField'
 import { uploadFieldFactory } from '@/fields/factories/fields/uploadField'
 import { advanced } from '@/fields/factories/toggles/advanced'
+import type { Field } from 'payload'
+import { dictionary } from '../sources/dictionary'
 
 export const assetsFields: Field[] = [
   uploadFieldFactory({
@@ -28,21 +28,21 @@ export const assetsFields: Field[] = [
           name: 'autograph',
           relationTo: 'media',
           dictionary: dictionary.tabs.assets.fields,
-          width: 3,
+          width: 1,
           flags: ['advanced'],
         }),
         uploadFieldFactory({
           name: 'helmet',
           relationTo: 'media',
           dictionary: dictionary.tabs.assets.fields,
-          width: 3,
+          width: 1,
           flags: ['advanced'],
         }),
         uploadFieldFactory({
           name: 'suit',
           relationTo: 'media',
           dictionary: dictionary.tabs.assets.fields,
-          width: 3,
+          width: 1,
           flags: ['advanced'],
         }),
       ]

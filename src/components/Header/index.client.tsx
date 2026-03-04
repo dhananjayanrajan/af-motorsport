@@ -61,7 +61,7 @@ type Props = {
 const MegaMenuItem = ({ item, isOpen, onMouseEnter, onMouseLeave }: any) => {
   const { label, tagline, subItems, spotlight } = item
   const pathname = usePathname()
-  const isActive = pathname.startsWith(item.link?.url)
+  const isActive = item.link?.url && item.link.url !== '/' ? pathname.startsWith(item.link.url) : pathname === item.link?.url
 
   return (
     <div className="relative h-full flex items-center" onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
@@ -74,7 +74,7 @@ const MegaMenuItem = ({ item, isOpen, onMouseEnter, onMouseLeave }: any) => {
       >
         <div className={cn(
           "absolute inset-0 transition-all duration-500 ease-[cubic-bezier(0.87,0,0.13,1)]",
-          isOpen || isActive ? "bg-red-600" : "bg-zinc-900"
+          isOpen ? "bg-red-600" : (isActive ? "bg-red-900/40" : "bg-zinc-900")
         )} />
         <div className="absolute inset-0 bg-white translate-x-[-101%] group-hover:translate-x-0 transition-transform duration-500 ease-[cubic-bezier(0.87,0,0.13,1)] opacity-20" />
 
@@ -124,44 +124,63 @@ const MegaMenuItem = ({ item, isOpen, onMouseEnter, onMouseLeave }: any) => {
                 </div>
 
                 <div className="flex flex-col">
-                  {subItems.map((subItem: any, idx: number) => (
-                    <CMSLink
-                      key={subItem.id}
-                      {...subItem.link}
-                      className={cn(
-                        "group/sub relative p-6 flex flex-col gap-1 border-b border-zinc-900 last:border-0 transition-all duration-300 overflow-hidden",
-                        subItem.isFeatured ? "text-red-600 bg-red-950/5" : "hover:text-red-600 hover:bg-zinc-900/40"
-                      )}
-                    >
-                      <div className="absolute inset-0 bg-red-600 translate-x-[-101%] group-hover/sub:translate-x-0 transition-transform duration-500 ease-[cubic-bezier(0.87,0,0.13,1)] opacity-10" />
-                      <div className="absolute left-0 top-0 bottom-0 w-[2px] bg-red-600 scale-y-0 group-hover/sub:scale-y-100 transition-transform duration-300 origin-top" />
+                  {subItems.map((subItem: any, idx: number) => {
+                    const isSubActive = subItem.link?.url && pathname === subItem.link.url
+                    return (
+                      <CMSLink
+                        key={subItem.id}
+                        {...subItem.link}
+                        className={cn(
+                          "group/sub relative p-6 flex flex-col gap-1 border-b border-zinc-900 last:border-0 transition-all duration-300 overflow-hidden",
+                          isSubActive ? "text-white bg-zinc-900/80" : (subItem.isFeatured ? "text-red-600 bg-red-950/5" : "text-zinc-400 hover:text-red-600 hover:bg-zinc-900/40")
+                        )}
+                      >
+                        <div className="absolute inset-0 bg-red-600 translate-x-[-101%] group-hover/sub:translate-x-0 transition-transform duration-500 ease-[cubic-bezier(0.87,0,0.13,1)] opacity-10" />
 
-                      <div className="flex items-center justify-between relative z-10">
-                        <div className="flex items-center gap-4">
-                          {subItem.isFeatured ? (
-                            <div className="relative">
-                              <Zap className="h-3 w-3 text-red-600 fill-red-600 animate-pulse" />
-                              <div className="absolute inset-0 blur-sm bg-red-600 opacity-50" />
+                        <div className={cn(
+                          "absolute left-0 top-0 bottom-0 w-[3px] bg-red-600 transition-transform duration-300 origin-top",
+                          isSubActive ? "scale-y-100" : "scale-y-0 group-hover/sub:scale-y-100"
+                        )} />
+
+                        <div className="flex items-center justify-between relative z-10">
+                          <div className="flex items-center gap-4">
+                            {subItem.isFeatured ? (
+                              <div className="relative">
+                                <Zap className="h-3 w-3 text-red-600 fill-red-600 animate-pulse" />
+                                <div className="absolute inset-0 blur-sm bg-red-600 opacity-50" />
+                              </div>
+                            ) : (
+                              <span className={cn(
+                                "text-[8px] font-mono transition-colors",
+                                isSubActive ? "text-red-600" : "text-zinc-800 group-hover/sub:text-red-500"
+                              )}>
+                                {String(idx + 1).padStart(2, '0')}
+                              </span>
+                            )}
+                            <div className="flex items-center gap-3">
+                              <div className={cn(
+                                "h-[1px] transition-all duration-500",
+                                isSubActive ? "w-36 bg-red-600" : "w-6 bg-zinc-900 group-hover/sub:w-36 group-hover/sub:bg-red-600"
+                              )} />
+                              <ArrowRight className={cn(
+                                "h-3.5 w-3.5 transition-all",
+                                isSubActive ? "text-red-600 translate-x-1" : "text-zinc-800 group-hover/sub:text-red-600 group-hover/sub:translate-x-1"
+                              )} />
                             </div>
-                          ) : (
-                            <span className="text-[8px] font-mono text-zinc-800 group-hover/sub:text-red-500 transition-colors">
-                              {String(idx + 1).padStart(2, '0')}
-                            </span>
-                          )}
-                          <div className="flex items-center gap-3">
-                            <div className="w-6 h-[1px] bg-zinc-900 group-hover/sub:w-36 group-hover/sub:bg-red-600 transition-all duration-500" />
-                            <ArrowRight className="h-3.5 w-3.5 text-zinc-800 group-hover/sub:text-red-600 transition-all" />
                           </div>
                         </div>
-                      </div>
 
-                      {subItem.description && (
-                        <span className="pl-7 text-[8px] font-bold uppercase tracking-widest text-zinc-600 group-hover/sub:text-zinc-400 transition-colors relative z-10">
-                          {subItem.description}
-                        </span>
-                      )}
-                    </CMSLink>
-                  ))}
+                        {subItem.description && (
+                          <span className={cn(
+                            "pl-7 text-[8px] font-bold uppercase tracking-widest transition-colors relative z-10",
+                            isSubActive ? "text-zinc-200" : "text-zinc-600 group-hover/sub:text-zinc-400"
+                          )}>
+                            {subItem.description}
+                          </span>
+                        )}
+                      </CMSLink>
+                    )
+                  })}
                 </div>
               </div>
 

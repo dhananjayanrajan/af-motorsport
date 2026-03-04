@@ -863,7 +863,6 @@ src/app/
 │
 ├── glory/
 │   ├── drivers/
-│   │   └── [driver-slug]/
 │   │       ├── page.tsx
 │   │       └── sections/
 │   │           ├── LegendSection.tsx

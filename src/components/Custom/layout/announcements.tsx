@@ -70,7 +70,7 @@ export const AnnouncementsSection = ({ data }: AnnouncementsSectionProps) => {
     : activeItems
 
   return (
-    <section className="relative z-30 w-full bg-black border-y border-zinc-900 overflow-hidden py-0 mt-12">
+    <section className="relative z-30 w-full bg-black border-y border-zinc-900 overflow-hidden py-0">
       <div className="w-full">
         <Carousel
           plugins={[plugin.current]}
