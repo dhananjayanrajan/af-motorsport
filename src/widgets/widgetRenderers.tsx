@@ -1,31 +1,30 @@
-import React from 'react'
 import Link from 'next/link'
+import React from 'react'
+import { buildCacheKey, getWidgetCache, setWidgetCache } from './widgetCache'
 import type {
-  StatsBarConfig,
-  RecentActivityFeedConfig,
-  TypeBreakdownChartConfig,
   CompletionScoreConfig,
-  ToggleDistributionConfig,
-  RelationshipDensityConfig,
-  TopTagsCategoriesConfig,
   PublishingPipelineConfig,
+  RecentActivityFeedConfig,
+  RelationshipDensityConfig,
   SlugHealthConfig,
-  TimelineConfig,
   SlugHealthResult,
+  StatsBarConfig,
+  TimelineConfig,
+  ToggleDistributionConfig,
+  TopTagsCategoriesConfig,
+  TypeBreakdownChartConfig,
 } from './widgetTypes'
 import {
+  calculateCompletionScore,
+  countArrayItems,
   formatRecordName,
   formatTypeName,
-  calculateCompletionScore,
-  scanRelationFields,
   getPipelineStage,
-  scoreColor,
   groupByMonth,
-  countArrayItems,
+  scanRelationFields
 } from './widgetUtils'
-import { getWidgetCache, setWidgetCache, buildCacheKey } from './widgetCache'
 
-// ─── Design tokens – using Payload's native CSS variables ───────────────────
+// Design tokens – Payload's native CSS variables
 const C = {
   bg: 'var(--theme-elevation-0)',
   surface: 'var(--theme-elevation-50)',
@@ -51,7 +50,7 @@ const ACCENT = [C.accent1, C.accent2, C.accent3, C.accent4, C.accent5, C.accent6
 
 const DEFAULT_LIMIT = 1000
 
-// ─── Primitives – Payload‑style cards ────────────────────────────────────────
+// Primitives – Payload‑style cards
 const card = (s?: React.CSSProperties): React.CSSProperties => ({
   background: C.bg,
   padding: 12,
@@ -98,7 +97,7 @@ const MID: React.CSSProperties = {
   color: C.strong,
 }
 
-// ─── Additional shared styles ────────────────────────────────────────────────
+// Additional shared styles
 const TRUNCATE: React.CSSProperties = {
   overflow: 'hidden',
   textOverflow: 'ellipsis',
@@ -238,7 +237,7 @@ function Sparkline({ vals, color, w = 80, h = 32 }: { vals: number[]; color: str
   )
 }
 
-// ─── StatsBar — span 2 ────────────────────────────────────────────────────────
+// Status Bar
 export async function renderStatsBar(config: StatsBarConfig, payload: any): Promise<React.ReactNode> {
   const cacheKey = buildCacheKey(config.collectionSlug, 'StatsBar')
   type D = {
@@ -291,80 +290,126 @@ export async function renderStatsBar(config: StatsBarConfig, payload: any): Prom
   const pubPct = d.total > 0 ? Math.round((d.pub / d.total) * 100) : 0
   const delta = d.thisMonth - d.lastMonth
 
+  const UI = {
+    bg: 'var(--theme-elevation-0)',
+    surface: 'var(--theme-elevation-50)',
+    border: 'var(--theme-elevation-150)',
+    line: 'var(--theme-elevation-200)',
+    textMuted: 'var(--theme-elevation-400)',
+    textStrong: 'var(--theme-elevation-950)',
+    accent: 'var(--theme-error-500)',
+    success: 'var(--theme-success-500)',
+  }
+
+  const containerStyle: React.CSSProperties = {
+    background: UI.bg,
+    padding: 24,
+    border: `1px solid ${UI.border}`,
+    position: 'relative',
+    overflow: 'hidden',
+    minHeight: 340,
+    display: 'flex',
+    flexDirection: 'column'
+  }
+
+  const gridStyle: React.CSSProperties = {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+    gap: 1,
+    background: UI.line,
+    border: `1px solid ${UI.line}`,
+    flex: 1
+  }
+
   if (d.total === 0) {
     return (
-      <div style={card()}>
-        {config.title && <div style={{ ...CAP, marginBottom: 12 }}>{config.title}</div>}
-        <Empty message="No records in this collection yet." />
+      <div style={containerStyle}>
+        <div style={{ fontSize: 9, fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.2em', color: UI.textMuted }}>
+          {config.title || 'Collection_Archive'}
+        </div>
+        <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, color: UI.textMuted, fontStyle: 'italic' }}>
+          NO_DATA_NODES_FOUND
+        </div>
       </div>
     )
   }
 
   return (
-    <div style={card()}>
-      {config.title && <div style={{ ...CAP, marginBottom: 16 }}>{config.title}</div>}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 12 }}>
-        {/* Zone A: hero total + trend sparkline */}
-        <div className='p-16' style={cell({ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: 12 })}>
+    <div style={containerStyle}>
+      <div style={{ position: 'absolute', top: 0, right: 0, width: 30, height: 1, background: UI.accent }} />
+      <div style={{ position: 'absolute', top: 0, right: 0, width: 1, height: 30, background: UI.accent }} />
+
+      {config.title && (
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 20 }}>
+          <div style={{ fontSize: 9, fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.2em', color: UI.textMuted, display: 'flex', alignItems: 'center', gap: 6 }}>
+            <div style={{ width: 6, height: 6, background: UI.accent }} />
+            {config.title}
+          </div>
+          <div style={{ fontSize: 8, fontFamily: 'monospace', color: UI.textMuted, opacity: 0.5 }}>MONUMENT_SYS_V.8.4</div>
+        </div>
+      )}
+
+      <div style={gridStyle}>
+        <div style={{ background: UI.bg, padding: 20, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
           <div>
-            <div style={CAP}>Total</div>
-            <div style={{ ...HERO, marginTop: 4 }}>{d.total}</div>
+            <div style={{ fontSize: 8, fontWeight: 900, color: UI.textMuted, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Total_Records</div>
+            <div style={{ fontSize: 56, fontWeight: 950, fontStyle: 'italic', lineHeight: 0.8, color: UI.textStrong, letterSpacing: '-0.04em', margin: '12px 0' }}>{d.total}</div>
           </div>
           <div>
-            <div style={{ fontSize: 13, fontWeight: 600, color: delta >= 0 ? C.success : C.error, marginBottom: 6 }}>
-              {delta >= 0 ? '↑' : '↓'} {Math.abs(delta)} this month
+            <div style={{ fontSize: 10, fontWeight: 800, color: delta >= 0 ? UI.success : UI.accent, marginBottom: 12 }}>
+              {delta >= 0 ? '▲' : '▼'} {Math.abs(delta)} <span style={{ opacity: 0.5, fontSize: 8 }}>THIS_PERIOD</span>
             </div>
-            <Sparkline vals={d.trend} color={C.accent1} w={120} h={120} />
+            <Sparkline vals={d.trend} color={UI.accent} w={140} h={30} />
           </div>
-          <Link
-            href={`/admin/collections/${config.collectionSlug}`}
-            style={{ ...BROWSE_LINK, display: 'inline-flex', alignItems: 'center', gap: 4 }}
-          >
-            Browse all →
-          </Link>
         </div>
 
-        {/* Zone B: 2×2 sub‑stat grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
-          {(
-            [
-              { label: 'Published', n: d.pub, color: C.success },
-              { label: 'Unpublished', n: d.unpub, color: C.muted },
-              { label: 'Featured', n: d.featured, color: C.warn },
-              { label: 'Pinned', n: d.pinned, color: C.accent4 },
-            ] as const
-          ).map(({ label, n, color }) => (
-            <div key={label} style={cell({ display: 'flex', flexDirection: 'column', gap: 4 })}>
-              <div style={CAP}>{label}</div>
-              <div style={{ ...BIG, color, marginTop: 2 }}>{n}</div>
-              <Bar pct={d.total > 0 ? Math.round((n / d.total) * 100) : 0} color={color} h={3} />
-              <div style={{ fontSize: 11, color: C.subtle }}>{d.total > 0 ? Math.round((n / d.total) * 100) : 0}%</div>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 1, background: UI.line }}>
+          {[
+            { label: 'Published', n: d.pub, color: UI.success },
+            { label: 'Draft', n: d.unpub, color: UI.textMuted },
+            { label: 'Featured', n: d.featured, color: UI.accent },
+            { label: 'Pinned', n: d.pinned, color: UI.textStrong },
+          ].map((item) => (
+            <div key={item.label} style={{ background: UI.surface, padding: 16, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+              <div style={{ fontSize: 7, fontWeight: 900, color: UI.textMuted, textTransform: 'uppercase', letterSpacing: '0.15em', marginBottom: 4 }}>{item.label}</div>
+              <div style={{ fontSize: 20, fontWeight: 900, fontStyle: 'italic', color: item.color }}>{item.n}</div>
+              <div style={{ width: '100%', height: 2, background: UI.line, marginTop: 8 }}>
+                <div style={{ width: `${(item.n / d.total) * 100}%`, height: '100%', background: item.color }} />
+              </div>
             </div>
           ))}
         </div>
 
-        {/* Zone C: publish‑rate ring */}
-        <div style={cell({ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 8 })}>
-          <div style={CAP}>Publish Rate</div>
-          <div style={RING_WRAPPER}>
-            <Ring pct={pubPct} size={100} stroke={10} color={scoreColor(pubPct)} />
-            <div style={RING_CENTER}>
-              <div style={{ ...MID, color: scoreColor(pubPct) }}>{pubPct}%</div>
+        <div style={{ background: UI.bg, padding: 20, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Ring pct={pubPct} size={90} stroke={3} color={pubPct > 80 ? UI.success : UI.accent} />
+            <div style={{ position: 'absolute', textAlign: 'center' }}>
+              <div style={{ fontSize: 20, fontWeight: 950, fontStyle: 'italic', color: UI.textStrong, lineHeight: 1 }}>{pubPct}%</div>
+              <div style={{ fontSize: 6, fontWeight: 900, color: UI.textMuted, textTransform: 'uppercase' }}>Index</div>
             </div>
           </div>
-          <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: 12, color: C.subtle }}>
-              {d.pub} of {d.total}
-            </div>
-            <div style={{ fontSize: 12, color: C.subtle }}>records live</div>
-          </div>
+          <Link
+            href={`/admin/collections/${config.collectionSlug}`}
+            style={{
+              marginTop: 20,
+              fontSize: 8,
+              fontWeight: 900,
+              color: UI.accent,
+              textDecoration: 'none',
+              textTransform: 'uppercase',
+              letterSpacing: '0.1em',
+              borderBottom: `1px solid ${UI.accent}44`,
+              paddingBottom: 2
+            }}
+          >
+            Terminal_Access →
+          </Link>
         </div>
       </div>
     </div>
   )
 }
 
-// ─── RecentActivityFeed — span 1 ─────────────────────────────────────────────
 export async function renderRecentActivityFeed(config: RecentActivityFeedConfig, payload: any): Promise<React.ReactNode> {
   const limit = config.limit ?? 10
   const cacheKey = buildCacheKey(config.collectionSlug, 'RecentActivityFeed', { limit })
@@ -389,81 +434,101 @@ export async function renderRecentActivityFeed(config: RecentActivityFeedConfig,
     await setWidgetCache(cacheKey, items, config.cacheTTL ?? 60)
   }
 
+  const UI = {
+    bg: 'var(--theme-elevation-0)',
+    surface: 'var(--theme-elevation-50)',
+    border: 'var(--theme-elevation-150)',
+    line: 'var(--theme-elevation-200)',
+    textMuted: 'var(--theme-elevation-400)',
+    textStrong: 'var(--theme-elevation-950)',
+    accent: 'var(--theme-error-500)',
+    success: 'var(--theme-success-500)',
+    warn: 'var(--theme-warning-500)',
+  }
+
+  const containerStyle: React.CSSProperties = {
+    background: UI.bg,
+    padding: 24,
+    border: `1px solid ${UI.border}`,
+    display: 'flex',
+    flexDirection: 'column',
+    minHeight: 340,
+    height: '100%'
+  }
+
   return (
-    <div style={card({ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 260 })}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-        <div style={CAP}>{config.title ?? 'Recent Activity'}</div>
-        <Link href={`/admin/collections/${config.collectionSlug}`} style={BROWSE_LINK}>
-          All →
+    <div style={containerStyle}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
+        <div style={{ fontSize: 9, fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.2em', color: UI.textMuted, display: 'flex', alignItems: 'center', gap: 8 }}>
+          <div style={{ width: 12, height: 2, background: UI.accent }} />
+          {config.title ?? 'Recent_Activity_Log'}
+        </div>
+        <Link href={`/admin/collections/${config.collectionSlug}`} style={{ fontSize: 8, fontWeight: 900, color: UI.accent, textDecoration: 'none', letterSpacing: '0.1em', border: `1px solid ${UI.accent}`, padding: '4px 8px' }}>
+          ACCESS_TERMINAL →
         </Link>
       </div>
 
-      <div style={{ flex: 1, overflowY: 'auto', maxHeight: 320 }}>
+      <div style={{ flex: 1, overflowY: 'auto', paddingRight: 4 }}>
         {items.length === 0 ? (
-          <Empty message="No recent activity." />
+          <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, color: UI.textMuted, fontStyle: 'italic' }}>NO_RECENT_TRANSMISSIONS</div>
         ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-            {items.map((item, i) => (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 2 }}>
+            {items.map((item) => (
               <Link key={item.id} href={`/admin/collections/${config.collectionSlug}/${item.id}`} style={{ textDecoration: 'none' }}>
                 <div
                   style={{
                     display: 'flex',
                     alignItems: 'center',
-                    gap: 12,
-                    padding: '8px 6px',
-                    borderRadius: 2,
-                    transition: 'background 0.1s ease',
-                    background: 'transparent',
+                    gap: 16,
+                    padding: '16px',
+                    background: UI.surface,
+                    borderLeft: `3px solid ${item.published ? UI.success : UI.line}`,
+                    position: 'relative',
                   }}
                 >
-                  {/* Avatar with status color */}
                   <div
                     style={{
                       width: 36,
                       height: 36,
-                      borderRadius: '50%',
                       flexShrink: 0,
-                      background: item.published ? `linear-gradient(145deg, ${C.success}40, ${C.success}20)` : C.line,
+                      background: item.published ? UI.success : UI.line,
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
                       fontSize: 14,
-                      fontWeight: 600,
-                      color: item.published ? C.success : C.mid,
+                      fontWeight: 950,
+                      fontStyle: 'italic',
+                      color: item.published ? UI.bg : UI.textMuted,
+                      transform: 'skewX(-12deg)',
                     }}
                   >
-                    {item.name.charAt(0).toUpperCase()}
+                    <span style={{ transform: 'skewX(12deg)' }}>{item.name.charAt(0)}</span>
                   </div>
-                  {/* Content */}
+
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 2 }}>
-                      <span
-                        style={{
-                          fontSize: 14,
-                          fontWeight: 600,
-                          color: C.text,
-                          ...TRUNCATE,
-                        }}
-                      >
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 6 }}>
+                      <span style={{ fontSize: 12, fontWeight: 950, color: UI.textStrong, textTransform: 'uppercase', letterSpacing: '-0.01em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                         {item.name}
                       </span>
-                      {item.published ? (
-                        <Pill label="Published" color="white" bg={C.success} />
-                      ) : (
-                        <Pill label="Draft" color={C.mid} />
-                      )}
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
-                      <span style={{ fontSize: 11, color: C.subtle }}>{item.type}</span>
-                      <span style={{ fontSize: 11, fontWeight: 600, color: ageCol(item.daysAgo) }}>
-                        {item.daysAgo === 0 ? 'Today' : item.daysAgo === 1 ? '1d ago' : `${item.daysAgo}d ago`}
+                      <span style={{ fontSize: 8, fontFamily: 'monospace', fontWeight: 900, color: item.daysAgo <= 1 ? UI.success : UI.textMuted, background: UI.bg, padding: '2px 4px', border: `1px solid ${UI.line}` }}>
+                        {item.daysAgo === 0 ? 'T_00:00' : `${item.daysAgo}D_LAG`}
                       </span>
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                      <Bar pct={item.completion} color={scoreColor(item.completion)} h={4} />
-                      <span style={{ fontSize: 10, fontWeight: 600, color: scoreColor(item.completion), flexShrink: 0 }}>
-                        {item.completion}%
-                      </span>
+
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
+                      <span style={{ fontSize: 8, fontWeight: 900, color: UI.accent, letterSpacing: '0.1em' }}>{item.type}</span>
+                      <div style={{ height: 1, flex: 1, background: UI.line, opacity: 0.3 }} />
+                      <span style={{ fontSize: 7, fontWeight: 900, color: UI.textMuted, textTransform: 'uppercase' }}>CP_IDX: {item.completion}%</span>
+                    </div>
+
+                    <div style={{ width: '100%', height: 2, background: UI.line, position: 'relative' }}>
+                      <div
+                        style={{
+                          width: `${item.completion}%`,
+                          height: '100%',
+                          background: item.completion > 80 ? UI.success : item.completion > 40 ? UI.warn : UI.accent,
+                        }}
+                      />
                     </div>
                   </div>
                 </div>
@@ -476,7 +541,7 @@ export async function renderRecentActivityFeed(config: RecentActivityFeedConfig,
   )
 }
 
-// ─── TypeBreakdownChart — span 1 ─────────────────────────────────────────────
+// Type Breakdown - Multi-Channel Signal Monitor
 export async function renderTypeBreakdownChart(config: TypeBreakdownChartConfig, payload: any): Promise<React.ReactNode> {
   const cacheKey = buildCacheKey(config.collectionSlug, 'TypeBreakdownChart')
   type Row = { name: string; total: number; pub: number; pubPct: number }
@@ -503,80 +568,87 @@ export async function renderTypeBreakdownChart(config: TypeBreakdownChartConfig,
     await setWidgetCache(cacheKey, d, config.cacheTTL ?? 60)
   }
 
+  const UI = {
+    bg: 'var(--theme-elevation-0)',
+    surface: 'var(--theme-elevation-50)',
+    border: 'var(--theme-elevation-150)',
+    line: 'var(--theme-elevation-200)',
+    textMuted: 'var(--theme-elevation-400)',
+    textStrong: 'var(--theme-elevation-950)',
+    accent: 'var(--theme-error-500)',
+    success: 'var(--theme-success-500)',
+  }
+
+  const containerStyle: React.CSSProperties = {
+    background: UI.bg,
+    padding: 24,
+    border: `1px solid ${UI.border}`,
+    display: 'flex',
+    flexDirection: 'column',
+    minHeight: 340,
+    height: '100%'
+  }
+
+  const listStyle: React.CSSProperties = {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+    gap: 2,
+    flex: 1,
+    overflowY: 'auto'
+  }
+
   const nonEmpty = d.rows.filter((r) => r.total > 0)
   const best = nonEmpty.length > 0 ? [...nonEmpty].sort((a, b) => b.pubPct - a.pubPct)[0] : null
-  const worst = nonEmpty.length > 1 ? [...nonEmpty].sort((a, b) => a.pubPct - b.pubPct)[0] : null
   const maxT = d.rows[0]?.total ?? 1
 
   return (
-    <div style={card({ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 260 })}>
-      <div style={{ ...CAP, marginBottom: 12 }}>{config.title ?? 'Type Breakdown'}</div>
+    <div style={containerStyle}>
+      <div style={{ fontSize: 9, fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.2em', color: UI.textMuted, marginBottom: 24, display: 'flex', alignItems: 'center', gap: 8 }}>
+        <div style={{ width: 4, height: 12, background: UI.accent }} />
+        {config.title ?? 'Type_Distribution_Matrix'}
+      </div>
 
-      {d.rows.length === 0 ? (
-        <Empty />
-      ) : (
-        <>
-          <div style={{ flex: 1, overflowY: 'auto', maxHeight: 280 }}>
-            {d.rows.map((row) => (
-              <div key={row.name} style={{ marginBottom: 10 }}>
-                <div style={FLEX_BETWEEN}>
-                  <span style={{ fontSize: 13, fontWeight: 500, color: C.text }}>{row.name}</span>
-                  <span style={{ fontSize: 12, color: C.subtle }}>{row.total}</span>
-                </div>
-                <div
-                  style={{
-                    width: `${Math.round((row.total / maxT) * 100)}%`,
-                    height: 8,
-                    borderRadius: 2,
-                    overflow: 'hidden',
-                    display: 'flex',
-                    background: C.muted,
-                  }}
-                >
-                  <div style={{ width: `${row.pubPct}%`, background: C.success }} />
-                </div>
-                <div style={{ fontSize: 10, color: scoreColor(row.pubPct), marginTop: 2, fontWeight: 500 }}>
-                  {row.pubPct}% published
-                </div>
+      <div style={listStyle}>
+        {d.rows.length === 0 ? (
+          <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, color: UI.textMuted, fontStyle: 'italic' }}>NO_NODES_DETECTED</div>
+        ) : (
+          d.rows.map((row) => (
+            <div key={row.name} style={{ background: UI.surface, padding: '16px', borderLeft: `1px solid ${UI.line}`, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 8 }}>
+                <span style={{ fontSize: 11, fontWeight: 950, color: UI.textStrong, letterSpacing: '0.05em' }}>{row.name.toUpperCase()}</span>
+                <span style={{ fontSize: 8, fontFamily: 'monospace', fontWeight: 900, color: UI.textMuted }}>VOL_{String(row.total).padStart(3, '0')}</span>
               </div>
-            ))}
-          </div>
+              <div style={{ width: '100%', height: 4, background: UI.line, position: 'relative', overflow: 'hidden' }}>
+                <div style={{ width: `${Math.round((row.total / maxT) * 100)}%`, height: '100%', background: UI.textMuted, opacity: 0.2 }} />
+                <div style={{ position: 'absolute', top: 0, left: 0, width: `${row.pubPct}%`, height: '100%', background: UI.success }} />
+              </div>
+              <div style={{ fontSize: 8, fontWeight: 900, color: row.pubPct > 50 ? UI.success : UI.accent, marginTop: 6, textAlign: 'right', letterSpacing: '0.1em', fontStyle: 'italic' }}>
+                {row.pubPct}%_SYNC_STATUS
+              </div>
+            </div>
+          ))
+        )}
+      </div>
 
-          <div style={{ display: 'flex', gap: 12, marginTop: 12 }}>
-            {[
-              { color: C.success, label: 'Published' },
-              { color: C.muted, label: 'Draft' },
-            ].map(({ color, label }) => (
-              <div key={label} style={LEGEND_ITEM}>
-                <div style={{ ...LEGEND_DOT, background: color }} />
-                <span style={{ fontSize: 10, color: C.subtle }}>{label}</span>
-              </div>
-            ))}
+      {best && (
+        <div style={{ marginTop: 24, paddingTop: 16, borderTop: `1px solid ${UI.line}`, display: 'flex', gap: 12 }}>
+          <div style={{ flex: 1, background: UI.bg, padding: '12px 16px', border: `1px solid ${UI.border}`, borderRight: `4px solid ${UI.success}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div>
+              <div style={{ fontSize: 7, fontWeight: 900, color: UI.success, textTransform: 'uppercase', letterSpacing: '0.15em' }}>Peak_Sync_Efficiency</div>
+              <div style={{ fontSize: 14, fontWeight: 950, fontStyle: 'italic', color: UI.textStrong, textTransform: 'uppercase' }}>{best.name}</div>
+            </div>
+            <div style={{ textAlign: 'right' }}>
+              <div style={{ fontSize: 18, fontWeight: 950, fontStyle: 'italic', color: UI.success }}>{best.pubPct}%</div>
+              <div style={{ fontSize: 6, fontWeight: 900, color: UI.textMuted, textTransform: 'uppercase' }}>Live_Ratio</div>
+            </div>
           </div>
-
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginTop: 12 }}>
-            {best && (
-              <div style={cell({ borderLeft: `2px solid ${C.success}`, padding: '8px 10px' })}>
-                <div style={{ ...CAP, color: C.success, marginBottom: 2 }}>Best</div>
-                <div style={{ fontSize: 13, fontWeight: 600, color: C.text }}>{best.name}</div>
-                <div style={{ ...MID, color: C.success, marginTop: 2 }}>{best.pubPct}%</div>
-              </div>
-            )}
-            {worst && worst.name !== best?.name && (
-              <div style={cell({ borderLeft: `2px solid ${C.error}`, padding: '8px 10px' })}>
-                <div style={{ ...CAP, color: C.error, marginBottom: 2 }}>Needs Work</div>
-                <div style={{ fontSize: 13, fontWeight: 600, color: C.text }}>{worst.name}</div>
-                <div style={{ ...MID, color: C.error, marginTop: 2 }}>{worst.pubPct}%</div>
-              </div>
-            )}
-          </div>
-        </>
+        </div>
       )}
     </div>
   )
 }
 
-// ─── CompletionScore — span 2 ─────────────────────────────────────────────────
+// Completion Score - System Integrity Diagnostic
 export async function renderCompletionScore(config: CompletionScoreConfig, payload: any): Promise<React.ReactNode> {
   const sections = config.sections ?? ['basics', 'details', 'traits', 'metrics', 'assets', 'contexts']
   const cacheKey = buildCacheKey(config.collectionSlug, 'CompletionScore', { s: sections.join(',') })
@@ -596,137 +668,103 @@ export async function renderCompletionScore(config: CompletionScoreConfig, paylo
       avg,
       worst: all.slice(0, 5),
       best: all.slice(-5).reverse(),
-      bands: (
-        [
-          { label: '0–25', count: all.filter((r) => r.score <= 25).length, color: C.error },
-          { label: '26–50', count: all.filter((r) => r.score > 25 && r.score <= 50).length, color: C.warn },
-          { label: '51–75', count: all.filter((r) => r.score > 50 && r.score <= 75).length, color: C.accent1 },
-          { label: '76–100', count: all.filter((r) => r.score > 75).length, color: C.success },
-        ] as Omit<Band, 'pct'>[]
-      ).map((b) => ({ ...b, pct: all.length > 0 ? Math.round((b.count / all.length) * 100) : 0 })),
+      bands: [
+        { label: '0-25', count: all.filter((r) => r.score <= 25).length, color: 'var(--theme-error-500)' },
+        { label: '26-50', count: all.filter((r) => r.score > 25 && r.score <= 50).length, color: 'var(--theme-warning-500)' },
+        { label: '51-75', count: all.filter((r) => r.score > 50 && r.score <= 75).length, color: 'var(--theme-elevation-600)' },
+        { label: '76-100', count: all.filter((r) => r.score > 75).length, color: 'var(--theme-success-500)' },
+      ].map((b) => ({ ...b, pct: all.length > 0 ? Math.round((b.count / all.length) * 100) : 0 })),
     }
     await setWidgetCache(cacheKey, d, config.cacheTTL ?? 60)
   }
 
-  const maxBand = Math.max(...d.bands.map((b) => b.count), 1)
+  const UI = {
+    bg: 'var(--theme-elevation-0)',
+    surface: 'var(--theme-elevation-50)',
+    border: 'var(--theme-elevation-150)',
+    line: 'var(--theme-elevation-200)',
+    textMuted: 'var(--theme-elevation-400)',
+    textStrong: 'var(--theme-elevation-950)',
+    accent: 'var(--theme-error-500)',
+    success: 'var(--theme-success-500)',
+  }
 
-  const ScoreRow = ({ item }: { item: Item }) => (
-    <Link
-      href={`/admin/collections/${config.collectionSlug}/${item.id}`}
-      style={{ textDecoration: 'none', display: 'block', marginBottom: 10 }}
-    >
-      <div style={FLEX_BETWEEN}>
-        <span
-          style={{
-            fontSize: 13,
-            color: C.text,
-            ...TRUNCATE,
-            maxWidth: '70%',
-          }}
-        >
-          {item.name}
-        </span>
-        <span style={{ fontSize: 13, fontWeight: 600, color: scoreColor(item.score) }}>{item.score}%</span>
+  const containerStyle: React.CSSProperties = {
+    background: UI.bg,
+    padding: 24,
+    border: `1px solid ${UI.border}`,
+    display: 'flex',
+    flexDirection: 'column',
+    minHeight: 340,
+    height: '100%'
+  }
+
+  const gridStyle: React.CSSProperties = {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+    gap: 1,
+    background: UI.line,
+    border: `1px solid ${UI.line}`,
+    flex: 1
+  }
+
+  const ScoreRow = ({ item, color }: { item: Item; color: string }) => (
+    <Link href={`/admin/collections/${config.collectionSlug}/${item.id}`} style={{ textDecoration: 'none', display: 'block', background: UI.surface, padding: '10px 12px', borderLeft: `3px solid ${color}`, marginBottom: 1 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8 }}>
+        <span style={{ fontSize: 10, fontWeight: 950, color: UI.textStrong, textTransform: 'uppercase', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.name}</span>
+        <span style={{ fontSize: 11, fontWeight: 950, fontStyle: 'italic', color }}>{String(item.score).padStart(2, '0')}%</span>
       </div>
-      <Bar pct={item.score} color={scoreColor(item.score)} h={4} />
     </Link>
   )
 
   return (
-    <div style={card({ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 300 })}>
-      <div style={{ ...CAP, marginBottom: 16 }}>{config.title ?? 'Profile Completion'}</div>
+    <div style={containerStyle}>
+      <div style={{ fontSize: 9, fontWeight: 950, textTransform: 'uppercase', letterSpacing: '0.2em', color: UI.textMuted, marginBottom: 24, display: 'flex', alignItems: 'center', gap: 8 }}>
+        <div style={{ width: 12, height: 2, background: UI.accent }} />
+        {config.title ?? 'Integrity_Check_Pulse'}
+      </div>
 
-      {d.total === 0 ? (
-        <Empty />
-      ) : (
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'auto 1fr 1fr',
-            gap: 16,
-            alignItems: 'stretch',
-            flex: 1,
-          }}
-        >
-          {/* Left: ring + histogram */}
-          <div
-            style={cell({
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'space-between',
-              height: '100%',
-              padding: '20px 16px',
-            })}
-          >
-            <div>
-              <div style={{ ...CAP, textAlign: 'center', marginBottom: 8 }}>Average Score</div>
-              <div style={RING_WRAPPER}>
-                <Ring pct={d.avg} size={100} stroke={10} color={scoreColor(d.avg)} />
-                <div style={RING_CENTER}>
-                  <div style={{ fontSize: 20, fontWeight: 700, color: scoreColor(d.avg) }}>{d.avg}%</div>
-                </div>
-              </div>
-              <div style={{ textAlign: 'center', marginTop: 8, fontSize: 12, color: C.subtle }}>
-                {d.total} records
-              </div>
-            </div>
-
-            <div>
-              <div style={{ ...CAP, marginBottom: 10 }}>Distribution</div>
-              <div style={{ display: 'flex', gap: 4, alignItems: 'flex-end', height: 60 }}>
-                {d.bands.map((b) => (
-                  <div
-                    key={b.label}
-                    style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}
-                  >
-                    <span style={{ fontSize: 11, fontWeight: 600, color: b.color }}>{b.count}</span>
-                    <div
-                      style={{
-                        width: '100%',
-                        background: b.color,
-                        borderRadius: '2px 2px 0 0',
-                        opacity: 0.9,
-                        height: `${Math.max(Math.round((b.count / maxBand) * 40), 4)}px`,
-                      }}
-                    />
-                    <span style={{ fontSize: 9, color: C.subtle, whiteSpace: 'nowrap' }}>{b.label}</span>
-                    <span style={{ fontSize: 9, color: C.mid, whiteSpace: 'nowrap' }}>{b.pct}%</span>
-                  </div>
-                ))}
-              </div>
+      <div style={gridStyle}>
+        <div style={{ background: UI.bg, padding: 24, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 24 }}>
+            <Ring pct={d.avg} size={120} stroke={5} color={d.avg > 70 ? UI.success : UI.accent} />
+            <div style={{ position: 'absolute', textAlign: 'center' }}>
+              <div style={{ fontSize: 32, fontWeight: 950, fontStyle: 'italic', color: UI.textStrong, lineHeight: 1 }}>{d.avg}%</div>
+              <div style={{ fontSize: 7, fontWeight: 900, color: UI.textMuted, textTransform: 'uppercase', marginTop: 4 }}>System_Average</div>
             </div>
           </div>
-
-          {/* Center: worst */}
-          <div style={cell({ display: 'flex', flexDirection: 'column', height: '100%', padding: '16px' })}>
-            <div style={{ ...CAP, color: C.error, marginBottom: 12, fontSize: 12 }}>↓ Needs Attention</div>
-            <div style={{ overflowY: 'auto', maxHeight: 280, paddingRight: 4 }}>
-              {d.worst.length === 0 ? (
-                <div style={{ fontSize: 13, color: C.subtle, padding: '8px 0' }}>All records complete.</div>
-              ) : (
-                d.worst.map((item) => <ScoreRow key={item.id} item={item} />)
-              )}
-            </div>
-          </div>
-
-          {/* Right: best */}
-          <div style={cell({ display: 'flex', flexDirection: 'column', height: '100%', padding: '16px' })}>
-            <div style={{ ...CAP, color: C.success, marginBottom: 12, fontSize: 12 }}>↑ Best Completed</div>
-            <div style={{ overflowY: 'auto', maxHeight: 280, paddingRight: 4 }}>
-              {d.best.length === 0 ? (
-                <div style={{ fontSize: 13, color: C.subtle, padding: '8px 0' }}>No data yet.</div>
-              ) : (
-                d.best.map((item) => <ScoreRow key={item.id} item={item} />)
-              )}
-            </div>
+          <div style={{ display: 'flex', gap: 2, width: '100%', height: 4 }}>
+            {d.bands.map(b => (
+              <div key={b.label} style={{ flex: 1, background: b.count > 0 ? b.color : UI.line, opacity: b.count > 0 ? 1 : 0.3 }} />
+            ))}
           </div>
         </div>
-      )}
+
+        <div style={{ background: UI.bg, padding: 20 }}>
+          <div style={{ fontSize: 8, fontWeight: 950, color: UI.accent, textTransform: 'uppercase', letterSpacing: '0.15em', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 6 }}>
+            <div style={{ width: 4, height: 4, borderRadius: '50%', background: UI.accent }} />
+            Critical_Attention
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+            {d.worst.map(item => <ScoreRow key={item.id} item={item} color={UI.accent} />)}
+          </div>
+        </div>
+
+        <div style={{ background: UI.bg, padding: 20 }}>
+          <div style={{ fontSize: 8, fontWeight: 950, color: UI.success, textTransform: 'uppercase', letterSpacing: '0.15em', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 6 }}>
+            <div style={{ width: 4, height: 4, borderRadius: '50%', background: UI.success }} />
+            Optimised_Nodes
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+            {d.best.map(item => <ScoreRow key={item.id} item={item} color={UI.success} />)}
+          </div>
+        </div>
+      </div>
     </div>
   )
 }
 
-// ─── ToggleDistribution — span 1 ─────────────────────────────────────────────
+// Toggle Distribution - Operation Mode Monitor
 export async function renderToggleDistribution(config: ToggleDistributionConfig, payload: any): Promise<React.ReactNode> {
   const cacheKey = buildCacheKey(config.collectionSlug, 'ToggleDistribution')
   type Row = { value: string; count: number; pct: number; avgC: number }
@@ -760,64 +798,77 @@ export async function renderToggleDistribution(config: ToggleDistributionConfig,
     await setWidgetCache(cacheKey, d, config.cacheTTL ?? 60)
   }
 
+  const UI = {
+    bg: 'var(--theme-elevation-0)',
+    surface: 'var(--theme-elevation-50)',
+    border: 'var(--theme-elevation-150)',
+    line: 'var(--theme-elevation-200)',
+    textMuted: 'var(--theme-elevation-400)',
+    textStrong: 'var(--theme-elevation-950)',
+    accent: 'var(--theme-error-500)',
+    success: 'var(--theme-success-500)',
+  }
+
+  const COLORS = [UI.accent, UI.textStrong, UI.textMuted, UI.line]
+
+  const containerStyle: React.CSSProperties = {
+    background: UI.bg,
+    padding: 24,
+    border: `1px solid ${UI.border}`,
+    display: 'flex',
+    flexDirection: 'column',
+    minHeight: 340,
+    height: '100%'
+  }
+
+  const listStyle: React.CSSProperties = {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+    gap: 2,
+    flex: 1,
+    overflowY: 'auto'
+  }
+
   return (
-    <div style={card({ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 260 })}>
-      <div style={{ ...CAP, marginBottom: 12 }}>{config.title ?? 'Mode Distribution'}</div>
+    <div style={containerStyle}>
+      <div style={{ fontSize: 9, fontWeight: 950, textTransform: 'uppercase', letterSpacing: '0.2em', color: UI.textMuted, marginBottom: 24, display: 'flex', alignItems: 'center', gap: 8 }}>
+        <div style={{ width: 12, height: 2, background: UI.accent }} />
+        {config.title ?? 'Operation_Mode_Spread'}
+      </div>
 
       {d.rows.length === 0 ? (
-        <Empty message="No toggle data found." />
+        <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, color: UI.textMuted, fontStyle: 'italic' }}>NO_TOGGLE_TELEMETRY</div>
       ) : (
         <>
-          {/* Proportional budget bar */}
-          <div style={PROPORTIONAL_BAR}>
+          <div style={{ display: 'flex', width: '100%', height: 4, background: UI.line, gap: 1, marginBottom: 24 }}>
             {d.rows.map((r, i) => (
-              <div
-                key={r.value}
-                title={`${r.value}: ${r.pct}%`}
-                style={{ width: `${r.pct}%`, background: ACCENT[i % ACCENT.length] }}
-              />
+              <div key={r.value} style={{ width: `${r.pct}%`, background: COLORS[i % COLORS.length] }} />
             ))}
           </div>
 
-          <div style={{ flex: 1, overflowY: 'auto', maxHeight: 280 }}>
+          <div style={listStyle}>
             {d.rows.map((r, i) => (
-              <div
-                key={r.value}
-                style={cell({
-                  borderLeft: `2px solid ${ACCENT[i % ACCENT.length]}`,
-                  padding: '10px 12px',
-                  marginBottom: 8,
-                })}
-              >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 6 }}>
+              <div key={r.value} style={{ background: UI.surface, borderLeft: `3px solid ${COLORS[i % COLORS.length]}`, padding: 16, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
                   <div>
-                    <div style={{ fontSize: 14, fontWeight: 600, color: C.text, textTransform: 'capitalize' }}>{r.value}</div>
-                    <div style={{ fontSize: 11, color: C.subtle, marginTop: 1 }}>{r.pct}% of total</div>
+                    <div style={{ fontSize: 12, fontWeight: 950, color: UI.textStrong, textTransform: 'uppercase' }}>{r.value}</div>
+                    <div style={{ fontSize: 8, fontWeight: 900, color: UI.textMuted, marginTop: 4, fontStyle: 'italic' }}>{r.pct}%_LOAD_LOADOUT</div>
                   </div>
-                  <div style={{ ...BIG, color: ACCENT[i % ACCENT.length] }}>{r.count}</div>
+                  <div style={{ fontSize: 28, fontWeight: 950, fontStyle: 'italic', color: COLORS[i % COLORS.length], lineHeight: 1 }}>{String(r.count).padStart(2, '0')}</div>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                  <Bar pct={r.avgC} color={scoreColor(r.avgC)} h={4} />
-                  <span style={{ fontSize: 11, fontWeight: 600, color: scoreColor(r.avgC), flexShrink: 0 }}>{r.avgC}%</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                  <div style={{ flex: 1, height: 2, background: UI.line }}>
+                    <div style={{ width: `${r.avgC}%`, height: '100%', background: r.avgC > 70 ? UI.success : UI.accent }} />
+                  </div>
+                  <span style={{ fontSize: 8, fontWeight: 950, color: UI.textStrong }}>{r.avgC}%_AVG_SYNC</span>
                 </div>
-                <div style={{ fontSize: 10, color: C.subtle, marginTop: 2 }}>avg completion</div>
               </div>
             ))}
           </div>
 
           {d.uncat > 0 && (
-            <div
-              style={{
-                marginTop: 10,
-                fontSize: 12,
-                color: C.subtle,
-                padding: '6px 10px',
-                background: C.surface,
-                borderRadius: 2,
-                border: `1px solid ${C.line}`,
-              }}
-            >
-              {d.uncat} record{d.uncat > 1 ? 's' : ''} with no mode set
+            <div style={{ marginTop: 16, fontSize: 8, fontWeight: 950, color: UI.textMuted, padding: '10px', background: UI.bg, border: `1px solid ${UI.line}`, textAlign: 'center', letterSpacing: '0.05em' }}>
+              CRITICAL_ALERT: {d.uncat} NODES_MISSING_OPERATIONAL_MODE
             </div>
           )}
         </>
@@ -826,7 +877,7 @@ export async function renderToggleDistribution(config: ToggleDistributionConfig,
   )
 }
 
-// ─── RelationshipDensity — span 2 ────────────────────────────────────────────
+// Relationship Density - Sub-System Connectivity Map
 export async function renderRelationshipDensity(config: RelationshipDensityConfig, payload: any): Promise<React.ReactNode> {
   const groups = config.relationGroups ?? ['details', 'traits', 'assets', 'contexts']
   const limit = config.limit ?? 6
@@ -839,12 +890,9 @@ export async function renderRelationshipDensity(config: RelationshipDensityConfi
   if (!d) {
     const res = await payload.find({ collection: config.collectionSlug, depth: 1, limit: DEFAULT_LIMIT })
     const agg: Record<string, { f: number; t: number }> = {}
-    groups.forEach((g) => {
-      agg[g] = { f: 0, t: 0 }
-    })
+    groups.forEach((g) => { agg[g] = { f: 0, t: 0 } })
     const perDoc: DocRow[] = (res.docs as any[]).map((doc) => {
-      let tf = 0,
-        tt = 0
+      let tf = 0, tt = 0
       const breakdown = groups.map((g) => {
         const s = scanRelationFields(doc[g])
         agg[g].f += s.filled
@@ -867,69 +915,82 @@ export async function renderRelationshipDensity(config: RelationshipDensityConfi
     await setWidgetCache(cacheKey, d, config.cacheTTL ?? 60)
   }
 
-  return (
-    <div style={card({ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 280 })}>
-      <div style={{ ...CAP, marginBottom: 12 }}>{config.title ?? 'Relationship Density'}</div>
+  const UI = {
+    bg: 'var(--theme-elevation-0)',
+    surface: 'var(--theme-elevation-50)',
+    border: 'var(--theme-elevation-150)',
+    line: 'var(--theme-elevation-200)',
+    textMuted: 'var(--theme-elevation-400)',
+    textStrong: 'var(--theme-elevation-950)',
+    accent: 'var(--theme-error-500)',
+  }
 
-      {/* Section heatmap */}
-      <div style={{ display: 'grid', gridTemplateColumns: `repeat(${groups.length}, 1fr)`, gap: 8, marginBottom: 16 }}>
-        {d.tiles.map((t, i) => (
-          <div key={t.group} style={cell({ textAlign: 'center', borderTop: `2px solid ${ACCENT[i % ACCENT.length]}`, padding: '12px 8px' })}>
-            <div style={{ fontSize: 20, fontWeight: 700, color: ACCENT[i % ACCENT.length], lineHeight: 1, marginBottom: 4 }}>{t.pct}%</div>
-            <Bar pct={t.pct} color={ACCENT[i % ACCENT.length]} h={4} />
-            <div style={{ ...CAP, marginTop: 6, textTransform: 'capitalize' }}>{t.group}</div>
-            <div style={{ fontSize: 10, color: C.muted, marginTop: 2 }}>
-              {t.filled}/{t.total}
-            </div>
+  const containerStyle: React.CSSProperties = {
+    background: UI.bg,
+    padding: 24,
+    border: `1px solid ${UI.border}`,
+    display: 'flex',
+    flexDirection: 'column',
+    minHeight: 340,
+    height: '100%'
+  }
+
+  const alertGridStyle: React.CSSProperties = {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+    gap: 1,
+    background: UI.line,
+    border: `1px solid ${UI.line}`,
+    flex: 1,
+    overflowY: 'auto'
+  }
+
+  return (
+    <div style={containerStyle}>
+      <div style={{ fontSize: 9, fontWeight: 950, textTransform: 'uppercase', letterSpacing: '0.2em', color: UI.textMuted, marginBottom: 24, display: 'flex', alignItems: 'center', gap: 8 }}>
+        <div style={{ width: 12, height: 2, background: UI.accent }} />
+        {config.title ?? 'Relational_Density_Map'}
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: `repeat(${groups.length}, 1fr)`, gap: 1, background: UI.line, marginBottom: 24, border: `1px solid ${UI.line}` }}>
+        {d.tiles.map((t) => (
+          <div key={t.group} style={{ background: UI.bg, textAlign: 'center', padding: '20px 8px' }}>
+            <div style={{ fontSize: 28, fontWeight: 950, fontStyle: 'italic', color: t.pct < 50 ? UI.accent : UI.textStrong, lineHeight: 1 }}>{t.pct}%</div>
+            <div style={{ fontSize: 7, fontWeight: 950, color: UI.textMuted, textTransform: 'uppercase', marginTop: 10, letterSpacing: '0.1em' }}>{t.group}</div>
+            <div style={{ fontSize: 7, fontFamily: 'monospace', fontWeight: 900, color: UI.line, marginTop: 4 }}>{String(t.filled).padStart(2, '0')}/{String(t.total).padStart(2, '0')}_UNIT</div>
           </div>
         ))}
       </div>
 
-      {/* Worst records */}
-      <div style={{ ...CAP, marginBottom: 8 }}>Lowest density records</div>
-      {d.worst.length === 0 ? (
-        <Empty message="All records have full relationship density." />
-      ) : (
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, overflowY: 'auto', maxHeight: 200 }}>
-          {d.worst.map((doc) => (
-            <Link key={doc.id} href={`/admin/collections/${config.collectionSlug}/${doc.id}`} style={{ textDecoration: 'none' }}>
-              <div style={cell({ padding: '10px 12px' })}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4, alignItems: 'center' }}>
-                  <span
-                    style={{
-                      fontSize: 12,
-                      fontWeight: 500,
-                      color: C.text,
-                      ...TRUNCATE,
-                      maxWidth: '70%',
-                    }}
-                  >
-                    {doc.name}
-                  </span>
-                  <span style={{ fontSize: 15, fontWeight: 600, color: scoreColor(doc.score) }}>{doc.score}%</span>
-                </div>
-                <div style={{ display: 'grid', gridTemplateColumns: `repeat(${groups.length}, 1fr)`, gap: 2 }}>
-                  {doc.breakdown.map((b, i) => (
-                    <div
-                      key={b.group}
-                      title={`${b.group}: ${b.pct}%`}
-                      style={{ display: 'flex', flexDirection: 'column', gap: 2, alignItems: 'center' }}
-                    >
-                      <Bar pct={b.pct} color={ACCENT[i % ACCENT.length]} h={3} />
-                      <span style={{ fontSize: 8, color: C.muted, textTransform: 'capitalize' }}>{b.group.slice(0, 3)}</span>
-                    </div>
-                  ))}
-                </div>
+      <div style={{ fontSize: 8, fontWeight: 950, color: UI.accent, textTransform: 'uppercase', marginBottom: 12, letterSpacing: '0.15em', display: 'flex', alignItems: 'center', gap: 6 }}>
+        <div style={{ width: 4, height: 4, borderRadius: '50%', background: UI.accent }} />
+        Low_Density_Alerts
+      </div>
+
+      <div style={alertGridStyle}>
+        {d.worst.map((doc) => (
+          <Link key={doc.id} href={`/admin/collections/${config.collectionSlug}/${doc.id}`} style={{ textDecoration: 'none' }}>
+            <div style={{ background: UI.surface, padding: 16, height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10, alignItems: 'center' }}>
+                <span style={{ fontSize: 11, fontWeight: 950, color: UI.textStrong, textTransform: 'uppercase', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{doc.name}</span>
+                <span style={{ fontSize: 13, fontWeight: 950, fontStyle: 'italic', color: UI.accent }}>{doc.score}%</span>
               </div>
-            </Link>
-          ))}
-        </div>
-      )}
+              <div style={{ display: 'grid', gridTemplateColumns: `repeat(${groups.length}, 1fr)`, gap: 4 }}>
+                {doc.breakdown.map((b) => (
+                  <div key={b.group} style={{ height: 3, background: UI.line, position: 'relative' }}>
+                    <div style={{ width: `${b.pct}%`, height: '100%', background: UI.accent }} />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </Link>
+        ))}
+      </div>
     </div>
   )
 }
 
-// ─── TopTagsCategories — span 1 ──────────────────────────────────────────────
+// Tags & Categories - Taxonomy Density Map
 export async function renderTopTagsCategories(config: TopTagsCategoriesConfig, payload: any): Promise<React.ReactNode> {
   const tagLimit = config.tagLimit ?? 15,
     catLimit = config.categoryLimit ?? 15
@@ -965,63 +1026,77 @@ export async function renderTopTagsCategories(config: TopTagsCategoriesConfig, p
     await setWidgetCache(cacheKey, d, config.cacheTTL ?? 60)
   }
 
-  const Cloud = ({ items }: { items: [string, number][] }) => {
-    const max = items[0]?.[1] ?? 1
-    return (
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px 8px', lineHeight: 1.5 }}>
-        {items.length === 0 ? (
-          <span style={{ fontSize: 12, color: C.subtle }}>None yet.</span>
-        ) : (
-          items.map(([name, count]) => (
-            <span
-              key={name}
-              title={`${count} uses`}
-              style={{
-                fontSize: 11 + Math.round((count / max) * 6),
-                fontWeight: count > max * 0.5 ? 600 : 400,
-                color: count > max * 0.5 ? C.text : C.mid,
-              }}
-            >
-              {name}
-            </span>
-          ))
-        )}
-      </div>
-    )
+  const UI = {
+    bg: 'var(--theme-elevation-0)',
+    surface: 'var(--theme-elevation-50)',
+    border: 'var(--theme-elevation-150)',
+    line: 'var(--theme-elevation-200)',
+    textMuted: 'var(--theme-elevation-400)',
+    textStrong: 'var(--theme-elevation-950)',
+    accent: 'var(--theme-error-500)',
   }
 
-  return (
-    <div style={card({ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 260 })}>
-      <div style={{ ...CAP, marginBottom: 12 }}>{config.title ?? 'Tags & Categories'}</div>
+  const containerStyle: React.CSSProperties = {
+    background: UI.bg,
+    padding: 24,
+    border: `1px solid ${UI.border}`,
+    display: 'flex',
+    flexDirection: 'column',
+    minHeight: 340,
+    height: '100%'
+  }
 
-      <div style={cell({ marginBottom: 8 })}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
-          <div style={CAP}>Tags</div>
-          <div style={{ ...MID, color: C.accent1 }}>{d.tagCov}%</div>
+  const gridStyle: React.CSSProperties = {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+    gap: 1,
+    background: UI.line,
+    border: `1px solid ${UI.line}`,
+    flex: 1
+  }
+
+  const DataGrid = ({ items, label, cov, unassigned }: { items: [string, number][], label: string, cov: number, unassigned: number }) => (
+    <div style={{ background: UI.bg, padding: 24, display: 'flex', flexDirection: 'column' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 16 }}>
+        <div>
+          <div style={{ fontSize: 9, fontWeight: 950, textTransform: 'uppercase', letterSpacing: '0.15em', color: UI.textMuted }}>{label}_SATURATION</div>
+          <div style={{ fontSize: 32, fontWeight: 950, fontStyle: 'italic', color: UI.textStrong, lineHeight: 1, marginTop: 4 }}>{cov}%</div>
         </div>
-        <Bar pct={d.tagCov} color={C.accent1} h={5} />
-        <div style={{ fontSize: 10, color: C.subtle, marginTop: 4, marginBottom: 8 }}>
-          {d.untagged} of {d.total} untagged
+        <div style={{ textAlign: 'right' }}>
+          <div style={{ fontSize: 8, fontWeight: 950, color: UI.accent, letterSpacing: '0.05em' }}>{unassigned} MISSING</div>
+          <div style={{ fontSize: 8, fontWeight: 900, color: UI.textMuted, marginTop: 2 }}>OF {d.total} NODES</div>
         </div>
-        <Cloud items={d.tags} />
       </div>
+      <div style={{ width: '100%', height: 2, background: UI.line, marginBottom: 20 }}>
+        <div style={{ width: `${cov}%`, height: '100%', background: UI.accent }} />
+      </div>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, alignContent: 'flex-start' }}>
+        {items.map(([name, count]) => (
+          <div key={name} style={{ background: UI.surface, border: `1px solid ${UI.line}`, padding: '6px 10px', display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span style={{ fontSize: 9, fontWeight: 950, color: UI.textStrong, textTransform: 'uppercase', letterSpacing: '0.02em' }}>{name}</span>
+            <div style={{ width: 1, height: 8, background: UI.line }} />
+            <span style={{ fontSize: 8, fontFamily: 'monospace', fontWeight: 900, color: UI.accent }}>{String(count).padStart(2, '0')}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
 
-      <div style={cell()}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
-          <div style={CAP}>Categories</div>
-          <div style={{ ...MID, color: C.accent4 }}>{d.catCov}%</div>
-        </div>
-        <Bar pct={d.catCov} color={C.accent4} h={5} />
-        <div style={{ fontSize: 10, color: C.subtle, marginTop: 4, marginBottom: 8 }}>
-          {d.uncat} of {d.total} uncategorised
-        </div>
-        <Cloud items={d.cats} />
+  return (
+    <div style={containerStyle}>
+      <div style={{ fontSize: 9, fontWeight: 950, textTransform: 'uppercase', letterSpacing: '0.2em', color: UI.textMuted, marginBottom: 24, display: 'flex', alignItems: 'center', gap: 8 }}>
+        <div style={{ width: 12, height: 2, background: UI.accent }} />
+        {config.title ?? 'Metadata_Coverage_Index'}
+      </div>
+      <div style={gridStyle}>
+        <DataGrid items={d.tags} label="TAG" cov={d.tagCov} unassigned={d.untagged} />
+        <DataGrid items={d.cats} label="CATEGORY" cov={d.catCov} unassigned={d.uncat} />
       </div>
     </div>
   )
 }
 
-// ─── PublishingPipeline — span 2 ─────────────────────────────────────────────
+// Publishing Pipeline - Stage-Gate Deployment Tracker
 export async function renderPublishingPipeline(config: PublishingPipelineConfig, payload: any): Promise<React.ReactNode> {
   const cacheKey = buildCacheKey(config.collectionSlug, 'PublishingPipeline')
   type PItem = { id: any; name: string; days: number; stale: boolean }
@@ -1031,8 +1106,7 @@ export async function renderPublishingPipeline(config: PublishingPipelineConfig,
   if (!d) {
     const res = await payload.find({ collection: config.collectionSlug, depth: 0, limit: DEFAULT_LIMIT })
     const stages: Record<string, PItem[]> = { Draft: [], Published: [], Featured: [], Pinned: [] }
-    let pubDays = 0,
-      pubCount = 0
+    let pubDays = 0, pubCount = 0
       ; (res.docs as any[]).forEach((doc) => {
         const stage = getPipelineStage(doc),
           days = daysSince(doc.updatedAt)
@@ -1044,107 +1118,101 @@ export async function renderPublishingPipeline(config: PublishingPipelineConfig,
       })
     Object.values(stages).forEach((s) => s.sort((a, b) => b.days - a.days))
     const total = Object.values(stages).reduce((s, a) => s + a.length, 0)
-    d = {
-      stages,
-      total,
-      avgDays: pubCount > 0 ? Math.round(pubDays / pubCount) : 0,
-      staleCount: stages.Draft.filter((i) => i.stale).length,
-    }
+    d = { stages, total, avgDays: pubCount > 0 ? Math.round(pubDays / pubCount) : 0, staleCount: stages.Draft.filter((i) => i.stale).length }
     await setWidgetCache(cacheKey, d, config.cacheTTL ?? 60)
   }
 
-  const stageCol: Record<string, string> = {
-    Draft: C.muted,
-    Published: C.success,
-    Featured: C.warn,
-    Pinned: C.accent4,
+  const UI = {
+    bg: 'var(--theme-elevation-0)',
+    surface: 'var(--theme-elevation-50)',
+    border: 'var(--theme-elevation-150)',
+    line: 'var(--theme-elevation-200)',
+    textMuted: 'var(--theme-elevation-400)',
+    textStrong: 'var(--theme-elevation-950)',
+    accent: 'var(--theme-error-500)',
+    success: 'var(--theme-success-500)',
+    warn: 'var(--theme-warning-500)',
+  }
+
+  const stageMap: Record<string, { color: string; label: string }> = {
+    Draft: { color: UI.textMuted, label: 'PRD_DRAFT' },
+    Published: { color: UI.success, label: 'STG_LIVE' },
+    Featured: { color: UI.warn, label: 'PRM_FEATURE' },
+    Pinned: { color: UI.accent, label: 'SYS_PINNED' },
+  }
+
+  const containerStyle: React.CSSProperties = {
+    background: UI.bg,
+    padding: 24,
+    border: `1px solid ${UI.border}`,
+    display: 'flex',
+    flexDirection: 'column',
+    minHeight: 400,
+    height: '100%'
+  }
+
+  const gridStyle: React.CSSProperties = {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+    gap: 1,
+    background: UI.line,
+    border: `1px solid ${UI.line}`,
+    flex: 1
   }
 
   return (
-    <div style={card({ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 280 })}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-        <div style={CAP}>{config.title ?? 'Publishing Pipeline'}</div>
-        <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-          {d.staleCount > 0 && <Pill label={`${d.staleCount} stale drafts`} color="white" bg={C.error} />}
-          {d.avgDays > 0 && <span style={{ fontSize: 11, color: C.subtle }}>avg {d.avgDays}d to publish</span>}
+    <div style={containerStyle}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 24, gap: 16, flexWrap: 'wrap' }}>
+        <div>
+          <div style={{ fontSize: 9, fontWeight: 950, textTransform: 'uppercase', letterSpacing: '0.2em', color: UI.textMuted, display: 'flex', alignItems: 'center', gap: 8 }}>
+            <div style={{ width: 12, height: 2, background: UI.accent }} />
+            {config.title ?? 'Deployment_Pipeline'}
+          </div>
+          <div style={{ fontSize: 8, fontWeight: 900, color: UI.textMuted, marginTop: 6, letterSpacing: '0.05em' }}>AVG_LATENCY_TO_PUBLISH: {String(d.avgDays).padStart(2, '0')}D</div>
         </div>
+        {d.staleCount > 0 && (
+          <div style={{ background: UI.accent, color: UI.bg, padding: '6px 10px', fontSize: 8, fontWeight: 950, letterSpacing: '0.1em', fontStyle: 'italic' }}>
+            STALE_DRAFTS_DETECTED: {String(d.staleCount).padStart(2, '0')}
+          </div>
+        )}
       </div>
 
-      {/* Proportional flow bar */}
-      <div style={PROPORTIONAL_BAR}>
+      <div style={gridStyle}>
         {Object.entries(d.stages).map(([stage, items]) => (
-          <div
-            key={stage}
-            title={`${stage}: ${items.length}`}
-            style={{
-              width: `${d.total > 0 ? Math.round((items.length / d.total) * 100) : 25}%`,
-              background: stageCol[stage],
-            }}
-          />
+          <div key={stage} style={{ background: UI.bg, display: 'flex', flexDirection: 'column' }}>
+            <div style={{ padding: '16px 12px', borderBottom: `3px solid ${stageMap[stage].color}`, background: UI.surface }}>
+              <div style={{ fontSize: 7, fontWeight: 950, color: stageMap[stage].color, letterSpacing: '0.15em' }}>{stageMap[stage].label}</div>
+              <div style={{ fontSize: 24, fontWeight: 950, fontStyle: 'italic', color: UI.textStrong, marginTop: 4, lineHeight: 1 }}>{String(items.length).padStart(2, '0')}</div>
+            </div>
+            <div style={{ flex: 1, overflowY: 'auto', padding: 1 }}>
+              {items.map((item) => (
+                <Link key={item.id} href={`/admin/collections/${config.collectionSlug}/${item.id}`} style={{ textDecoration: 'none' }}>
+                  <div style={{ padding: '12px', background: UI.surface, marginBottom: 1, borderLeft: `2px solid ${item.stale ? UI.accent : UI.line}`, transition: 'background 0.2s ease' }}>
+                    <div style={{ fontSize: 10, fontWeight: 950, color: item.stale ? UI.accent : UI.textStrong, textTransform: 'uppercase', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', letterSpacing: '-0.01em' }}>
+                      {item.name}
+                    </div>
+                    <div style={{ fontSize: 7, fontFamily: 'monospace', fontWeight: 900, color: UI.textMuted, marginTop: 6, display: 'flex', justifyContent: 'space-between' }}>
+                      <span>STATIONARY_AGE</span>
+                      <span style={{ color: item.stale ? UI.accent : UI.textMuted }}>{String(item.days).padStart(3, '0')}D</span>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+              {items.length === 0 && (
+                <div style={{ padding: 20, fontSize: 8, color: UI.line, textAlign: 'center', fontStyle: 'italic', fontWeight: 900 }}>NO_ACTIVE_NODES</div>
+              )}
+            </div>
+          </div>
         ))}
       </div>
-
-      {d.total === 0 ? (
-        <Empty message="No records in this collection yet." />
-      ) : (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8, overflowY: 'auto', maxHeight: 240 }}>
-          {Object.entries(d.stages).map(([stage, items]) => {
-            const avgDays = items.length > 0 ? Math.round(items.reduce((s, i) => s + i.days, 0) / items.length) : 0
-            return (
-              <div key={stage} style={cell({ borderTop: `2px solid ${stageCol[stage]}`, display: 'flex', flexDirection: 'column' })}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
-                  <span style={{ fontSize: 11, fontWeight: 600, color: stageCol[stage], textTransform: 'uppercase', letterSpacing: '0.03em' }}>
-                    {stage}
-                  </span>
-                  <span style={{ fontSize: 16, fontWeight: 600, color: C.strong }}>{items.length}</span>
-                </div>
-                <div style={{ fontSize: 10, color: C.subtle, marginBottom: 8 }}>avg {avgDays}d</div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 4, maxHeight: 160, overflowY: 'auto' }}>
-                  {items.slice(0, 8).map((item) => (
-                    <Link key={item.id} href={`/admin/collections/${config.collectionSlug}/${item.id}`} style={{ textDecoration: 'none' }}>
-                      <div
-                        style={{
-                          padding: '6px 8px',
-                          background: C.bg,
-                          borderRadius: 2,
-                          borderLeft: `2px solid ${item.stale ? C.error : C.border}`,
-                        }}
-                      >
-                        <div
-                          style={{
-                            fontSize: 12,
-                            color: item.stale ? C.error : C.text,
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis',
-                            whiteSpace: 'nowrap',
-                          }}
-                        >
-                          {item.name}
-                        </div>
-                        <div style={{ fontSize: 10, color: ageCol(item.days), marginTop: 1 }}>{item.days}d</div>
-                      </div>
-                    </Link>
-                  ))}
-                  {items.length > 8 && <span style={{ fontSize: 10, color: C.subtle, paddingLeft: 4 }}>+{items.length - 8} more</span>}
-                  {items.length === 0 && <span style={{ fontSize: 11, color: C.muted }}>Empty</span>}
-                </div>
-              </div>
-            )
-          })}
-        </div>
-      )}
     </div>
   )
 }
 
-// ─── SlugHealth — span 1 ─────────────────────────────────────────────────────
+// Slug Health - URI Integrity & Routing Diagnostic
 export async function renderSlugHealth(config: SlugHealthConfig, payload: any): Promise<React.ReactNode> {
   const cacheKey = buildCacheKey(config.collectionSlug, 'SlugHealth')
-  type Ext = SlugHealthResult & {
-    drifted: { id: any; name: string; slug: string }[]
-    score: number
-    total: number
-  }
+  type Ext = SlugHealthResult & { drifted: { id: any; name: string; slug: string }[]; score: number; total: number }
 
   let r = await getWidgetCache<Ext>(cacheKey)
   if (!r) {
@@ -1156,137 +1224,118 @@ export async function renderSlugHealth(config: SlugHealthConfig, payload: any): 
     const drifted: { id: any; name: string; slug: string }[] = []
 
     docs.forEach((d) => {
-      const name = formatRecordName(d),
-        item = { id: d.id, name }
-      if (!d.slug) {
-        missing.push(item)
-      } else {
+      const name = formatRecordName(d), item = { id: d.id, name }
+      if (!d.slug) { missing.push(item) }
+      else {
         if (!slugMap[d.slug]) slugMap[d.slug] = []
         slugMap[d.slug].push(item)
-        const exp = name
-          .toLowerCase()
-          .replace(/\s+/g, '-')
-          .replace(/[^a-z0-9-]/g, '')
+        const exp = name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')
         if (exp && d.slug !== exp) drifted.push({ id: d.id, name, slug: d.slug })
       }
       if (d.generateSlug === true) autoGen.push(item)
     })
 
-    const dupes = Object.entries(slugMap)
-      .filter(([, v]) => v.length > 1)
-      .flatMap(([, v]) => v)
+    const dupes = Object.entries(slugMap).filter(([, v]) => v.length > 1).flatMap(([, v]) => v)
     const issues = missing.length + dupes.length
-    r = {
-      missing,
-      autoGen,
-      duplicates: dupes,
-      drifted,
-      score: docs.length > 0 ? Math.round(((docs.length - issues) / docs.length) * 100) : 100,
-      total: docs.length,
-    }
+    r = { missing, autoGen, duplicates: dupes, drifted, score: docs.length > 0 ? Math.round(((docs.length - issues) / docs.length) * 100) : 100, total: docs.length }
     await setWidgetCache(cacheKey, r, config.cacheTTL ?? 60)
   }
 
-  const panels = [
-    { label: 'Missing', n: r.missing.length, bad: true, color: C.error, icon: '⚠' },
-    { label: 'Auto-gen', n: r.autoGen.length, bad: false, color: C.accent1, icon: '⚙' },
-    { label: 'Duplicate', n: r.duplicates.length, bad: true, color: C.warn, icon: '⊕' },
-    { label: 'Drifted', n: r.drifted.length, bad: false, color: C.accent4, icon: '↻' },
-  ]
+  const UI = {
+    bg: 'var(--theme-elevation-0)',
+    surface: 'var(--theme-elevation-50)',
+    border: 'var(--theme-elevation-150)',
+    line: 'var(--theme-elevation-200)',
+    textMuted: 'var(--theme-elevation-400)',
+    textStrong: 'var(--theme-elevation-950)',
+    accent: 'var(--theme-error-500)',
+    warn: 'var(--theme-warning-500)',
+    success: 'var(--theme-success-500)',
+  }
+
   const hardIssues = r.missing.length + r.duplicates.length
   const problems = [
-    ...r.missing.map((i) => ({ ...i, kind: 'Missing', color: C.error })),
-    ...r.duplicates.map((i) => ({ ...i, kind: 'Duplicate', color: C.warn })),
-    ...r.drifted.map((i) => ({ ...i, kind: 'Drifted', color: C.accent4 })),
+    ...r.missing.map((i) => ({ ...i, kind: 'MISSING', color: UI.accent })),
+    ...r.duplicates.map((i) => ({ ...i, kind: 'DUPE', color: UI.warn })),
+    ...r.drifted.map((i) => ({ ...i, kind: 'DRIFT', color: UI.textMuted })),
   ]
 
-  return (
-    <div style={card({ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 260 })}>
-      <div style={{ ...CAP, marginBottom: 12 }}>{config.title ?? 'Slug Health'}</div>
+  const containerStyle: React.CSSProperties = {
+    background: UI.bg,
+    padding: 24,
+    border: `1px solid ${UI.border}`,
+    display: 'flex',
+    flexDirection: 'column',
+    minHeight: 400,
+    height: '100%'
+  }
 
-      {/* Hero ring + summary */}
-      <div style={cell({ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 })}>
-        <div style={RING_WRAPPER}>
-          <Ring pct={r.score} size={64} stroke={8} color={scoreColor(r.score)} />
-          <div style={RING_CENTER}>
-            <div style={{ fontSize: 14, fontWeight: 700, color: scoreColor(r.score) }}>{r.score}%</div>
-          </div>
+  const gridStyle: React.CSSProperties = {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
+    gap: 1,
+    background: UI.line,
+    border: `1px solid ${UI.line}`,
+    marginBottom: 24
+  }
+
+  return (
+    <div style={containerStyle}>
+      <div style={{ fontSize: 9, fontWeight: 950, textTransform: 'uppercase', letterSpacing: '0.2em', color: UI.textMuted, marginBottom: 24, display: 'flex', alignItems: 'center', gap: 8 }}>
+        <div style={{ width: 12, height: 2, background: UI.accent }} />
+        {config.title ?? 'URI_Integrity_Audit'}
+      </div>
+
+      <div style={{ display: 'flex', alignItems: 'center', gap: 24, marginBottom: 24, padding: 20, background: UI.surface, borderLeft: `4px solid ${r.score === 100 ? UI.success : UI.accent}`, borderBottom: `1px solid ${UI.line}` }}>
+        <div style={{ position: 'relative', width: 72, height: 72, flexShrink: 0 }}>
+          <Ring pct={r.score} size={72} stroke={6} color={r.score === 100 ? UI.success : UI.accent} />
+          <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16, fontWeight: 950, fontStyle: 'italic', color: UI.textStrong }}>{r.score}%</div>
         </div>
         <div>
-          <div style={{ fontSize: 14, fontWeight: 600, color: C.text }}>
-            {hardIssues === 0 ? '✓ No critical issues' : `${hardIssues} critical issue${hardIssues > 1 ? 's' : ''}`}
+          <div style={{ fontSize: 12, fontWeight: 950, color: UI.textStrong, textTransform: 'uppercase', letterSpacing: '-0.01em' }}>
+            {hardIssues === 0 ? 'Routing: Status_Nominal' : `${String(hardIssues).padStart(2, '0')} Routing_Conflicts_Detected`}
           </div>
-          {r.drifted.length > 0 && (
-            <div style={{ fontSize: 12, color: C.accent4, marginTop: 1 }}>
-              {r.drifted.length} slug{r.drifted.length > 1 ? 's' : ''} may have drifted
-            </div>
-          )}
-          <div style={{ fontSize: 11, color: C.subtle, marginTop: 2 }}>{r.total} records audited</div>
+          <div style={{ fontSize: 8, fontFamily: 'monospace', fontWeight: 900, color: UI.textMuted, marginTop: 6, textTransform: 'uppercase' }}>
+            Audited_Nodes: {String(r.total).padStart(3, '0')} // Integrity_Verified
+          </div>
         </div>
       </div>
 
-      {/* 2×2 metric tiles */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 12 }}>
-        {panels.map((p) => (
-          <div key={p.label} style={cell({ textAlign: 'center', borderTop: `2px solid ${p.color}`, padding: '8px 6px' })}>
-            <div style={{ fontSize: 16, marginBottom: 2 }}>{p.icon}</div>
-            <div
-              style={{
-                fontSize: 20,
-                fontWeight: 700,
-                lineHeight: 1,
-                color: p.n === 0 ? C.success : p.bad ? C.error : C.text,
-              }}
-            >
-              {p.n === 0 ? '✓' : p.n}
-            </div>
-            <div style={{ fontSize: 10, color: C.subtle, marginTop: 2 }}>{p.label}</div>
+      <div style={gridStyle}>
+        {[
+          { label: 'MISSING', n: r.missing.length, color: UI.accent },
+          { label: 'AUTOGEN', n: r.autoGen.length, color: UI.textMuted },
+          { label: 'DUPLICATE', n: r.duplicates.length, color: UI.warn },
+          { label: 'DRIFTED', n: r.drifted.length, color: UI.textMuted },
+        ].map(p => (
+          <div key={p.label} style={{ background: UI.bg, padding: '20px 12px', textAlign: 'center' }}>
+            <div style={{ fontSize: 20, fontWeight: 950, fontStyle: 'italic', color: p.n > 0 && p.label !== 'AUTOGEN' ? p.color : UI.textStrong, lineHeight: 1 }}>{String(p.n).padStart(2, '0')}</div>
+            <div style={{ fontSize: 7, fontWeight: 950, color: UI.textMuted, marginTop: 8, letterSpacing: '0.1em' }}>{p.label}</div>
           </div>
         ))}
       </div>
 
-      {/* Unified problem list */}
-      {problems.length > 0 && (
-        <div style={cell({ padding: 0, overflow: 'hidden', overflowY: 'auto', maxHeight: 180 })}>
-          {problems.slice(0, 8).map((item, i) => (
-            <Link
-              key={`${item.id}-${item.kind}`}
-              href={`/admin/collections/${config.collectionSlug}/${item.id}`}
-              style={{ textDecoration: 'none' }}
-            >
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 8,
-                  padding: '8px 12px',
-                  borderBottom: i < Math.min(problems.length, 8) - 1 ? `1px solid ${C.line}` : 'none',
-                }}
-              >
-                <Pill label={item.kind} color={item.color} bg="transparent" />
-                <span
-                  style={{
-                    flex: 1,
-                    fontSize: 12,
-                    color: C.text,
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap',
-                  }}
-                >
-                  {item.name}
-                </span>
-              </div>
-            </Link>
-          ))}
-          {problems.length > 8 && <div style={{ padding: '6px 12px', fontSize: 11, color: C.subtle }}>+{problems.length - 8} more</div>}
-        </div>
-      )}
+      <div style={{ flex: 1, overflowY: 'auto' }}>
+        {problems.map((item) => (
+          <Link key={`${item.id}-${item.kind}`} href={`/admin/collections/${config.collectionSlug}/${item.id}`} style={{ textDecoration: 'none' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 16, padding: '14px 16px', background: UI.surface, marginBottom: 1, borderLeft: `2px solid ${item.color}`, transition: 'background 0.2s ease' }}>
+              <span style={{ fontSize: 8, fontWeight: 950, color: item.color, letterSpacing: '0.1em', width: 60 }}>[{item.kind}]</span>
+              <span style={{ flex: 1, fontSize: 11, fontWeight: 950, color: UI.textStrong, textTransform: 'uppercase', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.name}</span>
+              <span style={{ fontSize: 8, fontFamily: 'monospace', fontWeight: 900, color: UI.textMuted }}>ID:{String(item.id).slice(-4).toUpperCase()}</span>
+            </div>
+          </Link>
+        ))}
+        {problems.length === 0 && (
+          <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 40, border: `1px dashed ${UI.line}` }}>
+            <span style={{ fontSize: 9, fontWeight: 950, color: UI.line, letterSpacing: '0.2em' }}>CLEAN_SWEEP: NO_ROUTING_ERRORS</span>
+          </div>
+        )}
+      </div>
     </div>
   )
 }
 
-// ─── Timeline — span 2 ───────────────────────────────────────────────────────
+// Timeline - Creation Throughput Telemetry
 export async function renderTimeline(config: TimelineConfig, payload: any): Promise<React.ReactNode> {
   const dateField = config.dateField ?? 'createdAt'
   const cacheKey = buildCacheKey(config.collectionSlug, 'Timeline', { dateField })
@@ -1294,217 +1343,102 @@ export async function renderTimeline(config: TimelineConfig, payload: any): Prom
 
   let d = await getWidgetCache<D>(cacheKey)
   if (!d) {
-    const res = await payload.find({
-      collection: config.collectionSlug,
-      depth: 0,
-      limit: DEFAULT_LIMIT,
-      select: { [dateField]: true },
-    })
+    const res = await payload.find({ collection: config.collectionSlug, depth: 0, limit: DEFAULT_LIMIT, select: { [dateField]: true } })
     const docs = res.docs as any[]
     const groups = groupByMonth(docs, dateField)
     const now = new Date()
     const thisKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`
     const lastD = new Date(now.getFullYear(), now.getMonth() - 1, 1)
     const lastKey = `${lastD.getFullYear()}-${String(lastD.getMonth() + 1).padStart(2, '0')}`
-    d = {
-      timeline: Object.entries(groups).sort(([a], [b]) => a.localeCompare(b)),
-      thisMonth: groups[thisKey] ?? 0,
-      lastMonth: groups[lastKey] ?? 0,
-      total: docs.length,
-    }
+    d = { timeline: Object.entries(groups).sort(([a], [b]) => a.localeCompare(b)), thisMonth: groups[thisKey] ?? 0, lastMonth: groups[lastKey] ?? 0, total: docs.length }
     await setWidgetCache(cacheKey, d, config.cacheTTL ?? 60)
   }
 
-  // 🟢 Early exit if no data at all
-  if (d.total === 0) {
-    return (
-      <div style={card({ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 280 })}>
-        {config.title && <div style={{ ...CAP, marginBottom: 12 }}>{config.title}</div>}
-        <Empty message="No records created yet." />
-      </div>
-    )
+  const UI = {
+    bg: 'var(--theme-elevation-0)',
+    surface: 'var(--theme-elevation-50)',
+    border: 'var(--theme-elevation-150)',
+    line: 'var(--theme-elevation-200)',
+    textMuted: 'var(--theme-elevation-400)',
+    textStrong: 'var(--theme-elevation-950)',
+    accent: 'var(--theme-error-500)',
+    success: 'var(--theme-success-500)',
   }
 
   const delta = d.thisMonth - d.lastMonth
-  const now = new Date()
-  const thisKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`
   const max = Math.max(...d.timeline.map(([, v]) => v), 1)
-  let cum = 0
-  const enriched = d.timeline.map(([month, count]) => {
-    cum += count
-    return { month, count, cum }
-  })
-  const maxCum = cum || 1
+
+  const containerStyle: React.CSSProperties = {
+    background: UI.bg,
+    padding: 24,
+    border: `1px solid ${UI.border}`,
+    display: 'flex',
+    flexDirection: 'column',
+    minHeight: 400,
+    height: '100%'
+  }
+
+  const statGridStyle: React.CSSProperties = {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))',
+    gap: 1,
+    background: UI.line,
+    border: `1px solid ${UI.line}`,
+    marginBottom: 24
+  }
 
   return (
-    <div style={card({ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 280 })}>
-      {/* Hero stats */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr auto', gap: 8, marginBottom: 16 }}>
-        <div style={cell()}>
-          <div style={CAP}>Total</div>
-          <div style={{ ...BIG, marginTop: 4 }}>{d.total}</div>
-        </div>
-        <div style={cell()}>
-          <div style={CAP}>This Month</div>
-          <div style={{ ...BIG, color: d.thisMonth > 0 ? C.accent1 : C.muted, marginTop: 4 }}>{d.thisMonth}</div>
-        </div>
-        <div style={cell()}>
-          <div style={CAP}>Last Month</div>
-          <div style={{ ...BIG, marginTop: 4 }}>{d.lastMonth}</div>
-        </div>
-        <div style={cell({ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '8px 12px' })}>
-          <div
-            style={{
-              fontSize: 20,
-              fontWeight: 700,
-              lineHeight: 1,
-              color: delta > 0 ? C.success : delta < 0 ? C.error : C.muted,
-            }}
-          >
-            {delta > 0 ? '+' : ''}{delta}
+    <div style={containerStyle}>
+      <div style={statGridStyle}>
+        {[
+          { label: 'TTL_NODES', val: String(d.total).padStart(3, '0'), color: UI.textStrong },
+          { label: 'CURR_MONTH', val: String(d.thisMonth).padStart(2, '0'), color: UI.accent },
+          { label: 'PREV_MONTH', val: String(d.lastMonth).padStart(2, '0'), color: UI.textMuted },
+          { label: 'VELOCITY', val: `${delta >= 0 ? '+' : ''}${delta}`, color: delta >= 0 ? UI.success : UI.accent },
+        ].map(m => (
+          <div key={m.label} style={{ background: UI.bg, padding: '20px 12px' }}>
+            <div style={{ fontSize: 7, fontWeight: 950, color: UI.textMuted, letterSpacing: '0.15em', marginBottom: 8 }}>{m.label}</div>
+            <div style={{ fontSize: 24, fontWeight: 950, fontStyle: 'italic', color: m.color, lineHeight: 1 }}>{m.val}</div>
           </div>
-          <div style={{ fontSize: 10, color: C.subtle, marginTop: 2 }}>vs last mo</div>
-        </div>
+        ))}
       </div>
 
-      {/* Chart zone */}
-      <div style={cell({ padding: '12px 12px 8px' })}>
-        <div style={{ ...CAP, marginBottom: 12 }}>{config.title ?? 'Creation Timeline'}</div>
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', background: UI.surface, padding: 24, border: `1px solid ${UI.line}` }}>
+        <div style={{ fontSize: 9, fontWeight: 950, textTransform: 'uppercase', letterSpacing: '0.2em', color: UI.textMuted, marginBottom: 32, display: 'flex', alignItems: 'center', gap: 8 }}>
+          <div style={{ width: 12, height: 2, background: UI.accent }} />
+          {config.title ?? 'Throughput_Timeline'}
+        </div>
 
-        {d.timeline.length === 0 ? (
-          <Empty message="No records created yet." />
-        ) : (
-          <div style={{ position: 'relative', height: 80 }}>
-            {/* 🟢 Conditionally render bars based on data density */}
-            {enriched.length === 1 ? (
-              // Single month: centered fixed‑width bar
-              <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
-                {enriched.map(({ month, count }) => {
-                  const isThis = month === thisKey
-                  const h = Math.max(Math.round((count / max) * 56), count > 0 ? 2 : 0)
-                  const [yr, mo] = month.split('-')
-                  return (
-                    <div key={month} title={`${count} in ${mo}/${yr.slice(2)}`} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '80px' }}>
-                      {count > 0 && (
-                        <span style={{ fontSize: 9, color: isThis ? C.accent1 : C.subtle, marginBottom: 2, fontWeight: isThis ? 600 : 400 }}>
-                          {count}
-                        </span>
-                      )}
-                      {count > 0 && (
-                        <div style={{ width: '100%', background: isThis ? C.accent1 : C.text, opacity: isThis ? 1 : 0.4, borderRadius: '1px 1px 0 0', height: h }} />
-                      )}
-                      <span style={{ fontSize: 8, color: isThis ? C.accent1 : C.subtle, marginTop: 4, whiteSpace: 'nowrap', fontWeight: isThis ? 600 : 400 }}>
-                        {mo}/{yr.slice(2)}
-                      </span>
-                    </div>
-                  )
-                })}
-              </div>
-            ) : (
-              // Multiple months: flex distribution across full width
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'flex-end',
-                  gap: 2,
-                  height: 60,
-                  position: 'absolute',
-                  bottom: 20,
-                  left: 0,
-                  right: 0,
-                }}
-              >
-                {enriched.map(({ month, count }) => {
-                  const isThis = month === thisKey
-                  const h = Math.max(Math.round((count / max) * 56), count > 0 ? 2 : 0)
-                  const [yr, mo] = month.split('-')
-                  return (
-                    <div key={month} title={`${count} in ${mo}/${yr.slice(2)}`} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                      {count > 0 && (
-                        <span style={{ fontSize: 9, color: isThis ? C.accent1 : C.subtle, marginBottom: 2, fontWeight: isThis ? 600 : 400 }}>
-                          {count}
-                        </span>
-                      )}
-                      {count > 0 && (
-                        <div
-                          style={{
-                            width: '100%',
-                            background: isThis ? C.accent1 : C.text,
-                            opacity: isThis ? 1 : 0.4,
-                            borderRadius: '1px 1px 0 0',
-                            height: h,
-                          }}
-                        />
-                      )}
-                      <span
-                        style={{
-                          fontSize: 8,
-                          color: isThis ? C.accent1 : C.subtle,
-                          marginTop: 4,
-                          whiteSpace: 'nowrap',
-                          fontWeight: isThis ? 600 : 400,
-                        }}
-                      >
-                        {mo}/{yr.slice(2)}
-                      </span>
-                    </div>
-                  )
-                })}
-              </div>
-            )}
-
-            {/* Cumulative overlay – only for multiple months */}
-            {enriched.length > 1 && cum > 0 && (
-              <svg
-                style={{
-                  position: 'absolute',
-                  bottom: 20,
-                  left: 0,
-                  right: 0,
-                  height: 60,
-                  width: '100%',
-                  overflow: 'visible',
-                  pointerEvents: 'none',
-                }}
-              >
-                <polyline
-                  points={enriched
-                    .map(
-                      ({ cum: c }, i) =>
-                        `${(i / (enriched.length - 1)) * 100}%,${60 - Math.round((c / maxCum) * 50)}`,
-                    )
-                    .join(' ')}
-                  fill="none"
-                  stroke={C.accent4}
-                  strokeWidth="1.5"
-                  strokeDasharray="3 2"
+        <div style={{ flex: 1, display: 'flex', alignItems: 'flex-end', gap: 6, position: 'relative', paddingBottom: 24 }}>
+          {d.timeline.map(([month, count]) => {
+            const h = (count / max) * 100
+            const isCurrentYear = month.includes(new Date().getFullYear().toString())
+            return (
+              <div key={month} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%', justifyContent: 'flex-end' }}>
+                <div
+                  style={{
+                    width: '100%',
+                    height: `${Math.max(h, 2)}%`,
+                    background: isCurrentYear ? UI.accent : UI.textMuted,
+                    opacity: isCurrentYear ? 1 : 0.3,
+                    transition: 'height 0.6s cubic-bezier(0.33, 1, 0.68, 1)'
+                  }}
                 />
-              </svg>
-            )}
-          </div>
-        )}
-
-        {/* Legend – always show if we have data */}
-        {d.total > 0 && (
-          <div style={{ display: 'flex', gap: 16, marginTop: 6 }}>
-            {[
-              { color: C.text, opacity: '0.4', label: 'Monthly', type: 'box' },
-              { color: C.accent1, opacity: '1', label: 'This month', type: 'box' },
-              { color: C.accent4, label: `Cumulative (${d.total})`, type: 'dash' },
-            ].map((item) => (
-              <div key={item.label} style={LEGEND_ITEM}>
-                {item.type === 'box' ? (
-                  <div style={{ ...LEGEND_DOT, background: item.color, opacity: item.opacity }} />
-                ) : (
-                  <svg width={14} height={6}>
-                    <line x1="0" y1="3" x2="14" y2="3" stroke={item.color} strokeWidth="1.5" strokeDasharray="3 2" />
-                  </svg>
-                )}
-                <span style={{ fontSize: 10, color: C.subtle }}>{item.label}</span>
+                <div style={{
+                  fontSize: 7,
+                  fontFamily: 'monospace',
+                  fontWeight: 900,
+                  color: isCurrentYear ? UI.textStrong : UI.textMuted,
+                  transform: 'rotate(-45deg)',
+                  marginTop: 12,
+                  whiteSpace: 'nowrap'
+                }}>
+                  {month.split('-')[1]}/{month.split('-')[0].slice(2)}
+                </div>
               </div>
-            ))}
-          </div>
-        )}
+            )
+          })}
+        </div>
       </div>
     </div>
   )
