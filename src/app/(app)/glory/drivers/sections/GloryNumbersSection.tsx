@@ -3,7 +3,7 @@
 import Particles from '@/components/Particles'
 import { Activity, Cpu, Flag, Shield, Timer, Trophy, Wind, Zap } from 'lucide-react'
 import { motion, useInView, useScroll, useSpring, useTransform } from 'motion/react'
-import { useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 interface StatCard {
   id: string
@@ -81,6 +81,11 @@ const GLORY_STATS: StatCard[] = [
 export function GloryNumbersSection({ data }: { data?: any }) {
   const containerRef = useRef<HTMLDivElement>(null)
   const isInView = useInView(containerRef, { amount: 0.01 })
+  const [pixelRatio, setPixelRatio] = useState(1)
+
+  useEffect(() => {
+    setPixelRatio(window.devicePixelRatio || 1)
+  }, [])
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -127,7 +132,7 @@ export function GloryNumbersSection({ data }: { data?: any }) {
           moveParticlesOnHover={true}
           alphaParticles={true}
           disableRotation={true}
-          pixelRatio={window?.devicePixelRatio || 1}
+          pixelRatio={pixelRatio}
         />
       </motion.div>
 

@@ -59,9 +59,9 @@ type Props = {
 }
 
 const MegaMenuItem = ({ item, isOpen, onMouseEnter, onMouseLeave }: any) => {
-  const { label, tagline, subItems, spotlight } = item
+  const { label, tagline, subItems, spotlight, link } = item
   const pathname = usePathname()
-  const isActive = item.link?.url && item.link.url !== '/' ? pathname.startsWith(item.link.url) : pathname === item.link?.url
+  const isActive = link?.url && link.url !== '/' ? pathname.startsWith(link.url) : pathname === link?.url
 
   return (
     <div className="relative h-full flex items-center" onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
@@ -313,9 +313,12 @@ export function HeaderClient({ header, socials }: Props) {
             </div>
 
             <div className="flex items-center gap-8 ml-auto h-full">
-              {utilityNav.map((item: any) => (
-                <CMSLink key={item.id} {...item.link} className={cn('text-[8px] font-black uppercase tracking-[0.4em] italic transition-all relative', pathname === item.link.url ? 'text-red-500' : 'text-zinc-600 hover:text-white')} />
-              ))}
+              {utilityNav.map((item: any) => {
+                const isActive = item.link?.url && (pathname === item.link.url || (item.link.url !== '/' && pathname.startsWith(item.link.url)))
+                return (
+                  <CMSLink key={item.id} {...item.link} className={cn('text-[8px] font-black uppercase tracking-[0.4em] italic transition-all relative', isActive ? 'text-red-500' : 'text-zinc-600 hover:text-white')} />
+                )
+              })}
               <div
                 className="flex items-center gap-8 pl-12 h-full bg-zinc-900/20"
                 style={{ clipPath: 'polygon(15% 0%, 100% 0%, 100% 100%, 0% 100%)', borderLeft: '1px solid #18181b' }}
