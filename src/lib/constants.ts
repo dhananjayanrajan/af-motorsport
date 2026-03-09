@@ -6,6 +6,7 @@ export const DESIGN_SYSTEM = {
     BLACK: '#000000',
     ZINC_950: '#09090b',
     ZINC_800: '#27272a',
+    ZINC_900: '#1e1e1e',
     NEUTRAL_600: '#525252',
     WHITE: '#FFFFFF',
     WHITE_GLOW: 'rgba(255, 255, 255, 0.7)',

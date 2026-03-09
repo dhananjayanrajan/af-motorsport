@@ -1,5 +1,7 @@
 'use client'
 
+import { DESIGN_SYSTEM } from '@/lib/constants'
+import { cn } from '@/utilities/cn'
 import { Database, ExternalLink, Network } from 'lucide-react'
 import { motion, useScroll, useTransform } from 'motion/react'
 import Link from 'next/link'
@@ -141,8 +143,11 @@ export function TeamBehindTheGlorySection({ members = DUMMY_MEMBERS }: { members
   const backRow = members.filter(m => m.tier === 'Back')
 
   return (
-    <section ref={containerRef} className="relative w-full bg-black py-32 px-4 md:px-12 lg:px-24 overflow-hidden border-t border-zinc-900">
-
+    <section
+      ref={containerRef}
+      className="relative w-full py-32 px-4 md:px-12 lg:px-24 overflow-hidden border-t"
+      style={{ backgroundColor: DESIGN_SYSTEM.COLORS.BLACK, borderTopColor: DESIGN_SYSTEM.COLORS.ZINC_900 }}
+    >
       <div className="absolute top-1/2 left-0 -translate-y-1/2 w-full pointer-events-none select-none overflow-hidden">
         <motion.h2
           style={{ x: useTransform(scrollYProgress, [0, 1], [300, -300]), WebkitTextStroke: '1px rgba(255,255,255,0.15)' }}
@@ -153,22 +158,35 @@ export function TeamBehindTheGlorySection({ members = DUMMY_MEMBERS }: { members
       </div>
 
       <div className="max-w-7xl mx-auto relative z-10">
-
-        <div className="flex flex-col md:flex-row justify-between items-end mb-8 md:mb-32 border-l-4 border-red-600 pl-8">
+        <div
+          className="flex flex-col md:flex-row justify-between items-end mb-8 md:mb-32 border-l-4 pl-8"
+          style={{ borderLeftColor: DESIGN_SYSTEM.COLORS.PRIMARY }}
+        >
           <div className="space-y-4">
             <div className="flex items-center gap-3">
-              <div className="w-1.5 h-1.5 bg-red-600 rounded-full animate-pulse shadow-[0_0_10px_rgba(220,38,38,0.5)]" />
-              <span className="text-[10px] font-black italic text-zinc-500 tracking-[0.5em] uppercase underline decoration-red-600 underline-offset-8">Personnel_Registry</span>
+              <div
+                className="w-1.5 h-1.5 rounded-full animate-pulse"
+                style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY, boxShadow: `0 0 10px ${DESIGN_SYSTEM.COLORS.PRIMARY_GLOW}` }}
+              />
+              <span
+                className={cn("text-[10px] font-black italic text-zinc-500 uppercase underline underline-offset-8", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_XL)}
+                style={{ textDecorationColor: DESIGN_SYSTEM.COLORS.PRIMARY }}
+              >
+                Personnel_Registry
+              </span>
             </div>
             <h2 className="text-6xl md:text-8xl font-black italic text-white tracking-tighter uppercase leading-[0.8]">
               THE BRAIN<br />
-              <span className="text-red-600">TRUST</span>
+              <span style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }}>TRUST</span>
             </h2>
           </div>
 
           <div className="hidden md:flex flex-col items-end text-right font-mono text-[9px] text-zinc-700 gap-2">
-            <div className="flex items-center gap-3 bg-zinc-950 p-3 border border-zinc-900">
-              <Network className="size-3 text-red-600" />
+            <div
+              className="flex items-center gap-3 p-3 border"
+              style={{ backgroundColor: DESIGN_SYSTEM.COLORS.ZINC_950, borderColor: DESIGN_SYSTEM.COLORS.ZINC_900 }}
+            >
+              <Network className="size-3" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }} />
               <span>ACTIVE_NODES: {members.length}</span>
               <Database className="size-3 text-zinc-500" />
               <span>STATUS: NOMINAL</span>
@@ -189,7 +207,6 @@ export function TeamBehindTheGlorySection({ members = DUMMY_MEMBERS }: { members
             ))}
           </div>
         </div>
-
       </div>
     </section>
   )
@@ -207,11 +224,17 @@ function MemberTacticalModule({ member, variant, index }: { member: any, variant
       viewport={{ once: true }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className={`relative group transition-all duration-500 h-full ${!isPrimary ? 'opacity-50 grayscale hover:opacity-100 hover:grayscale-0' : ''}`}
+      className={cn(
+        "relative group transition-all duration-500 h-full",
+        !isPrimary && "opacity-50 grayscale hover:opacity-100 hover:grayscale-0"
+      )}
     >
       <div
-        className="relative bg-zinc-950 border border-white/5 p-[1px] transition-all duration-500 group-hover:border-red-600/50 z-10 h-full"
-        style={{ clipPath: clip }}
+        className="relative bg-zinc-950 border border-white/5 p-[1px] transition-all duration-500 group-hover:border-primary/50 z-10 h-full"
+        style={{
+          clipPath: clip,
+          borderColor: isHovered ? `${DESIGN_SYSTEM.COLORS.PRIMARY}80` : 'rgba(255,255,255,0.05)'
+        }}
       >
         <div
           className="relative bg-black overflow-hidden p-6 h-full flex flex-col"
@@ -225,15 +248,15 @@ function MemberTacticalModule({ member, variant, index }: { member: any, variant
             />
           )}
 
-          <div className={`relative z-10 flex ${isPrimary ? 'flex-col lg:flex-row' : 'flex-col'} gap-6 flex-1`}>
-
-            <div className={`relative ${isPrimary ? 'w-full lg:w-44' : 'w-full'} aspect-square overflow-hidden border border-white/10 group-hover:border-red-600/30 transition-colors bg-zinc-900 flex-shrink-0`}>
+          <div className={cn("relative z-10 flex gap-6 flex-1", isPrimary ? "flex-col lg:flex-row" : "flex-col")}>
+            <div className={cn("relative aspect-square overflow-hidden border border-white/10 transition-colors bg-zinc-900 flex-shrink-0", isPrimary ? "w-full lg:w-44" : "w-full")}>
               {isHovered && (
                 <motion.div
                   initial={{ top: '-100%' }}
                   animate={{ top: '100%' }}
                   transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
-                  className="absolute left-0 w-full h-20 bg-gradient-to-b from-transparent via-red-600/20 to-transparent z-20"
+                  className="absolute left-0 w-full h-20 z-20"
+                  style={{ backgroundImage: `linear-gradient(to b, transparent, ${DESIGN_SYSTEM.COLORS.PRIMARY}33, transparent)` }}
                 />
               )}
 
@@ -244,9 +267,14 @@ function MemberTacticalModule({ member, variant, index }: { member: any, variant
               />
 
               <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80" />
-
-              <div className="absolute inset-2 border-l border-t border-white/0 group-hover:border-red-600/50 group-hover:inset-4 transition-all duration-500" />
-              <div className="absolute inset-2 border-r border-b border-white/0 group-hover:border-red-600/50 group-hover:inset-4 transition-all duration-500" />
+              <div
+                className="absolute inset-2 border-l border-t border-white/0 group-hover:inset-4 transition-all duration-500"
+                style={{ borderLeftColor: isHovered ? `${DESIGN_SYSTEM.COLORS.PRIMARY}80` : 'transparent', borderTopColor: isHovered ? `${DESIGN_SYSTEM.COLORS.PRIMARY}80` : 'transparent' }}
+              />
+              <div
+                className="absolute inset-2 border-r border-b border-white/0 group-hover:inset-4 transition-all duration-500"
+                style={{ borderRightColor: isHovered ? `${DESIGN_SYSTEM.COLORS.PRIMARY}80` : 'transparent', borderBottomColor: isHovered ? `${DESIGN_SYSTEM.COLORS.PRIMARY}80` : 'transparent' }}
+              />
             </div>
 
             <div className="flex-1 flex flex-col justify-between">
@@ -255,11 +283,12 @@ function MemberTacticalModule({ member, variant, index }: { member: any, variant
                   <motion.span
                     animate={isHovered ? { x: [0, -2, 2, 0] } : {}}
                     transition={{ repeat: Infinity, duration: 0.2 }}
-                    className={`text-[8px] font-black italic tracking-[0.2em] ${isPrimary ? 'text-red-600' : 'text-zinc-600'}`}
+                    className={cn("text-[8px] font-black italic", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_DEFAULT)}
+                    style={{ color: isPrimary ? DESIGN_SYSTEM.COLORS.PRIMARY : '#52525b' }}
                   >
                     {member.basics?.identifier?.badge}
                   </motion.span>
-                  <div className="h-[1px] flex-1 bg-zinc-900" />
+                  <div className="h-[1px] flex-1" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.ZINC_900 }} />
                 </div>
 
                 <motion.div
@@ -267,17 +296,21 @@ function MemberTacticalModule({ member, variant, index }: { member: any, variant
                     y: isHovered ? -5 : 0,
                     opacity: isHovered ? 0.3 : 0.05
                   }}
-                  className={`absolute top-10 right-4 text-6xl font-black italic pointer-events-none z-0 ${isPrimary ? 'text-red-600' : 'text-white'}`}
+                  className="absolute top-10 right-4 text-6xl font-black italic pointer-events-none z-0"
+                  style={{ color: isPrimary ? DESIGN_SYSTEM.COLORS.PRIMARY : 'white' }}
                 >
                   {member.basics?.identifier?.number || '00'}
                 </motion.div>
 
-                <h3 className={`font-black italic leading-[0.85] tracking-tighter uppercase pt-4 transition-transform duration-500 ${isHovered ? 'translate-x-2' : ''} ${isPrimary ? 'text-4xl lg:text-5xl' : 'text-2xl'}`}>
-                  <span className={isPrimary ? 'text-white' : 'text-zinc-400'}>{member.first}</span><br />
-                  <span className={isPrimary ? 'text-red-600' : 'text-white'}>{member.last}</span>
+                <h3 className={cn("font-black italic leading-[0.85] tracking-tighter uppercase pt-4 transition-transform duration-500", isHovered && "translate-x-2", isPrimary ? "text-4xl lg:text-5xl" : "text-2xl")}>
+                  <span className={isPrimary ? "text-white" : "text-zinc-400"}>{member.first}</span><br />
+                  <span style={{ color: isPrimary ? DESIGN_SYSTEM.COLORS.PRIMARY : 'white' }}>{member.last}</span>
                 </h3>
 
-                <p className="mt-6 text-[10px] font-bold text-zinc-500 uppercase leading-relaxed italic border-l-2 border-zinc-800 group-hover:border-red-600 pl-4 py-1 transition-all duration-500 tracking-wider">
+                <p
+                  className="mt-6 text-[10px] font-bold text-zinc-500 uppercase leading-relaxed italic border-l-2 pl-4 py-1 transition-all duration-500 tracking-wider"
+                  style={{ borderLeftColor: isHovered ? DESIGN_SYSTEM.COLORS.PRIMARY : DESIGN_SYSTEM.COLORS.ZINC_800 }}
+                >
                   {member.basics?.description}
                 </p>
               </div>
@@ -285,19 +318,27 @@ function MemberTacticalModule({ member, variant, index }: { member: any, variant
               <div className="mt-8 flex items-center justify-between border-t border-white/5 pt-4">
                 <div className="flex gap-6">
                   <div className="flex flex-col">
-                    <span className="text-[6px] font-black text-zinc-700 uppercase tracking-widest mb-1">Origin</span>
+                    <span className={cn("text-[6px] font-black text-zinc-700 uppercase mb-1", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_XL)}>Origin</span>
                     <span className="text-[9px] font-mono text-white italic font-bold tracking-wider">{member.traits?.identity?.nationality}</span>
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-[6px] font-black text-zinc-700 uppercase tracking-widest mb-1">Callsign</span>
-                    <span className="text-[9px] font-mono text-zinc-500 italic group-hover:text-red-600 transition-colors tracking-wider">[{member.basics?.identifier?.nickname}]</span>
+                    <span className={cn("text-[6px] font-black text-zinc-700 uppercase mb-1", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_XL)}>Callsign</span>
+                    <span
+                      className="text-[9px] font-mono text-zinc-500 italic transition-colors tracking-wider"
+                      style={{ color: isHovered ? DESIGN_SYSTEM.COLORS.PRIMARY : '#71717a' }}
+                    >
+                      [{member.basics?.identifier?.nickname}]
+                    </span>
                   </div>
                 </div>
 
                 <Link href={`/team/${member.slug}`} className="group/btn relative">
                   <motion.div
                     whileHover={{ scale: 1.1, rotate: 90 }}
-                    className="bg-zinc-900 p-2 border border-white/10 hover:bg-red-600 transition-colors"
+                    className="p-2 border border-white/10 transition-colors"
+                    style={{ backgroundColor: DESIGN_SYSTEM.COLORS.ZINC_900 }}
+                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = DESIGN_SYSTEM.COLORS.PRIMARY}
+                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = DESIGN_SYSTEM.COLORS.ZINC_900}
                   >
                     <ExternalLink className="size-4 text-white" />
                   </motion.div>
@@ -308,10 +349,13 @@ function MemberTacticalModule({ member, variant, index }: { member: any, variant
         </div>
       </div>
 
-      <div className={`absolute top-0 left-10 -translate-y-1/2 pointer-events-none transition-all duration-300 z-20 ${isHovered ? 'opacity-100 scale-100' : 'opacity-0 scale-50'}`}>
-        <div className="flex items-center gap-2 bg-black border border-red-600/50 px-2 py-1 shadow-[0_0_15px_rgba(220,38,38,0.3)]">
-          <div className="size-1.5 bg-red-600 rounded-full animate-ping" />
-          <span className="text-[7px] font-black text-white italic tracking-widest uppercase">READ_NODE_{member.basics?.identifier?.number}</span>
+      <div className={cn("absolute top-0 left-10 -translate-y-1/2 pointer-events-none transition-all duration-300 z-20", isHovered ? "opacity-100 scale-100" : "opacity-0 scale-50")}>
+        <div
+          className="flex items-center gap-2 bg-black border px-2 py-1"
+          style={{ borderColor: `${DESIGN_SYSTEM.COLORS.PRIMARY}80`, boxShadow: `0 0 15px ${DESIGN_SYSTEM.COLORS.PRIMARY_GLOW}` }}
+        >
+          <div className="size-1.5 rounded-full animate-ping" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY }} />
+          <span className={cn("text-[7px] font-black text-white italic uppercase", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_XL)}>READ_NODE_{member.basics?.identifier?.number}</span>
         </div>
       </div>
     </motion.div>

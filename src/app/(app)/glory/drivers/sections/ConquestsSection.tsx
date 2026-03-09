@@ -10,6 +10,8 @@ import {
   MarkerPopup,
   type MapViewport,
 } from '@/components/ui/map'
+import { DESIGN_SYSTEM } from '@/lib/constants'
+import { cn } from '@/utilities/cn'
 import { Clock, Gauge, Info, Loader2, Navigation2, Route as RouteIcon, Target, Trophy, Zap } from 'lucide-react'
 import { AnimatePresence, motion } from 'motion/react'
 import { useEffect, useState } from 'react'
@@ -166,9 +168,10 @@ export function ConquestsSection() {
                 initial={{ width: 0 }}
                 whileInView={{ width: 48 }}
                 transition={{ duration: 1, delay: 0.2 }}
-                className="h-[1px] bg-red-600"
+                style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY }}
+                className="h-[1px]"
               />
-              <span className="text-[8px] md:text-[10px] font-black italic text-zinc-500 uppercase tracking-[0.5em]">Tactical Overview</span>
+              <span className={cn("text-[8px] md:text-[10px] font-black italic text-zinc-500 uppercase", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_DEFAULT)}>Tactical Overview</span>
             </motion.div>
 
             <motion.h2
@@ -180,7 +183,7 @@ export function ConquestsSection() {
               CONQUEST<br />
               <motion.span
                 initial={{ color: "#fff" }}
-                whileInView={{ color: "#dc2626" }}
+                whileInView={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }}
                 transition={{ duration: 1, delay: 0.5 }}
               >
                 PATHS
@@ -230,7 +233,7 @@ export function ConquestsSection() {
                 <MapRoute
                   key={`route-${idx}`}
                   coordinates={route.coordinates}
-                  color="#dc2626"
+                  color={DESIGN_SYSTEM.COLORS.PRIMARY}
                   width={3}
                   opacity={0.6}
                 />
@@ -239,10 +242,23 @@ export function ConquestsSection() {
 
             <MapMarker longitude={HQ.lng} latitude={HQ.lat}>
               <MarkerContent className="size-10 flex items-center justify-center">
-                <div className="absolute inset-0 bg-red-600/20 rounded-full animate-pulse scale-150" />
-                <Navigation2 className="size-5 text-red-600 fill-red-600 filter drop-shadow-[0_0_8px_rgba(220,38,38,0.8)]" />
+                <div
+                  className="absolute inset-0 rounded-full animate-pulse scale-150"
+                  style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY_GLOW, opacity: 0.2 }}
+                />
+                <Navigation2
+                  className="size-5"
+                  style={{
+                    color: DESIGN_SYSTEM.COLORS.PRIMARY,
+                    fill: DESIGN_SYSTEM.COLORS.PRIMARY,
+                    filter: `drop-shadow(0 0 8px ${DESIGN_SYSTEM.COLORS.PRIMARY_GLOW})`
+                  }}
+                />
               </MarkerContent>
-              <MarkerLabel position="bottom" className="text-[7px] font-black text-white bg-red-600 px-2 py-1 mt-2 tracking-tighter">
+              <MarkerLabel
+                position="bottom"
+                className="text-[7px] font-black text-white px-2 py-1 mt-2 tracking-tighter bg-red-600"
+              >
                 BASE_STATION
               </MarkerLabel>
             </MapMarker>
@@ -259,16 +275,25 @@ export function ConquestsSection() {
                     initial={false}
                     animate={{
                       scale: activeCircuit?.id === circuit.id ? 1.3 : 1,
-                      borderColor: activeCircuit?.id === circuit.id ? "#ffffff" : "#dc2626"
+                      borderColor: activeCircuit?.id === circuit.id ? "#ffffff" : DESIGN_SYSTEM.COLORS.PRIMARY,
+                      backgroundColor: activeCircuit?.id === circuit.id ? DESIGN_SYSTEM.COLORS.PRIMARY : "#000000"
                     }}
                     whileHover={{ scale: 1.2 }}
-                    className={`size-7 rounded-none rotate-45 border-2 flex items-center justify-center transition-all duration-300 relative ${activeCircuit?.id === circuit.id ? 'bg-red-600 z-50' : 'bg-black'
-                      }`}
+                    className={cn(
+                      "size-7 rounded-none rotate-45 border-2 flex items-center justify-center transition-all duration-300 relative",
+                      activeCircuit?.id === circuit.id && "z-50"
+                    )}
                   >
                     {activeCircuit?.id !== circuit.id && (
-                      <span className="absolute inset-0 border border-red-600/30 animate-[ping_2s_infinite] scale-150 rounded-none" />
+                      <span
+                        className="absolute inset-0 border animate-[ping_2s_infinite] scale-150 rounded-none"
+                        style={{ borderColor: DESIGN_SYSTEM.COLORS.PRIMARY, opacity: 0.3 }}
+                      />
                     )}
-                    <Trophy className={`size-3.5 -rotate-45 ${activeCircuit?.id === circuit.id ? 'text-white' : 'text-red-600'}`} />
+                    <Trophy
+                      className="-rotate-45 size-3.5"
+                      style={{ color: activeCircuit?.id === circuit.id ? '#ffffff' : DESIGN_SYSTEM.COLORS.PRIMARY }}
+                    />
                   </motion.div>
                 </MarkerContent>
 
@@ -280,7 +305,10 @@ export function ConquestsSection() {
                   >
                     <div className="bg-zinc-900 px-4 py-2 flex justify-between items-center border-b border-white/5">
                       <div className="flex items-center gap-2">
-                        <div className="size-1.5 bg-red-600 rounded-full animate-pulse" />
+                        <div
+                          className="size-1.5 rounded-full animate-pulse"
+                          style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY }}
+                        />
                         <span className="text-[8px] font-black text-white tracking-widest uppercase">CONQUEST_INTEL</span>
                       </div>
                       <span className="text-[8px] font-mono text-zinc-500">REF_{circuit.id.toUpperCase()}</span>
@@ -292,7 +320,15 @@ export function ConquestsSection() {
                           <h3 className="text-xl font-black italic text-white uppercase tracking-tighter leading-none">{circuit.name}</h3>
                           <span className="text-[8px] font-bold text-zinc-500 uppercase mt-1.5 block tracking-widest">{circuit.location}</span>
                         </div>
-                        <div className="text-4xl font-black italic text-red-600 leading-none drop-shadow-[0_0_10px_rgba(220,38,38,0.3)]">{circuit.result}</div>
+                        <div
+                          className="text-4xl font-black italic leading-none"
+                          style={{
+                            color: DESIGN_SYSTEM.COLORS.PRIMARY,
+                            filter: `drop-shadow(0 0 10px ${DESIGN_SYSTEM.COLORS.PRIMARY_GLOW})`
+                          }}
+                        >
+                          {circuit.result}
+                        </div>
                       </div>
 
                       <div className="grid grid-cols-2 gap-2 mb-5">
@@ -306,7 +342,10 @@ export function ConquestsSection() {
                         </div>
                       </div>
 
-                      <p className="text-[10px] font-bold text-zinc-300 uppercase leading-relaxed italic border-l-2 border-red-600 pl-4 py-1">
+                      <p
+                        className="text-[10px] font-bold text-zinc-300 uppercase leading-relaxed italic border-l-2 pl-4 py-1"
+                        style={{ borderLeftColor: DESIGN_SYSTEM.COLORS.PRIMARY }}
+                      >
                         {circuit.details}
                       </p>
                     </div>
@@ -324,9 +363,12 @@ export function ConquestsSection() {
                 exit={{ opacity: 0, x: -20 }}
                 className="absolute top-4 left-4 z-20 flex flex-col gap-2"
               >
-                <div className="bg-black/80 backdrop-blur-md border border-red-600/50 p-4 space-y-4 min-w-[200px]">
+                <div
+                  className="bg-black/80 backdrop-blur-md border p-4 space-y-4 min-w-[200px]"
+                  style={{ borderColor: DESIGN_SYSTEM.COLORS.PRIMARY }}
+                >
                   <div className="flex items-center gap-3 border-b border-white/10 pb-2">
-                    <Gauge className="size-4 text-red-600" />
+                    <Gauge className="size-4" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }} />
                     <span className="text-[10px] font-black text-white italic tracking-widest uppercase">Live Telemetry</span>
                   </div>
 
@@ -352,7 +394,7 @@ export function ConquestsSection() {
                         <Zap className="size-3 text-zinc-500" />
                         <span className="text-[8px] font-bold text-zinc-500 uppercase tracking-tighter">Status</span>
                       </div>
-                      <span className="text-[9px] font-black text-red-600 italic animate-pulse">OPTIMIZED</span>
+                      <span className="text-[9px] font-black italic animate-pulse" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }}>OPTIMIZED</span>
                     </div>
                   </div>
                 </div>
@@ -379,7 +421,7 @@ export function ConquestsSection() {
                 animate={{ opacity: 1 }}
                 className="flex flex-col items-center gap-4"
               >
-                <Loader2 className="size-10 animate-spin text-red-600" />
+                <Loader2 className="size-10 animate-spin" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }} />
                 <span className="text-[9px] font-black text-white italic tracking-[0.5em] animate-pulse">Establishing_Link...</span>
               </motion.div>
             </div>
@@ -402,27 +444,39 @@ export function ConquestsSection() {
                 if (stat.id === 'ROUTES') setShowRoutes(!showRoutes)
                 else setFilter(stat.id as any)
               }}
-              className={`flex flex-col p-8 border-t-2 transition-all duration-500 text-left group relative overflow-hidden ${(filter === stat.id || (stat.id === 'ROUTES' && showRoutes))
-                ? 'border-red-600 bg-zinc-950'
-                : 'border-zinc-900 hover:border-zinc-700 bg-black'
-                }`}
+              className={cn(
+                "flex flex-col p-8 border-t-2 transition-all duration-500 text-left group relative overflow-hidden",
+                (filter === stat.id || (stat.id === 'ROUTES' && showRoutes))
+                  ? 'bg-zinc-950'
+                  : 'border-zinc-900 hover:border-zinc-700 bg-black'
+              )}
+              style={{
+                borderTopColor: (filter === stat.id || (stat.id === 'ROUTES' && showRoutes)) ? DESIGN_SYSTEM.COLORS.PRIMARY : undefined
+              }}
             >
               <div className="flex items-center justify-between mb-6 relative z-10">
-                <stat.icon className={`size-4 transition-colors duration-500 ${(filter === stat.id || (stat.id === 'ROUTES' && showRoutes)) ? 'text-red-600' : 'text-zinc-700'
-                  }`} />
+                <stat.icon
+                  className="size-4 transition-colors duration-500"
+                  style={{
+                    color: (filter === stat.id || (stat.id === 'ROUTES' && showRoutes)) ? DESIGN_SYSTEM.COLORS.PRIMARY : '#3f3f46'
+                  }}
+                />
                 <span className="text-[7px] font-mono text-zinc-600 uppercase tracking-[0.3em]">Module_0{i + 1}</span>
               </div>
               <span className="text-[9px] font-black text-zinc-500 uppercase tracking-widest mb-1 group-hover:text-white transition-colors relative z-10">
                 {stat.label}
               </span>
-              <div className={`text-4xl font-black italic tracking-tighter transition-colors duration-500 relative z-10 ${(filter === stat.id || (stat.id === 'ROUTES' && showRoutes)) ? 'text-white' : 'text-zinc-800'
-                }`}>
+              <div className={cn(
+                "text-4xl font-black italic tracking-tighter transition-colors duration-500 relative z-10",
+                (filter === stat.id || (stat.id === 'ROUTES' && showRoutes)) ? 'text-white' : 'text-zinc-800'
+              )}>
                 {stat.value}
               </div>
               {(filter === stat.id || (stat.id === 'ROUTES' && showRoutes)) && (
                 <motion.div
                   layoutId="activeFilterBg"
-                  className="absolute inset-0 bg-red-600/5 z-0"
+                  className="absolute inset-0 z-0"
+                  style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY_GLOW, opacity: 0.05 }}
                 />
               )}
             </motion.button>

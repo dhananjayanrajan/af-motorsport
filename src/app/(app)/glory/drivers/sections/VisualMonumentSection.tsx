@@ -1,12 +1,13 @@
 'use client'
 
+import { DESIGN_SYSTEM } from '@/lib/constants'
+import { cn } from '@/utilities/cn'
 import {
   ChevronLeft,
   ChevronRight,
   Database,
   Hash,
   Info,
-  Library,
   X
 } from 'lucide-react'
 import { AnimatePresence, motion } from 'motion/react'
@@ -18,18 +19,20 @@ export function VisualMonumentSection({ data }: { data?: any[] }) {
   const monuments = data || DUMMY_ARCHIVE
 
   return (
-    <section className="relative w-full bg-zinc-950 py-32 border-t border-zinc-900 font-sans">
+    <section
+      className="relative w-full py-32 border-t font-sans"
+      style={{ backgroundColor: DESIGN_SYSTEM.COLORS.ZINC_950, borderTopColor: DESIGN_SYSTEM.COLORS.ZINC_900 }}
+    >
       <div className="max-w-[1800px] mx-auto px-6 md:px-12">
 
-        {/* SYNCED TITLE BLOCK */}
         <div className="max-w-7xl mx-auto mb-16">
           <div className="flex items-center gap-4 mb-6">
-            <Library className="size-5 text-red-600" />
-            <span className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.5em]">Multimedia_Asset_Matrix</span>
+            <Database className="size-5" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }} />
+            <span className={cn("text-[10px] font-black text-zinc-500 uppercase", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_XL)}>Multimedia_Asset_Matrix</span>
           </div>
           <h2 className="text-5xl md:text-8xl font-black italic text-white tracking-tighter uppercase leading-[0.85]">
             THE<br />
-            <span className="text-red-600">MONUMENT</span>
+            <span style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }}>MONUMENT</span>
           </h2>
         </div>
 
@@ -52,7 +55,7 @@ export function VisualMonumentSection({ data }: { data?: any[] }) {
                   className="object-cover grayscale group-hover:grayscale-0 transition-all duration-500 opacity-50 group-hover:opacity-100"
                 />
                 <div className="absolute top-2 left-2 flex items-center gap-1 opacity-40 group-hover:opacity-100 transition-opacity">
-                  <Hash size={8} className="text-red-600" />
+                  <Hash size={8} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }} />
                   <span className="text-[8px] font-mono text-white">{(idx + 1).toString().padStart(2, '0')}</span>
                 </div>
               </motion.div>
@@ -83,16 +86,26 @@ function MonumentLightbox({ item, onClose, onPrev, onNext }: { item: any, onClos
       initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
       className="fixed inset-0 z-[3000] flex items-center justify-center bg-black/98 backdrop-blur-3xl p-4"
     >
-      <div className="max-w-[1400px] w-full h-full md:h-[90vh] flex flex-col relative bg-[#050505] border border-white/10 shadow-[0_0_100px_rgba(255,0,0,0.1)]">
+      <div
+        className="max-w-[1400px] w-full h-full md:h-[90vh] flex flex-col relative border shadow-2xl"
+        style={{
+          backgroundColor: '#050505',
+          borderColor: 'rgba(255,255,255,0.1)',
+          boxShadow: `0 0 100px ${DESIGN_SYSTEM.COLORS.PRIMARY}1a`
+        }}
+      >
 
         <div className="p-6 border-b border-white/5 flex items-center justify-between">
           <div className="flex items-center gap-6">
             <div className="flex items-center gap-2">
-              <Database size={14} className="text-red-600" />
-              <span className="text-[10px] font-black text-white uppercase tracking-widest">{item.name || "UNNAMED_NODE"}</span>
+              <Database size={14} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }} />
+              <span className={cn("text-[10px] font-black text-white uppercase", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_XL)}>{item.name || "UNNAMED_NODE"}</span>
             </div>
             <div className="hidden md:flex items-center gap-2">
-              <div className="size-1 bg-red-600 rounded-full animate-pulse" />
+              <div
+                className="size-1 rounded-full animate-pulse"
+                style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY }}
+              />
               <span className="text-[9px] font-mono text-zinc-500 uppercase">{item.collectionType || "RECORD"}</span>
             </div>
           </div>
@@ -125,8 +138,24 @@ function MonumentLightbox({ item, onClose, onPrev, onNext }: { item: any, onClos
             </motion.div>
           )}
 
-          <button onClick={onPrev} className="absolute left-6 p-4 text-white/20 hover:text-red-600 transition-colors z-50"><ChevronLeft size={48} /></button>
-          <button onClick={onNext} className="absolute right-6 p-4 text-white/20 hover:text-red-600 transition-colors z-50"><ChevronRight size={48} /></button>
+          <button
+            onClick={onPrev}
+            className="absolute left-6 p-4 text-white/20 transition-colors z-50 hover:text-primary"
+            style={{ color: 'rgba(255,255,255,0.2)' }}
+            onMouseEnter={(e) => e.currentTarget.style.color = DESIGN_SYSTEM.COLORS.PRIMARY}
+            onMouseLeave={(e) => e.currentTarget.style.color = 'rgba(255,255,255,0.2)'}
+          >
+            <ChevronLeft size={48} />
+          </button>
+          <button
+            onClick={onNext}
+            className="absolute right-6 p-4 text-white/20 transition-colors z-50 hover:text-primary"
+            style={{ color: 'rgba(255,255,255,0.2)' }}
+            onMouseEnter={(e) => e.currentTarget.style.color = DESIGN_SYSTEM.COLORS.PRIMARY}
+            onMouseLeave={(e) => e.currentTarget.style.color = 'rgba(255,255,255,0.2)'}
+          >
+            <ChevronRight size={48} />
+          </button>
         </div>
 
         <div className="p-8 border-t border-white/5 flex flex-col md:flex-row gap-12 items-start justify-between bg-[#080808]">
@@ -134,8 +163,8 @@ function MonumentLightbox({ item, onClose, onPrev, onNext }: { item: any, onClos
             {item.basics?.description && (
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
-                  <Info size={12} className="text-red-600" />
-                  <span className="text-[8px] font-black text-zinc-600 uppercase tracking-widest">TRANSMISSION_SUMMARY</span>
+                  <Info size={12} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }} />
+                  <span className={cn("text-[8px] font-black text-zinc-600 uppercase", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_XL)}>TRANSMISSION_SUMMARY</span>
                 </div>
                 <p className="text-xs font-bold text-zinc-400 uppercase italic tracking-tight leading-relaxed max-w-2xl">
                   {item.basics.description}
@@ -177,7 +206,7 @@ function getRawAssetUrl(item: any): string {
 function Metric({ label, value }: { label: string, value: string }) {
   return (
     <div className="flex flex-col gap-1">
-      <span className="text-[7px] font-black text-zinc-600 uppercase tracking-widest">{label}</span>
+      <span className={cn("text-[7px] font-black text-zinc-600 uppercase", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_XL)}>{label}</span>
       <span className="text-[10px] font-mono text-zinc-300 uppercase tracking-tighter">{value}</span>
     </div>
   )

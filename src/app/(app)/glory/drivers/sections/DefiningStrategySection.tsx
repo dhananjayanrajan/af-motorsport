@@ -2,6 +2,8 @@
 
 import { ClippedButton } from "@/components/Custom/ui/ClippedButton"
 import { Badge } from "@/components/ui/badge"
+import { DESIGN_SYSTEM } from "@/lib/constants"
+import { cn } from "@/utilities/cn"
 import {
   Activity,
   Clock,
@@ -143,7 +145,7 @@ export function DefiningStrategySection({ strategies = DUMMY_STRATEGIES }: { str
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 0.04 }}
           className="text-[30vw] font-black italic text-transparent leading-none whitespace-nowrap"
-          style={{ WebkitTextStroke: '1px rgba(255,255,255,1)' }}
+          style={{ WebkitTextStroke: `1px ${DESIGN_SYSTEM.COLORS.WHITE}` }}
         >
           {current.name.toUpperCase()}
         </motion.h2>
@@ -151,20 +153,28 @@ export function DefiningStrategySection({ strategies = DUMMY_STRATEGIES }: { str
 
       <div className="max-w-7xl mx-auto relative z-10">
 
-        <div className="flex flex-col md:flex-row justify-between items-end mb-16 md:mb-24 border-l-4 border-red-600 pl-8">
+        <div
+          className="flex flex-col md:flex-row justify-between items-end mb-16 md:mb-24 border-l-4 pl-8"
+          style={{ borderLeftColor: DESIGN_SYSTEM.COLORS.PRIMARY }}
+        >
           <div className="space-y-10">
             <div className="flex items-center gap-3">
-              <span className="text-[10px] font-black italic text-zinc-500 tracking-[0.5em] uppercase underline decoration-red-600 underline-offset-8">Decision_Matrix_v2.0</span>
+              <span
+                className={cn("text-[10px] font-black italic text-zinc-500 tracking-[0.5em] uppercase underline underline-offset-8", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_DEFAULT)}
+                style={{ textDecorationColor: DESIGN_SYSTEM.COLORS.PRIMARY }}
+              >
+                Decision_Matrix_v2.0
+              </span>
             </div>
             <h2 className="text-6xl md:text-8xl font-black italic text-white tracking-tighter uppercase leading-[0.8]">
               THE DEFINING<br />
-              <span className="text-red-600">STRATEGY</span>
+              <span style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }}>STRATEGY</span>
             </h2>
           </div>
 
           <div className="hidden md:flex flex-col items-end text-right font-mono text-[9px] text-zinc-700 gap-2">
             <div className="flex items-center gap-3 bg-zinc-950 p-3 border border-zinc-900">
-              <Activity className="size-3 text-red-600" />
+              <Activity className="size-3" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }} />
               <span>NODES_LOADED: {strategies.length}</span>
               <Database className="size-3 text-zinc-500" />
               <span>CORE_STABILITY: 100%</span>
@@ -177,18 +187,33 @@ export function DefiningStrategySection({ strategies = DUMMY_STRATEGIES }: { str
             <button
               key={s.id}
               onClick={() => setActiveIdx(idx)}
-              className={`relative overflow-hidden group border transition-all duration-500 ${activeIdx === idx ? 'bg-zinc-900 border-red-600' : 'bg-black border-zinc-900 hover:border-zinc-700'}`}
-              style={{ clipPath: 'polygon(15px 0%, 100% 0%, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0% 100%, 0% 15px)' }}
+              className={cn(
+                "relative overflow-hidden group border transition-all duration-500",
+                activeIdx === idx ? 'bg-zinc-900' : 'bg-black border-zinc-900 hover:border-zinc-700'
+              )}
+              style={{
+                clipPath: 'polygon(15px 0%, 100% 0%, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0% 100%, 0% 15px)',
+                borderColor: activeIdx === idx ? DESIGN_SYSTEM.COLORS.PRIMARY : undefined
+              }}
             >
               {activeIdx === idx && (
-                <motion.div layoutId="nodeHighlight" className="absolute inset-0 bg-red-600/5 z-0" />
+                <motion.div
+                  layoutId="nodeHighlight"
+                  className="absolute inset-0 z-0"
+                  style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY_GLOW, opacity: 0.05 }}
+                />
               )}
               <div className="relative z-10 p-4 flex items-center justify-between">
                 <div className="flex flex-col items-start">
-                  <span className={`text-[8px] font-black italic tracking-widest ${activeIdx === idx ? 'text-red-600' : 'text-zinc-700'}`}>0{idx + 1}</span>
-                  <span className={`text-[10px] font-black italic uppercase tracking-tighter ${activeIdx === idx ? 'text-white' : 'text-zinc-600'}`}>{s.name}</span>
+                  <span
+                    className="text-[8px] font-black italic tracking-widest"
+                    style={{ color: activeIdx === idx ? DESIGN_SYSTEM.COLORS.PRIMARY : '#3f3f46' }}
+                  >
+                    0{idx + 1}
+                  </span>
+                  <span className={cn("text-[10px] font-black italic uppercase tracking-tighter", activeIdx === idx ? 'text-white' : 'text-zinc-600')}>{s.name}</span>
                 </div>
-                {activeIdx === idx && <Target className="size-3 text-red-600" />}
+                {activeIdx === idx && <Target className="size-3" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }} />}
               </div>
             </button>
           ))}
@@ -212,7 +237,12 @@ export function DefiningStrategySection({ strategies = DUMMY_STRATEGIES }: { str
                   <div className="bg-black p-10 h-full relative overflow-hidden" style={{ clipPath: getTacticalClip('main') }}>
                     <div className="relative z-10 flex flex-col gap-8">
                       <div className="flex items-center gap-4">
-                        <span className="text-[8px] font-black italic tracking-[0.2em] text-red-600 uppercase">Operational_Summary</span>
+                        <span
+                          className="text-[8px] font-black italic tracking-[0.2em] uppercase"
+                          style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }}
+                        >
+                          Operational_Summary
+                        </span>
                         <div className="h-[1px] flex-1 bg-zinc-900/50" />
                       </div>
 
@@ -220,7 +250,10 @@ export function DefiningStrategySection({ strategies = DUMMY_STRATEGIES }: { str
                         <h3 className="text-4xl md:text-6xl font-black italic text-white uppercase tracking-tighter leading-none">
                           {current.name.replace(/_/g, ' ')}
                         </h3>
-                        <p className="text-zinc-500 text-[11px] font-bold italic leading-relaxed uppercase tracking-wider border-l-2 border-red-600 pl-6 max-w-2xl">
+                        <p
+                          className="text-zinc-500 text-[11px] font-bold italic leading-relaxed uppercase tracking-wider border-l-2 pl-6 max-w-2xl"
+                          style={{ borderLeftColor: DESIGN_SYSTEM.COLORS.PRIMARY }}
+                        >
                           {current.basics?.description}
                         </p>
                       </div>
@@ -247,9 +280,14 @@ export function DefiningStrategySection({ strategies = DUMMY_STRATEGIES }: { str
                                 <button
                                   key={decision.id}
                                   onClick={() => router.push(`/decisions/${decision.slug}`)}
-                                  className="flex items-center justify-between p-3 bg-zinc-950 border border-zinc-900 hover:border-red-600/40 transition-all group/btn text-left"
+                                  className="flex items-center justify-between p-3 bg-zinc-950 border border-zinc-900 hover:border-zinc-700 transition-all group/btn text-left"
                                 >
-                                  <span className="text-[9px] font-black text-white italic tracking-tighter group-hover/btn:text-red-500">{decision.name}</span>
+                                  <span
+                                    className="text-[9px] font-black text-white italic tracking-tighter group-hover/btn:transition-colors"
+                                    style={{ color: 'white' }}
+                                  >
+                                    {decision.name}
+                                  </span>
                                   <ExternalLink className="size-3 text-zinc-800" />
                                 </button>
                               ))
@@ -283,7 +321,15 @@ export function DefiningStrategySection({ strategies = DUMMY_STRATEGIES }: { str
                       <div className="absolute top-2 right-4 text-[7px] font-mono text-zinc-800">REF_C_0{i + 1}</div>
                       <div className="space-y-4 relative z-10">
                         <div className="flex justify-between items-center">
-                          <Badge variant="outline" className={`rounded-none text-[7px] font-black italic tracking-widest uppercase py-0.5 ${c.impact === 'Critical' ? 'bg-red-600 text-white border-red-600' : 'border-zinc-800 text-zinc-500'}`}>
+                          <Badge
+                            variant="outline"
+                            className="rounded-none text-[7px] font-black italic tracking-widest uppercase py-0.5"
+                            style={{
+                              backgroundColor: c.impact === 'Critical' ? DESIGN_SYSTEM.COLORS.PRIMARY : 'transparent',
+                              color: c.impact === 'Critical' ? 'white' : '#71717a',
+                              borderColor: c.impact === 'Critical' ? DESIGN_SYSTEM.COLORS.PRIMARY : '#27272a'
+                            }}
+                          >
                             {c.impact}_IMPACT
                           </Badge>
                           <span className="text-[7px] font-mono text-zinc-700">PROBABILITY: {c.probability.toUpperCase()}</span>
@@ -307,7 +353,12 @@ export function DefiningStrategySection({ strategies = DUMMY_STRATEGIES }: { str
             >
               <div className="flex items-center justify-between border-b border-zinc-900 pb-6 mb-10">
                 <div className="space-y-1">
-                  <span className="text-[7px] font-black italic text-red-600 tracking-[.4em] uppercase">Tactical_Directives</span>
+                  <span
+                    className="text-[7px] font-black italic tracking-[.4em] uppercase"
+                    style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }}
+                  >
+                    Tactical_Directives
+                  </span>
                   <h4 className="text-white font-black italic text-lg uppercase tracking-tighter">EXECUTION_FLOW</h4>
                 </div>
                 <Workflow className="size-4 text-zinc-700" />
@@ -324,13 +375,19 @@ export function DefiningStrategySection({ strategies = DUMMY_STRATEGIES }: { str
                     transition={{ delay: idx * 0.05 }}
                     className="relative pl-8 group/item"
                   >
-                    <div className="absolute left-0 top-1 size-[15px] bg-black border border-zinc-800 rotate-45 flex items-center justify-center group-hover/item:border-red-600 transition-colors">
-                      <div className="size-1.5 bg-zinc-900 group-hover/item:bg-red-600 transition-colors" />
+                    <div className="absolute left-0 top-1 size-[15px] bg-black border border-zinc-800 rotate-45 flex items-center justify-center group-hover/item:border-zinc-600 transition-colors">
+                      <div
+                        className="size-1.5 bg-zinc-900 group-hover/item:transition-colors"
+                        style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY }}
+                      />
                     </div>
 
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
-                        <span className="text-[8px] font-black text-red-600 italic tracking-widest uppercase">
+                        <span
+                          className="text-[8px] font-black italic tracking-widest uppercase"
+                          style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }}
+                        >
                           {d.phase}
                         </span>
                         <div className="flex items-center gap-1">
@@ -338,7 +395,7 @@ export function DefiningStrategySection({ strategies = DUMMY_STRATEGIES }: { str
                           <span className="text-[7px] font-mono text-zinc-700">{d.deadline}</span>
                         </div>
                       </div>
-                      <h5 className="text-white text-[11px] font-black uppercase tracking-tighter leading-tight italic group-hover/item:text-red-500 transition-colors">
+                      <h5 className="text-white text-[11px] font-black uppercase tracking-tighter leading-tight italic group-hover/item:text-zinc-200 transition-colors">
                         {d.action}
                       </h5>
                       <div className="flex items-center gap-2 pt-1">
@@ -362,18 +419,26 @@ export function DefiningStrategySection({ strategies = DUMMY_STRATEGIES }: { str
             </div>
 
             <div className="relative bg-zinc-950 border border-zinc-900 p-5 overflow-hidden">
-              <div className="absolute top-0 left-0 w-1 h-full bg-red-600" />
+              <div
+                className="absolute top-0 left-0 w-1 h-full"
+                style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY }}
+              />
               <div className="flex items-center justify-between relative z-10">
                 <div className="flex items-center gap-3">
-                  <ShieldCheck className="size-3 text-red-600" />
+                  <ShieldCheck className="size-3" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }} />
                   <span className="text-[9px] font-black text-white italic uppercase tracking-wider">Strategic_Integrity_Index</span>
                 </div>
                 <div className="flex flex-col items-end">
-                  <span className="text-[8px] font-mono text-zinc-700 uppercase underline decoration-red-600">VERIFIED_LOG</span>
+                  <span
+                    className="text-[8px] font-mono text-zinc-700 uppercase underline"
+                    style={{ textDecorationColor: DESIGN_SYSTEM.COLORS.PRIMARY }}
+                  >
+                    VERIFIED_LOG
+                  </span>
                   <div className="flex gap-1 mt-1">
-                    <div className="h-1 w-3 bg-red-600" />
-                    <div className="h-1 w-3 bg-red-600" />
-                    <div className="h-1 w-3 bg-red-600" />
+                    <div className="h-1 w-3" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY }} />
+                    <div className="h-1 w-3" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY }} />
+                    <div className="h-1 w-3" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY }} />
                     <div className="h-1 w-3 bg-zinc-800" />
                   </div>
                 </div>

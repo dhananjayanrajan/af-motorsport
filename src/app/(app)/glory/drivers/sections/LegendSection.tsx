@@ -3,6 +3,8 @@
 import { ClippedButton } from '@/components/Custom/ui/ClippedButton'
 import { CMSLink } from '@/components/Link'
 import Magnet from '@/components/Magnet'
+import { DESIGN_SYSTEM } from '@/lib/constants'
+import { cn } from '@/utilities/cn'
 import { motion, useScroll, useTransform } from 'motion/react'
 import Image from 'next/image'
 import { useEffect, useRef } from 'react'
@@ -75,29 +77,22 @@ const PLACEHOLDERS = [
   {
     avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=800&auto=format&fit=crop',
     cover: 'https://images.unsplash.com/photo-1550291652-6ea9114a47b1?q=80&w=1600&auto=format&fit=crop',
-    primary: 'text-red-600',
-    border: 'border-red-600/50',
-    bg: 'bg-red-600'
   },
   {
     avatar: 'https://images.unsplash.com/photo-1594144408253-839659b48247?q=80&w=800&auto=format&fit=crop',
     cover: 'https://images.unsplash.com/photo-1511919884226-fd3cad34687c?q=80&w=1600&auto=format&fit=crop',
-    primary: 'text-blue-500',
-    border: 'border-blue-500/50',
-    bg: 'bg-blue-500'
   },
   {
     avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=800&auto=format&fit=crop',
     cover: 'https://images.unsplash.com/photo-1583121274602-3e2820c69888?q=80&w=1600&auto=format&fit=crop',
-    primary: 'text-yellow-500',
-    border: 'border-yellow-500/50',
-    bg: 'bg-yellow-500'
   }
 ]
 
 export function LegendSection({ drivers = DUMMY_DRIVERS as Driver[] }: { drivers?: Driver[] }) {
   const containerRef = useRef<HTMLDivElement>(null)
   const { scrollXProgress } = useScroll({ container: containerRef })
+
+  const parsedEase = (DESIGN_SYSTEM.ANIMATION.EASING_CUBIC.match(/[\d.]+/g)?.map(Number) || [0.87, 0, 0.13, 1]) as [number, number, number, number]
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -117,15 +112,24 @@ export function LegendSection({ drivers = DUMMY_DRIVERS as Driver[] }: { drivers
     <section className="relative w-full bg-black overflow-hidden">
       <div className="sticky top-0 left-0 w-full h-12 z-50 px-4 md:px-12 flex items-center justify-between border-b border-zinc-900 bg-black/90 backdrop-blur-md">
         <div className="flex items-center gap-3">
-          <div className="w-1.5 h-1.5 bg-red-600 rounded-full animate-pulse shadow-[0_0_10px_rgba(220,38,38,0.5)]" />
-          <span className="text-[8px] md:text-[9px] font-black italic text-zinc-400 tracking-[0.4em] uppercase">THE FINEST AT PLAY</span>
+          <div
+            className="w-1.5 h-1.5 rounded-full animate-pulse"
+            style={{
+              backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY,
+              boxShadow: `0 0 10px ${DESIGN_SYSTEM.COLORS.PRIMARY_GLOW}`
+            }}
+          />
+          <span className={cn("text-[8px] md:text-[9px] font-black italic text-zinc-400 uppercase", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_DEFAULT)}>
+            THE FINEST AT PLAY
+          </span>
         </div>
         <div className="flex gap-2">
           {drivers.map((_, i) => (
             <div key={i} className="w-4 md:w-6 h-[1px] bg-zinc-800 overflow-hidden">
               <motion.div
-                className="h-full bg-red-600"
+                className="h-full"
                 style={{
+                  backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY,
                   scaleX: useTransform(
                     scrollXProgress,
                     [i / drivers.length, (i + 1) / drivers.length],
@@ -154,8 +158,6 @@ export function LegendSection({ drivers = DUMMY_DRIVERS as Driver[] }: { drivers
 
           const avatarUrl = (driver as any).avatar?.url || PLACEHOLDERS[index % 3].avatar
           const coverUrl = (driver as any).cover?.url || PLACEHOLDERS[index % 3].cover
-          const themeColor = PLACEHOLDERS[index % 3].primary
-          const bgColor = PLACEHOLDERS[index % 3].bg
 
           return (
             <div
@@ -174,7 +176,7 @@ export function LegendSection({ drivers = DUMMY_DRIVERS as Driver[] }: { drivers
                       className="text-[65vw] md:text-[40vw] font-black italic leading-none tracking-tighter text-transparent"
                       style={{
                         WebkitTextStroke: '1px rgba(255,255,255,0.3)',
-                        filter: 'drop-shadow(0 0 40px rgba(255,255,255,0.3))'
+                        filter: `drop-shadow(0 0 40px ${DESIGN_SYSTEM.COLORS.WHITE_GLOW})`
                       }}
                     >
                       {num}
@@ -193,13 +195,16 @@ export function LegendSection({ drivers = DUMMY_DRIVERS as Driver[] }: { drivers
                       transition={{ delay: 0.2 }}
                       className="mb-2 md:mb-4 inline-block"
                     >
-                      <span className="text-white/40 font-black italic tracking-[0.4em] text-[9px] md:text-[10px] uppercase border-l-2 border-red-600 pl-4 py-1">
+                      <span
+                        className={cn("text-white/40 font-black italic border-l-2 text-[9px] md:text-[10px] uppercase pl-4 py-1", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_DEFAULT)}
+                        style={{ borderColor: DESIGN_SYSTEM.COLORS.PRIMARY }}
+                      >
                         {role} / <span className="text-white">{callsign}</span>
                       </span>
                     </motion.div>
 
                     <h2 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black italic leading-[0.85] tracking-tighter uppercase pl-4 md:pl-0">
-                      <span className={themeColor}>{driver.first}</span>
+                      <span style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }}>{driver.first}</span>
                       <br />
                       <span className="text-white">
                         {driver.last}
@@ -211,11 +216,19 @@ export function LegendSection({ drivers = DUMMY_DRIVERS as Driver[] }: { drivers
                     <motion.div
                       initial={{ opacity: 0, y: 40, rotateX: 10 }}
                       whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
-                      transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                      transition={{
+                        duration: 0.8,
+                        ease: parsedEase
+                      }}
                       className="relative w-full max-w-[360px] md:max-w-[420px] mx-auto lg:mr-0 lg:ml-auto group"
                     >
-                      <div className={`absolute -inset-0.5 ${bgColor} opacity-20 blur-sm group-hover:opacity-40 transition-opacity duration-500`}
-                        style={{ clipPath: 'polygon(20px 0, 100% 0, 100% calc(100% - 30px), calc(100% - 30px) 100%, 0 100%, 0 20px)' }} />
+                      <div
+                        className="absolute -inset-0.5 opacity-20 blur-sm group-hover:opacity-40 transition-opacity duration-500"
+                        style={{
+                          clipPath: 'polygon(20px 0, 100% 0, 100% calc(100% - 30px), calc(100% - 30px) 100%, 0 100%, 0 20px)',
+                          backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY
+                        }}
+                      />
 
                       <div className="relative bg-zinc-950 p-4 md:p-6 border border-white/10"
                         style={{ clipPath: 'polygon(20px 0, 100% 0, 100% calc(100% - 30px), calc(100% - 30px) 100%, 0 100%, 0 20px)' }}>
@@ -228,14 +241,14 @@ export function LegendSection({ drivers = DUMMY_DRIVERS as Driver[] }: { drivers
                             fill
                             className="object-cover grayscale hover:grayscale-0 transition-all duration-1000 -scale-x-100"
                           />
-                          <div className={`absolute top-0 left-0 w-1 h-8 md:h-12 ${bgColor} z-20`} />
-                          <div className={`absolute bottom-0 right-0 w-8 md:w-12 h-1 ${bgColor} z-20`} />
+                          <div className="absolute top-0 left-0 w-1 h-8 md:h-12 z-20" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY }} />
+                          <div className="absolute bottom-0 right-0 w-8 md:w-12 h-1 z-20" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY }} />
                           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                         </div>
 
                         <div className="space-y-4 md:space-y-6">
                           <div className="relative">
-                            <div className={`absolute -left-4 md:-left-6 top-0 w-0.5 md:w-1 h-full ${bgColor} opacity-50`} />
+                            <div className="absolute -left-4 md:-left-6 top-0 w-0.5 md:w-1 h-full opacity-50" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY }} />
                             <p className="text-[10px] md:text-xs font-bold text-zinc-300 uppercase tracking-widest leading-relaxed italic">
                               {driver.basics?.description}
                             </p>
@@ -260,7 +273,7 @@ export function LegendSection({ drivers = DUMMY_DRIVERS as Driver[] }: { drivers
                       { label: 'ORIGIN', value: nationality },
                       { label: 'AGE', value: age },
                       { label: 'NICKNAME', value: nickname },
-                      { label: 'SERIAL_NO', value: num, color: themeColor }
+                      { label: 'SERIAL_NO', value: num, color: DESIGN_SYSTEM.COLORS.PRIMARY }
                     ].map((stat, i) => (
                       <motion.div
                         key={i}
@@ -269,10 +282,13 @@ export function LegendSection({ drivers = DUMMY_DRIVERS as Driver[] }: { drivers
                         transition={{ delay: 0.4 + (i * 0.1) }}
                         className="space-y-1 md:space-y-2"
                       >
-                        <span className="text-[7px] md:text-[8px] font-black text-zinc-500 uppercase tracking-[0.3em]">
+                        <span className={cn("text-[7px] md:text-[8px] font-black text-zinc-500 uppercase", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_DEFAULT)}>
                           {stat.label}
                         </span>
-                        <div className={`text-xl md:text-3xl font-black italic tracking-tighter uppercase ${stat.color || 'text-white'}`}>
+                        <div
+                          className="text-xl md:text-3xl font-black italic tracking-tighter uppercase"
+                          style={{ color: stat.color || '#ffffff' }}
+                        >
                           {stat.value}
                         </div>
                       </motion.div>
@@ -284,11 +300,6 @@ export function LegendSection({ drivers = DUMMY_DRIVERS as Driver[] }: { drivers
           )
         })}
       </div>
-
-      <style jsx global>{`
-        .hide-scrollbar::-webkit-scrollbar { display: none; }
-        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-      `}</style>
     </section>
   )
 }

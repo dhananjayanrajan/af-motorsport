@@ -1,6 +1,8 @@
 'use client'
 
 import { ClippedButton } from '@/components/Custom/ui/ClippedButton'
+import { DESIGN_SYSTEM } from '@/lib/constants'
+import { cn } from '@/utilities/cn'
 import {
   Binary,
   Calendar,
@@ -68,17 +70,20 @@ export default function VaultSection({ data = CELEBRATIONS_DATA }: { data?: Cele
   const springY = useSpring(canvasY, { stiffness: 60, damping: 20 })
 
   return (
-    <section className="relative w-full h-screen bg-[#020202] overflow-hidden select-none font-sans text-white border-t border-zinc-900 touch-none">
-
-      {/* INFINITE CANVAS SYSTEM */}
+    <section
+      className="relative w-full h-screen overflow-hidden select-none font-sans text-white border-t touch-none"
+      style={{ backgroundColor: DESIGN_SYSTEM.COLORS.BLACK, borderTopColor: DESIGN_SYSTEM.COLORS.ZINC_800 }}
+    >
       <motion.div
         drag
         dragMomentum={true}
         style={{ x: springX, y: springY, scale: zoom }}
         className="absolute inset-0 w-full h-full flex items-center justify-center cursor-crosshair"
       >
-        <div className="absolute inset-0 w-[5000px] h-[5000px] -translate-x-1/2 -translate-y-1/2 opacity-10 pointer-events-none"
-          style={{ backgroundImage: 'radial-gradient(#fff 1px, transparent 1px)', backgroundSize: '80px 80px' }} />
+        <div
+          className="absolute inset-0 w-[5000px] h-[5000px] -translate-x-1/2 -translate-y-1/2 opacity-10 pointer-events-none"
+          style={{ backgroundImage: `radial-gradient(${DESIGN_SYSTEM.COLORS.WHITE} 1px, transparent 1px)`, backgroundSize: '80px 80px' }}
+        />
 
         <AnimatePresence>
           {data.map((item, idx) => (
@@ -93,21 +98,43 @@ export default function VaultSection({ data = CELEBRATIONS_DATA }: { data?: Cele
         </AnimatePresence>
       </motion.div>
 
-      {/* FIXED HUD ELEMENTS - RESPONSIVE SCALING */}
       <div className="absolute top-6 left-6 md:top-10 md:left-10 z-[100] pointer-events-none max-w-[calc(100vw-120px)]">
-        <div className="bg-zinc-950/90 backdrop-blur-xl p-4 md:p-6 border-l-2 border-red-600 pointer-events-auto shadow-2xl">
+        <div
+          className="p-4 md:p-6 border-l-2 pointer-events-auto shadow-2xl"
+          style={{ backgroundColor: `${DESIGN_SYSTEM.COLORS.ZINC_950}E6`, borderLeftColor: DESIGN_SYSTEM.COLORS.PRIMARY }}
+        >
           <div className="flex items-center gap-2 md:gap-4 mb-1">
-            <Binary size={12} className="text-red-600" />
-            <span className="text-[7px] md:text-[9px] font-black italic tracking-[0.5em] text-zinc-500 uppercase truncate">Archive_System_V7</span>
+            <Binary size={12} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }} />
+            <span className={cn("text-[7px] md:text-[9px] font-black italic text-zinc-500 uppercase truncate", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_XL)}>Archive_System_V7</span>
           </div>
-          <h2 className="text-2xl md:text-4xl font-black italic tracking-tighter uppercase text-white truncate">VAULT_<span className="text-red-600">RECORDS</span></h2>
+          <h2 className="text-2xl md:text-4xl font-black italic tracking-tighter uppercase text-white truncate">
+            VAULT_<span style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }}>RECORDS</span>
+          </h2>
         </div>
       </div>
 
-      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 md:bottom-auto md:top-10 md:right-10 md:left-auto md:translate-x-0 z-[100] flex gap-2 pointer-events-auto bg-zinc-950/50 p-2 md:p-0 backdrop-blur-md md:backdrop-blur-none rounded-full md:rounded-none border border-white/5 md:border-none">
-        <button onClick={() => setZoom(z => Math.min(z + 0.1, 2))} className="size-10 md:size-12 bg-zinc-950 border border-white/10 flex items-center justify-center hover:bg-red-600 text-zinc-400 hover:text-white transition-all rounded-full md:rounded-none"><ZoomIn size={16} /></button>
-        <button onClick={() => setZoom(z => Math.max(z - 0.1, 0.4))} className="size-10 md:size-12 bg-zinc-950 border border-white/10 flex items-center justify-center hover:bg-red-600 text-zinc-400 hover:text-white transition-all rounded-full md:rounded-none"><ZoomOut size={16} /></button>
-        <button onClick={() => { canvasX.set(0); canvasY.set(0); setZoom(isMobile ? 0.6 : 0.8); }} className="size-10 md:size-12 bg-zinc-950 border border-white/10 flex items-center justify-center hover:bg-red-600 text-zinc-400 hover:text-white transition-all rounded-full md:rounded-none"><Globe size={16} /></button>
+      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 md:bottom-auto md:top-10 md:right-10 md:left-auto md:translate-x-0 z-[100] flex gap-2 pointer-events-auto p-2 md:p-0 backdrop-blur-md md:backdrop-blur-none rounded-full md:rounded-none border md:border-none" style={{ backgroundColor: `${DESIGN_SYSTEM.COLORS.ZINC_950}80`, borderColor: 'rgba(255, 255, 255, 0.05)' }}>
+        <button
+          onClick={() => setZoom(z => Math.min(z + 0.1, 2))}
+          className="size-10 md:size-12 border flex items-center justify-center transition-all rounded-full md:rounded-none text-zinc-400 hover:text-white"
+          style={{ backgroundColor: DESIGN_SYSTEM.COLORS.ZINC_950, borderColor: 'rgba(255, 255, 255, 0.1)' }}
+          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = DESIGN_SYSTEM.COLORS.PRIMARY}
+          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = DESIGN_SYSTEM.COLORS.ZINC_950}
+        ><ZoomIn size={16} /></button>
+        <button
+          onClick={() => setZoom(z => Math.max(z - 0.1, 0.4))}
+          className="size-10 md:size-12 border flex items-center justify-center transition-all rounded-full md:rounded-none text-zinc-400 hover:text-white"
+          style={{ backgroundColor: DESIGN_SYSTEM.COLORS.ZINC_950, borderColor: 'rgba(255, 255, 255, 0.1)' }}
+          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = DESIGN_SYSTEM.COLORS.PRIMARY}
+          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = DESIGN_SYSTEM.COLORS.ZINC_950}
+        ><ZoomOut size={16} /></button>
+        <button
+          onClick={() => { canvasX.set(0); canvasY.set(0); setZoom(isMobile ? 0.6 : 0.8); }}
+          className="size-10 md:size-12 border flex items-center justify-center transition-all rounded-full md:rounded-none text-zinc-400 hover:text-white"
+          style={{ backgroundColor: DESIGN_SYSTEM.COLORS.ZINC_950, borderColor: 'rgba(255, 255, 255, 0.1)' }}
+          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = DESIGN_SYSTEM.COLORS.PRIMARY}
+          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = DESIGN_SYSTEM.COLORS.ZINC_950}
+        ><Globe size={16} /></button>
       </div>
 
       <AnimatePresence>
@@ -138,12 +165,19 @@ function DataSlab({ item, index, isMobile, onExpand }: { item: Celebration, inde
       onClick={(e) => {
         if (isMobile) onExpand()
       }}
-      className="absolute w-[280px] md:w-[340px] p-1 bg-zinc-950 border border-white/5 flex flex-col group cursor-grab shadow-[20px_20px_40px_rgba(0,0,0,0.8)] touch-none"
-      style={{ clipPath: 'polygon(15px 0, 100% 0, 100% calc(100% - 25px), calc(100% - 25px) 100%, 0 100%, 0 15px)' }}
+      className="absolute w-[280px] md:w-[340px] p-1 border flex flex-col group cursor-grab shadow-[20px_20px_40px_rgba(0,0,0,0.8)] touch-none"
+      style={{
+        backgroundColor: DESIGN_SYSTEM.COLORS.ZINC_950,
+        borderColor: 'rgba(255, 255, 255, 0.05)',
+        clipPath: 'polygon(15px 0, 100% 0, 100% calc(100% - 25px), calc(100% - 25px) 100%, 0 100%, 0 15px)'
+      }}
     >
       <div className="relative aspect-[16/10] bg-black overflow-hidden">
         <Image src={item.assets.primary.url} alt="" fill className="object-cover opacity-50 grayscale group-hover:grayscale-0 transition-all duration-700" />
-        <div className="absolute top-3 left-3 bg-red-600 text-[8px] font-black px-2 py-0.5 skew-x-[-15deg]">
+        <div
+          className="absolute top-3 left-3 text-[8px] font-black px-2 py-0.5 skew-x-[-15deg]"
+          style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY, color: DESIGN_SYSTEM.COLORS.BLACK }}
+        >
           {item.details.prestige.toUpperCase()}
         </div>
         {!isMobile && (
@@ -157,9 +191,9 @@ function DataSlab({ item, index, isMobile, onExpand }: { item: Celebration, inde
         <h4 className="text-[11px] md:text-[13px] font-black italic text-white uppercase tracking-tighter leading-none">
           {item.name.replace(/_/g, ' ')}
         </h4>
-        <div className="flex justify-between items-center border-t border-white/5 pt-3 md:pt-4">
-          <div className="flex items-center gap-2 text-[7px] md:text-[8px] text-zinc-500 font-bold uppercase italic tracking-widest">
-            <Calendar size={10} className="text-red-600" /> {new Date(item.createdAt).getFullYear()}
+        <div className="flex justify-between items-center border-t pt-3 md:pt-4" style={{ borderTopColor: 'rgba(255, 255, 255, 0.05)' }}>
+          <div className={cn("flex items-center gap-2 text-[7px] md:text-[8px] text-zinc-500 font-bold uppercase italic", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_XL)}>
+            <Calendar size={10} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }} /> {new Date(item.createdAt).getFullYear()}
           </div>
           <span className="text-[7px] md:text-[8px] font-mono text-zinc-700 tracking-tighter">NODE_{item.id}</span>
         </div>
@@ -176,31 +210,50 @@ function FullArchiveView({ item, onClose }: { item: Celebration, onClose: () => 
       initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
       className="fixed inset-0 z-[2000] flex items-center justify-center p-0 md:p-6 bg-black/98 backdrop-blur-3xl"
     >
-      <div className="w-full h-full md:h-[85vh] max-w-7xl flex flex-col lg:flex-row bg-[#050505] md:border border-white/10 overflow-hidden relative md:shadow-[0_0_100px_rgba(220,38,38,0.1)]">
-
-        {/* MOBILE CLOSE BUTTON */}
-        <button onClick={onClose} className="absolute top-6 right-6 md:top-10 md:right-10 p-3 md:p-5 text-white hover:text-red-600 bg-black/80 md:bg-black/50 rounded-full z-[2100] transition-colors border border-white/10 md:border-none">
+      <div
+        className="w-full h-full md:h-[85vh] max-w-7xl flex flex-col lg:flex-row md:border overflow-hidden relative"
+        style={{
+          backgroundColor: '#050505',
+          borderColor: 'rgba(255, 255, 255, 0.1)',
+          boxShadow: `0 0 100px ${DESIGN_SYSTEM.COLORS.PRIMARY_MUTED}`
+        }}
+      >
+        <button
+          onClick={onClose}
+          className="absolute top-6 right-6 md:top-10 md:right-10 p-3 md:p-5 text-white bg-black/80 md:bg-black/50 rounded-full z-[2100] transition-colors border"
+          style={{ borderColor: 'rgba(255, 255, 255, 0.1)' }}
+          onMouseEnter={(e) => e.currentTarget.style.color = DESIGN_SYSTEM.COLORS.PRIMARY}
+          onMouseLeave={(e) => e.currentTarget.style.color = 'white'}
+        >
           <X size={24} className="md:w-8 md:h-8" />
         </button>
 
-        <div className="relative h-[40vh] md:h-auto md:flex-1 bg-black overflow-hidden border-b lg:border-b-0 lg:border-r border-white/10 shrink-0">
+        <div className="relative h-[40vh] md:h-auto md:flex-1 bg-black overflow-hidden border-b lg:border-b-0 lg:border-r shrink-0" style={{ borderColor: 'rgba(255, 255, 255, 0.1)' }}>
           <Image src={item.assets.primary.url} alt="" fill className="object-cover opacity-60" priority />
         </div>
 
         <div className="flex-1 overflow-y-auto p-8 md:p-12 lg:w-[550px] lg:flex-none flex flex-col justify-between relative bg-[#080808]">
           <div className="space-y-8 md:space-y-12">
             <div className="flex flex-col gap-2">
-              <span className="text-[8px] md:text-[9px] font-black text-red-600 uppercase tracking-[0.4em] md:tracking-[0.6em] italic">Record_Initialized</span>
+              <span
+                className={cn("text-[8px] md:text-[9px] font-black uppercase italic", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_XL)}
+                style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }}
+              >
+                Record_Initialized
+              </span>
               <h3 className="text-2xl md:text-4xl font-black italic text-white uppercase tracking-tighter leading-[0.85] break-words max-w-3/5">
                 {item.name.replace(/_/g, ' ')}
               </h3>
             </div>
 
             <div className="space-y-6">
-              <p className="text-zinc-400 text-sm md:text-lg font-bold italic leading-relaxed uppercase border-l-4 border-red-600 pl-4 md:pl-8">
+              <p
+                className="text-zinc-400 text-sm md:text-lg font-bold italic leading-relaxed uppercase border-l-4 pl-4 md:pl-8"
+                style={{ borderLeftColor: DESIGN_SYSTEM.COLORS.PRIMARY }}
+              >
                 {item.basics.description}
               </p>
-              <div className="grid grid-cols-2 gap-px bg-white/5 border border-white/10">
+              <div className="grid grid-cols-2 gap-px bg-white/5 border" style={{ borderColor: 'rgba(255, 255, 255, 0.1)' }}>
                 <MetaField label="PRESTIGE" value={item.details.prestige} />
                 <MetaField label="ACCESS" value={item.details.exclusivity} />
                 <MetaField label="STAMP" value={new Date(item.createdAt).toLocaleDateString()} />
@@ -227,7 +280,7 @@ function FullArchiveView({ item, onClose }: { item: Celebration, onClose: () => 
 function MetaField({ label, value }: { label: string, value: string }) {
   return (
     <div className="p-3 md:p-5 flex flex-col gap-1 bg-black/40">
-      <span className="text-[6px] md:text-[7px] font-black text-zinc-600 uppercase tracking-[0.4em]">{label}</span>
+      <span className={cn("text-[6px] md:text-[7px] font-black text-zinc-600 uppercase", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_DEFAULT)}>{label}</span>
       <span className="text-[9px] md:text-[10px] font-mono text-zinc-200 uppercase truncate">{value}</span>
     </div>
   )

@@ -1,6 +1,8 @@
 'use client'
 
 import Particles from '@/components/Particles'
+import { DESIGN_SYSTEM } from '@/lib/constants'
+import { cn } from '@/utilities/cn'
 import { Activity, Cpu, Flag, Shield, Timer, Trophy, Wind, Zap } from 'lucide-react'
 import { motion, useInView, useScroll, useSpring, useTransform } from 'motion/react'
 import { useEffect, useRef, useState } from 'react'
@@ -124,7 +126,7 @@ export function GloryNumbersSection({ data }: { data?: any }) {
         }}
       >
         <Particles
-          particleColors={["#ffffff", "#ff0000", "#dc2626"]}
+          particleColors={[DESIGN_SYSTEM.COLORS.WHITE, DESIGN_SYSTEM.COLORS.PRIMARY, DESIGN_SYSTEM.COLORS.PRIMARY]}
           particleCount={1500}
           particleSpread={50}
           speed={3}
@@ -147,8 +149,9 @@ export function GloryNumbersSection({ data }: { data?: any }) {
             <span className="text-[8px] font-mono text-zinc-700">0{i + 1}</span>
             <div className="w-[2px] h-8 md:h-12 bg-zinc-900 rounded-full overflow-hidden">
               <motion.div
-                className="w-full bg-red-600 origin-top"
+                className="w-full origin-top"
                 style={{
+                  backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY,
                   height: useTransform(
                     progressBarProgress.scrollYProgress,
                     [i / GLORY_STATS.length, (i + 0.8) / GLORY_STATS.length],
@@ -170,8 +173,12 @@ export function GloryNumbersSection({ data }: { data?: any }) {
       <motion.div
         initial={{ scaleX: 0 }}
         animate={{ opacity: isInView ? 1 : 0 }}
-        style={{ scaleX }}
-        className="fixed bottom-0 left-0 right-0 h-1 bg-red-600 origin-left z-50 shadow-[0_-4px_10px_rgba(220,38,38,0.3)]"
+        style={{
+          scaleX,
+          backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY,
+          boxShadow: `0 -4px 10px ${DESIGN_SYSTEM.COLORS.PRIMARY_GLOW}`
+        }}
+        className="fixed bottom-0 left-0 right-0 h-1 origin-left z-50"
       />
     </div>
   )
@@ -179,6 +186,8 @@ export function GloryNumbersSection({ data }: { data?: any }) {
 
 function StatSection({ stat, index }: { stat: StatCard, index: number }) {
   const sectionRef = useRef(null)
+
+  const parsedEase = (DESIGN_SYSTEM.ANIMATION.EASING_CUBIC.match(/[\d.]+/g)?.map(Number) || [0.87, 0, 0.13, 1]) as [number, number, number, number]
 
   return (
     <section
@@ -207,21 +216,21 @@ function StatSection({ stat, index }: { stat: StatCard, index: number }) {
               transition={{ duration: 0.6 }}
               className="flex items-center gap-3"
             >
-              <stat.icon className="size-4 md:size-5 text-red-600" />
-              <div className="h-[1px] w-8 md:w-12 bg-red-600/30" />
-              <span className="text-[8px] md:text-[10px] font-black text-zinc-500 uppercase tracking-[0.4em]">{stat.label}</span>
+              <stat.icon className="size-4 md:size-5" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }} />
+              <div className="h-[1px] w-8 md:w-12" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY_MUTED }} />
+              <span className={cn("text-[8px] md:text-[10px] font-black text-zinc-500 uppercase", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_DEFAULT)}>{stat.label}</span>
             </motion.div>
 
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+              transition={{ duration: 0.8, delay: 0.1, ease: parsedEase }}
               className="flex flex-wrap items-baseline gap-x-3 md:gap-x-6"
             >
-              <h2 className="text-7xl md:text-[14rem] font-black italic leading-none text-white">
+              <h2 className="text-7xl md:text-[14rem] font-black italic leading-none text-white tracking-tighter">
                 {stat.value}
               </h2>
-              <span className="text-xl md:text-6xl font-black italic text-red-600 tracking-tighter uppercase">
+              <span className="text-xl md:text-6xl font-black italic tracking-tighter uppercase" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }}>
                 {stat.suffix}
               </span>
             </motion.div>
@@ -233,12 +242,12 @@ function StatSection({ stat, index }: { stat: StatCard, index: number }) {
               className="relative p-4 md:p-8 bg-zinc-950/50 border border-white/10 max-w-xl w-full backdrop-blur-sm"
               style={{ clipPath: 'polygon(0 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%)' }}
             >
-              <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-red-600" />
+              <div className="absolute top-0 left-0 w-2 h-2 border-t border-l" style={{ borderColor: DESIGN_SYSTEM.COLORS.PRIMARY }} />
               <p className="text-zinc-400 font-mono uppercase tracking-[0.05em] md:tracking-[0.1em] leading-relaxed text-[10px] md:text-sm italic">
                 {stat.description}
               </p>
               <div className="mt-3 md:mt-4 pt-3 md:pt-4 border-t border-white/5 flex items-center justify-between">
-                <span className="text-[7px] md:text-[8px] font-black text-red-600 tracking-widest uppercase">Validated_Telemetry</span>
+                <span className={cn("text-[7px] md:text-[8px] font-black tracking-widest uppercase", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_DEFAULT)} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }}>Validated_Telemetry</span>
                 <Cpu className="size-3 text-zinc-800" />
               </div>
             </motion.div>
@@ -252,7 +261,8 @@ function StatSection({ stat, index }: { stat: StatCard, index: number }) {
                   initial={{ opacity: 0, x: 20 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.5 + (i * 0.1) }}
-                  className="bg-zinc-900/30 backdrop-blur-md border-l-2 border-red-600 p-3 md:p-4 flex flex-col gap-1"
+                  className="bg-zinc-900/30 backdrop-blur-md border-l-2 p-3 md:p-4 flex flex-col gap-1"
+                  style={{ borderColor: DESIGN_SYSTEM.COLORS.PRIMARY }}
                 >
                   <span className="text-[7px] md:text-[8px] font-black text-zinc-600 uppercase tracking-widest">{spec.label}</span>
                   <span className="text-lg md:text-2xl font-black italic text-white">{spec.value}</span>
@@ -277,7 +287,10 @@ function StatSection({ stat, index }: { stat: StatCard, index: number }) {
       </div>
 
       <div className="absolute bottom-16 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 md:hidden">
-        <div className="w-px h-8 bg-gradient-to-b from-red-600 to-transparent animate-bounce" />
+        <div
+          className="w-px h-8 bg-gradient-to-b animate-bounce"
+          style={{ backgroundImage: `linear-gradient(to bottom, ${DESIGN_SYSTEM.COLORS.PRIMARY}, transparent)` }}
+        />
         <span className="text-[7px] font-black text-zinc-700 tracking-widest uppercase italic">Slide</span>
       </div>
     </section>
