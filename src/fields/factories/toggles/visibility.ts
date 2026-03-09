@@ -1,9 +1,15 @@
 // FILE: src/fields/factories/toggles/visibility.ts
-import type { Field, StaticLabel } from 'payload'
+import type { Field } from 'payload'
+
+type LocalizedLabel = {
+  en: string
+  es: string
+  pt: string
+}
 
 interface ControlOptions {
-  record: StaticLabel
-  label: StaticLabel
+  record: LocalizedLabel
+  label: LocalizedLabel
 }
 
 export const enable = ({ label }: ControlOptions): Field => ({
@@ -53,8 +59,8 @@ export const show = ({ label }: ControlOptions): Field => ({
 })
 
 interface VisibilityGroupOptions {
-  record: StaticLabel
-  entity: StaticLabel
+  record: LocalizedLabel
+  entity: LocalizedLabel
 }
 
 export const visibilityGroup = ({ entity }: VisibilityGroupOptions): Field => ({

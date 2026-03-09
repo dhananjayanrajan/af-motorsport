@@ -2,14 +2,13 @@
 
 import type { SortFilterItem as SortFilterItemType } from '@/lib/constants'
 
+import { DESIGN_SYSTEM } from '@/lib/constants'
 import { createUrl } from '@/utilities/createUrl'
 import clsx from 'clsx'
 import Link from 'next/link'
 import { usePathname, useSearchParams } from 'next/navigation'
-import React from 'react'
 
-import type { ListItem } from '.'
-import type { PathFilterItem as PathFilterItemType } from '.'
+import type { ListItem, PathFilterItem as PathFilterItemType } from '.'
 
 function PathFilterItem({ item }: { item: PathFilterItemType }) {
   const pathname = usePathname()
@@ -21,12 +20,13 @@ function PathFilterItem({ item }: { item: PathFilterItemType }) {
   newParams.delete('q')
 
   return (
-    <li className="mt-2 flex text-black dark:text-white" key={item.title}>
+    <li className="mt-2 flex" key={item.title}>
       <DynamicTag
         className={clsx(
-          'w-full text-sm underline-offset-4 hover:underline dark:hover:text-neutral-100',
+          'w-full text-sm underline-offset-4 transition-all duration-300',
           {
-            'underline underline-offset-4': active,
+            [`text-[${DESIGN_SYSTEM.COLORS.PRIMARY}] underline drop-shadow-[0_0_8px_${DESIGN_SYSTEM.COLORS.PRIMARY}66]`]: active,
+            [`text-zinc-400 hover:text-white hover:underline`]: !active,
           },
         )}
         href={createUrl(item.path, newParams)}
@@ -52,10 +52,11 @@ function SortFilterItem({ item }: { item: SortFilterItemType }) {
   const DynamicTag = active ? 'p' : Link
 
   return (
-    <li className="mt-2 flex text-sm text-black dark:text-white" key={item.title}>
+    <li className="mt-2 flex text-sm" key={item.title}>
       <DynamicTag
-        className={clsx('w-full hover:underline hover:underline-offset-4', {
-          'underline underline-offset-4': active,
+        className={clsx('w-full transition-all duration-300', {
+          [`text-[${DESIGN_SYSTEM.COLORS.PRIMARY}] underline underline-offset-4 drop-shadow-[0_0_8px_${DESIGN_SYSTEM.COLORS.PRIMARY}66]`]: active,
+          [`text-zinc-400 hover:text-white hover:underline hover:underline-offset-4`]: !active,
         })}
         href={href}
         prefetch={!active ? false : undefined}

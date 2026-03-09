@@ -2,7 +2,9 @@
 
 import { ClippedButton } from '@/components/Custom/ui/ClippedButton'
 import LogoLoop from '@/components/Reactbits/logo-loop'
+import { DESIGN_SYSTEM } from '@/lib/constants'
 import type { Organization } from '@/payload-types'
+import { cn } from '@/utilities/cn'
 import { AnimatePresence, motion, Variants } from 'motion/react'
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
@@ -80,7 +82,7 @@ export function CTA({
         >
           <div className="absolute inset-y-0 left-0 w-full pointer-events-none z-0">
             <div
-              className="absolute inset-y-0 left-0 w-[40%] bg-gradient-to-r from-red-600/20 via-red-600/5 to-transparent opacity-0 group-hover/cta:opacity-100 transition-all duration-300 group-hover/cta:animate-[rev_1s_infinite_cubic-bezier(0.4,0,0.2,1)]"
+              className={cn("absolute inset-y-0 left-0 w-[40%] opacity-0 group-hover/cta:opacity-100 transition-all duration-300 group-hover/cta:animate-[rev_1s_infinite_cubic-bezier(0.4,0,0.2,1)] bg-gradient-to-r", `from-[${DESIGN_SYSTEM.COLORS.PRIMARY}]/20 via-[${DESIGN_SYSTEM.COLORS.PRIMARY}]/5 to-transparent`)}
               style={{ transformOrigin: 'left' }}
             />
           </div>
@@ -94,7 +96,7 @@ export function CTA({
           `}</style>
 
           <div className="absolute left-0 top-0 w-[2px] h-full z-20 pointer-events-none">
-            <div className="w-full h-full bg-gradient-to-b from-red-600 via-red-600/20 to-transparent" />
+            <div className={cn("w-full h-full bg-gradient-to-b", `from-[${DESIGN_SYSTEM.COLORS.PRIMARY}] via-[${DESIGN_SYSTEM.COLORS.PRIMARY}]/20 to-transparent`)} />
           </div>
 
           <div className="relative z-10 p-8 md:p-16 flex flex-col lg:flex-row gap-12 items-center lg:items-center justify-between">
@@ -108,7 +110,7 @@ export function CTA({
                         initial={{ opacity: 0 }}
                         whileInView={{ opacity: 1 }}
                         transition={{ delay: i * 0.1, duration: 0.05 }}
-                        className="absolute inset-0 bg-red-600 shadow-[0_0_10px_rgba(220,38,38,0.8)] rotate-45"
+                        className={cn("absolute inset-0 rotate-45", `bg-[${DESIGN_SYSTEM.COLORS.PRIMARY}] shadow-[0_0_10px_rgba(220,38,38,0.8)]`)}
                       />
                     </div>
                   ))}
@@ -116,7 +118,7 @@ export function CTA({
 
                 <h2 className="text-4xl md:text-7xl font-black italic uppercase tracking-tighter text-white leading-none">
                   {headline?.split(' ').map((word, i) => (
-                    <span key={i} className={i === 0 ? "text-red-600" : "text-white"}>
+                    <span key={i} className={i === 0 ? `text-[${DESIGN_SYSTEM.COLORS.PRIMARY}]` : "text-white"}>
                       {word}{' '}
                     </span>
                   ))}
@@ -124,20 +126,20 @@ export function CTA({
 
                 <div className="max-w-xl relative mt-10">
                   <div className="absolute -left-4 top-0 bottom-0 w-[2px] bg-zinc-800">
-                    <div className="absolute top-0 left-0 w-full h-1/3 bg-red-600" />
+                    <div className={cn("absolute top-0 left-0 w-full h-1/3", `bg-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`)} />
                   </div>
                   <div className="flex flex-col gap-1">
                     <div className="flex items-center gap-2">
-                      <span className="text-[10px] font-bold text-red-600 tracking-tighter">SPEC_01</span>
+                      <span className={cn("text-[10px] font-bold tracking-tighter", `text-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`)}>SPEC_01</span>
                       <div className="h-[1px] flex-1 bg-zinc-900" />
                     </div>
-                    <p className="text-[11px] md:text-xs font-black text-zinc-400 uppercase tracking-[0.35em] leading-relaxed italic">
+                    <p className={cn("text-[11px] md:text-xs font-black text-zinc-400 uppercase leading-relaxed italic", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_XL)}>
                       {subtext}
                     </p>
                     <div className="flex justify-end gap-1 mt-2">
                       <div className="w-1 h-1 bg-zinc-800" />
                       <div className="w-1 h-1 bg-zinc-800" />
-                      <div className="w-4 h-1 bg-red-600" />
+                      <div className={cn("w-4 h-1", `bg-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`)} />
                     </div>
                   </div>
                 </div>
@@ -165,7 +167,7 @@ export function CTA({
                     animate={{ x: 0, opacity: 1 }}
                     exit={{ x: -20, opacity: 0 }}
                     transition={{ duration: 0.3 }}
-                    className="absolute text-[9px] font-black uppercase tracking-[1em] text-red-600 whitespace-nowrap mr-[-1em]"
+                    className={cn("absolute text-[9px] font-black uppercase whitespace-nowrap mr-[-1em]", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_XL, `text-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`)}
                   >
                     {CHAMPIONSHIP_WORDS[wordIndex]}
                   </motion.span>
@@ -176,7 +178,7 @@ export function CTA({
 
           {showPartners && (
             <div className="relative border-t border-zinc-900/30 bg-black/40 py-12 px-8 flex flex-col md:flex-row items-center gap-12">
-              <span className="text-[10px] font-black uppercase tracking-[0.7em] text-zinc-800 whitespace-nowrap italic">Strategic_Network</span>
+              <span className={cn("text-[10px] font-black uppercase text-zinc-800 whitespace-nowrap italic", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_XL)}>Strategic_Network</span>
               <div className="flex-1 w-full grayscale opacity-20 group-hover/cta:opacity-100 group-hover/cta:grayscale-0 transition-all duration-1000">
                 <LogoLoop
                   logos={partnerLogos}

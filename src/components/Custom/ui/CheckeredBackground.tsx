@@ -1,5 +1,6 @@
 'use client'
 
+import { DESIGN_SYSTEM } from '@/lib/constants'
 import { motion } from 'motion/react'
 
 interface CheckeredBackgroundProps {
@@ -31,9 +32,9 @@ export const CheckeredBackground = ({
           transform: 'skewX(-20deg) scale(1.6)',
           backgroundImage: `
             conic-gradient(
-              #71717a 0.25turn, 
+              ${DESIGN_SYSTEM.COLORS.PRIMARY} 0.25turn, 
               transparent 0 0.5turn, 
-              #71717a 0 0.75turn, 
+              ${DESIGN_SYSTEM.COLORS.PRIMARY} 0 0.75turn, 
               transparent 0
             )
           `,

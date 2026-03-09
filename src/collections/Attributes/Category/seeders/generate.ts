@@ -1,3 +1,4 @@
+// FILE: src/collections/Attributes/Category/seeders/generate.ts
 import { faker } from '@faker-js/faker';
 
 export async function generateCategories(count: number) {

@@ -1,7 +1,8 @@
 import type { Media as MediaType } from '@/payload-types'
 
-import { Media } from '@/components/Media'
 import { Label } from '@/components/Grid/Label'
+import { Media } from '@/components/Media'
+import { DESIGN_SYSTEM } from '@/lib/constants'
 import clsx from 'clsx'
 import React from 'react'
 
@@ -10,7 +11,7 @@ type Props = {
   isInteractive?: boolean
   label?: {
     amount: number
-    position?: 'bottom' | 'center'
+    position?: 'bottom' | 'center' | undefined
     title: string
   }
   media: MediaType
@@ -25,10 +26,10 @@ export const GridTileImage: React.FC<Props> = ({
   return (
     <div
       className={clsx(
-        'group flex h-full w-full items-center justify-center overflow-hidden rounded-lg border bg-white hover:border-blue-600 dark:bg-black',
+        'group flex h-full w-full items-center justify-center overflow-hidden rounded-lg border transition-all duration-300 bg-white dark:bg-black',
         {
-          'border-2 border-blue-600': active,
-          'border-neutral-200 dark:border-neutral-800': !active,
+          [`border-2 border-[${DESIGN_SYSTEM.COLORS.PRIMARY}] shadow-[0_0_20px_${DESIGN_SYSTEM.COLORS.PRIMARY}33]`]: active,
+          [`border-neutral-200 dark:border-neutral-800 hover:border-[${DESIGN_SYSTEM.COLORS.PRIMARY}]/50`]: !active,
           relative: label,
         },
       )}

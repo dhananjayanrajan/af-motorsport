@@ -10,6 +10,7 @@ import {
 } from '@/components/Custom/ui/ClippedSelect'
 import { FormError } from '@/components/forms/FormError'
 import { FormItem } from '@/components/forms/FormItem'
+import { DESIGN_SYSTEM } from '@/lib/constants'
 import { Address, Config } from '@/payload-types'
 import {
   defaultCountries as supportedCountries,
@@ -85,7 +86,7 @@ export const AddressForm: React.FC<Props> = ({
       <div className="grid grid-cols-1 md:grid-cols-12 gap-x-12 gap-y-12">
         <FormItem className="md:col-span-4 space-y-3">
           <label className="text-[9px] uppercase tracking-[0.4em] font-black text-zinc-700 px-1 flex items-center gap-2">
-            <span className="w-1 h-1 bg-red-600" /> Title
+            <span className={`w-1 h-1 bg-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`} /> Title
           </label>
           <ClippedSelect
             onValueChange={(value) => setValue('title', value, { shouldDirty: true, shouldValidate: true })}
@@ -108,12 +109,12 @@ export const AddressForm: React.FC<Props> = ({
               ))}
             </ClippedSelectContent>
           </ClippedSelect>
-          {errors.title && <FormError message={errors.title.message} className="px-1 text-red-600 text-[8px] uppercase font-bold mt-2 italic" />}
+          {errors.title && <FormError message={errors.title.message} className={`px-1 text-[${DESIGN_SYSTEM.COLORS.PRIMARY}] text-[8px] uppercase font-bold mt-2 italic`} />}
         </FormItem>
 
         <FormItem className="md:col-span-4 space-y-3">
           <label className="text-[9px] uppercase tracking-[0.4em] font-black text-zinc-700 px-1 flex items-center gap-2">
-            <span className="w-1 h-1 bg-red-600" /> First Name*
+            <span className={`w-1 h-1 bg-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`} /> First Name*
           </label>
           <ClippedInput
             id="firstName"
@@ -123,12 +124,12 @@ export const AddressForm: React.FC<Props> = ({
             valid={!!dirtyFields.firstName && !errors.firstName}
             {...register('firstName', { required: 'REQUIRED_FIELD' })}
           />
-          {errors.firstName && <FormError message={errors.firstName.message} className="px-1 text-red-600 text-[8px] uppercase font-bold mt-2 italic" />}
+          {errors.firstName && <FormError message={errors.firstName.message} className={`px-1 text-[${DESIGN_SYSTEM.COLORS.PRIMARY}] text-[8px] uppercase font-bold mt-2 italic`} />}
         </FormItem>
 
         <FormItem className="md:col-span-4 space-y-3">
           <label className="text-[9px] uppercase tracking-[0.4em] font-black text-zinc-700 px-1 flex items-center gap-2">
-            <span className="w-1 h-1 bg-red-600" /> Last Name*
+            <span className={`w-1 h-1 bg-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`} /> Last Name*
           </label>
           <ClippedInput
             id="lastName"
@@ -138,7 +139,7 @@ export const AddressForm: React.FC<Props> = ({
             valid={!!dirtyFields.lastName && !errors.lastName}
             {...register('lastName', { required: 'REQUIRED_FIELD' })}
           />
-          {errors.lastName && <FormError message={errors.lastName.message} className="px-1 text-red-600 text-[8px] uppercase font-bold mt-2 italic" />}
+          {errors.lastName && <FormError message={errors.lastName.message} className={`px-1 text-[${DESIGN_SYSTEM.COLORS.PRIMARY}] text-[8px] uppercase font-bold mt-2 italic`} />}
         </FormItem>
 
         <FormItem className="md:col-span-6 space-y-3">
@@ -172,7 +173,7 @@ export const AddressForm: React.FC<Props> = ({
 
         <FormItem className="md:col-span-8 space-y-3">
           <label className="text-[9px] uppercase tracking-[0.4em] font-black text-zinc-700 px-1 flex items-center gap-2">
-            <span className="w-1 h-1 bg-red-600" /> Primary Vector*
+            <span className={`w-1 h-1 bg-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`} /> Primary Vector*
           </label>
           <ClippedInput
             id="addressLine1"
@@ -182,7 +183,7 @@ export const AddressForm: React.FC<Props> = ({
             valid={!!dirtyFields.addressLine1 && !errors.addressLine1}
             {...register('addressLine1', { required: 'REQUIRED_FIELD' })}
           />
-          {errors.addressLine1 && <FormError message={errors.addressLine1.message} className="px-1 text-red-600 text-[8px] uppercase font-bold mt-2 italic" />}
+          {errors.addressLine1 && <FormError message={errors.addressLine1.message} className={`px-1 text-[${DESIGN_SYSTEM.COLORS.PRIMARY}] text-[8px] uppercase font-bold mt-2 italic`} />}
         </FormItem>
 
         <FormItem className="md:col-span-4 space-y-3">
@@ -201,7 +202,7 @@ export const AddressForm: React.FC<Props> = ({
 
         <FormItem className="md:col-span-4 space-y-3">
           <label className="text-[9px] uppercase tracking-[0.4em] font-black text-zinc-700 px-1 flex items-center gap-2">
-            <span className="w-1 h-1 bg-red-600" /> Node / City*
+            <span className={`w-1 h-1 bg-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`} /> Node / City*
           </label>
           <ClippedInput
             id="city"
@@ -211,7 +212,7 @@ export const AddressForm: React.FC<Props> = ({
             valid={!!dirtyFields.city && !errors.city}
             {...register('city', { required: 'REQUIRED_FIELD' })}
           />
-          {errors.city && <FormError message={errors.city.message} className="px-1 text-red-600 text-[8px] uppercase font-bold mt-2 italic" />}
+          {errors.city && <FormError message={errors.city.message} className={`px-1 text-[${DESIGN_SYSTEM.COLORS.PRIMARY}] text-[8px] uppercase font-bold mt-2 italic`} />}
         </FormItem>
 
         <FormItem className="md:col-span-4 space-y-3">
@@ -230,7 +231,7 @@ export const AddressForm: React.FC<Props> = ({
 
         <FormItem className="md:col-span-4 space-y-3">
           <label className="text-[9px] uppercase tracking-[0.4em] font-black text-zinc-700 px-1 flex items-center gap-2">
-            <span className="w-1 h-1 bg-red-600" /> Postal Index*
+            <span className={`w-1 h-1 bg-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`} /> Postal Index*
           </label>
           <ClippedInput
             id="postalCode"
@@ -239,12 +240,12 @@ export const AddressForm: React.FC<Props> = ({
             valid={!!dirtyFields.postalCode && !errors.postalCode}
             {...register('postalCode', { required: 'REQUIRED_FIELD' })}
           />
-          {errors.postalCode && <FormError message={errors.postalCode.message} className="px-1 text-red-600 text-[8px] uppercase font-bold mt-2 italic" />}
+          {errors.postalCode && <FormError message={errors.postalCode.message} className={`px-1 text-[${DESIGN_SYSTEM.COLORS.PRIMARY}] text-[8px] uppercase font-bold mt-2 italic`} />}
         </FormItem>
 
         <FormItem className="md:col-span-12 space-y-3">
           <label className="text-[9px] uppercase tracking-[0.4em] font-black text-zinc-700 px-1 flex items-center gap-2">
-            <span className="w-1 h-1 bg-red-600" /> Geopolitical Zone*
+            <span className={`w-1 h-1 bg-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`} /> Geopolitical Zone*
           </label>
           <ClippedSelect
             onValueChange={(value) => setValue('country', value, { shouldDirty: true, shouldValidate: true })}
@@ -271,7 +272,7 @@ export const AddressForm: React.FC<Props> = ({
               })}
             </ClippedSelectContent>
           </ClippedSelect>
-          {errors.country && <FormError message={errors.country.message} className="px-1 text-red-600 text-[8px] uppercase font-bold mt-2 italic" />}
+          {errors.country && <FormError message={errors.country.message} className={`px-1 text-[${DESIGN_SYSTEM.COLORS.PRIMARY}] text-[8px] uppercase font-bold mt-2 italic`} />}
         </FormItem>
       </div>
 
@@ -287,8 +288,8 @@ export const AddressForm: React.FC<Props> = ({
           className="group relative h-14 px-20 bg-zinc-900 text-white overflow-hidden transition-all active:scale-95 disabled:opacity-20"
           style={{ clipPath: 'polygon(8% 0%, 100% 0%, 92% 100%, 0% 100%)' }}
         >
-          <div className="absolute inset-0 bg-red-600 translate-x-[-100%] group-hover:translate-x-0 transition-transform duration-500 ease-[cubic-bezier(0.87,0,0.13,1)]" />
-          <span className="relative z-10 text-[10px] font-black uppercase tracking-[0.5em] italic flex items-center gap-4 group-hover:text-white transition-colors">
+          <div className={`absolute inset-0 translate-x-[-100%] group-hover:translate-x-0 transition-transform duration-500 ease-[cubic-bezier(0.87,0,0.13,1)] bg-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`} />
+          <span className="relative z-10 text-[10px] font-black uppercase tracking-[0.5em] italic flex items-center gap-4 group-hover:text-black transition-colors">
             {isSubmitting ? 'UPLOADING...' : 'COMMIT_COORDINATES'} <ChevronRight className="h-3 w-3 group-hover:translate-x-1 transition-transform" />
           </span>
         </button>

@@ -1,6 +1,7 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
+import { DESIGN_SYSTEM } from '@/lib/constants'
 import { cn } from '@/utilities/cn'
 import React from 'react'
 
@@ -9,11 +10,9 @@ interface ClippedButtonProps {
   onClick?: () => void
   className?: string
   variant?: 'primary' | 'outline'
-  size?: 'sm' | 'md' | 'lg'
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'full'
   children?: React.ReactNode
 }
-
-const diamondClip = 'polygon(12% 0%, 88% 0%, 100% 50%, 88% 100%, 12% 100%, 0% 50%)'
 
 export const ClippedButton = ({
   label,
@@ -26,42 +25,54 @@ export const ClippedButton = ({
   const isOutline = variant === 'outline'
 
   const sizeStyles = {
+    xs: 'h-8 px-6 text-[8px] tracking-[0.2em]',
     sm: 'h-10 px-10 text-[9px]',
     md: 'h-12 px-12 text-[10px]',
-    lg: 'h-14 px-14 text-[10px]',
+    lg: 'h-14 px-14 text-[11px]',
+    xl: `h-16 px-20 text-[12px] ${DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_XL}`,
+    '2xl': `h-20 px-24 text-[14px] ${DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_2XL}`,
+    full: 'h-14 w-full text-[11px]',
   }
 
   return (
-    <div className={cn('group relative inline-block w-full sm:w-auto z-50 cursor-pointer pointer-events-auto', className)}>
+    <div className={cn('group relative inline-block w-full sm:w-auto z-50 cursor-pointer pointer-events-auto', size === 'full' && 'w-full', className)}>
+      <div
+        className={`absolute inset-0 bg-[#00FF41]/15 blur-[30px] opacity-0 group-hover:opacity-100 transition-opacity ${DESIGN_SYSTEM.ANIMATION.DURATION_GLOW} rounded-full scale-95 pointer-events-none`}
+      />
+
       <Button
         size="lg"
         className={cn(
-          'relative w-full sm:w-auto uppercase tracking-[0.4em] font-black transition-all duration-500 rounded-none overflow-hidden border-none cursor-pointer',
+          `relative w-full sm:w-auto uppercase ${DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_DEFAULT} font-black transition-all ${DESIGN_SYSTEM.ANIMATION.DURATION_BASE} rounded-none overflow-hidden border-none cursor-pointer z-10`,
           sizeStyles[size],
           isOutline
-            ? 'bg-transparent text-neutral-600 dark:text-neutral-400 border border-neutral-300 dark:border-zinc-800 hover:border-zinc-950 dark:hover:border-white'
-            : 'bg-red-600 text-white'
+            ? 'bg-transparent text-neutral-600 border border-zinc-800'
+            : 'bg-[#00FF41] text-black'
         )}
-        style={{ clipPath: diamondClip }}
+        style={{ clipPath: DESIGN_SYSTEM.SHAPES.DIAMOND_CLIP }}
         {...props}
       >
         <span
           className={cn(
-            'absolute inset-0 translate-x-[-101%] group-hover:translate-x-0 transition-transform duration-500 ease-[cubic-bezier(0.87,0,0.13,1)]',
-            isOutline ? 'bg-zinc-950 text-white' : 'bg-white'
+            `absolute inset-0 translate-x-[-101%] group-hover:translate-x-0 transition-transform ${DESIGN_SYSTEM.ANIMATION.DURATION_BASE} ease-[${DESIGN_SYSTEM.ANIMATION.EASING_CUBIC}]`,
+            isOutline ? 'bg-zinc-950' : 'bg-black'
           )}
-          style={{ clipPath: diamondClip }}
+          style={{ clipPath: DESIGN_SYSTEM.SHAPES.DIAMOND_CLIP }}
         />
+
         <span
           className={cn(
-            'relative z-10 transition-all duration-300 group-hover:italic',
-            isOutline ? 'group-hover:text-white' : 'group-hover:text-red-600'
+            `relative z-20 transition-all ${DESIGN_SYSTEM.ANIMATION.DURATION_SLOW} group-hover:italic flex items-center justify-center gap-2`,
+            isOutline
+              ? 'group-hover:text-white group-hover:[text-shadow:0_0_15px_rgba(255,255,255,0.7)]'
+              : 'group-hover:text-[#00FF41] group-hover:[text-shadow:0_0_18px_rgba(0,255,65,0.9)]'
           )}
         >
           {children || label}
         </span>
       </Button>
-      <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-0 group-hover:w-1/2 h-[1px] bg-red-500 transition-all duration-500 opacity-0 group-hover:opacity-100" />
+
+      <div className={`absolute -bottom-1 left-1/2 -translate-x-1/2 w-0 group-hover:w-1/2 h-[1px] bg-[#00FF41] shadow-[0_0_15px_rgba(0,255,65,1)] transition-all ${DESIGN_SYSTEM.ANIMATION.DURATION_BASE} opacity-0 group-hover:opacity-100 z-30`} />
     </div>
   )
 }

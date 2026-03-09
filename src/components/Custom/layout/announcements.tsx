@@ -4,6 +4,7 @@ import {
   CarouselContent,
   CarouselItem,
 } from '@/components/ui/carousel'
+import { DESIGN_SYSTEM } from '@/lib/constants'
 import { Announcement as AnnouncementType } from '@/payload-types'
 import { cn } from '@/utilities/cn'
 import AutoScroll from 'embla-carousel-auto-scroll'
@@ -15,27 +16,27 @@ import * as React from 'react'
 const typeStyles = {
   info: {
     icon: Info,
-    color: 'text-blue-500',
-    glow: 'shadow-[0_0_30px_rgba(59,130,246,0.2)]',
-    border: 'border-blue-500/50',
+    color: `text-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`,
+    glow: 'shadow-[0_0_30px_rgba(0,255,65,0.15)]',
+    border: `border-[${DESIGN_SYSTEM.COLORS.PRIMARY}]/50`,
   },
   warning: {
     icon: AlertCircle,
-    color: 'text-amber-500',
-    glow: 'shadow-[0_0_30px_rgba(245,158,11,0.2)]',
-    border: 'border-amber-500/50',
+    color: `text-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`,
+    glow: 'shadow-[0_0_30px_rgba(0,255,65,0.15)]',
+    border: `border-[${DESIGN_SYSTEM.COLORS.PRIMARY}]/50`,
   },
   urgent: {
     icon: Bell,
-    color: 'text-red-600',
-    glow: 'shadow-[0_0_30px_rgba(220,38,38,0.3)]',
-    border: 'border-red-600/50',
+    color: `text-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`,
+    glow: 'shadow-[0_0_30px_rgba(0,255,65,0.2)]',
+    border: `border-[${DESIGN_SYSTEM.COLORS.PRIMARY}]/50`,
   },
   celebration: {
     icon: PartyPopper,
-    color: 'text-purple-500',
-    glow: 'shadow-[0_0_30px_rgba(168,85,247,0.2)]',
-    border: 'border-purple-500/50',
+    color: `text-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`,
+    glow: 'shadow-[0_0_30px_rgba(0,255,65,0.15)]',
+    border: `border-[${DESIGN_SYSTEM.COLORS.PRIMARY}]/50`,
   },
 }
 
@@ -95,14 +96,14 @@ export const AnnouncementsSection = ({ data }: AnnouncementsSectionProps) => {
                   >
                     <div
                       className={cn(
-                        "absolute inset-0 z-0 bg-zinc-950 border-x border-zinc-900 transition-all duration-500 -skew-x-12",
-                        "group-hover:bg-zinc-900 group-hover:border-white/20 group-hover:z-10",
+                        `absolute inset-0 z-0 bg-zinc-950 border-x border-zinc-900 transition-all ${DESIGN_SYSTEM.ANIMATION.DURATION_SLOW} -skew-x-12`,
+                        `group-hover:bg-zinc-900 group-hover:border-[${DESIGN_SYSTEM.COLORS.PRIMARY}]/20 group-hover:z-10`,
                         style.glow
                       )}
                     >
                       <div className={cn(
                         "absolute left-0 top-0 h-full w-[3px] opacity-0 group-hover:opacity-100 transition-opacity z-20",
-                        style.color.replace('text', 'bg')
+                        `bg-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`
                       )} />
                     </div>
 
@@ -118,13 +119,13 @@ export const AnnouncementsSection = ({ data }: AnnouncementsSectionProps) => {
 
                       <div className="space-y-3">
                         <div className="flex items-center gap-2">
-                          <span className={cn("h-[1px] w-5", style.color.replace('text', 'bg'))} />
+                          <span className={cn(`h-[1px] w-5 bg-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`)} />
                           <span className="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-500 group-hover:text-white transition-colors">
                             {item.type}
                           </span>
                         </div>
 
-                        <h4 className="text-xl font-black italic uppercase tracking-tighter text-white leading-none group-hover:text-red-600 transition-colors">
+                        <h4 className={`text-xl font-black italic uppercase tracking-tighter text-white leading-none group-hover:text-[${DESIGN_SYSTEM.COLORS.PRIMARY}] transition-colors`}>
                           {item.title}
                         </h4>
 

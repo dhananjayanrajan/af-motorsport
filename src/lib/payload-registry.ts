@@ -63,29 +63,29 @@ import { Socials } from '@/globals/Connectivity/Socials'
 import { revalidateCollection, revalidateGlobal } from './revalidate'
 
 export const rawCollections = [
-    Series, Seasons, Events, Sessions, Entries, Results, Points,
-    Drivers, Leaders, Members, Individuals, Organizations, Users,
-    Narratives, Stories, Histories, Journeys, Notes, Pages,
-    Cars, Kits, Media, Galleries, Playlists, Archives, Visualizations,
-    Schedules, Trainings, Careers, Initiatives, Meetups, Celebrations, Protocols, Duties, Expectations,
-    Highlights, Incidents, Impacts, Decisions, Strategies, Awards, Experiences,
-    Categories, Tags, Tones, Features, Specifications, Classifications, Skills, Principles, Preferences, Channels, Locations
+  Series, Seasons, Events, Sessions, Entries, Results, Points,
+  Drivers, Leaders, Members, Individuals, Organizations, Users,
+  Narratives, Stories, Histories, Journeys, Notes, Pages,
+  Cars, Kits, Media, Galleries, Playlists, Archives, Visualizations,
+  Schedules, Trainings, Careers, Initiatives, Meetups, Celebrations, Protocols, Duties, Expectations,
+  Highlights, Incidents, Impacts, Decisions, Strategies, Awards, Experiences,
+  Categories, Tags, Tones, Features, Specifications, Classifications, Skills, Principles, Preferences, Channels, Locations
 ]
 
 export const rawGlobals = [Header, Footer, Identity, Policies, Socials, Announcements, Questions]
 
 export const collections = rawCollections.map((col) => ({
-    ...col,
-    hooks: {
-        ...col.hooks,
-        afterChange: [...(col.hooks?.afterChange || []), revalidateCollection],
-    },
+  ...col,
+  hooks: {
+    ...col.hooks,
+    afterChange: [...(col.hooks?.afterChange || []), revalidateCollection],
+  },
 }))
 
 export const globals = rawGlobals.map((glob) => ({
-    ...glob,
-    hooks: {
-        ...glob.hooks,
-        afterChange: [...(glob.hooks?.afterChange || []), revalidateGlobal],
-    },
+  ...glob,
+  hooks: {
+    ...glob.hooks,
+    afterChange: [...(glob.hooks?.afterChange || []), revalidateGlobal],
+  },
 }))

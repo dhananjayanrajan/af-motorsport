@@ -20,8 +20,8 @@ export const AddressItem: React.FC<Props> = ({ address }) => {
         <div className="flex justify-between items-end border-b border-zinc-900 pb-8">
           <div className="space-y-2">
             <div className="flex items-center gap-3">
-              <Hash className="h-3 w-3 text-red-600 animate-pulse" />
-              <span className="text-[10px] font-black uppercase tracking-[0.5em] text-red-600 leading-none">
+              <Hash className="h-3 w-3 text-[#00FF41] animate-pulse" />
+              <span className="text-[10px] font-black uppercase tracking-[0.5em] text-[#00FF41] leading-none">
                 Recalibration Mode
               </span>
             </div>
@@ -34,8 +34,8 @@ export const AddressItem: React.FC<Props> = ({ address }) => {
             className="group relative h-10 px-6 overflow-hidden transition-all active:scale-95 bg-zinc-950 border border-zinc-800"
             style={{ clipPath: 'polygon(10% 0%, 100% 0%, 90% 100%, 0% 100%)' }}
           >
-            <div className="absolute inset-0 bg-red-600 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
-            <span className="relative z-10 text-[9px] font-black uppercase tracking-widest text-white italic flex items-center gap-2">
+            <div className="absolute inset-0 bg-[#00FF41] translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+            <span className="relative z-10 text-[9px] font-black uppercase tracking-widest text-white italic flex items-center gap-2 group-hover:text-black transition-colors duration-300">
               <X className="h-3 w-3" /> Abort
             </span>
           </button>
@@ -59,7 +59,7 @@ export const AddressItem: React.FC<Props> = ({ address }) => {
       >
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 w-full relative z-10">
           <div className="flex items-center gap-5">
-            <MapPin className="h-4 w-4 text-zinc-700 group-hover:text-red-600 transition-colors" />
+            <MapPin className="h-4 w-4 text-zinc-700 group-hover:text-[#00FF41] transition-colors" />
             <div className="flex flex-col">
               <span className="text-[11px] font-black uppercase tracking-[0.2em] text-white italic leading-none">
                 {address.title || 'UNNAMED_LOC'}
@@ -85,7 +85,7 @@ export const AddressItem: React.FC<Props> = ({ address }) => {
           </div>
         </div>
 
-        <ChevronRight className="hidden md:block h-4 w-4 opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-red-600 ml-4" />
+        <ChevronRight className="hidden md:block h-4 w-4 opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-[#00FF41] ml-4" />
       </div>
 
       <button

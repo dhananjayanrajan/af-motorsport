@@ -1,6 +1,7 @@
 'use client'
 
 import { CartItem } from '@/components/Cart'
+import { DESIGN_SYSTEM } from '@/lib/constants'
 import { cn } from '@/utilities/cn'
 import { useCart } from '@payloadcms/plugin-ecommerce/client/react'
 import { Minus, Plus } from 'lucide-react'
@@ -24,7 +25,7 @@ export function EditItemQuantityButton({ type, item }: { item: CartItem; type: '
       aria-label={type === 'plus' ? 'Increase' : 'Reduce'}
       className={cn(
         "h-full px-2 flex items-center justify-center text-zinc-500 transition-colors",
-        disabled || isLoading ? "opacity-20" : "hover:text-white hover:bg-zinc-800"
+        disabled || isLoading ? "opacity-20" : `hover:text-white hover:bg-[${DESIGN_SYSTEM.COLORS.PRIMARY}]/20`
       )}
       onClick={(e) => {
         e.preventDefault()

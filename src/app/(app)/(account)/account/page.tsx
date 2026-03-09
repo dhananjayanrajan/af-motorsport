@@ -1,6 +1,8 @@
 import { AccountForm } from '@/components/forms/AccountForm'
 import { OrderItem } from '@/components/OrderItem'
+import { DESIGN_SYSTEM } from '@/lib/constants'
 import { Order } from '@/payload-types'
+import { cn } from '@/utilities/cn'
 import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
 import configPromise from '@payload-config'
 import { ChevronRight, History, Settings } from 'lucide-react'
@@ -39,8 +41,8 @@ export default async function AccountPage() {
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 border-b border-zinc-900 pb-10">
           <div className="space-y-3">
             <div className="flex items-center gap-3">
-              <Settings className="h-3 w-3 text-red-600 animate-pulse" />
-              <span className="text-[10px] font-black uppercase tracking-[0.5em] text-red-600 leading-none">Identity Protocol</span>
+              <Settings className="h-3 w-3 animate-pulse" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }} />
+              <span className={cn("text-[10px] font-black uppercase leading-none", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_XL)} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }}>Identity Protocol</span>
             </div>
             <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tighter italic leading-none">
               Account <span className="text-zinc-800">/ Profile</span>
@@ -66,7 +68,7 @@ export default async function AccountPage() {
               Recent <span className="text-zinc-800">/ Orders</span>
             </h2>
           </div>
-          <Link href="/orders" className="group flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.4em] text-zinc-500 hover:text-red-600 transition-colors mb-2">
+          <Link href="/orders" className={cn("group flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.4em] text-zinc-500 transition-colors mb-2", `hover:text-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`)}>
             Archive Access <ChevronRight className="h-3 w-3 group-hover:translate-x-1 transition-transform" />
           </Link>
         </div>

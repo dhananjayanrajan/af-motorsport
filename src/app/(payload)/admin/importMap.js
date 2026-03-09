@@ -24,7 +24,6 @@ import { PriceInput as PriceInput_b91672ccd6e8b071c11142ab941fedfb } from '@payl
 import { HorizontalRuleFeatureClient as HorizontalRuleFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { LinkToDoc as LinkToDoc_aead06e4cbf6b2620c5c51c9ab283634 } from '@payloadcms/plugin-search/client'
 import { ReindexButton as ReindexButton_aead06e4cbf6b2620c5c51c9ab283634 } from '@payloadcms/plugin-search/client'
-import { EnhancedSidebar as EnhancedSidebar_1991e0cd7459bf6a1f4021425d377371 } from '@veiag/payload-enhanced-sidebar/rsc'
 import { CalendarNavLink as CalendarNavLink_19ea95c881564c703af65358ef789eee } from 'schedular-calendar-plugin/components'
 import { default as default_c815a0419702e73a9ba2b0569d3851ab } from '../../../../src/widgets/DashboardOrchestrator'
 import { CalendarViewSSR as CalendarViewSSR_19ea95c881564c703af65358ef789eee } from 'schedular-calendar-plugin/components'
@@ -57,7 +56,6 @@ export const importMap = {
   "@payloadcms/richtext-lexical/client#HorizontalRuleFeatureClient": HorizontalRuleFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "@payloadcms/plugin-search/client#LinkToDoc": LinkToDoc_aead06e4cbf6b2620c5c51c9ab283634,
   "@payloadcms/plugin-search/client#ReindexButton": ReindexButton_aead06e4cbf6b2620c5c51c9ab283634,
-  "@veiag/payload-enhanced-sidebar/rsc#EnhancedSidebar": EnhancedSidebar_1991e0cd7459bf6a1f4021425d377371,
   "schedular-calendar-plugin/components#CalendarNavLink": CalendarNavLink_19ea95c881564c703af65358ef789eee,
   "/src/widgets/DashboardOrchestrator#default": default_c815a0419702e73a9ba2b0569d3851ab,
   "schedular-calendar-plugin/components#CalendarViewSSR": CalendarViewSSR_19ea95c881564c703af65358ef789eee,

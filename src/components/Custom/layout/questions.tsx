@@ -2,6 +2,7 @@
 
 import { ClippedButton } from '@/components/Custom/ui/ClippedButton'
 import { RichText } from '@/components/RichText'
+import { DESIGN_SYSTEM } from '@/lib/constants'
 import type { Question } from '@/payload-types'
 import { cn } from '@/utilities/cn'
 import { SerializedEditorState, SerializedLexicalNode } from 'lexical'
@@ -23,7 +24,7 @@ export function FAQAccordionBlock({ data }: QuestionsProps) {
   const allVisibleCategories = data.categories.filter((cat) => cat.visible !== false)
 
   return (
-    <section className="relative w-full bg-white dark:bg-zinc-950 px-8 py-20 border-t border-zinc-100 dark:border-zinc-900 overflow-hidden">
+    <section className="relative w-full bg-black px-8 py-20 border-t border-zinc-900 overflow-hidden">
       <div className="relative z-10 mx-auto max-w-7xl">
         <motion.div
           initial={{ opacity: 0, y: 10 }}
@@ -32,22 +33,28 @@ export function FAQAccordionBlock({ data }: QuestionsProps) {
           transition={{ duration: 0.5 }}
           className="mb-16 flex flex-col md:flex-row md:items-end justify-between gap-8"
         >
-          <div className="space-y-4">
-            <ClippedButton
-              label="Operational Intelligence"
-              size="sm"
-              className="pointer-events-none scale-90 origin-left"
-            />
-            <h2 className="text-4xl md:text-6xl font-black tracking-tighter uppercase italic leading-[0.8]">
-              Strategic <span className="text-red-600 font-light">Briefing</span>
+          <div className="space-y-6">
+            <div className="flex items-center gap-4">
+              <div className={cn("h-[1px] w-12", `bg-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`)} />
+              <span className={cn("text-[10px] font-black uppercase italic", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_XL, `text-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`)}>
+                Data_Repository_v2.0
+              </span>
+            </div>
+            <h2 className="text-5xl md:text-8xl font-black tracking-[-0.05em] uppercase italic leading-[0.75] text-white">
+              Strategic <br />
+              <span className={cn("font-light not-italic", `text-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`)}>Briefing</span>
             </h2>
           </div>
-          <p className="max-w-xs text-[9px] uppercase tracking-[0.4em] font-bold text-zinc-400 leading-relaxed border-l border-zinc-200 dark:border-zinc-800 pl-6">
-            Sector-specific telemetry and support protocols.
-          </p>
+          <div className="relative">
+            <p className={cn("max-w-[240px] text-[9px] uppercase font-bold text-zinc-500 leading-relaxed pl-6 border-l", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_XL, `border-[${DESIGN_SYSTEM.COLORS.PRIMARY}]/30`)}>
+              Sector-specific telemetry <br />
+              and support protocols.
+            </p>
+            <div className={cn("absolute top-0 left-0 w-[2px] h-4", `bg-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`)} />
+          </div>
         </motion.div>
 
-        <div className="space-y-0 border-t border-zinc-100 dark:border-zinc-900">
+        <div className="space-y-0 border-t border-zinc-900">
           {allVisibleCategories.map((category, catIndex) => {
             const isCatOpen = openCategory === catIndex
 
@@ -67,25 +74,24 @@ export function FAQAccordionBlock({ data }: QuestionsProps) {
                   }}
                   className={cn(
                     "w-full flex items-center justify-between group py-6 border-b transition-all duration-500",
-                    isCatOpen ? "border-red-600" : "border-zinc-100 dark:border-zinc-900 hover:border-zinc-300 dark:hover:border-zinc-700"
+                    isCatOpen ? `border-[${DESIGN_SYSTEM.COLORS.PRIMARY}]` : "border-zinc-900 hover:border-zinc-700"
                   )}
                 >
                   <div className="flex items-center gap-10">
                     <motion.span
                       animate={{
-                        color: isCatOpen ? "#dc2626" : "#71717a",
+                        color: isCatOpen ? DESIGN_SYSTEM.COLORS.PRIMARY : "#3f3f46",
                         opacity: isCatOpen ? 1 : 0.5
                       }}
-                      className="text-[10px] font-black tracking-[0.2em] mono"
+                      className="text-[10px] font-black tracking-[0.2em] font-mono"
                     >
                       ID_{String(catIndex + 1).padStart(2, '0')}
                     </motion.span>
                     <motion.h3
                       animate={{
                         letterSpacing: isCatOpen ? "0.6em" : "0.4em",
-                        color: isCatOpen ? "#09090b" : "#a1a1aa"
                       }}
-                      className="text-xs md:text-lg uppercase font-black transition-all duration-700 dark:!text-white"
+                      className="text-xs md:text-lg uppercase font-black transition-all duration-700 text-white"
                     >
                       {category.label}
                     </motion.h3>
@@ -96,7 +102,7 @@ export function FAQAccordionBlock({ data }: QuestionsProps) {
                     }}
                     className="flex-shrink-0"
                   >
-                    <ChevronDown className={cn("h-5 w-5", isCatOpen ? "text-red-600" : "text-zinc-200")} />
+                    <ChevronDown className={cn("h-5 w-5", isCatOpen ? `text-[${DESIGN_SYSTEM.COLORS.PRIMARY}]` : "text-zinc-800")} />
                   </motion.div>
                 </button>
 
@@ -107,7 +113,7 @@ export function FAQAccordionBlock({ data }: QuestionsProps) {
                       animate={{ height: "auto", opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
                       transition={{ duration: 0.5, ease: [0.19, 1, 0.22, 1] }}
-                      className="overflow-hidden"
+                      className="overflow-hidden bg-zinc-950/30"
                     >
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-0 py-8 px-2 md:px-12">
                         {category.items?.filter(item => item.visible !== false).map((item, itemIndex) => {
@@ -121,8 +127,8 @@ export function FAQAccordionBlock({ data }: QuestionsProps) {
                               animate={{ opacity: 1, x: 0 }}
                               transition={{ delay: itemIndex * 0.02 }}
                               className={cn(
-                                "border-b border-zinc-50 dark:border-zinc-900/50 transition-all duration-300",
-                                isItemOpen ? "border-red-600/20" : "hover:border-zinc-200 dark:hover:border-zinc-800"
+                                "border-b border-zinc-900/50 transition-all duration-300",
+                                isItemOpen ? `border-[${DESIGN_SYSTEM.COLORS.PRIMARY}]/20` : "hover:border-zinc-800"
                               )}
                             >
                               <button
@@ -131,24 +137,24 @@ export function FAQAccordionBlock({ data }: QuestionsProps) {
                               >
                                 <span className={cn(
                                   "pr-4 text-[10px] font-bold uppercase tracking-[0.15em] transition-all duration-300 leading-tight",
-                                  isItemOpen ? "text-red-600 translate-x-1" : "text-zinc-500 group-hover/item:text-zinc-950 dark:group-hover/item:text-white"
+                                  isItemOpen ? `text-[${DESIGN_SYSTEM.COLORS.PRIMARY}] translate-x-1` : "text-zinc-600 group-hover/item:text-white"
                                 )}>
                                   {item.question}
                                 </span>
                                 <div className="flex items-center">
                                   <motion.div
                                     animate={{
-                                      backgroundColor: isItemOpen ? "#dc2626" : "transparent",
-                                      borderColor: isItemOpen ? "#dc2626" : "#e4e4e7"
+                                      backgroundColor: isItemOpen ? DESIGN_SYSTEM.COLORS.PRIMARY : "transparent",
+                                      borderColor: isItemOpen ? DESIGN_SYSTEM.COLORS.PRIMARY : "#27272a"
                                     }}
-                                    className="w-4 h-4 border flex items-center justify-center transition-all duration-300 dark:border-zinc-800"
+                                    className="w-4 h-4 border flex items-center justify-center transition-all duration-300"
                                   >
                                     <div className="relative w-2 h-2">
                                       <motion.div
                                         animate={{ rotate: isItemOpen ? 90 : 0 }}
-                                        className={cn("absolute top-1/2 left-0 w-full h-[1px] -translate-y-1/2", isItemOpen ? "bg-white" : "bg-zinc-400")}
+                                        className={cn("absolute top-1/2 left-0 w-full h-[1px] -translate-y-1/2", isItemOpen ? "bg-black" : "bg-zinc-600")}
                                       />
-                                      {!isItemOpen && <div className="absolute top-0 left-1/2 w-[1px] h-full -translate-x-1/2 bg-zinc-400" />}
+                                      {!isItemOpen && <div className="absolute top-0 left-1/2 w-[1px] h-full -translate-x-1/2 bg-zinc-600" />}
                                     </div>
                                   </motion.div>
                                 </div>
@@ -164,7 +170,7 @@ export function FAQAccordionBlock({ data }: QuestionsProps) {
                                     className="overflow-hidden"
                                   >
                                     <div className="pb-8 pt-1 px-1 md:pl-6">
-                                      <div className="text-zinc-500 dark:text-zinc-400 text-[11px] leading-relaxed prose prose-sm dark:prose-invert max-w-none prose-p:my-2">
+                                      <div className="text-zinc-400 text-[11px] leading-relaxed prose prose-sm prose-invert max-w-none prose-p:my-2">
                                         <RichText
                                           data={item.answer as unknown as SerializedEditorState<SerializedLexicalNode>}
                                           enableGutter={false}

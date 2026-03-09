@@ -30,14 +30,14 @@ export const AddressListing: React.FC = () => {
             {showAddForm ? (
               <><X className="h-3 w-3" /> Cancel Entry</>
             ) : (
-              <><Plus className="h-3 w-3 text-red-600" /> Add Coordinate</>
+              <><Plus className="h-3 w-3 text-[#00FF41]" /> Add Coordinate</>
             )}
           </span>
         </button>
       </div>
 
       {showAddForm && (
-        <div className="border-l border-red-600 pl-8 md:pl-16 py-4 animate-in fade-in slide-in-from-top-4 duration-500">
+        <div className="border-l border-[#00FF41] pl-8 md:pl-16 py-4 animate-in fade-in slide-in-from-top-4 duration-500">
           <div className="mb-10">
             <span className="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-600">
               Initialize Manual Input

@@ -1,3 +1,31 @@
+export const DESIGN_SYSTEM = {
+  COLORS: {
+    PRIMARY: '#00FF41',
+    PRIMARY_GLOW: 'rgba(0, 255, 65, 0.9)',
+    PRIMARY_MUTED: 'rgba(0, 255, 65, 0.15)',
+    BLACK: '#000000',
+    ZINC_950: '#09090b',
+    ZINC_800: '#27272a',
+    NEUTRAL_600: '#525252',
+    WHITE: '#FFFFFF',
+    WHITE_GLOW: 'rgba(255, 255, 255, 0.7)',
+  },
+  SHAPES: {
+    DIAMOND_CLIP: 'polygon(12% 0%, 88% 0%, 100% 50%, 88% 100%, 12% 100%, 0% 50%)',
+  },
+  ANIMATION: {
+    DURATION_BASE: 'duration-200',
+    DURATION_SLOW: 'duration-300',
+    DURATION_GLOW: 'duration-1000',
+    EASING_CUBIC: 'cubic-bezier(0.87,0,0.13,1)',
+  },
+  TYPOGRAPHY: {
+    TRACKING_DEFAULT: 'tracking-[0.4em]',
+    TRACKING_XL: 'tracking-[0.5em]',
+    TRACKING_2XL: 'tracking-[0.6em]',
+  },
+}
+
 export type SortFilterItem = {
   reverse: boolean
   slug: null | string

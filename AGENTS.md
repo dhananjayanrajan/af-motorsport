@@ -865,368 +865,368 @@ src/app/
 │   ├── drivers/
 │   │       ├── page.tsx
 │   │       └── sections/
-│   │           ├── LegendSection.tsx
-│   │           ├── ConquestsSection.tsx
-│   │           ├── GloryNumbersSection.tsx
-│   │           ├── RivalsOvercomeSection.tsx
-│   │           ├── MachinesThatCarriedThemSection.tsx
-│   │           ├── TeamBehindTheGlorySection.tsx
-│   │           ├── DefiningStrategySection.tsx
-│   │           ├── CelebrationsSection.tsx
-│   │           ├── VoiceOfAChampionSection.tsx
-│   │           └── VisualMonumentSection.tsx
+│   │           ├── LegendSection.tsx [global -> Hero]: drivers, media, results, points, awards
+│   │           ├── ConquestsSection.tsx [global -> Map]: drivers, entries, results, events, locations
+│   │           ├── GloryNumbersSection.tsx [global -> Stats]: drivers, results, points, awards
+│   │           ├── RivalsOvercomeSection.tsx [specific]: drivers, entries, results
+│   │           ├── MachinesThatCarriedThemSection.tsx [global -> CardDeck]: drivers, entries, cars
+│   │           ├── TeamBehindTheGlorySection.tsx [global -> PeopleGrid]: drivers, entries, members
+│   │           ├── DefiningStrategySection.tsx [specific]: drivers, strategies, decisions, events
+│   │           ├── CelebrationsSection.tsx [global -> Gallery]: drivers, celebrations, media
+│   │           ├── VoiceOfAChampionSection.tsx [global -> QuoteBlock]: drivers, narratives, notes
+│   │           └── VisualMonumentSection.tsx [global -> Gallery]: drivers, galleries, media
 │   │
 │   ├── events/
 │   │   └── [event-slug]/
 │   │       ├── page.tsx
 │   │       └── sections/
-│   │           ├── StageSetSection.tsx
-│   │           ├── AtmosphereSection.tsx
-│   │           ├── TurningPointSection.tsx
-│   │           ├── StrategyWarSection.tsx
-│   │           ├── MachinesInBattleSection.tsx
-│   │           ├── PodiumSection.tsx
-│   │           ├── AftermathSection.tsx
-│   │           ├── LegendItBuiltSection.tsx
-│   │           └── VisualEvidenceSection.tsx
+│   │           ├── StageSetSection.tsx [global -> HeaderCard]: events, locations, series, seasons
+│   │           ├── AtmosphereSection.tsx [specific]: events, media, sessions
+│   │           ├── TurningPointSection.tsx [specific]: events, sessions, incidents, highlights
+│   │           ├── StrategyWarSection.tsx [global -> Timeline]: events, sessions, entries, strategies
+│   │           ├── MachinesInBattleSection.tsx [global -> CardDeck]: events, entries, cars
+│   │           ├── PodiumSection.tsx [specific]: events, results, drivers
+│   │           ├── AftermathSection.tsx [global -> ImpactBlock]: events, results, points, seasons
+│   │           ├── LegendItBuiltSection.tsx [global -> QuoteBlock]: events, narratives, stories
+│   │           └── VisualEvidenceSection.tsx [global -> Gallery]: events, media, galleries
 │   │
 │   ├── awards/
 │   │   └── [award-slug]/
 │   │       ├── page.tsx
 │   │       └── sections/
-│   │           ├── PrizeSection.tsx
-│   │           ├── WeightOfItSection.tsx
-│   │           ├── RollOfHonourSection.tsx
-│   │           ├── WhatItTookSection.tsx
-│   │           ├── MachinesThatWonItSection.tsx
-│   │           ├── DecisionsThatEarnedItSection.tsx
-│   │           ├── CelebrationsItSparkedSection.tsx
-│   │           ├── PartnersWhoBelievedSection.tsx
-│   │           └── VisualLegacySection.tsx
+│   │           ├── PrizeSection.tsx [global -> Hero]: awards, media
+│   │           ├── WeightOfItSection.tsx [global -> Stats]: awards, classifications
+│   │           ├── RollOfHonourSection.tsx [global -> Timeline]: awards, drivers, organizations
+│   │           ├── WhatItTookSection.tsx [specific]: awards, specifications
+│   │           ├── MachinesThatWonItSection.tsx [global -> CardDeck]: awards, cars, entries
+│   │           ├── DecisionsThatEarnedItSection.tsx [global -> DecisionPoints]: awards, decisions
+│   │           ├── CelebrationsItSparkedSection.tsx [global -> Gallery]: awards, celebrations, media
+│   │           ├── PartnersWhoBelievedSection.tsx [global -> RelationshipView]: awards, organizations
+│   │           └── VisualLegacySection.tsx [global -> Gallery]: awards, media
 │   │
 │   └── hall-of-fame/
 │       ├── page.tsx
 │       └── sections/
-│           ├── GreatestMomentsSection.tsx
-│           ├── RecordBreakersSection.tsx
-│           ├── InductedSection.tsx
-│           ├── GreatestRacesSection.tsx
-│           ├── GreatestMachinesSection.tsx
-│           ├── GreatestSeasonsSection.tsx
-│           ├── GreatestDecisionsSection.tsx
-│           ├── GreatestRivalriesSection.tsx
-│           ├── GreatestPartnershipsSection.tsx
-│           ├── GreatestTeamsSection.tsx
-│           ├── NumbersThatDefinedUsSection.tsx
-│           └── VisualArchiveSection.tsx
+│           ├── GreatestMomentsSection.tsx [global -> HighlightBlock]: drivers, events, results, highlights
+│           ├── RecordBreakersSection.tsx [global -> Stats]: drivers, results, points, awards
+│           ├── InductedSection.tsx [global -> PeopleGrid]: drivers, members, leaders
+│           ├── GreatestRacesSection.tsx [global -> CardDeck]: events, results
+│           ├── GreatestMachinesSection.tsx [global -> CardDeck]: cars, entries, results
+│           ├── GreatestSeasonsSection.tsx [global -> CardDeck]: seasons, results
+│           ├── GreatestDecisionsSection.tsx [global -> DecisionPoints]: decisions, strategies
+│           ├── GreatestRivalriesSection.tsx [global -> Matrix]: drivers, results
+│           ├── GreatestPartnershipsSection.tsx [global -> RelationshipView]: organizations, members
+│           ├── GreatestTeamsSection.tsx [global -> PeopleGrid]: members, leaders
+│           ├── NumbersThatDefinedUsSection.tsx [global -> Stats]: results, points, awards
+│           └── VisualArchiveSection.tsx [global -> Gallery]: media, galleries, archives
 │
 ├── pursuit/
 │   ├── series/
 │   │   └── [series-slug]/
 │   │       ├── page.tsx
 │   │       └── sections/
-│   │           ├── OriginAndPowerSection.tsx
-│   │           ├── GovernanceStructureSection.tsx
-│   │           ├── BattlegroundsSection.tsx
-│   │           ├── PowerHierarchySection.tsx
-│   │           ├── MachinesItDemandsSection.tsx
-│   │           ├── ChampionshipHistorySection.tsx
-│   │           ├── RivalriesItProducedSection.tsx
-│   │           ├── EvolutionOfRulesSection.tsx
-│   │           ├── InsideStorySection.tsx
-│   │           └── VisualChronicleSection.tsx
+│   │           ├── OriginAndPowerSection.tsx [global -> Editorial]: series, narratives
+│   │           ├── GovernanceStructureSection.tsx [global -> OrgChart]: series, organizations
+│   │           ├── BattlegroundsSection.tsx [global -> Map]: series, seasons, events, locations
+│   │           ├── PowerHierarchySection.tsx [global -> Matrix]: series, seasons, results, points
+│   │           ├── MachinesItDemandsSection.tsx [specific]: series, specifications
+│   │           ├── ChampionshipHistorySection.tsx [global -> Timeline]: series, seasons, drivers, organizations
+│   │           ├── RivalriesItProducedSection.tsx [global -> Matrix]: series, drivers, results
+│   │           ├── EvolutionOfRulesSection.tsx [global -> Timeline]: series, specifications, histories
+│   │           ├── InsideStorySection.tsx [global -> Editorial]: series, narratives, stories
+│   │           └── VisualChronicleSection.tsx [global -> Gallery]: series, media, galleries
 │   │
 │   ├── seasons/
 │   │   └── [season-slug]/
 │   │       ├── page.tsx
 │   │       ├── sections/
-│   │       │   ├── ChampionshipStorySection.tsx
-│   │       │   ├── CalendarSection.tsx
-│   │       │   ├── ChampionshipFightSection.tsx
-│   │       │   ├── TechnicalLandscapeSection.tsx
-│   │       │   ├── KeyTurningPointsSection.tsx
-│   │       │   ├── MachinesOfThisYearSection.tsx
-│   │       │   ├── InsideStorySection.tsx
-│   │       │   └── VisualChronicleSection.tsx
+│   │       │   ├── ChampionshipStorySection.tsx [global -> Chart]: seasons, events, results, points
+│   │       │   ├── CalendarSection.tsx [global -> Map]: seasons, events, locations
+│   │       │   ├── ChampionshipFightSection.tsx [specific]: seasons, results, points
+│   │       │   ├── TechnicalLandscapeSection.tsx [global -> SplitView]: seasons, specifications
+│   │       │   ├── KeyTurningPointsSection.tsx [global -> HighlightBlock]: seasons, events, incidents, highlights
+│   │       │   ├── MachinesOfThisYearSection.tsx [global -> CardDeck]: seasons, entries, cars
+│   │       │   ├── InsideStorySection.tsx [global -> Editorial]: seasons, narratives, stories
+│   │       │   └── VisualChronicleSection.tsx [global -> Gallery]: seasons, media, galleries
 │   │       │
 │   │       └── events/
 │   │           └── [event-slug]/
 │   │               ├── page.tsx
 │   │               ├── sections/
-│   │               │   ├── WeekendBriefSection.tsx
-│   │               │   ├── EntryListSection.tsx
-│   │               │   ├── SessionBreakdownSection.tsx
-│   │               │   ├── WeatherAndConditionsSection.tsx
-│   │               │   ├── OperationalDecisionsSection.tsx
-│   │               │   ├── CrewOnTheGroundSection.tsx
-│   │               │   ├── ResultsSection.tsx
-│   │               │   └── VisualRecordSection.tsx
+│   │               │   ├── WeekendBriefSection.tsx [global -> HeaderCard]: events, locations, seasons
+│   │               │   ├── EntryListSection.tsx [global -> Table]: events, entries, drivers, organizations
+│   │               │   ├── SessionBreakdownSection.tsx [global -> Timeline]: events, sessions
+│   │               │   ├── WeatherAndConditionsSection.tsx [specific]: events, sessions
+│   │               │   ├── OperationalDecisionsSection.tsx [global -> DecisionPoints]: events, decisions
+│   │               │   ├── CrewOnTheGroundSection.tsx [global -> PeopleGrid]: events, members
+│   │               │   ├── ResultsSection.tsx [global -> Table]: events, results, drivers, organizations
+│   │               │   └── VisualRecordSection.tsx [global -> Gallery]: events, media, galleries
 │   │               │
 │   │               └── sessions/
 │   │                   └── [session-slug]/
 │   │                       ├── page.tsx
 │   │                       └── sections/
-│   │                           ├── SessionSection.tsx
-│   │                           ├── ParametersSection.tsx
-│   │                           ├── EntriesSection.tsx
-│   │                           ├── LapDataSection.tsx
-│   │                           ├── IncidentsSection.tsx
-│   │                           ├── StrategyEmployedSection.tsx
-│   │                           ├── CrewOperationSection.tsx
-│   │                           ├── HighlightsSection.tsx
-│   │                           └── VisualRecordSection.tsx
+│   │                           ├── SessionSection.tsx [global -> HeaderCard]: sessions, events
+│   │                           ├── ParametersSection.tsx [specific]: sessions, specifications
+│   │                           ├── EntriesSection.tsx [global -> Table]: sessions, entries, drivers, organizations
+│   │                           ├── LapDataSection.tsx [global -> Chart]: sessions, results
+│   │                           ├── IncidentsSection.tsx [global -> HighlightBlock]: sessions, incidents
+│   │                           ├── StrategyEmployedSection.tsx [specific]: sessions, entries, strategies
+│   │                           ├── CrewOperationSection.tsx [global -> PeopleGrid]: sessions, members
+│   │                           ├── HighlightsSection.tsx [global -> HighlightBlock]: sessions, highlights
+│   │                           └── VisualRecordSection.tsx [global -> Gallery]: sessions, media
 │
 ├── craft/
 │   ├── cars/
 │   │   └── [car-slug]/
 │   │       ├── page.tsx
 │   │       └── sections/
-│   │           ├── BlueprintSection.tsx
-│   │           ├── EngineeringPhilosophySection.tsx
-│   │           ├── DevelopmentLogSection.tsx
-│   │           ├── CrewWhoBuildItSection.tsx
-│   │           ├── BattleScarsSection.tsx
-│   │           ├── DriversWhoTrustedItSection.tsx
-│   │           ├── TechnicalPartnershipsSection.tsx
-│   │           ├── PerformanceRecordSection.tsx
-│   │           └── TechnicalVisualArchiveSection.tsx
+│   │           ├── BlueprintSection.tsx [global -> Gallery]: cars, visualizations
+│   │           ├── EngineeringPhilosophySection.tsx [global -> Editorial]: cars, narratives
+│   │           ├── DevelopmentLogSection.tsx [global -> Timeline]: cars, histories, narratives
+│   │           ├── CrewWhoBuildItSection.tsx [global -> PeopleGrid]: cars, members
+│   │           ├── BattleScarsSection.tsx [specific]: cars, media, incidents
+│   │           ├── DriversWhoTrustedItSection.tsx [global -> PeopleGrid]: cars, drivers, entries
+│   │           ├── TechnicalPartnershipsSection.tsx [global -> RelationshipView]: cars, organizations
+│   │           ├── PerformanceRecordSection.tsx [global -> Table]: cars, entries, results
+│   │           └── TechnicalVisualArchiveSection.tsx [global -> Gallery]: cars, media, galleries
 │   │
 │   ├── kits/
 │   │   └── [kit-slug]/
 │   │       ├── page.tsx
 │   │       └── sections/
-│   │           ├── MaterialScienceSection.tsx
-│   │           ├── DesignIntentSection.tsx
-│   │           ├── PerformanceDataSection.tsx
-│   │           ├── DevelopmentHistorySection.tsx
-│   │           ├── MakersSection.tsx
-│   │           ├── InActionSection.tsx
-│   │           ├── TechnicalPartnersSection.tsx
-│   │           └── TechnicalVisualArchiveSection.tsx
+│   │           ├── MaterialScienceSection.tsx [global -> Chart]: kits, specifications
+│   │           ├── DesignIntentSection.tsx [global -> SplitView]: kits, narratives
+│   │           ├── PerformanceDataSection.tsx [global -> Stats]: kits, specifications
+│   │           ├── DevelopmentHistorySection.tsx [global -> Timeline]: kits, histories, narratives
+│   │           ├── MakersSection.tsx [global -> PeopleGrid]: kits, members
+│   │           ├── InActionSection.tsx [global -> Gallery]: kits, media, galleries
+│   │           ├── TechnicalPartnersSection.tsx [global -> RelationshipView]: kits, organizations
+│   │           └── TechnicalVisualArchiveSection.tsx [global -> Gallery]: kits, media
 │   │
 │   ├── initiatives/
 │   │   └── [initiative-slug]/
 │   │       ├── page.tsx
 │   │       └── sections/
-│   │           ├── TechnicalMissionSection.tsx
-│   │           ├── InnovationBeingPursuedSection.tsx
-│   │           ├── EngineeringRoadmapSection.tsx
-│   │           ├── EngineeringTeamSection.tsx
-│   │           ├── MachinesItWillShapeSection.tsx
-│   │           ├── TechnicalPartnersSection.tsx
-│   │           ├── ProgressAndResultsSection.tsx
-│   │           └── TechnicalVisualRecordSection.tsx
+│   │           ├── TechnicalMissionSection.tsx [global -> SplitView]: initiatives, narratives
+│   │           ├── InnovationBeingPursuedSection.tsx [specific]: initiatives, specifications
+│   │           ├── EngineeringRoadmapSection.tsx [global -> Timeline]: initiatives, schedules
+│   │           ├── EngineeringTeamSection.tsx [global -> PeopleGrid]: initiatives, members
+│   │           ├── MachinesItWillShapeSection.tsx [global -> CardDeck]: initiatives, cars
+│   │           ├── TechnicalPartnersSection.tsx [global -> RelationshipView]: initiatives, organizations
+│   │           ├── ProgressAndResultsSection.tsx [specific]: initiatives, narratives, highlights
+│   │           └── TechnicalVisualRecordSection.tsx [global -> Gallery]: initiatives, media
 │   │
 │   └── engineering-philosophy/
 │       ├── page.tsx
 │       └── sections/
-│           ├── EngineeringCreedSection.tsx
-│           ├── EvolutionOfThinkingSection.tsx
-│           ├── MachinesItProducedSection.tsx
-│           ├── PeopleWhoEmbodyItSection.tsx
-│           ├── InnovationsItGeneratedSection.tsx
-│           ├── TestingGroundSection.tsx
-│           ├── FailuresThatRefinedItSection.tsx
-│           ├── PartnersWhoExtendItSection.tsx
-│           └── TechnicalVisualWorldSection.tsx
+│           ├── EngineeringCreedSection.tsx [global -> Editorial]: principles, narratives
+│           ├── EvolutionOfThinkingSection.tsx [global -> Timeline]: histories, decisions
+│           ├── MachinesItProducedSection.tsx [global -> CardDeck]: cars, entries
+│           ├── PeopleWhoEmbodyItSection.tsx [global -> PeopleGrid]: members, drivers, leaders
+│           ├── InnovationsItGeneratedSection.tsx [global -> HighlightBlock]: initiatives, highlights
+│           ├── TestingGroundSection.tsx [specific]: events, locations
+│           ├── FailuresThatRefinedItSection.tsx [global -> HighlightBlock]: incidents, impacts
+│           ├── PartnersWhoExtendItSection.tsx [global -> RelationshipView]: organizations
+│           └── TechnicalVisualWorldSection.tsx [global -> Gallery]: media, visualizations
 │
 ├── tribe/
 │   ├── drivers/
 │   │   └── [driver-slug]/
 │   │       ├── page.tsx
 │   │       └── sections/
-│   │           ├── HumanBeingSection.tsx
-│   │           ├── InnerWorldSection.tsx
-│   │           ├── JourneyThatShapedThemSection.tsx
-│   │           ├── RelationshipsThatDefineThemSection.tsx
-│   │           ├── SkillsTheyCarrySection.tsx
-│   │           ├── VoiceSection.tsx
-│   │           ├── HumanSideOfNumbersSection.tsx
-│   │           └── VisualHumanStorySection.tsx
+│   │           ├── HumanBeingSection.tsx [global -> Hero]: drivers, media
+│   │           ├── InnerWorldSection.tsx [specific]: drivers, principles
+│   │           ├── JourneyThatShapedThemSection.tsx [global -> Timeline]: drivers, journeys
+│   │           ├── RelationshipsThatDefineThemSection.tsx [global -> RelationshipView]: drivers, members, leaders, organizations
+│   │           ├── SkillsTheyCarrySection.tsx [global -> Chart]: drivers, skills
+│   │           ├── VoiceSection.tsx [global -> QuoteBlock]: drivers, narratives
+│   │           ├── HumanSideOfNumbersSection.tsx [global -> Stats]: drivers (personal stats)
+│   │           └── VisualHumanStorySection.tsx [global -> Gallery]: drivers, media
 │   │
 │   ├── leaders/
 │   │   └── [leader-slug]/
 │   │       ├── page.tsx
 │   │       └── sections/
-│   │           ├── PersonSection.tsx
-│   │           ├── InnerWorldSection.tsx
-│   │           ├── JourneyThatMadeThemSection.tsx
-│   │           ├── CommandAsRelationshipSection.tsx
-│   │           ├── DecisionsAsCharacterSection.tsx
-│   │           ├── RelationshipsTheyCultivateSection.tsx
-│   │           ├── InitiativesTheyChampionSection.tsx
-│   │           ├── VoiceSection.tsx
-│   │           └── VisualHumanStorySection.tsx
+│   │           ├── PersonSection.tsx [global -> Hero]: leaders, media
+│   │           ├── InnerWorldSection.tsx [specific]: leaders, principles
+│   │           ├── JourneyThatMadeThemSection.tsx [global -> Timeline]: leaders, journeys
+│   │           ├── CommandAsRelationshipSection.tsx [global -> OrgChart]: leaders, members, drivers
+│   │           ├── DecisionsAsCharacterSection.tsx [global -> DecisionPoints]: leaders, decisions
+│   │           ├── RelationshipsTheyCultivateSection.tsx [global -> RelationshipView]: leaders, organizations, members
+│   │           ├── InitiativesTheyChampionSection.tsx [global -> CardDeck]: leaders, initiatives
+│   │           ├── VoiceSection.tsx [global -> QuoteBlock]: leaders, narratives
+│   │           └── VisualHumanStorySection.tsx [global -> Gallery]: leaders, media
 │   │
 │   ├── members/
 │   │   └── [member-slug]/
 │   │       ├── page.tsx
 │   │       └── sections/
-│   │           ├── PersonSection.tsx
-│   │           ├── CraftAsIdentitySection.tsx
-│   │           ├── JourneyIntoCraftSection.tsx
-│   │           ├── TrainingThatBuiltThemSection.tsx
-│   │           ├── RelationshipsInThePitLaneSection.tsx
-│   │           ├── AssignmentsThatShapedThemSection.tsx
-│   │           ├── VoiceSection.tsx
-│   │           └── VisualHumanStorySection.tsx
+│   │           ├── PersonSection.tsx [global -> Hero]: members, media
+│   │           ├── CraftAsIdentitySection.tsx [specific]: members, duties
+│   │           ├── JourneyIntoCraftSection.tsx [global -> Timeline]: members, journeys
+│   │           ├── TrainingThatBuiltThemSection.tsx [global -> CardDeck]: members, trainings
+│   │           ├── RelationshipsInThePitLaneSection.tsx [global -> RelationshipView]: members, drivers, leaders
+│   │           ├── AssignmentsThatShapedThemSection.tsx [global -> HighlightBlock]: members, sessions, events
+│   │           ├── VoiceSection.tsx [global -> QuoteBlock]: members, narratives
+│   │           └── VisualHumanStorySection.tsx [global -> Gallery]: members, media
 │   │
 │   └── culture-code/
 │       ├── page.tsx
 │       └── sections/
-│           ├── BeliefSystemSection.tsx
-│           ├── DailyRealitySection.tsx
-│           ├── PeopleWhoEmbodyTheCultureSection.tsx
-│           ├── RitualsAndRhythmsSection.tsx
-│           ├── MilestonesThatDefineUsSection.tsx
-│           ├── DecisionsThatRevealCharacterSection.tsx
-│           ├── SkillsTheCultureValuesSection.tsx
-│           ├── PartnershipsTheCultureChoosesSection.tsx
-│           └── VisualCultureSection.tsx
+│           ├── BeliefSystemSection.tsx [specific]: principles
+│           ├── DailyRealitySection.tsx [global -> Timeline]: schedules, protocols
+│           ├── PeopleWhoEmbodyTheCultureSection.tsx [global -> PeopleGrid]: members, drivers, leaders
+│           ├── RitualsAndRhythmsSection.tsx [global -> Timeline]: schedules, celebrations
+│           ├── MilestonesThatDefineUsSection.tsx [global -> Timeline]: histories, celebrations
+│           ├── DecisionsThatRevealCharacterSection.tsx [global -> DecisionPoints]: decisions
+│           ├── SkillsTheCultureValuesSection.tsx [global -> Chart]: skills
+│           ├── PartnershipsTheCultureChoosesSection.tsx [global -> RelationshipView]: organizations
+│           └── VisualCultureSection.tsx [global -> Gallery]: media, galleries
 │
 ├── alliance/
 │   ├── organizations/
 │   │   └── [organization-slug]/
 │   │       ├── page.tsx
 │   │       └── sections/
-│   │           ├── OrganizationIdentitySection.tsx
-│   │           ├── OriginOfPartnershipSection.tsx
-│   │           ├── PeopleBridgingTwoWorldsSection.tsx
-│   │           ├── SharedWorkSection.tsx
-│   │           ├── TechnicalContributionSection.tsx
-│   │           ├── SharedVictoriesSection.tsx
-│   │           ├── ImpactOfAllianceSection.tsx
-│   │           ├── EvolutionTogetherSection.tsx
-│   │           ├── PartnershipVoiceSection.tsx
-│   │           └── VisualPartnershipStorySection.tsx
+│   │           ├── OrganizationIdentitySection.tsx [global -> Hero]: organizations, media
+│   │           ├── OriginOfPartnershipSection.tsx [global -> Timeline]: organizations, histories
+│   │           ├── PeopleBridgingTwoWorldsSection.tsx [global -> RelationshipView]: organizations, members, drivers, leaders
+│   │           ├── SharedWorkSection.tsx [global -> CardDeck]: organizations, initiatives, projects
+│   │           ├── TechnicalContributionSection.tsx [global -> Chart]: organizations, specifications
+│   │           ├── SharedVictoriesSection.tsx [specific]: organizations, events, results
+│   │           ├── ImpactOfAllianceSection.tsx [global -> ImpactBlock]: organizations, impacts
+│   │           ├── EvolutionTogetherSection.tsx [global -> Timeline]: organizations, histories
+│   │           ├── PartnershipVoiceSection.tsx [global -> QuoteBlock]: organizations, narratives
+│   │           └── VisualPartnershipStorySection.tsx [global -> Gallery]: organizations, media
 │   │
 │   └── network/
 │       ├── page.tsx
 │       └── sections/
-│           ├── EcosystemOverviewSection.tsx
-│           ├── StrategicPartnersSection.tsx
-│           ├── TechnicalPartnersSection.tsx
-│           ├── OperationalPartnersSection.tsx
-│           ├── HumanConnectiveTissueSection.tsx
-│           ├── SharedWinsSection.tsx
-│           ├── InitiativesBornFromAllianceSection.tsx
-│           ├── EcosystemEvolutionSection.tsx
-│           └── VisualNetworkSection.tsx
+│           ├── EcosystemOverviewSection.tsx [specific]: organizations, classifications
+│           ├── StrategicPartnersSection.tsx [global -> CardDeck]: organizations
+│           ├── TechnicalPartnersSection.tsx [global -> CardDeck]: organizations
+│           ├── OperationalPartnersSection.tsx [global -> CardDeck]: organizations
+│           ├── HumanConnectiveTissueSection.tsx [global -> PeopleGrid]: members, drivers, leaders
+│           ├── SharedWinsSection.tsx [global -> CardDeck]: events, results, organizations
+│           ├── InitiativesBornFromAllianceSection.tsx [global -> CardDeck]: initiatives, organizations
+│           ├── EcosystemEvolutionSection.tsx [global -> Timeline]: histories, organizations
+│           └── VisualNetworkSection.tsx [global -> Gallery]: media, galleries
 │
 ├── chronicle/
 │   ├── stories/
 │   │   └── [story-slug]/
 │   │       ├── page.tsx
 │   │       └── sections/
-│   │           ├── OpeningSection.tsx
-│   │           ├── CharactersSection.tsx
-│   │           ├── WorldItInhabitsSection.tsx
-│   │           ├── ConflictSection.tsx
-│   │           ├── StakesSection.tsx
-│   │           ├── ResolutionSection.tsx
-│   │           ├── MachinesInTheStorySection.tsx
-│   │           ├── StorysPlaceInHistorySection.tsx
-│   │           ├── RelatedStoriesSection.tsx
-│   │           └── VisualNarrativeSection.tsx
+│   │           ├── OpeningSection.tsx [global -> Hero]: stories, media
+│   │           ├── CharactersSection.tsx [global -> PeopleGrid]: stories, drivers, leaders, members
+│   │           ├── WorldItInhabitsSection.tsx [specific]: stories, locations, events
+│   │           ├── ConflictSection.tsx [global -> Editorial]: stories
+│   │           ├── StakesSection.tsx [global -> Editorial]: stories
+│   │           ├── ResolutionSection.tsx [global -> Editorial]: stories
+│   │           ├── MachinesInTheStorySection.tsx [global -> CardDeck]: stories, cars, kits
+│   │           ├── StorysPlaceInHistorySection.tsx [global -> LegacyBlock]: stories, histories
+│   │           ├── RelatedStoriesSection.tsx [global -> Gallery]: stories
+│   │           └── VisualNarrativeSection.tsx [global -> Gallery]: stories, media
 │   │
 │   ├── journeys/
 │   │   └── [journey-slug]/
 │   │       ├── page.tsx
 │   │       └── sections/
-│   │           ├── BeginningSection.tsx
-│   │           ├── PeopleWhoShapedItSection.tsx
-│   │           ├── MachinesThatWerePartOfItSection.tsx
-│   │           ├── BattlesAlongTheWaySection.tsx
-│   │           ├── TurningPointsSection.tsx
-│   │           ├── GrowthSection.tsx
-│   │           ├── AchievementsSection.tsx
-│   │           ├── RelationshipsItBuiltSection.tsx
-│   │           ├── LegacySection.tsx
-│   │           └── VisualArcSection.tsx
+│   │           ├── BeginningSection.tsx [global -> Editorial]: journeys, narratives
+│   │           ├── PeopleWhoShapedItSection.tsx [global -> RelationshipView]: journeys, drivers, leaders, members
+│   │           ├── MachinesThatWerePartOfItSection.tsx [global -> CardDeck]: journeys, cars
+│   │           ├── BattlesAlongTheWaySection.tsx [global -> HighlightBlock]: journeys, events, incidents
+│   │           ├── TurningPointsSection.tsx [global -> DecisionPoints]: journeys, decisions, highlights
+│   │           ├── GrowthSection.tsx [global -> Chart]: journeys, skills
+│   │           ├── AchievementsSection.tsx [global -> Timeline]: journeys, awards, results
+│   │           ├── RelationshipsItBuiltSection.tsx [global -> RelationshipView]: journeys, organizations, members
+│   │           ├── LegacySection.tsx [global -> Editorial]: journeys, narratives
+│   │           └── VisualArcSection.tsx [global -> Gallery]: journeys, media
 │   │
 │   └── histories/
 │       └── [history-slug]/
 │           ├── page.tsx
 │           └── sections/
-│               ├── OriginSection.tsx
-│               ├── LineageSection.tsx
-│               ├── PeopleWhoMadeItSection.tsx
-│               ├── MachinesInvolvedSection.tsx
-│               ├── EventsThatDefinedItSection.tsx
-│               ├── DecisionsThatShapedItSection.tsx
-│               ├── MemoryAndLegacySection.tsx
-│               ├── EchoInThePresentSection.tsx
-│               └── ArtifactRecordSection.tsx
+│               ├── OriginSection.tsx [global -> Editorial]: histories, narratives
+│               ├── LineageSection.tsx [global -> OrgChart]: histories, histories
+│               ├── PeopleWhoMadeItSection.tsx [global -> PeopleGrid]: histories, members, drivers, leaders
+│               ├── MachinesInvolvedSection.tsx [global -> CardDeck]: histories, cars
+│               ├── EventsThatDefinedItSection.tsx [global -> Timeline]: histories, events
+│               ├── DecisionsThatShapedItSection.tsx [global -> DecisionPoints]: histories, decisions
+│               ├── MemoryAndLegacySection.tsx [global -> LegacyBlock]: histories
+│               ├── EchoInThePresentSection.tsx [global -> LegacyBlock]: histories, drivers, cars, initiatives
+│               └── ArtifactRecordSection.tsx [global -> Gallery]: histories, archives
 │
 └── ambition/
     ├── initiatives/
     │   └── [initiative-slug]/
     │       ├── page.tsx
     │       └── sections/
-    │           ├── MissionSection.tsx
-    │           ├── OpportunityItCreatesSection.tsx
-    │           ├── RoadmapSection.tsx
-    │           ├── TeamBuildingItSection.tsx
-    │           ├── FutureMachinesSection.tsx
-    │           ├── PartnersMakingItPossibleSection.tsx
-    │           ├── ProgressSoFarSection.tsx
-    │           ├── HowToBePartOfItSection.tsx
-    │           └── VisualStorySection.tsx
+    │           ├── MissionSection.tsx [global -> SplitView]: initiatives, narratives
+    │           ├── OpportunityItCreatesSection.tsx [global -> SplitView]: initiatives, impacts
+    │           ├── RoadmapSection.tsx [global -> Timeline]: initiatives, schedules
+    │           ├── TeamBuildingItSection.tsx [global -> PeopleGrid]: initiatives, members
+    │           ├── FutureMachinesSection.tsx [global -> CardDeck]: initiatives, cars
+    │           ├── PartnersMakingItPossibleSection.tsx [global -> RelationshipView]: initiatives, organizations
+    │           ├── ProgressSoFarSection.tsx [specific]: initiatives, highlights, narratives
+    │           ├── HowToBePartOfItSection.tsx [global -> CTA]: initiatives
+    │           └── VisualStorySection.tsx [global -> Gallery]: initiatives, media
     │
     ├── celebrations/
     │   └── [celebration-slug]/
     │       ├── page.tsx
     │       └── sections/
-    │           ├── OccasionSection.tsx
-    │           ├── PeopleBeingCelebratedSection.tsx
-    │           ├── AchievementBehindItSection.tsx
-    │           ├── JourneyThatLedHereSection.tsx
-    │           ├── CommunityThatCelebratedSection.tsx
-    │           ├── WhatThisCelebrationSignalsSection.tsx
-    │           └── VisualMemorySection.tsx
+    │           ├── OccasionSection.tsx [global -> Hero]: celebrations
+    │           ├── PeopleBeingCelebratedSection.tsx [global -> PeopleGrid]: celebrations, drivers, members, leaders
+    │           ├── AchievementBehindItSection.tsx [specific]: celebrations, awards, results
+    │           ├── JourneyThatLedHereSection.tsx [global -> Timeline]: celebrations, journeys
+    │           ├── CommunityThatCelebratedSection.tsx [global -> PeopleGrid]: celebrations, members, drivers, leaders
+    │           ├── WhatThisCelebrationSignalsSection.tsx [global -> Editorial]: celebrations, narratives
+    │           └── VisualMemorySection.tsx [global -> Gallery]: celebrations, media
     │
     ├── meetups/
     │   └── [meetup-slug]/
     │       ├── page.tsx
     │       └── sections/
-    │           ├── EventSection.tsx
-    │           ├── LocationSection.tsx
-    │           ├── WhoWillBeThere.tsx
-    │           ├── AgendaSection.tsx
-    │           ├── MachinesOnShowSection.tsx
-    │           ├── InitiativesConnectedSection.tsx
-    │           ├── PartnersInvolvedSection.tsx
-    │           ├── HowToBePartOfItSection.tsx
-    │           └── VisualAtmosphereSection.tsx
+    │           ├── EventSection.tsx [global -> HeaderCard]: meetups
+    │           ├── LocationSection.tsx [global -> Map]: meetups, locations
+    │           ├── WhoWillBeThere.tsx [global -> PeopleGrid]: meetups, drivers, members, organizations
+    │           ├── AgendaSection.tsx [global -> Timeline]: meetups, schedules
+    │           ├── MachinesOnShowSection.tsx [global -> CardDeck]: meetups, cars
+    │           ├── InitiativesConnectedSection.tsx [global -> CardDeck]: meetups, initiatives
+    │           ├── PartnersInvolvedSection.tsx [global -> RelationshipView]: meetups, organizations
+    │           ├── HowToBePartOfItSection.tsx [global -> CTA]: meetups
+    │           └── VisualAtmosphereSection.tsx [global -> Gallery]: meetups, media
     │
     ├── careers/
     │   └── [career-slug]/
     │       ├── page.tsx
     │       └── sections/
-    │           ├── WhyThisRoleExistsSection.tsx
-    │           ├── WhatItDemandsSection.tsx
-    │           ├── GrowthThisRoleOffersSection.tsx
-    │           ├── PeopleYouWillWorkWithSection.tsx
-    │           ├── MachinesYouWillWorkOnSection.tsx
-    │           ├── InitiativesYouWillDriveSection.tsx
-    │           ├── LifeInsideSection.tsx
-    │           ├── PartnersAroundYouSection.tsx
-    │           └── ApplySection.tsx
+    │           ├── WhyThisRoleExistsSection.tsx [global -> Hero]: careers, narratives
+    │           ├── WhatItDemandsSection.tsx [global -> SplitView]: careers, expectations
+    │           ├── GrowthThisRoleOffersSection.tsx [global -> Chart]: careers, skills
+    │           ├── PeopleYouWillWorkWithSection.tsx [global -> PeopleGrid]: careers, members, leaders
+    │           ├── MachinesYouWillWorkOnSection.tsx [global -> CardDeck]: careers, cars
+    │           ├── InitiativesYouWillDriveSection.tsx [global -> CardDeck]: careers, initiatives
+    │           ├── LifeInsideSection.tsx [global -> Timeline]: careers, schedules, protocols
+    │           ├── PartnersAroundYouSection.tsx [global -> RelationshipView]: careers, organizations
+    │           └── ApplySection.tsx [global -> CTA]: careers
     │
     └── trainings/
         └── [training-slug]/
             ├── page.tsx
             └── sections/
-                ├── ProgramSection.tsx
-                ├── SkillsItBuildsSection.tsx
-                ├── MethodsSection.tsx
-                ├── MachinesUsedSection.tsx
-                ├── PeopleWhoDeliverItSection.tsx
-                ├── CohortSection.tsx
-                ├── ScheduleSection.tsx
-                ├── SuccessStoriesSection.tsx
-                ├── HowToJoinSection.tsx
-                └── VisualWorldSection.tsx
+                ├── ProgramSection.tsx [global -> Hero]: trainings
+                ├── SkillsItBuildsSection.tsx [global -> Chart]: trainings, skills
+                ├── MethodsSection.tsx [specific]: trainings, protocols
+                ├── MachinesUsedSection.tsx [global -> CardDeck]: trainings, cars
+                ├── PeopleWhoDeliverItSection.tsx [global -> PeopleGrid]: trainings, members
+                ├── CohortSection.tsx [global -> PeopleGrid]: trainings, members, drivers
+                ├── ScheduleSection.tsx [global -> Timeline]: trainings, schedules
+                ├── SuccessStoriesSection.tsx [global -> Gallery]: trainings, stories, members
+                ├── HowToJoinSection.tsx [global -> CTA]: trainings
+                └── VisualWorldSection.tsx [global -> Gallery]: trainings, media
 ```
 
 ### 18.2 Cinematic Universe → Page File Mapping

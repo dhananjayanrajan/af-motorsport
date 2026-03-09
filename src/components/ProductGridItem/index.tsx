@@ -1,10 +1,10 @@
-import type { Product, Variant } from '@/payload-types'
-
-import Link from 'next/link'
-import React from 'react'
-import clsx from 'clsx'
 import { Media } from '@/components/Media'
 import { Price } from '@/components/Price'
+import { DESIGN_SYSTEM } from '@/lib/constants'
+import type { Product } from '@/payload-types'
+import clsx from 'clsx'
+import Link from 'next/link'
+import React from 'react'
 
 type Props = {
   product: Partial<Product>
@@ -37,7 +37,8 @@ export const ProductGridItem: React.FC<Props> = ({ product }) => {
       {image ? (
         <Media
           className={clsx(
-            'relative aspect-square object-cover border rounded-2xl p-8 bg-primary-foreground',
+            'relative aspect-square object-cover border rounded-2xl p-8 bg-black transition-all duration-300',
+            `group-hover:border-[${DESIGN_SYSTEM.COLORS.PRIMARY}] group-hover:shadow-[0_0_20px_${DESIGN_SYSTEM.COLORS.PRIMARY}33]`
           )}
           height={80}
           imgClassName={clsx('h-full w-full object-cover rounded-2xl', {
@@ -48,11 +49,17 @@ export const ProductGridItem: React.FC<Props> = ({ product }) => {
         />
       ) : null}
 
-      <div className="font-mono text-primary/50 group-hover:text-primary flex justify-between items-center mt-4">
+      <div className={clsx(
+        "font-mono flex justify-between items-center mt-4 transition-colors duration-300",
+        `text-zinc-500 group-hover:text-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`
+      )}>
         <div>{title}</div>
 
         {typeof price === 'number' && (
-          <div className="">
+          <div className={clsx(
+            "transition-all duration-300",
+            `group-hover:drop-shadow-[0_0_8px_${DESIGN_SYSTEM.COLORS.PRIMARY}]`
+          )}>
             <Price amount={price} />
           </div>
         )}

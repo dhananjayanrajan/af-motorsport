@@ -1,33 +1,35 @@
 import configPromise from '@payload-config'
-import { getPayload } from 'payload'
 import clsx from 'clsx'
+import { getPayload } from 'payload'
 import React, { Suspense } from 'react'
 
 import { Item } from './Item'
 
 async function List() {
   const payload = await getPayload({ config: configPromise })
+
   const categoriesData = await payload.find({
     collection: 'categories',
     sort: 'title',
+    overrideAccess: true,
     select: {
       title: true,
       slug: true,
     },
   })
 
-  const categories = categoriesData.docs?.map((category) => {
+  const categories = categoriesData.docs.map((category) => {
     return {
       href: `/shop/${category.slug}`,
-      title: category.title,
+      title: (category as any).title || 'UNTITLED_NODE',
     }
   })
 
   return (
     <React.Fragment>
-      <nav>
-        <ul className="flex gap-3">
-          <Item title="All" href="/shop" />
+      <nav className="border-b border-zinc-900 pb-6 mb-8">
+        <ul className="flex flex-wrap gap-4">
+          <Item title="All_Stock" href="/shop" />
           <Suspense fallback={null}>
             {categories.map((category) => {
               return <Item {...category} key={category.href} />
@@ -39,25 +41,17 @@ async function List() {
   )
 }
 
-const skeleton = 'mb-3 h-4 w-5/6 animate-pulse rounded'
-const activeAndTitles = 'bg-neutral-800 dark:bg-neutral-300'
-const items = 'bg-neutral-400 dark:bg-neutral-700'
+const skeleton = 'mb-3 h-3 animate-pulse bg-zinc-900 border-l-2 border-[#00FF41]/20'
 
 export function CategoryTabs() {
   return (
     <Suspense
       fallback={
-        <div className="col-span-2 hidden h-[400px] w-full flex-none py-4 lg:block">
-          <div className={clsx(skeleton, activeAndTitles)} />
-          <div className={clsx(skeleton, activeAndTitles)} />
-          <div className={clsx(skeleton, items)} />
-          <div className={clsx(skeleton, items)} />
-          <div className={clsx(skeleton, items)} />
-          <div className={clsx(skeleton, items)} />
-          <div className={clsx(skeleton, items)} />
-          <div className={clsx(skeleton, items)} />
-          <div className={clsx(skeleton, items)} />
-          <div className={clsx(skeleton, items)} />
+        <div className="col-span-2 hidden w-full flex-none py-4 lg:block">
+          <div className={clsx(skeleton, 'w-1/4')} />
+          <div className={clsx(skeleton, 'w-1/3 shadow-[0_0_10px_rgba(0,255,65,0.05)]')} />
+          <div className={clsx(skeleton, 'w-1/2')} />
+          <div className={clsx(skeleton, 'w-1/4')} />
         </div>
       }
     >

@@ -1,12 +1,8 @@
 'use client'
-
-import { Button } from '@/components/ui/button'
-import type { Product } from '@/payload-types'
-
+import { Product } from '@/payload-types'
 import { createUrl } from '@/utilities/createUrl'
-import clsx from 'clsx'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import React from 'react'
+import { ClippedButton } from '../Custom/ui/ClippedButton'
 
 export function VariantSelector({ product }: { product: Product }) {
   const router = useRouter()
@@ -16,105 +12,60 @@ export function VariantSelector({ product }: { product: Product }) {
   const variantTypes = product.variantTypes
   const hasVariants = Boolean(product.enableVariants && variants?.length && variantTypes?.length)
 
-  if (!hasVariants) {
-    return null
-  }
+  if (!hasVariants) return null
 
   return variantTypes?.map((type) => {
-    if (!type || typeof type !== 'object') {
-      return <></>
-    }
-
+    if (!type || typeof type !== 'object') return null
     const options = type.options?.docs
-
-    if (!options || !Array.isArray(options) || !options.length) {
-      return <></>
-    }
+    if (!options?.length) return null
 
     return (
-      <dl className="" key={type.id}>
-        <dt className="mb-4 text-sm">{type.label}</dt>
-        <dd className="flex flex-wrap gap-3">
-          <React.Fragment>
-            {options?.map((option) => {
-              if (!option || typeof option !== 'object') {
-                return <></>
-              }
+      <dl className="flex flex-col gap-4" key={type.id}>
+        <dt className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.3em]">{type.label}</dt>
+        <dd className="flex flex-wrap gap-x-2 gap-y-4">
+          {options?.map((option) => {
+            if (!option || typeof option !== 'object') return null
+            const optionSearchParams = new URLSearchParams(searchParams.toString())
+            optionSearchParams.delete('variant')
+            optionSearchParams.delete('image')
+            optionSearchParams.set(type.name, String(option.id))
 
-              const optionID = option.id
-              const optionKeyLowerCase = type.name
+            const currentOptions = Array.from(optionSearchParams.values())
+            let isAvailableForSale = true
 
-              // Base option params on current params so we can preserve any other param state in the url.
-              const optionSearchParams = new URLSearchParams(searchParams.toString())
-
-              // Remove image and variant ID from this search params so we can loop over it safely.
-              optionSearchParams.delete('variant')
-              optionSearchParams.delete('image')
-
-              // Update the option params using the current option to reflect how the url *would* change,
-              // if the option was clicked.
-              optionSearchParams.set(optionKeyLowerCase, String(optionID))
-
-              const currentOptions = Array.from(optionSearchParams.values())
-
-              let isAvailableForSale = true
-
-              // Find a matching variant
-              if (variants) {
-                const matchingVariant = variants
-                  .filter((variant) => typeof variant === 'object')
-                  .find((variant) => {
-                    if (!variant.options || !Array.isArray(variant.options)) return false
-
-                    // Check if all variant options match the current options in the URL
-                    return variant.options.every((variantOption) => {
-                      if (typeof variantOption !== 'object')
-                        return currentOptions.includes(String(variantOption))
-
-                      return currentOptions.includes(String(variantOption.id))
-                    })
+            if (variants) {
+              const matchingVariant = variants
+                .filter((v) => typeof v === 'object')
+                .find((v) => {
+                  if (!v.options || !Array.isArray(v.options)) return false
+                  return v.options.every((vo) => {
+                    const id = typeof vo !== 'object' ? String(vo) : String(vo.id)
+                    return currentOptions.includes(id)
                   })
+                })
 
-                if (matchingVariant) {
-                  // If we found a matching variant, set the variant ID in the search params.
-                  optionSearchParams.set('variant', String(matchingVariant.id))
-
-                  if (matchingVariant.inventory && matchingVariant.inventory > 0) {
-                    isAvailableForSale = true
-                  } else {
-                    isAvailableForSale = false
-                  }
-                }
+              if (matchingVariant) {
+                optionSearchParams.set('variant', String(matchingVariant.id))
+                isAvailableForSale = (matchingVariant.inventory ?? 0) > 0
+              } else {
+                isAvailableForSale = false
               }
+            }
 
-              const optionUrl = createUrl(pathname, optionSearchParams)
+            const optionUrl = createUrl(pathname, optionSearchParams)
+            const isActive = searchParams.get(type.name) === String(option.id)
 
-              // The option is active if it's in the url params.
-              const isActive =
-                Boolean(isAvailableForSale) &&
-                searchParams.get(optionKeyLowerCase) === String(optionID)
-
-              return (
-                <Button
-                  variant={'ghost'}
-                  aria-disabled={!isAvailableForSale}
-                  className={clsx('px-2', {
-                    'bg-primary/5 text-primary': isActive,
-                  })}
-                  disabled={!isAvailableForSale}
-                  key={option.id}
-                  onClick={() => {
-                    router.replace(`${optionUrl}`, {
-                      scroll: false,
-                    })
-                  }}
-                  title={`${option.label} ${!isAvailableForSale ? ' (Out of Stock)' : ''}`}
-                >
-                  {option.label}
-                </Button>
-              )
-            })}
-          </React.Fragment>
+            return (
+              <ClippedButton
+                key={option.id}
+                label={option.label!}
+                variant={isActive ? 'primary' : 'outline'}
+                size="sm"
+                onClick={() => router.replace(optionUrl, { scroll: false })}
+                className={!isAvailableForSale ? 'opacity-20 pointer-events-none' : ''}
+              />
+            )
+          })}
         </dd>
       </dl>
     )

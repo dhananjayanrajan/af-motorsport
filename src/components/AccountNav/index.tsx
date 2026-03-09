@@ -50,7 +50,7 @@ export const AccountNav: React.FC<Props> = ({ className }) => {
                   className={cn(
                     'group relative flex items-center justify-between h-14 px-6 transition-all duration-300',
                     isActive
-                      ? 'bg-white text-black translate-x-2'
+                      ? 'bg-white text-black translate-x-2 shadow-[0_0_20px_rgba(255,255,255,0.05)]'
                       : 'bg-zinc-900/50 text-zinc-500 hover:bg-zinc-900 hover:text-white'
                   )}
                   style={{
@@ -58,7 +58,7 @@ export const AccountNav: React.FC<Props> = ({ className }) => {
                   }}
                 >
                   <div className="flex items-center gap-4 relative z-10">
-                    <item.icon className={cn('h-4 w-4', isActive ? 'text-red-600' : 'text-zinc-700 group-hover:text-red-500')} />
+                    <item.icon className={cn('h-4 w-4 transition-colors', isActive ? 'text-[#00FF41] drop-shadow-[0_0_5px_rgba(0,255,65,0.5)]' : 'text-zinc-700 group-hover:text-[#00FF41]')} />
                     <div className="flex flex-col">
                       <span className="text-[10px] font-black uppercase tracking-widest leading-none">
                         {item.label}
@@ -73,11 +73,11 @@ export const AccountNav: React.FC<Props> = ({ className }) => {
                   </div>
 
                   {isActive && (
-                    <div className="absolute right-0 top-0 bottom-0 w-2 bg-red-600 z-20" style={{ clipPath: 'polygon(100% 0%, 100% 100%, 0% 50%)' }} />
+                    <div className="absolute right-0 top-0 bottom-0 w-2 bg-[#00FF41] z-20 shadow-[0_0_10px_#00FF41]" style={{ clipPath: 'polygon(100% 0%, 100% 100%, 0% 50%)' }} />
                   )}
 
                   {!isActive && (
-                    <ChevronRight className="h-3 w-3 opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-2 transition-all text-red-600 relative z-10" />
+                    <ChevronRight className="h-3 w-3 opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-2 transition-all text-[#00FF41] relative z-10 drop-shadow-[0_0_3px_#00FF41]" />
                   )}
                 </Link>
               </li>
@@ -89,9 +89,9 @@ export const AccountNav: React.FC<Props> = ({ className }) => {
       <div className="mt-auto pt-8 border-t border-zinc-900">
         <Link
           href="/logout"
-          className="group flex items-center gap-4 px-6 py-4 text-zinc-600 hover:text-red-600 transition-colors"
+          className="group flex items-center gap-4 px-6 py-4 text-zinc-600 hover:text-[#00FF41] transition-colors"
         >
-          <LogOut className="h-4 w-4" />
+          <LogOut className="h-4 w-4 transition-transform group-hover:translate-x-1" />
           <span className="text-[10px] font-black uppercase tracking-[0.3em]">
             Terminate Session
           </span>

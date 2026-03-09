@@ -8,45 +8,39 @@ import { useEffect, useRef } from 'react'
 export const ConfirmOrder: React.FC = () => {
   const { confirmOrder } = usePayments()
   const { cart } = useCart()
-
   const searchParams = useSearchParams()
   const router = useRouter()
-  // Ensure we only confirm the order once, even if the component re-renders
   const isConfirming = useRef(false)
 
   useEffect(() => {
-    if (!cart || !cart.items || cart.items?.length === 0) {
-      return
-    }
-
+    if (!cart?.items?.length) return
     const paymentIntentID = searchParams.get('payment_intent')
     const email = searchParams.get('email')
 
-    if (paymentIntentID) {
-      if (!isConfirming.current) {
-        isConfirming.current = true
-
-        confirmOrder('stripe', {
-          additionalData: {
-            paymentIntentID,
-          },
-        }).then((result) => {
-          if (result && typeof result === 'object' && 'orderID' in result && result.orderID) {
-            router.push(`/shop/order/${result.orderID}?email=${email}`)
-          }
-        })
-      }
-    } else {
-      // If no payment intent ID is found, redirect to the home
+    if (paymentIntentID && !isConfirming.current) {
+      isConfirming.current = true
+      confirmOrder('stripe', { additionalData: { paymentIntentID } }).then((result) => {
+        if (result && typeof result === 'object' && 'orderID' in result) {
+          router.push(`/shop/order/${result.orderID}?email=${email}`)
+        }
+      })
+    } else if (!paymentIntentID) {
       router.push('/')
     }
-  }, [cart, searchParams])
+  }, [cart, searchParams, router, confirmOrder])
 
   return (
-    <div className="text-center w-full flex flex-col items-center justify-start gap-4">
-      <h1 className="text-2xl">Confirming Order</h1>
-
-      <LoadingSpinner className="w-12 h-6" />
+    <div className="grow flex flex-col items-center justify-center bg-black">
+      <div className="p-12 border border-zinc-900 bg-zinc-950 flex flex-col items-center gap-8 min-w-[320px]">
+        <div className="relative h-12 w-12">
+          <LoadingSpinner className="text-[#00FF41]" />
+          <div className="absolute inset-0 bg-[#00FF41]/10 blur-xl animate-pulse" />
+        </div>
+        <div className="space-y-2 text-center">
+          <h1 className="text-xs font-black uppercase tracking-[0.5em] text-white">Finalizing_Order</h1>
+          <p className="text-[8px] font-mono text-zinc-600 animate-pulse">WRITING_TO_BLOCKCHAIN_LEDGER...</p>
+        </div>
+      </div>
     </div>
   )
 }

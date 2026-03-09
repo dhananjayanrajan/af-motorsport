@@ -1,11 +1,14 @@
 'use client'
+
 import { FAQAccordionBlock } from '@/components/Custom/layout/questions'
 import { CheckeredBackground } from '@/components/Custom/ui/CheckeredBackground'
 import { ClippedButton } from '@/components/Custom/ui/ClippedButton'
 import { ClippedInput } from '@/components/Custom/ui/ClippedInput'
 import { CMSLink } from '@/components/Link'
 import ShinyText from '@/components/Reactbits/shiny-text'
+import { DESIGN_SYSTEM } from '@/lib/constants'
 import type { Announcement as AnnouncementType, Footer, Organization, Question, Social } from '@/payload-types'
+import { cn } from '@/utilities/cn'
 import {
   Camera,
   Disc,
@@ -65,7 +68,7 @@ export const CustomFooter = ({ footer, socials, organizations = [], questions, a
       )}
 
       {questions && (
-        <div className="relative z-20 pb-12 bg-white dark:bg-zinc-950">
+        <div className="relative z-20 pb-12 bg-black">
           <FAQAccordionBlock data={questions} />
         </div>
       )}
@@ -77,7 +80,6 @@ export const CustomFooter = ({ footer, socials, organizations = [], questions, a
             subtext={cta.subtext || 'Whether you race, engineer, design, or simply believe in what we build — there is a place for you inside AF Motorsport.'}
             buttonLabel={cta.buttonLabel || 'Explore Ambition'}
             buttonUrl={cta.link?.url || '/ambition'}
-            variant="glass"
             showPartners={true}
             organizations={organizations}
           />
@@ -85,12 +87,12 @@ export const CustomFooter = ({ footer, socials, organizations = [], questions, a
       )}
 
       <footer
-        className="relative bg-white dark:bg-zinc-950 text-black dark:text-white pt-20 border-t border-gray-100 dark:border-zinc-900 transition-colors duration-500 font-sans overflow-hidden"
+        className="relative bg-black text-white pt-20 border-t border-zinc-900 transition-colors duration-500 font-sans overflow-hidden"
       >
         <div
-          className="absolute inset-0 z-0 opacity-40 dark:opacity-60 transition-opacity duration-700"
+          className="absolute inset-0 z-0 opacity-60 transition-opacity duration-700"
           style={{
-            background: 'radial-gradient(circle at 50% 50%, rgba(220, 38, 38, 0.25) 0%, rgba(220, 38, 38, 0.05) 40%, transparent 75%)',
+            background: `radial-gradient(circle at 50% 50%, ${DESIGN_SYSTEM.COLORS.PRIMARY}26 0%, ${DESIGN_SYSTEM.COLORS.PRIMARY}05 40%, transparent 75%)`,
           }}
         />
 
@@ -104,7 +106,7 @@ export const CustomFooter = ({ footer, socials, organizations = [], questions, a
           <CheckeredBackground
             mode="horizontal"
             speed={2}
-            opacity={0.18}
+            opacity={0.12}
           />
         </div>
 
@@ -125,7 +127,7 @@ export const CustomFooter = ({ footer, socials, organizations = [], questions, a
                       speed={4}
                       delay={0.5}
                       color="#3b3b3b"
-                      shineColor="#ffffff"
+                      shineColor={DESIGN_SYSTEM.COLORS.PRIMARY}
                       spread={150}
                       direction="left"
                       pauseOnHover={false}
@@ -138,7 +140,7 @@ export const CustomFooter = ({ footer, socials, organizations = [], questions, a
           )}
         </div>
 
-        <div className="relative z-20 bg-white dark:bg-zinc-950 pt-16 pb-20 border-t border-gray-100 dark:border-zinc-900 px-8">
+        <div className="relative z-20 bg-black pt-16 pb-20 border-t border-zinc-900 px-8">
           <div className="max-w-7xl mx-auto">
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-x-8 gap-y-16 mb-16">
               {columns?.filter(col => col.visible).map((column, index) => (
@@ -150,7 +152,7 @@ export const CustomFooter = ({ footer, socials, organizations = [], questions, a
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: index * 0.1 }}
                 >
-                  <p className="text-[10px] uppercase tracking-[0.4em] font-black text-black dark:text-white px-3 border-l-2 border-red-600">
+                  <p className={cn("text-[10px] uppercase font-black text-white px-3 border-l-2", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_XL, `border-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`)}>
                     {column.label}
                   </p>
                   <ul className="flex flex-col gap-4">
@@ -159,7 +161,7 @@ export const CustomFooter = ({ footer, socials, organizations = [], questions, a
                         <CMSLink
                           {...linkData.link}
                           label={linkData.label || linkData.link.label}
-                          className="text-sm font-medium text-gray-500 dark:text-zinc-500 hover:text-red-600 dark:hover:text-red-500 transition-colors duration-300 uppercase tracking-widest text-[9px]"
+                          className={cn("text-sm font-medium text-zinc-500 transition-colors duration-300 uppercase text-[9px]", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_XL, `hover:text-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`)}
                         />
                       </li>
                     ))}
@@ -168,13 +170,13 @@ export const CustomFooter = ({ footer, socials, organizations = [], questions, a
               ))}
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 py-12 border-t border-gray-100 dark:border-zinc-900/50">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 py-12 border-t border-zinc-900/50">
               <div className="space-y-6">
                 <div className="space-y-2">
-                  <p className="text-[10px] uppercase tracking-[0.5em] font-black text-red-600">
+                  <p className={cn("text-[10px] uppercase font-black", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_XL, `text-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`)}>
                     Telemetry & Updates
                   </p>
-                  <h3 className="text-2xl font-light tracking-tighter uppercase italic">Stay in the slipstream.</h3>
+                  <h3 className="text-2xl font-light tracking-tighter uppercase italic text-white">Stay in the slipstream.</h3>
                 </div>
 
                 <div className="flex flex-col sm:flex-row gap-4 items-center">
@@ -188,7 +190,7 @@ export const CustomFooter = ({ footer, socials, organizations = [], questions, a
 
               <div className="flex flex-col justify-between items-start lg:items-end space-y-6">
                 <div className="space-y-4 text-left lg:text-right">
-                  <p className="text-[10px] uppercase tracking-[0.5em] font-black text-neutral-400">
+                  <p className={cn("text-[10px] uppercase font-black text-zinc-600", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_XL)}>
                     Social Channels
                   </p>
                   <div className="flex flex-wrap gap-6 lg:justify-end">
@@ -200,7 +202,7 @@ export const CustomFooter = ({ footer, socials, organizations = [], questions, a
                           href={account.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-neutral-500 hover:text-red-600 transition-colors"
+                          className={cn("text-zinc-500 transition-colors", `hover:text-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`)}
                           whileHover={{ scale: 1.1, rotate: -5 }}
                         >
                           <Icon className="h-5 w-5" />
@@ -210,7 +212,7 @@ export const CustomFooter = ({ footer, socials, organizations = [], questions, a
                   </div>
                 </div>
                 {brand?.description && (
-                  <p className="max-w-xs text-gray-500 dark:text-zinc-500 font-light text-[11px] leading-relaxed uppercase tracking-wider text-left lg:text-right">
+                  <p className="max-w-xs text-zinc-500 font-light text-[11px] leading-relaxed uppercase tracking-wider text-left lg:text-right">
                     {brand.description}
                   </p>
                 )}
@@ -218,7 +220,7 @@ export const CustomFooter = ({ footer, socials, organizations = [], questions, a
             </div>
 
             <motion.div
-              className="pt-12 border-t border-gray-100 dark:border-zinc-900 flex flex-col md:flex-row justify-between items-end gap-10 text-[10px] uppercase tracking-[0.3em] font-bold text-gray-400 dark:text-zinc-600"
+              className={cn("pt-12 border-t border-zinc-900 flex flex-col md:flex-row justify-between items-end gap-10 text-[10px] uppercase font-bold text-zinc-600", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_DEFAULT)}
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
@@ -231,7 +233,7 @@ export const CustomFooter = ({ footer, socials, organizations = [], questions, a
                       key={index}
                       {...linkData.link}
                       label={linkData.label || linkData.link.label}
-                      className="hover:text-black dark:hover:text-white transition-colors duration-300"
+                      className="hover:text-white transition-colors duration-300"
                     />
                   ))}
                 </div>
@@ -239,8 +241,8 @@ export const CustomFooter = ({ footer, socials, organizations = [], questions, a
               </div>
 
               <div className="flex flex-col items-end gap-1 group text-right">
-                <span className="text-gray-300 dark:text-zinc-800 uppercase text-[8px] tracking-[0.6em] leading-none">Built for</span>
-                <span className="text-black dark:text-white group-hover:text-red-600 transition-colors duration-500 font-black italic text-2xl tracking-tighter leading-none uppercase">Glory.</span>
+                <span className="text-zinc-800 uppercase text-[8px] tracking-[0.6em] leading-none">Built for</span>
+                <span className={cn("text-white transition-colors duration-500 font-black italic text-2xl tracking-tighter leading-none uppercase", `group-hover:text-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`)}>Glory.</span>
               </div>
             </motion.div>
           </div>

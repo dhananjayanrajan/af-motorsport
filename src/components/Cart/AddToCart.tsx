@@ -1,5 +1,6 @@
 'use client'
 
+import { DESIGN_SYSTEM } from '@/lib/constants'
 import type { Product, Variant } from '@/payload-types'
 import { cn } from '@/utilities/cn'
 import { useCart } from '@payloadcms/plugin-ecommerce/client/react'
@@ -75,7 +76,7 @@ export function AddToCart({ product }: Props) {
       )}
       style={{ clipPath: 'polygon(10% 0%, 100% 0%, 90% 100%, 0% 100%)' }}
     >
-      <div className="absolute inset-0 bg-red-600 transition-transform duration-500 group-hover:scale-105 group-active:scale-95" />
+      <div className={cn("absolute inset-0 transition-transform duration-500 group-hover:scale-105 group-active:scale-95", `bg-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`)} />
       <div className="relative z-10 flex items-center justify-center gap-3 text-white">
         <ShoppingCart className="h-4 w-4 fill-current" />
         <span className="text-xs font-black uppercase tracking-[0.4em] italic">

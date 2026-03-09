@@ -4,6 +4,7 @@ import { ClippedInput } from '@/components/Custom/ui/ClippedInput'
 import { FormError } from '@/components/forms/FormError'
 import { FormItem } from '@/components/forms/FormItem'
 import ShinyText from '@/components/Reactbits/shiny-text'
+import { DESIGN_SYSTEM } from '@/lib/constants'
 import { useAuth } from '@/providers/Auth'
 import { motion, useReducedMotion } from 'framer-motion'
 import { Search } from 'lucide-react'
@@ -47,15 +48,15 @@ export const FindOrderForm: React.FC<Props> = ({ initialEmail }) => {
       initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-      className="w-full max-w-lg overflow-hidden border border-zinc-800 bg-zinc-950 p-8 md:p-12 backdrop-blur-3xl relative shadow-2xl mx-auto"
+      className={`w-full max-w-lg overflow-hidden border bg-zinc-950 p-8 md:p-12 backdrop-blur-3xl relative shadow-2xl mx-auto border-zinc-800 transition-all duration-300 hover:border-[${DESIGN_SYSTEM.COLORS.PRIMARY}]/30`}
       style={{ clipPath: 'polygon(5% 0%, 100% 0%, 95% 100%, 0% 100%)' }}
     >
-      <div className="absolute inset-0 bg-gradient-to-br from-red-600/5 via-transparent to-transparent opacity-50 pointer-events-none" />
+      <div className={`absolute inset-0 via-transparent to-transparent opacity-50 pointer-events-none bg-gradient-to-br from-[${DESIGN_SYSTEM.COLORS.PRIMARY}]/5`} />
 
       <div className="mb-12 space-y-4 text-center relative z-10">
         <div className="flex flex-col items-center gap-2">
-          <div className="h-[1px] w-12 bg-red-600 mb-1" />
-          <span className="text-[10px] uppercase tracking-[0.6em] font-black text-red-600">
+          <div className={`h-[1px] w-12 mb-1 bg-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`} />
+          <span className={`text-[10px] uppercase tracking-[0.6em] font-black text-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`}>
             Archive Retrieval
           </span>
         </div>
@@ -65,7 +66,7 @@ export const FindOrderForm: React.FC<Props> = ({ initialEmail }) => {
             speed={2}
             delay={0}
             color="#27272a"
-            shineColor="#ffffff"
+            shineColor={DESIGN_SYSTEM.COLORS.PRIMARY}
             spread={150}
             direction="left"
             yoyo={false}
@@ -91,7 +92,7 @@ export const FindOrderForm: React.FC<Props> = ({ initialEmail }) => {
             autoComplete="email"
             {...register('email', { required: 'Email address is required.' })}
           />
-          {errors.email && <FormError message={errors.email.message} className="text-red-600 text-[9px] font-bold uppercase tracking-widest px-4 mt-2" />}
+          {errors.email && <FormError message={errors.email.message} className={`text-[9px] font-bold uppercase tracking-widest px-4 mt-2 text-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`} />}
         </FormItem>
 
         <FormItem className="space-y-3">
@@ -107,7 +108,7 @@ export const FindOrderForm: React.FC<Props> = ({ initialEmail }) => {
               required: 'Order ID is required.',
             })}
           />
-          {errors.orderID && <FormError message={errors.orderID.message} className="text-red-600 text-[9px] font-bold uppercase tracking-widest px-4 mt-2" />}
+          {errors.orderID && <FormError message={errors.orderID.message} className={`text-[9px] font-bold uppercase tracking-widest px-4 mt-2 text-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`} />}
         </FormItem>
 
         <div className="flex flex-col gap-6 pt-4">
@@ -117,8 +118,8 @@ export const FindOrderForm: React.FC<Props> = ({ initialEmail }) => {
             className="relative group flex items-center justify-center w-full h-14 bg-white text-black overflow-hidden transition-all active:scale-95 disabled:opacity-50 disabled:grayscale"
             style={{ clipPath: 'polygon(5% 0%, 100% 0%, 95% 100%, 0% 100%)' }}
           >
-            <div className="absolute inset-0 bg-red-600 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
-            <span className="relative z-10 text-[11px] font-black uppercase tracking-[0.5em] italic flex items-center gap-3 group-hover:text-white transition-colors">
+            <div className={`absolute inset-0 translate-y-full group-hover:translate-y-0 transition-transform duration-500 bg-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`} />
+            <span className="relative z-10 text-[11px] font-black uppercase tracking-[0.5em] italic flex items-center gap-3 group-hover:text-black transition-colors">
               {isLoading ? 'Scanning...' : 'Fetch Transaction'} <Search className="h-4 w-4" />
             </span>
           </button>

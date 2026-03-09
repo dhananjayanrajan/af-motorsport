@@ -1,5 +1,6 @@
 'use client'
 
+import { DESIGN_SYSTEM } from '@/lib/constants'
 import { cn } from '@/utilities/cn'
 import { createUrl } from '@/utilities/createUrl'
 import { SearchIcon } from 'lucide-react'
@@ -31,10 +32,15 @@ export const Search: React.FC<Props> = ({ className }) => {
   }
 
   return (
-    <form className={cn('relative w-full', className)} onSubmit={onSubmit}>
+    <form className={cn('relative w-full group', className)} onSubmit={onSubmit}>
       <input
         autoComplete="off"
-        className="w-full rounded-lg border bg-white px-4 py-2 text-sm text-black placeholder:text-neutral-500 dark:border-neutral-800 dark:bg-black dark:text-white dark:placeholder:text-neutral-400"
+        className={cn(
+          "w-full rounded-lg border px-4 py-2 text-sm transition-all duration-300 outline-none",
+          "bg-white text-black placeholder:text-neutral-500",
+          "dark:bg-black dark:text-white dark:placeholder:text-neutral-400",
+          `dark:border-neutral-800 dark:focus:border-[${DESIGN_SYSTEM.COLORS.PRIMARY}] dark:focus:shadow-[0_0_15px_${DESIGN_SYSTEM.COLORS.PRIMARY}33]`
+        )}
         defaultValue={searchParams?.get('q') || ''}
         key={searchParams?.get('q')}
         name="search"
@@ -42,7 +48,10 @@ export const Search: React.FC<Props> = ({ className }) => {
         type="text"
       />
       <div className="absolute right-0 top-0 mr-3 flex h-full items-center">
-        <SearchIcon className="h-4" />
+        <SearchIcon className={cn(
+          "h-4 transition-colors duration-300",
+          `group-focus-within:text-[${DESIGN_SYSTEM.COLORS.PRIMARY}] group-focus-within:drop-shadow-[0_0_5px_${DESIGN_SYSTEM.COLORS.PRIMARY}]`
+        )} />
       </div>
     </form>
   )

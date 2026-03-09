@@ -2,6 +2,7 @@
 
 import { Message } from '@/components/Message'
 import ShinyText from '@/components/Reactbits/shiny-text'
+import { DESIGN_SYSTEM } from '@/lib/constants'
 import { Address } from '@/payload-types'
 import { useCart, usePayments } from '@payloadcms/plugin-ecommerce/client/react'
 import { PaymentElement, useElements, useStripe } from '@stripe/react-stripe-js'
@@ -123,15 +124,15 @@ export const CheckoutForm: React.FC<Props> = ({
       initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-      className="w-full max-w-xl overflow-hidden border border-zinc-800 bg-zinc-950 p-8 md:p-12 backdrop-blur-3xl relative shadow-2xl mx-auto"
+      className={`w-full max-w-xl overflow-hidden border bg-zinc-950 p-8 md:p-12 backdrop-blur-3xl relative shadow-2xl mx-auto border-zinc-800 transition-all duration-300 hover:border-[${DESIGN_SYSTEM.COLORS.PRIMARY}]/30`}
       style={{ clipPath: 'polygon(5% 0%, 100% 0%, 95% 100%, 0% 100%)' }}
     >
-      <div className="absolute inset-0 bg-gradient-to-br from-red-600/5 via-transparent to-transparent opacity-50 pointer-events-none" />
+      <div className={`absolute inset-0 via-transparent to-transparent opacity-50 pointer-events-none bg-gradient-to-br from-[${DESIGN_SYSTEM.COLORS.PRIMARY}]/5`} />
 
       <div className="mb-12 space-y-4 text-center relative z-10">
         <div className="flex flex-col items-center gap-2">
-          <CreditCard className="h-5 w-5 text-red-600 mb-1" />
-          <span className="text-[10px] uppercase tracking-[0.6em] font-black text-red-600">
+          <CreditCard className={`h-5 w-5 mb-1 text-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`} />
+          <span className={`text-[10px] uppercase tracking-[0.6em] font-black text-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`}>
             Payment Terminal
           </span>
         </div>
@@ -141,7 +142,7 @@ export const CheckoutForm: React.FC<Props> = ({
             speed={1}
             delay={0}
             color="#27272a"
-            shineColor="#ffffff"
+            shineColor={DESIGN_SYSTEM.COLORS.PRIMARY}
             spread={150}
             direction="left"
             yoyo={false}
@@ -154,7 +155,10 @@ export const CheckoutForm: React.FC<Props> = ({
         </p>
       </div>
 
-      <Message className="mb-8 bg-red-950/10 border border-red-900/30 text-red-500 text-[10px] uppercase tracking-wider p-4" error={error} />
+      <Message
+        className={`mb-8 border text-[10px] uppercase tracking-wider p-4 bg-[${DESIGN_SYSTEM.COLORS.PRIMARY}]/5 border-[${DESIGN_SYSTEM.COLORS.PRIMARY}]/20 text-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`}
+        error={error}
+      />
 
       <form onSubmit={handleSubmit} className="relative z-10">
         <PaymentElement />
@@ -166,8 +170,8 @@ export const CheckoutForm: React.FC<Props> = ({
             className="relative group flex items-center justify-center w-full h-14 bg-white text-black overflow-hidden transition-all active:scale-95 disabled:opacity-50 disabled:grayscale"
             style={{ clipPath: 'polygon(5% 0%, 100% 0%, 95% 100%, 0% 100%)' }}
           >
-            <div className="absolute inset-0 bg-red-600 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
-            <span className="relative z-10 text-[11px] font-black uppercase tracking-[0.5em] italic flex items-center gap-3 group-hover:text-white transition-colors">
+            <div className={`absolute inset-0 translate-y-full group-hover:translate-y-0 transition-transform duration-500 bg-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`} />
+            <span className="relative z-10 text-[11px] font-black uppercase tracking-[0.5em] italic flex items-center gap-3 group-hover:text-black transition-colors">
               {isLoading ? 'Processing...' : 'Authorize Transaction'} <ChevronRight className="h-4 w-4" />
             </span>
           </button>

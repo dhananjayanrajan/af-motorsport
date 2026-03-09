@@ -27,14 +27,14 @@ const collectionLabels = {
 
 const Title: React.FC = () => (
   <div className="flex items-center gap-2">
-    <Terminal className="h-3 w-3 text-red-600" />
+    <Terminal className="h-3 w-3 text-[#00FF41] drop-shadow-[0_0_5px_#00FF41]" />
     <span className="text-[10px] font-black uppercase tracking-[0.3em] italic">
       <ShinyText
         text="Terminal"
         speed={1}
         delay={0}
         color="#52525b"
-        shineColor="#ffffff"
+        shineColor="#00FF41"
         spread={150}
         direction="left"
         yoyo={false}
@@ -63,7 +63,7 @@ export const AdminBar: React.FC<{
 
   return (
     <div
-      className={cn('py-1 bg-zinc-950 border-b border-zinc-900 sticky top-0 z-[100]', {
+      className={cn('py-1 bg-zinc-950 border-b border-zinc-900 sticky top-0 z-[100] shadow-[0_1px_10px_rgba(0,0,0,0.5)]', {
         block: show,
         hidden: !show,
       })}

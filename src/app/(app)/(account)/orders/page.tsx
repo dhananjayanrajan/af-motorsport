@@ -2,6 +2,8 @@ import type { Order } from '@/payload-types'
 import type { Metadata } from 'next'
 
 import { OrderItem } from '@/components/OrderItem'
+import { DESIGN_SYSTEM } from '@/lib/constants'
+import { cn } from '@/utilities/cn'
 import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
 import configPromise from '@payload-config'
 import { Cpu, History } from 'lucide-react'
@@ -41,8 +43,8 @@ export default async function Orders() {
     <div className="w-full space-y-12">
       <div className="flex flex-col gap-4 border-b border-zinc-900 pb-12">
         <div className="flex items-center gap-3">
-          <History className="h-4 w-4 text-red-600" />
-          <span className="text-[9px] uppercase tracking-[0.5em] font-black text-red-600">
+          <History className="h-4 w-4" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }} />
+          <span className={cn("text-[9px] uppercase font-black", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_XL)} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }}>
             Transaction Registry
           </span>
         </div>
@@ -72,7 +74,10 @@ export default async function Orders() {
                 key={order.id}
                 className="relative group transition-transform duration-500 hover:-translate-y-1"
               >
-                <div className="absolute -left-4 top-0 bottom-0 w-[1px] bg-zinc-900 group-hover:bg-red-600 transition-colors" />
+                <div
+                  className="absolute -left-4 top-0 bottom-0 w-[1px] bg-zinc-900 transition-colors group-hover:bg-[currentColor]"
+                  style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }}
+                />
                 <OrderItem order={order} />
               </li>
             ))}

@@ -1,6 +1,6 @@
 'use client'
+import { AddressForm } from '@/components/forms/AddressForm'
 import { Button } from '@/components/ui/button'
-import React, { useState } from 'react'
 import {
   Dialog,
   DialogContent,
@@ -9,9 +9,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
-import { AddressForm } from '@/components/forms/AddressForm'
 import { Address } from '@/payload-types'
 import { DefaultDocumentIDType } from 'payload'
+import React, { useState } from 'react'
 
 type Props = {
   addressID?: DefaultDocumentIDType
@@ -52,12 +52,17 @@ export const CreateAddressModal: React.FC<Props> = ({
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild disabled={disabled}>
-        <Button variant={'outline'}>{buttonText}</Button>
+        <Button
+          variant={'outline'}
+          className="rounded-none border-zinc-800 bg-black text-[10px] font-black uppercase tracking-widest h-12 px-10 hover:bg-[#00FF41] hover:text-black transition-all"
+        >
+          {buttonText}
+        </Button>
       </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>{modalTitle}</DialogTitle>
-          <DialogDescription>This address will be connected to your account.</DialogDescription>
+      <DialogContent className="bg-black border-zinc-900 rounded-none max-w-2xl">
+        <DialogHeader className="border-b border-zinc-900 pb-6 mb-6">
+          <DialogTitle className="text-[11px] font-black uppercase tracking-[0.5em] text-white italic">{modalTitle}</DialogTitle>
+          <DialogDescription className="text-[9px] uppercase tracking-widest text-zinc-600 font-bold">This address will be connected to your account.</DialogDescription>
         </DialogHeader>
 
         <AddressForm
