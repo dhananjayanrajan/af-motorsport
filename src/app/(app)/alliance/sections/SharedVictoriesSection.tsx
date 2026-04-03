@@ -2,7 +2,7 @@
 
 import { DESIGN_SYSTEM } from '@/lib/constants'
 import { cn } from '@/utilities/cn'
-import { motion } from 'motion/react'
+import { motion, AnimatePresence } from 'motion/react'
 import { useState } from 'react'
 
 export interface SharedVictoriesSectionProps {
@@ -20,21 +20,18 @@ export function SharedVictoriesSection({
 
   return (
     <section
-      className="relative w-full py-24 border-t"
-      style={{
-        backgroundColor: DESIGN_SYSTEM.COLORS.BLACK,
-        borderTopColor: DESIGN_SYSTEM.COLORS.ZINC_900
-      }}
+      className="relative w-full py-32 border-t bg-black"
+      style={{ borderTopColor: DESIGN_SYSTEM.COLORS.ZINC_900 }}
     >
-      <div className="px-6 md:px-12 lg:px-24 mb-20">
-        <div className="flex items-center gap-4 mb-6">
-          <div className="h-[1px] w-12" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY }} />
-          <span className="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-500">
-            COLLABORATIVE_MILESTONES
+      <div className="px-12 md:px-24 mb-24">
+        <div className="flex items-center gap-4 mb-10">
+          <div className="h-px w-10" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY }} />
+          <span className="text-[8px] font-black uppercase tracking-[0.4em] text-zinc-700">
+            COLLABORATIVE_LOGS
           </span>
         </div>
-        <h2 className="text-6xl md:text-8xl font-black italic text-white uppercase tracking-tighter leading-none">
-          SHARED_<span style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }}>VICTORIES</span>
+        <h2 className="text-5xl md:text-7xl font-black italic text-white uppercase tracking-tighter leading-[0.8]">
+          SHARED_VICTORIES
         </h2>
       </div>
 
@@ -49,28 +46,31 @@ export function SharedVictoriesSection({
               key={result.id}
               onMouseEnter={() => setHoveredVictory(result.id)}
               onMouseLeave={() => setHoveredVictory(null)}
-              className="relative group border-b last:border-b-0 border-zinc-900 transition-colors duration-500 hover:bg-zinc-950/50"
+              className="relative group border-b last:border-b-0 border-zinc-900/50 transition-colors duration-300 hover:bg-zinc-950"
             >
-              <div className="flex flex-col lg:flex-row items-stretch lg:items-center px-6 md:px-12 lg:px-24 py-12 gap-8 lg:gap-16">
-                <div className="w-20 shrink-0">
-                  <span className="text-4xl font-black italic text-zinc-800 group-hover:text-primary transition-colors"
-                    style={{ color: isHovered ? DESIGN_SYSTEM.COLORS.PRIMARY : '' }}>
+              <div className="flex flex-col lg:flex-row items-stretch lg:items-center px-12 md:px-24 py-16 gap-12 lg:gap-24">
+                <div className="w-16 shrink-0">
+                  <span
+                    className="text-2xl font-black italic transition-colors"
+                    style={{ color: isHovered ? DESIGN_SYSTEM.COLORS.PRIMARY : '#27272a' }}
+                  >
                     P{result.metrics?.position?.overall?.toString().padStart(2, '0')}
                   </span>
                 </div>
 
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-3 mb-2">
-                    <span className="text-[9px] font-mono text-zinc-600 uppercase">
-                      {event?.basics?.identifiers?.code} // {org?.name}
-                    </span>
-                  </div>
-                  <h3 className="text-3xl md:text-5xl font-black italic text-white uppercase tracking-tighter transition-transform duration-500 group-hover:translate-x-4">
+                  <span className="text-[7px] font-mono text-zinc-700 uppercase block mb-3 tracking-widest">
+                    {event?.basics?.identifiers?.code} // {org?.name}
+                  </span>
+                  <h3 className={cn(
+                    "text-2xl md:text-4xl font-black italic uppercase tracking-tighter transition-all duration-500",
+                    isHovered ? "text-white translate-x-4" : "text-zinc-600"
+                  )}>
                     {result.name}
                   </h3>
                 </div>
 
-                <div className="flex flex-wrap gap-4 lg:gap-12 shrink-0">
+                <div className="flex flex-wrap gap-12 lg:gap-20 shrink-0">
                   <VictoryMetric
                     label="LAP_TIME"
                     value={result.metrics?.performance?.time}
@@ -89,29 +89,34 @@ export function SharedVictoriesSection({
                 </div>
               </div>
 
-              <motion.div
-                initial={false}
-                animate={{ height: isHovered ? 'auto' : 0, opacity: isHovered ? 1 : 0 }}
-                className="overflow-hidden bg-zinc-900/30"
-              >
-                <div className="px-6 md:px-12 lg:px-24 py-8 grid grid-cols-1 md:grid-cols-2 gap-12 border-t border-zinc-800">
-                  <div className="space-y-4">
-                    <span className="text-[9px] font-black text-zinc-500 uppercase tracking-widest">NARRATIVE_LOG</span>
-                    <p className="text-sm text-zinc-400 leading-relaxed uppercase font-bold italic">
-                      {result.basics?.description}
-                    </p>
-                  </div>
-                  <div className="flex gap-8 items-center justify-end">
-                    <div className="text-right">
-                      <span className="text-[9px] font-black text-zinc-700 uppercase block mb-1">EVENT_CHRONO</span>
-                      <span className="text-xs font-mono text-white">{event?.traits?.chronology?.start}</span>
+              <AnimatePresence>
+                {isHovered && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="overflow-hidden bg-zinc-900/20"
+                  >
+                    <div className="px-12 md:px-24 py-12 grid grid-cols-1 md:grid-cols-2 gap-20 border-t border-zinc-900/50">
+                      <div className="max-w-xl">
+                        <p className="text-[10px] font-bold text-zinc-500 uppercase leading-relaxed italic tracking-wide border-l border-zinc-800 pl-8">
+                          {result.basics?.description}
+                        </p>
+                      </div>
+                      <div className="flex gap-12 items-center justify-end">
+                        <div className="text-right">
+                          <span className="text-[7px] font-black text-zinc-800 uppercase block mb-2 tracking-widest">CHRONO_REF</span>
+                          <span className="text-[10px] font-mono text-zinc-500">{event?.traits?.chronology?.start}</span>
+                        </div>
+                        <div className="w-14 h-14 border border-zinc-900 grayscale opacity-30">
+                          <img src={org?.assets?.logo} className="w-full h-full object-cover" alt="" />
+                        </div>
+                      </div>
                     </div>
-                    <div className="w-16 h-16 bg-zinc-800 border border-zinc-700 shrink-0">
-                      <img src={org?.assets?.logo} className="w-full h-full object-cover grayscale opacity-50" alt="ORG_LOGO" />
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           )
         })}
@@ -122,11 +127,11 @@ export function SharedVictoriesSection({
 
 function VictoryMetric({ label, value, active }: { label: string, value: string, active: boolean }) {
   return (
-    <div className="min-w-[100px]">
-      <span className="text-[8px] font-black text-zinc-700 uppercase block mb-1 tracking-widest">{label}</span>
+    <div className="min-w-[80px]">
+      <span className="text-[7px] font-black text-zinc-800 uppercase block mb-3 tracking-[0.3em]">{label}</span>
       <span className={cn(
-        "text-lg font-black italic transition-colors",
-        active ? "text-white" : "text-zinc-500"
+        "text-base font-black italic transition-colors tracking-tight",
+        active ? "text-white" : "text-zinc-700"
       )}>
         {value || '---'}
       </span>
@@ -135,8 +140,8 @@ function VictoryMetric({ label, value, active }: { label: string, value: string,
 }
 
 const DUMMY_ORGS = [
-  { id: 1, name: "APEX_ENGINEERING", assets: { logo: "https://images.unsplash.com/photo-1560179707-f14e90ef3623?q=80&w=400" } },
-  { id: 2, name: "NEURALIS_LABS", assets: { logo: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=400" } }
+  { id: 1, name: "APEX_ENGINEERING", assets: { logo: "https://picsum.photos/seed/apex/400/400" } },
+  { id: 2, name: "NEURALIS_LABS", assets: { logo: "https://picsum.photos/seed/neural/400/400" } }
 ]
 
 const DUMMY_EVENTS = [

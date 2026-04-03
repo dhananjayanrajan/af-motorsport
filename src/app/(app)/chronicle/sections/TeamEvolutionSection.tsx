@@ -2,18 +2,8 @@
 
 import { DESIGN_SYSTEM } from '@/lib/constants'
 import { cn } from '@/utilities/cn'
-import {
-  ChevronRight,
-  Cpu,
-  Database,
-  FastForward,
-  Gauge,
-  History,
-  Layers,
-  Settings2,
-  Workflow
-} from 'lucide-react'
-import { motion, useScroll, useTransform } from 'motion/react'
+import { ChevronRight } from 'lucide-react'
+import { motion } from 'motion/react'
 import Image from 'next/image'
 import React, { useRef } from 'react'
 
@@ -54,80 +44,71 @@ export default function TeamEvolutionSection({ data = DUMMY_EVOLUTION }: { data?
   return (
     <section
       ref={containerRef}
-      className="relative w-full bg-black py-32 px-6 md:px-12 lg:px-24 overflow-hidden"
+      className="relative w-full bg-black py-32 px-12 md:px-24 overflow-hidden border-t border-zinc-900"
     >
-      {/* Background Decor */}
-      <div className="absolute top-0 right-0 w-1/3 h-full border-r border-zinc-900/50 pointer-events-none" />
-      <div className="absolute top-0 left-1/4 w-px h-full bg-gradient-to-b from-transparent via-zinc-900 to-transparent pointer-events-none" />
-
-      {/* Header */}
-      <div className="relative z-10 mb-32">
-        <div className="flex items-center gap-6 mb-4">
-          <Workflow size={20} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }} />
-          <span className="text-[10px] font-black uppercase tracking-[0.5em] text-zinc-500">
-            ENGINEERING_LINEAGE_V4.0
+      <div className="relative z-10 mb-48">
+        <div className="flex items-center gap-4 mb-8">
+          <div className="h-px w-10" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY }} />
+          <span className="text-[8px] font-black uppercase tracking-[0.4em] text-zinc-700">
+            ENGINEERING_LINEAGE
           </span>
         </div>
-        <h2 className="text-6xl md:text-9xl font-black italic text-white uppercase tracking-tighter leading-[0.8]">
-          TEAM_<span style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }}>EVOLUTION</span>
+        <h2 className="text-5xl md:text-7xl font-black italic text-white uppercase tracking-tighter leading-[0.8]">
+          TEAM_EVOLUTION
         </h2>
       </div>
 
       <div className="relative space-y-64">
         {data.map((branch, idx) => (
-          <SeriesBlock key={branch.series.id} branch={branch} isLast={idx === data.length - 1} />
+          <SeriesBlock key={branch.series.id} branch={branch} />
         ))}
       </div>
     </section>
   )
 }
 
-function SeriesBlock({ branch, isLast }: { branch: EvolutionData, isLast: boolean }) {
+function SeriesBlock({ branch }: { branch: EvolutionData }) {
   const { series, seasons } = branch
 
   return (
     <div className="relative">
-      {/* Series Header Card */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start mb-32">
-        <div className="lg:col-span-5 sticky top-32">
-          <div className="space-y-8">
-            <div className="flex items-center gap-4">
-              <div className="px-3 py-1 bg-primary text-black text-[10px] font-black skew-x-[-15deg]" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY }}>
-                {series.details?.status?.toUpperCase()}
-              </div>
-              <span className="font-mono text-xs text-zinc-700">ID://{series.basics?.code}</span>
-            </div>
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-20 items-start mb-40">
+        <div className="lg:col-span-5 space-y-12">
+          <div className="flex items-center gap-6">
+            <span className="text-[7px] font-mono text-zinc-800 tracking-widest uppercase">ID://{series.basics?.code}</span>
+            <div className="h-px flex-1 bg-zinc-900" />
+            <span className="text-[8px] font-black text-white px-3 py-1 bg-zinc-900 uppercase italic">
+              {series.details?.status}
+            </span>
+          </div>
 
-            <h3 className="text-5xl font-black italic text-white uppercase tracking-tighter">
-              {series.name}
-            </h3>
+          <h3 className="text-4xl font-black italic text-white uppercase tracking-tighter">
+            {series.name}
+          </h3>
 
-            <p className="text-zinc-500 text-sm font-bold uppercase leading-relaxed max-w-md border-l-2 pl-6 border-zinc-800">
-              {series.basics?.description}
-            </p>
+          <p className="text-[11px] font-bold text-zinc-600 uppercase italic leading-relaxed max-w-md border-l border-zinc-900 pl-8 tracking-wide">
+            {series.basics?.description}
+          </p>
 
-            <div className="grid grid-cols-2 gap-px bg-zinc-900 border border-zinc-900">
-              <Stat label="TOTAL_SEASONS" value={series.metrics?.counts?.seasons?.toString()} />
-              <Stat label="CLASSIFICATION" value="PRO_ELITE" />
-            </div>
+          <div className="grid grid-cols-2 gap-px bg-zinc-900 border border-zinc-900">
+            <Stat label="TOTAL_SEASONS" value={series.metrics?.counts?.seasons?.toString()} />
+            <Stat label="CLASSIFICATION" value="PRO_ELITE" />
           </div>
         </div>
 
-        <div className="lg:col-span-7 relative aspect-[21/9] bg-zinc-950 border border-zinc-900 overflow-hidden group">
+        <div className="lg:col-span-7 relative aspect-[21/9] bg-zinc-950 border border-zinc-900 overflow-hidden">
           <Image
             src={series.assets.cover || ''}
-            alt={series.name}
+            alt=""
             fill
-            className="object-cover opacity-40 grayscale group-hover:grayscale-0 group-hover:opacity-60 transition-all duration-700"
+            className="object-cover opacity-30 grayscale contrast-125"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
         </div>
       </div>
 
-      {/* Seasons Timeline */}
-      <div className="relative pl-8 md:pl-24 space-y-48">
-        {/* The Vertical Line Connector */}
-        <div className="absolute left-0 md:left-12 top-0 bottom-0 w-px bg-gradient-to-b from-primary via-zinc-800 to-transparent" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY + '20' }} />
+      <div className="relative pl-12 md:pl-24 space-y-48">
+        <div className="absolute left-0 md:left-12 top-0 bottom-0 w-px bg-zinc-900" />
 
         {seasons.map((season) => (
           <SeasonNode key={season.id} season={season} />
@@ -140,32 +121,34 @@ function SeriesBlock({ branch, isLast }: { branch: EvolutionData, isLast: boolea
 function SeasonNode({ season }: { season: Season & { cars: Car[] } }) {
   return (
     <div className="relative">
-      {/* Node Dot */}
-      <div className="absolute -left-8 md:-left-[52px] top-0 size-1 bg-black border-4 border-primary box-content rounded-full z-10" style={{ borderColor: DESIGN_SYSTEM.COLORS.PRIMARY }} />
+      <div className="absolute -left-12 md:-left-[52px] top-2 size-1.5 bg-black border-2 border-white rounded-full z-10" />
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-        <div className="lg:col-span-4">
-          <span className="text-[10px] font-black text-zinc-600 block mb-2 tracking-widest">SEASON_LOG</span>
-          <h4 className="text-3xl font-black italic text-zinc-200 uppercase tracking-tighter mb-4">
-            {season.name}
-          </h4>
-          <p className="text-xs font-mono text-zinc-500 uppercase leading-relaxed mb-8">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
+        <div className="lg:col-span-4 space-y-8">
+          <div>
+            <span className="text-[7px] font-black text-zinc-800 block mb-3 tracking-[0.4em] uppercase">SEASON_REF</span>
+            <h4 className="text-2xl font-black italic text-zinc-300 uppercase tracking-tighter">
+              {season.name}
+            </h4>
+          </div>
+
+          <p className="text-[10px] font-bold text-zinc-600 uppercase leading-relaxed italic tracking-wide">
             {season.basics?.description}
           </p>
 
-          <div className="flex gap-8">
-            <div className="flex flex-col">
-              <span className="text-[8px] font-black text-zinc-800 uppercase">Entries</span>
-              <span className="text-lg font-black text-white italic">{season.metrics?.counts?.entries}</span>
+          <div className="flex gap-12 pt-4">
+            <div className="flex flex-col gap-1">
+              <span className="text-[7px] font-black text-zinc-800 uppercase tracking-widest">ENTRIES</span>
+              <span className="text-xl font-black text-white italic tracking-tighter">{season.metrics?.counts?.entries}</span>
             </div>
-            <div className="flex flex-col">
-              <span className="text-[8px] font-black text-zinc-800 uppercase">Events</span>
-              <span className="text-lg font-black text-white italic">{season.metrics?.counts?.events}</span>
+            <div className="flex flex-col gap-1">
+              <span className="text-[7px] font-black text-zinc-800 uppercase tracking-widest">EVENTS</span>
+              <span className="text-xl font-black text-white italic tracking-tighter">{season.metrics?.counts?.events}</span>
             </div>
           </div>
         </div>
 
-        <div className="lg:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="lg:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-8">
           {season.cars.map((car) => (
             <CarCard key={car.id} car={car} />
           ))}
@@ -178,37 +161,34 @@ function SeasonNode({ season }: { season: Season & { cars: Car[] } }) {
 function CarCard({ car }: { car: Car }) {
   return (
     <motion.div
-      whileHover={{ y: -5 }}
-      className="bg-zinc-950 border border-zinc-900 p-1 flex flex-col group"
-      style={{ clipPath: 'polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%)' }}
+      whileHover={{ y: -4 }}
+      className="bg-zinc-950 border border-zinc-900 p-1 flex flex-col group transition-colors hover:border-zinc-700"
+      style={{ clipPath: 'polygon(0 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%)' }}
     >
       <div className="relative aspect-video overflow-hidden bg-black">
         <Image
           src={car.assets.thumbnail}
-          alt={car.name}
+          alt=""
           fill
-          className="object-cover opacity-50 grayscale group-hover:scale-110 group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-700"
+          className="object-cover opacity-40 grayscale group-hover:scale-105 group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-700"
         />
-        <div className="absolute top-4 right-4 flex flex-col items-end">
-          <span className="text-[8px] font-black text-white bg-black/80 px-2 py-0.5 mb-1">{car.basics?.chassis}</span>
-          <span className="text-[8px] font-black text-black px-2 py-0.5" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY }}>V_{car.basics?.version}</span>
+        <div className="absolute top-4 right-4 flex flex-col items-end gap-1">
+          <span className="text-[7px] font-black text-white bg-black px-2 py-0.5 tracking-widest">{car.basics?.chassis}</span>
+          <span className="text-[7px] font-black text-black px-2 py-0.5 tracking-widest" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY }}>VER_{car.basics?.version}</span>
         </div>
       </div>
 
-      <div className="p-6">
-        <h5 className="text-lg font-black italic text-white uppercase tracking-tighter mb-2 group-hover:text-primary transition-colors">
+      <div className="p-8">
+        <h5 className="text-lg font-black italic text-white uppercase tracking-tighter mb-3 group-hover:text-white transition-colors">
           {car.name}
         </h5>
-        <p className="text-[10px] font-bold text-zinc-600 uppercase italic line-clamp-2">
+        <p className="text-[9px] font-bold text-zinc-600 uppercase italic line-clamp-2 tracking-wide leading-relaxed">
           {car.basics?.description}
         </p>
 
-        <div className="mt-6 flex items-center justify-between border-t border-zinc-900 pt-4">
-          <div className="flex items-center gap-2">
-            <Settings2 size={12} className="text-zinc-800" />
-            <span className="text-[8px] font-black text-zinc-800 uppercase tracking-widest">{car.details?.status}</span>
-          </div>
-          <ChevronRight size={14} className="text-zinc-800 group-hover:text-primary transform group-hover:translate-x-1 transition-all" />
+        <div className="mt-8 flex items-center justify-between border-t border-zinc-900 pt-6">
+          <span className="text-[7px] font-black text-zinc-800 uppercase tracking-[0.3em]">{car.details?.status}</span>
+          <ChevronRight size={12} className="text-zinc-800 group-hover:text-white transition-all transform group-hover:translate-x-1" />
         </div>
       </div>
     </motion.div>
@@ -217,9 +197,9 @@ function CarCard({ car }: { car: Car }) {
 
 function Stat({ label, value }: { label: string, value?: string }) {
   return (
-    <div className="bg-zinc-950 p-6">
-      <span className="text-[8px] font-black text-zinc-700 uppercase tracking-widest block mb-1">{label}</span>
-      <span className="text-sm font-black italic text-zinc-200 uppercase">{value || '---'}</span>
+    <div className="bg-zinc-950 p-8">
+      <span className="text-[7px] font-black text-zinc-800 uppercase tracking-[0.3em] block mb-2">{label}</span>
+      <span className="text-base font-black italic text-zinc-300 uppercase tracking-tight">{value || '---'}</span>
     </div>
   )
 }
@@ -229,60 +209,32 @@ const DUMMY_EVOLUTION: EvolutionData[] = [
     series: {
       id: 1,
       name: "DESERT_OFFROAD_SERIES",
-      basics: { code: "DOS_X", description: "The premier endurance series testing structural integrity and thermal management in extreme sand environments.", tagline: "Endure the Void." },
-      details: { status: "Active" },
+      basics: { code: "DOS_X", description: "THE PREMIER ENDURANCE SERIES TESTING STRUCTURAL INTEGRITY AND THERMAL MANAGEMENT IN EXTREME SAND ENVIRONMENTS.", tagline: "ENDURE THE VOID." },
+      details: { status: "ACTIVE" },
       metrics: { counts: { seasons: 4 } },
-      assets: { logo: "", cover: "https://images.unsplash.com/photo-1547744037-b80bdba1b6f0?q=80&w=1200" }
+      assets: { logo: "", cover: "https://picsum.photos/seed/desert/1200/600" }
     },
     seasons: [
       {
         id: 101,
         name: "SEASON_2025_PROTO",
         seriesId: 1,
-        basics: { description: "Inaugural validation season for the Alpha chassis architecture." },
+        basics: { description: "INAUGURAL VALIDATION SEASON FOR THE ALPHA CHASSIS ARCHITECTURE." },
         metrics: { counts: { entries: 12, events: 8 } },
         cars: [
           {
             id: 201,
             name: "VORTEX_A1",
-            basics: { chassis: "AF-01", version: "1.0", description: "First generation wide-track prototype with dual-stage cooling." },
-            details: { status: "Retired" },
-            assets: { thumbnail: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=800" }
+            basics: { chassis: "AF-01", version: "1.0", description: "FIRST GENERATION WIDE-TRACK PROTOTYPE WITH DUAL-STAGE COOLING." },
+            details: { status: "RETIRED" },
+            assets: { thumbnail: "https://picsum.photos/seed/car1/800/450" }
           },
           {
             id: 202,
             name: "VORTEX_A1_EVO",
-            basics: { chassis: "AF-01B", version: "1.2", description: "Revised aero package with high-downforce rear assembly." },
-            details: { status: "Museum" },
-            assets: { thumbnail: "https://images.unsplash.com/photo-1562141989-c5c79ac8f576?q=80&w=800" }
-          }
-        ]
-      }
-    ]
-  },
-  {
-    series: {
-      id: 2,
-      name: "NEURAL_CIRCUIT_INTEL",
-      basics: { code: "NCI_2", description: "Experimental series focusing on autonomous telemetry and predictive handling algorithms.", tagline: "Silicon over Sand." },
-      details: { status: "Active" },
-      metrics: { counts: { seasons: 2 } },
-      assets: { logo: "", cover: "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1200" }
-    },
-    seasons: [
-      {
-        id: 102,
-        name: "STAGGER_POINT_26",
-        seriesId: 2,
-        basics: { description: "Integration of Edge AI nodes into active suspension hardware." },
-        metrics: { counts: { entries: 8, events: 5 } },
-        cars: [
-          {
-            id: 203,
-            name: "NODE_PILOT_X",
-            basics: { chassis: "NX-26", version: "0.8", description: "Solid-state actuator testbed with integrated compute core." },
-            details: { status: "Active" },
-            assets: { thumbnail: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=800" }
+            basics: { chassis: "AF-01B", version: "1.2", description: "REVISED AERO PACKAGE WITH HIGH-DOWNFORCE REAR ASSEMBLY." },
+            details: { status: "MUSEUM" },
+            assets: { thumbnail: "https://picsum.photos/seed/car2/800/450" }
           }
         ]
       }

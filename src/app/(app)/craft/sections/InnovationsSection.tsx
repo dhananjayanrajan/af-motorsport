@@ -9,8 +9,7 @@ import {
   Radar,
   Target,
   ExternalLink,
-  ShieldCheck,
-  ChevronRight
+  ShieldCheck
 } from 'lucide-react'
 import { AnimatePresence, motion } from 'motion/react'
 import { useState } from 'react'
@@ -192,17 +191,6 @@ export function InnovationsSection({ initiatives = DUMMY_INITIATIVES }: { initia
                       {[...Array(8)].map((_, i) => <div key={i} className="w-0.5 h-4 bg-zinc-900" />)}
                     </div>
                   </div>
-
-                  <button
-                    onClick={() => window.open('/pursuit', '_self')}
-                    className="w-full group flex items-center justify-between p-6 border border-zinc-900 hover:border-white transition-all cursor-pointer"
-                  >
-                    <div className="flex items-center gap-4">
-                      <ShieldCheck size={18} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }} />
-                      <span className="text-[10px] font-black text-white uppercase tracking-[0.2em]">ACCESS_FULL_DOSSIER</span>
-                    </div>
-                    <ChevronRight size={18} className="text-zinc-800 group-hover:text-white group-hover:translate-x-1 transition-all" />
-                  </button>
                 </div>
               </div>
             </motion.div>
@@ -223,7 +211,7 @@ const DUMMY_INITIATIVES: Initiative[] = [
     },
     details: { status: 'Active' },
     traits: { outcomes: { expectations: [{ value: '40%_RED_TARGET' }, { value: '0_MASS_GAIN' }] } },
-    assets: { primary: "https://images.unsplash.com/photo-1558444479-c8f010b91939?q=80&w=1200" }
+    assets: { primary: "https://picsum.photos/seed/thermal/1200/800" }
   },
   {
     id: 102,
@@ -234,7 +222,7 @@ const DUMMY_INITIATIVES: Initiative[] = [
     },
     details: { status: 'Active' },
     traits: { outcomes: { expectations: [{ value: '±2_LAP_DELTA' }, { value: 'AI_ORCHESTRATED' }] } },
-    assets: { primary: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=1200" }
+    assets: { primary: "https://picsum.photos/seed/neural/1200/800" }
   },
   {
     id: 103,
@@ -245,7 +233,7 @@ const DUMMY_INITIATIVES: Initiative[] = [
     },
     details: { status: 'Proposed' },
     traits: { outcomes: { expectations: [{ value: 'RECYCLABLE_CORE' }, { value: 'WEIGHT_PARITY' }] } },
-    assets: { primary: "https://images.unsplash.com/photo-1511919884226-fd3cad34687c?q=80&w=1200" }
+    assets: { primary: "https://picsum.photos/seed/biocomp/1200/800" }
   },
   {
     id: 104,
@@ -256,6 +244,6 @@ const DUMMY_INITIATIVES: Initiative[] = [
     },
     details: { status: 'Paused' },
     traits: { outcomes: { expectations: [{ value: 'LIDAR_MAPPING' }, { value: 'ZERO_LATENCY' }] } },
-    assets: { primary: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=1200" }
+    assets: { primary: "https://picsum.photos/seed/drs/1200/800" }
   }
 ]

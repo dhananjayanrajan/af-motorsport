@@ -1,13 +1,15 @@
 import { CalendarSection } from "./sections/CalendarSection"
 import { ChampionshipSection } from "./sections/ChampionshipSection"
-import { SessionHighlightsSection } from "./sections/SessionHighlightsSection"
+import { ConquestsSection } from "./sections/ConquestsSection"
+import { SeasonRecapSection } from "./sections/SeasonRecapSection"
 
 export default function Page() {
   return (
     <main>
       <ChampionshipSection />
-      <SessionHighlightsSection />
+      <ConquestsSection />
       <CalendarSection />
+      <SeasonRecapSection />
     </main>
   )
 }

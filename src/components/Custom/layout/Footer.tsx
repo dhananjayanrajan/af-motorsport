@@ -78,8 +78,8 @@ export const CustomFooter = ({ footer, socials, organizations = [], questions, a
           <CTA
             headline={cta.headline || 'Ready to be part of the story?'}
             subtext={cta.subtext || 'Whether you race, engineer, design, or simply believe in what we build — there is a place for you inside AF Motorsport.'}
-            buttonLabel={cta.buttonLabel || 'Explore Ambition'}
-            buttonUrl={cta.link?.url || '/ambition'}
+            buttonLabel={cta.buttonLabel || 'Explore Careers'}
+            buttonUrl={cta.link?.url || '/careers'}
             showPartners={true}
             organizations={organizations}
           />

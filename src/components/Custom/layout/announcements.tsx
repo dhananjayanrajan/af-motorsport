@@ -1,4 +1,5 @@
 'use client'
+
 import {
   Carousel,
   CarouselContent,
@@ -54,13 +55,13 @@ export const AnnouncementsSection = ({ data }: AnnouncementsSectionProps) => {
     })
   )
 
-  if (!data?.items || data.items.length === 0) return null
+  const items = data?.items || []
 
-  const activeItems = data.items.filter((item) => {
-    if (!item.visible) return false
-    const now = new Date()
-    if (item.schedule?.from && new Date(item.schedule.from) > now) return false
-    if (item.schedule?.until && new Date(item.schedule.until) < now) return false
+  const activeItems = items.filter((item) => {
+    if (!item.active) return false
+    const now = new Date().getTime()
+    if (item.from && new Date(item.from).getTime() > now) return false
+    if (item.until && new Date(item.until).getTime() < now) return false
     return true
   })
 

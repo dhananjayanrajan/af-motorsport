@@ -168,21 +168,6 @@ export function BehindTheScenesSection({
                   </div>
                 </div>
               </div>
-
-              <div className="pt-20">
-                <button
-                  onClick={() => window.location.href = '/careers'}
-                  className="flex items-center gap-6 group cursor-pointer"
-                >
-                  <div className="size-16 bg-white text-black flex items-center justify-center group-hover:bg-zinc-200 transition-colors">
-                    <ArrowRight size={24} />
-                  </div>
-                  <div className="text-left space-y-1">
-                    <span className="block text-xs font-black uppercase tracking-widest text-white">Join the Pursuit</span>
-                    <span className="block text-[10px] font-bold text-zinc-600 uppercase">Explore open roles and training programs</span>
-                  </div>
-                </button>
-              </div>
             </motion.div>
           </AnimatePresence>
         </main>

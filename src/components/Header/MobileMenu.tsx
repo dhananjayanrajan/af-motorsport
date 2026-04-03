@@ -1,12 +1,18 @@
 'use client'
 
-import type { Header, Social } from '@/payload-types'
+import React, { useEffect, useState, useMemo } from 'react'
+import Link from 'next/link'
+import { usePathname, useSearchParams } from 'next/navigation'
+import {
+  ChevronRight, LogIn, LogOut, MenuIcon, Shield, UserPlus,
+  Camera, Disc, Facebook, Github, Instagram, Link2, Linkedin,
+  MessageCircle, Music, Phone, Send, Twitch, Twitter, Youtube
+} from 'lucide-react'
 
 import { CMSLink } from '@/components/Link'
 import {
   Sheet,
   SheetContent,
-  SheetDescription,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
@@ -14,27 +20,8 @@ import {
 import { DESIGN_SYSTEM } from '@/lib/constants'
 import { useAuth } from '@/providers/Auth'
 import { cn } from '@/utilities/cn'
-import { ChevronRight, LogIn, LogOut, MenuIcon, Shield, UserPlus } from 'lucide-react'
-import Link from 'next/link'
-import { usePathname, useSearchParams } from 'next/navigation'
-import React, { useEffect, useState } from 'react'
 
-import {
-  Camera,
-  Disc,
-  Facebook,
-  Github,
-  Instagram,
-  Link2,
-  Linkedin,
-  MessageCircle,
-  Music,
-  Phone,
-  Send,
-  Twitch,
-  Twitter,
-  Youtube,
-} from 'lucide-react'
+import type { Header, Social } from '@/payload-types'
 
 const socialIcons: Record<string, React.ElementType> = {
   instagram: Instagram,
@@ -77,123 +64,97 @@ export function MobileMenu({ menu, socials }: Props) {
     setIsOpen(false)
   }, [pathname, searchParams])
 
-  const validSocials = socials?.filter(s => s && s.url) || []
+  const validSocials = useMemo(() => socials?.filter(s => s && s.url) || [], [socials])
 
   return (
     <Sheet onOpenChange={setIsOpen} open={isOpen}>
-      <SheetTrigger className="relative flex h-10 w-10 items-center justify-center bg-black border border-zinc-800 text-white transition-all active:scale-95 group">
-        <MenuIcon className={cn("h-4 w-4 transition-colors duration-200", `group-hover:text-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`)} />
+      <SheetTrigger className="flex h-10 w-10 items-center justify-center bg-black border border-zinc-800 text-white transition-all active:scale-95 group">
+        <MenuIcon className="h-4 w-4 transition-colors group-hover:text-zinc-400" />
       </SheetTrigger>
 
-      <SheetContent side="left" className="flex flex-col bg-zinc-950 border-r border-zinc-800 text-white w-full max-w-[300px] p-0">
-        <SheetHeader className="p-8 border-b border-zinc-900 bg-black/50">
-          <div className="flex items-center gap-3 mb-2">
-            <Shield className={cn("h-4 w-4 animate-pulse", `text-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`)} />
-            <SheetTitle className={cn("text-xs font-black uppercase text-white", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_XL)}>Mainframe</SheetTitle>
+      <SheetContent side="left" className="flex flex-col bg-black border-r border-zinc-900 text-white w-[280px] p-0">
+        <SheetHeader className="p-6 border-b border-zinc-900 bg-zinc-950/50">
+          <div className="flex items-center gap-3">
+            <Shield className="h-4 w-4" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }} />
+            <SheetTitle className={cn("text-[10px] font-black uppercase italic text-white", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_XL)}>
+              MAINFRAME_V1.0
+            </SheetTitle>
           </div>
-          <SheetDescription className={cn("text-[9px] uppercase font-bold text-zinc-500 leading-relaxed", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_DEFAULT)}>
-            Navigation interface active. Select a sector to engage.
-          </SheetDescription>
         </SheetHeader>
 
-        <div className="flex-1 overflow-y-auto custom-scrollbar">
+        <nav className="flex-1 overflow-y-auto">
           {menu?.length ? (
-            <ul className="flex flex-col divide-y divide-zinc-900/50">
-              {menu.map(item => {
-                const linkProps = {
-                  url: item.link,
-                  label: item.label,
-                  reference: null,
-                  type: 'custom' as const,
-                  newTab: false,
-                }
-                return (
-                  <li key={item.id} className="group">
-                    <CMSLink
-                      {...linkProps}
-                      className="flex items-center justify-between p-6 transition-colors hover:bg-zinc-900/30"
-                    >
-                      <span className={cn("text-[11px] font-black uppercase italic transition-colors duration-200", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_DEFAULT, `group-hover:text-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`)}>
-                        {item.label}
-                      </span>
-                      <ChevronRight className={cn("h-3 w-3 text-zinc-600 transition-colors duration-200", `group-hover:text-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`)} />
-                    </CMSLink>
-                  </li>
-                )
-              })}
+            <ul className="flex flex-col">
+              {menu.map(item => (
+                <li key={item.id} className="border-b border-zinc-900/50">
+                  <CMSLink
+                    url={item.link}
+                    label={item.label}
+                    className="flex items-center justify-between p-5 transition-all hover:bg-zinc-900/40 group"
+                  >
+                    <span className={cn("text-[10px] font-black uppercase italic text-zinc-400 group-hover:text-white transition-colors", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_DEFAULT)}>
+                      {item.label}
+                    </span>
+                    <ChevronRight className="h-3 w-3 text-zinc-800 group-hover:text-white transition-colors" />
+                  </CMSLink>
+                </li>
+              ))}
             </ul>
           ) : null}
-        </div>
+        </nav>
 
-        <div className="p-8 bg-black/80 border-t border-zinc-900 space-y-8">
-          <div>
-            <span className={cn("text-[8px] font-black uppercase text-zinc-700 block mb-6", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_XL)}>Identity Systems</span>
-            <div className="flex flex-col gap-4">
-              {user ? (
-                <>
-                  <Link
-                    href="/account"
-                    className="flex items-center justify-between group py-2"
-                  >
-                    <span className={cn("text-[10px] font-black uppercase text-zinc-400 group-hover:text-white transition-colors duration-200", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_DEFAULT)}>Manage Profile</span>
-                    <ChevronRight className={cn("h-3 w-3 text-zinc-800 transition-colors duration-200", `group-hover:text-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`)} />
-                  </Link>
-                  <Link
-                    href="/logout"
-                    className="relative group flex items-center justify-center w-full h-12 bg-zinc-900 text-white overflow-hidden transition-all active:scale-95 border border-zinc-800"
-                    style={{ clipPath: 'polygon(5% 0%, 100% 0%, 95% 100%, 0% 100%)' }}
-                  >
-                    <div className={cn(`absolute inset-0 translate-x-[-101%] group-hover:translate-x-0 transition-transform duration-200`, `bg-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`)} />
-                    <span className={cn(`relative z-10 text-[9px] font-black uppercase italic flex items-center gap-2 group-hover:text-black transition-colors duration-200`, DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_XL)}>
-                      <LogOut className="h-3 w-3" /> Terminate Session
-                    </span>
-                  </Link>
-                </>
-              ) : (
-                <div className="flex flex-col gap-4">
-                  <Link
-                    href="/login"
-                    className="relative group flex items-center justify-center w-full h-12 bg-white text-black overflow-hidden transition-all active:scale-95"
-                    style={{ clipPath: 'polygon(5% 0%, 100% 0%, 95% 100%, 0% 100%)' }}
-                  >
-                    <div className="absolute inset-0 bg-zinc-800 translate-x-[-101%] group-hover:translate-x-0 transition-transform duration-200" />
-                    <span className={cn(`relative z-10 text-[9px] font-black uppercase italic flex items-center gap-2 group-hover:text-white transition-colors duration-200`, DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_XL)}>
-                      <LogIn className="h-3 w-3" /> Authorize
-                    </span>
-                  </Link>
-                  <Link
-                    href="/create-account"
-                    className={cn(`relative group flex items-center justify-center w-full h-12 text-black overflow-hidden transition-all active:scale-95`, `bg-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`)}
-                    style={{ clipPath: 'polygon(5% 0%, 100% 0%, 95% 100%, 0% 100%)' }}
-                  >
-                    <div className="absolute inset-0 bg-black translate-x-[-101%] group-hover:translate-x-0 transition-transform duration-200" />
-                    <span className={cn(`relative z-10 text-[9px] font-black uppercase italic flex items-center gap-2 transition-colors duration-200`, DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_XL, `group-hover:text-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`)}>
-                      <UserPlus className="h-3 w-3" /> Join Initiative
-                    </span>
-                  </Link>
-                </div>
-              )}
-            </div>
+        <div className="p-6 bg-zinc-950 border-t border-zinc-900">
+          <div className="grid gap-3 mb-8">
+            {user ? (
+              <>
+                <Link href="/account" className="flex items-center justify-between py-2 group">
+                  <span className="text-[9px] font-black uppercase italic text-zinc-500 group-hover:text-white">ACCOUNT_SESS</span>
+                  <ChevronRight className="h-3 w-3 text-zinc-800" />
+                </Link>
+                <Link
+                  href="/logout"
+                  className="flex items-center justify-center w-full h-10 bg-zinc-900 border border-zinc-800 text-[9px] font-black uppercase italic text-white transition-all hover:bg-white hover:text-black"
+                  style={{ clipPath: 'polygon(5% 0%, 100% 0%, 95% 100%, 0% 100%)' }}
+                >
+                  <LogOut className="h-3 w-3 mr-2" /> EXIT_SESS
+                </Link>
+              </>
+            ) : (
+              <div className="grid grid-cols-2 gap-2">
+                <Link
+                  href="/login"
+                  className="flex items-center justify-center h-10 bg-zinc-900 border border-zinc-800 text-[9px] font-black uppercase italic text-white transition-all hover:bg-zinc-800"
+                  style={{ clipPath: 'polygon(10% 0%, 100% 0%, 90% 100%, 0% 100%)' }}
+                >
+                  LOGIN
+                </Link>
+                <Link
+                  href="/create-account"
+                  className="flex items-center justify-center h-10 text-[9px] font-black uppercase italic text-black transition-all hover:opacity-90"
+                  style={{ clipPath: 'polygon(10% 0%, 100% 0%, 90% 100%, 0% 100%)', backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY }}
+                >
+                  JOIN
+                </Link>
+              </div>
+            )}
           </div>
 
           {validSocials.length > 0 && (
-            <div className="pt-6 border-t border-zinc-900/50">
-              <div className="flex flex-wrap gap-5 justify-center">
-                {validSocials.map(account => {
-                  const Icon = socialIcons[account.platform] || Link2
-                  return (
-                    <a
-                      key={account.id}
-                      href={account.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={cn("text-zinc-600 transition-colors duration-200", `hover:text-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`)}
-                    >
-                      <Icon className="h-4 w-4" />
-                    </a>
-                  )
-                })}
-              </div>
+            <div className="flex flex-wrap gap-4 pt-6 border-t border-zinc-900/50 justify-center">
+              {validSocials.map(account => {
+                const Icon = socialIcons[account.platform] || Link2
+                return (
+                  <a
+                    key={account.id}
+                    href={account.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-zinc-600 transition-colors hover:text-white"
+                  >
+                    <Icon className="h-3.5 w-3.5" />
+                  </a>
+                )
+              })}
             </div>
           )}
         </div>

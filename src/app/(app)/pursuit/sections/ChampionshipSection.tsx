@@ -6,31 +6,51 @@ import { DESIGN_SYSTEM } from '@/lib/constants'
 import { Trophy, Swords, X, Activity, Timer, Gauge, ExternalLink } from 'lucide-react'
 import { AnimatePresence, motion } from 'motion/react'
 import Link from 'next/link'
+import { cn } from '@/utilities/cn'
 
 export function ChampionshipSection({ results = DUMMY_RESULTS }: { results?: any[] }) {
   const [selectedResult, setSelectedResult] = useState<any | null>(null)
 
   return (
     <section
-      className="relative w-full py-32 border-t overflow-hidden"
+      className="relative w-full py-16 border-t overflow-hidden"
       style={{ backgroundColor: DESIGN_SYSTEM.COLORS.BLACK, borderTopColor: DESIGN_SYSTEM.COLORS.ZINC_900 }}
     >
-      <div className="max-w-[1800px] mx-auto px-6 md:px-12 relative z-10 mb-20">
-        <div className="flex flex-col md:flex-row justify-between items-end gap-8">
-          <div className="space-y-4">
-            <div className="flex items-center gap-3">
-              <Swords size={18} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }} />
-              <span className="text-[10px] font-black text-zinc-600 uppercase tracking-[0.4em]">LIVE_RESULT_FEED</span>
-            </div>
-            <h2 className="text-7xl md:text-9xl font-black italic text-white tracking-tighter uppercase leading-[0.75]">
+      <div className="max-w-7xl mx-auto px-4 relative z-10 mb-8">
+        <div className="flex flex-col md:flex-row justify-between items-end gap-6">
+          <div className="space-y-6">
+            <motion.div
+              initial={{ opacity: 0, x: -10 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, ease: "circOut" }}
+              className="flex items-center gap-4"
+            >
+              <motion.div
+                initial={{ width: 0 }}
+                whileInView={{ width: 48 }}
+                transition={{ duration: 1, delay: 0.2 }}
+                style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY }}
+                className="h-[1px]"
+              />
+              <span className={cn("text-[8px] md:text-[10px] font-black italic text-zinc-500 uppercase")}>Live Result Feed</span>
+            </motion.div>
+
+            <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+              className="text-5xl md:text-7xl font-black italic text-white tracking-tighter uppercase leading-[0.8]"
+            >
               CHAMPIONSHIP<br />
-              <span style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }}>FIGHT</span>
-            </h2>
+              <motion.span
+                initial={{ color: "#fff" }}
+                whileInView={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }}
+                transition={{ duration: 1, delay: 0.5 }}
+              >
+                FIGHT
+              </motion.span>
+            </motion.h2>
           </div>
-          <Link href="/pursuit" className="group flex items-center gap-2 text-[10px] font-black text-zinc-600 hover:text-primary transition-colors uppercase tracking-[0.2em]">
-            VIEW FULL STANDINGS
-            <ExternalLink size={12} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-          </Link>
         </div>
       </div>
 
@@ -92,10 +112,10 @@ function ResultShard({ data, onClose }: { data: any, onClose: () => void }) {
 
         <div className="flex-1 space-y-16">
           <div className="space-y-4">
-            <span className="text-[10px] font-black text-primary uppercase tracking-[0.3em]" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }}>
+            <span className="text-[8px] font-black text-primary uppercase tracking-[0.3em]" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }}>
               RESULT_ID_{data.id}
             </span>
-            <h3 className="text-6xl font-black italic text-white uppercase tracking-tighter leading-none">
+            <h3 className="text-xl md:text-2xl font-black italic text-white uppercase tracking-tighter leading-none">
               {data.name}
             </h3>
           </div>
@@ -108,16 +128,16 @@ function ResultShard({ data, onClose }: { data: any, onClose: () => void }) {
           </div>
 
           <div className="pt-12 border-t border-zinc-900">
-            <span className="text-[10px] font-black text-zinc-700 uppercase block mb-4 italic">BASICS_DESCRIPTION</span>
-            <p className="text-zinc-400 text-sm font-bold leading-relaxed uppercase italic">
+            <span className="text-[8px] font-black text-zinc-700 uppercase block mb-4 italic">BASICS_DESCRIPTION</span>
+            <p className="text-zinc-400 text-[10px] font-bold leading-relaxed uppercase italic border-l-2 pl-4 py-1" style={{ borderLeftColor: DESIGN_SYSTEM.COLORS.PRIMARY }}>
               {data.basics.description}
             </p>
           </div>
         </div>
 
         <div className="mt-auto pt-8 border-t border-zinc-900 flex justify-between items-center">
-          <span className="text-[10px] font-mono text-zinc-700 uppercase tracking-tighter">{data.details.status}</span>
-          <Link href="/pursuit" className="group flex items-center gap-2 text-[10px] font-black text-zinc-600 hover:text-primary transition-colors uppercase">
+          <span className="text-[8px] font-mono text-zinc-700 uppercase tracking-tighter">{data.details.status}</span>
+          <Link href="/pursuit" className="group flex items-center gap-2 text-[8px] font-black text-zinc-600 hover:text-primary transition-colors uppercase">
             SEASON DETAILS
             <ExternalLink size={12} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
           </Link>
@@ -132,9 +152,9 @@ function ShardStat({ icon, label, value }: { icon: React.ReactNode, label: strin
     <div className="space-y-2">
       <div className="flex items-center gap-2 opacity-30">
         {icon}
-        <span className="text-[8px] font-black text-white uppercase tracking-widest">{label}</span>
+        <span className="text-[6px] font-black text-white uppercase tracking-widest">{label}</span>
       </div>
-      <span className="text-3xl font-black italic text-white uppercase leading-none">{value}</span>
+      <span className="text-4xl font-black italic text-white uppercase leading-none" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }}>{value}</span>
     </div>
   )
 }
@@ -197,18 +217,21 @@ function MarqueeItem({ name, metrics, value, speed, marqueeBgColor, marqueeTextC
 
   return (
     <div className="relative overflow-hidden h-32 md:h-48 border-t cursor-pointer" style={{ borderColor }} ref={itemRef} onClick={onClick} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
-      <div className="flex items-center justify-between px-6 md:px-12 h-full">
+      <div className="flex items-center justify-between px-4 md:px-12 lg:px-24 h-full">
         <div className="flex items-baseline gap-8">
-          <span className="text-4xl md:text-7xl font-black italic text-zinc-900">P{metrics.position.overall.toString().padStart(2, '0')}</span>
-          <h3 className="text-2xl md:text-5xl font-black italic text-white uppercase tracking-tighter">{name}</h3>
+          <span className="text-4xl md:text-7xl font-black italic text-zinc-900 leading-[0.8]">P{metrics.position.overall.toString().padStart(2, '0')}</span>
+          <h3 className="text-xl md:text-4xl font-black italic text-white uppercase tracking-tighter leading-none">{name}</h3>
         </div>
-        <span className="text-2xl md:text-4xl font-black italic text-zinc-700">+{value} PTS</span>
+        <div className="flex flex-col items-end">
+          <span className="text-[8px] font-mono text-zinc-600 uppercase mb-1">Points_Gain</span>
+          <span className="text-2xl md:text-4xl font-black italic text-zinc-800 leading-none">+{value}</span>
+        </div>
       </div>
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none translate-y-[101%]" ref={marqueeRef} style={{ backgroundColor: marqueeBgColor }}>
         <div className="h-full w-fit flex" ref={marqueeInnerRef}>
           {[...Array(repetitions)].map((_, idx) => (
             <div className="marquee-part flex items-center px-4" key={idx} style={{ color: marqueeTextColor }}>
-              <span className="whitespace-nowrap uppercase font-black italic text-[5vh] px-8">{name} // P{metrics.position.overall} // +{value} PTS</span>
+              <span className="whitespace-nowrap uppercase font-black italic text-[4vh] px-8 tracking-tighter">{name} // P{metrics.position.overall} // +{value} PTS</span>
             </div>
           ))}
         </div>
@@ -233,69 +256,5 @@ const DUMMY_RESULTS = [
     basics: { description: "DEFENSIVE DRIVE SECURING PODIUM POSITION UNDER FLOODLIGHTS." },
     details: { status: "CERTIFIED" },
     metrics: { position: { overall: 2 }, performance: { time: "+1.109S", speed: "318 KM/H" } }
-  },
-  {
-    id: 103,
-    name: "DESERT STORM",
-    value: 15,
-    basics: { description: "FUEL SAVING MASTERCLASS UNDER EXTREME TEMPERATURES." },
-    details: { status: "OFFICIAL" },
-    metrics: { position: { overall: 3 }, performance: { time: "+8.234S", speed: "305 KM/H" } }
-  },
-  {
-    id: 104,
-    name: "RAIN MASTERY",
-    value: 12,
-    basics: { description: "WET TIRE GAMBLE PAYS OFF IN TORRENTIAL CONDITIONS." },
-    details: { status: "OFFICIAL" },
-    metrics: { position: { overall: 4 }, performance: { time: "+15.876S", speed: "278 KM/H" } }
-  },
-  {
-    id: 105,
-    name: "SPRINT SHOWDOWN",
-    value: 10,
-    basics: { description: "AGGRESSIVE OPENING LAPS SECURE TOP FIVE FINISH." },
-    details: { status: "CERTIFIED" },
-    metrics: { position: { overall: 5 }, performance: { time: "+22.341S", speed: "312 KM/H" } }
-  },
-  {
-    id: 106,
-    name: "ENDURANCE TRIAL",
-    value: 8,
-    basics: { description: "CONSISTENT STINT MANAGEMENT THROUGH DOUBLE STINT." },
-    details: { status: "OFFICIAL" },
-    metrics: { position: { overall: 6 }, performance: { time: "+35.678S", speed: "295 KM/H" } }
-  },
-  {
-    id: 107,
-    name: "COMEBACK DRIVE",
-    value: 6,
-    basics: { description: "P22 TO P7 RECOVERY AFTER EARGE PUNCTURE." },
-    details: { status: "OFFICIAL" },
-    metrics: { position: { overall: 7 }, performance: { time: "+42.109S", speed: "301 KM/H" } }
-  },
-  {
-    id: 108,
-    name: "TACTICAL BATTLE",
-    value: 4,
-    basics: { description: "TEAM ORDERS MAXIMIZE CONSTRUCTOR POINTS." },
-    details: { status: "CERTIFIED" },
-    metrics: { position: { overall: 8 }, performance: { time: "+51.234S", speed: "288 KM/H" } }
-  },
-  {
-    id: 109,
-    name: "LATE CHARGE",
-    value: 2,
-    basics: { description: "SOFT TIRE SPRINT TO THE FINISH LINE." },
-    details: { status: "OFFICIAL" },
-    metrics: { position: { overall: 9 }, performance: { time: "+59.876S", speed: "314 KM/H" } }
-  },
-  {
-    id: 110,
-    name: "POINTS FINISH",
-    value: 1,
-    basics: { description: "RELIABILITY RUN SECURES FINAL CHAMPIONSHIP POINT." },
-    details: { status: "OFFICIAL" },
-    metrics: { position: { overall: 10 }, performance: { time: "+72.345S", speed: "276 KM/H" } }
   }
 ]

@@ -216,16 +216,6 @@ function MemberTacticalModule({ member, variant, index }: { member: any, variant
                     </span>
                   </div>
                 </div>
-
-                <Link href={`/tribe/individuals/${member.id}`} className="group/btn relative">
-                  <motion.div
-                    whileHover={{ scale: 1.1, rotate: 90 }}
-                    className="p-2 border border-white/10 transition-colors"
-                    style={{ backgroundColor: DESIGN_SYSTEM.COLORS.ZINC_900 }}
-                  >
-                    <ExternalLink className="size-4 text-white" />
-                  </motion.div>
-                </Link>
               </div>
             </div>
           </div>
