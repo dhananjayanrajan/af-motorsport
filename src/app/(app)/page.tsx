@@ -1,55 +1,12 @@
-import { RenderBlocks } from '@/blocks/RenderBlocks'
-import { RenderHero } from '@/heros/RenderHero'
-import { generateMeta } from '@/utilities/generateMeta'
-import configPromise from '@payload-config'
-import { notFound } from 'next/navigation'
-import { getPayload } from 'payload'
+import React from 'react'
 
-export default async function HomePage() {
-    const payload = await getPayload({ config: configPromise })
-
-    const pages = await payload.find({
-        collection: 'pages',
-        limit: 1,
-        where: {
-            slug: {
-                equals: 'home'
-            }
-        },
-        overrideAccess: true,
-    })
-
-    const page = pages.docs[0]
-
-    if (!page) {
-        return notFound()
-    }
-
-    // @ts-ignore
-    const { hero, layout } = page
-
+const HomePage = () => {
     return (
-        <article className="pt-16 pb-24">
-            <RenderHero {...hero} />
-            <RenderBlocks blocks={layout} />
-        </article>
+        <main>
+            <h1>Custom Home Page</h1>
+            <p>This page is powered by page.tsx, bypassing the Pages collection.</p>
+        </main>
     )
 }
 
-export async function generateMetadata() {
-    const payload = await getPayload({ config: configPromise })
-
-    const pages = await payload.find({
-        collection: 'pages',
-        limit: 1,
-        where: {
-            slug: {
-                equals: 'home'
-            }
-        },
-        overrideAccess: true,
-    })
-
-    const page = pages.docs[0]
-    return generateMeta({ doc: page })
-}
+export default HomePage

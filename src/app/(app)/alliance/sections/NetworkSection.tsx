@@ -245,7 +245,7 @@ const DUMMY_ORGS: Organization[] = [
     },
     details: { evolution: { founded: "2012" } },
     traits: { reputation: { prestige: "Iconic", innovation: "Revolutionary", reliability: "Exceptional" } },
-    assets: { logo: "https://images.unsplash.com/photo-1560179707-f14e90ef3623?q=80&w=400" }
+    assets: { logo: "https://picsum.photos/id/11/400" }
   },
   {
     id: 2,
@@ -257,7 +257,7 @@ const DUMMY_ORGS: Organization[] = [
     },
     details: { evolution: { founded: "2019" } },
     traits: { reputation: { prestige: "Emerging", innovation: "Innovative", reliability: "Reliable" } },
-    assets: { logo: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=400" }
+    assets: { logo: "https://picsum.photos/id/12/400" }
   },
   {
     id: 3,
@@ -269,6 +269,6 @@ const DUMMY_ORGS: Organization[] = [
     },
     details: { evolution: { founded: "2015" } },
     traits: { reputation: { prestige: "Established", innovation: "Revolutionary", reliability: "Exceptional" } },
-    assets: { logo: "https://images.unsplash.com/photo-1551434678-e076c223a692?q=80&w=400" }
+    assets: { logo: "https://picsum.photos/id/13/400" }
   }
 ]
