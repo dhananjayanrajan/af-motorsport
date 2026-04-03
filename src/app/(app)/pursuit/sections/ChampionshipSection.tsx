@@ -3,10 +3,11 @@
 import React, { useRef, useEffect, useState } from 'react'
 import { gsap } from 'gsap'
 import { DESIGN_SYSTEM } from '@/lib/constants'
-import { Trophy, Swords, X, Activity, Timer, Gauge } from 'lucide-react'
+import { Trophy, Swords, X, Activity, Timer, Gauge, ExternalLink } from 'lucide-react'
 import { AnimatePresence, motion } from 'motion/react'
+import Link from 'next/link'
 
-export function ChampionshipSection({ results = DUMMY_RESULTS }) {
+export function ChampionshipSection({ results = DUMMY_RESULTS }: { results?: any[] }) {
   const [selectedResult, setSelectedResult] = useState<any | null>(null)
 
   return (
@@ -26,17 +27,20 @@ export function ChampionshipSection({ results = DUMMY_RESULTS }) {
               <span style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }}>FIGHT</span>
             </h2>
           </div>
+          <Link href="/pursuit" className="group flex items-center gap-2 text-[10px] font-black text-zinc-600 hover:text-primary transition-colors uppercase tracking-[0.2em]">
+            VIEW FULL STANDINGS
+            <ExternalLink size={12} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+          </Link>
         </div>
       </div>
 
       <nav className="flex flex-col border-b border-zinc-900">
         {results.map((item, idx) => (
           <MarqueeItem
-            key={idx}
+            key={item.id || idx}
             {...item}
             onClick={() => setSelectedResult(item)}
             speed={15}
-            textColor="#ffffff"
             marqueeBgColor={DESIGN_SYSTEM.COLORS.PRIMARY}
             marqueeTextColor={DESIGN_SYSTEM.COLORS.BLACK}
             borderColor={DESIGN_SYSTEM.COLORS.ZINC_900}
@@ -57,6 +61,14 @@ export function ChampionshipSection({ results = DUMMY_RESULTS }) {
 }
 
 function ResultShard({ data, onClose }: { data: any, onClose: () => void }) {
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose()
+    }
+    window.addEventListener('keydown', handleEscape)
+    return () => window.removeEventListener('keydown', handleEscape)
+  }, [onClose])
+
   return (
     <>
       <motion.div
@@ -64,24 +76,24 @@ function ResultShard({ data, onClose }: { data: any, onClose: () => void }) {
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         onClick={onClose}
-        className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100]"
+        className="fixed inset-0 bg-black/90 backdrop-blur-md z-[100]"
       />
       <motion.div
         initial={{ x: '100%' }}
         animate={{ x: 0 }}
         exit={{ x: '100%' }}
-        transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-        className="fixed top-0 right-0 h-full w-full max-w-xl bg-zinc-950 z-[101] border-l border-zinc-800 p-8 md:p-16 flex flex-col"
+        transition={{ type: 'spring', damping: 30, stiffness: 300 }}
+        className="fixed top-0 right-0 h-full w-full max-w-xl bg-zinc-950 z-[101] border-l border-zinc-900 p-8 md:p-16 flex flex-col"
         style={{ clipPath: 'polygon(40px 0, 100% 0, 100% 100%, 0 100%)' }}
       >
-        <button onClick={onClose} className="self-end p-4 hover:bg-zinc-900 transition-colors mb-12">
+        <button onClick={onClose} className="self-end p-4 hover:bg-zinc-900 transition-colors mb-12 border border-zinc-900 cursor-pointer">
           <X className="text-white" size={24} />
         </button>
 
         <div className="flex-1 space-y-16">
           <div className="space-y-4">
             <span className="text-[10px] font-black text-primary uppercase tracking-[0.3em]" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }}>
-              ENTRY_DEBRIEF // {data.id}
+              RESULT_ID_{data.id}
             </span>
             <h3 className="text-6xl font-black italic text-white uppercase tracking-tighter leading-none">
               {data.name}
@@ -89,42 +101,45 @@ function ResultShard({ data, onClose }: { data: any, onClose: () => void }) {
           </div>
 
           <div className="grid grid-cols-2 gap-12">
-            <ShardStat icon={<Trophy size={16} />} label="FINAL_POS" value={`P${data.position}`} />
-            <ShardStat icon={<Activity size={16} />} label="POINTS_GAIN" value={`+${data.value}`} />
-            <ShardStat icon={<Timer size={16} />} label="GAP_INTERVAL" value={data.metrics.interval} />
-            <ShardStat icon={<Gauge size={16} />} label="TOP_VELOCITY" value={data.metrics.speed} />
+            <ShardStat icon={<Trophy size={16} />} label="POSITION" value={`P${data.metrics.position.overall}`} />
+            <ShardStat icon={<Activity size={16} />} label="POINTS" value={`+${data.value}`} />
+            <ShardStat icon={<Timer size={16} />} label="INTERVAL" value={data.metrics.performance.time} />
+            <ShardStat icon={<Gauge size={16} />} label="SPEED" value={data.metrics.performance.speed} />
           </div>
 
           <div className="pt-12 border-t border-zinc-900">
-            <span className="text-[10px] font-black text-zinc-700 uppercase block mb-4 italic">Technical_Narrative</span>
-            <p className="text-zinc-500 text-sm font-bold leading-relaxed uppercase italic">
-              {data.description}
+            <span className="text-[10px] font-black text-zinc-700 uppercase block mb-4 italic">BASICS_DESCRIPTION</span>
+            <p className="text-zinc-400 text-sm font-bold leading-relaxed uppercase italic">
+              {data.basics.description}
             </p>
           </div>
         </div>
 
-        <div className="mt-auto pt-8 border-t border-zinc-900 flex justify-between items-center opacity-20">
-          <span className="text-[8px] font-mono text-white">HASH_REF: {data.id}</span>
-          <div className="size-4 bg-primary rotate-45" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY }} />
+        <div className="mt-auto pt-8 border-t border-zinc-900 flex justify-between items-center">
+          <span className="text-[10px] font-mono text-zinc-700 uppercase tracking-tighter">{data.details.status}</span>
+          <Link href="/pursuit" className="group flex items-center gap-2 text-[10px] font-black text-zinc-600 hover:text-primary transition-colors uppercase">
+            SEASON DETAILS
+            <ExternalLink size={12} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+          </Link>
         </div>
       </motion.div>
     </>
   )
 }
 
-function ShardStat({ icon, label, value }: any) {
+function ShardStat({ icon, label, value }: { icon: React.ReactNode, label: string, value: string | number }) {
   return (
     <div className="space-y-2">
       <div className="flex items-center gap-2 opacity-30">
         {icon}
         <span className="text-[8px] font-black text-white uppercase tracking-widest">{label}</span>
       </div>
-      <span className="text-3xl font-black italic text-white uppercase">{value}</span>
+      <span className="text-3xl font-black italic text-white uppercase leading-none">{value}</span>
     </div>
   )
 }
 
-function MarqueeItem({ name, position, value, speed, textColor, marqueeBgColor, marqueeTextColor, borderColor, onClick }: any) {
+function MarqueeItem({ name, metrics, value, speed, marqueeBgColor, marqueeTextColor, borderColor, onClick }: any) {
   const itemRef = useRef<HTMLDivElement>(null)
   const marqueeRef = useRef<HTMLDivElement>(null)
   const marqueeInnerRef = useRef<HTMLDivElement>(null)
@@ -144,27 +159,22 @@ function MarqueeItem({ name, position, value, speed, textColor, marqueeBgColor, 
   }, [name])
 
   useEffect(() => {
-    if (!marqueeInnerRef.current) return;
-    const marqueeContent = marqueeInnerRef.current.querySelector('.marquee-part') as HTMLElement;
-    if (!marqueeContent) return;
-
-    if (animationRef.current) {
-      animationRef.current.kill();
-    }
+    if (!marqueeInnerRef.current) return
+    const marqueeContent = marqueeInnerRef.current.querySelector('.marquee-part') as HTMLElement
+    if (!marqueeContent) return
+    if (animationRef.current) animationRef.current.kill()
 
     animationRef.current = gsap.to(marqueeInnerRef.current, {
       x: -marqueeContent.offsetWidth,
       duration: speed,
       ease: 'none',
       repeat: -1
-    });
+    })
 
     return () => {
-      if (animationRef.current) {
-        animationRef.current.kill();
-      }
-    };
-  }, [name, repetitions, speed]);
+      if (animationRef.current) animationRef.current.kill()
+    }
+  }, [name, repetitions, speed])
 
   const handleMouseEnter = (ev: React.MouseEvent) => {
     if (!itemRef.current || !marqueeRef.current || !marqueeInnerRef.current) return
@@ -186,10 +196,10 @@ function MarqueeItem({ name, position, value, speed, textColor, marqueeBgColor, 
   }
 
   return (
-    <div className="relative overflow-hidden h-32 md:h-48 border-t border-zinc-900" ref={itemRef}>
-      <div className="flex items-center justify-between px-6 md:px-12 h-full cursor-pointer" onClick={onClick} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+    <div className="relative overflow-hidden h-32 md:h-48 border-t cursor-pointer" style={{ borderColor }} ref={itemRef} onClick={onClick} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+      <div className="flex items-center justify-between px-6 md:px-12 h-full">
         <div className="flex items-baseline gap-8">
-          <span className="text-4xl md:text-7xl font-black italic text-zinc-900">P{position.toString().padStart(2, '0')}</span>
+          <span className="text-4xl md:text-7xl font-black italic text-zinc-900">P{metrics.position.overall.toString().padStart(2, '0')}</span>
           <h3 className="text-2xl md:text-5xl font-black italic text-white uppercase tracking-tighter">{name}</h3>
         </div>
         <span className="text-2xl md:text-4xl font-black italic text-zinc-700">+{value} PTS</span>
@@ -198,7 +208,7 @@ function MarqueeItem({ name, position, value, speed, textColor, marqueeBgColor, 
         <div className="h-full w-fit flex" ref={marqueeInnerRef}>
           {[...Array(repetitions)].map((_, idx) => (
             <div className="marquee-part flex items-center px-4" key={idx} style={{ color: marqueeTextColor }}>
-              <span className="whitespace-nowrap uppercase font-black italic text-[5vh] px-8">{name} // P{position} // +{value} PTS</span>
+              <span className="whitespace-nowrap uppercase font-black italic text-[5vh] px-8">{name} // P{metrics.position.overall} // +{value} PTS</span>
             </div>
           ))}
         </div>
@@ -208,7 +218,84 @@ function MarqueeItem({ name, position, value, speed, textColor, marqueeBgColor, 
 }
 
 const DUMMY_RESULTS = [
-  { id: "RES_001", name: "MONZA RECOVERY", position: 1, value: 25, description: "FLAWLESS EXECUTION OF OVERCUT STRATEGY DURING MID-RACE RAIN.", metrics: { interval: "+0.422S", speed: "342 KM/H" } },
-  { id: "RES_002", name: "NIGHT SPRINT", position: 2, value: 18, description: "PODIUM SECURED AFTER DEFENDING POSITION AGAINST V-CORP FOR 12 LAPS.", metrics: { interval: "+1.109S", speed: "318 KM/H" } },
-  { id: "RES_003", name: "ENDURANCE 12H", position: 1, value: 50, description: "DOMINANT RUN WITH ZERO MECHANICAL INCIDENTS OVER 400+ LAPS.", metrics: { interval: "+2 LAPS", speed: "298 KM/H" } },
+  {
+    id: 101,
+    name: "MONZA RECOVERY",
+    value: 25,
+    basics: { description: "STRATEGIC OVERCUT EXECUTED DURING VARIABLE WEATHER CONDITIONS." },
+    details: { status: "OFFICIAL" },
+    metrics: { position: { overall: 1 }, performance: { time: "+0.422S", speed: "342 KM/H" } }
+  },
+  {
+    id: 102,
+    name: "NIGHT SPRINT",
+    value: 18,
+    basics: { description: "DEFENSIVE DRIVE SECURING PODIUM POSITION UNDER FLOODLIGHTS." },
+    details: { status: "CERTIFIED" },
+    metrics: { position: { overall: 2 }, performance: { time: "+1.109S", speed: "318 KM/H" } }
+  },
+  {
+    id: 103,
+    name: "DESERT STORM",
+    value: 15,
+    basics: { description: "FUEL SAVING MASTERCLASS UNDER EXTREME TEMPERATURES." },
+    details: { status: "OFFICIAL" },
+    metrics: { position: { overall: 3 }, performance: { time: "+8.234S", speed: "305 KM/H" } }
+  },
+  {
+    id: 104,
+    name: "RAIN MASTERY",
+    value: 12,
+    basics: { description: "WET TIRE GAMBLE PAYS OFF IN TORRENTIAL CONDITIONS." },
+    details: { status: "OFFICIAL" },
+    metrics: { position: { overall: 4 }, performance: { time: "+15.876S", speed: "278 KM/H" } }
+  },
+  {
+    id: 105,
+    name: "SPRINT SHOWDOWN",
+    value: 10,
+    basics: { description: "AGGRESSIVE OPENING LAPS SECURE TOP FIVE FINISH." },
+    details: { status: "CERTIFIED" },
+    metrics: { position: { overall: 5 }, performance: { time: "+22.341S", speed: "312 KM/H" } }
+  },
+  {
+    id: 106,
+    name: "ENDURANCE TRIAL",
+    value: 8,
+    basics: { description: "CONSISTENT STINT MANAGEMENT THROUGH DOUBLE STINT." },
+    details: { status: "OFFICIAL" },
+    metrics: { position: { overall: 6 }, performance: { time: "+35.678S", speed: "295 KM/H" } }
+  },
+  {
+    id: 107,
+    name: "COMEBACK DRIVE",
+    value: 6,
+    basics: { description: "P22 TO P7 RECOVERY AFTER EARGE PUNCTURE." },
+    details: { status: "OFFICIAL" },
+    metrics: { position: { overall: 7 }, performance: { time: "+42.109S", speed: "301 KM/H" } }
+  },
+  {
+    id: 108,
+    name: "TACTICAL BATTLE",
+    value: 4,
+    basics: { description: "TEAM ORDERS MAXIMIZE CONSTRUCTOR POINTS." },
+    details: { status: "CERTIFIED" },
+    metrics: { position: { overall: 8 }, performance: { time: "+51.234S", speed: "288 KM/H" } }
+  },
+  {
+    id: 109,
+    name: "LATE CHARGE",
+    value: 2,
+    basics: { description: "SOFT TIRE SPRINT TO THE FINISH LINE." },
+    details: { status: "OFFICIAL" },
+    metrics: { position: { overall: 9 }, performance: { time: "+59.876S", speed: "314 KM/H" } }
+  },
+  {
+    id: 110,
+    name: "POINTS FINISH",
+    value: 1,
+    basics: { description: "RELIABILITY RUN SECURES FINAL CHAMPIONSHIP POINT." },
+    details: { status: "OFFICIAL" },
+    metrics: { position: { overall: 10 }, performance: { time: "+72.345S", speed: "276 KM/H" } }
+  }
 ]

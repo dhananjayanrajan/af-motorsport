@@ -7,11 +7,37 @@ import { DESIGN_SYSTEM } from '@/lib/constants'
 import { cn } from '@/utilities/cn'
 import { motion, useScroll, useTransform } from 'motion/react'
 import Image from 'next/image'
-import { useEffect, useRef } from 'react'
-import type { Driver } from 'src/payload-types'
+import { useEffect, useRef, useState } from 'react'
 
-const DUMMY_DRIVERS: Partial<Driver>[] = [
+interface DummyDriver {
+  id: number
+  first: string
+  last: string
+  basics?: {
+    enable?: boolean
+    identifier?: {
+      number?: string
+      callsign?: string
+      nickname?: string
+    }
+    tagline?: string
+    description?: string
+    visibility?: { show?: boolean }
+  }
+  traits?: {
+    enable?: boolean
+    identity?: {
+      nationality?: string
+      age?: number
+    }
+    visibility?: { show?: boolean }
+  }
+  slug?: string
+}
+
+const DUMMY_DRIVERS: DummyDriver[] = [
   {
+    id: 1,
     first: 'ALEXANDER',
     last: 'VOSS',
     basics: {
@@ -32,6 +58,7 @@ const DUMMY_DRIVERS: Partial<Driver>[] = [
     slug: 'alexander-voss',
   },
   {
+    id: 2,
     first: 'ELARA',
     last: 'KANE',
     basics: {
@@ -52,6 +79,7 @@ const DUMMY_DRIVERS: Partial<Driver>[] = [
     slug: 'elara-kane',
   },
   {
+    id: 3,
     first: 'MARCUS',
     last: 'THORNE',
     basics: {
@@ -71,6 +99,153 @@ const DUMMY_DRIVERS: Partial<Driver>[] = [
     },
     slug: 'marcus-thorne',
   },
+  {
+    id: 4,
+    first: 'SOFIA',
+    last: 'VALDEZ',
+    basics: {
+      identifier: {
+        number: '22',
+        callsign: 'VALDEZ_RACING',
+        nickname: 'PHANTOM',
+      },
+      tagline: 'ENDURANCE SPECIALIST',
+      description: 'Valdez dominates night races with supernatural consistency and tire management.',
+    },
+    traits: {
+      identity: {
+        nationality: 'SPANISH',
+        age: 31,
+      },
+    },
+    slug: 'sofia-valdez',
+  },
+  {
+    id: 5,
+    first: 'JAMES',
+    last: 'CHENG',
+    basics: {
+      identifier: {
+        number: '88',
+        callsign: 'CHENG_PROTO',
+        nickname: 'DRIFT_KING',
+      },
+      tagline: 'PROTOTYPE PILOT',
+      description: 'Cheng tests experimental aerodynamics and pushes chassis limits beyond simulation.',
+    },
+    traits: {
+      identity: {
+        nationality: 'CHINESE',
+        age: 27,
+      },
+    },
+    slug: 'james-cheng',
+  },
+  {
+    id: 6,
+    first: 'ISABELLE',
+    last: 'DUBOIS',
+    basics: {
+      identifier: {
+        number: '05',
+        callsign: 'DUBOIS_GT',
+        nickname: 'ICE_QUEEN',
+      },
+      tagline: 'WET WEATHER ACE',
+      description: 'Dubois thrives in monsoon conditions with unmatched car control and rain line intuition.',
+    },
+    traits: {
+      identity: {
+        nationality: 'FRENCH',
+        age: 29,
+      },
+    },
+    slug: 'isabelle-dubois',
+  },
+  {
+    id: 7,
+    first: 'VIKTOR',
+    last: 'PETROV',
+    basics: {
+      identifier: {
+        number: '33',
+        callsign: 'PETROV_ATTACK',
+        nickname: 'BULLET',
+      },
+      tagline: 'OVAL MASTER',
+      description: 'Petrov dominates high-banked ovals with fearless drafting and millimeter precision.',
+    },
+    traits: {
+      identity: {
+        nationality: 'RUSSIAN',
+        age: 34,
+      },
+    },
+    slug: 'viktor-petrov',
+  },
+  {
+    id: 8,
+    first: 'NAOMI',
+    last: 'WILLIAMS',
+    basics: {
+      identifier: {
+        number: '12',
+        callsign: 'WILLIAMS_ELITE',
+        nickname: 'PRODIGY',
+      },
+      tagline: 'RISING STAR',
+      description: 'Youngest driver in the lineup with natural pace and fearless overtaking.',
+    },
+    traits: {
+      identity: {
+        nationality: 'AUSTRALIAN',
+        age: 22,
+      },
+    },
+    slug: 'naomi-williams',
+  },
+  {
+    id: 9,
+    first: 'CARLOS',
+    last: 'SILVA',
+    basics: {
+      identifier: {
+        number: '77',
+        callsign: 'SILVA_TECH',
+        nickname: 'MACHINE',
+      },
+      tagline: 'SIMULATION EXPERT',
+      description: 'Silva bridges virtual and reality with telemetry-driven perfection.',
+    },
+    traits: {
+      identity: {
+        nationality: 'BRAZILIAN',
+        age: 32,
+      },
+    },
+    slug: 'carlos-silva',
+  },
+  {
+    id: 10,
+    first: 'YUKI',
+    last: 'TANAKA',
+    basics: {
+      identifier: {
+        number: '23',
+        callsign: 'TANAKA_DRIFT',
+        nickname: 'DRIFT_KING',
+      },
+      tagline: 'TACTICAL RETIREMENT',
+      description: 'Tanaka specializes in strategic fuel saving and tire preservation without losing pace.',
+    },
+    traits: {
+      identity: {
+        nationality: 'JAPANESE',
+        age: 30,
+      },
+    },
+    slug: 'yuki-tanaka',
+  },
 ]
 
 const PLACEHOLDERS = [
@@ -85,12 +260,41 @@ const PLACEHOLDERS = [
   {
     avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=800&auto=format&fit=crop',
     cover: 'https://images.unsplash.com/photo-1583121274602-3e2820c69888?q=80&w=1600&auto=format&fit=crop',
-  }
+  },
+  {
+    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=800&auto=format&fit=crop',
+    cover: 'https://images.unsplash.com/photo-1568605117036-5fe5e7fa0ab7?q=80&w=1600&auto=format&fit=crop',
+  },
+  {
+    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=800&auto=format&fit=crop',
+    cover: 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?q=80&w=1600&auto=format&fit=crop',
+  },
+  {
+    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=800&auto=format&fit=crop',
+    cover: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=1600&auto=format&fit=crop',
+  },
+  {
+    avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=800&auto=format&fit=crop',
+    cover: 'https://images.unsplash.com/photo-1533130061792-64b345e4a833?q=80&w=1600&auto=format&fit=crop',
+  },
+  {
+    avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=800&auto=format&fit=crop',
+    cover: 'https://images.unsplash.com/photo-1620706857370-e1b9770e8bb1?q=80&w=1600&auto=format&fit=crop',
+  },
+  {
+    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=800&auto=format&fit=crop',
+    cover: 'https://images.unsplash.com/photo-1601309111403-85d133da5dd1?q=80&w=1600&auto=format&fit=crop',
+  },
+  {
+    avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=800&auto=format&fit=crop',
+    cover: 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?q=80&w=1600&auto=format&fit=crop',
+  },
 ]
 
-export function LegendSection({ drivers = DUMMY_DRIVERS as Driver[] }: { drivers?: Driver[] }) {
+export function LegendSection({ drivers = DUMMY_DRIVERS }: { drivers?: DummyDriver[] }) {
   const containerRef = useRef<HTMLDivElement>(null)
   const { scrollXProgress } = useScroll({ container: containerRef })
+  const [currentIndex, setCurrentIndex] = useState(0)
 
   const parsedEase = (DESIGN_SYSTEM.ANIMATION.EASING_CUBIC.match(/[\d.]+/g)?.map(Number) || [0.87, 0, 0.13, 1]) as [number, number, number, number]
 
@@ -106,6 +310,19 @@ export function LegendSection({ drivers = DUMMY_DRIVERS as Driver[] }: { drivers
     }
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [])
+
+  useEffect(() => {
+    const container = containerRef.current
+    if (!container) return
+
+    const handleScroll = () => {
+      const index = Math.round(container.scrollLeft / container.clientWidth)
+      setCurrentIndex(index)
+    }
+
+    container.addEventListener('scroll', handleScroll)
+    return () => container.removeEventListener('scroll', handleScroll)
   }, [])
 
   return (
@@ -156,8 +373,8 @@ export function LegendSection({ drivers = DUMMY_DRIVERS as Driver[] }: { drivers
           const age = driver.traits?.identity?.age || 'XX'
           const nickname = driver.basics?.identifier?.nickname || 'CLASS_A'
 
-          const avatarUrl = (driver as any).avatar?.url || PLACEHOLDERS[index % 3].avatar
-          const coverUrl = (driver as any).cover?.url || PLACEHOLDERS[index % 3].cover
+          const avatarUrl = PLACEHOLDERS[index % PLACEHOLDERS.length].avatar
+          const coverUrl = PLACEHOLDERS[index % PLACEHOLDERS.length].cover
 
           return (
             <div
@@ -259,7 +476,7 @@ export function LegendSection({ drivers = DUMMY_DRIVERS as Driver[] }: { drivers
                               <span className="text-[6px] md:text-[7px] font-mono text-zinc-600 uppercase tracking-widest">TACTICAL_ID</span>
                               <span className="text-[8px] md:text-[9px] font-mono text-zinc-400">{callsign}</span>
                             </div>
-                            <CMSLink url={`/drivers/${driver.slug}`}>
+                            <CMSLink url={`/tribe`}>
                               <ClippedButton variant="primary" size="md" className="scale-90 md:scale-100 origin-right" label="ACCESS_DOSSIER" />
                             </CMSLink>
                           </div>

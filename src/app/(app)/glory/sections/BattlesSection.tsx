@@ -13,12 +13,14 @@ import {
 } from 'lucide-react'
 import { AnimatePresence, motion } from 'motion/react'
 import { useState } from 'react'
+import Link from 'next/link'
 
 const DUMMY_BATTLES = [
   {
     event: {
       id: 1,
       name: "NIGHT STALKER ENDURANCE",
+      slug: "night-stalker-endurance",
       basics: {
         identifiers: { code: "NSE-26", round: "04" },
         tagline: "24H THERMAL EXHAUSTION",
@@ -39,6 +41,7 @@ const DUMMY_BATTLES = [
     event: {
       id: 2,
       name: "MONSOON SPRINT CUP",
+      slug: "monsoon-sprint-cup",
       basics: {
         identifiers: { code: "MSC-26", round: "05" },
         tagline: "AQUAPLANING THRESHOLD",
@@ -53,6 +56,174 @@ const DUMMY_BATTLES = [
         performance: { laps: 18, time: "42:15.9", speed: "210 KM/H" }
       },
       traits: { achievements: { gap: "+4.5s", status: "P3 PODIUM" } }
+    }
+  },
+  {
+    event: {
+      id: 3,
+      name: "DESERT HEAT 12H",
+      slug: "desert-heat-12h",
+      basics: {
+        identifiers: { code: "DH12", round: "06" },
+        tagline: "SANDSTORM RESILIENCE",
+        description: "Mid-east endurance challenge with sand intrusion and 50°C cockpit temperatures."
+      },
+      traits: { chronology: { start: "2026-04-15" } },
+      assets: { poster: "https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?q=80&w=1200" }
+    },
+    result: {
+      metrics: {
+        position: { overall: 2, class: 1 },
+        performance: { laps: 289, time: "12:01:08.3", speed: "256 KM/H" }
+      },
+      traits: { achievements: { gap: "+18.7s", status: "P2 SILVER" } }
+    }
+  },
+  {
+    event: {
+      id: 4,
+      name: "MOUNTAIN ASCENT TT",
+      slug: "mountain-ascent-tt",
+      basics: {
+        identifiers: { code: "MAT-26", round: "07" },
+        tagline: "GRAVITY DEFIANCE",
+        description: "Hill climb time trial with 156 corners and 1200m elevation change."
+      },
+      traits: { chronology: { start: "2026-05-03" } },
+      assets: { poster: "https://images.unsplash.com/photo-1620706857370-e1b9770e8bb1?q=80&w=1200" }
+    },
+    result: {
+      metrics: {
+        position: { overall: 1, class: 2 },
+        performance: { laps: 1, time: "08:42.1", speed: "178 KM/H" }
+      },
+      traits: { achievements: { gap: "-2.3s", status: "P1 GOLD" } }
+    }
+  },
+  {
+    event: {
+      id: 5,
+      name: "COASTAL CHALLENGE 6H",
+      slug: "coastal-challenge-6h",
+      basics: {
+        identifiers: { code: "CC6", round: "08" },
+        tagline: "OCEAN SPRAY WARFARE",
+        description: "Coastal circuit with unpredictable sea breeze and humidity extremes."
+      },
+      traits: { chronology: { start: "2026-05-22" } },
+      assets: { poster: "https://images.unsplash.com/photo-1601309111403-85d133da5dd1?q=80&w=1200" }
+    },
+    result: {
+      metrics: {
+        position: { overall: 5, class: 2 },
+        performance: { laps: 234, time: "06:00:45.2", speed: "245 KM/H" }
+      },
+      traits: { achievements: { gap: "+45.3s", status: "P5 CLASSIFIED" } }
+    }
+  },
+  {
+    event: {
+      id: 6,
+      name: "THUNDER VALLEY 500",
+      slug: "thunder-valley-500",
+      basics: {
+        identifiers: { code: "TV500", round: "09" },
+        tagline: "OVAL MAYHEM",
+        description: "High-banked oval racing with drafting battles and tyre degradation."
+      },
+      traits: { chronology: { start: "2026-06-08" } },
+      assets: { poster: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?q=80&w=1200" }
+    },
+    result: {
+      metrics: {
+        position: { overall: 4, class: 1 },
+        performance: { laps: 500, time: "03:22:18.9", speed: "298 KM/H" }
+      },
+      traits: { achievements: { gap: "+1 lap", status: "P4 CLASSIFIED" } }
+    }
+  },
+  {
+    event: {
+      id: 7,
+      name: "GLACIER RUN 24H",
+      slug: "glacier-run-24h",
+      basics: {
+        identifiers: { code: "GR24", round: "10" },
+        tagline: "SUB-ZERO ENDURANCE",
+        description: "Arctic circle race with ice patches, snow walls, and extreme cold."
+      },
+      traits: { chronology: { start: "2026-06-27" } },
+      assets: { poster: "https://images.unsplash.com/photo-1483921020237-2ff51e8e4b22?q=80&w=1200" }
+    },
+    result: {
+      metrics: {
+        position: { overall: 2, class: 1 },
+        performance: { laps: 678, time: "24:00:00.0", speed: "267 KM/H" }
+      },
+      traits: { achievements: { gap: "+8.9s", status: "P2 SILVER" } }
+    }
+  },
+  {
+    event: {
+      id: 8,
+      name: "JUNGLE RALLY X",
+      slug: "jungle-rally-x",
+      basics: {
+        identifiers: { code: "JRX", round: "11" },
+        tagline: "MUDDY SURVIVAL",
+        description: "Off-road rallycross with unpredictable terrain and water crossings."
+      },
+      traits: { chronology: { start: "2026-07-19" } },
+      assets: { poster: "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?q=80&w=1200" }
+    },
+    result: {
+      metrics: {
+        position: { overall: 1, class: 1 },
+        performance: { laps: 42, time: "01:28:33.7", speed: "112 KM/H" }
+      },
+      traits: { achievements: { gap: "-5.1s", status: "P1 GOLD" } }
+    }
+  },
+  {
+    event: {
+      id: 9,
+      name: "VOLCANO ASCENT",
+      slug: "volcano-ascent",
+      basics: {
+        identifiers: { code: "VA26", round: "12" },
+        tagline: "LAVA ZONE",
+        description: "Asphalt and gravel mixed surface race around an active volcanic crater."
+      },
+      traits: { chronology: { start: "2026-08-14" } },
+      assets: { poster: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=1200" }
+    },
+    result: {
+      metrics: {
+        position: { overall: 3, class: 1 },
+        performance: { laps: 28, time: "03:15:22.4", speed: "189 KM/H" }
+      },
+      traits: { achievements: { gap: "+12.4s", status: "P3 PODIUM" } }
+    }
+  },
+  {
+    event: {
+      id: 10,
+      name: "FINAL SHOWDOWN GP",
+      slug: "final-showdown-gp",
+      basics: {
+        identifiers: { code: "FSGP", round: "13" },
+        tagline: "CHAMPIONSHIP DECIDER",
+        description: "Season finale double points race with title on the line."
+      },
+      traits: { chronology: { start: "2026-09-05" } },
+      assets: { poster: "https://images.unsplash.com/photo-1541963463532-d68292c34b19?q=80&w=1200" }
+    },
+    result: {
+      metrics: {
+        position: { overall: 2, class: 1 },
+        performance: { laps: 78, time: "02:45:19.0", speed: "301 KM/H" }
+      },
+      traits: { achievements: { gap: "+0.8s", status: "P2 CHAMPIONSHIP" } }
     }
   }
 ]
@@ -118,32 +289,34 @@ export function BattlesSection({ battles = DUMMY_BATTLES }: { battles?: any[] })
               <div className="lg:col-span-7 relative group">
                 <div className="absolute -inset-4 bg-primary/10 blur-3xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-1000" style={{ backgroundColor: `${DESIGN_SYSTEM.COLORS.PRIMARY}15` }} />
 
-                <div
-                  className="relative aspect-[16/9] w-full overflow-hidden border border-white/5 grayscale brightness-50 group-hover:grayscale-0 group-hover:brightness-100 transition-all duration-1000"
-                  style={{ clipPath: 'polygon(0 0, 100% 0, 100% 100%, 10% 100%, 0 85%)' }}
-                >
-                  <img
-                    src={battles[activeIdx].event.assets?.poster}
-                    className="w-full h-full object-cover scale-110 group-hover:scale-100 transition-transform duration-1000"
-                    alt=""
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
-                </div>
-
-                <div className="absolute -bottom-10 -right-6 lg:right-10 bg-black border border-white/10 p-10 max-w-md backdrop-blur-xl">
-                  <div className="flex items-center gap-4 mb-4">
-                    <span className="text-[10px] font-mono text-primary font-bold" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }}>
-                      {battles[activeIdx].event.basics.identifiers.code}
-                    </span>
-                    <div className="h-px flex-1 bg-zinc-800" />
+                <Link href={`/pursuit`} className="block">
+                  <div
+                    className="relative aspect-[16/9] w-full overflow-hidden border border-white/5 grayscale brightness-50 group-hover:grayscale-0 group-hover:brightness-100 transition-all duration-1000"
+                    style={{ clipPath: 'polygon(0 0, 100% 0, 100% 100%, 10% 100%, 0 85%)' }}
+                  >
+                    <img
+                      src={battles[activeIdx].event.assets?.poster}
+                      className="w-full h-full object-cover scale-110 group-hover:scale-100 transition-transform duration-1000"
+                      alt=""
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
                   </div>
-                  <h3 className="text-3xl font-black italic text-white uppercase mb-4 tracking-tighter">
-                    {battles[activeIdx].event.name}
-                  </h3>
-                  <p className="text-zinc-500 text-xs font-bold leading-relaxed uppercase italic">
-                    {battles[activeIdx].event.basics.description}
-                  </p>
-                </div>
+
+                  <div className="absolute -bottom-10 -right-6 lg:right-10 bg-black border border-white/10 p-10 max-w-md backdrop-blur-xl">
+                    <div className="flex items-center gap-4 mb-4">
+                      <span className="text-[10px] font-mono text-primary font-bold" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }}>
+                        {battles[activeIdx].event.basics.identifiers.code}
+                      </span>
+                      <div className="h-px flex-1 bg-zinc-800" />
+                    </div>
+                    <h3 className="text-3xl font-black italic text-white uppercase mb-4 tracking-tighter">
+                      {battles[activeIdx].event.name}
+                    </h3>
+                    <p className="text-zinc-500 text-xs font-bold leading-relaxed uppercase italic">
+                      {battles[activeIdx].event.basics.description}
+                    </p>
+                  </div>
+                </Link>
               </div>
 
               <div className="lg:col-span-5 flex flex-col justify-center lg:pl-20">
@@ -170,6 +343,14 @@ export function BattlesSection({ battles = DUMMY_BATTLES }: { battles?: any[] })
                     <StatItem icon={<Hash size={16} />} label="LAPS" value={battles[activeIdx].result.metrics.performance.laps} />
                     <StatItem icon={<ArrowRight size={16} />} label="GAP" value={battles[activeIdx].result.traits.achievements.gap} />
                   </div>
+
+                  <Link
+                    href="/pursuit"
+                    className="inline-flex items-center gap-2 text-xs font-black text-zinc-600 hover:text-primary transition-colors uppercase tracking-widest group"
+                  >
+                    VIEW FULL SEASON
+                    <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                  </Link>
                 </div>
               </div>
             </motion.div>
