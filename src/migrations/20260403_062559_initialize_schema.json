@@ -201,27 +201,6 @@
           "primaryKey": false,
           "notNull": false
         },
-        "visibility_check_publish": {
-          "name": "visibility_check_publish",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_featured": {
-          "name": "visibility_check_featured",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_pinned": {
-          "name": "visibility_check_pinned",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
         "updated_at": {
           "name": "updated_at",
           "type": "timestamp(3) with time zone",
@@ -1287,27 +1266,6 @@
           "type": "varchar",
           "primaryKey": false,
           "notNull": false
-        },
-        "visibility_check_publish": {
-          "name": "visibility_check_publish",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_featured": {
-          "name": "visibility_check_featured",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_pinned": {
-          "name": "visibility_check_pinned",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
         },
         "updated_at": {
           "name": "updated_at",
@@ -2487,27 +2445,6 @@
           "type": "varchar",
           "primaryKey": false,
           "notNull": false
-        },
-        "visibility_check_publish": {
-          "name": "visibility_check_publish",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_featured": {
-          "name": "visibility_check_featured",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_pinned": {
-          "name": "visibility_check_pinned",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
         },
         "updated_at": {
           "name": "updated_at",
@@ -3838,27 +3775,6 @@
           "primaryKey": false,
           "notNull": false
         },
-        "visibility_check_publish": {
-          "name": "visibility_check_publish",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_featured": {
-          "name": "visibility_check_featured",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_pinned": {
-          "name": "visibility_check_pinned",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
         "updated_at": {
           "name": "updated_at",
           "type": "timestamp(3) with time zone",
@@ -5156,27 +5072,6 @@
           "primaryKey": false,
           "notNull": false
         },
-        "visibility_check_publish": {
-          "name": "visibility_check_publish",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_featured": {
-          "name": "visibility_check_featured",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_pinned": {
-          "name": "visibility_check_pinned",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
         "updated_at": {
           "name": "updated_at",
           "type": "timestamp(3) with time zone",
@@ -6372,27 +6267,6 @@
           "primaryKey": false,
           "notNull": false
         },
-        "visibility_check_publish": {
-          "name": "visibility_check_publish",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_featured": {
-          "name": "visibility_check_featured",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_pinned": {
-          "name": "visibility_check_pinned",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
         "updated_at": {
           "name": "updated_at",
           "type": "timestamp(3) with time zone",
@@ -7371,27 +7245,6 @@
           "primaryKey": false,
           "notNull": false
         },
-        "visibility_check_publish": {
-          "name": "visibility_check_publish",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_featured": {
-          "name": "visibility_check_featured",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_pinned": {
-          "name": "visibility_check_pinned",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
         "updated_at": {
           "name": "updated_at",
           "type": "timestamp(3) with time zone",
@@ -8319,27 +8172,6 @@
           "type": "varchar",
           "primaryKey": false,
           "notNull": false
-        },
-        "visibility_check_publish": {
-          "name": "visibility_check_publish",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_featured": {
-          "name": "visibility_check_featured",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_pinned": {
-          "name": "visibility_check_pinned",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
         },
         "updated_at": {
           "name": "updated_at",
@@ -9748,27 +9580,6 @@
           "primaryKey": false,
           "notNull": false
         },
-        "visibility_check_publish": {
-          "name": "visibility_check_publish",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_featured": {
-          "name": "visibility_check_featured",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_pinned": {
-          "name": "visibility_check_pinned",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
         "updated_at": {
           "name": "updated_at",
           "type": "timestamp(3) with time zone",
@@ -11113,27 +10924,6 @@
           "type": "varchar",
           "primaryKey": false,
           "notNull": false
-        },
-        "visibility_check_publish": {
-          "name": "visibility_check_publish",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_featured": {
-          "name": "visibility_check_featured",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_pinned": {
-          "name": "visibility_check_pinned",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
         },
         "updated_at": {
           "name": "updated_at",
@@ -12597,27 +12387,6 @@
           "primaryKey": false,
           "notNull": false
         },
-        "visibility_check_publish": {
-          "name": "visibility_check_publish",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_featured": {
-          "name": "visibility_check_featured",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_pinned": {
-          "name": "visibility_check_pinned",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
         "updated_at": {
           "name": "updated_at",
           "type": "timestamp(3) with time zone",
@@ -13799,27 +13568,6 @@
           "type": "varchar",
           "primaryKey": false,
           "notNull": false
-        },
-        "visibility_check_publish": {
-          "name": "visibility_check_publish",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_featured": {
-          "name": "visibility_check_featured",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_pinned": {
-          "name": "visibility_check_pinned",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
         },
         "updated_at": {
           "name": "updated_at",
@@ -15118,27 +14866,6 @@
           "type": "varchar",
           "primaryKey": false,
           "notNull": false
-        },
-        "visibility_check_publish": {
-          "name": "visibility_check_publish",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_featured": {
-          "name": "visibility_check_featured",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_pinned": {
-          "name": "visibility_check_pinned",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
         },
         "updated_at": {
           "name": "updated_at",
@@ -16443,27 +16170,6 @@
           "primaryKey": false,
           "notNull": false
         },
-        "visibility_check_publish": {
-          "name": "visibility_check_publish",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_featured": {
-          "name": "visibility_check_featured",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_pinned": {
-          "name": "visibility_check_pinned",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
         "updated_at": {
           "name": "updated_at",
           "type": "timestamp(3) with time zone",
@@ -17348,27 +17054,6 @@
           "primaryKey": false,
           "notNull": false
         },
-        "visibility_check_publish": {
-          "name": "visibility_check_publish",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_featured": {
-          "name": "visibility_check_featured",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_pinned": {
-          "name": "visibility_check_pinned",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
         "updated_at": {
           "name": "updated_at",
           "type": "timestamp(3) with time zone",
@@ -18189,27 +17874,6 @@
           "type": "varchar",
           "primaryKey": false,
           "notNull": false
-        },
-        "visibility_check_publish": {
-          "name": "visibility_check_publish",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_featured": {
-          "name": "visibility_check_featured",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_pinned": {
-          "name": "visibility_check_pinned",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
         },
         "updated_at": {
           "name": "updated_at",
@@ -19176,27 +18840,6 @@
           "primaryKey": false,
           "notNull": false
         },
-        "visibility_check_publish": {
-          "name": "visibility_check_publish",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_featured": {
-          "name": "visibility_check_featured",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_pinned": {
-          "name": "visibility_check_pinned",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
         "updated_at": {
           "name": "updated_at",
           "type": "timestamp(3) with time zone",
@@ -19814,27 +19457,6 @@
           "primaryKey": false,
           "notNull": false
         },
-        "visibility_check_publish": {
-          "name": "visibility_check_publish",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_featured": {
-          "name": "visibility_check_featured",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_pinned": {
-          "name": "visibility_check_pinned",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
         "updated_at": {
           "name": "updated_at",
           "type": "timestamp(3) with time zone",
@@ -20359,27 +19981,6 @@
           "type": "varchar",
           "primaryKey": false,
           "notNull": false
-        },
-        "visibility_check_publish": {
-          "name": "visibility_check_publish",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_featured": {
-          "name": "visibility_check_featured",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_pinned": {
-          "name": "visibility_check_pinned",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
         },
         "updated_at": {
           "name": "updated_at",
@@ -21680,27 +21281,6 @@
           "primaryKey": false,
           "notNull": false
         },
-        "visibility_check_publish": {
-          "name": "visibility_check_publish",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_featured": {
-          "name": "visibility_check_featured",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_pinned": {
-          "name": "visibility_check_pinned",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
         "updated_at": {
           "name": "updated_at",
           "type": "timestamp(3) with time zone",
@@ -22688,27 +22268,6 @@
           "primaryKey": false,
           "notNull": false
         },
-        "visibility_check_publish": {
-          "name": "visibility_check_publish",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_featured": {
-          "name": "visibility_check_featured",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_pinned": {
-          "name": "visibility_check_pinned",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
         "updated_at": {
           "name": "updated_at",
           "type": "timestamp(3) with time zone",
@@ -23288,27 +22847,6 @@
           "primaryKey": false,
           "notNull": false
         },
-        "visibility_check_publish": {
-          "name": "visibility_check_publish",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_featured": {
-          "name": "visibility_check_featured",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_pinned": {
-          "name": "visibility_check_pinned",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
         "updated_at": {
           "name": "updated_at",
           "type": "timestamp(3) with time zone",
@@ -23860,27 +23398,6 @@
           "primaryKey": false,
           "notNull": false
         },
-        "visibility_check_publish": {
-          "name": "visibility_check_publish",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_featured": {
-          "name": "visibility_check_featured",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_pinned": {
-          "name": "visibility_check_pinned",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
         "updated_at": {
           "name": "updated_at",
           "type": "timestamp(3) with time zone",
@@ -24431,27 +23948,6 @@
           "type": "varchar",
           "primaryKey": false,
           "notNull": false
-        },
-        "visibility_check_publish": {
-          "name": "visibility_check_publish",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_featured": {
-          "name": "visibility_check_featured",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_pinned": {
-          "name": "visibility_check_pinned",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
         },
         "updated_at": {
           "name": "updated_at",
@@ -25327,27 +24823,6 @@
           "primaryKey": false,
           "notNull": false
         },
-        "visibility_check_publish": {
-          "name": "visibility_check_publish",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_featured": {
-          "name": "visibility_check_featured",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_pinned": {
-          "name": "visibility_check_pinned",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
         "updated_at": {
           "name": "updated_at",
           "type": "timestamp(3) with time zone",
@@ -26155,27 +25630,6 @@
           "type": "varchar",
           "primaryKey": false,
           "notNull": false
-        },
-        "visibility_check_publish": {
-          "name": "visibility_check_publish",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_featured": {
-          "name": "visibility_check_featured",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_pinned": {
-          "name": "visibility_check_pinned",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
         },
         "updated_at": {
           "name": "updated_at",
@@ -27241,27 +26695,6 @@
           "primaryKey": false,
           "notNull": false
         },
-        "visibility_check_publish": {
-          "name": "visibility_check_publish",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_featured": {
-          "name": "visibility_check_featured",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_pinned": {
-          "name": "visibility_check_pinned",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
         "updated_at": {
           "name": "updated_at",
           "type": "timestamp(3) with time zone",
@@ -28157,27 +27590,6 @@
           "type": "varchar",
           "primaryKey": false,
           "notNull": false
-        },
-        "visibility_check_publish": {
-          "name": "visibility_check_publish",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_featured": {
-          "name": "visibility_check_featured",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_pinned": {
-          "name": "visibility_check_pinned",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
         },
         "updated_at": {
           "name": "updated_at",
@@ -29254,27 +28666,6 @@
           "type": "varchar",
           "primaryKey": false,
           "notNull": false
-        },
-        "visibility_check_publish": {
-          "name": "visibility_check_publish",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_featured": {
-          "name": "visibility_check_featured",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_pinned": {
-          "name": "visibility_check_pinned",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
         },
         "updated_at": {
           "name": "updated_at",
@@ -30368,27 +29759,6 @@
           "primaryKey": false,
           "notNull": false
         },
-        "visibility_check_publish": {
-          "name": "visibility_check_publish",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_featured": {
-          "name": "visibility_check_featured",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_pinned": {
-          "name": "visibility_check_pinned",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
         "updated_at": {
           "name": "updated_at",
           "type": "timestamp(3) with time zone",
@@ -31434,27 +30804,6 @@
           "primaryKey": false,
           "notNull": false
         },
-        "visibility_check_publish": {
-          "name": "visibility_check_publish",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_featured": {
-          "name": "visibility_check_featured",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_pinned": {
-          "name": "visibility_check_pinned",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
         "updated_at": {
           "name": "updated_at",
           "type": "timestamp(3) with time zone",
@@ -32077,27 +31426,6 @@
           "primaryKey": false,
           "notNull": false
         },
-        "visibility_check_publish": {
-          "name": "visibility_check_publish",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_featured": {
-          "name": "visibility_check_featured",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_pinned": {
-          "name": "visibility_check_pinned",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
         "updated_at": {
           "name": "updated_at",
           "type": "timestamp(3) with time zone",
@@ -32717,27 +32045,6 @@
           "type": "varchar",
           "primaryKey": false,
           "notNull": false
-        },
-        "visibility_check_publish": {
-          "name": "visibility_check_publish",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_featured": {
-          "name": "visibility_check_featured",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_pinned": {
-          "name": "visibility_check_pinned",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
         },
         "updated_at": {
           "name": "updated_at",
@@ -33403,27 +32710,6 @@
           "type": "varchar",
           "primaryKey": false,
           "notNull": false
-        },
-        "visibility_check_publish": {
-          "name": "visibility_check_publish",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_featured": {
-          "name": "visibility_check_featured",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_pinned": {
-          "name": "visibility_check_pinned",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
         },
         "updated_at": {
           "name": "updated_at",
@@ -34208,27 +33494,6 @@
           "type": "varchar",
           "primaryKey": false,
           "notNull": false
-        },
-        "visibility_check_publish": {
-          "name": "visibility_check_publish",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_featured": {
-          "name": "visibility_check_featured",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_pinned": {
-          "name": "visibility_check_pinned",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
         },
         "updated_at": {
           "name": "updated_at",
@@ -35235,27 +34500,6 @@
           "primaryKey": false,
           "notNull": false
         },
-        "visibility_check_publish": {
-          "name": "visibility_check_publish",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_featured": {
-          "name": "visibility_check_featured",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_pinned": {
-          "name": "visibility_check_pinned",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
         "updated_at": {
           "name": "updated_at",
           "type": "timestamp(3) with time zone",
@@ -36059,27 +35303,6 @@
           "type": "varchar",
           "primaryKey": false,
           "notNull": false
-        },
-        "visibility_check_publish": {
-          "name": "visibility_check_publish",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_featured": {
-          "name": "visibility_check_featured",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_pinned": {
-          "name": "visibility_check_pinned",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
         },
         "updated_at": {
           "name": "updated_at",
@@ -37603,27 +36826,6 @@
           "primaryKey": false,
           "notNull": false
         },
-        "visibility_check_publish": {
-          "name": "visibility_check_publish",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_featured": {
-          "name": "visibility_check_featured",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_pinned": {
-          "name": "visibility_check_pinned",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
         "updated_at": {
           "name": "updated_at",
           "type": "timestamp(3) with time zone",
@@ -38359,27 +37561,6 @@
           "type": "varchar",
           "primaryKey": false,
           "notNull": false
-        },
-        "visibility_check_publish": {
-          "name": "visibility_check_publish",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_featured": {
-          "name": "visibility_check_featured",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_pinned": {
-          "name": "visibility_check_pinned",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
         },
         "updated_at": {
           "name": "updated_at",
@@ -39288,27 +38469,6 @@
           "type": "varchar",
           "primaryKey": false,
           "notNull": false
-        },
-        "visibility_check_publish": {
-          "name": "visibility_check_publish",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_featured": {
-          "name": "visibility_check_featured",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_pinned": {
-          "name": "visibility_check_pinned",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
         },
         "updated_at": {
           "name": "updated_at",
@@ -40294,27 +39454,6 @@
           "primaryKey": false,
           "notNull": false
         },
-        "visibility_check_publish": {
-          "name": "visibility_check_publish",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_featured": {
-          "name": "visibility_check_featured",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_pinned": {
-          "name": "visibility_check_pinned",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
         "updated_at": {
           "name": "updated_at",
           "type": "timestamp(3) with time zone",
@@ -40748,27 +39887,6 @@
           "type": "varchar",
           "primaryKey": false,
           "notNull": false
-        },
-        "visibility_check_publish": {
-          "name": "visibility_check_publish",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_featured": {
-          "name": "visibility_check_featured",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_pinned": {
-          "name": "visibility_check_pinned",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
         },
         "updated_at": {
           "name": "updated_at",
@@ -41371,27 +40489,6 @@
           "primaryKey": false,
           "notNull": false
         },
-        "visibility_check_publish": {
-          "name": "visibility_check_publish",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_featured": {
-          "name": "visibility_check_featured",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_pinned": {
-          "name": "visibility_check_pinned",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
         "updated_at": {
           "name": "updated_at",
           "type": "timestamp(3) with time zone",
@@ -41937,27 +41034,6 @@
           "type": "varchar",
           "primaryKey": false,
           "notNull": false
-        },
-        "visibility_check_publish": {
-          "name": "visibility_check_publish",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_featured": {
-          "name": "visibility_check_featured",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_pinned": {
-          "name": "visibility_check_pinned",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
         },
         "updated_at": {
           "name": "updated_at",
@@ -42782,27 +41858,6 @@
           "primaryKey": false,
           "notNull": false
         },
-        "visibility_check_publish": {
-          "name": "visibility_check_publish",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_featured": {
-          "name": "visibility_check_featured",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_pinned": {
-          "name": "visibility_check_pinned",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
         "updated_at": {
           "name": "updated_at",
           "type": "timestamp(3) with time zone",
@@ -43286,27 +42341,6 @@
           "type": "varchar",
           "primaryKey": false,
           "notNull": false
-        },
-        "visibility_check_publish": {
-          "name": "visibility_check_publish",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_featured": {
-          "name": "visibility_check_featured",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_pinned": {
-          "name": "visibility_check_pinned",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
         },
         "updated_at": {
           "name": "updated_at",
@@ -44179,27 +43213,6 @@
           "primaryKey": false,
           "notNull": false
         },
-        "visibility_check_publish": {
-          "name": "visibility_check_publish",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_featured": {
-          "name": "visibility_check_featured",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_pinned": {
-          "name": "visibility_check_pinned",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
         "updated_at": {
           "name": "updated_at",
           "type": "timestamp(3) with time zone",
@@ -44904,27 +43917,6 @@
           "type": "varchar",
           "primaryKey": false,
           "notNull": false
-        },
-        "visibility_check_publish": {
-          "name": "visibility_check_publish",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_featured": {
-          "name": "visibility_check_featured",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_pinned": {
-          "name": "visibility_check_pinned",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
         },
         "updated_at": {
           "name": "updated_at",
@@ -45664,27 +44656,6 @@
           "type": "varchar",
           "primaryKey": false,
           "notNull": false
-        },
-        "visibility_check_publish": {
-          "name": "visibility_check_publish",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_featured": {
-          "name": "visibility_check_featured",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_pinned": {
-          "name": "visibility_check_pinned",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
         },
         "updated_at": {
           "name": "updated_at",
@@ -46562,27 +45533,6 @@
           "primaryKey": false,
           "notNull": false
         },
-        "visibility_check_publish": {
-          "name": "visibility_check_publish",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_featured": {
-          "name": "visibility_check_featured",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_pinned": {
-          "name": "visibility_check_pinned",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
         "updated_at": {
           "name": "updated_at",
           "type": "timestamp(3) with time zone",
@@ -47219,27 +46169,6 @@
           "type": "varchar",
           "primaryKey": false,
           "notNull": false
-        },
-        "visibility_check_publish": {
-          "name": "visibility_check_publish",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_featured": {
-          "name": "visibility_check_featured",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "visibility_check_pinned": {
-          "name": "visibility_check_pinned",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
         },
         "updated_at": {
           "name": "updated_at",
@@ -62000,127 +60929,6 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.header_nav_items_sub_items": {
-      "name": "header_nav_items_sub_items",
-      "schema": "",
-      "columns": {
-        "_order": {
-          "name": "_order",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "_parent_id": {
-          "name": "_parent_id",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "id": {
-          "name": "id",
-          "type": "varchar",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "label": {
-          "name": "label",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "description": {
-          "name": "description",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "link_type": {
-          "name": "link_type",
-          "type": "enum_header_nav_items_sub_items_link_type",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "'reference'"
-        },
-        "link_new_tab": {
-          "name": "link_new_tab",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "link_url": {
-          "name": "link_url",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "link_label": {
-          "name": "link_label",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "is_featured": {
-          "name": "is_featured",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        }
-      },
-      "indexes": {
-        "header_nav_items_sub_items_order_idx": {
-          "name": "header_nav_items_sub_items_order_idx",
-          "columns": [
-            {
-              "expression": "_order",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "header_nav_items_sub_items_parent_id_idx": {
-          "name": "header_nav_items_sub_items_parent_id_idx",
-          "columns": [
-            {
-              "expression": "_parent_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        }
-      },
-      "foreignKeys": {
-        "header_nav_items_sub_items_parent_id_fk": {
-          "name": "header_nav_items_sub_items_parent_id_fk",
-          "tableFrom": "header_nav_items_sub_items",
-          "tableTo": "header_nav_items",
-          "columnsFrom": [
-            "_parent_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
     "public.header_nav_items": {
       "name": "header_nav_items",
       "schema": "",
@@ -62149,36 +60957,11 @@
           "primaryKey": false,
           "notNull": true
         },
-        "tagline": {
-          "name": "tagline",
+        "link": {
+          "name": "link",
           "type": "varchar",
           "primaryKey": false,
-          "notNull": false
-        },
-        "description": {
-          "name": "description",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "spotlight_enable": {
-          "name": "spotlight_enable",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "spotlight_label": {
-          "name": "spotlight_label",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "spotlight_override_url": {
-          "name": "spotlight_override_url",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "visible": {
           "name": "visible",
@@ -62269,28 +61052,8 @@
           "primaryKey": false,
           "notNull": true
         },
-        "link_type": {
-          "name": "link_type",
-          "type": "enum_header_utility_nav_link_type",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "'reference'"
-        },
-        "link_new_tab": {
-          "name": "link_new_tab",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "link_url": {
-          "name": "link_url",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "link_label": {
-          "name": "link_label",
+        "link": {
+          "name": "link",
           "type": "varchar",
           "primaryKey": false,
           "notNull": true
@@ -62459,114 +61222,6 @@
           "type": "integer",
           "primaryKey": false,
           "notNull": false
-        },
-        "drivers_id": {
-          "name": "drivers_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "leaders_id": {
-          "name": "leaders_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "members_id": {
-          "name": "members_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "cars_id": {
-          "name": "cars_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "kits_id": {
-          "name": "kits_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "series_id": {
-          "name": "series_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "seasons_id": {
-          "name": "seasons_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "events_id": {
-          "name": "events_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "awards_id": {
-          "name": "awards_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "stories_id": {
-          "name": "stories_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "journeys_id": {
-          "name": "journeys_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "histories_id": {
-          "name": "histories_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "initiatives_id": {
-          "name": "initiatives_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "celebrations_id": {
-          "name": "celebrations_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "meetups_id": {
-          "name": "meetups_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "careers_id": {
-          "name": "careers_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "trainings_id": {
-          "name": "trainings_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "organizations_id": {
-          "name": "organizations_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
         }
       },
       "indexes": {
@@ -62629,276 +61284,6 @@
           "concurrently": false,
           "method": "btree",
           "with": {}
-        },
-        "header_rels_drivers_id_idx": {
-          "name": "header_rels_drivers_id_idx",
-          "columns": [
-            {
-              "expression": "drivers_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "header_rels_leaders_id_idx": {
-          "name": "header_rels_leaders_id_idx",
-          "columns": [
-            {
-              "expression": "leaders_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "header_rels_members_id_idx": {
-          "name": "header_rels_members_id_idx",
-          "columns": [
-            {
-              "expression": "members_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "header_rels_cars_id_idx": {
-          "name": "header_rels_cars_id_idx",
-          "columns": [
-            {
-              "expression": "cars_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "header_rels_kits_id_idx": {
-          "name": "header_rels_kits_id_idx",
-          "columns": [
-            {
-              "expression": "kits_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "header_rels_series_id_idx": {
-          "name": "header_rels_series_id_idx",
-          "columns": [
-            {
-              "expression": "series_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "header_rels_seasons_id_idx": {
-          "name": "header_rels_seasons_id_idx",
-          "columns": [
-            {
-              "expression": "seasons_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "header_rels_events_id_idx": {
-          "name": "header_rels_events_id_idx",
-          "columns": [
-            {
-              "expression": "events_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "header_rels_awards_id_idx": {
-          "name": "header_rels_awards_id_idx",
-          "columns": [
-            {
-              "expression": "awards_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "header_rels_stories_id_idx": {
-          "name": "header_rels_stories_id_idx",
-          "columns": [
-            {
-              "expression": "stories_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "header_rels_journeys_id_idx": {
-          "name": "header_rels_journeys_id_idx",
-          "columns": [
-            {
-              "expression": "journeys_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "header_rels_histories_id_idx": {
-          "name": "header_rels_histories_id_idx",
-          "columns": [
-            {
-              "expression": "histories_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "header_rels_initiatives_id_idx": {
-          "name": "header_rels_initiatives_id_idx",
-          "columns": [
-            {
-              "expression": "initiatives_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "header_rels_celebrations_id_idx": {
-          "name": "header_rels_celebrations_id_idx",
-          "columns": [
-            {
-              "expression": "celebrations_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "header_rels_meetups_id_idx": {
-          "name": "header_rels_meetups_id_idx",
-          "columns": [
-            {
-              "expression": "meetups_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "header_rels_careers_id_idx": {
-          "name": "header_rels_careers_id_idx",
-          "columns": [
-            {
-              "expression": "careers_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "header_rels_trainings_id_idx": {
-          "name": "header_rels_trainings_id_idx",
-          "columns": [
-            {
-              "expression": "trainings_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "header_rels_organizations_id_idx": {
-          "name": "header_rels_organizations_id_idx",
-          "columns": [
-            {
-              "expression": "organizations_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
         }
       },
       "foreignKeys": {
@@ -62921,240 +61306,6 @@
           "tableTo": "pages",
           "columnsFrom": [
             "pages_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        },
-        "header_rels_drivers_fk": {
-          "name": "header_rels_drivers_fk",
-          "tableFrom": "header_rels",
-          "tableTo": "drivers",
-          "columnsFrom": [
-            "drivers_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        },
-        "header_rels_leaders_fk": {
-          "name": "header_rels_leaders_fk",
-          "tableFrom": "header_rels",
-          "tableTo": "leaders",
-          "columnsFrom": [
-            "leaders_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        },
-        "header_rels_members_fk": {
-          "name": "header_rels_members_fk",
-          "tableFrom": "header_rels",
-          "tableTo": "members",
-          "columnsFrom": [
-            "members_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        },
-        "header_rels_cars_fk": {
-          "name": "header_rels_cars_fk",
-          "tableFrom": "header_rels",
-          "tableTo": "cars",
-          "columnsFrom": [
-            "cars_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        },
-        "header_rels_kits_fk": {
-          "name": "header_rels_kits_fk",
-          "tableFrom": "header_rels",
-          "tableTo": "kits",
-          "columnsFrom": [
-            "kits_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        },
-        "header_rels_series_fk": {
-          "name": "header_rels_series_fk",
-          "tableFrom": "header_rels",
-          "tableTo": "series",
-          "columnsFrom": [
-            "series_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        },
-        "header_rels_seasons_fk": {
-          "name": "header_rels_seasons_fk",
-          "tableFrom": "header_rels",
-          "tableTo": "seasons",
-          "columnsFrom": [
-            "seasons_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        },
-        "header_rels_events_fk": {
-          "name": "header_rels_events_fk",
-          "tableFrom": "header_rels",
-          "tableTo": "events",
-          "columnsFrom": [
-            "events_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        },
-        "header_rels_awards_fk": {
-          "name": "header_rels_awards_fk",
-          "tableFrom": "header_rels",
-          "tableTo": "awards",
-          "columnsFrom": [
-            "awards_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        },
-        "header_rels_stories_fk": {
-          "name": "header_rels_stories_fk",
-          "tableFrom": "header_rels",
-          "tableTo": "stories",
-          "columnsFrom": [
-            "stories_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        },
-        "header_rels_journeys_fk": {
-          "name": "header_rels_journeys_fk",
-          "tableFrom": "header_rels",
-          "tableTo": "journeys",
-          "columnsFrom": [
-            "journeys_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        },
-        "header_rels_histories_fk": {
-          "name": "header_rels_histories_fk",
-          "tableFrom": "header_rels",
-          "tableTo": "histories",
-          "columnsFrom": [
-            "histories_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        },
-        "header_rels_initiatives_fk": {
-          "name": "header_rels_initiatives_fk",
-          "tableFrom": "header_rels",
-          "tableTo": "initiatives",
-          "columnsFrom": [
-            "initiatives_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        },
-        "header_rels_celebrations_fk": {
-          "name": "header_rels_celebrations_fk",
-          "tableFrom": "header_rels",
-          "tableTo": "celebrations",
-          "columnsFrom": [
-            "celebrations_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        },
-        "header_rels_meetups_fk": {
-          "name": "header_rels_meetups_fk",
-          "tableFrom": "header_rels",
-          "tableTo": "meetups",
-          "columnsFrom": [
-            "meetups_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        },
-        "header_rels_careers_fk": {
-          "name": "header_rels_careers_fk",
-          "tableFrom": "header_rels",
-          "tableTo": "careers",
-          "columnsFrom": [
-            "careers_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        },
-        "header_rels_trainings_fk": {
-          "name": "header_rels_trainings_fk",
-          "tableFrom": "header_rels",
-          "tableTo": "trainings",
-          "columnsFrom": [
-            "trainings_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        },
-        "header_rels_organizations_fk": {
-          "name": "header_rels_organizations_fk",
-          "tableFrom": "header_rels",
-          "tableTo": "organizations",
-          "columnsFrom": [
-            "organizations_id"
           ],
           "columnsTo": [
             "id"
@@ -64738,7 +62889,7 @@
           "name": "label",
           "type": "varchar",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "handle": {
           "name": "handle",
@@ -64751,12 +62902,6 @@
           "type": "varchar",
           "primaryKey": false,
           "notNull": true
-        },
-        "channel_id": {
-          "name": "channel_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
         },
         "visible": {
           "name": "visible",
@@ -64796,37 +62941,9 @@
           "concurrently": false,
           "method": "btree",
           "with": {}
-        },
-        "socials_accounts_channel_idx": {
-          "name": "socials_accounts_channel_idx",
-          "columns": [
-            {
-              "expression": "channel_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
         }
       },
       "foreignKeys": {
-        "socials_accounts_channel_id_channels_id_fk": {
-          "name": "socials_accounts_channel_id_channels_id_fk",
-          "tableFrom": "socials_accounts",
-          "tableTo": "channels",
-          "columnsFrom": [
-            "channel_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "set null",
-          "onUpdate": "no action"
-        },
         "socials_accounts_parent_id_fk": {
           "name": "socials_accounts_parent_id_fk",
           "tableFrom": "socials_accounts",
@@ -64927,14 +63044,14 @@
           "primaryKey": false,
           "notNull": false
         },
-        "schedule_from": {
-          "name": "schedule_from",
+        "from": {
+          "name": "from",
           "type": "timestamp(3) with time zone",
           "primaryKey": false,
           "notNull": false
         },
-        "schedule_until": {
-          "name": "schedule_until",
+        "until": {
+          "name": "until",
           "type": "timestamp(3) with time zone",
           "primaryKey": false,
           "notNull": false
@@ -64945,7 +63062,7 @@
           "typeSchema": "public",
           "primaryKey": false,
           "notNull": false,
-          "default": "'all'"
+          "default": "'everyone'"
         },
         "dismissible": {
           "name": "dismissible",
@@ -64954,8 +63071,8 @@
           "notNull": false,
           "default": true
         },
-        "visible": {
-          "name": "visible",
+        "active": {
+          "name": "active",
           "type": "boolean",
           "primaryKey": false,
           "notNull": false,
@@ -65153,13 +63270,6 @@
           "type": "varchar",
           "primaryKey": false,
           "notNull": false
-        },
-        "visible": {
-          "name": "visible",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": true
         }
       },
       "indexes": {
@@ -67254,22 +65364,6 @@
         "USD"
       ]
     },
-    "public.enum_header_nav_items_sub_items_link_type": {
-      "name": "enum_header_nav_items_sub_items_link_type",
-      "schema": "public",
-      "values": [
-        "reference",
-        "custom"
-      ]
-    },
-    "public.enum_header_utility_nav_link_type": {
-      "name": "enum_header_utility_nav_link_type",
-      "schema": "public",
-      "values": [
-        "reference",
-        "custom"
-      ]
-    },
     "public.enum_header_cta_link_type": {
       "name": "enum_header_cta_link_type",
       "schema": "public",
@@ -67351,7 +65445,7 @@
       "name": "enum_announcements_items_audience",
       "schema": "public",
       "values": [
-        "all",
+        "everyone",
         "authenticated",
         "guest"
       ]
@@ -67367,6 +65461,6 @@
     "tables": {},
     "columns": {}
   },
-  "id": "95ec84c9-d35e-4ad6-a491-a508df4d07ff",
+  "id": "34abab4b-0427-4a31-a169-823c594ab1e1",
   "prevId": "00000000-0000-0000-0000-000000000000"
 }

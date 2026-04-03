@@ -28,9 +28,12 @@ export const Questions: GlobalConfig = {
           type: 'text',
           required: true,
           localized: true,
-          admin: {
-            description: 'E.g. "About AF Motorsport", "Race Weekend", "Store & Orders", "Careers"',
-          },
+        },
+        {
+          name: 'visible',
+          label: 'Visible',
+          type: 'checkbox',
+          defaultValue: true,
         },
         {
           name: 'items',
@@ -60,25 +63,10 @@ export const Questions: GlobalConfig = {
             },
             {
               name: 'relatedPage',
-              label: 'Related Page URL',
+              label: 'Related Page',
               type: 'text',
-              admin: {
-                description: 'Optional link to a page where the visitor can read more.',
-              },
-            },
-            {
-              name: 'visible',
-              label: 'Visible',
-              type: 'checkbox',
-              defaultValue: true,
             },
           ],
-        },
-        {
-          name: 'visible',
-          label: 'Visible',
-          type: 'checkbox',
-          defaultValue: true,
         },
       ],
     },

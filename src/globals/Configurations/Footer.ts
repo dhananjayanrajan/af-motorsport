@@ -1,4 +1,3 @@
-// FILE: /src/globals/Configurations/Footer.ts
 import { link } from '@/fields/common/link'
 import type { GlobalConfig } from 'payload'
 
@@ -64,6 +63,12 @@ export const Footer: GlobalConfig = {
           required: true,
         },
         {
+          name: 'visible',
+          label: 'Visible',
+          type: 'checkbox',
+          defaultValue: true,
+        },
+        {
           name: 'links',
           label: 'Links',
           type: 'array',
@@ -83,12 +88,6 @@ export const Footer: GlobalConfig = {
               defaultValue: true,
             },
           ],
-        },
-        {
-          name: 'visible',
-          label: 'Visible',
-          type: 'checkbox',
-          defaultValue: true,
         },
       ],
     },

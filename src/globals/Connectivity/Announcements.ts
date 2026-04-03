@@ -74,54 +74,44 @@ export const Announcements: GlobalConfig = {
           ],
         },
         {
-          name: 'schedule',
-          label: 'Display Window',
-          type: 'group',
-          fields: [
-            {
-              name: 'from',
-              label: 'Show From',
-              type: 'date',
-              admin: {
-                date: {
-                  pickerAppearance: 'dayAndTime',
-                },
-              },
+          name: 'from',
+          label: 'Show From',
+          type: 'date',
+          admin: {
+            date: {
+              pickerAppearance: 'dayAndTime',
             },
-            {
-              name: 'until',
-              label: 'Show Until',
-              type: 'date',
-              admin: {
-                date: {
-                  pickerAppearance: 'dayAndTime',
-                },
-              },
+          },
+        },
+        {
+          name: 'until',
+          label: 'Show Until',
+          type: 'date',
+          admin: {
+            date: {
+              pickerAppearance: 'dayAndTime',
             },
-          ],
+          },
         },
         {
           name: 'audience',
           label: 'Target Audience',
           type: 'select',
           options: [
-            { label: 'Everyone', value: 'all' },
+            { label: 'Everyone', value: 'everyone' },
             { label: 'Logged In Users', value: 'authenticated' },
             { label: 'Guests Only', value: 'guest' },
           ],
-          defaultValue: 'all',
+          defaultValue: 'everyone',
         },
         {
           name: 'dismissible',
           label: 'Dismissible',
           type: 'checkbox',
           defaultValue: true,
-          admin: {
-            description: 'Allow visitors to close this announcement.',
-          },
         },
         {
-          name: 'visible',
+          name: 'active',
           label: 'Active',
           type: 'checkbox',
           defaultValue: true,

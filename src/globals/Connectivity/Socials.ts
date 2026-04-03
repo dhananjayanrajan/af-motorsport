@@ -43,34 +43,20 @@ export const Socials: GlobalConfig = {
         },
         {
           name: 'label',
-          label: 'Display Label',
-          type: 'text',
-          admin: {
-            description: 'Optional override label. Defaults to platform name if left empty.',
-          },
-        },
-        {
-          name: 'handle',
-          label: 'Handle / Username',
-          type: 'text',
-          admin: {
-            description: 'E.g. @afmotorsport',
-          },
-        },
-        {
-          name: 'url',
-          label: 'Profile URL',
+          label: 'Label',
           type: 'text',
           required: true,
         },
         {
-          name: 'channel',
-          label: 'Linked Channel',
-          type: 'relationship',
-          relationTo: 'channels',
-          admin: {
-            description: 'Optional link to the corresponding Channels collection record.',
-          },
+          name: 'handle',
+          label: 'Handle',
+          type: 'text',
+        },
+        {
+          name: 'url',
+          label: 'URL',
+          type: 'text',
+          required: true,
         },
         {
           name: 'visible',

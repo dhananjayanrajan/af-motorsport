@@ -560,14 +560,6 @@ export interface Series {
    * Associated tags for the record.
    */
   tags?: (number | Tag)[] | null;
-  /**
-   * Controls who can see this record and under what conditions.
-   */
-  visibility?: {
-    check_publish?: boolean | null;
-    check_featured?: boolean | null;
-    check_pinned?: boolean | null;
-  };
   updatedAt: string;
   createdAt: string;
 }
@@ -653,14 +645,6 @@ export interface Category {
    * Associated tags for the record.
    */
   tags?: (number | Tag)[] | null;
-  /**
-   * Controls who can see this record and under what conditions.
-   */
-  visibility?: {
-    check_publish?: boolean | null;
-    check_featured?: boolean | null;
-    check_pinned?: boolean | null;
-  };
   updatedAt: string;
   createdAt: string;
 }
@@ -757,14 +741,6 @@ export interface Tag {
    * Associated tags for the record.
    */
   tags?: (number | Tag)[] | null;
-  /**
-   * Controls who can see this record and under what conditions.
-   */
-  visibility?: {
-    check_publish?: boolean | null;
-    check_featured?: boolean | null;
-    check_pinned?: boolean | null;
-  };
   updatedAt: string;
   createdAt: string;
 }
@@ -870,14 +846,6 @@ export interface Classification {
    * Associated tags for the record.
    */
   tags?: (number | Tag)[] | null;
-  /**
-   * Controls who can see this record and under what conditions.
-   */
-  visibility?: {
-    check_publish?: boolean | null;
-    check_featured?: boolean | null;
-    check_pinned?: boolean | null;
-  };
   updatedAt: string;
   createdAt: string;
 }
@@ -1018,14 +986,6 @@ export interface Note {
    * Associated tags for the record.
    */
   tags?: (number | Tag)[] | null;
-  /**
-   * Controls who can see this record and under what conditions.
-   */
-  visibility?: {
-    check_publish?: boolean | null;
-    check_featured?: boolean | null;
-    check_pinned?: boolean | null;
-  };
   updatedAt: string;
   createdAt: string;
 }
@@ -1131,14 +1091,6 @@ export interface Archive {
    * Associated tags for the record.
    */
   tags?: (number | Tag)[] | null;
-  /**
-   * Controls who can see this record and under what conditions.
-   */
-  visibility?: {
-    check_publish?: boolean | null;
-    check_featured?: boolean | null;
-    check_pinned?: boolean | null;
-  };
   updatedAt: string;
   createdAt: string;
 }
@@ -1391,14 +1343,6 @@ export interface Narrative {
    * Associated tags for the record.
    */
   tags?: (number | Tag)[] | null;
-  /**
-   * Controls who can see this record and under what conditions.
-   */
-  visibility?: {
-    check_publish?: boolean | null;
-    check_featured?: boolean | null;
-    check_pinned?: boolean | null;
-  };
   updatedAt: string;
   createdAt: string;
 }
@@ -1533,14 +1477,6 @@ export interface Tone {
    * Associated tags for the record.
    */
   tags?: (number | Tag)[] | null;
-  /**
-   * Controls who can see this record and under what conditions.
-   */
-  visibility?: {
-    check_publish?: boolean | null;
-    check_featured?: boolean | null;
-    check_pinned?: boolean | null;
-  };
   updatedAt: string;
   createdAt: string;
 }
@@ -1764,14 +1700,6 @@ export interface Location {
    * Associated tags for the record.
    */
   tags?: (number | Tag)[] | null;
-  /**
-   * Controls who can see this record and under what conditions.
-   */
-  visibility?: {
-    check_publish?: boolean | null;
-    check_featured?: boolean | null;
-    check_pinned?: boolean | null;
-  };
   updatedAt: string;
   createdAt: string;
 }
@@ -2101,14 +2029,6 @@ export interface Driver {
    * Associated tags for the record.
    */
   tags?: (number | Tag)[] | null;
-  /**
-   * Controls who can see this record and under what conditions.
-   */
-  visibility?: {
-    check_publish?: boolean | null;
-    check_featured?: boolean | null;
-    check_pinned?: boolean | null;
-  };
   updatedAt: string;
   createdAt: string;
 }
@@ -2275,14 +2195,6 @@ export interface History {
    * Associated tags for the record.
    */
   tags?: (number | Tag)[] | null;
-  /**
-   * Controls who can see this record and under what conditions.
-   */
-  visibility?: {
-    check_publish?: boolean | null;
-    check_featured?: boolean | null;
-    check_pinned?: boolean | null;
-  };
   updatedAt: string;
   createdAt: string;
 }
@@ -2513,14 +2425,6 @@ export interface Story {
    * Associated tags for the record.
    */
   tags?: (number | Tag)[] | null;
-  /**
-   * Controls who can see this record and under what conditions.
-   */
-  visibility?: {
-    check_publish?: boolean | null;
-    check_featured?: boolean | null;
-    check_pinned?: boolean | null;
-  };
   updatedAt: string;
   createdAt: string;
 }
@@ -2622,14 +2526,6 @@ export interface Gallery {
    * Associated tags for the record.
    */
   tags?: (number | Tag)[] | null;
-  /**
-   * Controls who can see this record and under what conditions.
-   */
-  visibility?: {
-    check_publish?: boolean | null;
-    check_featured?: boolean | null;
-    check_pinned?: boolean | null;
-  };
   updatedAt: string;
   createdAt: string;
 }
@@ -2758,14 +2654,6 @@ export interface Playlist {
    * Associated tags for the record.
    */
   tags?: (number | Tag)[] | null;
-  /**
-   * Controls who can see this record and under what conditions.
-   */
-  visibility?: {
-    check_publish?: boolean | null;
-    check_featured?: boolean | null;
-    check_pinned?: boolean | null;
-  };
   updatedAt: string;
   createdAt: string;
 }
@@ -2867,14 +2755,6 @@ export interface Visualization {
    * Associated tags for the record.
    */
   tags?: (number | Tag)[] | null;
-  /**
-   * Controls who can see this record and under what conditions.
-   */
-  visibility?: {
-    check_publish?: boolean | null;
-    check_featured?: boolean | null;
-    check_pinned?: boolean | null;
-  };
   updatedAt: string;
   createdAt: string;
 }
@@ -3040,14 +2920,6 @@ export interface Highlight {
    * Associated tags for the record.
    */
   tags?: (number | Tag)[] | null;
-  /**
-   * Controls who can see this record and under what conditions.
-   */
-  visibility?: {
-    check_publish?: boolean | null;
-    check_featured?: boolean | null;
-    check_pinned?: boolean | null;
-  };
   updatedAt: string;
   createdAt: string;
 }
@@ -3265,14 +3137,6 @@ export interface Specification {
    * Associated tags for the record.
    */
   tags?: (number | Tag)[] | null;
-  /**
-   * Controls who can see this record and under what conditions.
-   */
-  visibility?: {
-    check_publish?: boolean | null;
-    check_featured?: boolean | null;
-    check_pinned?: boolean | null;
-  };
   updatedAt: string;
   createdAt: string;
 }
@@ -3499,14 +3363,6 @@ export interface Car {
    * Associated tags for the record.
    */
   tags?: (number | Tag)[] | null;
-  /**
-   * Controls who can see this record and under what conditions.
-   */
-  visibility?: {
-    check_publish?: boolean | null;
-    check_featured?: boolean | null;
-    check_pinned?: boolean | null;
-  };
   updatedAt: string;
   createdAt: string;
 }
@@ -3640,14 +3496,6 @@ export interface Feature {
    * Associated tags for the record.
    */
   tags?: (number | Tag)[] | null;
-  /**
-   * Controls who can see this record and under what conditions.
-   */
-  visibility?: {
-    check_publish?: boolean | null;
-    check_featured?: boolean | null;
-    check_pinned?: boolean | null;
-  };
   updatedAt: string;
   createdAt: string;
 }
@@ -3959,14 +3807,6 @@ export interface Organization {
    * Associated tags for the record.
    */
   tags?: (number | Tag)[] | null;
-  /**
-   * Controls who can see this record and under what conditions.
-   */
-  visibility?: {
-    check_publish?: boolean | null;
-    check_featured?: boolean | null;
-    check_pinned?: boolean | null;
-  };
   updatedAt: string;
   createdAt: string;
 }
@@ -4174,14 +4014,6 @@ export interface Channel {
    * Associated tags for the record.
    */
   tags?: (number | Tag)[] | null;
-  /**
-   * Controls who can see this record and under what conditions.
-   */
-  visibility?: {
-    check_publish?: boolean | null;
-    check_featured?: boolean | null;
-    check_pinned?: boolean | null;
-  };
   updatedAt: string;
   createdAt: string;
 }
@@ -4499,14 +4331,6 @@ export interface Member {
    * Associated tags for the record.
    */
   tags?: (number | Tag)[] | null;
-  /**
-   * Controls who can see this record and under what conditions.
-   */
-  visibility?: {
-    check_publish?: boolean | null;
-    check_featured?: boolean | null;
-    check_pinned?: boolean | null;
-  };
   updatedAt: string;
   createdAt: string;
 }
@@ -4612,14 +4436,6 @@ export interface Duty {
    * Associated tags for the record.
    */
   tags?: (number | Tag)[] | null;
-  /**
-   * Controls who can see this record and under what conditions.
-   */
-  visibility?: {
-    check_publish?: boolean | null;
-    check_featured?: boolean | null;
-    check_pinned?: boolean | null;
-  };
   updatedAt: string;
   createdAt: string;
 }
@@ -4792,14 +4608,6 @@ export interface Protocol {
    * Associated tags for the record.
    */
   tags?: (number | Tag)[] | null;
-  /**
-   * Controls who can see this record and under what conditions.
-   */
-  visibility?: {
-    check_publish?: boolean | null;
-    check_featured?: boolean | null;
-    check_pinned?: boolean | null;
-  };
   updatedAt: string;
   createdAt: string;
 }
@@ -4936,14 +4744,6 @@ export interface Expectation {
    * Associated tags for the record.
    */
   tags?: (number | Tag)[] | null;
-  /**
-   * Controls who can see this record and under what conditions.
-   */
-  visibility?: {
-    check_publish?: boolean | null;
-    check_featured?: boolean | null;
-    check_pinned?: boolean | null;
-  };
   updatedAt: string;
   createdAt: string;
 }
@@ -5182,14 +4982,6 @@ export interface Skill {
    * Associated tags for the record.
    */
   tags?: (number | Tag)[] | null;
-  /**
-   * Controls who can see this record and under what conditions.
-   */
-  visibility?: {
-    check_publish?: boolean | null;
-    check_featured?: boolean | null;
-    check_pinned?: boolean | null;
-  };
   updatedAt: string;
   createdAt: string;
 }
@@ -5379,14 +5171,6 @@ export interface Training {
    * Associated tags for the record.
    */
   tags?: (number | Tag)[] | null;
-  /**
-   * Controls who can see this record and under what conditions.
-   */
-  visibility?: {
-    check_publish?: boolean | null;
-    check_featured?: boolean | null;
-    check_pinned?: boolean | null;
-  };
   updatedAt: string;
   createdAt: string;
 }
@@ -5707,14 +5491,6 @@ export interface Leader {
    * Associated tags for the record.
    */
   tags?: (number | Tag)[] | null;
-  /**
-   * Controls who can see this record and under what conditions.
-   */
-  visibility?: {
-    check_publish?: boolean | null;
-    check_featured?: boolean | null;
-    check_pinned?: boolean | null;
-  };
   updatedAt: string;
   createdAt: string;
 }
@@ -5824,14 +5600,6 @@ export interface Principle {
    * Associated tags for the record.
    */
   tags?: (number | Tag)[] | null;
-  /**
-   * Controls who can see this record and under what conditions.
-   */
-  visibility?: {
-    check_publish?: boolean | null;
-    check_featured?: boolean | null;
-    check_pinned?: boolean | null;
-  };
   updatedAt: string;
   createdAt: string;
 }
@@ -6077,14 +5845,6 @@ export interface Strategy {
    * Associated tags for the record.
    */
   tags?: (number | Tag)[] | null;
-  /**
-   * Controls who can see this record and under what conditions.
-   */
-  visibility?: {
-    check_publish?: boolean | null;
-    check_featured?: boolean | null;
-    check_pinned?: boolean | null;
-  };
   updatedAt: string;
   createdAt: string;
 }
@@ -6247,14 +6007,6 @@ export interface Decision {
    * Associated tags for the record.
    */
   tags?: (number | Tag)[] | null;
-  /**
-   * Controls who can see this record and under what conditions.
-   */
-  visibility?: {
-    check_publish?: boolean | null;
-    check_featured?: boolean | null;
-    check_pinned?: boolean | null;
-  };
   updatedAt: string;
   createdAt: string;
 }
@@ -6550,14 +6302,6 @@ export interface Individual {
    * Associated tags for the record.
    */
   tags?: (number | Tag)[] | null;
-  /**
-   * Controls who can see this record and under what conditions.
-   */
-  visibility?: {
-    check_publish?: boolean | null;
-    check_featured?: boolean | null;
-    check_pinned?: boolean | null;
-  };
   updatedAt: string;
   createdAt: string;
 }
@@ -6723,14 +6467,6 @@ export interface Preference {
    * Associated tags for the record.
    */
   tags?: (number | Tag)[] | null;
-  /**
-   * Controls who can see this record and under what conditions.
-   */
-  visibility?: {
-    check_publish?: boolean | null;
-    check_featured?: boolean | null;
-    check_pinned?: boolean | null;
-  };
   updatedAt: string;
   createdAt: string;
 }
@@ -6923,14 +6659,6 @@ export interface Impact {
    * Associated tags for the record.
    */
   tags?: (number | Tag)[] | null;
-  /**
-   * Controls who can see this record and under what conditions.
-   */
-  visibility?: {
-    check_publish?: boolean | null;
-    check_featured?: boolean | null;
-    check_pinned?: boolean | null;
-  };
   updatedAt: string;
   createdAt: string;
 }
@@ -7233,14 +6961,6 @@ export interface Kit {
    * Associated tags for the record.
    */
   tags?: (number | Tag)[] | null;
-  /**
-   * Controls who can see this record and under what conditions.
-   */
-  visibility?: {
-    check_publish?: boolean | null;
-    check_featured?: boolean | null;
-    check_pinned?: boolean | null;
-  };
   updatedAt: string;
   createdAt: string;
 }
@@ -7470,14 +7190,6 @@ export interface Experience {
    * Associated tags for the record.
    */
   tags?: (number | Tag)[] | null;
-  /**
-   * Controls who can see this record and under what conditions.
-   */
-  visibility?: {
-    check_publish?: boolean | null;
-    check_featured?: boolean | null;
-    check_pinned?: boolean | null;
-  };
   updatedAt: string;
   createdAt: string;
 }
@@ -7659,14 +7371,6 @@ export interface Journey {
    * Associated tags for the record.
    */
   tags?: (number | Tag)[] | null;
-  /**
-   * Controls who can see this record and under what conditions.
-   */
-  visibility?: {
-    check_publish?: boolean | null;
-    check_featured?: boolean | null;
-    check_pinned?: boolean | null;
-  };
   updatedAt: string;
   createdAt: string;
 }
@@ -7871,14 +7575,6 @@ export interface Incident {
    * Associated tags for the record.
    */
   tags?: (number | Tag)[] | null;
-  /**
-   * Controls who can see this record and under what conditions.
-   */
-  visibility?: {
-    check_publish?: boolean | null;
-    check_featured?: boolean | null;
-    check_pinned?: boolean | null;
-  };
   updatedAt: string;
   createdAt: string;
 }
@@ -8020,14 +7716,6 @@ export interface Award {
    * Associated tags for the record.
    */
   tags?: (number | Tag)[] | null;
-  /**
-   * Controls who can see this record and under what conditions.
-   */
-  visibility?: {
-    check_publish?: boolean | null;
-    check_featured?: boolean | null;
-    check_pinned?: boolean | null;
-  };
   updatedAt: string;
   createdAt: string;
 }
@@ -8238,14 +7926,6 @@ export interface Point {
    * Associated tags for the record.
    */
   tags?: (number | Tag)[] | null;
-  /**
-   * Controls who can see this record and under what conditions.
-   */
-  visibility?: {
-    check_publish?: boolean | null;
-    check_featured?: boolean | null;
-    check_pinned?: boolean | null;
-  };
   updatedAt: string;
   createdAt: string;
 }
@@ -8482,14 +8162,6 @@ export interface Result {
    * Associated tags for the record.
    */
   tags?: (number | Tag)[] | null;
-  /**
-   * Controls who can see this record and under what conditions.
-   */
-  visibility?: {
-    check_publish?: boolean | null;
-    check_featured?: boolean | null;
-    check_pinned?: boolean | null;
-  };
   updatedAt: string;
   createdAt: string;
 }
@@ -8749,14 +8421,6 @@ export interface Schedule {
    * Associated tags for the record.
    */
   tags?: (number | Tag)[] | null;
-  /**
-   * Controls who can see this record and under what conditions.
-   */
-  visibility?: {
-    check_publish?: boolean | null;
-    check_featured?: boolean | null;
-    check_pinned?: boolean | null;
-  };
   updatedAt: string;
   createdAt: string;
 }
@@ -8987,14 +8651,6 @@ export interface Meetup {
    * Associated tags for the record.
    */
   tags?: (number | Tag)[] | null;
-  /**
-   * Controls who can see this record and under what conditions.
-   */
-  visibility?: {
-    check_publish?: boolean | null;
-    check_featured?: boolean | null;
-    check_pinned?: boolean | null;
-  };
   updatedAt: string;
   createdAt: string;
 }
@@ -9201,14 +8857,6 @@ export interface Initiative {
    * Associated tags for the record.
    */
   tags?: (number | Tag)[] | null;
-  /**
-   * Controls who can see this record and under what conditions.
-   */
-  visibility?: {
-    check_publish?: boolean | null;
-    check_featured?: boolean | null;
-    check_pinned?: boolean | null;
-  };
   updatedAt: string;
   createdAt: string;
 }
@@ -9398,14 +9046,6 @@ export interface Celebration {
    * Associated tags for the record.
    */
   tags?: (number | Tag)[] | null;
-  /**
-   * Controls who can see this record and under what conditions.
-   */
-  visibility?: {
-    check_publish?: boolean | null;
-    check_featured?: boolean | null;
-    check_pinned?: boolean | null;
-  };
   updatedAt: string;
   createdAt: string;
 }
@@ -9638,14 +9278,6 @@ export interface Season {
    * Associated tags for the record.
    */
   tags?: (number | Tag)[] | null;
-  /**
-   * Controls who can see this record and under what conditions.
-   */
-  visibility?: {
-    check_publish?: boolean | null;
-    check_featured?: boolean | null;
-    check_pinned?: boolean | null;
-  };
   updatedAt: string;
   createdAt: string;
 }
@@ -9922,14 +9554,6 @@ export interface Event {
    * Associated tags for the record.
    */
   tags?: (number | Tag)[] | null;
-  /**
-   * Controls who can see this record and under what conditions.
-   */
-  visibility?: {
-    check_publish?: boolean | null;
-    check_featured?: boolean | null;
-    check_pinned?: boolean | null;
-  };
   updatedAt: string;
   createdAt: string;
 }
@@ -10295,14 +9919,6 @@ export interface Session {
    * Associated tags for the record.
    */
   tags?: (number | Tag)[] | null;
-  /**
-   * Controls who can see this record and under what conditions.
-   */
-  visibility?: {
-    check_publish?: boolean | null;
-    check_featured?: boolean | null;
-    check_pinned?: boolean | null;
-  };
   updatedAt: string;
   createdAt: string;
 }
@@ -10592,14 +10208,6 @@ export interface Entry {
    * Associated tags for the record.
    */
   tags?: (number | Tag)[] | null;
-  /**
-   * Controls who can see this record and under what conditions.
-   */
-  visibility?: {
-    check_publish?: boolean | null;
-    check_featured?: boolean | null;
-    check_pinned?: boolean | null;
-  };
   updatedAt: string;
   createdAt: string;
 }
@@ -10938,14 +10546,6 @@ export interface Page {
    * Associated tags for the record.
    */
   tags?: (number | Tag)[] | null;
-  /**
-   * Controls who can see this record and under what conditions.
-   */
-  visibility?: {
-    check_publish?: boolean | null;
-    check_featured?: boolean | null;
-    check_pinned?: boolean | null;
-  };
   updatedAt: string;
   createdAt: string;
 }
@@ -11354,14 +10954,6 @@ export interface Career {
    * Associated tags for the record.
    */
   tags?: (number | Tag)[] | null;
-  /**
-   * Controls who can see this record and under what conditions.
-   */
-  visibility?: {
-    check_publish?: boolean | null;
-    check_featured?: boolean | null;
-    check_pinned?: boolean | null;
-  };
   updatedAt: string;
   createdAt: string;
 }
@@ -13296,13 +12888,6 @@ export interface SeriesSelect<T extends boolean = true> {
   slug?: T;
   categories?: T;
   tags?: T;
-  visibility?:
-    | T
-    | {
-        check_publish?: T;
-        check_featured?: T;
-        check_pinned?: T;
-      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -13421,13 +13006,6 @@ export interface SeasonsSelect<T extends boolean = true> {
   slug?: T;
   categories?: T;
   tags?: T;
-  visibility?:
-    | T
-    | {
-        check_publish?: T;
-        check_featured?: T;
-        check_pinned?: T;
-      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -13566,13 +13144,6 @@ export interface EventsSelect<T extends boolean = true> {
   slug?: T;
   categories?: T;
   tags?: T;
-  visibility?:
-    | T
-    | {
-        check_publish?: T;
-        check_featured?: T;
-        check_pinned?: T;
-      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -13746,13 +13317,6 @@ export interface SessionsSelect<T extends boolean = true> {
   slug?: T;
   categories?: T;
   tags?: T;
-  visibility?:
-    | T
-    | {
-        check_publish?: T;
-        check_featured?: T;
-        check_pinned?: T;
-      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -13891,13 +13455,6 @@ export interface EntriesSelect<T extends boolean = true> {
   slug?: T;
   categories?: T;
   tags?: T;
-  visibility?:
-    | T
-    | {
-        check_publish?: T;
-        check_featured?: T;
-        check_pinned?: T;
-      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -14020,13 +13577,6 @@ export interface ResultsSelect<T extends boolean = true> {
   slug?: T;
   categories?: T;
   tags?: T;
-  visibility?:
-    | T
-    | {
-        check_publish?: T;
-        check_featured?: T;
-        check_pinned?: T;
-      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -14135,13 +13685,6 @@ export interface PointsSelect<T extends boolean = true> {
   slug?: T;
   categories?: T;
   tags?: T;
-  visibility?:
-    | T
-    | {
-        check_publish?: T;
-        check_featured?: T;
-        check_pinned?: T;
-      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -14296,13 +13839,6 @@ export interface DriversSelect<T extends boolean = true> {
   slug?: T;
   categories?: T;
   tags?: T;
-  visibility?:
-    | T
-    | {
-        check_publish?: T;
-        check_featured?: T;
-        check_pinned?: T;
-      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -14452,13 +13988,6 @@ export interface LeadersSelect<T extends boolean = true> {
   slug?: T;
   categories?: T;
   tags?: T;
-  visibility?:
-    | T
-    | {
-        check_publish?: T;
-        check_featured?: T;
-        check_pinned?: T;
-      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -14610,13 +14139,6 @@ export interface MembersSelect<T extends boolean = true> {
   slug?: T;
   categories?: T;
   tags?: T;
-  visibility?:
-    | T
-    | {
-        check_publish?: T;
-        check_featured?: T;
-        check_pinned?: T;
-      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -14767,13 +14289,6 @@ export interface IndividualsSelect<T extends boolean = true> {
   slug?: T;
   categories?: T;
   tags?: T;
-  visibility?:
-    | T
-    | {
-        check_publish?: T;
-        check_featured?: T;
-        check_pinned?: T;
-      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -14938,13 +14453,6 @@ export interface OrganizationsSelect<T extends boolean = true> {
   slug?: T;
   categories?: T;
   tags?: T;
-  visibility?:
-    | T
-    | {
-        check_publish?: T;
-        check_featured?: T;
-        check_pinned?: T;
-      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -15096,13 +14604,6 @@ export interface NarrativesSelect<T extends boolean = true> {
   slug?: T;
   categories?: T;
   tags?: T;
-  visibility?:
-    | T
-    | {
-        check_publish?: T;
-        check_featured?: T;
-        check_pinned?: T;
-      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -15224,13 +14725,6 @@ export interface StoriesSelect<T extends boolean = true> {
   slug?: T;
   categories?: T;
   tags?: T;
-  visibility?:
-    | T
-    | {
-        check_publish?: T;
-        check_featured?: T;
-        check_pinned?: T;
-      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -15318,13 +14812,6 @@ export interface HistoriesSelect<T extends boolean = true> {
   slug?: T;
   categories?: T;
   tags?: T;
-  visibility?:
-    | T
-    | {
-        check_publish?: T;
-        check_featured?: T;
-        check_pinned?: T;
-      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -15423,13 +14910,6 @@ export interface JourneysSelect<T extends boolean = true> {
   slug?: T;
   categories?: T;
   tags?: T;
-  visibility?:
-    | T
-    | {
-        check_publish?: T;
-        check_featured?: T;
-        check_pinned?: T;
-      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -15506,13 +14986,6 @@ export interface NotesSelect<T extends boolean = true> {
   slug?: T;
   categories?: T;
   tags?: T;
-  visibility?:
-    | T
-    | {
-        check_publish?: T;
-        check_featured?: T;
-        check_pinned?: T;
-      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -15593,13 +15066,6 @@ export interface PagesSelect<T extends boolean = true> {
   slug?: T;
   categories?: T;
   tags?: T;
-  visibility?:
-    | T
-    | {
-        check_publish?: T;
-        check_featured?: T;
-        check_pinned?: T;
-      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -15711,13 +15177,6 @@ export interface CarsSelect<T extends boolean = true> {
   slug?: T;
   categories?: T;
   tags?: T;
-  visibility?:
-    | T
-    | {
-        check_publish?: T;
-        check_featured?: T;
-        check_pinned?: T;
-      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -15869,13 +15328,6 @@ export interface KitsSelect<T extends boolean = true> {
   slug?: T;
   categories?: T;
   tags?: T;
-  visibility?:
-    | T
-    | {
-        check_publish?: T;
-        check_featured?: T;
-        check_pinned?: T;
-      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -15954,13 +15406,6 @@ export interface GalleriesSelect<T extends boolean = true> {
   slug?: T;
   categories?: T;
   tags?: T;
-  visibility?:
-    | T
-    | {
-        check_publish?: T;
-        check_featured?: T;
-        check_pinned?: T;
-      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -16033,13 +15478,6 @@ export interface PlaylistsSelect<T extends boolean = true> {
   slug?: T;
   categories?: T;
   tags?: T;
-  visibility?:
-    | T
-    | {
-        check_publish?: T;
-        check_featured?: T;
-        check_pinned?: T;
-      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -16100,13 +15538,6 @@ export interface ArchivesSelect<T extends boolean = true> {
   slug?: T;
   categories?: T;
   tags?: T;
-  visibility?:
-    | T
-    | {
-        check_publish?: T;
-        check_featured?: T;
-        check_pinned?: T;
-      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -16166,13 +15597,6 @@ export interface VisualizationsSelect<T extends boolean = true> {
   slug?: T;
   categories?: T;
   tags?: T;
-  visibility?:
-    | T
-    | {
-        check_publish?: T;
-        check_featured?: T;
-        check_pinned?: T;
-      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -16306,13 +15730,6 @@ export interface SchedulesSelect<T extends boolean = true> {
   slug?: T;
   categories?: T;
   tags?: T;
-  visibility?:
-    | T
-    | {
-        check_publish?: T;
-        check_featured?: T;
-        check_pinned?: T;
-      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -16412,13 +15829,6 @@ export interface TrainingsSelect<T extends boolean = true> {
   slug?: T;
   categories?: T;
   tags?: T;
-  visibility?:
-    | T
-    | {
-        check_publish?: T;
-        check_featured?: T;
-        check_pinned?: T;
-      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -16529,13 +15939,6 @@ export interface CareersSelect<T extends boolean = true> {
   slug?: T;
   categories?: T;
   tags?: T;
-  visibility?:
-    | T
-    | {
-        check_publish?: T;
-        check_featured?: T;
-        check_pinned?: T;
-      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -16642,13 +16045,6 @@ export interface InitiativesSelect<T extends boolean = true> {
   slug?: T;
   categories?: T;
   tags?: T;
-  visibility?:
-    | T
-    | {
-        check_publish?: T;
-        check_featured?: T;
-        check_pinned?: T;
-      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -16761,13 +16157,6 @@ export interface MeetupsSelect<T extends boolean = true> {
   slug?: T;
   categories?: T;
   tags?: T;
-  visibility?:
-    | T
-    | {
-        check_publish?: T;
-        check_featured?: T;
-        check_pinned?: T;
-      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -16867,13 +16256,6 @@ export interface CelebrationsSelect<T extends boolean = true> {
   slug?: T;
   categories?: T;
   tags?: T;
-  visibility?:
-    | T
-    | {
-        check_publish?: T;
-        check_featured?: T;
-        check_pinned?: T;
-      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -16967,13 +16349,6 @@ export interface ProtocolsSelect<T extends boolean = true> {
   slug?: T;
   categories?: T;
   tags?: T;
-  visibility?:
-    | T
-    | {
-        check_publish?: T;
-        check_featured?: T;
-        check_pinned?: T;
-      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -17034,13 +16409,6 @@ export interface DutiesSelect<T extends boolean = true> {
   slug?: T;
   categories?: T;
   tags?: T;
-  visibility?:
-    | T
-    | {
-        check_publish?: T;
-        check_featured?: T;
-        check_pinned?: T;
-      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -17115,13 +16483,6 @@ export interface ExpectationsSelect<T extends boolean = true> {
   slug?: T;
   categories?: T;
   tags?: T;
-  visibility?:
-    | T
-    | {
-        check_publish?: T;
-        check_featured?: T;
-        check_pinned?: T;
-      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -17215,13 +16576,6 @@ export interface HighlightsSelect<T extends boolean = true> {
   slug?: T;
   categories?: T;
   tags?: T;
-  visibility?:
-    | T
-    | {
-        check_publish?: T;
-        check_featured?: T;
-        check_pinned?: T;
-      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -17333,13 +16687,6 @@ export interface IncidentsSelect<T extends boolean = true> {
   slug?: T;
   categories?: T;
   tags?: T;
-  visibility?:
-    | T
-    | {
-        check_publish?: T;
-        check_featured?: T;
-        check_pinned?: T;
-      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -17439,13 +16786,6 @@ export interface ImpactsSelect<T extends boolean = true> {
   slug?: T;
   categories?: T;
   tags?: T;
-  visibility?:
-    | T
-    | {
-        check_publish?: T;
-        check_featured?: T;
-        check_pinned?: T;
-      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -17532,13 +16872,6 @@ export interface DecisionsSelect<T extends boolean = true> {
   slug?: T;
   categories?: T;
   tags?: T;
-  visibility?:
-    | T
-    | {
-        check_publish?: T;
-        check_featured?: T;
-        check_pinned?: T;
-      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -17673,13 +17006,6 @@ export interface StrategiesSelect<T extends boolean = true> {
   slug?: T;
   categories?: T;
   tags?: T;
-  visibility?:
-    | T
-    | {
-        check_publish?: T;
-        check_featured?: T;
-        check_pinned?: T;
-      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -17758,13 +17084,6 @@ export interface AwardsSelect<T extends boolean = true> {
   slug?: T;
   categories?: T;
   tags?: T;
-  visibility?:
-    | T
-    | {
-        check_publish?: T;
-        check_featured?: T;
-        check_pinned?: T;
-      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -17893,13 +17212,6 @@ export interface ExperiencesSelect<T extends boolean = true> {
   slug?: T;
   categories?: T;
   tags?: T;
-  visibility?:
-    | T
-    | {
-        check_publish?: T;
-        check_featured?: T;
-        check_pinned?: T;
-      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -17949,13 +17261,6 @@ export interface CategoriesSelect<T extends boolean = true> {
   slug?: T;
   categories?: T;
   tags?: T;
-  visibility?:
-    | T
-    | {
-        check_publish?: T;
-        check_featured?: T;
-        check_pinned?: T;
-      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -17990,13 +17295,6 @@ export interface TagsSelect<T extends boolean = true> {
   slug?: T;
   categories?: T;
   tags?: T;
-  visibility?:
-    | T
-    | {
-        check_publish?: T;
-        check_featured?: T;
-        check_pinned?: T;
-      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -18068,13 +17366,6 @@ export interface TonesSelect<T extends boolean = true> {
   slug?: T;
   categories?: T;
   tags?: T;
-  visibility?:
-    | T
-    | {
-        check_publish?: T;
-        check_featured?: T;
-        check_pinned?: T;
-      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -18151,13 +17442,6 @@ export interface FeaturesSelect<T extends boolean = true> {
   slug?: T;
   categories?: T;
   tags?: T;
-  visibility?:
-    | T
-    | {
-        check_publish?: T;
-        check_featured?: T;
-        check_pinned?: T;
-      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -18275,13 +17559,6 @@ export interface SpecificationsSelect<T extends boolean = true> {
   slug?: T;
   categories?: T;
   tags?: T;
-  visibility?:
-    | T
-    | {
-        check_publish?: T;
-        check_featured?: T;
-        check_pinned?: T;
-      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -18342,13 +17619,6 @@ export interface ClassificationsSelect<T extends boolean = true> {
   slug?: T;
   categories?: T;
   tags?: T;
-  visibility?:
-    | T
-    | {
-        check_publish?: T;
-        check_featured?: T;
-        check_pinned?: T;
-      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -18474,13 +17744,6 @@ export interface SkillsSelect<T extends boolean = true> {
   slug?: T;
   categories?: T;
   tags?: T;
-  visibility?:
-    | T
-    | {
-        check_publish?: T;
-        check_featured?: T;
-        check_pinned?: T;
-      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -18542,13 +17805,6 @@ export interface PrinciplesSelect<T extends boolean = true> {
   slug?: T;
   categories?: T;
   tags?: T;
-  visibility?:
-    | T
-    | {
-        check_publish?: T;
-        check_featured?: T;
-        check_pinned?: T;
-      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -18644,13 +17900,6 @@ export interface PreferencesSelect<T extends boolean = true> {
   slug?: T;
   categories?: T;
   tags?: T;
-  visibility?:
-    | T
-    | {
-        check_publish?: T;
-        check_featured?: T;
-        check_pinned?: T;
-      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -18762,13 +18011,6 @@ export interface ChannelsSelect<T extends boolean = true> {
   slug?: T;
   categories?: T;
   tags?: T;
-  visibility?:
-    | T
-    | {
-        check_publish?: T;
-        check_featured?: T;
-        check_pinned?: T;
-      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -18872,13 +18114,6 @@ export interface LocationsSelect<T extends boolean = true> {
   slug?: T;
   categories?: T;
   tags?: T;
-  visibility?:
-    | T
-    | {
-        check_publish?: T;
-        check_featured?: T;
-        check_pinned?: T;
-      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -19830,131 +19065,31 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   createdAt?: T;
 }
 /**
- * Defines the global mega menu navigation — primary nav items, sub-links, spotlights, utility nav, and the primary CTA.
+ * Defines the global navigation — primary nav items, utility nav, and the primary CTA.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "header".
  */
 export interface Header {
   id: number;
+  /**
+   * Primary navigation links (e.g., Glory, Pursuit, Craft).
+   */
   navItems?:
     | {
         label: string;
-        tagline?: string | null;
-        description?: string | null;
-        subItems?:
-          | {
-              label: string;
-              description?: string | null;
-              link: {
-                type?: ('reference' | 'custom') | null;
-                newTab?: boolean | null;
-                reference?: {
-                  relationTo: 'pages';
-                  value: number | Page;
-                } | null;
-                url?: string | null;
-                label: string;
-              };
-              isFeatured?: boolean | null;
-              id?: string | null;
-            }[]
-          | null;
-        spotlight?: {
-          enable?: boolean | null;
-          label?: string | null;
-          entity?:
-            | ({
-                relationTo: 'drivers';
-                value: number | Driver;
-              } | null)
-            | ({
-                relationTo: 'leaders';
-                value: number | Leader;
-              } | null)
-            | ({
-                relationTo: 'members';
-                value: number | Member;
-              } | null)
-            | ({
-                relationTo: 'cars';
-                value: number | Car;
-              } | null)
-            | ({
-                relationTo: 'kits';
-                value: number | Kit;
-              } | null)
-            | ({
-                relationTo: 'series';
-                value: number | Series;
-              } | null)
-            | ({
-                relationTo: 'seasons';
-                value: number | Season;
-              } | null)
-            | ({
-                relationTo: 'events';
-                value: number | Event;
-              } | null)
-            | ({
-                relationTo: 'awards';
-                value: number | Award;
-              } | null)
-            | ({
-                relationTo: 'stories';
-                value: number | Story;
-              } | null)
-            | ({
-                relationTo: 'journeys';
-                value: number | Journey;
-              } | null)
-            | ({
-                relationTo: 'histories';
-                value: number | History;
-              } | null)
-            | ({
-                relationTo: 'initiatives';
-                value: number | Initiative;
-              } | null)
-            | ({
-                relationTo: 'celebrations';
-                value: number | Celebration;
-              } | null)
-            | ({
-                relationTo: 'meetups';
-                value: number | Meetup;
-              } | null)
-            | ({
-                relationTo: 'careers';
-                value: number | Career;
-              } | null)
-            | ({
-                relationTo: 'trainings';
-                value: number | Training;
-              } | null)
-            | ({
-                relationTo: 'organizations';
-                value: number | Organization;
-              } | null);
-          overrideUrl?: string | null;
-        };
+        link: string;
         visible?: boolean | null;
         id?: string | null;
       }[]
     | null;
+  /**
+   * Secondary links typically found in the top bar or corner (e.g., Store, About).
+   */
   utilityNav?:
     | {
         label: string;
-        link: {
-          type?: ('reference' | 'custom') | null;
-          newTab?: boolean | null;
-          reference?: {
-            relationTo: 'pages';
-            value: number | Page;
-          } | null;
-          url?: string | null;
-          label: string;
-        };
+        link: string;
         visible?: boolean | null;
         id?: string | null;
       }[]
@@ -19993,6 +19128,7 @@ export interface Footer {
   columns?:
     | {
         label: string;
+        visible?: boolean | null;
         links?:
           | {
               label: string;
@@ -20010,7 +19146,6 @@ export interface Footer {
               id?: string | null;
             }[]
           | null;
-        visible?: boolean | null;
         id?: string | null;
       }[]
     | null;
@@ -20143,10 +19278,11 @@ export interface Policy {
         type: 'privacy' | 'terms' | 'cookies' | 'returns' | 'refunds' | 'transactions' | 'legal';
         title: string;
         /**
-         * E.g. v1.2 or 2025-01
+         * E.g. v1.0
          */
         version?: string | null;
         lastUpdated?: string | null;
+        visible?: boolean | null;
         body: {
           root: {
             type: string;
@@ -20162,7 +19298,6 @@ export interface Policy {
           };
           [k: string]: unknown;
         };
-        visible?: boolean | null;
         id?: string | null;
       }[]
     | null;
@@ -20196,19 +19331,9 @@ export interface Social {
           | 'github'
           | 'spotify'
           | 'other';
-        /**
-         * Optional override label. Defaults to platform name if left empty.
-         */
-        label?: string | null;
-        /**
-         * E.g. @afmotorsport
-         */
+        label: string;
         handle?: string | null;
         url: string;
-        /**
-         * Optional link to the corresponding Channels collection record.
-         */
-        channel?: (number | null) | Channel;
         visible?: boolean | null;
         id?: string | null;
       }[]
@@ -20234,16 +19359,11 @@ export interface Announcement {
           label?: string | null;
           url?: string | null;
         };
-        schedule?: {
-          from?: string | null;
-          until?: string | null;
-        };
-        audience?: ('all' | 'authenticated' | 'guest') | null;
-        /**
-         * Allow visitors to close this announcement.
-         */
+        from?: string | null;
+        until?: string | null;
+        audience?: ('everyone' | 'authenticated' | 'guest') | null;
         dismissible?: boolean | null;
-        visible?: boolean | null;
+        active?: boolean | null;
         id?: string | null;
       }[]
     | null;
@@ -20260,10 +19380,8 @@ export interface Question {
   id: number;
   categories?:
     | {
-        /**
-         * E.g. "About AF Motorsport", "Race Weekend", "Store & Orders", "Careers"
-         */
         label: string;
+        visible?: boolean | null;
         items?:
           | {
               question: string;
@@ -20282,15 +19400,10 @@ export interface Question {
                 };
                 [k: string]: unknown;
               };
-              /**
-               * Optional link to a page where the visitor can read more.
-               */
               relatedPage?: string | null;
-              visible?: boolean | null;
               id?: string | null;
             }[]
           | null;
-        visible?: boolean | null;
         id?: string | null;
       }[]
     | null;
@@ -20306,33 +19419,7 @@ export interface HeaderSelect<T extends boolean = true> {
     | T
     | {
         label?: T;
-        tagline?: T;
-        description?: T;
-        subItems?:
-          | T
-          | {
-              label?: T;
-              description?: T;
-              link?:
-                | T
-                | {
-                    type?: T;
-                    newTab?: T;
-                    reference?: T;
-                    url?: T;
-                    label?: T;
-                  };
-              isFeatured?: T;
-              id?: T;
-            };
-        spotlight?:
-          | T
-          | {
-              enable?: T;
-              label?: T;
-              entity?: T;
-              overrideUrl?: T;
-            };
+        link?: T;
         visible?: T;
         id?: T;
       };
@@ -20340,15 +19427,7 @@ export interface HeaderSelect<T extends boolean = true> {
     | T
     | {
         label?: T;
-        link?:
-          | T
-          | {
-              type?: T;
-              newTab?: T;
-              reference?: T;
-              url?: T;
-              label?: T;
-            };
+        link?: T;
         visible?: T;
         id?: T;
       };
@@ -20388,6 +19467,7 @@ export interface FooterSelect<T extends boolean = true> {
     | T
     | {
         label?: T;
+        visible?: T;
         links?:
           | T
           | {
@@ -20404,7 +19484,6 @@ export interface FooterSelect<T extends boolean = true> {
               visible?: T;
               id?: T;
             };
-        visible?: T;
         id?: T;
       };
   cta?:
@@ -20501,8 +19580,8 @@ export interface PoliciesSelect<T extends boolean = true> {
         title?: T;
         version?: T;
         lastUpdated?: T;
-        body?: T;
         visible?: T;
+        body?: T;
         id?: T;
       };
   updatedAt?: T;
@@ -20521,7 +19600,6 @@ export interface SocialsSelect<T extends boolean = true> {
         label?: T;
         handle?: T;
         url?: T;
-        channel?: T;
         visible?: T;
         id?: T;
       };
@@ -20547,15 +19625,11 @@ export interface AnnouncementsSelect<T extends boolean = true> {
               label?: T;
               url?: T;
             };
-        schedule?:
-          | T
-          | {
-              from?: T;
-              until?: T;
-            };
+        from?: T;
+        until?: T;
         audience?: T;
         dismissible?: T;
-        visible?: T;
+        active?: T;
         id?: T;
       };
   updatedAt?: T;
@@ -20571,16 +19645,15 @@ export interface QuestionsSelect<T extends boolean = true> {
     | T
     | {
         label?: T;
+        visible?: T;
         items?:
           | T
           | {
               question?: T;
               answer?: T;
               relatedPage?: T;
-              visible?: T;
               id?: T;
             };
-        visible?: T;
         id?: T;
       };
   updatedAt?: T;

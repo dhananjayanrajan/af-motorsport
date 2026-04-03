@@ -49,7 +49,7 @@ export const Policies: GlobalConfig = {
           label: 'Version',
           type: 'text',
           admin: {
-            description: 'E.g. v1.2 or 2025-01',
+            description: 'E.g. v1.0',
           },
         },
         {
@@ -61,6 +61,12 @@ export const Policies: GlobalConfig = {
               pickerAppearance: 'dayOnly',
             },
           },
+        },
+        {
+          name: 'visible',
+          label: 'Visible',
+          type: 'checkbox',
+          defaultValue: true,
         },
         {
           name: 'body',
@@ -75,12 +81,6 @@ export const Policies: GlobalConfig = {
               InlineToolbarFeature(),
             ],
           }),
-        },
-        {
-          name: 'visible',
-          label: 'Visible',
-          type: 'checkbox',
-          defaultValue: true,
         },
       ],
     },

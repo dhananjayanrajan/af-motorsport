@@ -185,8 +185,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE TYPE "public"."enum_transactions_payment_method" AS ENUM('stripe');
   CREATE TYPE "public"."enum_transactions_status" AS ENUM('pending', 'succeeded', 'failed', 'cancelled', 'expired', 'refunded');
   CREATE TYPE "public"."enum_transactions_currency" AS ENUM('USD');
-  CREATE TYPE "public"."enum_header_nav_items_sub_items_link_type" AS ENUM('reference', 'custom');
-  CREATE TYPE "public"."enum_header_utility_nav_link_type" AS ENUM('reference', 'custom');
   CREATE TYPE "public"."enum_header_cta_link_type" AS ENUM('reference', 'custom');
   CREATE TYPE "public"."enum_footer_columns_links_link_type" AS ENUM('reference', 'custom');
   CREATE TYPE "public"."enum_footer_legal_link_type" AS ENUM('reference', 'custom');
@@ -194,7 +192,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE TYPE "public"."enum_policies_documents_type" AS ENUM('privacy', 'terms', 'cookies', 'returns', 'refunds', 'transactions', 'legal');
   CREATE TYPE "public"."enum_socials_accounts_platform" AS ENUM('instagram', 'x', 'facebook', 'youtube', 'linkedin', 'tiktok', 'threads', 'snapchat', 'pinterest', 'discord', 'twitch', 'whatsapp', 'telegram', 'github', 'spotify', 'other');
   CREATE TYPE "public"."enum_announcements_items_type" AS ENUM('info', 'warning', 'urgent', 'celebration');
-  CREATE TYPE "public"."enum_announcements_items_audience" AS ENUM('all', 'authenticated', 'guest');
+  CREATE TYPE "public"."enum_announcements_items_audience" AS ENUM('everyone', 'authenticated', 'guest');
   CREATE TABLE "series" (
   	"id" serial PRIMARY KEY NOT NULL,
   	"toggle" "enum_series_toggle" DEFAULT 'advanced',
@@ -225,9 +223,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"contexts_visibility_show" boolean DEFAULT false,
   	"generate_slug" boolean DEFAULT true,
   	"slug" varchar,
-  	"visibility_check_publish" boolean DEFAULT false,
-  	"visibility_check_featured" boolean DEFAULT false,
-  	"visibility_check_pinned" boolean DEFAULT false,
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
   );
@@ -286,9 +281,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"contexts_visibility_show" boolean DEFAULT false,
   	"generate_slug" boolean DEFAULT true,
   	"slug" varchar,
-  	"visibility_check_publish" boolean DEFAULT false,
-  	"visibility_check_featured" boolean DEFAULT false,
-  	"visibility_check_pinned" boolean DEFAULT false,
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
   );
@@ -361,9 +353,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"contexts_visibility_show" boolean DEFAULT false,
   	"generate_slug" boolean DEFAULT true,
   	"slug" varchar,
-  	"visibility_check_publish" boolean DEFAULT false,
-  	"visibility_check_featured" boolean DEFAULT false,
-  	"visibility_check_pinned" boolean DEFAULT false,
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
   );
@@ -441,9 +430,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"contexts_visibility_show" boolean DEFAULT false,
   	"generate_slug" boolean DEFAULT true,
   	"slug" varchar,
-  	"visibility_check_publish" boolean DEFAULT false,
-  	"visibility_check_featured" boolean DEFAULT false,
-  	"visibility_check_pinned" boolean DEFAULT false,
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
   );
@@ -521,9 +507,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"contexts_visibility_show" boolean DEFAULT false,
   	"generate_slug" boolean DEFAULT true,
   	"slug" varchar,
-  	"visibility_check_publish" boolean DEFAULT false,
-  	"visibility_check_featured" boolean DEFAULT false,
-  	"visibility_check_pinned" boolean DEFAULT false,
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
   );
@@ -588,9 +571,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"assets_visibility_show" boolean DEFAULT false,
   	"generate_slug" boolean DEFAULT true,
   	"slug" varchar,
-  	"visibility_check_publish" boolean DEFAULT false,
-  	"visibility_check_featured" boolean DEFAULT false,
-  	"visibility_check_pinned" boolean DEFAULT false,
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
   );
@@ -653,9 +633,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"contexts_visibility_show" boolean DEFAULT false,
   	"generate_slug" boolean DEFAULT true,
   	"slug" varchar,
-  	"visibility_check_publish" boolean DEFAULT false,
-  	"visibility_check_featured" boolean DEFAULT false,
-  	"visibility_check_pinned" boolean DEFAULT false,
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
   );
@@ -724,9 +701,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"contexts_visibility_show" boolean DEFAULT false,
   	"generate_slug" boolean DEFAULT true,
   	"slug" varchar,
-  	"visibility_check_publish" boolean DEFAULT false,
-  	"visibility_check_featured" boolean DEFAULT false,
-  	"visibility_check_pinned" boolean DEFAULT false,
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
   );
@@ -800,9 +774,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"contexts_visibility_show" boolean DEFAULT false,
   	"generate_slug" boolean DEFAULT true,
   	"slug" varchar,
-  	"visibility_check_publish" boolean DEFAULT false,
-  	"visibility_check_featured" boolean DEFAULT false,
-  	"visibility_check_pinned" boolean DEFAULT false,
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
   );
@@ -877,9 +848,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"contexts_visibility_show" boolean DEFAULT false,
   	"generate_slug" boolean DEFAULT true,
   	"slug" varchar,
-  	"visibility_check_publish" boolean DEFAULT false,
-  	"visibility_check_featured" boolean DEFAULT false,
-  	"visibility_check_pinned" boolean DEFAULT false,
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
   );
@@ -967,9 +935,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"contexts_visibility_show" boolean DEFAULT false,
   	"generate_slug" boolean DEFAULT true,
   	"slug" varchar,
-  	"visibility_check_publish" boolean DEFAULT false,
-  	"visibility_check_featured" boolean DEFAULT false,
-  	"visibility_check_pinned" boolean DEFAULT false,
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
   );
@@ -1052,9 +1017,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"contexts_visibility_show" boolean DEFAULT false,
   	"generate_slug" boolean DEFAULT true,
   	"slug" varchar,
-  	"visibility_check_publish" boolean DEFAULT false,
-  	"visibility_check_featured" boolean DEFAULT false,
-  	"visibility_check_pinned" boolean DEFAULT false,
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
   );
@@ -1148,9 +1110,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"contexts_visibility_show" boolean DEFAULT false,
   	"generate_slug" boolean DEFAULT true,
   	"slug" varchar,
-  	"visibility_check_publish" boolean DEFAULT false,
-  	"visibility_check_featured" boolean DEFAULT false,
-  	"visibility_check_pinned" boolean DEFAULT false,
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
   );
@@ -1241,9 +1200,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"contexts_visibility_show" boolean DEFAULT false,
   	"generate_slug" boolean DEFAULT true,
   	"slug" varchar,
-  	"visibility_check_publish" boolean DEFAULT false,
-  	"visibility_check_featured" boolean DEFAULT false,
-  	"visibility_check_pinned" boolean DEFAULT false,
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
   );
@@ -1295,9 +1251,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"assets_visibility_show" boolean DEFAULT false,
   	"generate_slug" boolean DEFAULT true,
   	"slug" varchar,
-  	"visibility_check_publish" boolean DEFAULT false,
-  	"visibility_check_featured" boolean DEFAULT false,
-  	"visibility_check_pinned" boolean DEFAULT false,
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
   );
@@ -1354,9 +1307,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"assets_visibility_show" boolean DEFAULT false,
   	"generate_slug" boolean DEFAULT true,
   	"slug" varchar,
-  	"visibility_check_publish" boolean DEFAULT false,
-  	"visibility_check_featured" boolean DEFAULT false,
-  	"visibility_check_pinned" boolean DEFAULT false,
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
   );
@@ -1416,9 +1366,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"assets_visibility_show" boolean DEFAULT false,
   	"generate_slug" boolean DEFAULT true,
   	"slug" varchar,
-  	"visibility_check_publish" boolean DEFAULT false,
-  	"visibility_check_featured" boolean DEFAULT false,
-  	"visibility_check_pinned" boolean DEFAULT false,
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
   );
@@ -1461,9 +1408,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"contexts_visibility_show" boolean DEFAULT false,
   	"generate_slug" boolean DEFAULT true,
   	"slug" varchar,
-  	"visibility_check_publish" boolean DEFAULT false,
-  	"visibility_check_featured" boolean DEFAULT false,
-  	"visibility_check_pinned" boolean DEFAULT false,
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
   );
@@ -1512,9 +1456,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"contexts_visibility_show" boolean DEFAULT false,
   	"generate_slug" boolean DEFAULT true,
   	"slug" varchar,
-  	"visibility_check_publish" boolean DEFAULT false,
-  	"visibility_check_featured" boolean DEFAULT false,
-  	"visibility_check_pinned" boolean DEFAULT false,
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
   );
@@ -1594,9 +1535,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"contexts_visibility_show" boolean DEFAULT false,
   	"generate_slug" boolean DEFAULT true,
   	"slug" varchar,
-  	"visibility_check_publish" boolean DEFAULT false,
-  	"visibility_check_featured" boolean DEFAULT false,
-  	"visibility_check_pinned" boolean DEFAULT false,
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
   );
@@ -1658,9 +1596,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"contexts_visibility_show" boolean DEFAULT false,
   	"generate_slug" boolean DEFAULT true,
   	"slug" varchar,
-  	"visibility_check_publish" boolean DEFAULT false,
-  	"visibility_check_featured" boolean DEFAULT false,
-  	"visibility_check_pinned" boolean DEFAULT false,
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
   );
@@ -1702,9 +1637,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"contexts_visibility_show" boolean DEFAULT false,
   	"generate_slug" boolean DEFAULT true,
   	"slug" varchar,
-  	"visibility_check_publish" boolean DEFAULT false,
-  	"visibility_check_featured" boolean DEFAULT false,
-  	"visibility_check_pinned" boolean DEFAULT false,
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
   );
@@ -1742,9 +1674,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"contexts_visibility_show" boolean DEFAULT false,
   	"generate_slug" boolean DEFAULT true,
   	"slug" varchar,
-  	"visibility_check_publish" boolean DEFAULT false,
-  	"visibility_check_featured" boolean DEFAULT false,
-  	"visibility_check_pinned" boolean DEFAULT false,
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
   );
@@ -1782,9 +1711,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"contexts_visibility_show" boolean DEFAULT false,
   	"generate_slug" boolean DEFAULT true,
   	"slug" varchar,
-  	"visibility_check_publish" boolean DEFAULT false,
-  	"visibility_check_featured" boolean DEFAULT false,
-  	"visibility_check_pinned" boolean DEFAULT false,
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
   );
@@ -1855,9 +1781,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"contexts_visibility_show" boolean DEFAULT false,
   	"generate_slug" boolean DEFAULT true,
   	"slug" varchar,
-  	"visibility_check_publish" boolean DEFAULT false,
-  	"visibility_check_featured" boolean DEFAULT false,
-  	"visibility_check_pinned" boolean DEFAULT false,
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
   );
@@ -1908,9 +1831,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"contexts_visibility_show" boolean DEFAULT false,
   	"generate_slug" boolean DEFAULT true,
   	"slug" varchar,
-  	"visibility_check_publish" boolean DEFAULT false,
-  	"visibility_check_featured" boolean DEFAULT false,
-  	"visibility_check_pinned" boolean DEFAULT false,
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
   );
@@ -1974,9 +1894,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"contexts_visibility_show" boolean DEFAULT false,
   	"generate_slug" boolean DEFAULT true,
   	"slug" varchar,
-  	"visibility_check_publish" boolean DEFAULT false,
-  	"visibility_check_featured" boolean DEFAULT false,
-  	"visibility_check_pinned" boolean DEFAULT false,
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
   );
@@ -2032,9 +1949,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"contexts_visibility_show" boolean DEFAULT false,
   	"generate_slug" boolean DEFAULT true,
   	"slug" varchar,
-  	"visibility_check_publish" boolean DEFAULT false,
-  	"visibility_check_featured" boolean DEFAULT false,
-  	"visibility_check_pinned" boolean DEFAULT false,
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
   );
@@ -2094,9 +2008,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"contexts_visibility_show" boolean DEFAULT false,
   	"generate_slug" boolean DEFAULT true,
   	"slug" varchar,
-  	"visibility_check_publish" boolean DEFAULT false,
-  	"visibility_check_featured" boolean DEFAULT false,
-  	"visibility_check_pinned" boolean DEFAULT false,
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
   );
@@ -2153,9 +2064,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"contexts_visibility_show" boolean DEFAULT false,
   	"generate_slug" boolean DEFAULT true,
   	"slug" varchar,
-  	"visibility_check_publish" boolean DEFAULT false,
-  	"visibility_check_featured" boolean DEFAULT false,
-  	"visibility_check_pinned" boolean DEFAULT false,
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
   );
@@ -2216,9 +2124,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"contexts_visibility_show" boolean DEFAULT false,
   	"generate_slug" boolean DEFAULT true,
   	"slug" varchar,
-  	"visibility_check_publish" boolean DEFAULT false,
-  	"visibility_check_featured" boolean DEFAULT false,
-  	"visibility_check_pinned" boolean DEFAULT false,
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
   );
@@ -2258,9 +2163,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"contexts_visibility_show" boolean DEFAULT false,
   	"generate_slug" boolean DEFAULT true,
   	"slug" varchar,
-  	"visibility_check_publish" boolean DEFAULT false,
-  	"visibility_check_featured" boolean DEFAULT false,
-  	"visibility_check_pinned" boolean DEFAULT false,
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
   );
@@ -2304,9 +2206,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"contexts_visibility_show" boolean DEFAULT false,
   	"generate_slug" boolean DEFAULT true,
   	"slug" varchar,
-  	"visibility_check_publish" boolean DEFAULT false,
-  	"visibility_check_featured" boolean DEFAULT false,
-  	"visibility_check_pinned" boolean DEFAULT false,
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
   );
@@ -2354,9 +2253,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"contexts_visibility_show" boolean DEFAULT false,
   	"generate_slug" boolean DEFAULT true,
   	"slug" varchar,
-  	"visibility_check_publish" boolean DEFAULT false,
-  	"visibility_check_featured" boolean DEFAULT false,
-  	"visibility_check_pinned" boolean DEFAULT false,
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
   );
@@ -2404,9 +2300,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"contexts_visibility_show" boolean DEFAULT false,
   	"generate_slug" boolean DEFAULT true,
   	"slug" varchar,
-  	"visibility_check_publish" boolean DEFAULT false,
-  	"visibility_check_featured" boolean DEFAULT false,
-  	"visibility_check_pinned" boolean DEFAULT false,
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
   );
@@ -2462,9 +2355,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"contexts_visibility_show" boolean DEFAULT false,
   	"generate_slug" boolean DEFAULT true,
   	"slug" varchar,
-  	"visibility_check_publish" boolean DEFAULT false,
-  	"visibility_check_featured" boolean DEFAULT false,
-  	"visibility_check_pinned" boolean DEFAULT false,
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
   );
@@ -2511,9 +2401,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"contexts_visibility_show" boolean DEFAULT false,
   	"generate_slug" boolean DEFAULT true,
   	"slug" varchar,
-  	"visibility_check_publish" boolean DEFAULT false,
-  	"visibility_check_featured" boolean DEFAULT false,
-  	"visibility_check_pinned" boolean DEFAULT false,
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
   );
@@ -2609,9 +2496,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"contexts_visibility_show" boolean DEFAULT false,
   	"generate_slug" boolean DEFAULT true,
   	"slug" varchar,
-  	"visibility_check_publish" boolean DEFAULT false,
-  	"visibility_check_featured" boolean DEFAULT false,
-  	"visibility_check_pinned" boolean DEFAULT false,
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
   );
@@ -2657,9 +2541,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"contexts_visibility_show" boolean DEFAULT false,
   	"generate_slug" boolean DEFAULT true,
   	"slug" varchar,
-  	"visibility_check_publish" boolean DEFAULT false,
-  	"visibility_check_featured" boolean DEFAULT false,
-  	"visibility_check_pinned" boolean DEFAULT false,
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
   );
@@ -2720,9 +2601,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"contexts_visibility_show" boolean DEFAULT false,
   	"generate_slug" boolean DEFAULT true,
   	"slug" varchar,
-  	"visibility_check_publish" boolean DEFAULT false,
-  	"visibility_check_featured" boolean DEFAULT false,
-  	"visibility_check_pinned" boolean DEFAULT false,
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
   );
@@ -2778,9 +2656,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"details_visibility_show" boolean DEFAULT false,
   	"generate_slug" boolean DEFAULT true,
   	"slug" varchar,
-  	"visibility_check_publish" boolean DEFAULT false,
-  	"visibility_check_featured" boolean DEFAULT false,
-  	"visibility_check_pinned" boolean DEFAULT false,
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
   );
@@ -2812,9 +2687,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"basics_visibility_show" boolean DEFAULT false,
   	"generate_slug" boolean DEFAULT true,
   	"slug" varchar,
-  	"visibility_check_publish" boolean DEFAULT false,
-  	"visibility_check_featured" boolean DEFAULT false,
-  	"visibility_check_pinned" boolean DEFAULT false,
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
   );
@@ -2865,9 +2737,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"traits_visibility_show" boolean DEFAULT false,
   	"generate_slug" boolean DEFAULT true,
   	"slug" varchar,
-  	"visibility_check_publish" boolean DEFAULT false,
-  	"visibility_check_featured" boolean DEFAULT false,
-  	"visibility_check_pinned" boolean DEFAULT false,
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
   );
@@ -2909,9 +2778,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"contexts_visibility_show" boolean DEFAULT false,
   	"generate_slug" boolean DEFAULT true,
   	"slug" varchar,
-  	"visibility_check_publish" boolean DEFAULT false,
-  	"visibility_check_featured" boolean DEFAULT false,
-  	"visibility_check_pinned" boolean DEFAULT false,
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
   );
@@ -2982,9 +2848,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"metrics_visibility_show" boolean DEFAULT false,
   	"generate_slug" boolean DEFAULT true,
   	"slug" varchar,
-  	"visibility_check_publish" boolean DEFAULT false,
-  	"visibility_check_featured" boolean DEFAULT false,
-  	"visibility_check_pinned" boolean DEFAULT false,
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
   );
@@ -3021,9 +2884,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"contexts_visibility_show" boolean DEFAULT false,
   	"generate_slug" boolean DEFAULT true,
   	"slug" varchar,
-  	"visibility_check_publish" boolean DEFAULT false,
-  	"visibility_check_featured" boolean DEFAULT false,
-  	"visibility_check_pinned" boolean DEFAULT false,
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
   );
@@ -3094,9 +2954,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"contexts_visibility_show" boolean DEFAULT false,
   	"generate_slug" boolean DEFAULT true,
   	"slug" varchar,
-  	"visibility_check_publish" boolean DEFAULT false,
-  	"visibility_check_featured" boolean DEFAULT false,
-  	"visibility_check_pinned" boolean DEFAULT false,
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
   );
@@ -3138,9 +2995,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"contexts_visibility_show" boolean DEFAULT false,
   	"generate_slug" boolean DEFAULT true,
   	"slug" varchar,
-  	"visibility_check_publish" boolean DEFAULT false,
-  	"visibility_check_featured" boolean DEFAULT false,
-  	"visibility_check_pinned" boolean DEFAULT false,
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
   );
@@ -3202,9 +3056,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"contexts_visibility_show" boolean DEFAULT false,
   	"generate_slug" boolean DEFAULT true,
   	"slug" varchar,
-  	"visibility_check_publish" boolean DEFAULT false,
-  	"visibility_check_featured" boolean DEFAULT false,
-  	"visibility_check_pinned" boolean DEFAULT false,
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
   );
@@ -3275,9 +3126,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"traits_visibility_show" boolean DEFAULT false,
   	"generate_slug" boolean DEFAULT true,
   	"slug" varchar,
-  	"visibility_check_publish" boolean DEFAULT false,
-  	"visibility_check_featured" boolean DEFAULT false,
-  	"visibility_check_pinned" boolean DEFAULT false,
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
   );
@@ -3332,9 +3180,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"contexts_visibility_show" boolean DEFAULT false,
   	"generate_slug" boolean DEFAULT true,
   	"slug" varchar,
-  	"visibility_check_publish" boolean DEFAULT false,
-  	"visibility_check_featured" boolean DEFAULT false,
-  	"visibility_check_pinned" boolean DEFAULT false,
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
   );
@@ -4404,29 +4249,12 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
   );
   
-  CREATE TABLE "header_nav_items_sub_items" (
-  	"_order" integer NOT NULL,
-  	"_parent_id" varchar NOT NULL,
-  	"id" varchar PRIMARY KEY NOT NULL,
-  	"label" varchar NOT NULL,
-  	"description" varchar,
-  	"link_type" "enum_header_nav_items_sub_items_link_type" DEFAULT 'reference',
-  	"link_new_tab" boolean,
-  	"link_url" varchar,
-  	"link_label" varchar NOT NULL,
-  	"is_featured" boolean DEFAULT false
-  );
-  
   CREATE TABLE "header_nav_items" (
   	"_order" integer NOT NULL,
   	"_parent_id" integer NOT NULL,
   	"id" varchar PRIMARY KEY NOT NULL,
   	"label" varchar NOT NULL,
-  	"tagline" varchar,
-  	"description" varchar,
-  	"spotlight_enable" boolean DEFAULT false,
-  	"spotlight_label" varchar,
-  	"spotlight_override_url" varchar,
+  	"link" varchar NOT NULL,
   	"visible" boolean DEFAULT true
   );
   
@@ -4435,10 +4263,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"_parent_id" integer NOT NULL,
   	"id" varchar PRIMARY KEY NOT NULL,
   	"label" varchar NOT NULL,
-  	"link_type" "enum_header_utility_nav_link_type" DEFAULT 'reference',
-  	"link_new_tab" boolean,
-  	"link_url" varchar,
-  	"link_label" varchar NOT NULL,
+  	"link" varchar NOT NULL,
   	"visible" boolean DEFAULT true
   );
   
@@ -4459,25 +4284,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"order" integer,
   	"parent_id" integer NOT NULL,
   	"path" varchar NOT NULL,
-  	"pages_id" integer,
-  	"drivers_id" integer,
-  	"leaders_id" integer,
-  	"members_id" integer,
-  	"cars_id" integer,
-  	"kits_id" integer,
-  	"series_id" integer,
-  	"seasons_id" integer,
-  	"events_id" integer,
-  	"awards_id" integer,
-  	"stories_id" integer,
-  	"journeys_id" integer,
-  	"histories_id" integer,
-  	"initiatives_id" integer,
-  	"celebrations_id" integer,
-  	"meetups_id" integer,
-  	"careers_id" integer,
-  	"trainings_id" integer,
-  	"organizations_id" integer
+  	"pages_id" integer
   );
   
   CREATE TABLE "footer_columns_links" (
@@ -4617,10 +4424,9 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"_parent_id" integer NOT NULL,
   	"id" varchar PRIMARY KEY NOT NULL,
   	"platform" "enum_socials_accounts_platform" NOT NULL,
-  	"label" varchar,
+  	"label" varchar NOT NULL,
   	"handle" varchar,
   	"url" varchar NOT NULL,
-  	"channel_id" integer,
   	"visible" boolean DEFAULT true
   );
   
@@ -4638,11 +4444,11 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"link_enable" boolean DEFAULT false,
   	"link_label" varchar,
   	"link_url" varchar,
-  	"schedule_from" timestamp(3) with time zone,
-  	"schedule_until" timestamp(3) with time zone,
-  	"audience" "enum_announcements_items_audience" DEFAULT 'all',
+  	"from" timestamp(3) with time zone,
+  	"until" timestamp(3) with time zone,
+  	"audience" "enum_announcements_items_audience" DEFAULT 'everyone',
   	"dismissible" boolean DEFAULT true,
-  	"visible" boolean DEFAULT true
+  	"active" boolean DEFAULT true
   );
   
   CREATE TABLE "announcements_items_locales" (
@@ -4663,8 +4469,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"_order" integer NOT NULL,
   	"_parent_id" varchar NOT NULL,
   	"id" varchar PRIMARY KEY NOT NULL,
-  	"related_page" varchar,
-  	"visible" boolean DEFAULT true
+  	"related_page" varchar
   );
   
   CREATE TABLE "questions_categories_items_locales" (
@@ -5590,29 +5395,10 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   ALTER TABLE "payload_preferences_rels" ADD CONSTRAINT "payload_preferences_rels_parent_fk" FOREIGN KEY ("parent_id") REFERENCES "public"."payload_preferences"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "payload_preferences_rels" ADD CONSTRAINT "payload_preferences_rels_users_fk" FOREIGN KEY ("users_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "payload_preferences_rels" ADD CONSTRAINT "payload_preferences_rels_payload_mcp_api_keys_fk" FOREIGN KEY ("payload_mcp_api_keys_id") REFERENCES "public"."payload_mcp_api_keys"("id") ON DELETE cascade ON UPDATE no action;
-  ALTER TABLE "header_nav_items_sub_items" ADD CONSTRAINT "header_nav_items_sub_items_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."header_nav_items"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "header_nav_items" ADD CONSTRAINT "header_nav_items_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."header"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "header_utility_nav" ADD CONSTRAINT "header_utility_nav_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."header"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "header_rels" ADD CONSTRAINT "header_rels_parent_fk" FOREIGN KEY ("parent_id") REFERENCES "public"."header"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "header_rels" ADD CONSTRAINT "header_rels_pages_fk" FOREIGN KEY ("pages_id") REFERENCES "public"."pages"("id") ON DELETE cascade ON UPDATE no action;
-  ALTER TABLE "header_rels" ADD CONSTRAINT "header_rels_drivers_fk" FOREIGN KEY ("drivers_id") REFERENCES "public"."drivers"("id") ON DELETE cascade ON UPDATE no action;
-  ALTER TABLE "header_rels" ADD CONSTRAINT "header_rels_leaders_fk" FOREIGN KEY ("leaders_id") REFERENCES "public"."leaders"("id") ON DELETE cascade ON UPDATE no action;
-  ALTER TABLE "header_rels" ADD CONSTRAINT "header_rels_members_fk" FOREIGN KEY ("members_id") REFERENCES "public"."members"("id") ON DELETE cascade ON UPDATE no action;
-  ALTER TABLE "header_rels" ADD CONSTRAINT "header_rels_cars_fk" FOREIGN KEY ("cars_id") REFERENCES "public"."cars"("id") ON DELETE cascade ON UPDATE no action;
-  ALTER TABLE "header_rels" ADD CONSTRAINT "header_rels_kits_fk" FOREIGN KEY ("kits_id") REFERENCES "public"."kits"("id") ON DELETE cascade ON UPDATE no action;
-  ALTER TABLE "header_rels" ADD CONSTRAINT "header_rels_series_fk" FOREIGN KEY ("series_id") REFERENCES "public"."series"("id") ON DELETE cascade ON UPDATE no action;
-  ALTER TABLE "header_rels" ADD CONSTRAINT "header_rels_seasons_fk" FOREIGN KEY ("seasons_id") REFERENCES "public"."seasons"("id") ON DELETE cascade ON UPDATE no action;
-  ALTER TABLE "header_rels" ADD CONSTRAINT "header_rels_events_fk" FOREIGN KEY ("events_id") REFERENCES "public"."events"("id") ON DELETE cascade ON UPDATE no action;
-  ALTER TABLE "header_rels" ADD CONSTRAINT "header_rels_awards_fk" FOREIGN KEY ("awards_id") REFERENCES "public"."awards"("id") ON DELETE cascade ON UPDATE no action;
-  ALTER TABLE "header_rels" ADD CONSTRAINT "header_rels_stories_fk" FOREIGN KEY ("stories_id") REFERENCES "public"."stories"("id") ON DELETE cascade ON UPDATE no action;
-  ALTER TABLE "header_rels" ADD CONSTRAINT "header_rels_journeys_fk" FOREIGN KEY ("journeys_id") REFERENCES "public"."journeys"("id") ON DELETE cascade ON UPDATE no action;
-  ALTER TABLE "header_rels" ADD CONSTRAINT "header_rels_histories_fk" FOREIGN KEY ("histories_id") REFERENCES "public"."histories"("id") ON DELETE cascade ON UPDATE no action;
-  ALTER TABLE "header_rels" ADD CONSTRAINT "header_rels_initiatives_fk" FOREIGN KEY ("initiatives_id") REFERENCES "public"."initiatives"("id") ON DELETE cascade ON UPDATE no action;
-  ALTER TABLE "header_rels" ADD CONSTRAINT "header_rels_celebrations_fk" FOREIGN KEY ("celebrations_id") REFERENCES "public"."celebrations"("id") ON DELETE cascade ON UPDATE no action;
-  ALTER TABLE "header_rels" ADD CONSTRAINT "header_rels_meetups_fk" FOREIGN KEY ("meetups_id") REFERENCES "public"."meetups"("id") ON DELETE cascade ON UPDATE no action;
-  ALTER TABLE "header_rels" ADD CONSTRAINT "header_rels_careers_fk" FOREIGN KEY ("careers_id") REFERENCES "public"."careers"("id") ON DELETE cascade ON UPDATE no action;
-  ALTER TABLE "header_rels" ADD CONSTRAINT "header_rels_trainings_fk" FOREIGN KEY ("trainings_id") REFERENCES "public"."trainings"("id") ON DELETE cascade ON UPDATE no action;
-  ALTER TABLE "header_rels" ADD CONSTRAINT "header_rels_organizations_fk" FOREIGN KEY ("organizations_id") REFERENCES "public"."organizations"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "footer_columns_links" ADD CONSTRAINT "footer_columns_links_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."footer_columns"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "footer_columns" ADD CONSTRAINT "footer_columns_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."footer"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "footer_legal" ADD CONSTRAINT "footer_legal_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."footer"("id") ON DELETE cascade ON UPDATE no action;
@@ -5635,7 +5421,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   ALTER TABLE "identity_rels" ADD CONSTRAINT "identity_rels_initiatives_fk" FOREIGN KEY ("initiatives_id") REFERENCES "public"."initiatives"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "policies_documents" ADD CONSTRAINT "policies_documents_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."policies"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "policies_documents_locales" ADD CONSTRAINT "policies_documents_locales_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."policies_documents"("id") ON DELETE cascade ON UPDATE no action;
-  ALTER TABLE "socials_accounts" ADD CONSTRAINT "socials_accounts_channel_id_channels_id_fk" FOREIGN KEY ("channel_id") REFERENCES "public"."channels"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "socials_accounts" ADD CONSTRAINT "socials_accounts_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."socials"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "announcements_items" ADD CONSTRAINT "announcements_items_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."announcements"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "announcements_items_locales" ADD CONSTRAINT "announcements_items_locales_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."announcements_items"("id") ON DELETE cascade ON UPDATE no action;
@@ -7149,8 +6934,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX "payload_preferences_rels_payload_mcp_api_keys_id_idx" ON "payload_preferences_rels" USING btree ("payload_mcp_api_keys_id");
   CREATE INDEX "payload_migrations_updated_at_idx" ON "payload_migrations" USING btree ("updated_at");
   CREATE INDEX "payload_migrations_created_at_idx" ON "payload_migrations" USING btree ("created_at");
-  CREATE INDEX "header_nav_items_sub_items_order_idx" ON "header_nav_items_sub_items" USING btree ("_order");
-  CREATE INDEX "header_nav_items_sub_items_parent_id_idx" ON "header_nav_items_sub_items" USING btree ("_parent_id");
   CREATE INDEX "header_nav_items_order_idx" ON "header_nav_items" USING btree ("_order");
   CREATE INDEX "header_nav_items_parent_id_idx" ON "header_nav_items" USING btree ("_parent_id");
   CREATE INDEX "header_utility_nav_order_idx" ON "header_utility_nav" USING btree ("_order");
@@ -7159,24 +6942,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX "header_rels_parent_idx" ON "header_rels" USING btree ("parent_id");
   CREATE INDEX "header_rels_path_idx" ON "header_rels" USING btree ("path");
   CREATE INDEX "header_rels_pages_id_idx" ON "header_rels" USING btree ("pages_id");
-  CREATE INDEX "header_rels_drivers_id_idx" ON "header_rels" USING btree ("drivers_id");
-  CREATE INDEX "header_rels_leaders_id_idx" ON "header_rels" USING btree ("leaders_id");
-  CREATE INDEX "header_rels_members_id_idx" ON "header_rels" USING btree ("members_id");
-  CREATE INDEX "header_rels_cars_id_idx" ON "header_rels" USING btree ("cars_id");
-  CREATE INDEX "header_rels_kits_id_idx" ON "header_rels" USING btree ("kits_id");
-  CREATE INDEX "header_rels_series_id_idx" ON "header_rels" USING btree ("series_id");
-  CREATE INDEX "header_rels_seasons_id_idx" ON "header_rels" USING btree ("seasons_id");
-  CREATE INDEX "header_rels_events_id_idx" ON "header_rels" USING btree ("events_id");
-  CREATE INDEX "header_rels_awards_id_idx" ON "header_rels" USING btree ("awards_id");
-  CREATE INDEX "header_rels_stories_id_idx" ON "header_rels" USING btree ("stories_id");
-  CREATE INDEX "header_rels_journeys_id_idx" ON "header_rels" USING btree ("journeys_id");
-  CREATE INDEX "header_rels_histories_id_idx" ON "header_rels" USING btree ("histories_id");
-  CREATE INDEX "header_rels_initiatives_id_idx" ON "header_rels" USING btree ("initiatives_id");
-  CREATE INDEX "header_rels_celebrations_id_idx" ON "header_rels" USING btree ("celebrations_id");
-  CREATE INDEX "header_rels_meetups_id_idx" ON "header_rels" USING btree ("meetups_id");
-  CREATE INDEX "header_rels_careers_id_idx" ON "header_rels" USING btree ("careers_id");
-  CREATE INDEX "header_rels_trainings_id_idx" ON "header_rels" USING btree ("trainings_id");
-  CREATE INDEX "header_rels_organizations_id_idx" ON "header_rels" USING btree ("organizations_id");
   CREATE INDEX "footer_columns_links_order_idx" ON "footer_columns_links" USING btree ("_order");
   CREATE INDEX "footer_columns_links_parent_id_idx" ON "footer_columns_links" USING btree ("_parent_id");
   CREATE INDEX "footer_columns_order_idx" ON "footer_columns" USING btree ("_order");
@@ -7210,7 +6975,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE UNIQUE INDEX "policies_documents_locales_locale_parent_id_unique" ON "policies_documents_locales" USING btree ("_locale","_parent_id");
   CREATE INDEX "socials_accounts_order_idx" ON "socials_accounts" USING btree ("_order");
   CREATE INDEX "socials_accounts_parent_id_idx" ON "socials_accounts" USING btree ("_parent_id");
-  CREATE INDEX "socials_accounts_channel_idx" ON "socials_accounts" USING btree ("channel_id");
   CREATE INDEX "announcements_items_order_idx" ON "announcements_items" USING btree ("_order");
   CREATE INDEX "announcements_items_parent_id_idx" ON "announcements_items" USING btree ("_parent_id");
   CREATE UNIQUE INDEX "announcements_items_locales_locale_parent_id_unique" ON "announcements_items_locales" USING btree ("_locale","_parent_id");
@@ -7486,7 +7250,6 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
   DROP TABLE "payload_preferences" CASCADE;
   DROP TABLE "payload_preferences_rels" CASCADE;
   DROP TABLE "payload_migrations" CASCADE;
-  DROP TABLE "header_nav_items_sub_items" CASCADE;
   DROP TABLE "header_nav_items" CASCADE;
   DROP TABLE "header_utility_nav" CASCADE;
   DROP TABLE "header" CASCADE;
@@ -7697,8 +7460,6 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
   DROP TYPE "public"."enum_transactions_payment_method";
   DROP TYPE "public"."enum_transactions_status";
   DROP TYPE "public"."enum_transactions_currency";
-  DROP TYPE "public"."enum_header_nav_items_sub_items_link_type";
-  DROP TYPE "public"."enum_header_utility_nav_link_type";
   DROP TYPE "public"."enum_header_cta_link_type";
   DROP TYPE "public"."enum_footer_columns_links_link_type";
   DROP TYPE "public"."enum_footer_legal_link_type";

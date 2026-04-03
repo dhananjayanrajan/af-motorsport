@@ -14,8 +14,7 @@ import {
 import { DESIGN_SYSTEM } from '@/lib/constants'
 import { useAuth } from '@/providers/Auth'
 import { cn } from '@/utilities/cn'
-import { ChevronDown, ChevronRight, LogIn, LogOut, MenuIcon, Shield, UserPlus } from 'lucide-react'
-import { AnimatePresence, motion } from 'motion/react'
+import { ChevronRight, LogIn, LogOut, MenuIcon, Shield, UserPlus } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname, useSearchParams } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
@@ -65,7 +64,6 @@ export function MobileMenu({ menu, socials }: Props) {
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const [isOpen, setIsOpen] = useState(false)
-  const [expandedItems, setExpandedItems] = useState<string[]>([])
 
   useEffect(() => {
     const handleResize = () => {
@@ -78,12 +76,6 @@ export function MobileMenu({ menu, socials }: Props) {
   useEffect(() => {
     setIsOpen(false)
   }, [pathname, searchParams])
-
-  const toggleExpand = (id: string) => {
-    setExpandedItems(prev =>
-      prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
-    )
-  }
 
   const validSocials = socials?.filter(s => s && s.url) || []
 
@@ -107,55 +99,28 @@ export function MobileMenu({ menu, socials }: Props) {
         <div className="flex-1 overflow-y-auto custom-scrollbar">
           {menu?.length ? (
             <ul className="flex flex-col divide-y divide-zinc-900/50">
-              {menu.map(item => (
-                <li key={item.id} className="group">
-                  <div className="flex items-center justify-between p-6 transition-colors hover:bg-zinc-900/30">
-                    <span className={cn("text-[11px] font-black uppercase italic transition-colors duration-200", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_DEFAULT, `group-hover:text-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`)}>
-                      {item.label}
-                    </span>
-                    {item.subItems && item.subItems.length > 0 && (
-                      <button
-                        onClick={() => toggleExpand(item.id!)}
-                        className="p-2 bg-zinc-900 border border-zinc-800 active:scale-90 transition-transform"
-                      >
-                        <ChevronDown
-                          className={cn(
-                            'h-3 w-3 text-zinc-500 transition-transform duration-200',
-                            expandedItems.includes(item.id!) && `rotate-180 text-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`
-                          )}
-                        />
-                      </button>
-                    )}
-                  </div>
-
-                  <AnimatePresence>
-                    {expandedItems.includes(item.id!) && item.subItems && (
-                      <motion.ul
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: 'auto', opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.2 }}
-                        className="overflow-hidden bg-black/40 border-t border-zinc-900/50"
-                      >
-                        {item.subItems.map(sub => (
-                          <li key={sub.id} className="border-b border-zinc-900/30 last:border-none">
-                            <CMSLink
-                              {...sub.link}
-                              label={sub.label || sub.link.label}
-                              className="flex flex-col px-8 py-4 hover:bg-zinc-900/50 transition-colors duration-200"
-                            >
-                              <span className="text-[10px] font-bold text-white uppercase tracking-wider">{sub.label || sub.link.label}</span>
-                              {sub.description && (
-                                <span className="text-[8px] text-zinc-600 uppercase font-medium tracking-widest mt-1">{sub.description}</span>
-                              )}
-                            </CMSLink>
-                          </li>
-                        ))}
-                      </motion.ul>
-                    )}
-                  </AnimatePresence>
-                </li>
-              ))}
+              {menu.map(item => {
+                const linkProps = {
+                  url: item.link,
+                  label: item.label,
+                  reference: null,
+                  type: 'custom' as const,
+                  newTab: false,
+                }
+                return (
+                  <li key={item.id} className="group">
+                    <CMSLink
+                      {...linkProps}
+                      className="flex items-center justify-between p-6 transition-colors hover:bg-zinc-900/30"
+                    >
+                      <span className={cn("text-[11px] font-black uppercase italic transition-colors duration-200", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_DEFAULT, `group-hover:text-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`)}>
+                        {item.label}
+                      </span>
+                      <ChevronRight className={cn("h-3 w-3 text-zinc-600 transition-colors duration-200", `group-hover:text-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`)} />
+                    </CMSLink>
+                  </li>
+                )
+              })}
             </ul>
           ) : null}
         </div>
@@ -217,17 +182,15 @@ export function MobileMenu({ menu, socials }: Props) {
                 {validSocials.map(account => {
                   const Icon = socialIcons[account.platform] || Link2
                   return (
-                    <motion.a
+                    <a
                       key={account.id}
                       href={account.url}
                       target="_blank"
                       rel="noopener noreferrer"
                       className={cn("text-zinc-600 transition-colors duration-200", `hover:text-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`)}
-                      whileHover={{ scale: 1.2, y: -2 }}
-                      whileTap={{ scale: 0.9 }}
                     >
                       <Icon className="h-4 w-4" />
-                    </motion.a>
+                    </a>
                   )
                 })}
               </div>

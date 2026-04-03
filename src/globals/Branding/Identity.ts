@@ -116,7 +116,7 @@ export const Identity: GlobalConfig = {
           type: 'textarea',
           localized: true,
           admin: {
-            description: 'AF Motorsport\'s position and commitments on sustainability.',
+            description: "AF Motorsport's position and commitments on sustainability.",
           },
         },
         {

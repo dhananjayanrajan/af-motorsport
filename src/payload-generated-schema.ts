@@ -795,14 +795,6 @@ export const enum_transactions_status = pgEnum('enum_transactions_status', [
   'refunded',
 ])
 export const enum_transactions_currency = pgEnum('enum_transactions_currency', ['USD'])
-export const enum_header_nav_items_sub_items_link_type = pgEnum(
-  'enum_header_nav_items_sub_items_link_type',
-  ['reference', 'custom'],
-)
-export const enum_header_utility_nav_link_type = pgEnum('enum_header_utility_nav_link_type', [
-  'reference',
-  'custom',
-])
 export const enum_header_cta_link_type = pgEnum('enum_header_cta_link_type', [
   'reference',
   'custom',
@@ -853,7 +845,7 @@ export const enum_announcements_items_type = pgEnum('enum_announcements_items_ty
   'celebration',
 ])
 export const enum_announcements_items_audience = pgEnum('enum_announcements_items_audience', [
-  'all',
+  'everyone',
   'authenticated',
   'guest',
 ])
@@ -917,9 +909,6 @@ export const series = pgTable(
     contexts_visibility_show: boolean('contexts_visibility_show').default(false),
     generateSlug: boolean('generate_slug').default(true),
     slug: varchar('slug'),
-    visibility_check_publish: boolean('visibility_check_publish').default(false),
-    visibility_check_featured: boolean('visibility_check_featured').default(false),
-    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
     updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
       .defaultNow()
       .notNull(),
@@ -1112,9 +1101,6 @@ export const seasons = pgTable(
     contexts_visibility_show: boolean('contexts_visibility_show').default(false),
     generateSlug: boolean('generate_slug').default(true),
     slug: varchar('slug'),
-    visibility_check_publish: boolean('visibility_check_publish').default(false),
-    visibility_check_featured: boolean('visibility_check_featured').default(false),
-    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
     updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
       .defaultNow()
       .notNull(),
@@ -1341,9 +1327,6 @@ export const events = pgTable(
     contexts_visibility_show: boolean('contexts_visibility_show').default(false),
     generateSlug: boolean('generate_slug').default(true),
     slug: varchar('slug'),
-    visibility_check_publish: boolean('visibility_check_publish').default(false),
-    visibility_check_featured: boolean('visibility_check_featured').default(false),
-    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
     updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
       .defaultNow()
       .notNull(),
@@ -1565,9 +1548,6 @@ export const sessions = pgTable(
     contexts_visibility_show: boolean('contexts_visibility_show').default(false),
     generateSlug: boolean('generate_slug').default(true),
     slug: varchar('slug'),
-    visibility_check_publish: boolean('visibility_check_publish').default(false),
-    visibility_check_featured: boolean('visibility_check_featured').default(false),
-    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
     updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
       .defaultNow()
       .notNull(),
@@ -1819,9 +1799,6 @@ export const entries = pgTable(
     contexts_visibility_show: boolean('contexts_visibility_show').default(false),
     generateSlug: boolean('generate_slug').default(true),
     slug: varchar('slug'),
-    visibility_check_publish: boolean('visibility_check_publish').default(false),
-    visibility_check_featured: boolean('visibility_check_featured').default(false),
-    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
     updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
       .defaultNow()
       .notNull(),
@@ -2028,9 +2005,6 @@ export const results = pgTable(
     assets_visibility_show: boolean('assets_visibility_show').default(false),
     generateSlug: boolean('generate_slug').default(true),
     slug: varchar('slug'),
-    visibility_check_publish: boolean('visibility_check_publish').default(false),
-    visibility_check_featured: boolean('visibility_check_featured').default(false),
-    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
     updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
       .defaultNow()
       .notNull(),
@@ -2206,9 +2180,6 @@ export const points = pgTable(
     contexts_visibility_show: boolean('contexts_visibility_show').default(false),
     generateSlug: boolean('generate_slug').default(true),
     slug: varchar('slug'),
-    visibility_check_publish: boolean('visibility_check_publish').default(false),
-    visibility_check_featured: boolean('visibility_check_featured').default(false),
-    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
     updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
       .defaultNow()
       .notNull(),
@@ -2395,9 +2366,6 @@ export const drivers = pgTable(
     contexts_visibility_show: boolean('contexts_visibility_show').default(false),
     generateSlug: boolean('generate_slug').default(true),
     slug: varchar('slug'),
-    visibility_check_publish: boolean('visibility_check_publish').default(false),
-    visibility_check_featured: boolean('visibility_check_featured').default(false),
-    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
     updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
       .defaultNow()
       .notNull(),
@@ -2649,9 +2617,6 @@ export const leaders = pgTable(
     contexts_visibility_show: boolean('contexts_visibility_show').default(false),
     generateSlug: boolean('generate_slug').default(true),
     slug: varchar('slug'),
-    visibility_check_publish: boolean('visibility_check_publish').default(false),
-    visibility_check_featured: boolean('visibility_check_featured').default(false),
-    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
     updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
       .defaultNow()
       .notNull(),
@@ -2904,9 +2869,6 @@ export const members = pgTable(
     contexts_visibility_show: boolean('contexts_visibility_show').default(false),
     generateSlug: boolean('generate_slug').default(true),
     slug: varchar('slug'),
-    visibility_check_publish: boolean('visibility_check_publish').default(false),
-    visibility_check_featured: boolean('visibility_check_featured').default(false),
-    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
     updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
       .defaultNow()
       .notNull(),
@@ -3169,9 +3131,6 @@ export const individuals = pgTable(
     contexts_visibility_show: boolean('contexts_visibility_show').default(false),
     generateSlug: boolean('generate_slug').default(true),
     slug: varchar('slug'),
-    visibility_check_publish: boolean('visibility_check_publish').default(false),
-    visibility_check_featured: boolean('visibility_check_featured').default(false),
-    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
     updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
       .defaultNow()
       .notNull(),
@@ -3413,9 +3372,6 @@ export const organizations = pgTable(
     contexts_visibility_show: boolean('contexts_visibility_show').default(false),
     generateSlug: boolean('generate_slug').default(true),
     slug: varchar('slug'),
-    visibility_check_publish: boolean('visibility_check_publish').default(false),
-    visibility_check_featured: boolean('visibility_check_featured').default(false),
-    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
     updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
       .defaultNow()
       .notNull(),
@@ -3665,9 +3621,6 @@ export const narratives = pgTable(
     contexts_visibility_show: boolean('contexts_visibility_show').default(false),
     generateSlug: boolean('generate_slug').default(true),
     slug: varchar('slug'),
-    visibility_check_publish: boolean('visibility_check_publish').default(false),
-    visibility_check_featured: boolean('visibility_check_featured').default(false),
-    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
     updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
       .defaultNow()
       .notNull(),
@@ -3928,9 +3881,6 @@ export const stories = pgTable(
     contexts_visibility_show: boolean('contexts_visibility_show').default(false),
     generateSlug: boolean('generate_slug').default(true),
     slug: varchar('slug'),
-    visibility_check_publish: boolean('visibility_check_publish').default(false),
-    visibility_check_featured: boolean('visibility_check_featured').default(false),
-    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
     updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
       .defaultNow()
       .notNull(),
@@ -4067,9 +4017,6 @@ export const histories = pgTable(
     assets_visibility_show: boolean('assets_visibility_show').default(false),
     generateSlug: boolean('generate_slug').default(true),
     slug: varchar('slug'),
-    visibility_check_publish: boolean('visibility_check_publish').default(false),
-    visibility_check_featured: boolean('visibility_check_featured').default(false),
-    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
     updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
       .defaultNow()
       .notNull(),
@@ -4218,9 +4165,6 @@ export const journeys = pgTable(
     assets_visibility_show: boolean('assets_visibility_show').default(false),
     generateSlug: boolean('generate_slug').default(true),
     slug: varchar('slug'),
-    visibility_check_publish: boolean('visibility_check_publish').default(false),
-    visibility_check_featured: boolean('visibility_check_featured').default(false),
-    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
     updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
       .defaultNow()
       .notNull(),
@@ -4392,9 +4336,6 @@ export const notes = pgTable(
     assets_visibility_show: boolean('assets_visibility_show').default(false),
     generateSlug: boolean('generate_slug').default(true),
     slug: varchar('slug'),
-    visibility_check_publish: boolean('visibility_check_publish').default(false),
-    visibility_check_featured: boolean('visibility_check_featured').default(false),
-    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
     updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
       .defaultNow()
       .notNull(),
@@ -4493,9 +4434,6 @@ export const pages = pgTable(
     contexts_visibility_show: boolean('contexts_visibility_show').default(false),
     generateSlug: boolean('generate_slug').default(true),
     slug: varchar('slug'),
-    visibility_check_publish: boolean('visibility_check_publish').default(false),
-    visibility_check_featured: boolean('visibility_check_featured').default(false),
-    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
     updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
       .defaultNow()
       .notNull(),
@@ -4614,9 +4552,6 @@ export const cars = pgTable(
     contexts_visibility_show: boolean('contexts_visibility_show').default(false),
     generateSlug: boolean('generate_slug').default(true),
     slug: varchar('slug'),
-    visibility_check_publish: boolean('visibility_check_publish').default(false),
-    visibility_check_featured: boolean('visibility_check_featured').default(false),
-    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
     updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
       .defaultNow()
       .notNull(),
@@ -4854,9 +4789,6 @@ export const kits = pgTable(
     contexts_visibility_show: boolean('contexts_visibility_show').default(false),
     generateSlug: boolean('generate_slug').default(true),
     slug: varchar('slug'),
-    visibility_check_publish: boolean('visibility_check_publish').default(false),
-    visibility_check_featured: boolean('visibility_check_featured').default(false),
-    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
     updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
       .defaultNow()
       .notNull(),
@@ -5024,9 +4956,6 @@ export const galleries = pgTable(
     contexts_visibility_show: boolean('contexts_visibility_show').default(false),
     generateSlug: boolean('generate_slug').default(true),
     slug: varchar('slug'),
-    visibility_check_publish: boolean('visibility_check_publish').default(false),
-    visibility_check_featured: boolean('visibility_check_featured').default(false),
-    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
     updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
       .defaultNow()
       .notNull(),
@@ -5136,9 +5065,6 @@ export const playlists = pgTable(
     contexts_visibility_show: boolean('contexts_visibility_show').default(false),
     generateSlug: boolean('generate_slug').default(true),
     slug: varchar('slug'),
-    visibility_check_publish: boolean('visibility_check_publish').default(false),
-    visibility_check_featured: boolean('visibility_check_featured').default(false),
-    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
     updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
       .defaultNow()
       .notNull(),
@@ -5244,9 +5170,6 @@ export const archives = pgTable(
     contexts_visibility_show: boolean('contexts_visibility_show').default(false),
     generateSlug: boolean('generate_slug').default(true),
     slug: varchar('slug'),
-    visibility_check_publish: boolean('visibility_check_publish').default(false),
-    visibility_check_featured: boolean('visibility_check_featured').default(false),
-    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
     updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
       .defaultNow()
       .notNull(),
@@ -5349,9 +5272,6 @@ export const visualizations = pgTable(
     contexts_visibility_show: boolean('contexts_visibility_show').default(false),
     generateSlug: boolean('generate_slug').default(true),
     slug: varchar('slug'),
-    visibility_check_publish: boolean('visibility_check_publish').default(false),
-    visibility_check_featured: boolean('visibility_check_featured').default(false),
-    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
     updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
       .defaultNow()
       .notNull(),
@@ -5526,9 +5446,6 @@ export const schedules = pgTable(
     contexts_visibility_show: boolean('contexts_visibility_show').default(false),
     generateSlug: boolean('generate_slug').default(true),
     slug: varchar('slug'),
-    visibility_check_publish: boolean('visibility_check_publish').default(false),
-    visibility_check_featured: boolean('visibility_check_featured').default(false),
-    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
     updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
       .defaultNow()
       .notNull(),
@@ -5689,9 +5606,6 @@ export const trainings = pgTable(
     contexts_visibility_show: boolean('contexts_visibility_show').default(false),
     generateSlug: boolean('generate_slug').default(true),
     slug: varchar('slug'),
-    visibility_check_publish: boolean('visibility_check_publish').default(false),
-    visibility_check_featured: boolean('visibility_check_featured').default(false),
-    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
     updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
       .defaultNow()
       .notNull(),
@@ -5882,9 +5796,6 @@ export const careers = pgTable(
     contexts_visibility_show: boolean('contexts_visibility_show').default(false),
     generateSlug: boolean('generate_slug').default(true),
     slug: varchar('slug'),
-    visibility_check_publish: boolean('visibility_check_publish').default(false),
-    visibility_check_featured: boolean('visibility_check_featured').default(false),
-    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
     updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
       .defaultNow()
       .notNull(),
@@ -6068,9 +5979,6 @@ export const initiatives = pgTable(
     contexts_visibility_show: boolean('contexts_visibility_show').default(false),
     generateSlug: boolean('generate_slug').default(true),
     slug: varchar('slug'),
-    visibility_check_publish: boolean('visibility_check_publish').default(false),
-    visibility_check_featured: boolean('visibility_check_featured').default(false),
-    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
     updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
       .defaultNow()
       .notNull(),
@@ -6269,9 +6177,6 @@ export const meetups = pgTable(
     contexts_visibility_show: boolean('contexts_visibility_show').default(false),
     generateSlug: boolean('generate_slug').default(true),
     slug: varchar('slug'),
-    visibility_check_publish: boolean('visibility_check_publish').default(false),
-    visibility_check_featured: boolean('visibility_check_featured').default(false),
-    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
     updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
       .defaultNow()
       .notNull(),
@@ -6463,9 +6368,6 @@ export const celebrations = pgTable(
     contexts_visibility_show: boolean('contexts_visibility_show').default(false),
     generateSlug: boolean('generate_slug').default(true),
     slug: varchar('slug'),
-    visibility_check_publish: boolean('visibility_check_publish').default(false),
-    visibility_check_featured: boolean('visibility_check_featured').default(false),
-    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
     updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
       .defaultNow()
       .notNull(),
@@ -6648,9 +6550,6 @@ export const protocols = pgTable(
     contexts_visibility_show: boolean('contexts_visibility_show').default(false),
     generateSlug: boolean('generate_slug').default(true),
     slug: varchar('slug'),
-    visibility_check_publish: boolean('visibility_check_publish').default(false),
-    visibility_check_featured: boolean('visibility_check_featured').default(false),
-    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
     updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
       .defaultNow()
       .notNull(),
@@ -6763,9 +6662,6 @@ export const duties = pgTable(
     contexts_visibility_show: boolean('contexts_visibility_show').default(false),
     generateSlug: boolean('generate_slug').default(true),
     slug: varchar('slug'),
-    visibility_check_publish: boolean('visibility_check_publish').default(false),
-    visibility_check_featured: boolean('visibility_check_featured').default(false),
-    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
     updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
       .defaultNow()
       .notNull(),
@@ -6880,9 +6776,6 @@ export const expectations = pgTable(
     contexts_visibility_show: boolean('contexts_visibility_show').default(false),
     generateSlug: boolean('generate_slug').default(true),
     slug: varchar('slug'),
-    visibility_check_publish: boolean('visibility_check_publish').default(false),
-    visibility_check_featured: boolean('visibility_check_featured').default(false),
-    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
     updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
       .defaultNow()
       .notNull(),
@@ -7019,9 +6912,6 @@ export const highlights = pgTable(
     contexts_visibility_show: boolean('contexts_visibility_show').default(false),
     generateSlug: boolean('generate_slug').default(true),
     slug: varchar('slug'),
-    visibility_check_publish: boolean('visibility_check_publish').default(false),
-    visibility_check_featured: boolean('visibility_check_featured').default(false),
-    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
     updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
       .defaultNow()
       .notNull(),
@@ -7169,9 +7059,6 @@ export const incidents = pgTable(
     contexts_visibility_show: boolean('contexts_visibility_show').default(false),
     generateSlug: boolean('generate_slug').default(true),
     slug: varchar('slug'),
-    visibility_check_publish: boolean('visibility_check_publish').default(false),
-    visibility_check_featured: boolean('visibility_check_featured').default(false),
-    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
     updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
       .defaultNow()
       .notNull(),
@@ -7351,9 +7238,6 @@ export const impacts = pgTable(
     contexts_visibility_show: boolean('contexts_visibility_show').default(false),
     generateSlug: boolean('generate_slug').default(true),
     slug: varchar('slug'),
-    visibility_check_publish: boolean('visibility_check_publish').default(false),
-    visibility_check_featured: boolean('visibility_check_featured').default(false),
-    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
     updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
       .defaultNow()
       .notNull(),
@@ -7507,9 +7391,6 @@ export const decisions = pgTable(
     contexts_visibility_show: boolean('contexts_visibility_show').default(false),
     generateSlug: boolean('generate_slug').default(true),
     slug: varchar('slug'),
-    visibility_check_publish: boolean('visibility_check_publish').default(false),
-    visibility_check_featured: boolean('visibility_check_featured').default(false),
-    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
     updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
       .defaultNow()
       .notNull(),
@@ -7807,9 +7688,6 @@ export const strategies = pgTable(
     contexts_visibility_show: boolean('contexts_visibility_show').default(false),
     generateSlug: boolean('generate_slug').default(true),
     slug: varchar('slug'),
-    visibility_check_publish: boolean('visibility_check_publish').default(false),
-    visibility_check_featured: boolean('visibility_check_featured').default(false),
-    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
     updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
       .defaultNow()
       .notNull(),
@@ -7958,9 +7836,6 @@ export const awards = pgTable(
     contexts_visibility_show: boolean('contexts_visibility_show').default(false),
     generateSlug: boolean('generate_slug').default(true),
     slug: varchar('slug'),
-    visibility_check_publish: boolean('visibility_check_publish').default(false),
-    visibility_check_featured: boolean('visibility_check_featured').default(false),
-    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
     updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
       .defaultNow()
       .notNull(),
@@ -8132,9 +8007,6 @@ export const experiences = pgTable(
     contexts_visibility_show: boolean('contexts_visibility_show').default(false),
     generateSlug: boolean('generate_slug').default(true),
     slug: varchar('slug'),
-    visibility_check_publish: boolean('visibility_check_publish').default(false),
-    visibility_check_featured: boolean('visibility_check_featured').default(false),
-    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
     updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
       .defaultNow()
       .notNull(),
@@ -8330,9 +8202,6 @@ export const categories = pgTable(
     details_visibility_show: boolean('details_visibility_show').default(false),
     generateSlug: boolean('generate_slug').default(true),
     slug: varchar('slug'),
-    visibility_check_publish: boolean('visibility_check_publish').default(false),
-    visibility_check_featured: boolean('visibility_check_featured').default(false),
-    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
     updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
       .defaultNow()
       .notNull(),
@@ -8419,9 +8288,6 @@ export const tags = pgTable(
     basics_visibility_show: boolean('basics_visibility_show').default(false),
     generateSlug: boolean('generate_slug').default(true),
     slug: varchar('slug'),
-    visibility_check_publish: boolean('visibility_check_publish').default(false),
-    visibility_check_featured: boolean('visibility_check_featured').default(false),
-    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
     updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
       .defaultNow()
       .notNull(),
@@ -8536,9 +8402,6 @@ export const tones = pgTable(
     traits_visibility_show: boolean('traits_visibility_show').default(false),
     generateSlug: boolean('generate_slug').default(true),
     slug: varchar('slug'),
-    visibility_check_publish: boolean('visibility_check_publish').default(false),
-    visibility_check_featured: boolean('visibility_check_featured').default(false),
-    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
     updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
       .defaultNow()
       .notNull(),
@@ -8634,9 +8497,6 @@ export const features = pgTable(
     contexts_visibility_show: boolean('contexts_visibility_show').default(false),
     generateSlug: boolean('generate_slug').default(true),
     slug: varchar('slug'),
-    visibility_check_publish: boolean('visibility_check_publish').default(false),
-    visibility_check_featured: boolean('visibility_check_featured').default(false),
-    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
     updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
       .defaultNow()
       .notNull(),
@@ -8794,9 +8654,6 @@ export const specifications = pgTable(
     metrics_visibility_show: boolean('metrics_visibility_show').default(false),
     generateSlug: boolean('generate_slug').default(true),
     slug: varchar('slug'),
-    visibility_check_publish: boolean('visibility_check_publish').default(false),
-    visibility_check_featured: boolean('visibility_check_featured').default(false),
-    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
     updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
       .defaultNow()
       .notNull(),
@@ -8891,9 +8748,6 @@ export const classifications = pgTable(
     contexts_visibility_show: boolean('contexts_visibility_show').default(false),
     generateSlug: boolean('generate_slug').default(true),
     slug: varchar('slug'),
-    visibility_check_publish: boolean('visibility_check_publish').default(false),
-    visibility_check_featured: boolean('visibility_check_featured').default(false),
-    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
     updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
       .defaultNow()
       .notNull(),
@@ -9060,9 +8914,6 @@ export const skills = pgTable(
     contexts_visibility_show: boolean('contexts_visibility_show').default(false),
     generateSlug: boolean('generate_slug').default(true),
     slug: varchar('slug'),
-    visibility_check_publish: boolean('visibility_check_publish').default(false),
-    visibility_check_featured: boolean('visibility_check_featured').default(false),
-    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
     updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
       .defaultNow()
       .notNull(),
@@ -9190,9 +9041,6 @@ export const principles = pgTable(
     contexts_visibility_show: boolean('contexts_visibility_show').default(false),
     generateSlug: boolean('generate_slug').default(true),
     slug: varchar('slug'),
-    visibility_check_publish: boolean('visibility_check_publish').default(false),
-    visibility_check_featured: boolean('visibility_check_featured').default(false),
-    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
     updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
       .defaultNow()
       .notNull(),
@@ -9339,9 +9187,6 @@ export const preferences = pgTable(
     contexts_visibility_show: boolean('contexts_visibility_show').default(false),
     generateSlug: boolean('generate_slug').default(true),
     slug: varchar('slug'),
-    visibility_check_publish: boolean('visibility_check_publish').default(false),
-    visibility_check_featured: boolean('visibility_check_featured').default(false),
-    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
     updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
       .defaultNow()
       .notNull(),
@@ -9521,9 +9366,6 @@ export const channels = pgTable(
     traits_visibility_show: boolean('traits_visibility_show').default(false),
     generateSlug: boolean('generate_slug').default(true),
     slug: varchar('slug'),
-    visibility_check_publish: boolean('visibility_check_publish').default(false),
-    visibility_check_featured: boolean('visibility_check_featured').default(false),
-    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
     updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
       .defaultNow()
       .notNull(),
@@ -9644,9 +9486,6 @@ export const locations = pgTable(
     contexts_visibility_show: boolean('contexts_visibility_show').default(false),
     generateSlug: boolean('generate_slug').default(true),
     slug: varchar('slug'),
-    visibility_check_publish: boolean('visibility_check_publish').default(false),
-    visibility_check_featured: boolean('visibility_check_featured').default(false),
-    visibility_check_pinned: boolean('visibility_check_pinned').default(false),
     updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
       .defaultNow()
       .notNull(),
@@ -12581,31 +12420,6 @@ export const payload_migrations = pgTable(
   ],
 )
 
-export const header_nav_items_sub_items = pgTable(
-  'header_nav_items_sub_items',
-  {
-    _order: integer('_order').notNull(),
-    _parentID: varchar('_parent_id').notNull(),
-    id: varchar('id').primaryKey(),
-    label: varchar('label').notNull(),
-    description: varchar('description'),
-    link_type: enum_header_nav_items_sub_items_link_type('link_type').default('reference'),
-    link_newTab: boolean('link_new_tab'),
-    link_url: varchar('link_url'),
-    link_label: varchar('link_label').notNull(),
-    isFeatured: boolean('is_featured').default(false),
-  },
-  (columns) => [
-    index('header_nav_items_sub_items_order_idx').on(columns._order),
-    index('header_nav_items_sub_items_parent_id_idx').on(columns._parentID),
-    foreignKey({
-      columns: [columns['_parentID']],
-      foreignColumns: [header_nav_items.id],
-      name: 'header_nav_items_sub_items_parent_id_fk',
-    }).onDelete('cascade'),
-  ],
-)
-
 export const header_nav_items = pgTable(
   'header_nav_items',
   {
@@ -12613,11 +12427,7 @@ export const header_nav_items = pgTable(
     _parentID: integer('_parent_id').notNull(),
     id: varchar('id').primaryKey(),
     label: varchar('label').notNull(),
-    tagline: varchar('tagline'),
-    description: varchar('description'),
-    spotlight_enable: boolean('spotlight_enable').default(false),
-    spotlight_label: varchar('spotlight_label'),
-    spotlight_overrideUrl: varchar('spotlight_override_url'),
+    link: varchar('link').notNull(),
     visible: boolean('visible').default(true),
   },
   (columns) => [
@@ -12638,10 +12448,7 @@ export const header_utility_nav = pgTable(
     _parentID: integer('_parent_id').notNull(),
     id: varchar('id').primaryKey(),
     label: varchar('label').notNull(),
-    link_type: enum_header_utility_nav_link_type('link_type').default('reference'),
-    link_newTab: boolean('link_new_tab'),
-    link_url: varchar('link_url'),
-    link_label: varchar('link_label').notNull(),
+    link: varchar('link').notNull(),
     visible: boolean('visible').default(true),
   },
   (columns) => [
@@ -12675,48 +12482,12 @@ export const header_rels = pgTable(
     parent: integer('parent_id').notNull(),
     path: varchar('path').notNull(),
     pagesID: integer('pages_id'),
-    driversID: integer('drivers_id'),
-    leadersID: integer('leaders_id'),
-    membersID: integer('members_id'),
-    carsID: integer('cars_id'),
-    kitsID: integer('kits_id'),
-    seriesID: integer('series_id'),
-    seasonsID: integer('seasons_id'),
-    eventsID: integer('events_id'),
-    awardsID: integer('awards_id'),
-    storiesID: integer('stories_id'),
-    journeysID: integer('journeys_id'),
-    historiesID: integer('histories_id'),
-    initiativesID: integer('initiatives_id'),
-    celebrationsID: integer('celebrations_id'),
-    meetupsID: integer('meetups_id'),
-    careersID: integer('careers_id'),
-    trainingsID: integer('trainings_id'),
-    organizationsID: integer('organizations_id'),
   },
   (columns) => [
     index('header_rels_order_idx').on(columns.order),
     index('header_rels_parent_idx').on(columns.parent),
     index('header_rels_path_idx').on(columns.path),
     index('header_rels_pages_id_idx').on(columns.pagesID),
-    index('header_rels_drivers_id_idx').on(columns.driversID),
-    index('header_rels_leaders_id_idx').on(columns.leadersID),
-    index('header_rels_members_id_idx').on(columns.membersID),
-    index('header_rels_cars_id_idx').on(columns.carsID),
-    index('header_rels_kits_id_idx').on(columns.kitsID),
-    index('header_rels_series_id_idx').on(columns.seriesID),
-    index('header_rels_seasons_id_idx').on(columns.seasonsID),
-    index('header_rels_events_id_idx').on(columns.eventsID),
-    index('header_rels_awards_id_idx').on(columns.awardsID),
-    index('header_rels_stories_id_idx').on(columns.storiesID),
-    index('header_rels_journeys_id_idx').on(columns.journeysID),
-    index('header_rels_histories_id_idx').on(columns.historiesID),
-    index('header_rels_initiatives_id_idx').on(columns.initiativesID),
-    index('header_rels_celebrations_id_idx').on(columns.celebrationsID),
-    index('header_rels_meetups_id_idx').on(columns.meetupsID),
-    index('header_rels_careers_id_idx').on(columns.careersID),
-    index('header_rels_trainings_id_idx').on(columns.trainingsID),
-    index('header_rels_organizations_id_idx').on(columns.organizationsID),
     foreignKey({
       columns: [columns['parent']],
       foreignColumns: [header.id],
@@ -12726,96 +12497,6 @@ export const header_rels = pgTable(
       columns: [columns['pagesID']],
       foreignColumns: [pages.id],
       name: 'header_rels_pages_fk',
-    }).onDelete('cascade'),
-    foreignKey({
-      columns: [columns['driversID']],
-      foreignColumns: [drivers.id],
-      name: 'header_rels_drivers_fk',
-    }).onDelete('cascade'),
-    foreignKey({
-      columns: [columns['leadersID']],
-      foreignColumns: [leaders.id],
-      name: 'header_rels_leaders_fk',
-    }).onDelete('cascade'),
-    foreignKey({
-      columns: [columns['membersID']],
-      foreignColumns: [members.id],
-      name: 'header_rels_members_fk',
-    }).onDelete('cascade'),
-    foreignKey({
-      columns: [columns['carsID']],
-      foreignColumns: [cars.id],
-      name: 'header_rels_cars_fk',
-    }).onDelete('cascade'),
-    foreignKey({
-      columns: [columns['kitsID']],
-      foreignColumns: [kits.id],
-      name: 'header_rels_kits_fk',
-    }).onDelete('cascade'),
-    foreignKey({
-      columns: [columns['seriesID']],
-      foreignColumns: [series.id],
-      name: 'header_rels_series_fk',
-    }).onDelete('cascade'),
-    foreignKey({
-      columns: [columns['seasonsID']],
-      foreignColumns: [seasons.id],
-      name: 'header_rels_seasons_fk',
-    }).onDelete('cascade'),
-    foreignKey({
-      columns: [columns['eventsID']],
-      foreignColumns: [events.id],
-      name: 'header_rels_events_fk',
-    }).onDelete('cascade'),
-    foreignKey({
-      columns: [columns['awardsID']],
-      foreignColumns: [awards.id],
-      name: 'header_rels_awards_fk',
-    }).onDelete('cascade'),
-    foreignKey({
-      columns: [columns['storiesID']],
-      foreignColumns: [stories.id],
-      name: 'header_rels_stories_fk',
-    }).onDelete('cascade'),
-    foreignKey({
-      columns: [columns['journeysID']],
-      foreignColumns: [journeys.id],
-      name: 'header_rels_journeys_fk',
-    }).onDelete('cascade'),
-    foreignKey({
-      columns: [columns['historiesID']],
-      foreignColumns: [histories.id],
-      name: 'header_rels_histories_fk',
-    }).onDelete('cascade'),
-    foreignKey({
-      columns: [columns['initiativesID']],
-      foreignColumns: [initiatives.id],
-      name: 'header_rels_initiatives_fk',
-    }).onDelete('cascade'),
-    foreignKey({
-      columns: [columns['celebrationsID']],
-      foreignColumns: [celebrations.id],
-      name: 'header_rels_celebrations_fk',
-    }).onDelete('cascade'),
-    foreignKey({
-      columns: [columns['meetupsID']],
-      foreignColumns: [meetups.id],
-      name: 'header_rels_meetups_fk',
-    }).onDelete('cascade'),
-    foreignKey({
-      columns: [columns['careersID']],
-      foreignColumns: [careers.id],
-      name: 'header_rels_careers_fk',
-    }).onDelete('cascade'),
-    foreignKey({
-      columns: [columns['trainingsID']],
-      foreignColumns: [trainings.id],
-      name: 'header_rels_trainings_fk',
-    }).onDelete('cascade'),
-    foreignKey({
-      columns: [columns['organizationsID']],
-      foreignColumns: [organizations.id],
-      name: 'header_rels_organizations_fk',
     }).onDelete('cascade'),
   ],
 )
@@ -13140,18 +12821,14 @@ export const socials_accounts = pgTable(
     _parentID: integer('_parent_id').notNull(),
     id: varchar('id').primaryKey(),
     platform: enum_socials_accounts_platform('platform').notNull(),
-    label: varchar('label'),
+    label: varchar('label').notNull(),
     handle: varchar('handle'),
     url: varchar('url').notNull(),
-    channel: integer('channel_id').references(() => channels.id, {
-      onDelete: 'set null',
-    }),
     visible: boolean('visible').default(true),
   },
   (columns) => [
     index('socials_accounts_order_idx').on(columns._order),
     index('socials_accounts_parent_id_idx').on(columns._parentID),
-    index('socials_accounts_channel_idx').on(columns.channel),
     foreignKey({
       columns: [columns['_parentID']],
       foreignColumns: [socials.id],
@@ -13176,15 +12853,11 @@ export const announcements_items = pgTable(
     link_enable: boolean('link_enable').default(false),
     link_label: varchar('link_label'),
     link_url: varchar('link_url'),
-    schedule_from: timestamp('schedule_from', { mode: 'string', withTimezone: true, precision: 3 }),
-    schedule_until: timestamp('schedule_until', {
-      mode: 'string',
-      withTimezone: true,
-      precision: 3,
-    }),
-    audience: enum_announcements_items_audience('audience').default('all'),
+    from: timestamp('from', { mode: 'string', withTimezone: true, precision: 3 }),
+    until: timestamp('until', { mode: 'string', withTimezone: true, precision: 3 }),
+    audience: enum_announcements_items_audience('audience').default('everyone'),
     dismissible: boolean('dismissible').default(true),
-    visible: boolean('visible').default(true),
+    active: boolean('active').default(true),
   },
   (columns) => [
     index('announcements_items_order_idx').on(columns._order),
@@ -13232,7 +12905,6 @@ export const questions_categories_items = pgTable(
     _parentID: varchar('_parent_id').notNull(),
     id: varchar('id').primaryKey(),
     relatedPage: varchar('related_page'),
-    visible: boolean('visible').default(true),
   },
   (columns) => [
     index('questions_categories_items_order_idx').on(columns._order),
@@ -19073,24 +18745,11 @@ export const relations_payload_preferences = relations(payload_preferences, ({ m
   }),
 }))
 export const relations_payload_migrations = relations(payload_migrations, () => ({}))
-export const relations_header_nav_items_sub_items = relations(
-  header_nav_items_sub_items,
-  ({ one }) => ({
-    _parentID: one(header_nav_items, {
-      fields: [header_nav_items_sub_items._parentID],
-      references: [header_nav_items.id],
-      relationName: 'subItems',
-    }),
-  }),
-)
-export const relations_header_nav_items = relations(header_nav_items, ({ one, many }) => ({
+export const relations_header_nav_items = relations(header_nav_items, ({ one }) => ({
   _parentID: one(header, {
     fields: [header_nav_items._parentID],
     references: [header.id],
     relationName: 'navItems',
-  }),
-  subItems: many(header_nav_items_sub_items, {
-    relationName: 'subItems',
   }),
 }))
 export const relations_header_utility_nav = relations(header_utility_nav, ({ one }) => ({
@@ -19110,96 +18769,6 @@ export const relations_header_rels = relations(header_rels, ({ one }) => ({
     fields: [header_rels.pagesID],
     references: [pages.id],
     relationName: 'pages',
-  }),
-  driversID: one(drivers, {
-    fields: [header_rels.driversID],
-    references: [drivers.id],
-    relationName: 'drivers',
-  }),
-  leadersID: one(leaders, {
-    fields: [header_rels.leadersID],
-    references: [leaders.id],
-    relationName: 'leaders',
-  }),
-  membersID: one(members, {
-    fields: [header_rels.membersID],
-    references: [members.id],
-    relationName: 'members',
-  }),
-  carsID: one(cars, {
-    fields: [header_rels.carsID],
-    references: [cars.id],
-    relationName: 'cars',
-  }),
-  kitsID: one(kits, {
-    fields: [header_rels.kitsID],
-    references: [kits.id],
-    relationName: 'kits',
-  }),
-  seriesID: one(series, {
-    fields: [header_rels.seriesID],
-    references: [series.id],
-    relationName: 'series',
-  }),
-  seasonsID: one(seasons, {
-    fields: [header_rels.seasonsID],
-    references: [seasons.id],
-    relationName: 'seasons',
-  }),
-  eventsID: one(events, {
-    fields: [header_rels.eventsID],
-    references: [events.id],
-    relationName: 'events',
-  }),
-  awardsID: one(awards, {
-    fields: [header_rels.awardsID],
-    references: [awards.id],
-    relationName: 'awards',
-  }),
-  storiesID: one(stories, {
-    fields: [header_rels.storiesID],
-    references: [stories.id],
-    relationName: 'stories',
-  }),
-  journeysID: one(journeys, {
-    fields: [header_rels.journeysID],
-    references: [journeys.id],
-    relationName: 'journeys',
-  }),
-  historiesID: one(histories, {
-    fields: [header_rels.historiesID],
-    references: [histories.id],
-    relationName: 'histories',
-  }),
-  initiativesID: one(initiatives, {
-    fields: [header_rels.initiativesID],
-    references: [initiatives.id],
-    relationName: 'initiatives',
-  }),
-  celebrationsID: one(celebrations, {
-    fields: [header_rels.celebrationsID],
-    references: [celebrations.id],
-    relationName: 'celebrations',
-  }),
-  meetupsID: one(meetups, {
-    fields: [header_rels.meetupsID],
-    references: [meetups.id],
-    relationName: 'meetups',
-  }),
-  careersID: one(careers, {
-    fields: [header_rels.careersID],
-    references: [careers.id],
-    relationName: 'careers',
-  }),
-  trainingsID: one(trainings, {
-    fields: [header_rels.trainingsID],
-    references: [trainings.id],
-    relationName: 'trainings',
-  }),
-  organizationsID: one(organizations, {
-    fields: [header_rels.organizationsID],
-    references: [organizations.id],
-    relationName: 'organizations',
   }),
 }))
 export const relations_header = relations(header, ({ many }) => ({
@@ -19387,11 +18956,6 @@ export const relations_socials_accounts = relations(socials_accounts, ({ one }) 
     fields: [socials_accounts._parentID],
     references: [socials.id],
     relationName: 'accounts',
-  }),
-  channel: one(channels, {
-    fields: [socials_accounts.channel],
-    references: [channels.id],
-    relationName: 'channel',
   }),
 }))
 export const relations_socials = relations(socials, ({ many }) => ({
@@ -19660,8 +19224,6 @@ type DatabaseSchema = {
   enum_transactions_payment_method: typeof enum_transactions_payment_method
   enum_transactions_status: typeof enum_transactions_status
   enum_transactions_currency: typeof enum_transactions_currency
-  enum_header_nav_items_sub_items_link_type: typeof enum_header_nav_items_sub_items_link_type
-  enum_header_utility_nav_link_type: typeof enum_header_utility_nav_link_type
   enum_header_cta_link_type: typeof enum_header_cta_link_type
   enum_footer_columns_links_link_type: typeof enum_footer_columns_links_link_type
   enum_footer_legal_link_type: typeof enum_footer_legal_link_type
@@ -19932,7 +19494,6 @@ type DatabaseSchema = {
   payload_preferences: typeof payload_preferences
   payload_preferences_rels: typeof payload_preferences_rels
   payload_migrations: typeof payload_migrations
-  header_nav_items_sub_items: typeof header_nav_items_sub_items
   header_nav_items: typeof header_nav_items
   header_utility_nav: typeof header_utility_nav
   header: typeof header
@@ -20222,7 +19783,6 @@ type DatabaseSchema = {
   relations_payload_preferences_rels: typeof relations_payload_preferences_rels
   relations_payload_preferences: typeof relations_payload_preferences
   relations_payload_migrations: typeof relations_payload_migrations
-  relations_header_nav_items_sub_items: typeof relations_header_nav_items_sub_items
   relations_header_nav_items: typeof relations_header_nav_items
   relations_header_utility_nav: typeof relations_header_utility_nav
   relations_header_rels: typeof relations_header_rels

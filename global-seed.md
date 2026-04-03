@@ -120,164 +120,40 @@ Initiatives → link: relevant initiative records once created.
 
 ### Navigation Items
 
----
-
 **Item 1 — Glory**
 - Label: Glory
-- Tagline: The victories that define us.
-- Description: Every triumph, every trophy, every moment that became legend — this is where glory lives.
+- Link: /glory
 - Visible: Yes
-
-Sub Items:
-
-| Label | Description | URL | Featured |
-|---|---|---|---|
-| The Legends | Every driver who carried the flag | `/glory/[driver-slug]` | Yes |
-| The Battles | Races that became history | `/glory/[event-slug]` | No |
-| The Trophies | Awards and the stories behind them | `/glory/[award-slug]` | No |
-| Hall of Fame | The eternal record of AF Motorsport | `/glory/hall-of-fame` | Yes |
-
-Spotlight:
-- Enable: Yes
-- Label: Current Champion
-- Entity: link to featured driver record
-- Override URL: —
-
----
 
 **Item 2 — Pursuit**
 - Label: Pursuit
-- Tagline: The championship engine.
-- Description: The relentless machinery of racing — championships, seasons, race weekends, and the sessions that decided everything.
+- Link: /pursuit
 - Visible: Yes
-
-Sub Items:
-
-| Label | Description | URL | Featured |
-|---|---|---|---|
-| The Championships | Series we compete in | `/pursuit/[series-slug]` | Yes |
-| The Seasons | Every year's complete arc | `/pursuit/[season-slug]` | Yes |
-| Race Weekends | Round by round, event by event | `/pursuit/[season-slug]/[event-slug]` | No |
-| The Sessions | The moments within the moments | `/pursuit/[season-slug]/[event-slug]/[session-slug]` | No |
-
-Spotlight:
-- Enable: Yes
-- Label: Current Season
-- Entity: link to current season record
-- Override URL: —
-
----
 
 **Item 3 — Craft**
 - Label: Craft
-- Tagline: The machines and the minds.
-- Description: Every car built, every kit designed, every engineering decision made — the technical obsession that drives everything.
+- Link: /craft
 - Visible: Yes
-
-Sub Items:
-
-| Label | Description | URL | Featured |
-|---|---|---|---|
-| The Machines | Every car we have ever fielded | `/craft/[car-slug]` | Yes |
-| The Equipment | Precision instruments, meticulously designed | `/craft/[kit-slug]` | No |
-| R&D Projects | The innovations we are building | `/craft/[initiative-slug]` | No |
-| Engineering Philosophy | The belief system behind it all | `/craft/engineering-philosophy` | Yes |
-
-Spotlight:
-- Enable: Yes
-- Label: Current Machine
-- Entity: link to current race car record
-- Override URL: —
-
----
 
 **Item 4 — Tribe**
 - Label: Tribe
-- Tagline: The people behind the numbers.
-- Description: Not who won — who they are. The drivers, leaders, specialists, and the culture that connects them all.
+- Link: /tribe
 - Visible: Yes
-
-Sub Items:
-
-| Label | Description | URL | Featured |
-|---|---|---|---|
-| The Drivers | The people behind the racing numbers | `/tribe/[driver-slug]` | Yes |
-| The Leaders | The humans who lead | `/tribe/[leader-slug]` | No |
-| The Specialists | The crew who make it possible | `/tribe/[member-slug]` | No |
-| Culture Code | The soul of AF Motorsport | `/tribe/culture-code` | Yes |
-
-Spotlight:
-- Enable: Yes
-- Label: Spotlight: The Team
-- Entity: link to a featured member record
-- Override URL: —
-
----
 
 **Item 5 — Alliance**
 - Label: Alliance
-- Tagline: The partnerships that power us.
-- Description: No team races alone. The organizations, people, and ecosystem that make AF Motorsport possible.
+- Link: /alliance
 - Visible: Yes
-
-Sub Items:
-
-| Label | Description | URL | Featured |
-|---|---|---|---|
-| Our Partners | The organizations we work with | `/alliance/[organization-slug]` | Yes |
-| The Network | The complete ecosystem map | `/alliance/network` | Yes |
-
-Spotlight:
-- Enable: Yes
-- Label: Strategic Partner
-- Entity: link to a featured organization record
-- Override URL: —
-
----
 
 **Item 6 — Chronicle**
 - Label: Chronicle
-- Tagline: The stories we carry.
-- Description: Authored journalism, career arcs, and historical records — the universe told in full narrative form.
+- Link: /chronicle
 - Visible: Yes
-
-Sub Items:
-
-| Label | Description | URL | Featured |
-|---|---|---|---|
-| Stories | Authored features and deep dives | `/chronicle/[story-slug]` | Yes |
-| Journeys | Career arcs and personal chapters | `/chronicle/[journey-slug]` | No |
-| Histories | The documented historical record | `/chronicle/[history-slug]` | No |
-
-Spotlight:
-- Enable: Yes
-- Label: Latest Story
-- Entity: link to the most recent published story record
-- Override URL: —
-
----
 
 **Item 7 — Ambition**
 - Label: Ambition
-- Tagline: What we are building next.
-- Description: The future in motion — projects, celebrations, gatherings, roles, and programs. How to be part of what comes next.
+- Link: /ambition
 - Visible: Yes
-
-Sub Items:
-
-| Label | Description | URL | Featured |
-|---|---|---|---|
-| Initiatives | Projects shaping the future | `/ambition/[initiative-slug]` | No |
-| Celebrations | Moments of recognition | `/ambition/[celebration-slug]` | No |
-| Meetups | Events and gatherings | `/ambition/[meetup-slug]` | Yes |
-| Careers | Open roles at AF Motorsport | `/ambition/[career-slug]` | Yes |
-| Training Programs | Development programs we run | `/ambition/[training-slug]` | No |
-
-Spotlight:
-- Enable: Yes
-- Label: We're Hiring
-- Entity: link to a featured career record
-- Override URL: —
 
 ---
 
@@ -285,15 +161,18 @@ Spotlight:
 
 | Label | URL | Visible |
 |---|---|---|
-| Store | `/store` | Yes |
-| About | `/about` | Yes |
-| Contact | `/contact` | Yes |
+| Store | /store | Yes |
+| About | /about | Yes |
+| Contact | /contact | Yes |
 
 ### Primary CTA
 
 - Enable: Yes
 - Label: Join the Team
-- URL: `/ambition`
+- Link: /ambition
+- Type: custom
+- URL: /ambition
+- New Tab: No
 
 ---
 
@@ -310,72 +189,62 @@ Spotlight:
 
 ### Navigation Columns
 
----
-
 **Column 1 — Universe**
 - Visible: Yes
 
 | Label | URL | Visible |
 |---|---|---|
-| Glory | `/glory/hall-of-fame` | Yes |
-| Pursuit | `/pursuit` | Yes |
-| Craft | `/craft/engineering-philosophy` | Yes |
-| Tribe | `/tribe/culture-code` | Yes |
-| Alliance | `/alliance/network` | Yes |
-| Chronicle | `/chronicle` | Yes |
-| Ambition | `/ambition` | Yes |
-
----
+| Glory | /glory | Yes |
+| Pursuit | /pursuit | Yes |
+| Craft | /craft | Yes |
+| Tribe | /tribe | Yes |
+| Alliance | /alliance | Yes |
+| Chronicle | /chronicle | Yes |
+| Ambition | /ambition | Yes |
 
 **Column 2 — The Team**
 - Visible: Yes
 
 | Label | URL | Visible |
 |---|---|---|
-| Drivers | `/tribe` | Yes |
-| Leaders | `/tribe` | Yes |
-| Specialists | `/tribe` | Yes |
-| Culture Code | `/tribe/culture-code` | Yes |
-| Hall of Fame | `/glory/hall-of-fame` | Yes |
-
----
+| Drivers | /tribe | Yes |
+| Leaders | /tribe | Yes |
+| Specialists | /tribe | Yes |
+| Culture Code | /tribe/culture-code | Yes |
+| Hall of Fame | /glory/hall-of-fame | Yes |
 
 **Column 3 — The Machines**
 - Visible: Yes
 
 | Label | URL | Visible |
 |---|---|---|
-| Our Cars | `/craft` | Yes |
-| Our Equipment | `/craft` | Yes |
-| Engineering Philosophy | `/craft/engineering-philosophy` | Yes |
-| R&D Projects | `/craft` | Yes |
-| Technical Partnerships | `/alliance/network` | Yes |
-
----
+| Our Cars | /craft | Yes |
+| Our Equipment | /craft | Yes |
+| Engineering Philosophy | /craft/engineering-philosophy | Yes |
+| R&D Projects | /craft | Yes |
+| Technical Partnerships | /alliance/network | Yes |
 
 **Column 4 — Join Us**
 - Visible: Yes
 
 | Label | URL | Visible |
 |---|---|---|
-| Open Careers | `/ambition` | Yes |
-| Training Programs | `/ambition` | Yes |
-| Upcoming Meetups | `/ambition` | Yes |
-| Current Initiatives | `/ambition` | Yes |
-| Partner With Us | `/contact` | Yes |
-
----
+| Open Careers | /ambition | Yes |
+| Training Programs | /ambition | Yes |
+| Upcoming Meetups | /ambition | Yes |
+| Current Initiatives | /ambition | Yes |
+| Partner With Us | /contact | Yes |
 
 **Column 5 — Company**
 - Visible: Yes
 
 | Label | URL | Visible |
 |---|---|---|
-| About AF Motorsport | `/about` | Yes |
-| Contact | `/contact` | Yes |
-| Store | `/store` | Yes |
-| Opportunities | `/opportunities` | Yes |
-| The Network | `/alliance/network` | Yes |
+| About AF Motorsport | /about | Yes |
+| Contact | /contact | Yes |
+| Store | /store | Yes |
+| Opportunities | /opportunities | Yes |
+| The Network | /alliance/network | Yes |
 
 ---
 
@@ -385,7 +254,10 @@ Spotlight:
 - Headline: Ready to be part of the story?
 - Subtext: Whether you race, engineer, design, or simply believe in what we build — there is a place for you inside AF Motorsport.
 - Button Label: Explore Ambition
-- URL: `/ambition`
+- Link: /ambition
+- Type: custom
+- URL: /ambition
+- New Tab: No
 
 ---
 
@@ -393,11 +265,11 @@ Spotlight:
 
 | Label | URL | Visible |
 |---|---|---|
-| Privacy Policy | `/legal` | Yes |
-| Terms of Use | `/legal` | Yes |
-| Cookie Policy | `/legal` | Yes |
-| Returns & Exchanges | `/legal` | Yes |
-| Legal Notice | `/legal` | Yes |
+| Privacy Policy | /legal | Yes |
+| Terms of Use | /legal | Yes |
+| Cookie Policy | /legal | Yes |
+| Returns & Exchanges | /legal | Yes |
+| Legal Notice | /legal | Yes |
 
 ### Copyright
 
@@ -411,7 +283,7 @@ Spotlight:
 - Type: Celebration
 - Title: Welcome to the new AF Motorsport universe.
 - Message: We have rebuilt everything from the ground up — the team, the machines, the stories. Explore what we have been building.
-- Link: Enable — Label: Explore Now — URL: `/glory/hall-of-fame`
+- Link: Enable — Label: Explore Now — URL: /glory
 - Show From: Site launch date
 - Show Until: 30 days after launch
 - Audience: Everyone
@@ -422,7 +294,7 @@ Spotlight:
 - Type: Info
 - Title: The new season has begun.
 - Message: Follow every round, every session, and every turning point as the championship unfolds.
-- Link: Enable — Label: Follow the Season — URL: `/pursuit`
+- Link: Enable — Label: Follow the Season — URL: /pursuit
 - Show From: Season start date
 - Show Until: Season end date
 - Audience: Everyone
@@ -433,7 +305,7 @@ Spotlight:
 - Type: Info
 - Title: We are growing the team.
 - Message: AF Motorsport is looking for exceptional people to join us. Explore open roles and training programs.
-- Link: Enable — Label: See Opportunities — URL: `/ambition`
+- Link: Enable — Label: See Opportunities — URL: /ambition
 - Show From: —
 - Show Until: —
 - Audience: Everyone
@@ -449,64 +321,56 @@ Spotlight:
 
 | Question | Answer | Related Page |
 |---|---|---|
-| What is AF Motorsport? | AF Motorsport is a competitive racing team that participates primarily in Porsche championship series. Beyond the racing, we document the team, the machines, and the stories that define us. | `/about` |
-| Which championships do you compete in? | We compete primarily in Porsche racing series. Visit the Pursuit section to follow our championships, seasons, and race results in full. | `/pursuit` |
-| Where is AF Motorsport based? | — | `/contact` |
-| How do I contact the team? | Use our contact page to reach the team directly. | `/contact` |
-
----
+| What is AF Motorsport? | AF Motorsport is a competitive racing team that participates primarily in Porsche championship series. Beyond the racing, we document the team, the machines, and the stories that define us. | /about |
+| Which championships do you compete in? | We compete primarily in Porsche racing series. Visit the Pursuit section to follow our championships, seasons, and race results in full. | /pursuit |
+| Where is AF Motorsport based? | — | /contact |
+| How do I contact the team? | Use our contact page to reach the team directly. | /contact |
 
 **Category 2 — The Team**
 - Visible: Yes
 
 | Question | Answer | Related Page |
 |---|---|---|
-| How can I learn about the drivers? | Visit the Tribe section to explore every driver as a complete human story — not just a racing CV. | `/tribe` |
-| Who leads AF Motorsport? | Meet the leaders who build and direct the team in the Tribe section. | `/tribe` |
-| What is the Culture Code? | The Culture Code is the soul of AF Motorsport — the values, rituals, and human identity of the team. | `/tribe/culture-code` |
-
----
+| How can I learn about the drivers? | Visit the Tribe section to explore every driver as a complete human story — not just a racing CV. | /tribe |
+| Who leads AF Motorsport? | Meet the leaders who build and direct the team in the Tribe section. | /tribe |
+| What is the Culture Code? | The Culture Code is the soul of AF Motorsport — the values, rituals, and human identity of the team. | /tribe/culture-code |
 
 **Category 3 — The Machines**
 - Visible: Yes
 
 | Question | Answer | Related Page |
 |---|---|---|
-| What cars does AF Motorsport race? | Visit the Craft section to explore every machine we have ever fielded — full specifications, history, and the stories behind each build. | `/craft` |
-| What is your engineering philosophy? | Our engineering philosophy is documented in full in the Craft section. | `/craft/engineering-philosophy` |
-
----
+| What cars does AF Motorsport race? | Visit the Craft section to explore every machine we have ever fielded — full specifications, history, and the stories behind each build. | /craft |
+| What is your engineering philosophy? | Our engineering philosophy is documented in full in the Craft section. | /craft/engineering-philosophy |
 
 **Category 4 — Join Us**
 - Visible: Yes
 
 | Question | Answer | Related Page |
 |---|---|---|
-| How do I join the AF Motorsport team? | Explore open roles, training programs, and upcoming meetups in the Ambition section. | `/ambition` |
-| Do you offer training programs? | Yes. Visit the Ambition section to see all current development programs and how to apply. | `/ambition` |
-| How can my company partner with AF Motorsport? | Contact us directly to discuss partnership opportunities. | `/contact` |
-
----
+| How do I join the AF Motorsport team? | Explore open roles, training programs, and upcoming meetups in the Ambition section. | /ambition |
+| Do you offer training programs? | Yes. Visit the Ambition section to see all current development programs and how to apply. | /ambition |
+| How can my company partner with AF Motorsport? | Contact us directly to discuss partnership opportunities. | /contact |
 
 **Category 5 — Store & Orders**
 - Visible: Yes
 
 | Question | Answer | Related Page |
 |---|---|---|
-| How do I place an order? | Browse the store and add items to your cart. Checkout is handled securely via the store. | `/store` |
-| What is your returns policy? | Please review our Returns & Exchanges policy on the legal page. | `/legal` |
-| How long does delivery take? | Delivery times vary by location. Details are provided at checkout. | `/store` |
-| What payment methods do you accept? | We accept all major payment methods. Details are available in our Transaction Policy. | `/legal` |
+| How do I place an order? | Browse the store and add items to your cart. Checkout is handled securely via the store. | /store |
+| What is your returns policy? | Please review our Returns & Exchanges policy on the legal page. | /legal |
+| How long does delivery take? | Delivery times vary by location. Details are provided at checkout. | /store |
+| What payment methods do you accept? | We accept all major payment methods. Details are available in our Transaction Policy. | /legal |
 
 ---
 
 ## SOCIALS
 
-| Platform | Label | Handle | URL | Linked Channel | Visible |
-|---|---|---|---|---|---|
-| Instagram | Instagram | @afmotorsport | https://instagram.com/afmotorsport | Link once channels populated | Yes |
-| X / Twitter | X | @afmotorsport | https://x.com/afmotorsport | Link once channels populated | Yes |
-| YouTube | YouTube | AF Motorsport | https://youtube.com/@afmotorsport | Link once channels populated | Yes |
-| Facebook | Facebook | AF Motorsport | https://facebook.com/afmotorsport | Link once channels populated | Yes |
-| LinkedIn | LinkedIn | AF Motorsport | https://linkedin.com/company/afmotorsport | Link once channels populated | Yes |
-| TikTok | TikTok | @afmotorsport | https://tiktok.com/@afmotorsport | Link once channels populated | No |
+| Platform | Label | Handle | URL | Visible |
+|---|---|---|---|---|
+| Instagram | Instagram | @afmotorsport | https://instagram.com/afmotorsport | Yes |
+| X / Twitter | X | @afmotorsport | https://x.com/afmotorsport | Yes |
+| YouTube | YouTube | AF Motorsport | https://youtube.com/@afmotorsport | Yes |
+| Facebook | Facebook | AF Motorsport | https://facebook.com/afmotorsport | Yes |
+| LinkedIn | LinkedIn | AF Motorsport | https://linkedin.com/company/afmotorsport | Yes |
+| TikTok | TikTok | @afmotorsport | https://tiktok.com/@afmotorsport | No |

@@ -4,10 +4,9 @@ import { Cart } from '@/components/Cart'
 import { OpenCartButton } from '@/components/Cart/OpenCart'
 import { ClippedButton } from '@/components/Custom/ui/ClippedButton'
 import { CMSLink } from '@/components/Link'
-import { Media } from '@/components/Media'
 import { DESIGN_SYSTEM } from '@/lib/constants'
-import { ArrowRight, ChevronDown, Crosshair, User, Zap } from 'lucide-react'
-import { AnimatePresence, motion } from 'motion/react'
+import { User } from 'lucide-react'
+import { motion } from 'motion/react'
 import Link from 'next/link'
 import React, { Suspense, useRef, useState } from 'react'
 
@@ -59,187 +58,30 @@ type Props = {
   socials: Social
 }
 
-const MegaMenuItem = ({ item, isOpen, onMouseEnter, onMouseLeave }: any) => {
-  const { label, tagline, subItems, spotlight, link } = item
+const NavItem = ({ item }: { item: any }) => {
   const pathname = usePathname()
-  const isActive = link?.url && link.url !== '/' ? pathname.startsWith(link.url) : pathname === link?.url
+  const isActive = item.link && item.link !== '/' ? pathname.startsWith(item.link) : pathname === item.link
 
   return (
-    <div className="relative h-full flex items-center" onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
-      <button
-        className={cn(
-          'group relative h-full px-8 transition-all active:scale-95 flex items-center gap-2 border-none outline-none overflow-hidden',
-          isOpen || isActive ? 'text-white' : 'text-zinc-500 hover:text-white',
-        )}
-        style={{ clipPath: 'polygon(12% 0%, 100% 0%, 88% 100%, 0% 100%)' }}
-      >
-        <div className={cn(
-          `absolute inset-0 transition-all ${DESIGN_SYSTEM.ANIMATION.DURATION_SLOW} ease-[cubic-bezier(0.87,0,0.13,1)]`,
-          isOpen ? `bg-[${DESIGN_SYSTEM.COLORS.PRIMARY}]` : (isActive ? `bg-[${DESIGN_SYSTEM.COLORS.PRIMARY}]/20` : "bg-zinc-900")
-        )} />
-        <div className={`absolute inset-0 bg-white translate-x-[-101%] group-hover:translate-x-0 transition-transform ${DESIGN_SYSTEM.ANIMATION.DURATION_SLOW} ease-[cubic-bezier(0.87,0,0.13,1)] opacity-20`} />
+    <Link
+      href={item.link}
+      className={cn(
+        'relative h-full px-6 transition-all active:scale-95 flex items-center border-none outline-none',
+        isActive ? 'text-white' : 'text-zinc-500 hover:text-white',
+      )}
+    >
+      <span className={cn(
+        `relative z-10 text-[9px] font-black uppercase italic transition-all ${DESIGN_SYSTEM.ANIMATION.DURATION_SLOW}`,
+        DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_XL,
+      )}>
+        {item.label}
+      </span>
 
-        <span className={cn(
-          `relative z-10 text-[9px] font-black uppercase italic transition-all ${DESIGN_SYSTEM.ANIMATION.DURATION_SLOW} group-hover:scale-105`,
-          DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_XL,
-          isOpen ? "text-black" : "text-zinc-500 group-hover:text-white"
-        )}>
-          {label}
-        </span>
-
-        {subItems && subItems.length > 0 && (
-          <ChevronDown className={cn(
-            `h-3 w-3 relative z-10 transition-transform ${DESIGN_SYSTEM.ANIMATION.DURATION_SLOW}`,
-            isOpen && 'rotate-180 text-black',
-            !isOpen && 'group-hover:text-white'
-          )} />
-        )}
-
-        <div className={cn(
-          `absolute bottom-0 left-1/2 -translate-x-1/2 h-[2px] bg-[${DESIGN_SYSTEM.COLORS.PRIMARY}] transition-all ${DESIGN_SYSTEM.ANIMATION.DURATION_SLOW}`,
-          isOpen || isActive ? "w-1/2 opacity-100" : "w-0 opacity-0 group-hover:w-1/3 group-hover:opacity-50"
-        )} />
-      </button>
-
-      <AnimatePresence>
-        {isOpen && subItems && subItems.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 10, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 5, scale: 0.98 }}
-            transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-            className="absolute left-0 top-full mt-2 w-[580px] bg-black border border-zinc-800 z-999 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.8)]"
-          >
-            <div className="grid grid-cols-12">
-              <div className="col-span-7 border-r border-zinc-900">
-                <div className="p-6 border-b border-zinc-900 flex justify-between items-center bg-zinc-950/50">
-                  <div className="flex flex-col">
-                    <span className={cn("text-[7px] font-mono text-zinc-500 uppercase", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_DEFAULT)}>
-                      {tagline || 'Sector_Access'}
-                    </span>
-                    <span className="text-[10px] font-black uppercase italic text-white tracking-widest">
-                      Primary_Protocol_0{subItems.length}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="h-1 w-8 bg-zinc-900 relative overflow-hidden">
-                      <div className={`absolute inset-0 bg-[${DESIGN_SYSTEM.COLORS.PRIMARY}] animate-pulse`} />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex flex-col">
-                  {subItems.map((subItem: any, idx: number) => {
-                    const isSubActive = subItem.link?.url && pathname === subItem.link.url
-                    return (
-                      <CMSLink
-                        key={subItem.id}
-                        {...subItem.link}
-                        className={cn(
-                          `group/sub relative p-6 flex flex-col gap-1 border-b border-zinc-900 last:border-0 transition-all ${DESIGN_SYSTEM.ANIMATION.DURATION_SLOW} overflow-hidden`,
-                          isSubActive ? "text-white bg-zinc-900/80" : (subItem.isFeatured ? `text-[${DESIGN_SYSTEM.COLORS.PRIMARY}] bg-[${DESIGN_SYSTEM.COLORS.PRIMARY}]/5` : "text-zinc-400 hover:text-white hover:bg-zinc-900/40")
-                        )}
-                      >
-                        <div className={`absolute inset-0 bg-[${DESIGN_SYSTEM.COLORS.PRIMARY}] translate-x-[-101%] group-hover/sub:translate-x-0 transition-transform ${DESIGN_SYSTEM.ANIMATION.DURATION_SLOW} ease-[cubic-bezier(0.87,0,0.13,1)] opacity-10`} />
-
-                        <div className={cn(
-                          `absolute left-0 top-0 bottom-0 w-[3px] bg-[${DESIGN_SYSTEM.COLORS.PRIMARY}] transition-transform ${DESIGN_SYSTEM.ANIMATION.DURATION_SLOW} origin-top`,
-                          isSubActive ? "scale-y-100" : "scale-y-0 group-hover/sub:scale-y-100"
-                        )} />
-
-                        <div className="flex items-center justify-between relative z-10">
-                          <div className="flex items-center gap-4">
-                            {subItem.isFeatured ? (
-                              <div className="relative">
-                                <Zap className={cn("h-3 w-3 fill-current animate-pulse", `text-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`)} />
-                                <div className={`absolute inset-0 blur-sm bg-[${DESIGN_SYSTEM.COLORS.PRIMARY}] opacity-50`} />
-                              </div>
-                            ) : (
-                              <span className={cn(
-                                "text-[8px] font-mono transition-colors",
-                                isSubActive ? `text-[${DESIGN_SYSTEM.COLORS.PRIMARY}]` : "text-zinc-800 group-hover/sub:text-white"
-                              )}>
-                                {String(idx + 1).padStart(2, '0')}
-                              </span>
-                            )}
-                            <div className="flex items-center gap-3">
-                              <div className={cn(
-                                `h-[1px] transition-all ${DESIGN_SYSTEM.ANIMATION.DURATION_SLOW}`,
-                                isSubActive ? `w-36 bg-[${DESIGN_SYSTEM.COLORS.PRIMARY}]` : "w-6 bg-zinc-900 group-hover/sub:w-36 group-hover/sub:bg-white"
-                              )} />
-                              <ArrowRight className={cn(
-                                `h-3.5 w-3.5 transition-all`,
-                                isSubActive ? `text-[${DESIGN_SYSTEM.COLORS.PRIMARY}] translate-x-1` : "text-zinc-800 group-hover/sub:text-white group-hover/sub:translate-x-1"
-                              )} />
-                            </div>
-                          </div>
-                        </div>
-
-                        {subItem.description && (
-                          <span className={cn(
-                            "pl-7 text-[8px] font-bold uppercase tracking-widest transition-colors relative z-10",
-                            isSubActive ? "text-zinc-200" : "text-zinc-600 group-hover/sub:text-zinc-400"
-                          )}>
-                            {subItem.description}
-                          </span>
-                        )}
-                      </CMSLink>
-                    )
-                  })}
-                </div>
-              </div>
-
-              <div className="col-span-5 bg-zinc-950 flex flex-col h-full">
-                <div className="p-6 border-b border-zinc-900 flex justify-between items-center">
-                  <span className={cn("text-[8px] font-black uppercase text-zinc-600", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_XL)}>Spotlight_Target</span>
-                  <Crosshair className="h-3.5 w-3.5 text-zinc-800 animate-spin-slow" />
-                </div>
-
-                {spotlight?.enable && (
-                  <div className="p-8 flex-1 flex flex-col justify-end">
-                    {(() => {
-                      const entity = spotlight.entity?.value
-                      let name = spotlight.label || ''
-                      let image = null
-                      let url = spotlight.overrideUrl || '#'
-
-                      if (entity && typeof entity === 'object') {
-                        name = name || entity.name || entity.title || ''
-                        image = entity.logo || entity.cover || entity.thumbnail || null
-                      }
-
-                      return (
-                        <Link href={url} className="group/spot flex flex-col h-full">
-                          {image && typeof image === 'object' && (
-                            <div className={`relative aspect-square mb-8 border border-zinc-800 bg-black overflow-hidden group-hover/spot:border-[${DESIGN_SYSTEM.COLORS.PRIMARY}]/50 transition-colors ${DESIGN_SYSTEM.ANIMATION.DURATION_SLOW}`}
-                              style={{ clipPath: 'polygon(15% 0%, 100% 0%, 85% 100%, 0% 100%)' }}>
-                              <Media resource={image} className="object-cover w-full h-full grayscale opacity-40 group-hover/spot:grayscale-0 group-hover/spot:opacity-100 group-hover/spot:scale-110 transition-all duration-1000 ease-out" />
-                              <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80" />
-                            </div>
-                          )}
-                          <div className="space-y-3">
-                            <div className="flex items-center gap-2">
-                              <div className={`w-1 h-1 bg-[${DESIGN_SYSTEM.COLORS.PRIMARY}] group-hover/spot:animate-ping`} />
-                              <span className="text-[7px] font-mono text-zinc-600 uppercase">Live_Sync</span>
-                            </div>
-                            <h4 className="text-[13px] font-black uppercase italic text-zinc-400 group-hover/spot:text-white transition-all tracking-tighter group-hover/spot:translate-x-1">
-                              {name}
-                            </h4>
-                            <div className="h-[2px] w-full bg-zinc-900 overflow-hidden relative">
-                              <div className={`absolute inset-0 bg-[${DESIGN_SYSTEM.COLORS.PRIMARY}] translate-x-[-100%] group-hover/spot:translate-x-0 transition-transform ${DESIGN_SYSTEM.ANIMATION.DURATION_SLOW} ease-[cubic-bezier(0.87,0,0.13,1)]`} />
-                            </div>
-                          </div>
-                        </Link>
-                      )
-                    })()}
-                  </div>
-                )}
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
+      <div className={cn(
+        `absolute bottom-0 left-1/2 -translate-x-1/2 h-[2px] bg-[${DESIGN_SYSTEM.COLORS.PRIMARY}] transition-all ${DESIGN_SYSTEM.ANIMATION.DURATION_SLOW}`,
+        isActive ? "w-1/2 opacity-100" : "w-0 opacity-0 group-hover:w-1/3 group-hover:opacity-50"
+      )} />
+    </Link>
   )
 }
 
@@ -288,8 +130,6 @@ export function HeaderClient({ header, socials }: Props) {
   const cta = header.cta
   const pathname = usePathname()
   const socialAccounts = socials?.accounts?.filter((acc: any) => acc.visible !== false) || []
-  const [activeIndex, setActiveIndex] = useState<number | null>(null)
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   return (
     <header className="sticky top-0 z-50 bg-black border-b border-zinc-900">
@@ -339,20 +179,10 @@ export function HeaderClient({ header, socials }: Props) {
           </div>
 
           <div className="flex items-center justify-between pr-8 flex-1">
-            <ul className="hidden md:flex items-center h-full -space-x-4">
-              {navItems.map((item: any, index: number) => (
+            <ul className="hidden md:flex items-center h-full">
+              {navItems.map((item: any) => (
                 <li key={item.id} className="relative h-full flex items-center">
-                  <MegaMenuItem
-                    item={item}
-                    isOpen={activeIndex === index}
-                    onMouseEnter={() => {
-                      if (timeoutRef.current) clearTimeout(timeoutRef.current)
-                      setActiveIndex(index)
-                    }}
-                    onMouseLeave={() => {
-                      timeoutRef.current = setTimeout(() => setActiveIndex(null), 150)
-                    }}
-                  />
+                  <NavItem item={item} />
                 </li>
               ))}
             </ul>
