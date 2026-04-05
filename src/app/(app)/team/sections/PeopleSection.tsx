@@ -45,7 +45,7 @@ export function PeopleSection({ members = DUMMY_TRIBE }: { members?: TeamMember[
             <span className="text-[8px] font-black text-zinc-700 uppercase tracking-[0.6em]">GENETIC_ASSET_VAULT</span>
           </div>
           <h2 className="text-5xl md:text-7xl font-black italic text-white uppercase tracking-tighter leading-none">
-            TRIBE<span className="text-zinc-900">.OS</span>
+            Our<span className="text-zinc-900"> Team</span>
           </h2>
         </div>
 

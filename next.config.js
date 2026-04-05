@@ -29,7 +29,17 @@ const nextConfig = {
     ],
   },
   reactStrictMode: false,
-  redirects,
+  async redirects() {
+    const existingRedirects = await redirects()
+    return [
+      {
+        source: '/',
+        destination: '/glory',
+        permanent: true,
+      },
+      ...existingRedirects,
+    ]
+  },
   eslint: {
     ignoreDuringBuilds: true,
   },

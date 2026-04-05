@@ -11,10 +11,15 @@ import {
   Star
 } from 'lucide-react'
 import { AnimatePresence, motion } from 'motion/react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 export function TrophiesSection({ trophies = DUMMY_ARCHIVE }: { trophies?: any[] }) {
   const [activeIdx, setActiveIdx] = useState(0)
+  const [token, setToken] = useState<string | null>(null)
+
+  useEffect(() => {
+    setToken((Math.random() * 0xffffff << 0).toString(16).toUpperCase())
+  }, [activeIdx])
 
   const nextSlide = () => setActiveIdx((prev) => (prev + 1) % trophies.length)
   const prevSlide = () => setActiveIdx((prev) => (prev - 1 + trophies.length) % trophies.length)
@@ -125,7 +130,9 @@ export function TrophiesSection({ trophies = DUMMY_ARCHIVE }: { trophies?: any[]
 
                 <div className="flex justify-between items-end">
                   <div className="size-12 border-b-2 border-l-2" style={{ borderColor: DESIGN_SYSTEM.COLORS.PRIMARY }} />
-                  <span className="text-[8px] font-mono text-zinc-800 uppercase tracking-widest">Auth_Token: {(Math.random() * 0xffffff << 0).toString(16).toUpperCase()}</span>
+                  <span className="text-[8px] font-mono text-zinc-800 uppercase tracking-widest">
+                    Auth_Token: {token}
+                  </span>
                 </div>
               </div>
             </motion.div>

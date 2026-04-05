@@ -1,13 +1,13 @@
 'use client'
 
 import { ClippedButton } from '@/components/Custom/ui/ClippedButton'
-import { CMSLink } from '@/components/Link'
 import Magnet from '@/components/Magnet'
 import { DESIGN_SYSTEM } from '@/lib/constants'
 import { cn } from '@/utilities/cn'
-import { motion, useScroll, useTransform } from 'motion/react'
+import { motion, useScroll, useTransform, AnimatePresence } from 'motion/react'
 import Image from 'next/image'
 import { useEffect, useRef, useState } from 'react'
+import { X, Zap, Target, Gauge, Shield, Activity, Terminal, Cpu } from 'lucide-react'
 
 interface DummyDriver {
   id: number
@@ -33,6 +33,12 @@ interface DummyDriver {
     visibility?: { show?: boolean }
   }
   slug?: string
+  telemetry?: {
+    reactionTime: string
+    avgGForce: string
+    peakBPM: string
+    consistency: string
+  }
 }
 
 const DUMMY_DRIVERS: DummyDriver[] = [
@@ -41,260 +47,142 @@ const DUMMY_DRIVERS: DummyDriver[] = [
     first: 'ALEXANDER',
     last: 'VOSS',
     basics: {
-      identifier: {
-        number: '44',
-        callsign: 'VOSS_UNIT_01',
-        nickname: 'THE APEX',
-      },
+      identifier: { number: '44', callsign: 'VOSS_UNIT_01', nickname: 'THE APEX' },
       tagline: 'LEAD PILOT',
       description: 'Engineered for the limit. Voss represents the synthesis of biometric data and raw mechanical intuition.',
     },
-    traits: {
-      identity: {
-        nationality: 'GERMAN',
-        age: 28,
-      },
-    },
+    traits: { identity: { nationality: 'GERMAN', age: 28 } },
     slug: 'alexander-voss',
+    telemetry: { reactionTime: '0.12s', avgGForce: '4.2G', peakBPM: '168', consistency: '99.4%' }
   },
   {
     id: 2,
     first: 'ELARA',
     last: 'KANE',
     basics: {
-      identifier: {
-        number: '07',
-        callsign: 'KANE_TACTICAL',
-        nickname: 'GHOST',
-      },
+      identifier: { number: '07', callsign: 'KANE_TACTICAL', nickname: 'GHOST' },
       tagline: 'TACTICAL UNIT',
       description: 'Kane dominates through high-altitude precision and a cold, calculated approach to defensive maneuvers.',
     },
-    traits: {
-      identity: {
-        nationality: 'JAPANESE',
-        age: 24,
-      },
-    },
+    traits: { identity: { nationality: 'JAPANESE', age: 24 } },
     slug: 'elara-kane',
+    telemetry: { reactionTime: '0.14s', avgGForce: '3.8G', peakBPM: '152', consistency: '98.1%' }
   },
   {
     id: 3,
     first: 'MARCUS',
     last: 'THORNE',
     basics: {
-      identifier: {
-        number: '19',
-        callsign: 'THORNE_STRIKE',
-        nickname: 'HAMMER',
-      },
+      identifier: { number: '19', callsign: 'THORNE_STRIKE', nickname: 'HAMMER' },
       tagline: 'STRIKE PILOT',
       description: 'A veteran of the iron circuits, Thorne relies on mechanical grit and aggressive line-breaking strategies.',
     },
-    traits: {
-      identity: {
-        nationality: 'BRITISH',
-        age: 35,
-      },
-    },
+    traits: { identity: { nationality: 'BRITISH', age: 35 } },
     slug: 'marcus-thorne',
+    telemetry: { reactionTime: '0.18s', avgGForce: '4.5G', peakBPM: '175', consistency: '96.8%' }
   },
   {
     id: 4,
     first: 'SOFIA',
     last: 'VALDEZ',
     basics: {
-      identifier: {
-        number: '22',
-        callsign: 'VALDEZ_RACING',
-        nickname: 'PHANTOM',
-      },
+      identifier: { number: '22', callsign: 'VALDEZ_RACING', nickname: 'PHANTOM' },
       tagline: 'ENDURANCE SPECIALIST',
       description: 'Valdez dominates night races with supernatural consistency and tire management.',
     },
-    traits: {
-      identity: {
-        nationality: 'SPANISH',
-        age: 31,
-      },
-    },
+    traits: { identity: { nationality: 'SPANISH', age: 31 } },
     slug: 'sofia-valdez',
+    telemetry: { reactionTime: '0.15s', avgGForce: '3.5G', peakBPM: '145', consistency: '99.8%' }
   },
   {
     id: 5,
     first: 'JAMES',
     last: 'CHENG',
     basics: {
-      identifier: {
-        number: '88',
-        callsign: 'CHENG_PROTO',
-        nickname: 'DRIFT_KING',
-      },
+      identifier: { number: '88', callsign: 'CHENG_PROTO', nickname: 'DRIFT_KING' },
       tagline: 'PROTOTYPE PILOT',
       description: 'Cheng tests experimental aerodynamics and pushes chassis limits beyond simulation.',
     },
-    traits: {
-      identity: {
-        nationality: 'CHINESE',
-        age: 27,
-      },
-    },
+    traits: { identity: { nationality: 'CHINESE', age: 27 } },
     slug: 'james-cheng',
+    telemetry: { reactionTime: '0.13s', avgGForce: '4.0G', peakBPM: '160', consistency: '97.5%' }
   },
   {
     id: 6,
     first: 'ISABELLE',
     last: 'DUBOIS',
     basics: {
-      identifier: {
-        number: '05',
-        callsign: 'DUBOIS_GT',
-        nickname: 'ICE_QUEEN',
-      },
+      identifier: { number: '05', callsign: 'DUBOIS_GT', nickname: 'ICE_QUEEN' },
       tagline: 'WET WEATHER ACE',
       description: 'Dubois thrives in monsoon conditions with unmatched car control and rain line intuition.',
     },
-    traits: {
-      identity: {
-        nationality: 'FRENCH',
-        age: 29,
-      },
-    },
+    traits: { identity: { nationality: 'FRENCH', age: 29 } },
     slug: 'isabelle-dubois',
+    telemetry: { reactionTime: '0.16s', avgGForce: '3.2G', peakBPM: '148', consistency: '99.1%' }
   },
   {
     id: 7,
     first: 'VIKTOR',
     last: 'PETROV',
     basics: {
-      identifier: {
-        number: '33',
-        callsign: 'PETROV_ATTACK',
-        nickname: 'BULLET',
-      },
+      identifier: { number: '33', callsign: 'PETROV_ATTACK', nickname: 'BULLET' },
       tagline: 'OVAL MASTER',
       description: 'Petrov dominates high-banked ovals with fearless drafting and millimeter precision.',
     },
-    traits: {
-      identity: {
-        nationality: 'RUSSIAN',
-        age: 34,
-      },
-    },
+    traits: { identity: { nationality: 'RUSSIAN', age: 34 } },
     slug: 'viktor-petrov',
+    telemetry: { reactionTime: '0.11s', avgGForce: '4.8G', peakBPM: '182', consistency: '95.9%' }
   },
   {
     id: 8,
     first: 'NAOMI',
     last: 'WILLIAMS',
     basics: {
-      identifier: {
-        number: '12',
-        callsign: 'WILLIAMS_ELITE',
-        nickname: 'PRODIGY',
-      },
+      identifier: { number: '12', callsign: 'WILLIAMS_ELITE', nickname: 'PRODIGY' },
       tagline: 'RISING STAR',
       description: 'Youngest driver in the lineup with natural pace and fearless overtaking.',
     },
-    traits: {
-      identity: {
-        nationality: 'AUSTRALIAN',
-        age: 22,
-      },
-    },
+    traits: { identity: { nationality: 'AUSTRALIAN', age: 22 } },
     slug: 'naomi-williams',
+    telemetry: { reactionTime: '0.12s', avgGForce: '3.9G', peakBPM: '165', consistency: '98.4%' }
   },
   {
     id: 9,
     first: 'CARLOS',
     last: 'SILVA',
     basics: {
-      identifier: {
-        number: '77',
-        callsign: 'SILVA_TECH',
-        nickname: 'MACHINE',
-      },
+      identifier: { number: '77', callsign: 'SILVA_TECH', nickname: 'MACHINE' },
       tagline: 'SIMULATION EXPERT',
       description: 'Silva bridges virtual and reality with telemetry-driven perfection.',
     },
-    traits: {
-      identity: {
-        nationality: 'BRAZILIAN',
-        age: 32,
-      },
-    },
+    traits: { identity: { nationality: 'BRAZILIAN', age: 32 } },
     slug: 'carlos-silva',
+    telemetry: { reactionTime: '0.14s', avgGForce: '4.1G', peakBPM: '158', consistency: '99.5%' }
   },
   {
     id: 10,
     first: 'YUKI',
     last: 'TANAKA',
     basics: {
-      identifier: {
-        number: '23',
-        callsign: 'TANAKA_DRIFT',
-        nickname: 'DRIFT_KING',
-      },
+      identifier: { number: '23', callsign: 'TANAKA_DRIFT', nickname: 'DRIFT_KING' },
       tagline: 'TACTICAL RETIREMENT',
       description: 'Tanaka specializes in strategic fuel saving and tire preservation without losing pace.',
     },
-    traits: {
-      identity: {
-        nationality: 'JAPANESE',
-        age: 30,
-      },
-    },
+    traits: { identity: { nationality: 'JAPANESE', age: 30 } },
     slug: 'yuki-tanaka',
+    telemetry: { reactionTime: '0.17s', avgGForce: '3.4G', peakBPM: '150', consistency: '99.9%' }
   },
 ]
 
-const PLACEHOLDERS = [
-  {
-    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=800&auto=format&fit=crop',
-    cover: 'https://images.unsplash.com/photo-1550291652-6ea9114a47b1?q=80&w=1600&auto=format&fit=crop',
-  },
-  {
-    avatar: 'https://images.unsplash.com/photo-1594144408253-839659b48247?q=80&w=800&auto=format&fit=crop',
-    cover: 'https://images.unsplash.com/photo-1511919884226-fd3cad34687c?q=80&w=1600&auto=format&fit=crop',
-  },
-  {
-    avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=800&auto=format&fit=crop',
-    cover: 'https://images.unsplash.com/photo-1583121274602-3e2820c69888?q=80&w=1600&auto=format&fit=crop',
-  },
-  {
-    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=800&auto=format&fit=crop',
-    cover: 'https://images.unsplash.com/photo-1568605117036-5fe5e7fa0ab7?q=80&w=1600&auto=format&fit=crop',
-  },
-  {
-    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=800&auto=format&fit=crop',
-    cover: 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?q=80&w=1600&auto=format&fit=crop',
-  },
-  {
-    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=800&auto=format&fit=crop',
-    cover: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=1600&auto=format&fit=crop',
-  },
-  {
-    avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=800&auto=format&fit=crop',
-    cover: 'https://images.unsplash.com/photo-1533130061792-64b345e4a833?q=80&w=1600&auto=format&fit=crop',
-  },
-  {
-    avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=800&auto=format&fit=crop',
-    cover: 'https://images.unsplash.com/photo-1620706857370-e1b9770e8bb1?q=80&w=1600&auto=format&fit=crop',
-  },
-  {
-    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=800&auto=format&fit=crop',
-    cover: 'https://images.unsplash.com/photo-1601309111403-85d133da5dd1?q=80&w=1600&auto=format&fit=crop',
-  },
-  {
-    avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=800&auto=format&fit=crop',
-    cover: 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?q=80&w=1600&auto=format&fit=crop',
-  },
-]
+const PLACEHOLDERS = Array.from({ length: 10 }).map((_, i) => ({
+  avatar: `https://picsum.photos/id/${10 + i}/800/1000`,
+  cover: `https://picsum.photos/id/${20 + i}/1600/900`,
+}))
 
 export function LegendSection({ drivers = DUMMY_DRIVERS }: { drivers?: DummyDriver[] }) {
   const containerRef = useRef<HTMLDivElement>(null)
   const { scrollXProgress } = useScroll({ container: containerRef })
-  const [currentIndex, setCurrentIndex] = useState(0)
+  const [activeDossier, setActiveDossier] = useState<DummyDriver | null>(null)
 
   const parsedEase = (DESIGN_SYSTEM.ANIMATION.EASING_CUBIC.match(/[\d.]+/g)?.map(Number) || [0.87, 0, 0.13, 1]) as [number, number, number, number]
 
@@ -312,21 +200,18 @@ export function LegendSection({ drivers = DUMMY_DRIVERS }: { drivers?: DummyDriv
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [])
 
-  useEffect(() => {
-    const container = containerRef.current
-    if (!container) return
-
-    const handleScroll = () => {
-      const index = Math.round(container.scrollLeft / container.clientWidth)
-      setCurrentIndex(index)
-    }
-
-    container.addEventListener('scroll', handleScroll)
-    return () => container.removeEventListener('scroll', handleScroll)
-  }, [])
-
   return (
     <section className="relative w-full bg-black overflow-hidden">
+      <AnimatePresence>
+        {activeDossier && (
+          <DossierSidebar
+            driver={activeDossier}
+            onClose={() => setActiveDossier(null)}
+            image={PLACEHOLDERS[drivers.indexOf(activeDossier) % PLACEHOLDERS.length].avatar}
+          />
+        )}
+      </AnimatePresence>
+
       <div className="sticky top-0 left-0 w-full h-12 z-50 px-4 md:px-12 flex items-center justify-between border-b border-zinc-900 bg-black/90 backdrop-blur-md">
         <div className="flex items-center gap-3">
           <div
@@ -347,11 +232,7 @@ export function LegendSection({ drivers = DUMMY_DRIVERS }: { drivers?: DummyDriv
                 className="h-full"
                 style={{
                   backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY,
-                  scaleX: useTransform(
-                    scrollXProgress,
-                    [i / drivers.length, (i + 1) / drivers.length],
-                    [0, 1],
-                  ),
+                  scaleX: useTransform(scrollXProgress, [i / drivers.length, (i + 1) / drivers.length], [0, 1]),
                   transformOrigin: 'left',
                 }}
               />
@@ -404,7 +285,6 @@ export function LegendSection({ drivers = DUMMY_DRIVERS }: { drivers?: DummyDriv
 
               <div className="relative z-10 w-full max-w-7xl mx-auto">
                 <div className="flex flex-col lg:grid lg:grid-cols-12 gap-6 md:gap-10 lg:gap-16 items-end">
-
                   <div className="w-full lg:col-span-7">
                     <motion.div
                       initial={{ opacity: 0, x: -20 }}
@@ -423,9 +303,7 @@ export function LegendSection({ drivers = DUMMY_DRIVERS }: { drivers?: DummyDriv
                     <h2 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black italic leading-[0.85] tracking-tighter uppercase pl-4 md:pl-0">
                       <span style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }}>{driver.first}</span>
                       <br />
-                      <span className="text-white">
-                        {driver.last}
-                      </span>
+                      <span className="text-white">{driver.last}</span>
                     </h2>
                   </div>
 
@@ -433,10 +311,7 @@ export function LegendSection({ drivers = DUMMY_DRIVERS }: { drivers?: DummyDriv
                     <motion.div
                       initial={{ opacity: 0, y: 40, rotateX: 10 }}
                       whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
-                      transition={{
-                        duration: 0.8,
-                        ease: parsedEase
-                      }}
+                      transition={{ duration: 0.8, ease: parsedEase }}
                       className="relative w-full max-w-[360px] md:max-w-[420px] mx-auto lg:mr-0 lg:ml-auto group"
                     >
                       <div
@@ -452,12 +327,7 @@ export function LegendSection({ drivers = DUMMY_DRIVERS }: { drivers?: DummyDriv
 
                         <div className="relative w-full aspect-[4/3] mb-4 md:mb-6 overflow-hidden border border-white/5 bg-black"
                           style={{ clipPath: 'polygon(15px 0, 100% 0, 100% calc(100% - 15px), 100% 100%, 0 100%, 0 15px)' }}>
-                          <Image
-                            src={avatarUrl}
-                            alt=""
-                            fill
-                            className="object-cover grayscale hover:grayscale-0 transition-all duration-1000 -scale-x-100"
-                          />
+                          <Image src={avatarUrl} alt="" fill className="object-cover grayscale hover:grayscale-0 transition-all duration-1000 -scale-x-100" />
                           <div className="absolute top-0 left-0 w-1 h-8 md:h-12 z-20" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY }} />
                           <div className="absolute bottom-0 right-0 w-8 md:w-12 h-1 z-20" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY }} />
                           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
@@ -476,9 +346,13 @@ export function LegendSection({ drivers = DUMMY_DRIVERS }: { drivers?: DummyDriv
                               <span className="text-[6px] md:text-[7px] font-mono text-zinc-600 uppercase tracking-widest">TACTICAL_ID</span>
                               <span className="text-[8px] md:text-[9px] font-mono text-zinc-400">{callsign}</span>
                             </div>
-                            <CMSLink url={`/tribe`}>
-                              <ClippedButton variant="primary" size="md" className="scale-90 md:scale-100 origin-right" label="ACCESS_DOSSIER" />
-                            </CMSLink>
+                            <ClippedButton
+                              variant="primary"
+                              size="md"
+                              className="scale-90 md:scale-100 origin-right"
+                              label="ACCESS_DOSSIER"
+                              onClick={() => setActiveDossier(driver)}
+                            />
                           </div>
                         </div>
                       </div>
@@ -518,5 +392,137 @@ export function LegendSection({ drivers = DUMMY_DRIVERS }: { drivers?: DummyDriv
         })}
       </div>
     </section>
+  )
+}
+
+function DossierSidebar({ driver, onClose, image }: { driver: DummyDriver, onClose: () => void, image: string }) {
+  return (
+    <motion.div
+      initial={{ x: '100%' }}
+      animate={{ x: 0 }}
+      exit={{ x: '100%' }}
+      transition={{ type: 'spring', damping: 35, stiffness: 250 }}
+      className="fixed top-0 right-0 h-full w-[95vw] md:w-[85vw] lg:w-[70vw] z-[100] bg-zinc-950 border-l border-zinc-800 shadow-2xl overflow-y-auto"
+    >
+      <div className="sticky top-0 z-50 flex items-center justify-between p-4 bg-zinc-950/90 backdrop-blur-xl border-b border-zinc-900">
+        <div className="flex items-center gap-4">
+          <Terminal size={14} className="text-primary" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }} />
+          <span className="text-[9px] font-mono font-bold uppercase tracking-[0.3em] text-zinc-600">
+            SECURE_DOSSIER // {driver.basics?.identifier?.callsign}
+          </span>
+        </div>
+        <button onClick={onClose} className="p-1.5 hover:bg-zinc-900 transition-colors">
+          <X size={20} className="text-white" />
+        </button>
+      </div>
+
+      <div className="p-6 md:p-12 lg:p-16 space-y-16">
+        <div className="grid lg:grid-cols-12 gap-8 lg:gap-16 items-start">
+          <div className="lg:col-span-4 aspect-[3/4] relative grayscale border border-zinc-800 p-1.5 bg-zinc-900/50">
+            <Image src={image} alt="" fill className="object-cover p-1.5" />
+            <div className="absolute top-0 left-0 w-4 h-4 border-t border-l border-primary" style={{ borderColor: DESIGN_SYSTEM.COLORS.PRIMARY }} />
+            <div className="absolute bottom-0 right-0 w-4 h-4 border-b border-r border-primary" style={{ borderColor: DESIGN_SYSTEM.COLORS.PRIMARY }} />
+          </div>
+          <div className="lg:col-span-8 space-y-6">
+            <div className="space-y-2">
+              <div className="flex items-center gap-3">
+                <span className="text-primary font-black italic text-[10px] tracking-[0.4em] uppercase" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }}>
+                  {driver.basics?.tagline}
+                </span>
+                <div className="h-px flex-1 bg-zinc-900" />
+              </div>
+              <h1 className="text-5xl md:text-7xl font-black italic uppercase tracking-tighter leading-[0.9]">
+                {driver.first}<br />
+                <span className="text-zinc-800">{driver.last}</span>
+              </h1>
+            </div>
+            <p className="text-base font-bold text-zinc-400 uppercase tracking-widest leading-relaxed max-w-2xl">
+              {driver.basics?.description}
+            </p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-px bg-zinc-900 border border-zinc-900">
+          <TelemetryBox icon={<Zap size={18} />} label="REACTION_TIME" value={driver.telemetry?.reactionTime || '0.14s'} />
+          <TelemetryBox icon={<Gauge size={18} />} label="AVG_G_FORCE" value={driver.telemetry?.avgGForce || '4.2G'} />
+          <TelemetryBox icon={<Activity size={18} />} label="PEAK_BPM" value={driver.telemetry?.peakBPM || '168'} />
+          <TelemetryBox icon={<Shield size={18} />} label="CONSISTENCY" value={driver.telemetry?.consistency || '99.4%'} />
+        </div>
+
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-20">
+          <div className="space-y-8">
+            <div className="flex items-center gap-3">
+              <Cpu size={14} className="text-zinc-600" />
+              <h3 className="text-xl font-black italic uppercase tracking-tighter">BIOMETRIC_PROFILE</h3>
+            </div>
+            <div className="space-y-4">
+              <DataRow label="NATIONALITY" value={driver.traits?.identity?.nationality || 'UNDISCLOSED'} />
+              <DataRow label="AGE" value={String(driver.traits?.identity?.age) || 'XX'} />
+              <DataRow label="BLOOD_TYPE" value="O_POSITIVE" />
+              <DataRow label="NEURAL_STABILITY" value="OPTIMIZED" />
+              <DataRow label="GENETIC_MARKER" value="ALPHA_7" />
+            </div>
+          </div>
+          <div className="space-y-8">
+            <div className="flex items-center gap-3">
+              <Target size={14} className="text-zinc-600" />
+              <h3 className="text-xl font-black italic uppercase tracking-tighter">MECHANICAL_SYNERGY</h3>
+            </div>
+            <div className="space-y-4">
+              <DataRow label="CHASSIS_PREF" value="STIFF / OVERSTEER" />
+              <DataRow label="BRAKE_BIAS" value="54% FRONT" />
+              <DataRow label="TYRE_MGMT" value="CLASS_A" />
+              <DataRow label="SIM_HOURS" value="4,820+" />
+              <DataRow label="OVERTAKE_INDEX" value="9.4/10" />
+            </div>
+          </div>
+        </div>
+
+        <div className="space-y-8 pb-16">
+          <h3 className="text-xl font-black italic uppercase tracking-tighter border-b border-zinc-900 pb-3">DEPLOYMENT_LOGS</h3>
+          <div className="space-y-1.5">
+            <LogEntry date="2026.03.12" circuit="PORTIMÃO" result="P1" status="SUCCESS" />
+            <LogEntry date="2026.02.28" circuit="BARCELONA" result="P3" status="SUCCESS" />
+            <LogEntry date="2026.02.15" circuit="ESTORIL" result="DNF" status="MECH_FAIL" />
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  )
+}
+
+function TelemetryBox({ icon, label, value }: { icon: any, label: string, value: string }) {
+  return (
+    <div className="bg-black p-6 md:p-8 flex flex-col gap-6 group hover:bg-zinc-950 transition-colors">
+      <div className="text-zinc-800 group-hover:text-primary transition-colors" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }}>{icon}</div>
+      <div className="space-y-1.5">
+        <span className="text-[9px] font-black text-zinc-700 uppercase tracking-widest">{label}</span>
+        <span className="text-3xl md:text-4xl font-black italic uppercase tracking-tighter block leading-none">{value}</span>
+      </div>
+    </div>
+  )
+}
+
+function DataRow({ label, value }: { label: string, value: string }) {
+  return (
+    <div className="flex justify-between items-end border-b border-zinc-900 pb-3 group">
+      <span className="text-[10px] font-black text-zinc-700 uppercase tracking-widest">{label}</span>
+      <span className="text-base font-black italic uppercase tracking-tighter group-hover:text-primary transition-colors">{value}</span>
+    </div>
+  )
+}
+
+function LogEntry({ date, circuit, result, status }: { date: string, circuit: string, result: string, status: string }) {
+  return (
+    <div className="flex items-center justify-between p-5 md:p-6 bg-zinc-900/20 hover:bg-zinc-900/40 border border-zinc-900 transition-all group">
+      <div className="flex items-center gap-6 md:gap-10">
+        <span className="text-[9px] font-mono text-zinc-700">{date}</span>
+        <span className="text-lg md:text-xl font-black italic uppercase tracking-tighter group-hover:translate-x-1 transition-transform">{circuit}</span>
+      </div>
+      <div className="flex items-center gap-6 md:gap-8">
+        <span className="text-2xl font-black italic text-primary" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }}>{result}</span>
+        <div className="text-[8px] font-mono px-3 py-1 bg-zinc-950 text-zinc-500 uppercase tracking-tighter border border-zinc-800">{status}</div>
+      </div>
+    </div>
   )
 }
