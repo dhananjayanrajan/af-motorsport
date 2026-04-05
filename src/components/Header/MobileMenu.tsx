@@ -4,9 +4,10 @@ import React, { useEffect, useState, useMemo } from 'react'
 import Link from 'next/link'
 import { usePathname, useSearchParams } from 'next/navigation'
 import {
-  ChevronRight, LogIn, LogOut, MenuIcon, Shield, UserPlus,
+  ChevronRight, LogOut, MenuIcon,
   Camera, Disc, Facebook, Github, Instagram, Link2, Linkedin,
-  MessageCircle, Music, Phone, Send, Twitch, Twitter, Youtube
+  MessageCircle, Music, Phone, Send, Twitch, Twitter, Youtube,
+  User, LogIn
 } from 'lucide-react'
 
 import { CMSLink } from '@/components/Link'
@@ -21,7 +22,7 @@ import { DESIGN_SYSTEM } from '@/lib/constants'
 import { useAuth } from '@/providers/Auth'
 import { cn } from '@/utilities/cn'
 
-import type { Header, Social } from '@/payload-types'
+import type { Header, Social } from 'src/payload-types'
 
 const socialIcons: Record<string, React.ElementType> = {
   instagram: Instagram,
@@ -47,7 +48,7 @@ interface Props {
 }
 
 export function MobileMenu({ menu, socials }: Props) {
-  const { user } = useAuth()
+  const { user, logout } = useAuth()
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const [isOpen, setIsOpen] = useState(false)
@@ -64,84 +65,102 @@ export function MobileMenu({ menu, socials }: Props) {
     setIsOpen(false)
   }, [pathname, searchParams])
 
-  const validSocials = useMemo(() => socials?.filter(s => s && s.url) || [], [socials])
+  const validSocials = useMemo(() => socials?.filter((s: any) => s && s.url) || [], [socials])
 
   return (
     <Sheet onOpenChange={setIsOpen} open={isOpen}>
-      <SheetTrigger className="flex h-10 w-10 items-center justify-center bg-black border border-zinc-800 text-white transition-all active:scale-95 group">
-        <MenuIcon className="h-4 w-4 transition-colors group-hover:text-zinc-400" />
+      <SheetTrigger className="flex h-10 w-10 items-center justify-center bg-white border border-zinc-200 text-zinc-950 transition-all active:scale-95 group skew-x-[-15deg]">
+        <MenuIcon className="h-4 w-4 transition-colors group-hover:text-primary skew-x-[15deg]" />
       </SheetTrigger>
 
-      <SheetContent side="left" className="flex flex-col bg-black border-r border-zinc-900 text-white w-[280px] p-0">
-        <SheetHeader className="p-6 border-b border-zinc-900 bg-zinc-950/50">
-          <div className="flex items-center gap-3">
-            <Shield className="h-4 w-4" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }} />
-            <SheetTitle className={cn("text-[10px] font-black uppercase italic text-white", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_XL)}>
-              MAINFRAME_V1.0
+      <SheetContent side="left" className="flex flex-col bg-white border-r border-zinc-200 text-zinc-950 w-[300px] p-0 gap-0">
+        <SheetHeader className="p-8 border-b border-zinc-100 bg-zinc-50/50 text-left">
+          <div className="flex flex-col gap-1">
+            <SheetTitle className={cn("text-[11px] font-black uppercase italic text-zinc-950", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_XL)}>
+              NAVIGATION_MENU
             </SheetTitle>
+            <div className="h-1 w-12 bg-primary" />
           </div>
         </SheetHeader>
 
-        <nav className="flex-1 overflow-y-auto">
+        <nav className="flex-1 overflow-y-auto py-4 overflow-x-hidden">
           {menu?.length ? (
-            <ul className="flex flex-col">
-              {menu.map(item => (
-                <li key={item.id} className="border-b border-zinc-900/50">
-                  <CMSLink
-                    url={item.link}
-                    label={item.label}
-                    className="flex items-center justify-between p-5 transition-all hover:bg-zinc-900/40 group"
-                  >
-                    <span className={cn("text-[10px] font-black uppercase italic text-zinc-400 group-hover:text-white transition-colors", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_DEFAULT)}>
-                      {item.label}
-                    </span>
-                    <ChevronRight className="h-3 w-3 text-zinc-800 group-hover:text-white transition-colors" />
-                  </CMSLink>
-                </li>
-              ))}
+            <ul className="flex flex-col gap-2 px-6">
+              {menu.map((item: any) => {
+                const isActive = item.link && (item.link === '/' ? pathname === '/' : pathname.startsWith(item.link))
+                return (
+                  <li key={item.id} className="relative group">
+                    <Link
+                      href={item.link || '#'}
+                      className={cn(
+                        "flex items-center justify-between p-4 transition-all skew-x-[-15deg] border border-zinc-200 relative overflow-hidden",
+                        isActive ? "bg-black text-white border-black" : "bg-white text-zinc-950 hover:border-primary"
+                      )}
+                    >
+                      {!isActive && (
+                        <div
+                          className="absolute inset-0 translate-x-[-101%] group-hover:translate-x-0 transition-transform duration-300 bg-primary"
+                        />
+                      )}
+
+                      <div className="flex items-center gap-4 skew-x-[15deg] relative z-10">
+                        <span className={cn("text-[11px] font-black uppercase italic transition-all group-hover:translate-x-1", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_DEFAULT)}>
+                          {item.label}
+                        </span>
+                      </div>
+
+                      <ChevronRight className={cn("h-3 w-3 skew-x-[15deg] transition-transform group-hover:translate-x-1 relative z-10", isActive ? "text-primary" : "text-zinc-300 group-hover:text-black")} />
+                    </Link>
+                  </li>
+                )
+              })}
             </ul>
           ) : null}
         </nav>
 
-        <div className="p-6 bg-zinc-950 border-t border-zinc-900">
+        <div className="p-8 bg-zinc-50 border-t border-zinc-200">
           <div className="grid gap-3 mb-8">
             {user ? (
-              <>
-                <Link href="/account" className="flex items-center justify-between py-2 group">
-                  <span className="text-[9px] font-black uppercase italic text-zinc-500 group-hover:text-white">ACCOUNT_SESS</span>
-                  <ChevronRight className="h-3 w-3 text-zinc-800" />
-                </Link>
+              <div className="flex flex-col gap-2">
                 <Link
-                  href="/logout"
-                  className="flex items-center justify-center w-full h-10 bg-zinc-900 border border-zinc-800 text-[9px] font-black uppercase italic text-white transition-all hover:bg-white hover:text-black"
-                  style={{ clipPath: 'polygon(5% 0%, 100% 0%, 95% 100%, 0% 100%)' }}
+                  href="/account"
+                  className="flex items-center justify-center w-full h-12 bg-white border border-zinc-200 text-[10px] font-black uppercase italic text-zinc-950 transition-all hover:bg-zinc-100 skew-x-[-15deg]"
                 >
-                  <LogOut className="h-3 w-3 mr-2" /> EXIT_SESS
+                  <span className="skew-x-[15deg] flex items-center gap-2">
+                    <User className="h-3 w-3" /> ACCOUNT
+                  </span>
                 </Link>
-              </>
+                <button
+                  onClick={() => logout()}
+                  className="flex items-center justify-center w-full h-12 bg-black text-[10px] font-black uppercase italic text-white transition-all hover:bg-zinc-800 skew-x-[-15deg]"
+                >
+                  <span className="skew-x-[15deg] flex items-center gap-2">
+                    <LogOut className="h-3 w-3" /> SIGN_OUT
+                  </span>
+                </button>
+              </div>
             ) : (
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-2 gap-3">
                 <Link
                   href="/login"
-                  className="flex items-center justify-center h-10 bg-zinc-900 border border-zinc-800 text-[9px] font-black uppercase italic text-white transition-all hover:bg-zinc-800"
-                  style={{ clipPath: 'polygon(10% 0%, 100% 0%, 90% 100%, 0% 100%)' }}
+                  className="flex items-center justify-center h-12 bg-white border border-zinc-200 text-[10px] font-black uppercase italic text-zinc-950 transition-all hover:bg-zinc-100 skew-x-[-15deg]"
                 >
-                  LOGIN
+                  <span className="skew-x-[15deg]">LOGIN</span>
                 </Link>
                 <Link
                   href="/create-account"
-                  className="flex items-center justify-center h-10 text-[9px] font-black uppercase italic text-black transition-all hover:opacity-90"
-                  style={{ clipPath: 'polygon(10% 0%, 100% 0%, 90% 100%, 0% 100%)', backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY }}
+                  className="flex items-center justify-center h-12 text-[10px] font-black uppercase italic text-black transition-all hover:opacity-90 skew-x-[-15deg]"
+                  style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY }}
                 >
-                  JOIN
+                  <span className="skew-x-[15deg]">JOIN</span>
                 </Link>
               </div>
             )}
           </div>
 
           {validSocials.length > 0 && (
-            <div className="flex flex-wrap gap-4 pt-6 border-t border-zinc-900/50 justify-center">
-              {validSocials.map(account => {
+            <div className="flex flex-wrap gap-6 justify-center py-4 border-t border-zinc-200">
+              {validSocials.map((account: any) => {
                 const Icon = socialIcons[account.platform] || Link2
                 return (
                   <a
@@ -149,14 +168,20 @@ export function MobileMenu({ menu, socials }: Props) {
                     href={account.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-zinc-600 transition-colors hover:text-white"
+                    className="text-zinc-400 transition-all hover:text-primary hover:scale-110"
                   >
-                    <Icon className="h-3.5 w-3.5" />
+                    <Icon className="h-5 w-5" />
                   </a>
                 )
               })}
             </div>
           )}
+
+          <div className="mt-4 text-center">
+            <span className="text-[8px] font-bold text-zinc-400 uppercase tracking-[0.3em]">
+              VER_2026.04.05
+            </span>
+          </div>
         </div>
       </SheetContent>
     </Sheet>
