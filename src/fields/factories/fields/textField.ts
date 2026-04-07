@@ -1,5 +1,4 @@
-// fields/factories/fields/textField.ts
-import { advanced } from '@/fields/factories/toggles/advanced'
+// FILE: src/fields/factories/fields/textField.ts
 import type { Field, StaticLabel, TextField } from 'payload'
 
 type DictLeaf = {
@@ -19,7 +18,6 @@ type Flag =
   | 'index'
   | 'unique'
   | 'hasMany'
-  | 'advanced'
   | 'readonly'
   | 'disabled'
   | 'hidden'
@@ -135,7 +133,7 @@ export const textFieldFactory = (opts: TextFactoryOptions): Field => {
       maxRows: opts.maxRows,
       defaultValue: (opts.defaultValue as string[]) ?? [],
     }
-    return flags.has('advanced') ? advanced(field) : field
+    return field
   }
 
   const field: TextField = {
@@ -144,5 +142,5 @@ export const textFieldFactory = (opts: TextFactoryOptions): Field => {
     defaultValue: (opts.defaultValue as string) ?? dictNode?.defaultValue ?? '',
   }
 
-  return flags.has('advanced') ? advanced(field) : field
+  return field
 }

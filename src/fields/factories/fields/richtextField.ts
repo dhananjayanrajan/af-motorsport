@@ -1,6 +1,5 @@
-// fields/factories/fields/richTextField.ts
-import type { RichTextField, Field, StaticLabel, RichTextFieldValidation, RichTextAdapter } from 'payload'
-import { advanced } from '../toggles/advanced'
+// FILE: src/fields/factories/fields/richTextField.ts
+import type { Field, RichTextAdapter, RichTextField, RichTextFieldValidation, StaticLabel } from 'payload'
 
 type DictLeaf = {
   label?: StaticLabel
@@ -13,7 +12,6 @@ type DictLeaf = {
 type Flag =
   | 'required'
   | 'localized'
-  | 'advanced'
   | 'readonly'
   | 'disabled'
   | 'hidden'
@@ -99,5 +97,5 @@ export const richtextFieldFactory = (opts: RichTextFactoryOptions): Field => {
   if (opts.editor !== undefined) field.editor = opts.editor
   if (opts.validate !== undefined) field.validate = opts.validate
 
-  return flags.has('advanced') ? advanced(field) : field
+  return field
 }

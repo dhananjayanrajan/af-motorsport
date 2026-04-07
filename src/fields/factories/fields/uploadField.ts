@@ -1,6 +1,5 @@
-// fields/factories/fields/uploadField.ts
-import type { UploadField, Field, StaticLabel, UploadFieldValidation, FilterOptions, CollectionSlug } from 'payload'
-import { advanced } from '../toggles/advanced'
+// FILE: src/fields/factories/fields/uploadField.ts
+import type { CollectionSlug, Field, FilterOptions, StaticLabel, UploadField, UploadFieldValidation } from 'payload'
 
 type DictLeaf = {
   label?: StaticLabel
@@ -16,7 +15,6 @@ type Flag =
   | 'index'
   | 'unique'
   | 'hasMany'
-  | 'advanced'
   | 'readonly'
   | 'disabled'
   | 'hidden'
@@ -126,5 +124,5 @@ export const uploadFieldFactory = (opts: UploadFactoryOptions): Field => {
   if (opts.filterOptions !== undefined) field.filterOptions = opts.filterOptions
   if (opts.validate !== undefined) field.validate = opts.validate
 
-  return flags.has('advanced') ? advanced(field) : field
+  return field
 }

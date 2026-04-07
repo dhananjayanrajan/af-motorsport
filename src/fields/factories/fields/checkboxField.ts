@@ -1,6 +1,5 @@
-// fields/factories/fields/checkboxField.ts
-import type { CheckboxField, Field, StaticLabel, CheckboxFieldValidation } from 'payload'
-import { advanced } from '../toggles/advanced'
+// FILE: src/fields/factories/fields/checkboxField.ts
+import type { CheckboxField, CheckboxFieldValidation, Field, StaticLabel } from 'payload'
 
 type DictLeaf = {
   label?: StaticLabel
@@ -14,7 +13,6 @@ type Flag =
   | 'required'
   | 'localized'
   | 'index'
-  | 'advanced'
   | 'readonly'
   | 'disabled'
   | 'hidden'
@@ -107,5 +105,5 @@ export const checkboxFieldFactory = (opts: CheckboxFactoryOptions): Field => {
 
   if (opts.validate) field.validate = opts.validate
 
-  return flags.has('advanced') ? advanced(field) : field
+  return field
 }

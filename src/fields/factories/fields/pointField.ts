@@ -1,6 +1,5 @@
-// fields/factories/fields/pointField.ts
-import type { Field, StaticLabel, PointField as PointFieldType, PointFieldValidation } from 'payload'
-import { advanced } from '../toggles/advanced'
+// FILE: src/fields/factories/fields/pointField.ts
+import type { Field, PointField as PointFieldType, PointFieldValidation, StaticLabel } from 'payload'
 
 type DictLeaf = {
   label?: StaticLabel
@@ -15,7 +14,6 @@ type Flag =
   | 'localized'
   | 'index'
   | 'unique'
-  | 'advanced'
   | 'readonly'
   | 'disabled'
   | 'hidden'
@@ -140,6 +138,5 @@ export const pointFieldFactory = (opts: PointFactoryOptions): Field => {
     }
   }
 
-  const out = field as Field
-  return flags.has('advanced') ? advanced(out) : out
+  return field as Field
 }

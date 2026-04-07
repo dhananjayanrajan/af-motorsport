@@ -1,6 +1,5 @@
-// fields/factories/fields/radioField.ts
-import type { RadioField, Field, StaticLabel, RadioFieldValidation, OptionObject } from 'payload'
-import { advanced } from '../toggles/advanced'
+// FILE: src/fields/factories/fields/radioField.ts
+import type { Field, OptionObject, RadioField, RadioFieldValidation, StaticLabel } from 'payload'
 
 type DictLeaf = {
   label?: StaticLabel
@@ -14,7 +13,6 @@ type Flag =
   | 'required'
   | 'localized'
   | 'index'
-  | 'advanced'
   | 'readonly'
   | 'disabled'
   | 'hidden'
@@ -110,5 +108,5 @@ export const radioFieldFactory = (opts: RadioFactoryOptions): Field => {
   if (opts.interfaceName !== undefined) field.interfaceName = opts.interfaceName
   if (opts.validate !== undefined) field.validate = opts.validate
 
-  return flags.has('advanced') ? advanced(field) : field
+  return field
 }

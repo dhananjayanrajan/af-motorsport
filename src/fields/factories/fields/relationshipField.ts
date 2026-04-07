@@ -1,6 +1,5 @@
-// fields/factories/fields/relationshipField.ts
-import type { RelationshipField, Field, StaticLabel, RelationshipFieldValidation, CollectionSlug, Where, FilterOptions } from 'payload'
-import { advanced } from '../toggles/advanced'
+// FILE: src/fields/factories/fields/relationshipField.ts
+import type { CollectionSlug, Field, FilterOptions, RelationshipField, RelationshipFieldValidation, StaticLabel, Where } from 'payload'
 
 type DictLeaf = {
   label?: StaticLabel
@@ -17,7 +16,6 @@ type Flag =
   | 'index'
   | 'unique'
   | 'hasMany'
-  | 'advanced'
   | 'readonly'
   | 'disabled'
   | 'hidden'
@@ -144,5 +142,5 @@ export const relationshipFieldFactory = (opts: RelationshipFactoryOptions): Fiel
   if (opts.sortOptions !== undefined) field.admin.sortOptions = opts.sortOptions
   if (opts.validate !== undefined) field.validate = opts.validate
 
-  return flags.has('advanced') ? advanced(field as Field) : field as Field
+  return field as Field
 }

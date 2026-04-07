@@ -1,6 +1,6 @@
-// fields/factories/fields/selectField.ts
-import type { SelectField, Field, StaticLabel, SelectFieldValidation, OptionObject } from 'payload'
-import { advanced } from '../toggles/advanced'
+// FILE: src/fields/factories/fields/selectField.ts
+import type { Field, OptionObject, SelectField, SelectFieldValidation, StaticLabel } from 'payload'
+
 type DictLeaf = {
   label?: StaticLabel
   placeholder?: string
@@ -9,16 +9,17 @@ type DictLeaf = {
   defaultValue?: string | string[]
   localized?: boolean
 }
+
 type Flag =
   | 'required'
   | 'localized'
   | 'index'
   | 'unique'
   | 'hasMany'
-  | 'advanced'
   | 'readonly'
   | 'disabled'
   | 'hidden'
+
 interface SelectFactoryOptions {
   name: string
   // Accept readonly arrays to support const assertions in constants files
@@ -43,6 +44,7 @@ interface SelectFactoryOptions {
   dbName?: string
   interfaceName?: string
 }
+
 const WIDTH_MAP = {
   1: '100%',
   2: '50%',
@@ -50,11 +52,13 @@ const WIDTH_MAP = {
   4: '25%',
   5: '20%',
 } as const
+
 const DEFAULT_DESCRIPTION: StaticLabel = {
   en: 'Select one or more options.',
   es: 'Seleccione una o más opciones.',
   pt: 'Selecione uma ou mais opções.',
 }
+
 const DEFAULTS = {
   required: false,
   localized: false,
@@ -64,6 +68,7 @@ const DEFAULTS = {
   isClearable: false,
   isSortable: false,
 } as const
+
 const findDictNode = (dict: Record<string, any> | undefined, name: string): DictLeaf | undefined => {
   if (!dict) return
   const stack: any[] = [dict]
@@ -76,23 +81,30 @@ const findDictNode = (dict: Record<string, any> | undefined, name: string): Dict
     }
   }
 }
+
 export const selectFieldFactory = (opts: SelectFactoryOptions): Field => {
   const flags = new Set(opts.flags || [])
   const dictNode = findDictNode(opts.dictionary, opts.name)
+
   const label: StaticLabel =
     dictNode?.label ?? { en: opts.name, es: opts.name, pt: opts.name }
+
   const placeholder =
     opts.placeholder ??
     dictNode?.placeholder ??
     `Select ${opts.name}`
+
   const description: StaticLabel =
     dictNode?.description ?? DEFAULT_DESCRIPTION
+
   const width = WIDTH_MAP[opts.width ?? 1]
+
   const required = flags.has('required') || dictNode?.required || DEFAULTS.required
   const localized = flags.has('localized') || dictNode?.localized || DEFAULTS.localized
   const unique = flags.has('unique') || DEFAULTS.unique
   const index = flags.has('index') || DEFAULTS.index
   const hasMany = opts.hasMany ?? DEFAULTS.hasMany
+
   const field: SelectField = {
     name: opts.name,
     type: 'select',
@@ -114,15 +126,18 @@ export const selectFieldFactory = (opts: SelectFactoryOptions): Field => {
       isSortable: opts.isSortable ?? DEFAULTS.isSortable,
     },
   }
+
   if (opts.defaultValue !== undefined) {
     field.defaultValue = opts.defaultValue
   } else if (dictNode?.defaultValue !== undefined) {
     field.defaultValue = dictNode.defaultValue
   }
+
   if (opts.filterOptions !== undefined) field.filterOptions = opts.filterOptions as any
   if (opts.enumName !== undefined) field.enumName = opts.enumName
   if (opts.dbName !== undefined) field.dbName = opts.dbName
   if (opts.interfaceName !== undefined) field.interfaceName = opts.interfaceName
   if (opts.validate !== undefined) field.validate = opts.validate
-  return flags.has('advanced') ? advanced(field) : field
+
+  return field
 }

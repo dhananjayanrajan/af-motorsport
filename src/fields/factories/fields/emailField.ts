@@ -1,6 +1,5 @@
-// fields/factories/fields/emailField.ts
-import type { EmailField, Field, StaticLabel, EmailFieldValidation } from 'payload'
-import { advanced } from '../toggles/advanced'
+// FILE: src/fields/factories/fields/emailField.ts
+import type { EmailField, EmailFieldValidation, Field, StaticLabel } from 'payload'
 
 type DictLeaf = {
   label?: StaticLabel
@@ -16,7 +15,6 @@ type Flag =
   | 'localized'
   | 'index'
   | 'unique'
-  | 'advanced'
   | 'readonly'
   | 'disabled'
   | 'hidden'
@@ -111,5 +109,5 @@ export const emailFieldFactory = (opts: EmailFactoryOptions): Field => {
 
   if (opts.validate) field.validate = opts.validate
 
-  return flags.has('advanced') ? advanced(field) : field
+  return field
 }

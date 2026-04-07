@@ -1,5 +1,5 @@
-import type { DateField, Field, StaticLabel, DateFieldValidation } from 'payload'
-import { advanced } from '../toggles/advanced'
+// FILE: src/fields/factories/fields/dateField.ts
+import type { DateField, DateFieldValidation, Field, StaticLabel } from 'payload'
 
 type DictLeaf = {
   label?: StaticLabel
@@ -14,7 +14,6 @@ type Flag =
   | 'required'
   | 'localized'
   | 'index'
-  | 'advanced'
   | 'readonly'
   | 'disabled'
   | 'hidden'
@@ -137,5 +136,5 @@ export const dateFieldFactory = (opts: DateFactoryOptions): Field => {
 
   if (opts.validate) field.validate = opts.validate
 
-  return flags.has('advanced') ? advanced(field) : field
+  return field
 }

@@ -1,6 +1,5 @@
-// fields/factories/fields/textareaField.ts
-import type { TextareaField, Field, StaticLabel } from 'payload'
-import { advanced } from '../toggles/advanced'
+// FILE: src/fields/factories/fields/textareaField.ts
+import type { Field, StaticLabel, TextareaField } from 'payload'
 
 type DictLeaf = {
   label?: StaticLabel
@@ -19,7 +18,6 @@ type Flag =
   | 'localized'
   | 'index'
   | 'unique'
-  | 'advanced'
   | 'readonly'
   | 'disabled'
   | 'hidden'
@@ -137,5 +135,5 @@ export const textareaFieldFactory = (
     },
   }
 
-  return flags.has('advanced') ? advanced(field) : field
+  return field
 }

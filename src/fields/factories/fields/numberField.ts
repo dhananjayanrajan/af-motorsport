@@ -1,6 +1,5 @@
-// fields/factories/fields/numberField.ts
+// FILE: src/fields/factories/fields/numberField.ts
 import type { Field, StaticLabel } from 'payload'
-import { advanced } from '../toggles/advanced'
 
 type DictLeaf = {
   label?: StaticLabel
@@ -19,7 +18,6 @@ type Flag =
   | 'index'
   | 'unique'
   | 'hasMany'
-  | 'advanced'
   | 'readonly'
   | 'disabled'
   | 'hidden'
@@ -136,6 +134,5 @@ export const numberFieldFactory = (opts: NumberFactoryOptions): Field => {
           : 0
   }
 
-  const out = field as Field
-  return flags.has('advanced') ? advanced(out) : out
+  return field as Field
 }
