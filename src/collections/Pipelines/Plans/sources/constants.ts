@@ -1,0 +1,6 @@
+export const PLAN_SCOPE = ['personal', 'team', 'departmental', 'organizational', 'championship']
+export const PLAN_STATUS = ['draft', 'approved', 'in_progress', 'completed', 'on_hold', 'cancelled']
+export const PLAN_PRIORITY = ['low', 'medium', 'high', 'critical']
+export const CURRENCY = ['USD', 'EUR', 'GBP', 'INR']
+export const RISK_LIKELIHOOD = ['low', 'medium', 'high']
+export const RISK_IMPACT = ['low', 'medium', 'high', 'critical']
