@@ -34,7 +34,7 @@ const nextConfig = {
     return [
       {
         source: '/',
-        destination: '/glory',
+        destination: '/home',
         permanent: true,
       },
       ...existingRedirects,
