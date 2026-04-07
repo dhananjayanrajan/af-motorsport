@@ -15,15 +15,15 @@ export const basicsFields: Field[] = [
     dictionary.host,
     [
       textFieldFactory({
-        name: 'code',
+        name: 'number',
         dictionary: dictionary.tabs.basics.fields.identifiers.fields,
         width: 2,
         flags: ['index'],
         minLength: 1,
-        maxLength: 50,
+        maxLength: 10,
       }),
       textFieldFactory({
-        name: 'abbreviation',
+        name: 'plate',
         dictionary: dictionary.tabs.basics.fields.identifiers.fields,
         width: 2,
         flags: [],
@@ -33,14 +33,6 @@ export const basicsFields: Field[] = [
     ],
     false
   ),
-  textFieldFactory({
-    name: 'tagline',
-    dictionary: dictionary.tabs.basics.fields,
-    width: 1,
-    flags: [],
-    minLength: 1,
-    maxLength: 200,
-  }),
   textareaFieldFactory({
     name: 'description',
     dictionary: dictionary.tabs.basics.fields,

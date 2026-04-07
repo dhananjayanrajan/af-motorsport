@@ -1,13 +1,12 @@
 import { collectionFactory, tabFactory } from '@/fields/factories/blueprint'
 import { dictionary } from './sources/dictionary'
-import { assetsFields } from './tabs/assets'
 import { basicsFields } from './tabs/basics'
 import { detailsFields } from './tabs/details'
 import { essentialFields } from './tabs/essentials'
 
-export const Series = collectionFactory(
+export const Points = collectionFactory(
   {
-    slug: 'series',
+    slug: 'points',
     labels: { singular: dictionary.host, plural: dictionary.hostPlural },
     access: {
       read: () => true,
@@ -27,14 +26,13 @@ export const Series = collectionFactory(
     admin: {
       group: 'Competition',
       useAsTitle: 'name',
-      defaultColumns: ['name', 'alias', 'updatedAt'],
+      defaultColumns: ['name', 'alias', 'value', 'scale', 'updatedAt'],
     },
   },
   essentialFields,
   [
     tabFactory('basics', dictionary.host, basicsFields),
     tabFactory('details', dictionary.host, detailsFields),
-    tabFactory('assets', dictionary.host, assetsFields),
   ],
   { host: dictionary.host, hostPlural: dictionary.hostPlural }
 )

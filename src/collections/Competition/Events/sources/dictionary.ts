@@ -1,14 +1,14 @@
 export const dictionary = {
-  host: { en: 'Series', es: 'Serie', pt: 'Série' },
-  hostPlural: { en: 'Series', es: 'Series', pt: 'Séries' },
+  host: { en: 'Event', es: 'Evento', pt: 'Evento' },
+  hostPlural: { en: 'Events', es: 'Eventos', pt: 'Eventos' },
   essential: {
     name: {
       label: { en: 'Name', es: 'Nombre', pt: 'Nome' },
-      placeholder: { en: 'e.g. Formula One', es: 'e.g. Fórmula Uno', pt: 'e.g. Fórmula 1' },
+      placeholder: { en: 'e.g. Monaco Grand Prix', es: 'e.g. Gran Premio de Mónaco', pt: 'e.g. Grande Prêmio de Mônaco' },
     },
     alias: {
       label: { en: 'Alias', es: 'Alias', pt: 'Alias' },
-      placeholder: { en: 'e.g. F1', es: 'e.g. F1', pt: 'e.g. F1' },
+      placeholder: { en: 'e.g. MON', es: 'e.g. MON', pt: 'e.g. MON' },
     },
   },
   tabs: {
@@ -19,21 +19,17 @@ export const dictionary = {
         identifiers: {
           label: { en: 'Identifiers', es: 'Identificadores', pt: 'Identificadores' },
           entity: { en: 'Identifier', es: 'Identificador', pt: 'Identificador' },
-          description: { en: 'Series identification codes', es: 'Códigos de identificación', pt: 'Códigos de identificação' },
+          description: { en: 'Event identification codes', es: 'Códigos de identificación', pt: 'Códigos de identificação' },
           fields: {
             code: {
               label: { en: 'Code', es: 'Código', pt: 'Código' },
-              placeholder: { en: 'e.g. FIA_F1', es: 'e.g. FIA_F1', pt: 'e.g. FIA_F1' },
-            },
-            abbreviation: {
-              label: { en: 'Abbreviation', es: 'Abreviatura', pt: 'Abreviação' },
-              placeholder: { en: 'e.g. F1', es: 'e.g. F1', pt: 'e.g. F1' },
+              placeholder: { en: 'e.g. MON_2024', es: 'e.g. MON_2024', pt: 'e.g. MON_2024' },
             },
           },
         },
         tagline: {
           label: { en: 'Tagline', es: 'Lema', pt: 'Lema' },
-          placeholder: { en: 'e.g. The Pinnacle of Motorsport', es: 'e.g. La Cima del Motorsport', pt: 'e.g. O Pináculo do Motorsport' },
+          placeholder: { en: 'e.g. The Jewel in the Crown', es: 'e.g. La Joya de la Corona', pt: 'e.g. A Joia da Coroa' },
         },
         description: {
           label: { en: 'Description', es: 'Descripción', pt: 'Descrição' },
@@ -51,21 +47,15 @@ export const dictionary = {
         access: {
           label: { en: 'Access', es: 'Acceso', pt: 'Acesso' },
         },
-        agenda: {
-          label: { en: 'Agenda', es: 'Agenda', pt: 'Agenda' },
-          placeholder: { en: 'Enter agenda', es: 'Ingrese agenda', pt: 'Insira a agenda' },
+        season: {
+          label: { en: 'Season', es: 'Temporada', pt: 'Temporada' },
+        },
+        location: {
+          label: { en: 'Location', es: 'Ubicación', pt: 'Localização' },
         },
         history: {
           label: { en: 'History', es: 'Historia', pt: 'História' },
-          placeholder: { en: 'Enter history', es: 'Ingrese historia', pt: 'Insira a história' },
-        },
-        predecessor: {
-          label: { en: 'Predecessor', es: 'Predecesor', pt: 'Antecessor' },
-          description: { en: 'Previous series that led to this one', es: 'Serie anterior que llevó a esta', pt: 'Série anterior que levou a esta' },
-        },
-        successor: {
-          label: { en: 'Successor', es: 'Sucesor', pt: 'Sucessor' },
-          description: { en: 'Subsequent series that followed this one', es: 'Serie posterior que siguió a esta', pt: 'Série posterior que seguiu esta' },
+          placeholder: { en: 'Enter event history', es: 'Ingrese historia del evento', pt: 'Insira a história do evento' },
         },
         start_date: {
           label: { en: 'Start Date', es: 'Fecha de Inicio', pt: 'Data de Início' },
@@ -73,8 +63,9 @@ export const dictionary = {
         end_date: {
           label: { en: 'End Date', es: 'Fecha de Fin', pt: 'Data de Término' },
         },
-        location: {
-          label: { en: 'Location', es: 'Ubicación', pt: 'Localização' },
+        notes: {
+          label: { en: 'Notes', es: 'Notas', pt: 'Notas' },
+          placeholder: { en: 'Additional notes', es: 'Notas adicionales', pt: 'Notas adicionais' },
         },
       },
     },
@@ -82,17 +73,17 @@ export const dictionary = {
       name: 'assets',
       label: { en: 'Assets', es: 'Activos', pt: 'Ativos' },
       fields: {
-        logo: {
-          label: { en: 'Logo', es: 'Logotipo', pt: 'Logotipo' },
-        },
         thumbnail: {
           label: { en: 'Thumbnail', es: 'Miniatura', pt: 'Miniatura' },
+        },
+        poster: {
+          label: { en: 'Poster', es: 'Póster', pt: 'Pôster' },
         },
         cover: {
           label: { en: 'Cover', es: 'Portada', pt: 'Capa' },
         },
-        documents: {
-          label: { en: 'Documents', es: 'Documentos', pt: 'Documentos' },
+        videos: {
+          label: { en: 'Videos', es: 'Videos', pt: 'Vídeos' },
         },
       },
     },

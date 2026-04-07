@@ -1,71 +1,34 @@
 import type { Field } from 'payload'
 import { dictionary } from '../sources/dictionary'
-import { textareaFieldFactory } from '@/fields/factories/fields/textareaField'
+import { selectFieldFactory } from '@/fields/factories/fields/selectField'
+import { relationshipFieldFactory } from '@/fields/factories/fields/relationshipField'
+import { pointFieldFactory } from '@/fields/factories/fields/pointField'
 import { richtextFieldFactory } from '@/fields/factories/fields/richtextField'
 import { dateFieldFactory } from '@/fields/factories/fields/dateField'
-import { pointFieldFactory } from '@/fields/factories/fields/pointField'
-import { selectFieldFactory } from '@/fields/factories/fields/selectField'
-import { SERIES_STATUS, SERIES_ACCESS } from '../sources/constants'
+import { textareaFieldFactory } from '@/fields/factories/fields/textareaField'
+import { EVENT_STATUS, EVENT_ACCESS } from '../sources/constants'
 
 export const detailsFields: Field[] = [
   selectFieldFactory({
     name: 'status',
-    options: SERIES_STATUS,
+    options: EVENT_STATUS,
     dictionary: dictionary.tabs.details.fields,
     width: 2,
     flags: ['index'],
   }),
   selectFieldFactory({
     name: 'access',
-    options: SERIES_ACCESS,
+    options: EVENT_ACCESS,
     dictionary: dictionary.tabs.details.fields,
     width: 2,
     flags: [],
   }),
-  textareaFieldFactory({
-    name: 'agenda',
-    dictionary: dictionary.tabs.details.fields,
-    width: 1,
-    flags: [],
-    minLength: 1,
-    maxLength: 2000,
-    rows: 6,
-  }),
-  richtextFieldFactory({
-    name: 'history',
-    dictionary: dictionary.tabs.details.fields,
-    width: 1,
-    flags: [],
-  }),
-  {
-    name: 'predecessor',
-    type: 'json',
-    label: dictionary.tabs.details.fields.predecessor.label,
-    admin: {
-      description: dictionary.tabs.details.fields.predecessor.description,
-    },
-  },
-  {
-    name: 'successor',
-    type: 'json',
-    label: dictionary.tabs.details.fields.successor.label,
-    admin: {
-      description: dictionary.tabs.details.fields.successor.description,
-    },
-  },
-  dateFieldFactory({
-    name: 'start_date',
+  relationshipFieldFactory({
+    name: 'season',
+    relationTo: 'seasons',
     dictionary: dictionary.tabs.details.fields,
     width: 2,
-    pickerAppearance: 'dayOnly',
-    flags: [],
-  }),
-  dateFieldFactory({
-    name: 'end_date',
-    dictionary: dictionary.tabs.details.fields,
-    width: 2,
-    pickerAppearance: 'dayOnly',
-    flags: [],
+    flags: ['required', 'index'],
   }),
   pointFieldFactory({
     name: 'location',
@@ -75,5 +38,33 @@ export const detailsFields: Field[] = [
     maxLongitude: 180,
     minLatitude: -90,
     maxLatitude: 90,
+  }),
+  richtextFieldFactory({
+    name: 'history',
+    dictionary: dictionary.tabs.details.fields,
+    width: 1,
+    flags: [],
+  }),
+  dateFieldFactory({
+    name: 'start_date',
+    dictionary: dictionary.tabs.details.fields,
+    width: 2,
+    pickerAppearance: 'dayOnly',
+    flags: ['index'],
+  }),
+  dateFieldFactory({
+    name: 'end_date',
+    dictionary: dictionary.tabs.details.fields,
+    width: 2,
+    pickerAppearance: 'dayOnly',
+    flags: [],
+  }),
+  textareaFieldFactory({
+    name: 'notes',
+    dictionary: dictionary.tabs.details.fields,
+    flags: [],
+    minLength: 1,
+    maxLength: 2000,
+    rows: 4,
   }),
 ]

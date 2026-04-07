@@ -4,17 +4,33 @@ import { textFieldFactory } from '@/fields/factories/fields/textField'
 
 export const essentialFields: Field[] = [
   textFieldFactory({
-    name: 'name',
+    name: 'first_name',
     dictionary: dictionary.essential,
-    width: 4,
+    width: 3,
     flags: ['required', 'index'],
-    minLength: 2,
-    maxLength: 100,
+    minLength: 1,
+    maxLength: 50,
+  }),
+  textFieldFactory({
+    name: 'middle_name',
+    dictionary: dictionary.essential,
+    width: 3,
+    flags: [],
+    minLength: 1,
+    maxLength: 50,
+  }),
+  textFieldFactory({
+    name: 'last_name',
+    dictionary: dictionary.essential,
+    width: 3,
+    flags: ['required', 'index'],
+    minLength: 1,
+    maxLength: 50,
   }),
   textFieldFactory({
     name: 'alias',
     dictionary: dictionary.essential,
-    width: 4,
+    width: 3,
     flags: [],
     minLength: 1,
     maxLength: 50,

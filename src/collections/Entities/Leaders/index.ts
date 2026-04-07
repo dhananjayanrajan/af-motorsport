@@ -5,9 +5,9 @@ import { basicsFields } from './tabs/basics'
 import { detailsFields } from './tabs/details'
 import { essentialFields } from './tabs/essentials'
 
-export const Series = collectionFactory(
+export const Leaders = collectionFactory(
   {
-    slug: 'series',
+    slug: 'leaders',
     labels: { singular: dictionary.host, plural: dictionary.hostPlural },
     access: {
       read: () => true,
@@ -25,9 +25,9 @@ export const Series = collectionFactory(
       },
     },
     admin: {
-      group: 'Competition',
-      useAsTitle: 'name',
-      defaultColumns: ['name', 'alias', 'updatedAt'],
+      group: 'Entities',
+      useAsTitle: 'first_name',
+      defaultColumns: ['first_name', 'last_name', 'alias', 'title', 'nationality', 'updatedAt'],
     },
   },
   essentialFields,

@@ -12,13 +12,6 @@ export const assetsFields: Field[] = [
     flags: [],
   }),
   uploadFieldFactory({
-    name: 'thumbnail',
-    relationTo: 'media',
-    dictionary: dictionary.tabs.assets.fields,
-    width: 2,
-    flags: [],
-  }),
-  uploadFieldFactory({
     name: 'cover',
     relationTo: 'media',
     dictionary: dictionary.tabs.assets.fields,
@@ -26,12 +19,12 @@ export const assetsFields: Field[] = [
     flags: [],
   }),
   relationshipFieldFactory({
-    name: 'documents',
+    name: 'gallery',
     relationTo: 'media',
     dictionary: dictionary.tabs.assets.fields,
-    width: 1,
+    width: 2,
     flags: ['hasMany'],
     hasMany: true,
-    maxRows: 50,
+    maxRows: 100,
   }),
 ]

@@ -22,14 +22,6 @@ export const basicsFields: Field[] = [
         minLength: 1,
         maxLength: 50,
       }),
-      textFieldFactory({
-        name: 'abbreviation',
-        dictionary: dictionary.tabs.basics.fields.identifiers.fields,
-        width: 2,
-        flags: [],
-        minLength: 1,
-        maxLength: 20,
-      }),
     ],
     false
   ),

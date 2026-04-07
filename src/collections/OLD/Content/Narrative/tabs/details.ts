@@ -1,16 +1,16 @@
 // FILE: src/collections/Content/Narratives/tabs/details.ts
-import type { Field } from 'payload'
-import { dictionary } from '../sources/dictionary'
-import { richtextFieldFactory } from '@/fields/factories/fields/richtextField'
 import { groupFactory } from '@/fields/factories/blueprint'
+import { richtextFieldFactory } from '@/fields/factories/fields/richtextField'
 import { selectFieldFactory } from '@/fields/factories/fields/selectField'
 import { textFieldFactory } from '@/fields/factories/fields/textField'
 import { advanced } from '@/fields/factories/toggles/advanced'
+import type { Field } from 'payload'
 import {
-  NARRATIVE_SCOPE_SIGNIFICANCE,
-  NARRATIVE_SCOPE_SCALE,
   NARRATIVE_SCOPE_DEPTH,
+  NARRATIVE_SCOPE_SCALE,
+  NARRATIVE_SCOPE_SIGNIFICANCE,
 } from '../sources/constants'
+import { dictionary } from '../sources/dictionary'
 
 export const detailsFields: Field[] = [
   {

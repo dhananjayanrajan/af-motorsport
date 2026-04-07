@@ -22,24 +22,16 @@ export const basicsFields: Field[] = [
         minLength: 1,
         maxLength: 50,
       }),
-      textFieldFactory({
-        name: 'abbreviation',
-        dictionary: dictionary.tabs.basics.fields.identifiers.fields,
-        width: 2,
-        flags: [],
-        minLength: 1,
-        maxLength: 20,
-      }),
     ],
     false
   ),
   textFieldFactory({
-    name: 'tagline',
+    name: 'segment',
     dictionary: dictionary.tabs.basics.fields,
     width: 1,
-    flags: [],
+    flags: ['index'],
     minLength: 1,
-    maxLength: 200,
+    maxLength: 100,
   }),
   textareaFieldFactory({
     name: 'description',

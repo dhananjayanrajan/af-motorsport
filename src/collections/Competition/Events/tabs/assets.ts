@@ -5,14 +5,14 @@ import { relationshipFieldFactory } from '@/fields/factories/fields/relationship
 
 export const assetsFields: Field[] = [
   uploadFieldFactory({
-    name: 'logo',
+    name: 'thumbnail',
     relationTo: 'media',
     dictionary: dictionary.tabs.assets.fields,
     width: 2,
     flags: [],
   }),
   uploadFieldFactory({
-    name: 'thumbnail',
+    name: 'poster',
     relationTo: 'media',
     dictionary: dictionary.tabs.assets.fields,
     width: 2,
@@ -26,8 +26,8 @@ export const assetsFields: Field[] = [
     flags: [],
   }),
   relationshipFieldFactory({
-    name: 'documents',
-    relationTo: 'media',
+    name: 'videos',
+    relationTo: 'playlists',
     dictionary: dictionary.tabs.assets.fields,
     width: 1,
     flags: ['hasMany'],
