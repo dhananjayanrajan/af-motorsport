@@ -121,8 +121,8 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"details_access" "enum_series_details_access",
   	"details_agenda" varchar DEFAULT '',
   	"details_history" jsonb,
-  	"details_predecessor" jsonb,
-  	"details_successor" jsonb,
+  	"details_predecessor_id" integer,
+  	"details_successor_id" integer,
   	"details_start_date" timestamp(3) with time zone,
   	"details_end_date" timestamp(3) with time zone,
   	"details_location" geometry(Point) DEFAULT 'SRID=4326;POINT(0 0)',
@@ -3470,6 +3470,8 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"created_at" timestamp(3) with time zone
   );
   
+  ALTER TABLE "series" ADD CONSTRAINT "series_details_predecessor_id_series_id_fk" FOREIGN KEY ("details_predecessor_id") REFERENCES "public"."series"("id") ON DELETE set null ON UPDATE no action;
+  ALTER TABLE "series" ADD CONSTRAINT "series_details_successor_id_series_id_fk" FOREIGN KEY ("details_successor_id") REFERENCES "public"."series"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "series" ADD CONSTRAINT "series_assets_logo_id_media_id_fk" FOREIGN KEY ("assets_logo_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "series" ADD CONSTRAINT "series_assets_thumbnail_id_media_id_fk" FOREIGN KEY ("assets_thumbnail_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "series" ADD CONSTRAINT "series_assets_cover_id_media_id_fk" FOREIGN KEY ("assets_cover_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
@@ -4117,6 +4119,8 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX "series_name_idx" ON "series" USING btree ("name");
   CREATE INDEX "series_basics_identifiers_basics_identifiers_code_idx" ON "series" USING btree ("basics_identifiers_code");
   CREATE INDEX "series_details_details_status_idx" ON "series" USING btree ("details_status");
+  CREATE INDEX "series_details_details_predecessor_idx" ON "series" USING btree ("details_predecessor_id");
+  CREATE INDEX "series_details_details_successor_idx" ON "series" USING btree ("details_successor_id");
   CREATE INDEX "series_details_details_location_idx" ON "series" USING btree ("details_location");
   CREATE INDEX "series_assets_assets_logo_idx" ON "series" USING btree ("assets_logo_id");
   CREATE INDEX "series_assets_assets_thumbnail_idx" ON "series" USING btree ("assets_thumbnail_id");

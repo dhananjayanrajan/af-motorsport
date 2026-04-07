@@ -15,8 +15,9 @@ import {
   serial,
   varchar,
   jsonb,
-  timestamp,
   integer,
+  type AnyPgColumn,
+  timestamp,
   boolean,
   numeric,
   text,
@@ -741,8 +742,15 @@ export const series = pgTable(
     details_access: enum_series_details_access('details_access'),
     details_agenda: varchar('details_agenda').default(''),
     details_history: jsonb('details_history'),
-    details_predecessor: jsonb('details_predecessor'),
-    details_successor: jsonb('details_successor'),
+    details_predecessor: integer('details_predecessor_id').references(
+      (): AnyPgColumn => series.id,
+      {
+        onDelete: 'set null',
+      },
+    ),
+    details_successor: integer('details_successor_id').references((): AnyPgColumn => series.id, {
+      onDelete: 'set null',
+    }),
     details_start_date: timestamp('details_start_date', {
       mode: 'string',
       withTimezone: true,
@@ -778,6 +786,8 @@ export const series = pgTable(
       columns.basics_identifiers_code,
     ),
     index('series_details_details_status_idx').on(columns.details_status),
+    index('series_details_details_predecessor_idx').on(columns.details_predecessor),
+    index('series_details_details_successor_idx').on(columns.details_successor),
     index('series_details_details_location_idx').on(columns.details_location),
     index('series_assets_assets_logo_idx').on(columns.assets_logo),
     index('series_assets_assets_thumbnail_idx').on(columns.assets_thumbnail),
@@ -9926,6 +9936,16 @@ export const relations_series_rels = relations(series_rels, ({ one }) => ({
   }),
 }))
 export const relations_series = relations(series, ({ one, many }) => ({
+  details_predecessor: one(series, {
+    fields: [series.details_predecessor],
+    references: [series.id],
+    relationName: 'details_predecessor',
+  }),
+  details_successor: one(series, {
+    fields: [series.details_successor],
+    references: [series.id],
+    relationName: 'details_successor',
+  }),
   assets_logo: one(media, {
     fields: [series.assets_logo],
     references: [media.id],

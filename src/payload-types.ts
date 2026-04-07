@@ -367,27 +367,11 @@ export interface Series {
     /**
      * Previous series that led to this one
      */
-    predecessor?:
-      | {
-          [k: string]: unknown;
-        }
-      | unknown[]
-      | string
-      | number
-      | boolean
-      | null;
+    predecessor?: (number | null) | Series;
     /**
      * Subsequent series that followed this one
      */
-    successor?:
-      | {
-          [k: string]: unknown;
-        }
-      | unknown[]
-      | string
-      | number
-      | boolean
-      | null;
+    successor?: (number | null) | Series;
     /**
      * Select a date and/or time.
      */

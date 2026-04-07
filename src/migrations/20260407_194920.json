@@ -81,15 +81,15 @@
           "primaryKey": false,
           "notNull": false
         },
-        "details_predecessor": {
-          "name": "details_predecessor",
-          "type": "jsonb",
+        "details_predecessor_id": {
+          "name": "details_predecessor_id",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false
         },
-        "details_successor": {
-          "name": "details_successor",
-          "type": "jsonb",
+        "details_successor_id": {
+          "name": "details_successor_id",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false
         },
@@ -194,6 +194,36 @@
           "columns": [
             {
               "expression": "details_status",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "series_details_details_predecessor_idx": {
+          "name": "series_details_details_predecessor_idx",
+          "columns": [
+            {
+              "expression": "details_predecessor_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "series_details_details_successor_idx": {
+          "name": "series_details_details_successor_idx",
+          "columns": [
+            {
+              "expression": "details_successor_id",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -311,6 +341,32 @@
         }
       },
       "foreignKeys": {
+        "series_details_predecessor_id_series_id_fk": {
+          "name": "series_details_predecessor_id_series_id_fk",
+          "tableFrom": "series",
+          "tableTo": "series",
+          "columnsFrom": [
+            "details_predecessor_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        },
+        "series_details_successor_id_series_id_fk": {
+          "name": "series_details_successor_id_series_id_fk",
+          "tableFrom": "series",
+          "tableTo": "series",
+          "columnsFrom": [
+            "details_successor_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        },
         "series_assets_logo_id_media_id_fk": {
           "name": "series_assets_logo_id_media_id_fk",
           "tableFrom": "series",
@@ -48049,6 +48105,6 @@
     "tables": {},
     "columns": {}
   },
-  "id": "a09fd57b-5f1f-4bff-9122-caa90b1ccf03",
+  "id": "6a72aa8e-0d0c-4e9f-8ce9-0248e61bff3b",
   "prevId": "00000000-0000-0000-0000-000000000000"
 }
