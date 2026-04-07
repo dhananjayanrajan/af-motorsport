@@ -87,6 +87,7 @@ import { Announcements } from '@/globals/Connectivity/Announcements'
 import { Questions } from '@/globals/Connectivity/Questions'
 import { Socials } from '@/globals/Connectivity/Socials'
 
+import { Hospitalities } from './collections/Operations/Hospitalities'
 import { plugins } from './plugins'
 
 const revalidateCollection: CollectionAfterChangeHook = async ({ doc, collection }) => {
@@ -109,7 +110,7 @@ if (!DATABASE_URL) throw new Error('DATABASE_URL missing')
 const collections = [
   Series, Seasons, Events, Sessions, Entries, Results, Points, Circuits, Championships, Races,
   Teams, Drivers, Leaders, Members, Individuals, Organizations, Users,
-  Meetups, Initiatives, Trainings, Vacancies, Onboardings,
+  Meetups, Initiatives, Trainings, Vacancies, Onboardings, Hospitalities,
   Awards, Celebrations, Interviews, Incidents,
   Cars, Helmets, Suits, Garages, Media,
   Designations, Skills, Statuses, Regulations, PoliciesCollection, Statements, Slides, Pages, Categories, Tags, Countries,

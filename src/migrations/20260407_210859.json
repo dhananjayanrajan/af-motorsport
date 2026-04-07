@@ -16652,6 +16652,967 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
+    "public.hospitalities_details_inclusions_list": {
+      "name": "hospitalities_details_inclusions_list",
+      "schema": "",
+      "columns": {
+        "_order": {
+          "name": "_order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "_parent_id": {
+          "name": "_parent_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "id": {
+          "name": "id",
+          "type": "varchar",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "''"
+        },
+        "description": {
+          "name": "description",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "''"
+        }
+      },
+      "indexes": {
+        "hospitalities_details_inclusions_list_order_idx": {
+          "name": "hospitalities_details_inclusions_list_order_idx",
+          "columns": [
+            {
+              "expression": "_order",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "hospitalities_details_inclusions_list_parent_id_idx": {
+          "name": "hospitalities_details_inclusions_list_parent_id_idx",
+          "columns": [
+            {
+              "expression": "_parent_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "hospitalities_details_inclusions_list_parent_id_fk": {
+          "name": "hospitalities_details_inclusions_list_parent_id_fk",
+          "tableFrom": "hospitalities_details_inclusions_list",
+          "tableTo": "hospitalities",
+          "columnsFrom": [
+            "_parent_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.hospitalities_details_exclusions_list": {
+      "name": "hospitalities_details_exclusions_list",
+      "schema": "",
+      "columns": {
+        "_order": {
+          "name": "_order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "_parent_id": {
+          "name": "_parent_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "id": {
+          "name": "id",
+          "type": "varchar",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "''"
+        },
+        "description": {
+          "name": "description",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "''"
+        }
+      },
+      "indexes": {
+        "hospitalities_details_exclusions_list_order_idx": {
+          "name": "hospitalities_details_exclusions_list_order_idx",
+          "columns": [
+            {
+              "expression": "_order",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "hospitalities_details_exclusions_list_parent_id_idx": {
+          "name": "hospitalities_details_exclusions_list_parent_id_idx",
+          "columns": [
+            {
+              "expression": "_parent_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "hospitalities_details_exclusions_list_parent_id_fk": {
+          "name": "hospitalities_details_exclusions_list_parent_id_fk",
+          "tableFrom": "hospitalities_details_exclusions_list",
+          "tableTo": "hospitalities",
+          "columnsFrom": [
+            "_parent_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.hospitalities_details_requirements_list": {
+      "name": "hospitalities_details_requirements_list",
+      "schema": "",
+      "columns": {
+        "_order": {
+          "name": "_order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "_parent_id": {
+          "name": "_parent_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "id": {
+          "name": "id",
+          "type": "varchar",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "''"
+        },
+        "description": {
+          "name": "description",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "''"
+        }
+      },
+      "indexes": {
+        "hospitalities_details_requirements_list_order_idx": {
+          "name": "hospitalities_details_requirements_list_order_idx",
+          "columns": [
+            {
+              "expression": "_order",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "hospitalities_details_requirements_list_parent_id_idx": {
+          "name": "hospitalities_details_requirements_list_parent_id_idx",
+          "columns": [
+            {
+              "expression": "_parent_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "hospitalities_details_requirements_list_parent_id_fk": {
+          "name": "hospitalities_details_requirements_list_parent_id_fk",
+          "tableFrom": "hospitalities_details_requirements_list",
+          "tableTo": "hospitalities",
+          "columnsFrom": [
+            "_parent_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.hospitalities": {
+      "name": "hospitalities",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "''"
+        },
+        "alias": {
+          "name": "alias",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "''"
+        },
+        "basics_identifiers_code": {
+          "name": "basics_identifiers_code",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "''"
+        },
+        "basics_tagline": {
+          "name": "basics_tagline",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "''"
+        },
+        "basics_description": {
+          "name": "basics_description",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "''"
+        },
+        "details_type": {
+          "name": "details_type",
+          "type": "enum_hospitalities_details_type",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "details_status": {
+          "name": "details_status",
+          "type": "enum_hospitalities_details_status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "details_access": {
+          "name": "details_access",
+          "type": "enum_hospitalities_details_access",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "details_capacity": {
+          "name": "details_capacity",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false,
+          "default": 0
+        },
+        "details_price_per_guest": {
+          "name": "details_price_per_guest",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false,
+          "default": 0
+        },
+        "details_location": {
+          "name": "details_location",
+          "type": "geometry(Point)",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'SRID=4326;POINT(0 0)'"
+        },
+        "details_start_date": {
+          "name": "details_start_date",
+          "type": "timestamp(3) with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "details_end_date": {
+          "name": "details_end_date",
+          "type": "timestamp(3) with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "details_event_id": {
+          "name": "details_event_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "details_history": {
+          "name": "details_history",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "details_notes": {
+          "name": "details_notes",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "''"
+        },
+        "assets_thumbnail_id": {
+          "name": "assets_thumbnail_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "assets_cover_id": {
+          "name": "assets_cover_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "generate_slug": {
+          "name": "generate_slug",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": true
+        },
+        "slug": {
+          "name": "slug",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp(3) with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp(3) with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "hospitalities_name_idx": {
+          "name": "hospitalities_name_idx",
+          "columns": [
+            {
+              "expression": "name",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "hospitalities_basics_identifiers_basics_identifiers_code_idx": {
+          "name": "hospitalities_basics_identifiers_basics_identifiers_code_idx",
+          "columns": [
+            {
+              "expression": "basics_identifiers_code",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "hospitalities_details_details_type_idx": {
+          "name": "hospitalities_details_details_type_idx",
+          "columns": [
+            {
+              "expression": "details_type",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "hospitalities_details_details_status_idx": {
+          "name": "hospitalities_details_details_status_idx",
+          "columns": [
+            {
+              "expression": "details_status",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "hospitalities_details_details_location_idx": {
+          "name": "hospitalities_details_details_location_idx",
+          "columns": [
+            {
+              "expression": "details_location",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "hospitalities_details_details_event_idx": {
+          "name": "hospitalities_details_details_event_idx",
+          "columns": [
+            {
+              "expression": "details_event_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "hospitalities_assets_assets_thumbnail_idx": {
+          "name": "hospitalities_assets_assets_thumbnail_idx",
+          "columns": [
+            {
+              "expression": "assets_thumbnail_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "hospitalities_assets_assets_cover_idx": {
+          "name": "hospitalities_assets_assets_cover_idx",
+          "columns": [
+            {
+              "expression": "assets_cover_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "hospitalities_slug_idx": {
+          "name": "hospitalities_slug_idx",
+          "columns": [
+            {
+              "expression": "slug",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "hospitalities_updated_at_idx": {
+          "name": "hospitalities_updated_at_idx",
+          "columns": [
+            {
+              "expression": "updated_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "hospitalities_created_at_idx": {
+          "name": "hospitalities_created_at_idx",
+          "columns": [
+            {
+              "expression": "created_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "hospitalities_details_event_id_events_id_fk": {
+          "name": "hospitalities_details_event_id_events_id_fk",
+          "tableFrom": "hospitalities",
+          "tableTo": "events",
+          "columnsFrom": [
+            "details_event_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        },
+        "hospitalities_assets_thumbnail_id_media_id_fk": {
+          "name": "hospitalities_assets_thumbnail_id_media_id_fk",
+          "tableFrom": "hospitalities",
+          "tableTo": "media",
+          "columnsFrom": [
+            "assets_thumbnail_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        },
+        "hospitalities_assets_cover_id_media_id_fk": {
+          "name": "hospitalities_assets_cover_id_media_id_fk",
+          "tableFrom": "hospitalities",
+          "tableTo": "media",
+          "columnsFrom": [
+            "assets_cover_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.hospitalities_locales": {
+      "name": "hospitalities_locales",
+      "schema": "",
+      "columns": {
+        "seo_title": {
+          "name": "seo_title",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "seo_image_id": {
+          "name": "seo_image_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "seo_description": {
+          "name": "seo_description",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "_locale": {
+          "name": "_locale",
+          "type": "_locales",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "_parent_id": {
+          "name": "_parent_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "hospitalities_seo_seo_image_idx": {
+          "name": "hospitalities_seo_seo_image_idx",
+          "columns": [
+            {
+              "expression": "seo_image_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "_locale",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "hospitalities_locales_locale_parent_id_unique": {
+          "name": "hospitalities_locales_locale_parent_id_unique",
+          "columns": [
+            {
+              "expression": "_locale",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "_parent_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "hospitalities_locales_seo_image_id_media_id_fk": {
+          "name": "hospitalities_locales_seo_image_id_media_id_fk",
+          "tableFrom": "hospitalities_locales",
+          "tableTo": "media",
+          "columnsFrom": [
+            "seo_image_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        },
+        "hospitalities_locales_parent_id_fk": {
+          "name": "hospitalities_locales_parent_id_fk",
+          "tableFrom": "hospitalities_locales",
+          "tableTo": "hospitalities",
+          "columnsFrom": [
+            "_parent_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.hospitalities_rels": {
+      "name": "hospitalities_rels",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "order": {
+          "name": "order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "parent_id": {
+          "name": "parent_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "path": {
+          "name": "path",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "media_id": {
+          "name": "media_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "categories_id": {
+          "name": "categories_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tags_id": {
+          "name": "tags_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "hospitalities_rels_order_idx": {
+          "name": "hospitalities_rels_order_idx",
+          "columns": [
+            {
+              "expression": "order",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "hospitalities_rels_parent_idx": {
+          "name": "hospitalities_rels_parent_idx",
+          "columns": [
+            {
+              "expression": "parent_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "hospitalities_rels_path_idx": {
+          "name": "hospitalities_rels_path_idx",
+          "columns": [
+            {
+              "expression": "path",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "hospitalities_rels_media_id_idx": {
+          "name": "hospitalities_rels_media_id_idx",
+          "columns": [
+            {
+              "expression": "media_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "hospitalities_rels_categories_id_idx": {
+          "name": "hospitalities_rels_categories_id_idx",
+          "columns": [
+            {
+              "expression": "categories_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "hospitalities_rels_tags_id_idx": {
+          "name": "hospitalities_rels_tags_id_idx",
+          "columns": [
+            {
+              "expression": "tags_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "hospitalities_rels_parent_fk": {
+          "name": "hospitalities_rels_parent_fk",
+          "tableFrom": "hospitalities_rels",
+          "tableTo": "hospitalities",
+          "columnsFrom": [
+            "parent_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "hospitalities_rels_media_fk": {
+          "name": "hospitalities_rels_media_fk",
+          "tableFrom": "hospitalities_rels",
+          "tableTo": "media",
+          "columnsFrom": [
+            "media_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "hospitalities_rels_categories_fk": {
+          "name": "hospitalities_rels_categories_fk",
+          "tableFrom": "hospitalities_rels",
+          "tableTo": "categories",
+          "columnsFrom": [
+            "categories_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "hospitalities_rels_tags_fk": {
+          "name": "hospitalities_rels_tags_fk",
+          "tableFrom": "hospitalities_rels",
+          "tableTo": "tags",
+          "columnsFrom": [
+            "tags_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public.awards": {
       "name": "awards",
       "schema": "",
@@ -38886,6 +39847,12 @@
           "primaryKey": false,
           "notNull": false
         },
+        "hospitalities_id": {
+          "name": "hospitalities_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
         "awards_id": {
           "name": "awards_id",
           "type": "integer",
@@ -39391,6 +40358,21 @@
           "columns": [
             {
               "expression": "onboardings_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "search_rels_hospitalities_id_idx": {
+          "name": "search_rels_hospitalities_id_idx",
+          "columns": [
+            {
+              "expression": "hospitalities_id",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -40040,6 +41022,19 @@
           "tableTo": "onboardings",
           "columnsFrom": [
             "onboardings_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "search_rels_hospitalities_fk": {
+          "name": "search_rels_hospitalities_fk",
+          "tableFrom": "search_rels",
+          "tableTo": "hospitalities",
+          "columnsFrom": [
+            "hospitalities_id"
           ],
           "columnsTo": [
             "id"
@@ -40992,6 +41987,34 @@
         },
         "onboardings_delete": {
           "name": "onboardings_delete",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
+        },
+        "hospitalities_find": {
+          "name": "hospitalities_find",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
+        },
+        "hospitalities_create": {
+          "name": "hospitalities_create",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
+        },
+        "hospitalities_update": {
+          "name": "hospitalities_update",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
+        },
+        "hospitalities_delete": {
+          "name": "hospitalities_delete",
           "type": "boolean",
           "primaryKey": false,
           "notNull": false,
@@ -42118,6 +43141,12 @@
           "primaryKey": false,
           "notNull": false
         },
+        "hospitalities_id": {
+          "name": "hospitalities_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
         "awards_id": {
           "name": "awards_id",
           "type": "integer",
@@ -42695,6 +43724,21 @@
           "columns": [
             {
               "expression": "onboardings_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "payload_locked_documents_rels_hospitalities_id_idx": {
+          "name": "payload_locked_documents_rels_hospitalities_id_idx",
+          "columns": [
+            {
+              "expression": "hospitalities_id",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -43524,6 +44568,19 @@
           "tableTo": "onboardings",
           "columnsFrom": [
             "onboardings_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "payload_locked_documents_rels_hospitalities_fk": {
+          "name": "payload_locked_documents_rels_hospitalities_fk",
+          "tableFrom": "payload_locked_documents_rels",
+          "tableTo": "hospitalities",
+          "columnsFrom": [
+            "hospitalities_id"
           ],
           "columnsTo": [
             "id"
@@ -47390,6 +48447,42 @@
         "archived"
       ]
     },
+    "public.enum_hospitalities_details_type": {
+      "name": "enum_hospitalities_details_type",
+      "schema": "public",
+      "values": [
+        "paddock_club",
+        "vip_suite",
+        "garage_tour",
+        "driver_meet_greet",
+        "track_walk",
+        "champagne_celebration",
+        "private_dining",
+        "general_admission_vip"
+      ]
+    },
+    "public.enum_hospitalities_details_status": {
+      "name": "enum_hospitalities_details_status",
+      "schema": "public",
+      "values": [
+        "available",
+        "sold_out",
+        "cancelled",
+        "private_only",
+        "coming_soon"
+      ]
+    },
+    "public.enum_hospitalities_details_access": {
+      "name": "enum_hospitalities_details_access",
+      "schema": "public",
+      "values": [
+        "public",
+        "members_only",
+        "partners_only",
+        "invite_only",
+        "drivers_and_family"
+      ]
+    },
     "public.enum_celebrations_details_exclusivity": {
       "name": "enum_celebrations_details_exclusivity",
       "schema": "public",
@@ -48105,6 +49198,6 @@
     "tables": {},
     "columns": {}
   },
-  "id": "6a72aa8e-0d0c-4e9f-8ce9-0248e61bff3b",
+  "id": "29bbdc7b-51fa-4ae7-ab38-fafadee1f2d2",
   "prevId": "00000000-0000-0000-0000-000000000000"
 }

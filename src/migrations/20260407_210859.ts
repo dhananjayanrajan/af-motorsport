@@ -40,6 +40,9 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE TYPE "public"."enum_onboardings_details_type" AS ENUM('driver', 'member', 'leader', 'partner', 'volunteer');
   CREATE TYPE "public"."enum_onboardings_details_format" AS ENUM('in_person', 'virtual', 'hybrid', 'self_paced');
   CREATE TYPE "public"."enum_onboardings_details_status" AS ENUM('draft', 'active', 'completed', 'archived');
+  CREATE TYPE "public"."enum_hospitalities_details_type" AS ENUM('paddock_club', 'vip_suite', 'garage_tour', 'driver_meet_greet', 'track_walk', 'champagne_celebration', 'private_dining', 'general_admission_vip');
+  CREATE TYPE "public"."enum_hospitalities_details_status" AS ENUM('available', 'sold_out', 'cancelled', 'private_only', 'coming_soon');
+  CREATE TYPE "public"."enum_hospitalities_details_access" AS ENUM('public', 'members_only', 'partners_only', 'invite_only', 'drivers_and_family');
   CREATE TYPE "public"."enum_celebrations_details_exclusivity" AS ENUM('public', 'private');
   CREATE TYPE "public"."enum_interviews_details_format" AS ENUM('one_on_one', 'panel', 'press_conference', 'remote', 'pit_lane', 'podium');
   CREATE TYPE "public"."enum_interviews_details_status" AS ENUM('draft', 'scheduled', 'recorded', 'published', 'archived');
@@ -1227,6 +1230,75 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   );
   
   CREATE TABLE "onboardings_rels" (
+  	"id" serial PRIMARY KEY NOT NULL,
+  	"order" integer,
+  	"parent_id" integer NOT NULL,
+  	"path" varchar NOT NULL,
+  	"media_id" integer,
+  	"categories_id" integer,
+  	"tags_id" integer
+  );
+  
+  CREATE TABLE "hospitalities_details_inclusions_list" (
+  	"_order" integer NOT NULL,
+  	"_parent_id" integer NOT NULL,
+  	"id" varchar PRIMARY KEY NOT NULL,
+  	"name" varchar DEFAULT '',
+  	"description" varchar DEFAULT ''
+  );
+  
+  CREATE TABLE "hospitalities_details_exclusions_list" (
+  	"_order" integer NOT NULL,
+  	"_parent_id" integer NOT NULL,
+  	"id" varchar PRIMARY KEY NOT NULL,
+  	"name" varchar DEFAULT '',
+  	"description" varchar DEFAULT ''
+  );
+  
+  CREATE TABLE "hospitalities_details_requirements_list" (
+  	"_order" integer NOT NULL,
+  	"_parent_id" integer NOT NULL,
+  	"id" varchar PRIMARY KEY NOT NULL,
+  	"name" varchar DEFAULT '',
+  	"description" varchar DEFAULT ''
+  );
+  
+  CREATE TABLE "hospitalities" (
+  	"id" serial PRIMARY KEY NOT NULL,
+  	"name" varchar DEFAULT '' NOT NULL,
+  	"alias" varchar DEFAULT '',
+  	"basics_identifiers_code" varchar DEFAULT '',
+  	"basics_tagline" varchar DEFAULT '',
+  	"basics_description" varchar DEFAULT '',
+  	"details_type" "enum_hospitalities_details_type",
+  	"details_status" "enum_hospitalities_details_status",
+  	"details_access" "enum_hospitalities_details_access",
+  	"details_capacity" numeric DEFAULT 0,
+  	"details_price_per_guest" numeric DEFAULT 0,
+  	"details_location" geometry(Point) DEFAULT 'SRID=4326;POINT(0 0)',
+  	"details_start_date" timestamp(3) with time zone,
+  	"details_end_date" timestamp(3) with time zone,
+  	"details_event_id" integer,
+  	"details_history" jsonb,
+  	"details_notes" varchar DEFAULT '',
+  	"assets_thumbnail_id" integer,
+  	"assets_cover_id" integer,
+  	"generate_slug" boolean DEFAULT true,
+  	"slug" varchar,
+  	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
+  	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
+  );
+  
+  CREATE TABLE "hospitalities_locales" (
+  	"seo_title" varchar,
+  	"seo_image_id" integer,
+  	"seo_description" varchar,
+  	"id" serial PRIMARY KEY NOT NULL,
+  	"_locale" "_locales" NOT NULL,
+  	"_parent_id" integer NOT NULL
+  );
+  
+  CREATE TABLE "hospitalities_rels" (
   	"id" serial PRIMARY KEY NOT NULL,
   	"order" integer,
   	"parent_id" integer NOT NULL,
@@ -2887,6 +2959,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"trainings_id" integer,
   	"vacancies_id" integer,
   	"onboardings_id" integer,
+  	"hospitalities_id" integer,
   	"awards_id" integer,
   	"celebrations_id" integer,
   	"interviews_id" integer,
@@ -3005,6 +3078,10 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"onboardings_create" boolean DEFAULT false,
   	"onboardings_update" boolean DEFAULT false,
   	"onboardings_delete" boolean DEFAULT false,
+  	"hospitalities_find" boolean DEFAULT false,
+  	"hospitalities_create" boolean DEFAULT false,
+  	"hospitalities_update" boolean DEFAULT false,
+  	"hospitalities_delete" boolean DEFAULT false,
   	"awards_find" boolean DEFAULT false,
   	"awards_create" boolean DEFAULT false,
   	"awards_update" boolean DEFAULT false,
@@ -3156,6 +3233,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"trainings_id" integer,
   	"vacancies_id" integer,
   	"onboardings_id" integer,
+  	"hospitalities_id" integer,
   	"awards_id" integer,
   	"celebrations_id" integer,
   	"interviews_id" integer,
@@ -3701,6 +3779,18 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   ALTER TABLE "onboardings_rels" ADD CONSTRAINT "onboardings_rels_media_fk" FOREIGN KEY ("media_id") REFERENCES "public"."media"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "onboardings_rels" ADD CONSTRAINT "onboardings_rels_categories_fk" FOREIGN KEY ("categories_id") REFERENCES "public"."categories"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "onboardings_rels" ADD CONSTRAINT "onboardings_rels_tags_fk" FOREIGN KEY ("tags_id") REFERENCES "public"."tags"("id") ON DELETE cascade ON UPDATE no action;
+  ALTER TABLE "hospitalities_details_inclusions_list" ADD CONSTRAINT "hospitalities_details_inclusions_list_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."hospitalities"("id") ON DELETE cascade ON UPDATE no action;
+  ALTER TABLE "hospitalities_details_exclusions_list" ADD CONSTRAINT "hospitalities_details_exclusions_list_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."hospitalities"("id") ON DELETE cascade ON UPDATE no action;
+  ALTER TABLE "hospitalities_details_requirements_list" ADD CONSTRAINT "hospitalities_details_requirements_list_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."hospitalities"("id") ON DELETE cascade ON UPDATE no action;
+  ALTER TABLE "hospitalities" ADD CONSTRAINT "hospitalities_details_event_id_events_id_fk" FOREIGN KEY ("details_event_id") REFERENCES "public"."events"("id") ON DELETE set null ON UPDATE no action;
+  ALTER TABLE "hospitalities" ADD CONSTRAINT "hospitalities_assets_thumbnail_id_media_id_fk" FOREIGN KEY ("assets_thumbnail_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
+  ALTER TABLE "hospitalities" ADD CONSTRAINT "hospitalities_assets_cover_id_media_id_fk" FOREIGN KEY ("assets_cover_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
+  ALTER TABLE "hospitalities_locales" ADD CONSTRAINT "hospitalities_locales_seo_image_id_media_id_fk" FOREIGN KEY ("seo_image_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
+  ALTER TABLE "hospitalities_locales" ADD CONSTRAINT "hospitalities_locales_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."hospitalities"("id") ON DELETE cascade ON UPDATE no action;
+  ALTER TABLE "hospitalities_rels" ADD CONSTRAINT "hospitalities_rels_parent_fk" FOREIGN KEY ("parent_id") REFERENCES "public"."hospitalities"("id") ON DELETE cascade ON UPDATE no action;
+  ALTER TABLE "hospitalities_rels" ADD CONSTRAINT "hospitalities_rels_media_fk" FOREIGN KEY ("media_id") REFERENCES "public"."media"("id") ON DELETE cascade ON UPDATE no action;
+  ALTER TABLE "hospitalities_rels" ADD CONSTRAINT "hospitalities_rels_categories_fk" FOREIGN KEY ("categories_id") REFERENCES "public"."categories"("id") ON DELETE cascade ON UPDATE no action;
+  ALTER TABLE "hospitalities_rels" ADD CONSTRAINT "hospitalities_rels_tags_fk" FOREIGN KEY ("tags_id") REFERENCES "public"."tags"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "awards" ADD CONSTRAINT "awards_assets_thumbnail_id_media_id_fk" FOREIGN KEY ("assets_thumbnail_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "awards" ADD CONSTRAINT "awards_assets_candid_id_media_id_fk" FOREIGN KEY ("assets_candid_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "awards" ADD CONSTRAINT "awards_assets_video_id_media_id_fk" FOREIGN KEY ("assets_video_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
@@ -4000,6 +4090,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   ALTER TABLE "search_rels" ADD CONSTRAINT "search_rels_trainings_fk" FOREIGN KEY ("trainings_id") REFERENCES "public"."trainings"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "search_rels" ADD CONSTRAINT "search_rels_vacancies_fk" FOREIGN KEY ("vacancies_id") REFERENCES "public"."vacancies"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "search_rels" ADD CONSTRAINT "search_rels_onboardings_fk" FOREIGN KEY ("onboardings_id") REFERENCES "public"."onboardings"("id") ON DELETE cascade ON UPDATE no action;
+  ALTER TABLE "search_rels" ADD CONSTRAINT "search_rels_hospitalities_fk" FOREIGN KEY ("hospitalities_id") REFERENCES "public"."hospitalities"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "search_rels" ADD CONSTRAINT "search_rels_awards_fk" FOREIGN KEY ("awards_id") REFERENCES "public"."awards"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "search_rels" ADD CONSTRAINT "search_rels_celebrations_fk" FOREIGN KEY ("celebrations_id") REFERENCES "public"."celebrations"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "search_rels" ADD CONSTRAINT "search_rels_interviews_fk" FOREIGN KEY ("interviews_id") REFERENCES "public"."interviews"("id") ON DELETE cascade ON UPDATE no action;
@@ -4047,6 +4138,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_trainings_fk" FOREIGN KEY ("trainings_id") REFERENCES "public"."trainings"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_vacancies_fk" FOREIGN KEY ("vacancies_id") REFERENCES "public"."vacancies"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_onboardings_fk" FOREIGN KEY ("onboardings_id") REFERENCES "public"."onboardings"("id") ON DELETE cascade ON UPDATE no action;
+  ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_hospitalities_fk" FOREIGN KEY ("hospitalities_id") REFERENCES "public"."hospitalities"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_awards_fk" FOREIGN KEY ("awards_id") REFERENCES "public"."awards"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_celebrations_fk" FOREIGN KEY ("celebrations_id") REFERENCES "public"."celebrations"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_interviews_fk" FOREIGN KEY ("interviews_id") REFERENCES "public"."interviews"("id") ON DELETE cascade ON UPDATE no action;
@@ -4552,6 +4644,31 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX "onboardings_rels_media_id_idx" ON "onboardings_rels" USING btree ("media_id");
   CREATE INDEX "onboardings_rels_categories_id_idx" ON "onboardings_rels" USING btree ("categories_id");
   CREATE INDEX "onboardings_rels_tags_id_idx" ON "onboardings_rels" USING btree ("tags_id");
+  CREATE INDEX "hospitalities_details_inclusions_list_order_idx" ON "hospitalities_details_inclusions_list" USING btree ("_order");
+  CREATE INDEX "hospitalities_details_inclusions_list_parent_id_idx" ON "hospitalities_details_inclusions_list" USING btree ("_parent_id");
+  CREATE INDEX "hospitalities_details_exclusions_list_order_idx" ON "hospitalities_details_exclusions_list" USING btree ("_order");
+  CREATE INDEX "hospitalities_details_exclusions_list_parent_id_idx" ON "hospitalities_details_exclusions_list" USING btree ("_parent_id");
+  CREATE INDEX "hospitalities_details_requirements_list_order_idx" ON "hospitalities_details_requirements_list" USING btree ("_order");
+  CREATE INDEX "hospitalities_details_requirements_list_parent_id_idx" ON "hospitalities_details_requirements_list" USING btree ("_parent_id");
+  CREATE INDEX "hospitalities_name_idx" ON "hospitalities" USING btree ("name");
+  CREATE INDEX "hospitalities_basics_identifiers_basics_identifiers_code_idx" ON "hospitalities" USING btree ("basics_identifiers_code");
+  CREATE INDEX "hospitalities_details_details_type_idx" ON "hospitalities" USING btree ("details_type");
+  CREATE INDEX "hospitalities_details_details_status_idx" ON "hospitalities" USING btree ("details_status");
+  CREATE INDEX "hospitalities_details_details_location_idx" ON "hospitalities" USING btree ("details_location");
+  CREATE INDEX "hospitalities_details_details_event_idx" ON "hospitalities" USING btree ("details_event_id");
+  CREATE INDEX "hospitalities_assets_assets_thumbnail_idx" ON "hospitalities" USING btree ("assets_thumbnail_id");
+  CREATE INDEX "hospitalities_assets_assets_cover_idx" ON "hospitalities" USING btree ("assets_cover_id");
+  CREATE UNIQUE INDEX "hospitalities_slug_idx" ON "hospitalities" USING btree ("slug");
+  CREATE INDEX "hospitalities_updated_at_idx" ON "hospitalities" USING btree ("updated_at");
+  CREATE INDEX "hospitalities_created_at_idx" ON "hospitalities" USING btree ("created_at");
+  CREATE INDEX "hospitalities_seo_seo_image_idx" ON "hospitalities_locales" USING btree ("seo_image_id","_locale");
+  CREATE UNIQUE INDEX "hospitalities_locales_locale_parent_id_unique" ON "hospitalities_locales" USING btree ("_locale","_parent_id");
+  CREATE INDEX "hospitalities_rels_order_idx" ON "hospitalities_rels" USING btree ("order");
+  CREATE INDEX "hospitalities_rels_parent_idx" ON "hospitalities_rels" USING btree ("parent_id");
+  CREATE INDEX "hospitalities_rels_path_idx" ON "hospitalities_rels" USING btree ("path");
+  CREATE INDEX "hospitalities_rels_media_id_idx" ON "hospitalities_rels" USING btree ("media_id");
+  CREATE INDEX "hospitalities_rels_categories_id_idx" ON "hospitalities_rels" USING btree ("categories_id");
+  CREATE INDEX "hospitalities_rels_tags_id_idx" ON "hospitalities_rels" USING btree ("tags_id");
   CREATE INDEX "awards_name_idx" ON "awards" USING btree ("name");
   CREATE INDEX "awards_details_details_awarded_date_idx" ON "awards" USING btree ("details_awarded_date");
   CREATE INDEX "awards_details_details_awarded_location_idx" ON "awards" USING btree ("details_awarded_location");
@@ -5139,6 +5256,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX "search_rels_trainings_id_idx" ON "search_rels" USING btree ("trainings_id");
   CREATE INDEX "search_rels_vacancies_id_idx" ON "search_rels" USING btree ("vacancies_id");
   CREATE INDEX "search_rels_onboardings_id_idx" ON "search_rels" USING btree ("onboardings_id");
+  CREATE INDEX "search_rels_hospitalities_id_idx" ON "search_rels" USING btree ("hospitalities_id");
   CREATE INDEX "search_rels_awards_id_idx" ON "search_rels" USING btree ("awards_id");
   CREATE INDEX "search_rels_celebrations_id_idx" ON "search_rels" USING btree ("celebrations_id");
   CREATE INDEX "search_rels_interviews_id_idx" ON "search_rels" USING btree ("interviews_id");
@@ -5194,6 +5312,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX "payload_locked_documents_rels_trainings_id_idx" ON "payload_locked_documents_rels" USING btree ("trainings_id");
   CREATE INDEX "payload_locked_documents_rels_vacancies_id_idx" ON "payload_locked_documents_rels" USING btree ("vacancies_id");
   CREATE INDEX "payload_locked_documents_rels_onboardings_id_idx" ON "payload_locked_documents_rels" USING btree ("onboardings_id");
+  CREATE INDEX "payload_locked_documents_rels_hospitalities_id_idx" ON "payload_locked_documents_rels" USING btree ("hospitalities_id");
   CREATE INDEX "payload_locked_documents_rels_awards_id_idx" ON "payload_locked_documents_rels" USING btree ("awards_id");
   CREATE INDEX "payload_locked_documents_rels_celebrations_id_idx" ON "payload_locked_documents_rels" USING btree ("celebrations_id");
   CREATE INDEX "payload_locked_documents_rels_interviews_id_idx" ON "payload_locked_documents_rels" USING btree ("interviews_id");
@@ -5379,6 +5498,12 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
   DROP TABLE "onboardings" CASCADE;
   DROP TABLE "onboardings_locales" CASCADE;
   DROP TABLE "onboardings_rels" CASCADE;
+  DROP TABLE "hospitalities_details_inclusions_list" CASCADE;
+  DROP TABLE "hospitalities_details_exclusions_list" CASCADE;
+  DROP TABLE "hospitalities_details_requirements_list" CASCADE;
+  DROP TABLE "hospitalities" CASCADE;
+  DROP TABLE "hospitalities_locales" CASCADE;
+  DROP TABLE "hospitalities_rels" CASCADE;
   DROP TABLE "awards" CASCADE;
   DROP TABLE "awards_locales" CASCADE;
   DROP TABLE "awards_rels" CASCADE;
@@ -5600,6 +5725,9 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
   DROP TYPE "public"."enum_onboardings_details_type";
   DROP TYPE "public"."enum_onboardings_details_format";
   DROP TYPE "public"."enum_onboardings_details_status";
+  DROP TYPE "public"."enum_hospitalities_details_type";
+  DROP TYPE "public"."enum_hospitalities_details_status";
+  DROP TYPE "public"."enum_hospitalities_details_access";
   DROP TYPE "public"."enum_celebrations_details_exclusivity";
   DROP TYPE "public"."enum_interviews_details_format";
   DROP TYPE "public"."enum_interviews_details_status";

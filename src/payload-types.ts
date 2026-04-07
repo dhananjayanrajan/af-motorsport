@@ -95,6 +95,7 @@ export interface Config {
     trainings: Training;
     vacancies: Vacancy;
     onboardings: Onboarding;
+    hospitalities: Hospitality;
     awards: Award;
     celebrations: Celebration;
     interviews: Interview;
@@ -171,6 +172,7 @@ export interface Config {
     trainings: TrainingsSelect<false> | TrainingsSelect<true>;
     vacancies: VacanciesSelect<false> | VacanciesSelect<true>;
     onboardings: OnboardingsSelect<false> | OnboardingsSelect<true>;
+    hospitalities: HospitalitiesSelect<false> | HospitalitiesSelect<true>;
     awards: AwardsSelect<false> | AwardsSelect<true>;
     celebrations: CelebrationsSelect<false> | CelebrationsSelect<true>;
     interviews: InterviewsSelect<false> | InterviewsSelect<true>;
@@ -4724,6 +4726,218 @@ export interface Onboarding {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "hospitalities".
+ */
+export interface Hospitality {
+  id: number;
+  /**
+   * Enter text value.
+   */
+  name: string;
+  /**
+   * Enter text value.
+   */
+  alias?: string | null;
+  /**
+   * Identifying info.
+   */
+  basics?: {
+    /**
+     * Hospitality identification codes
+     */
+    identifiers?: {
+      /**
+       * Enter text value.
+       */
+      code?: string | null;
+    };
+    /**
+     * Enter text value.
+     */
+    tagline?: string | null;
+    /**
+     * Enter text value.
+     */
+    description?: string | null;
+  };
+  /**
+   * Extra data.
+   */
+  details?: {
+    /**
+     * Select one or more options.
+     */
+    type?:
+      | (
+          | 'paddock_club'
+          | 'vip_suite'
+          | 'garage_tour'
+          | 'driver_meet_greet'
+          | 'track_walk'
+          | 'champagne_celebration'
+          | 'private_dining'
+          | 'general_admission_vip'
+        )
+      | null;
+    /**
+     * Select one or more options.
+     */
+    status?: ('available' | 'sold_out' | 'cancelled' | 'private_only' | 'coming_soon') | null;
+    /**
+     * Select one or more options.
+     */
+    access?: ('public' | 'members_only' | 'partners_only' | 'invite_only' | 'drivers_and_family') | null;
+    /**
+     * Enter numeric value.
+     */
+    capacity?: number | null;
+    /**
+     * Enter numeric value.
+     */
+    price_per_guest?: number | null;
+    /**
+     * Enter coordinates as [longitude, latitude].
+     *
+     * @minItems 2
+     * @maxItems 2
+     */
+    location?: [number, number] | null;
+    /**
+     * Select a date and/or time.
+     */
+    start_date?: string | null;
+    /**
+     * Select a date and/or time.
+     */
+    end_date?: string | null;
+    /**
+     * Select related document(s).
+     */
+    event?: (number | null) | Event;
+    /**
+     * Enter rich text content.
+     */
+    history?: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
+    /**
+     * What is included
+     */
+    inclusions?: {
+      list?:
+        | {
+            /**
+             * Enter text value.
+             */
+            name?: string | null;
+            /**
+             * Enter text value.
+             */
+            description?: string | null;
+            id?: string | null;
+          }[]
+        | null;
+    };
+    /**
+     * What is not included
+     */
+    exclusions?: {
+      list?:
+        | {
+            /**
+             * Enter text value.
+             */
+            name?: string | null;
+            /**
+             * Enter text value.
+             */
+            description?: string | null;
+            id?: string | null;
+          }[]
+        | null;
+    };
+    /**
+     * Guest requirements
+     */
+    requirements?: {
+      list?:
+        | {
+            /**
+             * Enter text value.
+             */
+            name?: string | null;
+            /**
+             * Enter text value.
+             */
+            description?: string | null;
+            id?: string | null;
+          }[]
+        | null;
+    };
+    /**
+     * Enter text value.
+     */
+    notes?: string | null;
+  };
+  /**
+   * Media files.
+   */
+  assets?: {
+    /**
+     * Select an uploaded file.
+     */
+    thumbnail?: (number | null) | Media;
+    /**
+     * Select an uploaded file.
+     */
+    cover?: (number | null) | Media;
+    /**
+     * Select related document(s).
+     */
+    gallery?: (number | Media)[] | null;
+    /**
+     * Select related document(s).
+     */
+    documents?: (number | Media)[] | null;
+  };
+  seo?: {
+    title?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
+    description?: string | null;
+  };
+  /**
+   * When enabled, the slug will auto-generate from the title field on save and autosave.
+   */
+  generateSlug?: boolean | null;
+  slug?: string | null;
+  /**
+   * Categories that are relevant to the record.
+   */
+  categories?: (number | Category)[] | null;
+  /**
+   * Associated tags for the record.
+   */
+  tags?: (number | Tag)[] | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "celebrations".
  */
 export interface Celebration {
@@ -6762,6 +6976,10 @@ export interface Search {
         value: number | Onboarding;
       }
     | {
+        relationTo: 'hospitalities';
+        value: number | Hospitality;
+      }
+    | {
         relationTo: 'awards';
         value: number | Award;
       }
@@ -7269,6 +7487,24 @@ export interface PayloadMcpApiKey {
     update?: boolean | null;
     /**
      * Allow clients to delete onboardings.
+     */
+    delete?: boolean | null;
+  };
+  hospitalities?: {
+    /**
+     * Allow clients to find hospitalities.
+     */
+    find?: boolean | null;
+    /**
+     * Allow clients to create hospitalities.
+     */
+    create?: boolean | null;
+    /**
+     * Allow clients to update hospitalities.
+     */
+    update?: boolean | null;
+    /**
+     * Allow clients to delete hospitalities.
      */
     delete?: boolean | null;
   };
@@ -7864,6 +8100,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'onboardings';
         value: number | Onboarding;
+      } | null)
+    | ({
+        relationTo: 'hospitalities';
+        value: number | Hospitality;
       } | null)
     | ({
         relationTo: 'awards';
@@ -9398,6 +9638,94 @@ export interface OnboardingsSelect<T extends boolean = true> {
         completion_certificate?: T;
         thumbnail?: T;
         cover?: T;
+      };
+  seo?:
+    | T
+    | {
+        title?: T;
+        image?: T;
+        description?: T;
+      };
+  generateSlug?: T;
+  slug?: T;
+  categories?: T;
+  tags?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "hospitalities_select".
+ */
+export interface HospitalitiesSelect<T extends boolean = true> {
+  name?: T;
+  alias?: T;
+  basics?:
+    | T
+    | {
+        identifiers?:
+          | T
+          | {
+              code?: T;
+            };
+        tagline?: T;
+        description?: T;
+      };
+  details?:
+    | T
+    | {
+        type?: T;
+        status?: T;
+        access?: T;
+        capacity?: T;
+        price_per_guest?: T;
+        location?: T;
+        start_date?: T;
+        end_date?: T;
+        event?: T;
+        history?: T;
+        inclusions?:
+          | T
+          | {
+              list?:
+                | T
+                | {
+                    name?: T;
+                    description?: T;
+                    id?: T;
+                  };
+            };
+        exclusions?:
+          | T
+          | {
+              list?:
+                | T
+                | {
+                    name?: T;
+                    description?: T;
+                    id?: T;
+                  };
+            };
+        requirements?:
+          | T
+          | {
+              list?:
+                | T
+                | {
+                    name?: T;
+                    description?: T;
+                    id?: T;
+                  };
+            };
+        notes?: T;
+      };
+  assets?:
+    | T
+    | {
+        thumbnail?: T;
+        cover?: T;
+        gallery?: T;
+        documents?: T;
       };
   seo?:
     | T
@@ -11147,6 +11475,14 @@ export interface PayloadMcpApiKeysSelect<T extends boolean = true> {
         delete?: T;
       };
   onboardings?:
+    | T
+    | {
+        find?: T;
+        create?: T;
+        update?: T;
+        delete?: T;
+      };
+  hospitalities?:
     | T
     | {
         find?: T;
