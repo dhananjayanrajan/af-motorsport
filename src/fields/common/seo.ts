@@ -1,5 +1,4 @@
 // FILE: src/fields/common/seo.ts
-import type { Tab } from 'payload';
 import {
   MetaDescriptionField,
   MetaImageField,
@@ -7,6 +6,7 @@ import {
   OverviewField,
   PreviewField,
 } from '@payloadcms/plugin-seo/fields';
+import type { Tab } from 'payload';
 
 export const createSeoTab = (): Tab => ({
   label: { en: 'SEO', es: 'SEO', pt: 'SEO' },

@@ -59,40 +59,4 @@ export const createSidebarFields = (): Field[] => [
       },
     ],
   },
-  // {
-  //   label: 'Visibility',
-  //   name: 'visibility',
-  //   type: 'group',
-  //   admin: {
-  //     position: 'sidebar',
-  //     description: {
-  //       en: 'Controls who can see this record and under what conditions.',
-  //       es: 'Controla quién puede ver este registro.',
-  //       pt: 'Controla quem pode ver este registro.',
-  //     },
-  //   },
-  //   fields: [
-  //     {
-  //       label: { en: 'Is this published?', es: '¿Está publicado?', pt: 'Está publicado?' },
-  //       name: 'check_publish',
-  //       type: 'checkbox',
-  //       defaultValue: false,
-  //       admin: { readOnly: true },
-  //     },
-  //     {
-  //       label: { en: 'Is this featured?', es: '¿Es destacado?', pt: 'É destaque?' },
-  //       name: 'check_featured',
-  //       type: 'checkbox',
-  //       defaultValue: false,
-  //       admin: { readOnly: true },
-  //     },
-  //     {
-  //       label: { en: 'Is this pinned?', es: '¿Está fijado?', pt: 'Está fixado?' },
-  //       name: 'check_pinned',
-  //       type: 'checkbox',
-  //       defaultValue: false,
-  //       admin: { readOnly: true },
-  //     },
-  //   ],
-  // },
 ]

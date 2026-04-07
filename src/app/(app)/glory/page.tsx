@@ -4,6 +4,7 @@ import InfiniteMenu from "@/components/InfiniteMenu";
 import { BattlesSection } from "./sections/BattlesSection";
 import { GloryNumbersSection } from "./sections/GloryNumbersSection";
 import { LegendSection } from "./sections/LegendSection";
+import { PrincipleCards } from "./sections/PrincipleCards";
 import { RivalsOvercomeSection } from "./sections/RivalsOvercomeSection";
 import { TrophiesSection } from "./sections/TrophiesSection";
 
@@ -42,6 +43,13 @@ export default function Page() {
       <TrophiesSection />
       <GloryNumbersSection />
       <RivalsOvercomeSection />
+
+      {/* Add principles cards here */}
+      <section className="my-12">
+        <h1 className="text-3xl font-bold text-center mb-8">Our Principles</h1>
+        <PrincipleCards />
+      </section>
+
       <div style={{ height: '600px', position: 'relative' }}>
         <InfiniteMenu items={items}
           scale={1}

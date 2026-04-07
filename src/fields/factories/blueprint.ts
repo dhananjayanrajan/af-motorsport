@@ -1,12 +1,9 @@
 // FILE: src/fields/factories/blueprint.ts
-import type { CollectionConfig, Tab, Field, StaticLabel, CollectionSlug } from 'payload'
-import { enable, show, visibilityGroup } from './toggles/visibility'
-import { createToggleGroup } from '@/fields/common/toggle'
-import { createSidebarFields } from '@/fields/common/sidebar'
 import { createSeoTab } from '@/fields/common/seo'
+import { createSidebarFields } from '@/fields/common/sidebar'
+import type { CollectionConfig, CollectionSlug, Field, StaticLabel, Tab } from 'payload'
 import { relationshipFieldFactory } from './fields/relationshipField'
 import { textFieldFactory } from './fields/textField'
-import { advanced } from './toggles/advanced'
 
 const STANDARD_TABS: Record<string, { name: string; label: StaticLabel; description: StaticLabel }> = {
   basics: {
@@ -41,13 +38,6 @@ const STANDARD_TABS: Record<string, { name: string; label: StaticLabel; descript
   },
 }
 
-const isAdvancedField = (field: Field): boolean => {
-  if ('fields' in field && !('name' in field)) {
-    return field.fields.every(isAdvancedField)
-  }
-  return field.admin?.condition?.toString().includes('advanced') ?? false
-}
-
 export const groupFactory = (
   groupLabels: { name: string; label: StaticLabel; entity: StaticLabel; description: StaticLabel },
   host: StaticLabel,
@@ -61,7 +51,7 @@ export const groupFactory = (
         type: 'array' as const,
         label: groupLabels.entity,
         admin: { initCollapsed: true, isSortable: true },
-        fields: [...fields, visibilityGroup({ record: host, entity: groupLabels.entity })],
+        fields: fields,
       },
     ]
     : fields
@@ -72,16 +62,6 @@ export const groupFactory = (
     label: groupLabels.label,
     admin: { width: '100%', hideGutter: false, description: groupLabels.description },
     fields: baseFields,
-  }
-
-  const allAdvanced = fields.every(isAdvancedField)
-
-  if (allAdvanced) {
-    const advancedGroup = advanced(group)
-    if (advancedGroup.admin) {
-      delete (advancedGroup.admin as any).width
-    }
-    return advancedGroup
   }
 
   return group
@@ -121,16 +101,7 @@ export const tabFactory = (
     name: meta.name,
     label: meta.label,
     admin: { description: meta.description },
-    fields: [
-      {
-        type: 'group',
-        label: meta.label,
-        admin: { description: meta.description, hideGutter: false },
-        fields: [
-          enable({ record: host, label: meta.label })
-        ]
-      }, ...groups, show({ record: host, label: meta.label })
-    ],
+    fields: groups,
   }
 }
 
@@ -161,17 +132,12 @@ export const collectionFactory = (
       ...config.admin,
     },
     fields: [
-      createToggleGroup(hostLabels.host),
       ...essentials,
       {
         type: 'tabs',
         tabs: [...tabs, createSeoTab()],
       },
-      ...createSidebarFields({
-        record: hostLabels.host,
-        records: hostLabels.hostPlural,
-        useAsTitle: config.admin?.useAsTitle
-      }),
+      ...createSidebarFields(),
     ],
     timestamps: true,
     dbName: config.slug,
@@ -184,7 +150,7 @@ interface ConnectFactoryOptions {
   dictionary?: Record<string, any>
   hostLabel: StaticLabel
   width?: 1 | 2 | 3 | 4 | 5
-  flags?: ('required' | 'localized' | 'index' | 'unique' | 'hasMany' | 'advanced' | 'readonly' | 'disabled' | 'hidden')[]
+  flags?: ('required' | 'localized' | 'index' | 'unique' | 'hasMany' | 'readonly' | 'disabled' | 'hidden')[]
 }
 
 export const connectFactory = (opts: ConnectFactoryOptions, isArray = false): Field => {
