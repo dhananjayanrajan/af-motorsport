@@ -6,7 +6,7 @@ import { textareaFieldFactory } from '@/fields/factories/fields/textareaField'
 export const basicsFields: Field[] = [
   textFieldFactory({
     name: 'tagline',
-    dictionary: dictionary.tabs.basics.fields,
+    dictionary: dictionary.tabs.basics,
     width: 1,
     flags: [],
     minLength: 1,
@@ -14,7 +14,7 @@ export const basicsFields: Field[] = [
   }),
   textareaFieldFactory({
     name: 'description',
-    dictionary: dictionary.tabs.basics.fields,
+    dictionary: dictionary.tabs.basics,
     width: 1,
     flags: [],
     minLength: 1,

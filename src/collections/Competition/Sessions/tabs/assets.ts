@@ -7,14 +7,14 @@ export const assetsFields: Field[] = [
   uploadFieldFactory({
     name: 'thumbnail',
     relationTo: 'media',
-    dictionary: dictionary.tabs.assets.fields,
+    dictionary: dictionary.tabs.assets,
     width: 2,
     flags: [],
   }),
   relationshipFieldFactory({
     name: 'gallery',
     relationTo: 'media',
-    dictionary: dictionary.tabs.assets.fields,
+    dictionary: dictionary.tabs.assets,
     width: 2,
     flags: ['hasMany'],
     hasMany: true,
@@ -22,8 +22,8 @@ export const assetsFields: Field[] = [
   }),
   relationshipFieldFactory({
     name: 'videos',
-    relationTo: 'playlists',
-    dictionary: dictionary.tabs.assets.fields,
+    relationTo: 'media',
+    dictionary: dictionary.tabs.assets,
     width: 2,
     flags: ['hasMany'],
     hasMany: true,

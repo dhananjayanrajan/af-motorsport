@@ -33,8 +33,8 @@ export const Identity: GlobalConfig = {
     {
       name: 'story',
       label: 'Founding Story',
-      type: 'relationship',
-      relationTo: 'narratives',
+      type: 'richText',
+      localized: true,
       admin: {
         description: 'The authored narrative that tells the origin and founding story of AF Motorsport.',
       },
@@ -59,12 +59,12 @@ export const Identity: GlobalConfig = {
           localized: true,
         },
         {
-          name: 'principle',
-          label: 'Linked Principle',
-          type: 'relationship',
-          relationTo: 'principles',
+          name: 'principleName',
+          label: 'Associated Principle',
+          type: 'text',
+          localized: true,
           admin: {
-            description: 'The principle collection record that backs this value.',
+            description: 'The name of the principle that backs this value (e.g., "Precision", "Passion").',
           },
         },
       ],
@@ -75,13 +75,21 @@ export const Identity: GlobalConfig = {
       type: 'group',
       fields: [
         {
-          name: 'tones',
-          label: 'Tones',
-          type: 'relationship',
-          relationTo: 'tones',
-          hasMany: true,
+          name: 'toneKeywords',
+          label: 'Tone Keywords',
+          type: 'array',
+          maxRows: 5,
+          fields: [
+            {
+              name: 'keyword',
+              label: 'Keyword',
+              type: 'text',
+              required: true,
+              localized: true,
+            },
+          ],
           admin: {
-            description: 'The tones that define how AF Motorsport communicates.',
+            description: 'Keywords that define how AF Motorsport communicates (e.g., "Bold", "Technical", "Inspiring").',
           },
         },
         {
@@ -120,11 +128,25 @@ export const Identity: GlobalConfig = {
           },
         },
         {
-          name: 'initiatives',
-          label: 'Sustainability Initiatives',
-          type: 'relationship',
-          relationTo: 'initiatives',
-          hasMany: true,
+          name: 'initiativeNames',
+          label: 'Key Initiatives',
+          type: 'array',
+          maxRows: 5,
+          fields: [
+            {
+              name: 'name',
+              label: 'Initiative Name',
+              type: 'text',
+              required: true,
+              localized: true,
+            },
+            {
+              name: 'description',
+              label: 'Description',
+              type: 'textarea',
+              localized: true,
+            },
+          ],
           admin: {
             description: 'Active initiatives that support the sustainability stance.',
           },

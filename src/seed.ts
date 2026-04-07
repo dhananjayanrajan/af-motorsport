@@ -1,8 +1,8 @@
 import type { SanitizedConfig } from 'payload'
 import payload from 'payload'
 
-import { generateCategories } from './collections/OLD/Attributes/Category/seeders/generate'
-import { generateTags } from './collections/OLD/Attributes/Tag/seeders/generate'
+import { generateCategories } from './collections/Metadata/Category/seeders/generate'
+import { generateTags } from './collections/Metadata/Tags/seeders/generate'
 
 import fs from 'fs'
 import path from 'path'

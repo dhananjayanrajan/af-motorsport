@@ -1,3 +1,4 @@
+// payload.config.ts
 import path from 'path'
 import type { CollectionAfterChangeHook, GlobalAfterChangeHook } from 'payload'
 import { buildConfig } from 'payload'
@@ -58,8 +59,10 @@ import { Interviews } from '@/collections/Outcomes/Interviews'
 import { Cars } from '@/collections/Resources/Cars'
 import { Garages } from '@/collections/Resources/Garages'
 import { Helmets } from '@/collections/Resources/Helmets'
+import { Media } from '@/collections/Resources/Media'
 import { Suits } from '@/collections/Resources/Suits'
 
+import { Categories } from '@/collections/Metadata/Category'
 import { Designations } from '@/collections/Metadata/Designations'
 import { Policies as PoliciesCollection } from '@/collections/Metadata/Policies'
 import { Regulations } from '@/collections/Metadata/Regulations'
@@ -67,6 +70,11 @@ import { Skills } from '@/collections/Metadata/Skills'
 import { Slides } from '@/collections/Metadata/Slides'
 import { Statements } from '@/collections/Metadata/Statements'
 import { Statuses } from '@/collections/Metadata/Statuses'
+import { Tags } from '@/collections/Metadata/Tags'
+import { Countries } from './collections/Metadata/Countries'
+
+import { Users } from '@/collections/Entities/User'
+import { Pages } from '@/collections/Metadata/Pages'
 
 import { Plans } from '@/collections/Pipelines/Plans'
 import { Programs } from '@/collections/Pipelines/Programs'
@@ -78,6 +86,8 @@ import { Header } from '@/globals/Configurations/Header'
 import { Announcements } from '@/globals/Connectivity/Announcements'
 import { Questions } from '@/globals/Connectivity/Questions'
 import { Socials } from '@/globals/Connectivity/Socials'
+
+import { plugins } from './plugins'
 
 const revalidateCollection: CollectionAfterChangeHook = async ({ doc, collection }) => {
   revalidateTag(collection.slug)
@@ -98,12 +108,12 @@ if (!DATABASE_URL) throw new Error('DATABASE_URL missing')
 
 const collections = [
   Series, Seasons, Events, Sessions, Entries, Results, Points, Circuits, Championships, Races,
-  Teams, Drivers, Leaders, Members, Individuals, Organizations,
+  Teams, Drivers, Leaders, Members, Individuals, Organizations, Users,
   Meetups, Initiatives, Trainings, Vacancies, Onboardings,
   Awards, Celebrations, Interviews, Incidents,
-  Cars, Helmets, Suits, Garages,
-  Designations, Skills, Statuses, Regulations, PoliciesCollection, Statements, Slides,
-  Plans, Timelines, Programs,
+  Cars, Helmets, Suits, Garages, Media,
+  Designations, Skills, Statuses, Regulations, PoliciesCollection, Statements, Slides, Pages, Categories, Tags, Countries,
+  Plans, Timelines, Programs
 ].map((col) => ({
   ...col,
   hooks: {
@@ -128,6 +138,13 @@ const globals = [
 }))
 
 export default buildConfig({
+  admin: {
+    components: {
+      beforeLogin: [],
+      beforeDashboard: [],
+    },
+    user: Users.slug,
+  },
   collections,
   globals,
   db: postgresAdapter({
@@ -142,7 +159,27 @@ export default buildConfig({
       UnorderedListFeature(),
       IndentFeature(),
       EXPERIMENTAL_TableFeature(),
-      LinkFeature({ enabledCollections: ['pages'] }),
+      LinkFeature({
+        enabledCollections: ['pages'],
+        fields: ({ defaultFields }) => {
+          const defaultFieldsWithoutUrl = defaultFields.filter((field) => {
+            if ('name' in field && field.name === 'url') return false
+            return true
+          })
+          return [
+            ...defaultFieldsWithoutUrl,
+            {
+              name: 'url',
+              type: 'text',
+              admin: {
+                condition: ({ linkType }) => linkType !== 'internal',
+              },
+              label: ({ t }) => t('fields:enterURL'),
+              required: true,
+            },
+          ]
+        },
+      }),
     ],
   }),
   i18n: {
@@ -156,8 +193,10 @@ export default buildConfig({
       { label: 'Portuguese', code: 'pt' },
     ],
     defaultLocale: 'en',
+    fallback: true,
   },
   plugins: [
+    ...plugins,
     calendarPlugin(),
     searchPlugin({
       collections: collections.map((c) => c.slug),
