@@ -3,7 +3,7 @@
 import Particles from '@/components/Particles'
 import { DESIGN_SYSTEM } from '@/lib/constants'
 import { cn } from '@/utilities/cn'
-import { Activity, Cpu, Flag, Shield, Timer, Trophy, Wind, Zap } from 'lucide-react'
+import { Activity, Cpu, Flag, Shield, Trophy, Wind, Zap } from 'lucide-react'
 import { motion, useInView, useScroll, useSpring, useTransform } from 'motion/react'
 import { useEffect, useRef, useState } from 'react'
 

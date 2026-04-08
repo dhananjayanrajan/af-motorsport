@@ -1,19 +1,20 @@
 'use client'
 
 import { DESIGN_SYSTEM } from '@/lib/constants'
+import { Driver, Leader, Media, Member } from '@/payload-types'
 import { cn } from '@/utilities/cn'
 import {
-  Fingerprint,
   Activity,
+  Database,
   Dna,
-  Database
+  Fingerprint
 } from 'lucide-react'
 import { AnimatePresence, motion } from 'motion/react'
 import { useState } from 'react'
 
 type MemberType = 'DRIVERS' | 'LEADERS' | 'MEMBERS'
 
-export interface TeamMember {
+export interface UnifiedPersonnel {
   id: string
   name: string
   type: MemberType
@@ -26,12 +27,57 @@ export interface TeamMember {
   image: string
 }
 
-export function PeopleSection({ members = DUMMY_TRIBE }: { members?: TeamMember[] }) {
+interface PeopleSectionProps {
+  drivers: Driver[]
+  leaders: Leader[]
+  members: Member[]
+}
+
+export default function PeopleSection({ drivers, leaders, members }: PeopleSectionProps) {
   const [activeType, setActiveType] = useState<MemberType>('DRIVERS')
   const [activeIdx, setActiveIdx] = useState(0)
 
-  const filteredTribe = members.filter((m) => m.type === activeType)
-  const current = filteredTribe[activeIdx] || filteredTribe[0]
+  const personnel: UnifiedPersonnel[] = [
+    ...drivers.map((d) => ({
+      id: String(d.id),
+      name: `${d.first_name}_${d.last_name}`.toUpperCase(),
+      type: 'DRIVERS' as MemberType,
+      role: d.basics?.callsign || d.basics?.competition_name || 'PILOT',
+      background: d.seo?.description || 'STORY_REDACTED',
+      stats: [
+        { label: 'NUMBER', value: d.basics?.racing_number ? `#${d.basics.racing_number}` : 'N/A' },
+        { label: 'BORN', value: d.basics?.birth_date || 'N/A' }
+      ],
+      image: typeof d.assets?.avatar === 'object' ? (d.assets.avatar as Media)?.url || '' : ''
+    })),
+    ...leaders.map((l) => ({
+      id: String(l.id),
+      name: `${l.first_name}_${l.last_name}`.toUpperCase(),
+      type: 'LEADERS' as MemberType,
+      role: l.basics?.title || 'EXECUTIVE',
+      background: l.seo?.description || 'VISION_REDACTED',
+      stats: [
+        { label: 'DEBUT', value: l.basics?.debut_date || 'N/A' },
+        { label: 'BORN', value: l.basics?.birth_date || 'N/A' }
+      ],
+      image: typeof l.assets?.avatar === 'object' ? (l.assets.avatar as Media)?.url || '' : ''
+    })),
+    ...members.map((m) => ({
+      id: String(m.id),
+      name: `${m.first_name}_${m.last_name}`.toUpperCase(),
+      type: 'MEMBERS' as MemberType,
+      role: m.alias || 'OPERATIVE',
+      background: m.basics?.description || m.seo?.description || 'DATA_REDACTED',
+      stats: [
+        { label: 'JOINED', value: m.basics?.joining_date || 'N/A' },
+        { label: 'BORN', value: m.basics?.birth_date || 'N/A' }
+      ],
+      image: typeof m.assets?.avatar === 'object' ? (m.assets.avatar as Media)?.url || '' : ''
+    }))
+  ]
+
+  const filteredTribe = personnel.filter((m) => m.type === activeType)
+  const current = filteredTribe[activeIdx] || null
 
   return (
     <section
@@ -77,16 +123,17 @@ export function PeopleSection({ members = DUMMY_TRIBE }: { members?: TeamMember[
               className="flex-1 flex flex-col lg:flex-row"
             >
               <div className="lg:w-1/2 relative h-[40vh] lg:h-auto overflow-hidden bg-zinc-950">
-                <img
-                  src={current.image}
-                  className="w-full h-full object-cover grayscale opacity-40 contrast-150 transition-all duration-1000"
-                  alt=""
-                />
+                {current.image && (
+                  <img
+                    src={current.image}
+                    className="w-full h-full object-cover grayscale opacity-40 contrast-150 transition-all duration-1000"
+                    alt={current.name}
+                  />
+                )}
                 <div className="absolute inset-0 bg-gradient-to-r from-black via-transparent to-transparent opacity-80" />
-
                 <div className="absolute bottom-16 left-16 space-y-3">
                   <div className="flex items-center gap-3">
-                    <div className="size-1.5 bg-primary animate-pulse" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY }} />
+                    <div className="size-1.5 animate-pulse" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY }} />
                     <span className="text-[7px] font-mono text-zinc-600 uppercase tracking-widest italic">ACTIVE_DATA_FEED</span>
                   </div>
                 </div>
@@ -98,13 +145,11 @@ export function PeopleSection({ members = DUMMY_TRIBE }: { members?: TeamMember[
                     <Fingerprint size={20} />
                     <span className="text-[9px] font-black uppercase tracking-[0.5em]">IDENTITY_CONFIRMED</span>
                   </div>
-
                   <h3 className="text-5xl md:text-8xl font-black italic text-white uppercase tracking-tighter leading-[0.8] break-words">
                     {current.name.split('_').map((n, i) => (
                       <span key={i} className="block">{n}</span>
                     ))}
                   </h3>
-
                   <div className="flex items-center gap-8 pt-6">
                     <div className="px-5 py-1.5 border border-zinc-800 text-[8px] font-black text-zinc-600 uppercase tracking-[0.4em]">
                       {current.role}
@@ -122,7 +167,6 @@ export function PeopleSection({ members = DUMMY_TRIBE }: { members?: TeamMember[
                       {current.background}
                     </p>
                   </div>
-
                   <div className="space-y-8">
                     {current.stats.map((s, i) => (
                       <div key={i} className="flex justify-between items-end border-b border-zinc-900 pb-4">
@@ -156,7 +200,7 @@ export function PeopleSection({ members = DUMMY_TRIBE }: { members?: TeamMember[
               <div className="flex flex-col text-left">
                 <span className={cn(
                   "text-[6px] font-mono mb-1 tracking-widest",
-                  activeIdx === idx ? "text-primary" : "text-zinc-800"
+                  activeIdx === idx ? "" : "text-zinc-800"
                 )} style={{ color: activeIdx === idx ? DESIGN_SYSTEM.COLORS.PRIMARY : '' }}>
                   INDEX_00{member.id}
                 </span>
@@ -173,7 +217,7 @@ export function PeopleSection({ members = DUMMY_TRIBE }: { members?: TeamMember[
                   "transition-all duration-500",
                   activeIdx === idx ? "opacity-100 scale-110" : "opacity-0 group-hover:opacity-100"
                 )}
-                style={{ color: activeIdx === idx ? DESIGN_SYSTEM.COLORS.PRIMARY : DESIGN_SYSTEM.COLORS.ZINC_800 }}
+                style={{ color: activeIdx === idx ? DESIGN_SYSTEM.COLORS.PRIMARY : '#27272a' }}
               />
             </button>
           ))
@@ -185,42 +229,3 @@ export function PeopleSection({ members = DUMMY_TRIBE }: { members?: TeamMember[
     </section>
   )
 }
-
-const DUMMY_TRIBE: TeamMember[] = [
-  {
-    id: "1",
-    type: 'DRIVERS',
-    name: "ALEX_FERRARI",
-    role: "LEAD_PILOT",
-    background: "SPECIALIST IN HIGH-VELOCITY KINETICS AND AERONAUTICAL TELEMETRY. HOLDER OF 12 TRACK RECORDS IN PROTOTYPE CLASS.",
-    stats: [{ label: "EXPERIENCE", value: "14_YRS" }, { label: "MAX_G", value: "6.2G" }],
-    image: "https://picsum.photos/seed/driver1/1200/1200"
-  },
-  {
-    id: "2",
-    type: 'DRIVERS',
-    name: "KAITO_SATO",
-    role: "TECHNICAL_PILOT",
-    background: "EXPERT IN ELECTRIC DRIVETRAIN CALIBRATION AND ENERGY REGENERATION STRATEGY DURING ENDURANCE STINTS.",
-    stats: [{ label: "PRECISION", value: "99.2%" }, { label: "LAPS", value: "4.2K" }],
-    image: "https://picsum.photos/seed/driver2/1200/1200"
-  },
-  {
-    id: "3",
-    type: 'LEADERS',
-    name: "MARCUS_VANCE",
-    role: "STRATEGY_DIRECTOR",
-    background: "ARCHITECT OF THE 2025 HYPER-FLOW AERODYNAMICS REGULATION. DIRECTS ALL R&D OPERATIONS ACROSS THREE CONTINENTS.",
-    stats: [{ label: "TENURE", value: "12_YRS" }, { label: "PATENTS", value: "08" }],
-    image: "https://picsum.photos/seed/leader1/1200/1200"
-  },
-  {
-    id: "4",
-    type: 'MEMBERS',
-    name: "ELARA_VOSS",
-    role: "AERO_ENGINEER",
-    background: "SPECIALIZED IN COMPUTATIONAL FLUID DYNAMICS AND BOUNDARY LAYER CONTROL SYSTEMS FOR HIGH-DOWNFORCE APPLICATIONS.",
-    stats: [{ label: "DEGREES", value: "PHD_MIT" }, { label: "FOCUS", value: "CFD_V2" }],
-    image: "https://picsum.photos/seed/member1/1200/1200"
-  }
-]

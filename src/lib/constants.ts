@@ -3,7 +3,8 @@ export const DESIGN_SYSTEM = {
     PRIMARY: '#00FF41',
     PRIMARY_GLOW: 'rgba(0, 255, 65, 0.9)',
     PRIMARY_MUTED: 'rgba(0, 255, 65, 0.15)',
-    BLACK: '#FFFFFF',
+    PRIMARY_STARK: '#FFFFFF',
+    BLACK: '#000000',
     ZINC_50: '#fafafa',
     ZINC_100: '#f4f4f5',
     ZINC_200: '#e4e4e7',
@@ -21,6 +22,7 @@ export const DESIGN_SYSTEM = {
   },
   SHAPES: {
     DIAMOND_CLIP: 'polygon(12% 0%, 88% 0%, 100% 50%, 88% 100%, 12% 100%, 0% 50%)',
+    RECT_CLIP: 'polygon(0 0, 100% 0, 100% 100%, 0 100%)',
   },
   ANIMATION: {
     DURATION_BASE: 'duration-200',
@@ -33,6 +35,9 @@ export const DESIGN_SYSTEM = {
     TRACKING_XL: 'tracking-[0.5em]',
     TRACKING_2XL: 'tracking-[0.6em]',
   },
+  EFFECTS: {
+    MEDIA_OVERLAY: 'linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0) 100%)',
+  }
 }
 
 export type SortFilterItem = {

@@ -7,11 +7,10 @@ import {
   ChevronLeft,
   ChevronRight,
   GlassWater,
-  Layers,
   Star
 } from 'lucide-react'
 import { AnimatePresence, motion } from 'motion/react'
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 export function TrophiesSection({ trophies = DUMMY_ARCHIVE }: { trophies?: any[] }) {
   const [activeIdx, setActiveIdx] = useState(0)
@@ -126,13 +125,6 @@ export function TrophiesSection({ trophies = DUMMY_ARCHIVE }: { trophies?: any[]
                       </span>
                     </div>
                   </div>
-                </div>
-
-                <div className="flex justify-between items-end">
-                  <div className="size-12 border-b-2 border-l-2" style={{ borderColor: DESIGN_SYSTEM.COLORS.PRIMARY }} />
-                  <span className="text-[8px] font-mono text-zinc-800 uppercase tracking-widest">
-                    Auth_Token: {token}
-                  </span>
                 </div>
               </div>
             </motion.div>

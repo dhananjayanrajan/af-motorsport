@@ -1,24 +1,26 @@
 'use client'
 
 import { DESIGN_SYSTEM } from '@/lib/constants'
+import { Celebration, Incident, Media } from '@/payload-types'
 import { cn } from '@/utilities/cn'
 import {
-  FileText,
-  ChevronRight,
-  Plus
+  Activity,
+  ChevronRight
 } from 'lucide-react'
 import { AnimatePresence, motion } from 'motion/react'
-import React, { useState, useEffect, useCallback } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 type TabType = 'CELEBRATIONS' | 'INCIDENTS'
 
-export function TeamSpiritSection({
-  celebrations = DUMMY_CELEBRATIONS,
-  incidents = DUMMY_INCIDENTS,
-}: {
-  celebrations?: any[]
-  incidents?: any[]
-}) {
+interface TeamSpiritSectionProps {
+  celebrations: Celebration[]
+  incidents: Incident[]
+}
+
+export default function TeamSpiritSection({
+  celebrations,
+  incidents,
+}: TeamSpiritSectionProps) {
   const [activeTab, setActiveTab] = useState<TabType>('CELEBRATIONS')
   const [activeIdx, setActiveIdx] = useState(0)
 
@@ -26,10 +28,12 @@ export function TeamSpiritSection({
   const current = items[activeIdx]
 
   const handleNext = useCallback(() => {
+    if (items.length === 0) return
     setActiveIdx((prev) => (prev + 1) % items.length)
   }, [items.length])
 
   const handlePrev = useCallback(() => {
+    if (items.length === 0) return
     setActiveIdx((prev) => (prev - 1 + items.length) % items.length)
   }, [items.length])
 
@@ -42,13 +46,15 @@ export function TeamSpiritSection({
     return () => window.removeEventListener('keydown', handleKey)
   }, [handleNext, handlePrev])
 
+  if (!current) return null
+
+  const getActiveImage = () => {
+    const asset = current.assets?.thumbnail || current.assets?.gallery?.[0]
+    return typeof asset === 'object' ? (asset as Media)?.url : ''
+  }
+
   return (
     <section className="relative w-full h-screen bg-black overflow-hidden flex flex-col lg:flex-row font-sans border-y border-zinc-900 select-none">
-      <style jsx global>{`
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-      `}</style>
-
       <div className="absolute inset-0 z-0">
         <AnimatePresence mode="wait">
           <motion.div
@@ -59,11 +65,13 @@ export function TeamSpiritSection({
             transition={{ duration: 0.4 }}
             className="absolute inset-0"
           >
-            <img
-              src={activeTab === 'CELEBRATIONS' ? current.assets.primary : current.assets.thumbnail}
-              className="w-full h-full object-cover grayscale opacity-50"
-              alt=""
-            />
+            {getActiveImage() && (
+              <img
+                src={getActiveImage()!}
+                className="w-full h-full object-cover grayscale opacity-50"
+                alt=""
+              />
+            )}
             <div className="absolute inset-0 bg-gradient-to-r from-black via-black/40 to-transparent" />
           </motion.div>
         </AnimatePresence>
@@ -109,20 +117,31 @@ export function TeamSpiritSection({
                 </div>
 
                 <p className="text-[11px] font-bold text-zinc-600 uppercase leading-relaxed tracking-wide border-l border-zinc-900 pl-6 italic">
-                  {current.basics?.description}
+                  {current.basics?.description || "CLASSIFIED_INTERNAL_RECORD"}
                 </p>
 
                 <div className="space-y-4">
+                  <div className="flex items-center gap-2 mb-4">
+                    <Activity size={10} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }} />
+                    <span className="text-[7px] font-black text-zinc-500 uppercase tracking-widest">METRIC_IMPACT</span>
+                  </div>
                   <div className="space-y-3">
-                    {(activeTab === 'CELEBRATIONS' ? current.traits?.outcomes?.stories : current.traits?.outcomes?.impacts)?.map((node: any, i: number) => (
-                      <div
-                        key={i}
-                        className="p-5 border border-zinc-900 bg-zinc-950 flex justify-between items-center"
-                      >
-                        <span className="text-[9px] font-black uppercase italic text-zinc-500">{node.value}</span>
-                        <Plus size={10} className="text-zinc-800" />
-                      </div>
-                    ))}
+                    <div className="p-5 border border-zinc-900 bg-zinc-950 flex justify-between items-center">
+                      <span className="text-[9px] font-black uppercase italic text-zinc-500">
+                        {activeTab === 'CELEBRATIONS' ? 'EXCLUSIVITY' : 'LOCATION_COORD'}
+                      </span>
+                      <span className="text-[9px] font-black text-white">
+                        {activeTab === 'CELEBRATIONS'
+                          ? (current as Celebration).details?.exclusivity?.toUpperCase()
+                          : (current as Incident).details?.location?.join(', ') || 'N/A'}
+                      </span>
+                    </div>
+                    <div className="p-5 border border-zinc-900 bg-zinc-950 flex justify-between items-center">
+                      <span className="text-[9px] font-black uppercase italic text-zinc-500">TIMESTAMP</span>
+                      <span className="text-[9px] font-black text-white">
+                        {current.details?.date_time ? new Date(current.details.date_time).toLocaleDateString() : 'UNKNOWN'}
+                      </span>
+                    </div>
                   </div>
                 </div>
               </motion.div>
@@ -164,36 +183,11 @@ export function TeamSpiritSection({
               />
             ))}
           </div>
-          <span className="text-[8px] font-black text-zinc-800 uppercase tracking-[0.6em] italic">INDEX_{activeIdx + 1}</span>
+          <span className="text-[8px] font-black text-zinc-800 uppercase tracking-[0.6em] italic">
+            INDEX_{activeTab === 'CELEBRATIONS' ? 'C' : 'I'}_{activeIdx + 1}
+          </span>
         </div>
       </div>
     </section>
   )
 }
-
-const DUMMY_CELEBRATIONS = [
-  {
-    id: 1,
-    name: "MONSOON_VICTORY",
-    basics: { description: "TOTAL DOMINATION UNDER ADVERSE ATMOSPHERIC CONDITIONS. THE SINGAPORE PODIUM LOCKOUT." },
-    traits: { outcomes: { stories: [{ value: "STRATEGY_MASTERY" }, { value: "PIT_STOP_PRECISION" }] } },
-    assets: { primary: "https://picsum.photos/seed/monsoon/1920/1080" }
-  },
-  {
-    id: 2,
-    name: "FOUNDERS_NIGHT",
-    basics: { description: "COMMEMORATING A DECADE OF ENGINEERING SOVEREIGNTY AND AERODYNAMIC REVOLUTION." },
-    traits: { outcomes: { stories: [{ value: "LEGACY_ADDRESS" }, { value: "FUTURE_REVEAL" }] } },
-    assets: { primary: "https://picsum.photos/seed/founders/1920/1080" }
-  }
-]
-
-const DUMMY_INCIDENTS = [
-  {
-    id: 801,
-    name: "CHASSIS_BREACH",
-    basics: { description: "CRITICAL COMPOSITE FAILURE DETECTED DURING NÜRBURGRING ENDURANCE EVALUATION." },
-    traits: { outcomes: { impacts: [{ value: "RE_DESIGN_PHASE" }, { value: "SAFETY_AUDIT_V3" }] } },
-    assets: { thumbnail: "https://picsum.photos/seed/chassis/1920/1080" }
-  }
-]
