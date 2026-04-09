@@ -78,28 +78,32 @@ export default function StandingsTable({ season, drivers, teams, results, points
 
     return (
         <section
-            className="w-full py-24 px-10 md:px-16 border-b border-zinc-900"
-            style={{ backgroundColor: DESIGN_SYSTEM.COLORS.BLACK }}
+            className="w-full py-24 px-10 md:px-16 border-b"
+            style={{ backgroundColor: DESIGN_SYSTEM.COLORS.WHITE, borderColor: DESIGN_SYSTEM.COLORS.ZINC_200 }}
         >
             <div className="max-w-7xl mx-auto space-y-16">
                 <div className="flex flex-col md:flex-row md:items-end justify-between gap-12">
                     <div className="space-y-4">
                         <div className="flex items-center gap-3">
                             <Target size={12} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }} />
-                            <span className="text-[8px] font-black text-zinc-700 uppercase tracking-[0.6em]">LIVE_COMPETITION_DATA</span>
+                            <span className="text-[8px] font-black uppercase tracking-[0.6em]" style={{ color: DESIGN_SYSTEM.COLORS.ZINC_400 }}>LIVE_COMPETITION_DATA</span>
                         </div>
-                        <h2 className="text-4xl md:text-6xl font-black italic text-white uppercase tracking-tighter">
-                            Championship<span className="text-zinc-900"> Standings</span>
+                        <h2 className="text-4xl md:text-6xl font-black italic uppercase tracking-tighter" style={{ color: DESIGN_SYSTEM.COLORS.BLACK }}>
+                            Championship<span style={{ color: DESIGN_SYSTEM.COLORS.ZINC_200 }}> Standings</span>
                         </h2>
                     </div>
 
-                    <div className="flex bg-zinc-950 border border-zinc-900 p-1">
+                    <div className="flex border p-1" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.ZINC_100, borderColor: DESIGN_SYSTEM.COLORS.ZINC_200 }}>
                         <button
                             onClick={() => setActiveTab('drivers')}
                             className={cn(
-                                "px-8 py-3 flex items-center gap-3 transition-all duration-300",
-                                activeTab === 'drivers' ? "bg-zinc-900 text-white" : "text-zinc-700 hover:text-zinc-400"
+                                "px-8 py-3 flex items-center gap-3 transition-all duration-300 cursor-pointer",
+                                activeTab === 'drivers' ? "" : "hover:text-zinc-600"
                             )}
+                            style={{
+                                backgroundColor: activeTab === 'drivers' ? DESIGN_SYSTEM.COLORS.WHITE : 'transparent',
+                                color: activeTab === 'drivers' ? DESIGN_SYSTEM.COLORS.BLACK : DESIGN_SYSTEM.COLORS.ZINC_400
+                            }}
                         >
                             <Users size={12} />
                             <span className="text-[9px] font-black uppercase tracking-widest">DRIVERS</span>
@@ -107,9 +111,13 @@ export default function StandingsTable({ season, drivers, teams, results, points
                         <button
                             onClick={() => setActiveTab('teams')}
                             className={cn(
-                                "px-8 py-3 flex items-center gap-3 transition-all duration-300",
-                                activeTab === 'teams' ? "bg-zinc-900 text-white" : "text-zinc-700 hover:text-zinc-400"
+                                "px-8 py-3 flex items-center gap-3 transition-all duration-300 cursor-pointer",
+                                activeTab === 'teams' ? "" : "hover:text-zinc-600"
                             )}
+                            style={{
+                                backgroundColor: activeTab === 'teams' ? DESIGN_SYSTEM.COLORS.WHITE : 'transparent',
+                                color: activeTab === 'teams' ? DESIGN_SYSTEM.COLORS.BLACK : DESIGN_SYSTEM.COLORS.ZINC_400
+                            }}
                         >
                             <Shield size={12} />
                             <span className="text-[9px] font-black uppercase tracking-widest">TEAMS</span>
@@ -117,19 +125,19 @@ export default function StandingsTable({ season, drivers, teams, results, points
                     </div>
                 </div>
 
-                <div className="border border-zinc-900 overflow-hidden bg-zinc-950/20">
+                <div className="border overflow-hidden" style={{ borderColor: DESIGN_SYSTEM.COLORS.ZINC_200, backgroundColor: DESIGN_SYSTEM.COLORS.ZINC_50 }}>
                     <table className="w-full border-collapse">
                         <thead>
-                            <tr className="bg-zinc-950 border-b border-zinc-900">
-                                <th className="p-6 text-[8px] font-black text-zinc-700 uppercase tracking-widest text-left w-20">POS</th>
-                                <th className="p-6 text-[8px] font-black text-zinc-700 uppercase tracking-widest text-left">ENTITY_IDENTIFIER</th>
-                                <th className="p-6 text-[8px] font-black text-zinc-700 uppercase tracking-widest text-center hidden md:table-cell w-32">WINS</th>
-                                <th className="p-6 text-[8px] font-black text-zinc-700 uppercase tracking-widest text-center hidden md:table-cell w-32">PODIUMS</th>
-                                <th className="p-6 text-[8px] font-black text-zinc-700 uppercase tracking-widest text-right w-32">POINTS</th>
+                            <tr className="border-b" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.WHITE, borderColor: DESIGN_SYSTEM.COLORS.ZINC_200 }}>
+                                <th className="p-6 text-[8px] font-black uppercase tracking-widest text-left w-20" style={{ color: DESIGN_SYSTEM.COLORS.ZINC_400 }}>POS</th>
+                                <th className="p-6 text-[8px] font-black uppercase tracking-widest text-left" style={{ color: DESIGN_SYSTEM.COLORS.ZINC_400 }}>ENTITY_IDENTIFIER</th>
+                                <th className="p-6 text-[8px] font-black uppercase tracking-widest text-center hidden md:table-cell w-32" style={{ color: DESIGN_SYSTEM.COLORS.ZINC_400 }}>WINS</th>
+                                <th className="p-6 text-[8px] font-black uppercase tracking-widest text-center hidden md:table-cell w-32" style={{ color: DESIGN_SYSTEM.COLORS.ZINC_400 }}>PODIUMS</th>
+                                <th className="p-6 text-[8px] font-black uppercase tracking-widest text-right w-32" style={{ color: DESIGN_SYSTEM.COLORS.ZINC_400 }}>POINTS</th>
                                 <th className="p-6 w-16"></th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-zinc-900/50">
+                        <tbody className="divide-y divide-zinc-100">
                             <AnimatePresence mode="wait">
                                 {currentData.map((row, idx) => (
                                     <motion.tr
@@ -138,37 +146,34 @@ export default function StandingsTable({ season, drivers, teams, results, points
                                         animate={{ opacity: 1, x: 0 }}
                                         exit={{ opacity: 0, x: 10 }}
                                         transition={{ delay: idx * 0.03 }}
-                                        className="group hover:bg-zinc-950 transition-colors"
+                                        className="group transition-colors hover:bg-white"
                                     >
                                         <td className="p-6">
-                                            <span className={cn(
-                                                "text-2xl font-black italic tracking-tighter",
-                                                idx === 0 ? "text-primary" : "text-zinc-800"
-                                            )} style={{ color: idx === 0 ? DESIGN_SYSTEM.COLORS.PRIMARY : '' }}>
+                                            <span className="text-2xl font-black italic tracking-tighter" style={{ color: idx === 0 ? DESIGN_SYSTEM.COLORS.PRIMARY : DESIGN_SYSTEM.COLORS.ZINC_200 }}>
                                                 {idx + 1}
                                             </span>
                                         </td>
                                         <td className="p-6">
                                             <div className="flex flex-col">
-                                                <span className="text-xs font-black text-white uppercase italic tracking-wide group-hover:translate-x-1 transition-transform">
+                                                <span className="text-xs font-black uppercase italic tracking-wide group-hover:translate-x-1 transition-transform" style={{ color: DESIGN_SYSTEM.COLORS.BLACK }}>
                                                     {row.name}
                                                 </span>
-                                                <span className="text-[7px] font-mono text-zinc-800 uppercase mt-1">ID_REF_{row.id}</span>
+                                                <span className="text-[7px] font-mono uppercase mt-1" style={{ color: DESIGN_SYSTEM.COLORS.ZINC_300 }}>ID_REF_{row.id}</span>
                                             </div>
                                         </td>
                                         <td className="p-6 text-center hidden md:table-cell">
-                                            <span className={cn("text-xs font-black italic", row.wins > 0 ? "text-zinc-400" : "text-zinc-800")}>
+                                            <span className="text-xs font-black italic" style={{ color: row.wins > 0 ? DESIGN_SYSTEM.COLORS.ZINC_500 : DESIGN_SYSTEM.COLORS.ZINC_200 }}>
                                                 {row.wins}
                                             </span>
                                         </td>
                                         <td className="p-6 text-center hidden md:table-cell">
-                                            <span className={cn("text-xs font-black italic", row.podiums > 0 ? "text-zinc-400" : "text-zinc-800")}>
+                                            <span className="text-xs font-black italic" style={{ color: row.podiums > 0 ? DESIGN_SYSTEM.COLORS.ZINC_500 : DESIGN_SYSTEM.COLORS.ZINC_200 }}>
                                                 {row.podiums}
                                             </span>
                                         </td>
                                         <td className="p-6 text-right">
                                             <div className="flex items-center justify-end gap-3">
-                                                <span className="text-xl font-black italic text-white tracking-tighter">
+                                                <span className="text-xl font-black italic tracking-tighter" style={{ color: DESIGN_SYSTEM.COLORS.BLACK }}>
                                                     {row.points}
                                                 </span>
                                                 {idx === 0 && (
@@ -177,7 +182,7 @@ export default function StandingsTable({ season, drivers, teams, results, points
                                             </div>
                                         </td>
                                         <td className="p-6">
-                                            <ChevronRight size={14} className="text-zinc-900 group-hover:text-white group-hover:translate-x-1 transition-all" />
+                                            <ChevronRight size={14} className="group-hover:translate-x-1 transition-all" style={{ color: DESIGN_SYSTEM.COLORS.ZINC_200 }} />
                                         </td>
                                     </motion.tr>
                                 ))}
@@ -186,21 +191,21 @@ export default function StandingsTable({ season, drivers, teams, results, points
                     </table>
                 </div>
 
-                <div className="flex flex-col md:flex-row justify-between items-center gap-6 pt-8 border-t border-zinc-900/50">
+                <div className="flex flex-col md:flex-row justify-between items-center gap-6 pt-8 border-t" style={{ borderTopColor: DESIGN_SYSTEM.COLORS.ZINC_100 }}>
                     <div className="flex items-center gap-8">
                         <div className="flex items-center gap-3">
                             <div className="size-2 rounded-full" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY }} />
-                            <span className="text-[8px] font-black text-zinc-500 uppercase tracking-widest">CHAMPIONSHIP_LEAD</span>
+                            <span className="text-[8px] font-black uppercase tracking-widest" style={{ color: DESIGN_SYSTEM.COLORS.ZINC_400 }}>CHAMPIONSHIP_LEAD</span>
                         </div>
                         <div className="flex items-center gap-3">
-                            <div className="size-2 rounded-full bg-zinc-800" />
-                            <span className="text-[8px] font-black text-zinc-500 uppercase tracking-widest">STABLE_POSITION</span>
+                            <div className="size-2 rounded-full" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.ZINC_200 }} />
+                            <span className="text-[8px] font-black uppercase tracking-widest" style={{ color: DESIGN_SYSTEM.COLORS.ZINC_400 }}>STABLE_POSITION</span>
                         </div>
                     </div>
 
-                    <button className="flex items-center gap-3 group">
-                        <BarChart3 size={12} className="text-zinc-700" />
-                        <span className="text-[8px] font-black text-zinc-700 uppercase tracking-[0.4em] group-hover:text-white transition-colors">EXPORT_FULL_TELEMETRY_REPORT</span>
+                    <button className="flex items-center gap-3 group cursor-pointer">
+                        <BarChart3 size={12} style={{ color: DESIGN_SYSTEM.COLORS.ZINC_400 }} />
+                        <span className="text-[8px] font-black uppercase tracking-[0.4em] transition-colors group-hover:text-black" style={{ color: DESIGN_SYSTEM.COLORS.ZINC_400 }}>EXPORT_FULL_TELEMETRY_REPORT</span>
                     </button>
                 </div>
             </div>

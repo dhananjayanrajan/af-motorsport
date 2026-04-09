@@ -54,7 +54,10 @@ export default function TeamSpiritSection({
   }
 
   return (
-    <section className="relative w-full h-screen bg-black overflow-hidden flex flex-col lg:flex-row font-sans border-y border-zinc-900 select-none">
+    <section
+      className="relative w-full h-screen overflow-hidden flex flex-col lg:flex-row font-sans border-y select-none"
+      style={{ backgroundColor: DESIGN_SYSTEM.COLORS.ZINC_50, borderColor: DESIGN_SYSTEM.COLORS.ZINC_200 }}
+    >
       <div className="absolute inset-0 z-0">
         <AnimatePresence mode="wait">
           <motion.div
@@ -72,26 +75,40 @@ export default function TeamSpiritSection({
                 alt=""
               />
             )}
-            <div className="absolute inset-0 bg-gradient-to-r from-black via-black/40 to-transparent" />
+            <div
+              className="absolute inset-0"
+              style={{ background: `linear-gradient(to right, ${DESIGN_SYSTEM.COLORS.ZINC_50}, ${DESIGN_SYSTEM.COLORS.ZINC_50}66, transparent)` }}
+            />
           </motion.div>
         </AnimatePresence>
       </div>
 
-      <div className="relative z-20 w-full lg:w-[450px] bg-black border-r border-zinc-900 flex flex-col shrink-0 overflow-hidden">
+      <div
+        className="relative z-20 w-full lg:w-[450px] border-r flex flex-col shrink-0 overflow-hidden"
+        style={{ backgroundColor: DESIGN_SYSTEM.COLORS.WHITE, borderColor: DESIGN_SYSTEM.COLORS.ZINC_200 }}
+      >
         <div className="p-12 md:p-16 flex-1 flex flex-col overflow-hidden">
           <header className="mb-20 shrink-0">
-            <div className="flex bg-zinc-950 border border-zinc-900 p-1">
+            <div
+              className="flex border p-1"
+              style={{ backgroundColor: DESIGN_SYSTEM.COLORS.ZINC_100, borderColor: DESIGN_SYSTEM.COLORS.ZINC_200 }}
+            >
               {(['CELEBRATIONS', 'INCIDENTS'] as TabType[]).map((tab) => (
                 <button
                   key={tab}
                   onClick={() => { setActiveTab(tab); setActiveIdx(0); }}
                   className={cn(
                     "flex-1 py-3 text-[8px] font-black uppercase tracking-[0.3em] transition-all cursor-pointer relative",
-                    activeTab === tab ? "text-black" : "text-zinc-700 hover:text-zinc-400"
+                    activeTab === tab ? "" : "text-zinc-400 hover:text-zinc-600"
                   )}
+                  style={{ color: activeTab === tab ? DESIGN_SYSTEM.COLORS.BLACK : '' }}
                 >
                   {activeTab === tab && (
-                    <motion.div layoutId="tab-active" className="absolute inset-0 bg-white" transition={{ duration: 0.2 }} />
+                    <motion.div
+                      layoutId="tab-active"
+                      className="absolute inset-0 bg-white"
+                      transition={{ duration: 0.2 }}
+                    />
                   )}
                   <span className="relative z-10">{tab}</span>
                 </button>
@@ -110,35 +127,47 @@ export default function TeamSpiritSection({
                 className="space-y-12"
               >
                 <div>
-                  <h3 className="text-4xl md:text-5xl font-black italic text-white uppercase tracking-tighter leading-[0.85] break-words">
+                  <h3
+                    className="text-4xl md:text-5xl font-black italic uppercase tracking-tighter leading-[0.85] break-words"
+                    style={{ color: DESIGN_SYSTEM.COLORS.BLACK }}
+                  >
                     {current.name}
                   </h3>
                   <div className="h-0.5 w-12 mt-8" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY }} />
                 </div>
 
-                <p className="text-[11px] font-bold text-zinc-600 uppercase leading-relaxed tracking-wide border-l border-zinc-900 pl-6 italic">
+                <p
+                  className="text-[11px] font-bold uppercase leading-relaxed tracking-wide border-l pl-6 italic"
+                  style={{ color: DESIGN_SYSTEM.COLORS.ZINC_500, borderLeftColor: DESIGN_SYSTEM.COLORS.ZINC_100 }}
+                >
                   {current.basics?.description || "CLASSIFIED_INTERNAL_RECORD"}
                 </p>
 
                 <div className="space-y-4">
                   <div className="flex items-center gap-2 mb-4">
                     <Activity size={10} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }} />
-                    <span className="text-[7px] font-black text-zinc-500 uppercase tracking-widest">METRIC_IMPACT</span>
+                    <span className="text-[7px] font-black uppercase tracking-widest" style={{ color: DESIGN_SYSTEM.COLORS.ZINC_400 }}>METRIC_IMPACT</span>
                   </div>
                   <div className="space-y-3">
-                    <div className="p-5 border border-zinc-900 bg-zinc-950 flex justify-between items-center">
-                      <span className="text-[9px] font-black uppercase italic text-zinc-500">
+                    <div
+                      className="p-5 border flex justify-between items-center"
+                      style={{ backgroundColor: DESIGN_SYSTEM.COLORS.ZINC_50, borderColor: DESIGN_SYSTEM.COLORS.ZINC_100 }}
+                    >
+                      <span className="text-[9px] font-black uppercase italic" style={{ color: DESIGN_SYSTEM.COLORS.ZINC_400 }}>
                         {activeTab === 'CELEBRATIONS' ? 'EXCLUSIVITY' : 'LOCATION_COORD'}
                       </span>
-                      <span className="text-[9px] font-black text-white">
+                      <span className="text-[9px] font-black" style={{ color: DESIGN_SYSTEM.COLORS.BLACK }}>
                         {activeTab === 'CELEBRATIONS'
                           ? (current as Celebration).details?.exclusivity?.toUpperCase()
                           : (current as Incident).details?.location?.join(', ') || 'N/A'}
                       </span>
                     </div>
-                    <div className="p-5 border border-zinc-900 bg-zinc-950 flex justify-between items-center">
-                      <span className="text-[9px] font-black uppercase italic text-zinc-500">TIMESTAMP</span>
-                      <span className="text-[9px] font-black text-white">
+                    <div
+                      className="p-5 border flex justify-between items-center"
+                      style={{ backgroundColor: DESIGN_SYSTEM.COLORS.ZINC_50, borderColor: DESIGN_SYSTEM.COLORS.ZINC_100 }}
+                    >
+                      <span className="text-[9px] font-black uppercase italic" style={{ color: DESIGN_SYSTEM.COLORS.ZINC_400 }}>TIMESTAMP</span>
+                      <span className="text-[9px] font-black" style={{ color: DESIGN_SYSTEM.COLORS.BLACK }}>
                         {current.details?.date_time ? new Date(current.details.date_time).toLocaleDateString() : 'UNKNOWN'}
                       </span>
                     </div>
@@ -152,13 +181,17 @@ export default function TeamSpiritSection({
             <div className="flex gap-4">
               <button
                 onClick={handlePrev}
-                className="size-14 border border-zinc-900 flex items-center justify-center hover:bg-zinc-900 transition-colors cursor-pointer group"
+                className="size-14 border flex items-center justify-center transition-colors cursor-pointer group hover:bg-white"
+                style={{ borderColor: DESIGN_SYSTEM.COLORS.ZINC_200 }}
               >
-                <ChevronRight size={18} className="rotate-180 text-zinc-800 group-hover:text-white" />
+                <ChevronRight size={18} className="rotate-180 transition-colors" style={{ color: DESIGN_SYSTEM.COLORS.ZINC_300 }} />
               </button>
               <button
                 onClick={handleNext}
-                className="flex-1 h-14 bg-white text-black font-black uppercase text-[9px] tracking-[0.2em] flex items-center justify-center gap-3 hover:bg-zinc-200 transition-colors cursor-pointer"
+                className="flex-1 h-14 font-black uppercase text-[9px] tracking-[0.2em] flex items-center justify-center gap-3 transition-colors cursor-pointer"
+                style={{ backgroundColor: DESIGN_SYSTEM.COLORS.BLACK, color: DESIGN_SYSTEM.COLORS.WHITE }}
+                onMouseEnter={(e) => { e.currentTarget.style.opacity = '0.9' }}
+                onMouseLeave={(e) => { e.currentTarget.style.opacity = '1' }}
               >
                 NEXT_RECORD
                 <ChevronRight size={14} />
@@ -177,13 +210,15 @@ export default function TeamSpiritSection({
                 onClick={() => setActiveIdx(i)}
                 className={cn(
                   "h-1 transition-all duration-500 pointer-events-auto cursor-pointer",
-                  i === activeIdx ? "w-16" : "w-6 bg-zinc-900 hover:bg-zinc-700"
+                  i === activeIdx ? "w-16" : "w-6 hover:bg-zinc-300"
                 )}
-                style={{ backgroundColor: i === activeIdx ? DESIGN_SYSTEM.COLORS.PRIMARY : '' }}
+                style={{
+                  backgroundColor: i === activeIdx ? DESIGN_SYSTEM.COLORS.PRIMARY : DESIGN_SYSTEM.COLORS.ZINC_200
+                }}
               />
             ))}
           </div>
-          <span className="text-[8px] font-black text-zinc-800 uppercase tracking-[0.6em] italic">
+          <span className="text-[8px] font-black uppercase tracking-[0.6em] italic" style={{ color: DESIGN_SYSTEM.COLORS.ZINC_300 }}>
             INDEX_{activeTab === 'CELEBRATIONS' ? 'C' : 'I'}_{activeIdx + 1}
           </span>
         </div>

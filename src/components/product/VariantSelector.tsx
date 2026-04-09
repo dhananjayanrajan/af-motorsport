@@ -21,8 +21,10 @@ export function VariantSelector({ product }: { product: Product }) {
 
     return (
       <dl className="flex flex-col gap-4" key={type.id}>
-        <dt className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.3em]">{type.label}</dt>
-        <dd className="flex flex-wrap gap-x-2 gap-y-4">
+        <dt className="text-xs font-black text-zinc-500 uppercase tracking-[0.3em]">
+          {type.label}
+        </dt>
+        <dd className="flex flex-wrap gap-x-3 gap-y-4">
           {options?.map((option) => {
             if (!option || typeof option !== 'object') return null
             const optionSearchParams = new URLSearchParams(searchParams.toString())
@@ -62,7 +64,7 @@ export function VariantSelector({ product }: { product: Product }) {
                 variant={isActive ? 'primary' : 'outline'}
                 size="sm"
                 onClick={() => router.replace(optionUrl, { scroll: false })}
-                className={!isAvailableForSale ? 'opacity-20 pointer-events-none' : ''}
+                className={!isAvailableForSale ? 'opacity-30 pointer-events-none' : ''}
               />
             )
           })}

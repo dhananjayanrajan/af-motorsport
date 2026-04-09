@@ -3,6 +3,7 @@ import { AddToCart } from '@/components/Cart/AddToCart'
 import { Price } from '@/components/Price'
 import { StockIndicator } from '@/components/product/StockIndicator'
 import { RichText } from '@/components/RichText'
+import { DESIGN_SYSTEM } from '@/lib/constants'
 import type { Product, Variant } from '@/payload-types'
 import { useCurrency } from '@payloadcms/plugin-ecommerce/client/react'
 import { Suspense } from 'react'
@@ -49,18 +50,27 @@ export function ProductDescription({ product }: { product: Product }) {
   }
 
   return (
-    <div className="flex flex-col gap-10">
+    <div className="flex flex-col gap-8">
       <div className="flex flex-col gap-4">
         <div className="flex items-center gap-3">
-          <span className="text-[10px] font-black text-[#00FF41] uppercase tracking-[0.4em]">Asset_Identity</span>
-          <div className="h-[1px] flex-1 bg-zinc-900" />
+          <span
+            className="text-xs font-black uppercase tracking-[0.4em]"
+            style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }}
+          >
+            Asset_Identity
+          </span>
+          <div className="h-px flex-1 bg-zinc-900" />
         </div>
         <h1 className="text-5xl font-black italic text-white uppercase tracking-tighter leading-none">
           {product.title}
         </h1>
-        <div className="mt-2">
+        <div className="mt-1">
           {hasVariants ? (
-            <Price highestAmount={highestAmount} lowestAmount={lowestAmount} className="text-3xl font-black text-white italic" />
+            <Price
+              highestAmount={highestAmount}
+              lowestAmount={lowestAmount}
+              className="text-3xl font-black text-white italic"
+            />
           ) : (
             <Price amount={amount} className="text-3xl font-black text-white italic" />
           )}
@@ -68,8 +78,12 @@ export function ProductDescription({ product }: { product: Product }) {
       </div>
 
       {product.description ? (
-        <div className="border-l-2 border-zinc-800 pl-6 py-2">
-          <RichText className="prose prose-invert max-w-none text-zinc-400 text-sm uppercase leading-tight font-medium" data={product.description} enableGutter={false} />
+        <div className="border-l-2 border-primary pl-5 py-2">
+          <RichText
+            className="prose prose-invert max-w-none text-zinc-400 text-sm uppercase leading-relaxed font-medium"
+            data={product.description}
+            enableGutter={false}
+          />
         </div>
       ) : null}
 
@@ -86,7 +100,7 @@ export function ProductDescription({ product }: { product: Product }) {
           <Suspense fallback={null}>
             <StockIndicator product={product} />
           </Suspense>
-          <span className="text-[9px] font-mono text-zinc-600 uppercase">Status: Verified</span>
+          <span className="text-xs font-mono text-zinc-600 uppercase">Status: Verified</span>
         </div>
 
         <Suspense fallback={null}>
