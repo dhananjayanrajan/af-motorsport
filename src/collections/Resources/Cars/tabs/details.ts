@@ -1,12 +1,12 @@
-import type { Field } from 'payload'
-import { dictionary } from '../sources/dictionary'
-import { selectFieldFactory } from '@/fields/factories/fields/selectField'
-import { richtextFieldFactory } from '@/fields/factories/fields/richtextField'
-import { relationshipFieldFactory } from '@/fields/factories/fields/relationshipField'
 import { groupFactory } from '@/fields/factories/blueprint'
+import { relationshipFieldFactory } from '@/fields/factories/fields/relationshipField'
+import { richtextFieldFactory } from '@/fields/factories/fields/richtextField'
+import { selectFieldFactory } from '@/fields/factories/fields/selectField'
 import { textFieldFactory } from '@/fields/factories/fields/textField'
 import { textareaFieldFactory } from '@/fields/factories/fields/textareaField'
-import { CAR_STATUS } from '../sources/constants'
+import type { Field } from 'payload'
+import { CAR_STATUS, CAR_TECHNICAL_CATEGORIES } from '../sources/constants'
+import { dictionary } from '../sources/dictionary'
 
 export const detailsFields: Field[] = [
   selectFieldFactory({
@@ -39,6 +39,13 @@ export const detailsFields: Field[] = [
     flags: ['hasMany'],
     hasMany: true,
     maxRows: 50,
+  }),
+  selectFieldFactory({
+    name: 'technicalCategories',
+    options: CAR_TECHNICAL_CATEGORIES,
+    dictionary: dictionary.tabs.basics,
+    width: 2,
+    flags: ['index'],
   }),
   groupFactory(
     {

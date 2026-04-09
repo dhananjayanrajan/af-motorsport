@@ -1,10 +1,10 @@
-import type { Field } from 'payload'
-import { dictionary } from '../sources/dictionary'
+import { groupFactory } from '@/fields/factories/blueprint'
+import { selectFieldFactory } from '@/fields/factories/fields/selectField'
 import { textFieldFactory } from '@/fields/factories/fields/textField'
 import { textareaFieldFactory } from '@/fields/factories/fields/textareaField'
-import { selectFieldFactory } from '@/fields/factories/fields/selectField'
-import { groupFactory } from '@/fields/factories/blueprint'
-import { ORGANIZATION_TYPE } from '../sources/constants'
+import type { Field } from 'payload'
+import { ORGANIZATION_INDUSTRY, ORGANIZATION_TYPE } from '../sources/constants'
+import { dictionary } from '../sources/dictionary'
 
 export const basicsFields: Field[] = [
   groupFactory(
@@ -47,6 +47,13 @@ export const basicsFields: Field[] = [
   selectFieldFactory({
     name: 'type',
     options: ORGANIZATION_TYPE,
+    dictionary: dictionary.tabs.basics,
+    width: 2,
+    flags: ['index'],
+  }),
+  selectFieldFactory({
+    name: 'industry',
+    options: ORGANIZATION_INDUSTRY,
     dictionary: dictionary.tabs.basics,
     width: 2,
     flags: ['index'],

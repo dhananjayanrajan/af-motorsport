@@ -17,17 +17,18 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE TYPE "public"."enum_championships_details_standings_scope" AS ENUM('season_only', 'rolling', 'cumulative');
   CREATE TYPE "public"."enum_races_details_type" AS ENUM('sprint', 'feature', 'qualifying_race', 'heat', 'final', 'knockout');
   CREATE TYPE "public"."enum_races_details_status" AS ENUM('scheduled', 'ongoing', 'completed', 'cancelled', 'postponed');
-  CREATE TYPE "public"."enum_drivers_details_socials_list_platform" AS ENUM('Twitter', 'Instagram', 'Facebook', 'LinkedIn', 'TikTok', 'YouTube', 'Twitch', 'Discord', 'Telegram', 'WhatsApp');
+  CREATE TYPE "public"."enum_drivers_details_socials_list_platform" AS ENUM('Twitter', 'Instagram', 'Threads', 'Facebook', 'LinkedIn', 'TikTok', 'YouTube', 'Twitch', 'Discord', 'Reddit', 'Telegram', 'WhatsApp');
   CREATE TYPE "public"."enum_drivers_basics_gender" AS ENUM('Male', 'Female', 'NonBinary', 'Undisclosed');
-  CREATE TYPE "public"."enum_leaders_details_socials_list_platform" AS ENUM('Twitter', 'Instagram', 'Facebook', 'LinkedIn', 'TikTok', 'YouTube', 'Twitch', 'Discord', 'Telegram', 'WhatsApp');
+  CREATE TYPE "public"."enum_leaders_details_socials_list_platform" AS ENUM('Twitter', 'Instagram', 'Threads', 'Facebook', 'LinkedIn', 'TikTok', 'YouTube', 'Twitch', 'Discord', 'Reddit', 'Telegram', 'WhatsApp');
   CREATE TYPE "public"."enum_leaders_basics_gender" AS ENUM('Male', 'Female', 'NonBinary', 'Undisclosed');
   CREATE TYPE "public"."enum_members_basics_gender" AS ENUM('Male', 'Female', 'NonBinary', 'Undisclosed');
   CREATE TYPE "public"."enum_individuals_basics_type" AS ENUM('mentor', 'trainee', 'intern', 'advisor', 'consultant', 'guest');
   CREATE TYPE "public"."enum_individuals_basics_gender" AS ENUM('Male', 'Female', 'NonBinary', 'Undisclosed');
   CREATE TYPE "public"."enum_organizations_details_socials_list_platform" AS ENUM('Twitter', 'Instagram', 'Facebook', 'LinkedIn', 'TikTok', 'YouTube', 'Twitch', 'Discord', 'Telegram', 'WhatsApp');
-  CREATE TYPE "public"."enum_organizations_basics_type" AS ENUM('sponsors', 'investors', 'partners', 'supporters', 'promoters', 'organizers', 'media', 'government', 'NGO', 'developers', 'distributors', 'retailers', 'manufacturers', 'suppliers');
-  CREATE TYPE "public"."enum_organizations_details_prestige" AS ENUM('unknown', 'emerging', 'established', 'prestigious', 'iconic');
-  CREATE TYPE "public"."enum_organizations_details_impact" AS ENUM('low', 'medium', 'deep', 'heavy', 'profound', 'rare', 'catastrophic', 'moderate', 'minor', 'negligible', 'major', 'severe', 'permanent', 'temporary');
+  CREATE TYPE "public"."enum_organizations_basics_type" AS ENUM('Sponsors', 'Investors', 'Partners', 'Supporters', 'Promoters', 'Organizers', 'Media', 'Government', 'NGO', 'Developers', 'Distributors', 'Retailers', 'Manufacturers', 'Suppliers', 'Providers', 'Recipients', 'Others');
+  CREATE TYPE "public"."enum_organizations_basics_industry" AS ENUM('Aerospace', 'Agriculture', 'AI & Machine Learning', 'Apparel & Fashion', 'Automotive', 'Banking & Finance', 'Betting & Gambling', 'Blockchain & Crypto', 'Chemicals', 'Cloud Computing', 'Construction', 'Consulting', 'Cybersecurity', 'Data Analytics', 'E-commerce', 'Education', 'Electronics', 'Energy & Utilities', 'Engineering', 'Entertainment', 'Environmental Services', 'Esports & Gaming', 'Event Management', 'Fitness & Wellness', 'Food & Beverage', 'Government', 'Healthcare', 'Hospitality', 'Human Resources', 'Insurance', 'Legal Services', 'Logistics & Supply Chain', 'Lubricants', 'Luxury Goods', 'Manufacturing', 'Marketing & Advertising', 'Materials Science', 'Media & Broadcasting', 'Mining', 'Non-Profit', 'Oil & Gas', 'Pharmaceuticals', 'Printing & Publishing', 'Property', 'Public Sector', 'Railway', 'Real Estate', 'Retail', 'Security', 'Shipping', 'Sports', 'Telecommunications', 'Textiles', 'Tourism', 'Transportation', 'Utilities');
+  CREATE TYPE "public"."enum_organizations_details_prestige" AS ENUM('Unknown', 'Emerging', 'Established', 'Prestigious', 'Iconic');
+  CREATE TYPE "public"."enum_organizations_details_impact" AS ENUM('Low', 'Medium', 'Deep', 'Heavy', 'Profound', 'Rare', 'Catastrophic', 'Moderate', 'Minor', 'Negligible', 'Major', 'Severe', 'Permanent', 'Temporary');
   CREATE TYPE "public"."enum_users_roles" AS ENUM('admin', 'race_admin', 'commercial', 'content', 'technical', 'hr', 'archive', 'customer');
   CREATE TYPE "public"."enum_meetups_details_format" AS ENUM('in_person', 'virtual', 'hybrid');
   CREATE TYPE "public"."enum_meetups_details_access" AS ENUM('public', 'invite_only', 'private', 'exclusive');
@@ -48,6 +49,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE TYPE "public"."enum_interviews_details_status" AS ENUM('draft', 'scheduled', 'recorded', 'published', 'archived');
   CREATE TYPE "public"."enum_interviews_details_access" AS ENUM('public', 'exclusive', 'team_only', 'media_only');
   CREATE TYPE "public"."enum_cars_details_status" AS ENUM('Active', 'Retired', 'Development', 'Museum', 'Prototype', 'Concept');
+  CREATE TYPE "public"."enum_cars_details_technical_categories" AS ENUM('Power Unit / Engine', 'Chassis & Aerodynamics', 'Drivetrain & Transmission', 'Suspension & Steering', 'Electronic Systems / ECU', 'Tires & Wheels', 'Safety Equipment', 'Fuel & Lubricants');
   CREATE TYPE "public"."enum_helmets_details_usage" AS ENUM('Track', 'Street', 'Show', 'Performance');
   CREATE TYPE "public"."enum_helmets_details_branding" AS ENUM('Minimal', 'Prominent', 'Full', 'Heritage');
   CREATE TYPE "public"."enum_helmets_details_style" AS ENUM('Classic', 'Modern', 'Futuristic', 'Retro');
@@ -63,6 +65,8 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE TYPE "public"."enum_skills_details_rarity" AS ENUM('Common', 'Uncommon', 'Rare', 'Unique');
   CREATE TYPE "public"."enum_skills_details_complexity" AS ENUM('Low', 'Medium', 'High', 'Extreme');
   CREATE TYPE "public"."enum_regulations_basics_status" AS ENUM('Published', 'Draft', 'Archived');
+  CREATE TYPE "public"."enum_regulations_basics_type" AS ENUM('Sporting & Competition', 'Technical & Engineering', 'Financial & Budgetary', 'Safety & Medical', 'Judicial & Disciplinary', 'Commercial & Media');
+  CREATE TYPE "public"."enum_regulations_basics_enforcement" AS ENUM('Live Scrutineering', 'Post-Event Inspection', 'Telemetry Monitoring', 'Self-Declaration', 'Financial Audit');
   CREATE TYPE "public"."enum_statements_basics_status" AS ENUM('Published', 'Draft', 'Archived');
   CREATE TYPE "public"."enum_slides_details_type" AS ENUM('intro', 'overview', 'highlight', 'summary', 'statistical', 'congratulatory');
   CREATE TYPE "public"."enum_slides_details_orientation" AS ENUM('landscape', 'portrait', 'square');
@@ -898,6 +902,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"basics_tagline" varchar DEFAULT '',
   	"basics_description" varchar DEFAULT '',
   	"basics_type" "enum_organizations_basics_type",
+  	"basics_industry" "enum_organizations_basics_industry",
   	"details_history" jsonb,
   	"details_founded" timestamp(3) with time zone,
   	"details_merged" timestamp(3) with time zone,
@@ -1504,6 +1509,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"basics_description" varchar DEFAULT '',
   	"details_status" "enum_cars_details_status",
   	"details_history" jsonb,
+  	"details_technical_categories" "enum_cars_details_technical_categories",
   	"assets_avatar_id" integer,
   	"assets_thumbnail_id" integer,
   	"assets_cover_id" integer,
@@ -1825,6 +1831,8 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"alias" varchar DEFAULT '',
   	"basics_description" varchar DEFAULT '',
   	"basics_status" "enum_regulations_basics_status",
+  	"basics_type" "enum_regulations_basics_type",
+  	"basics_enforcement" "enum_regulations_basics_enforcement",
   	"basics_code" varchar DEFAULT '',
   	"basics_version" varchar DEFAULT '',
   	"basics_effective_date" timestamp(3) with time zone,
@@ -4522,6 +4530,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX "organizations_name_idx" ON "organizations" USING btree ("name");
   CREATE INDEX "organizations_basics_identifiers_basics_identifiers_code_idx" ON "organizations" USING btree ("basics_identifiers_code");
   CREATE INDEX "organizations_basics_basics_type_idx" ON "organizations" USING btree ("basics_type");
+  CREATE INDEX "organizations_basics_basics_industry_idx" ON "organizations" USING btree ("basics_industry");
   CREATE INDEX "organizations_assets_assets_logo_idx" ON "organizations" USING btree ("assets_logo_id");
   CREATE INDEX "organizations_assets_assets_alt_logo_idx" ON "organizations" USING btree ("assets_alt_logo_id");
   CREATE UNIQUE INDEX "organizations_slug_idx" ON "organizations" USING btree ("slug");
@@ -4755,6 +4764,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX "cars_name_idx" ON "cars" USING btree ("name");
   CREATE INDEX "cars_basics_identifiers_basics_identifiers_chassis_idx" ON "cars" USING btree ("basics_identifiers_chassis");
   CREATE INDEX "cars_details_details_status_idx" ON "cars" USING btree ("details_status");
+  CREATE INDEX "cars_details_details_technical_categories_idx" ON "cars" USING btree ("details_technical_categories");
   CREATE INDEX "cars_assets_assets_avatar_idx" ON "cars" USING btree ("assets_avatar_id");
   CREATE INDEX "cars_assets_assets_thumbnail_idx" ON "cars" USING btree ("assets_thumbnail_id");
   CREATE INDEX "cars_assets_assets_cover_idx" ON "cars" USING btree ("assets_cover_id");
@@ -4869,6 +4879,8 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX "statuses_rels_tags_id_idx" ON "statuses_rels" USING btree ("tags_id");
   CREATE INDEX "regulations_name_idx" ON "regulations" USING btree ("name");
   CREATE INDEX "regulations_basics_basics_status_idx" ON "regulations" USING btree ("basics_status");
+  CREATE INDEX "regulations_basics_basics_type_idx" ON "regulations" USING btree ("basics_type");
+  CREATE INDEX "regulations_basics_basics_enforcement_idx" ON "regulations" USING btree ("basics_enforcement");
   CREATE INDEX "regulations_basics_basics_code_idx" ON "regulations" USING btree ("basics_code");
   CREATE INDEX "regulations_basics_basics_document_idx" ON "regulations" USING btree ("basics_document_id");
   CREATE UNIQUE INDEX "regulations_slug_idx" ON "regulations" USING btree ("slug");
@@ -5711,6 +5723,7 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
   DROP TYPE "public"."enum_individuals_basics_gender";
   DROP TYPE "public"."enum_organizations_details_socials_list_platform";
   DROP TYPE "public"."enum_organizations_basics_type";
+  DROP TYPE "public"."enum_organizations_basics_industry";
   DROP TYPE "public"."enum_organizations_details_prestige";
   DROP TYPE "public"."enum_organizations_details_impact";
   DROP TYPE "public"."enum_users_roles";
@@ -5733,6 +5746,7 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
   DROP TYPE "public"."enum_interviews_details_status";
   DROP TYPE "public"."enum_interviews_details_access";
   DROP TYPE "public"."enum_cars_details_status";
+  DROP TYPE "public"."enum_cars_details_technical_categories";
   DROP TYPE "public"."enum_helmets_details_usage";
   DROP TYPE "public"."enum_helmets_details_branding";
   DROP TYPE "public"."enum_helmets_details_style";
@@ -5748,6 +5762,8 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
   DROP TYPE "public"."enum_skills_details_rarity";
   DROP TYPE "public"."enum_skills_details_complexity";
   DROP TYPE "public"."enum_regulations_basics_status";
+  DROP TYPE "public"."enum_regulations_basics_type";
+  DROP TYPE "public"."enum_regulations_basics_enforcement";
   DROP TYPE "public"."enum_statements_basics_status";
   DROP TYPE "public"."enum_slides_details_type";
   DROP TYPE "public"."enum_slides_details_orientation";

@@ -11,7 +11,7 @@ export default function NotFound() {
         </h1>
         <div className={cn("absolute inset-0 flex items-center justify-center")}>
           <span className={cn("text-2xl font-black uppercase italic tracking-[0.5em]", `text-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`)}>
-            Asset_Not_Found
+            Asset Not Found
           </span>
         </div>
       </div>
@@ -30,7 +30,7 @@ export default function NotFound() {
       >
         <div className={cn("absolute inset-0 translate-y-full group-hover:translate-y-0 transition-transform duration-500", `bg-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`)} />
         <span className={cn("relative z-10 text-[11px] font-black uppercase italic group-hover:text-white transition-colors", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_XL)}>
-          Return_To_Base
+          Return To Base
         </span>
       </Link>
     </div>

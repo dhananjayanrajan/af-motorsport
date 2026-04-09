@@ -1605,20 +1605,86 @@ export interface Organization {
      */
     type?:
       | (
-          | 'sponsors'
-          | 'investors'
-          | 'partners'
-          | 'supporters'
-          | 'promoters'
-          | 'organizers'
-          | 'media'
-          | 'government'
+          | 'Sponsors'
+          | 'Investors'
+          | 'Partners'
+          | 'Supporters'
+          | 'Promoters'
+          | 'Organizers'
+          | 'Media'
+          | 'Government'
           | 'NGO'
-          | 'developers'
-          | 'distributors'
-          | 'retailers'
-          | 'manufacturers'
-          | 'suppliers'
+          | 'Developers'
+          | 'Distributors'
+          | 'Retailers'
+          | 'Manufacturers'
+          | 'Suppliers'
+          | 'Providers'
+          | 'Recipients'
+          | 'Others'
+        )
+      | null;
+    /**
+     * Select one or more options.
+     */
+    industry?:
+      | (
+          | 'Aerospace'
+          | 'Agriculture'
+          | 'AI & Machine Learning'
+          | 'Apparel & Fashion'
+          | 'Automotive'
+          | 'Banking & Finance'
+          | 'Betting & Gambling'
+          | 'Blockchain & Crypto'
+          | 'Chemicals'
+          | 'Cloud Computing'
+          | 'Construction'
+          | 'Consulting'
+          | 'Cybersecurity'
+          | 'Data Analytics'
+          | 'E-commerce'
+          | 'Education'
+          | 'Electronics'
+          | 'Energy & Utilities'
+          | 'Engineering'
+          | 'Entertainment'
+          | 'Environmental Services'
+          | 'Esports & Gaming'
+          | 'Event Management'
+          | 'Fitness & Wellness'
+          | 'Food & Beverage'
+          | 'Government'
+          | 'Healthcare'
+          | 'Hospitality'
+          | 'Human Resources'
+          | 'Insurance'
+          | 'Legal Services'
+          | 'Logistics & Supply Chain'
+          | 'Lubricants'
+          | 'Luxury Goods'
+          | 'Manufacturing'
+          | 'Marketing & Advertising'
+          | 'Materials Science'
+          | 'Media & Broadcasting'
+          | 'Mining'
+          | 'Non-Profit'
+          | 'Oil & Gas'
+          | 'Pharmaceuticals'
+          | 'Printing & Publishing'
+          | 'Property'
+          | 'Public Sector'
+          | 'Railway'
+          | 'Real Estate'
+          | 'Retail'
+          | 'Security'
+          | 'Shipping'
+          | 'Sports'
+          | 'Telecommunications'
+          | 'Textiles'
+          | 'Tourism'
+          | 'Transportation'
+          | 'Utilities'
         )
       | null;
   };
@@ -1663,26 +1729,26 @@ export interface Organization {
     /**
      * Select one or more options.
      */
-    prestige?: ('unknown' | 'emerging' | 'established' | 'prestigious' | 'iconic') | null;
+    prestige?: ('Unknown' | 'Emerging' | 'Established' | 'Prestigious' | 'Iconic') | null;
     /**
      * Select one or more options.
      */
     impact?:
       | (
-          | 'low'
-          | 'medium'
-          | 'deep'
-          | 'heavy'
-          | 'profound'
-          | 'rare'
-          | 'catastrophic'
-          | 'moderate'
-          | 'minor'
-          | 'negligible'
-          | 'major'
-          | 'severe'
-          | 'permanent'
-          | 'temporary'
+          | 'Low'
+          | 'Medium'
+          | 'Deep'
+          | 'Heavy'
+          | 'Profound'
+          | 'Rare'
+          | 'Catastrophic'
+          | 'Moderate'
+          | 'Minor'
+          | 'Negligible'
+          | 'Major'
+          | 'Severe'
+          | 'Permanent'
+          | 'Temporary'
         )
       | null;
     /**
@@ -1977,12 +2043,14 @@ export interface Driver {
               | (
                   | 'Twitter'
                   | 'Instagram'
+                  | 'Threads'
                   | 'Facebook'
                   | 'LinkedIn'
                   | 'TikTok'
                   | 'YouTube'
                   | 'Twitch'
                   | 'Discord'
+                  | 'Reddit'
                   | 'Telegram'
                   | 'WhatsApp'
                 )
@@ -2363,6 +2431,21 @@ export interface Car {
      * Select related document(s).
      */
     members?: (number | Member)[] | null;
+    /**
+     * Select one or more options.
+     */
+    technicalCategories?:
+      | (
+          | 'Power Unit / Engine'
+          | 'Chassis & Aerodynamics'
+          | 'Drivetrain & Transmission'
+          | 'Suspension & Steering'
+          | 'Electronic Systems / ECU'
+          | 'Tires & Wheels'
+          | 'Safety Equipment'
+          | 'Fuel & Lubricants'
+        )
+      | null;
     /**
      * Technical classifications
      */
@@ -2937,6 +3020,31 @@ export interface Regulation {
      */
     status?: ('Published' | 'Draft' | 'Archived') | null;
     /**
+     * Select one or more options.
+     */
+    type?:
+      | (
+          | 'Sporting & Competition'
+          | 'Technical & Engineering'
+          | 'Financial & Budgetary'
+          | 'Safety & Medical'
+          | 'Judicial & Disciplinary'
+          | 'Commercial & Media'
+        )
+      | null;
+    /**
+     * Select one or more options.
+     */
+    enforcement?:
+      | (
+          | 'Live Scrutineering'
+          | 'Post-Event Inspection'
+          | 'Telemetry Monitoring'
+          | 'Self-Declaration'
+          | 'Financial Audit'
+        )
+      | null;
+    /**
      * Enter text value.
      */
     code?: string | null;
@@ -3442,12 +3550,14 @@ export interface Leader {
               | (
                   | 'Twitter'
                   | 'Instagram'
+                  | 'Threads'
                   | 'Facebook'
                   | 'LinkedIn'
                   | 'TikTok'
                   | 'YouTube'
                   | 'Twitch'
                   | 'Discord'
+                  | 'Reddit'
                   | 'Telegram'
                   | 'WhatsApp'
                 )
@@ -9206,6 +9316,7 @@ export interface OrganizationsSelect<T extends boolean = true> {
         tagline?: T;
         description?: T;
         type?: T;
+        industry?: T;
       };
   details?:
     | T
@@ -9962,6 +10073,7 @@ export interface CarsSelect<T extends boolean = true> {
         history?: T;
         manufacturers?: T;
         members?: T;
+        technicalCategories?: T;
         classifications?:
           | T
           | {
@@ -10343,6 +10455,8 @@ export interface RegulationsSelect<T extends boolean = true> {
     | {
         description?: T;
         status?: T;
+        type?: T;
+        enforcement?: T;
         code?: T;
         version?: T;
         effective_date?: T;

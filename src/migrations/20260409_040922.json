@@ -11825,6 +11825,13 @@
           "primaryKey": false,
           "notNull": false
         },
+        "basics_industry": {
+          "name": "basics_industry",
+          "type": "enum_organizations_basics_industry",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
         "details_history": {
           "name": "details_history",
           "type": "jsonb",
@@ -11945,6 +11952,21 @@
           "columns": [
             {
               "expression": "basics_type",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "organizations_basics_basics_industry_idx": {
+          "name": "organizations_basics_basics_industry_idx",
+          "columns": [
+            {
+              "expression": "basics_industry",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -20665,6 +20687,13 @@
           "primaryKey": false,
           "notNull": false
         },
+        "details_technical_categories": {
+          "name": "details_technical_categories",
+          "type": "enum_cars_details_technical_categories",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
         "assets_avatar_id": {
           "name": "assets_avatar_id",
           "type": "integer",
@@ -20753,6 +20782,21 @@
           "columns": [
             {
               "expression": "details_status",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "cars_details_details_technical_categories_idx": {
+          "name": "cars_details_details_technical_categories_idx",
+          "columns": [
+            {
+              "expression": "details_technical_categories",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -25185,6 +25229,20 @@
           "primaryKey": false,
           "notNull": false
         },
+        "basics_type": {
+          "name": "basics_type",
+          "type": "enum_regulations_basics_type",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "basics_enforcement": {
+          "name": "basics_enforcement",
+          "type": "enum_regulations_basics_enforcement",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
         "basics_code": {
           "name": "basics_code",
           "type": "varchar",
@@ -25260,6 +25318,36 @@
           "columns": [
             {
               "expression": "basics_status",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "regulations_basics_basics_type_idx": {
+          "name": "regulations_basics_basics_type_idx",
+          "columns": [
+            {
+              "expression": "basics_type",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "regulations_basics_basics_enforcement_idx": {
+          "name": "regulations_basics_basics_enforcement_idx",
+          "columns": [
+            {
+              "expression": "basics_enforcement",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -48190,12 +48278,14 @@
       "values": [
         "Twitter",
         "Instagram",
+        "Threads",
         "Facebook",
         "LinkedIn",
         "TikTok",
         "YouTube",
         "Twitch",
         "Discord",
+        "Reddit",
         "Telegram",
         "WhatsApp"
       ]
@@ -48216,12 +48306,14 @@
       "values": [
         "Twitter",
         "Instagram",
+        "Threads",
         "Facebook",
         "LinkedIn",
         "TikTok",
         "YouTube",
         "Twitch",
         "Discord",
+        "Reddit",
         "Telegram",
         "WhatsApp"
       ]
@@ -48288,51 +48380,116 @@
       "name": "enum_organizations_basics_type",
       "schema": "public",
       "values": [
-        "sponsors",
-        "investors",
-        "partners",
-        "supporters",
-        "promoters",
-        "organizers",
-        "media",
-        "government",
+        "Sponsors",
+        "Investors",
+        "Partners",
+        "Supporters",
+        "Promoters",
+        "Organizers",
+        "Media",
+        "Government",
         "NGO",
-        "developers",
-        "distributors",
-        "retailers",
-        "manufacturers",
-        "suppliers"
+        "Developers",
+        "Distributors",
+        "Retailers",
+        "Manufacturers",
+        "Suppliers",
+        "Providers",
+        "Recipients",
+        "Others"
+      ]
+    },
+    "public.enum_organizations_basics_industry": {
+      "name": "enum_organizations_basics_industry",
+      "schema": "public",
+      "values": [
+        "Aerospace",
+        "Agriculture",
+        "AI & Machine Learning",
+        "Apparel & Fashion",
+        "Automotive",
+        "Banking & Finance",
+        "Betting & Gambling",
+        "Blockchain & Crypto",
+        "Chemicals",
+        "Cloud Computing",
+        "Construction",
+        "Consulting",
+        "Cybersecurity",
+        "Data Analytics",
+        "E-commerce",
+        "Education",
+        "Electronics",
+        "Energy & Utilities",
+        "Engineering",
+        "Entertainment",
+        "Environmental Services",
+        "Esports & Gaming",
+        "Event Management",
+        "Fitness & Wellness",
+        "Food & Beverage",
+        "Government",
+        "Healthcare",
+        "Hospitality",
+        "Human Resources",
+        "Insurance",
+        "Legal Services",
+        "Logistics & Supply Chain",
+        "Lubricants",
+        "Luxury Goods",
+        "Manufacturing",
+        "Marketing & Advertising",
+        "Materials Science",
+        "Media & Broadcasting",
+        "Mining",
+        "Non-Profit",
+        "Oil & Gas",
+        "Pharmaceuticals",
+        "Printing & Publishing",
+        "Property",
+        "Public Sector",
+        "Railway",
+        "Real Estate",
+        "Retail",
+        "Security",
+        "Shipping",
+        "Sports",
+        "Telecommunications",
+        "Textiles",
+        "Tourism",
+        "Transportation",
+        "Utilities"
       ]
     },
     "public.enum_organizations_details_prestige": {
       "name": "enum_organizations_details_prestige",
       "schema": "public",
       "values": [
-        "unknown",
-        "emerging",
-        "established",
-        "prestigious",
-        "iconic"
+        "Unknown",
+        "Emerging",
+        "Established",
+        "Prestigious",
+        "Iconic"
       ]
     },
     "public.enum_organizations_details_impact": {
       "name": "enum_organizations_details_impact",
       "schema": "public",
       "values": [
-        "low",
-        "medium",
-        "deep",
-        "heavy",
-        "profound",
-        "rare",
-        "catastrophic",
-        "moderate",
-        "minor",
-        "negligible",
-        "major",
-        "severe",
-        "permanent",
-        "temporary"
+        "Low",
+        "Medium",
+        "Deep",
+        "Heavy",
+        "Profound",
+        "Rare",
+        "Catastrophic",
+        "Moderate",
+        "Minor",
+        "Negligible",
+        "Major",
+        "Severe",
+        "Permanent",
+        "Temporary"
       ]
     },
     "public.enum_users_roles": {
@@ -48536,6 +48693,20 @@
         "Concept"
       ]
     },
+    "public.enum_cars_details_technical_categories": {
+      "name": "enum_cars_details_technical_categories",
+      "schema": "public",
+      "values": [
+        "Power Unit / Engine",
+        "Chassis & Aerodynamics",
+        "Drivetrain & Transmission",
+        "Suspension & Steering",
+        "Electronic Systems / ECU",
+        "Tires & Wheels",
+        "Safety Equipment",
+        "Fuel & Lubricants"
+      ]
+    },
     "public.enum_helmets_details_usage": {
       "name": "enum_helmets_details_usage",
       "schema": "public",
@@ -48686,6 +48857,29 @@
         "Published",
         "Draft",
         "Archived"
+      ]
+    },
+    "public.enum_regulations_basics_type": {
+      "name": "enum_regulations_basics_type",
+      "schema": "public",
+      "values": [
+        "Sporting & Competition",
+        "Technical & Engineering",
+        "Financial & Budgetary",
+        "Safety & Medical",
+        "Judicial & Disciplinary",
+        "Commercial & Media"
+      ]
+    },
+    "public.enum_regulations_basics_enforcement": {
+      "name": "enum_regulations_basics_enforcement",
+      "schema": "public",
+      "values": [
+        "Live Scrutineering",
+        "Post-Event Inspection",
+        "Telemetry Monitoring",
+        "Self-Declaration",
+        "Financial Audit"
       ]
     },
     "public.enum_statements_basics_status": {
@@ -49198,6 +49392,6 @@
     "tables": {},
     "columns": {}
   },
-  "id": "29bbdc7b-51fa-4ae7-ab38-fafadee1f2d2",
+  "id": "7202e86b-1452-426e-a557-6f64f1fd17a4",
   "prevId": "00000000-0000-0000-0000-000000000000"
 }

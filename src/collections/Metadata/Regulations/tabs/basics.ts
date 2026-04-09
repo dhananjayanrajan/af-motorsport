@@ -1,11 +1,11 @@
-import type { Field } from 'payload'
-import { dictionary } from '../sources/dictionary'
-import { textareaFieldFactory } from '@/fields/factories/fields/textareaField'
-import { selectFieldFactory } from '@/fields/factories/fields/selectField'
-import { textFieldFactory } from '@/fields/factories/fields/textField'
 import { dateFieldFactory } from '@/fields/factories/fields/dateField'
+import { selectFieldFactory } from '@/fields/factories/fields/selectField'
+import { textareaFieldFactory } from '@/fields/factories/fields/textareaField'
+import { textFieldFactory } from '@/fields/factories/fields/textField'
 import { uploadFieldFactory } from '@/fields/factories/fields/uploadField'
-import { REGULATION_STATUS } from '../sources/constants'
+import type { Field } from 'payload'
+import { REGULATION_ENFORCEMENT, REGULATION_STATUS, REGULATION_TYPES } from '../sources/constants'
+import { dictionary } from '../sources/dictionary'
 
 export const basicsFields: Field[] = [
   textareaFieldFactory({
@@ -20,6 +20,20 @@ export const basicsFields: Field[] = [
   selectFieldFactory({
     name: 'status',
     options: REGULATION_STATUS,
+    dictionary: dictionary.tabs.basics,
+    width: 1,
+    flags: ['index'],
+  }),
+  selectFieldFactory({
+    name: 'type',
+    options: REGULATION_TYPES,
+    dictionary: dictionary.tabs.basics,
+    width: 2,
+    flags: ['index'],
+  }),
+  selectFieldFactory({
+    name: 'enforcement',
+    options: REGULATION_ENFORCEMENT,
     dictionary: dictionary.tabs.basics,
     width: 2,
     flags: ['index'],
