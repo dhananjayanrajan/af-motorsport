@@ -96,7 +96,7 @@ export function MobileMenu({ menu, socials }: Props) {
                       href={item.link || '#'}
                       className={cn(
                         "flex items-center justify-between p-4 transition-all skew-x-[-12deg] border border-zinc-200 relative overflow-hidden",
-                        isActive ? "bg-black text-white border-black" : "bg-white text-zinc-950 hover:border-primary"
+                        isActive ? "bg-black text-white" : "bg-white text-zinc-950 hover:border-primary"
                       )}
                     >
                       {!isActive && (

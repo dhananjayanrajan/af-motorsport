@@ -1,3 +1,4 @@
+// @/components/Custom/ui/ClippedButton.tsx
 'use client'
 
 import { Button } from '@/components/ui/button'
@@ -37,8 +38,8 @@ export const ClippedButton = ({
   return (
     <div className={cn('group relative inline-block w-full sm:w-auto z-50 cursor-pointer pointer-events-auto', size === 'full' && 'w-full', className)}>
       <div
-        className={`absolute inset-0 blur-[30px] opacity-0 group-hover:opacity-100 transition-opacity ${DESIGN_SYSTEM.ANIMATION.DURATION_GLOW} rounded-full scale-95 pointer-events-none`}
-        style={{ backgroundColor: `${DESIGN_SYSTEM.COLORS.PRIMARY}26` }}
+        className={`absolute inset-0 blur-[25px] opacity-0 group-hover:opacity-40 transition-opacity ${DESIGN_SYSTEM.ANIMATION.DURATION_GLOW} scale-110 pointer-events-none`}
+        style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY }}
       />
 
       <Button
@@ -47,7 +48,7 @@ export const ClippedButton = ({
           `relative w-full sm:w-auto uppercase ${DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_DEFAULT} font-black transition-all ${DESIGN_SYSTEM.ANIMATION.DURATION_BASE} rounded-none overflow-hidden border-none cursor-pointer z-10`,
           sizeStyles[size],
           isOutline
-            ? 'bg-transparent text-zinc-400 border border-zinc-200'
+            ? 'bg-zinc-950/20 text-zinc-400 border border-zinc-800 backdrop-blur-md'
             : 'text-white'
         )}
         style={{
@@ -56,37 +57,32 @@ export const ClippedButton = ({
         }}
         {...props}
       >
-        <span
+        <div
           className={cn(
-            `absolute inset-0 translate-x-[-101%] group-hover:translate-x-0 transition-transform ${DESIGN_SYSTEM.ANIMATION.DURATION_BASE} ease-[${DESIGN_SYSTEM.ANIMATION.EASING_CUBIC}]`,
-            isOutline ? 'bg-black' : 'bg-white'
+            `absolute inset-0 translate-y-[101%] group-hover:translate-y-0 transition-transform ${DESIGN_SYSTEM.ANIMATION.DURATION_BASE} ease-[${DESIGN_SYSTEM.ANIMATION.EASING_CUBIC}]`,
+            isOutline ? 'bg-white' : 'bg-black'
           )}
-          style={{ clipPath: DESIGN_SYSTEM.SHAPES.DIAMOND_CLIP }}
         />
 
         <span
           className={cn(
-            `relative z-20 transition-all ${DESIGN_SYSTEM.ANIMATION.DURATION_SLOW} group-hover:italic flex items-center justify-center gap-2`,
+            `relative z-20 transition-colors ${DESIGN_SYSTEM.ANIMATION.DURATION_BASE} flex items-center justify-center gap-2`,
             isOutline
-              ? 'group-hover:text-white'
-              : 'group-hover:text-black'
+              ? 'group-hover:text-black'
+              : 'group-hover:text-white'
           )}
-          style={{
-            color: isOutline ? undefined : 'white',
-            textShadow: isOutline ? 'none' : '0 0 10px rgba(0,0,0,0.2)'
-          }}
         >
           {children || label}
         </span>
-      </Button>
 
-      <div
-        className={`absolute -bottom-1 left-1/2 -translate-x-1/2 w-0 group-hover:w-1/2 h-[1px] transition-all ${DESIGN_SYSTEM.ANIMATION.DURATION_BASE} opacity-0 group-hover:opacity-100 z-30`}
-        style={{
-          backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY,
-          boxShadow: `0 0 15px ${DESIGN_SYSTEM.COLORS.PRIMARY}`
-        }}
-      />
+        <div
+          className={cn(
+            "absolute inset-0 border-2 pointer-events-none transition-opacity duration-300",
+            isOutline ? "border-zinc-700 opacity-50 group-hover:opacity-100" : "border-white/20 opacity-100"
+          )}
+          style={{ clipPath: DESIGN_SYSTEM.SHAPES.DIAMOND_CLIP }}
+        />
+      </Button>
     </div>
   )
 }

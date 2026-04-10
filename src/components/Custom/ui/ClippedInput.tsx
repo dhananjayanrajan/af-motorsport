@@ -15,17 +15,14 @@ const diamondClip = 'polygon(5% 0%, 95% 0%, 100% 50%, 95% 100%, 5% 100%, 0% 50%)
 
 export const ClippedInput = React.forwardRef<HTMLInputElement, ClippedInputProps>(
   ({ containerClassName, className, error, valid, value, defaultValue, ...props }, ref) => {
-    const isFilled = (value !== undefined && value !== '') || (defaultValue !== undefined && defaultValue !== '')
-
     return (
       <div className={cn('group relative w-full max-w-md', containerClassName)}>
         <div
           className={cn(
             `relative overflow-hidden h-14 transition-all ${DESIGN_SYSTEM.ANIMATION.DURATION_SLOW}`,
-            'bg-zinc-100 group-focus-within:bg-white',
-            error && 'bg-red-50',
-            valid && !error && `bg-[${DESIGN_SYSTEM.COLORS.PRIMARY}]/5`,
-            props.disabled && 'bg-zinc-200 opacity-50'
+            'bg-zinc-200/50 dark:bg-zinc-800/50 group-focus-within:bg-zinc-100 dark:group-focus-within:bg-zinc-900 backdrop-blur-md',
+            error && 'bg-red-500/10',
+            props.disabled && 'opacity-30'
           )}
           style={{ clipPath: diamondClip }}
         >
@@ -35,36 +32,34 @@ export const ClippedInput = React.forwardRef<HTMLInputElement, ClippedInputProps
             defaultValue={defaultValue}
             className={cn(
               `w-full h-full bg-transparent px-10 text-[12px] uppercase tracking-[0.2em] font-bold outline-none`,
-              'placeholder:text-zinc-400 disabled:cursor-not-allowed',
-              isFilled ? 'text-black' : 'text-zinc-600',
-              error && 'text-red-600',
-              valid && !error && `text-black`,
+              'placeholder:text-zinc-500 text-black dark:text-white',
+              error && 'text-red-500',
               className
             )}
             {...props}
           />
+
           <div
-            className={cn(
-              `absolute inset-0 border-2 pointer-events-none transition-colors ${DESIGN_SYSTEM.ANIMATION.DURATION_SLOW}`,
-              'border-zinc-200 group-focus-within:border-black',
-              error && 'border-red-600',
-              valid && !error && `border-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`
-            )}
+            className="absolute inset-0 pointer-events-none border border-black/[0.08] dark:border-white/[0.08]"
             style={{ clipPath: diamondClip }}
           />
-        </div>
 
-        <div
-          className={cn(
-            'absolute -bottom-1 left-1/2 -translate-x-1/2 h-[2px] transition-all duration-500',
-            error ? 'w-2/3 bg-red-600 shadow-[0_0_12px_rgba(220,38,38,0.4)] opacity-100' :
-              valid ? `w-2/3 bg-[${DESIGN_SYSTEM.COLORS.PRIMARY}] shadow-[0_0_12px_rgba(0,255,65,0.4)] opacity-100` :
-                `w-0 bg-black group-focus-within:w-1/2 opacity-0 group-focus-within:opacity-100`
-          )}
-        />
+          <div
+            className={cn(
+              "absolute bottom-0 left-0 h-[4px] w-full transition-transform duration-500 ease-out translate-x-[-100%] group-focus-within:translate-x-0",
+              error ? "bg-red-500 shadow-[0_0_15px_rgba(239,68,68,0.5)]" :
+                valid ? `bg-[${DESIGN_SYSTEM.COLORS.PRIMARY}] shadow-[0_0_15px_${DESIGN_SYSTEM.COLORS.PRIMARY}80]` :
+                  "bg-black dark:bg-white shadow-[0_0_15px_rgba(255,255,255,0.3)]"
+            )}
+          />
+
+          <div
+            className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-r from-transparent via-white/10 dark:via-white/5 to-transparent -translate-x-full group-hover:translate-x-full"
+            style={{ transitionDuration: '1s' }}
+          />
+        </div>
       </div>
     )
   }
 )
-
 ClippedInput.displayName = 'ClippedInput'
