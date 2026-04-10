@@ -1,16 +1,18 @@
 'use client'
 
-import React, { useEffect, useState, useMemo } from 'react'
+import {
+  Camera,
+  ChevronRight,
+  Disc, Facebook, Github, Instagram, Link2, Linkedin,
+  LogOut, MenuIcon,
+  MessageCircle, Music, Phone, Send, Twitch, Twitter,
+  User,
+  Youtube
+} from 'lucide-react'
 import Link from 'next/link'
 import { usePathname, useSearchParams } from 'next/navigation'
-import {
-  ChevronRight, LogOut, MenuIcon,
-  Camera, Disc, Facebook, Github, Instagram, Link2, Linkedin,
-  MessageCircle, Music, Phone, Send, Twitch, Twitter, Youtube,
-  User, LogIn
-} from 'lucide-react'
+import React, { useEffect, useMemo, useState } from 'react'
 
-import { CMSLink } from '@/components/Link'
 import {
   Sheet,
   SheetContent,
@@ -83,9 +85,9 @@ export function MobileMenu({ menu, socials }: Props) {
           </div>
         </SheetHeader>
 
-        <nav className="flex-1 overflow-y-auto py-4 overflow-x-hidden">
+        <nav className="flex-1 overflow-y-auto py-6 overflow-x-hidden">
           {menu?.length ? (
-            <ul className="flex flex-col gap-2 px-6">
+            <ul className="flex flex-col gap-3 px-8">
               {menu.map((item: any) => {
                 const isActive = item.link && (item.link === '/' ? pathname === '/' : pathname.startsWith(item.link))
                 return (
@@ -119,7 +121,7 @@ export function MobileMenu({ menu, socials }: Props) {
         </nav>
 
         <div className="p-8 bg-zinc-50 border-t border-zinc-200">
-          <div className="grid gap-3 mb-8">
+          <div className="grid gap-3 mb-8 px-2">
             {user ? (
               <div className="flex flex-col gap-2">
                 <Link

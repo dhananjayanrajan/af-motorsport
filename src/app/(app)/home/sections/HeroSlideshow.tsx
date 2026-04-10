@@ -3,7 +3,7 @@
 import { ClippedButton } from '@/components/Custom/ui/ClippedButton';
 import { DESIGN_SYSTEM } from '@/lib/constants';
 import { Slide } from '@/payload-types';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, motion, Variants } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Pause, Play } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 import dummyData from '../dummy.json';
@@ -17,40 +17,46 @@ export default function HeroSlideshow({ slides }: HeroSlideshowProps) {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isAutoPlaying, setIsAutoPlaying] = useState(true);
     const [direction, setDirection] = useState(0);
-    const [keyPressed, setKeyPressed] = useState<string | null>(null);
 
-    const slideVariants = {
+    const slideVariants: Variants = {
         enter: (direction: number) => ({
-            x: direction > 0 ? '100%' : '-100%',
-            opacity: 0
+            clipPath: direction > 0 ? 'inset(0 0 0 100%)' : 'inset(0 100% 0 0)',
+            filter: 'brightness(1.5)',
+            scale: 1.1
         }),
         center: {
-            x: 0,
-            opacity: 1
+            clipPath: 'inset(0 0 0 0%)',
+            filter: 'brightness(1)',
+            scale: 1,
+            transition: {
+                clipPath: { duration: 0.8, ease: [0.87, 0, 0.13, 1] },
+                filter: { duration: 1 },
+                scale: { duration: 1.2 }
+            }
         },
         exit: (direction: number) => ({
-            x: direction < 0 ? '100%' : '-100%',
-            opacity: 0
+            clipPath: direction < 0 ? 'inset(0 0 0 100%)' : 'inset(0 100% 0 0)',
+            filter: 'brightness(0.5)',
+            scale: 0.95,
+            transition: {
+                clipPath: { duration: 0.8, ease: [0.87, 0, 0.13, 1] }
+            }
         })
     };
 
     const handleKeyDown = useCallback((e: KeyboardEvent) => {
-        setKeyPressed(e.key);
         if (e.key === 'ArrowLeft') {
             setDirection(-1);
             setCurrentIndex((prev) => (prev - 1 + displaySlides.length) % displaySlides.length);
             setIsAutoPlaying(false);
-            setTimeout(() => setIsAutoPlaying(true), 8000);
         } else if (e.key === 'ArrowRight') {
             setDirection(1);
             setCurrentIndex((prev) => (prev + 1) % displaySlides.length);
             setIsAutoPlaying(false);
-            setTimeout(() => setIsAutoPlaying(true), 8000);
-        } else if (e.key === ' ' || e.key === 'Space') {
+        } else if (e.key === ' ') {
             e.preventDefault();
             setIsAutoPlaying(prev => !prev);
         }
-        setTimeout(() => setKeyPressed(null), 200);
     }, [displaySlides.length]);
 
     useEffect(() => {
@@ -63,7 +69,7 @@ export default function HeroSlideshow({ slides }: HeroSlideshowProps) {
         const interval = setInterval(() => {
             setDirection(1);
             setCurrentIndex((prev) => (prev + 1) % displaySlides.length);
-        }, 5000);
+        }, 6000);
         return () => clearInterval(interval);
     }, [isAutoPlaying, displaySlides.length]);
 
@@ -71,205 +77,186 @@ export default function HeroSlideshow({ slides }: HeroSlideshowProps) {
         setDirection(index > currentIndex ? 1 : -1);
         setCurrentIndex(index);
         setIsAutoPlaying(false);
-        setTimeout(() => setIsAutoPlaying(true), 8000);
     };
 
     const nextSlide = () => {
         setDirection(1);
         setCurrentIndex((prev) => (prev + 1) % displaySlides.length);
         setIsAutoPlaying(false);
-        setTimeout(() => setIsAutoPlaying(true), 8000);
     };
 
     const prevSlide = () => {
         setDirection(-1);
         setCurrentIndex((prev) => (prev - 1 + displaySlides.length) % displaySlides.length);
         setIsAutoPlaying(false);
-        setTimeout(() => setIsAutoPlaying(true), 8000);
     };
 
     const currentSlide = displaySlides[currentIndex];
     const backgroundId = typeof currentSlide.assets?.background === 'number'
         ? currentSlide.assets.background
-        : (currentIndex + 10);
+        : (currentIndex + 15);
 
     return (
-        <section
-            className="relative w-full h-screen overflow-hidden"
-            style={{ backgroundColor: DESIGN_SYSTEM.COLORS.BLACK }}
-        >
-            {/* Background Image with Smooth Transition */}
-            <AnimatePresence mode="wait" custom={direction}>
+        <section className="relative w-full h-screen overflow-hidden bg-white">
+            <AnimatePresence initial={false} custom={direction} mode="popLayout">
                 <motion.div
                     key={currentIndex}
                     custom={direction}
-                    variants={{
-                        enter: (direction: number) => ({
-                            x: direction > 0 ? '100%' : '-100%',
-                            opacity: 0
-                        }),
-                        center: {
-                            x: 0,
-                            opacity: 1
-                        },
-                        exit: (direction: number) => ({
-                            x: direction < 0 ? '100%' : '-100%',
-                            opacity: 0
-                        })
-                    }}
+                    variants={slideVariants}
                     initial="enter"
                     animate="center"
                     exit="exit"
-                    transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
                     className="absolute inset-0 z-0"
                 >
                     <img
                         src={`https://picsum.photos/id/${backgroundId}/1920/1080`}
-                        alt={currentSlide.name || 'Background'}
+                        alt={currentSlide.name || 'AF Motorsport'}
                         className="w-full h-full object-cover"
                     />
                     <div
-                        className="absolute inset-0"
-                        style={{
-                            background: `linear-gradient(135deg, ${DESIGN_SYSTEM.COLORS.BLACK} 0%, ${DESIGN_SYSTEM.COLORS.BLACK}40 30%, transparent 60%, ${DESIGN_SYSTEM.COLORS.BLACK} 100%)`,
-                            opacity: 0.7
-                        }}
+                        className="absolute inset-0 pointer-events-none"
+                        style={{ background: DESIGN_SYSTEM.EFFECTS.MEDIA_OVERLAY }}
                     />
                 </motion.div>
             </AnimatePresence>
 
-            {/* Primary Color Accent Lines */}
-            <div className="absolute top-0 left-0 w-full h-0.5 z-30" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY }} />
+            <div className="relative z-10 h-full w-full flex flex-col justify-center px-8 md:px-24">
+                <div className="max-w-[1440px] w-full mx-auto">
+                    <motion.div
+                        key={`content-${currentIndex}`}
+                        initial={{ opacity: 0, x: -50 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.6, delay: 0.2 }}
+                        className="space-y-8"
+                    >
+                        <div className="flex items-center gap-4">
+                            <div className="h-[2px] w-12" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY }} />
+                            <span
+                                className={`text-sm font-bold ${DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_XL} uppercase`}
+                                style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }}
+                            >
+                                AF MOTORSPORT SERIES
+                            </span>
+                        </div>
 
-            {/* Content at Bottom Center with Dark Background Panel */}
-            <div className="absolute bottom-24 left-0 right-0 z-10">
-                <div className="flex flex-col items-center justify-center text-center px-4 max-w-4xl mx-auto">
-                    <AnimatePresence mode="wait" custom={direction}>
-                        <motion.div
-                            key={currentIndex}
-                            custom={direction}
-                            variants={slideVariants}
-                            initial="enter"
-                            animate="center"
-                            exit="exit"
-                            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-                            className="w-full"
+                        <h1
+                            className={`text-5xl md:text-7xl lg:text-8xl font-black uppercase leading-[0.9] max-w-5xl ${DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_DEFAULT}`}
+                            style={{ color: DESIGN_SYSTEM.COLORS.WHITE }}
                         >
-                            <motion.h1
-                                className="text-2xl md:text-3xl lg:text-4xl font-black uppercase tracking-tighter"
-                                style={{ color: DESIGN_SYSTEM.COLORS.WHITE }}
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 0.2, duration: 0.5 }}
-                            >
-                                {currentSlide.name}
-                            </motion.h1>
+                            {currentSlide.name}
+                        </h1>
 
-                            {currentSlide.basics?.description && (
-                                <motion.p
-                                    className="mt-3 text-sm md:text-base max-w-2xl mx-auto font-light leading-relaxed"
-                                    style={{ color: DESIGN_SYSTEM.COLORS.ZINC_200 }}
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: 0.3, duration: 0.5 }}
-                                >
-                                    {currentSlide.basics.description}
-                                </motion.p>
-                            )}
+                        <p
+                            className="text-lg md:text-xl max-w-xl font-medium leading-relaxed"
+                            style={{ color: DESIGN_SYSTEM.COLORS.ZINC_200 }}
+                        >
+                            {currentSlide.basics?.description}
+                        </p>
 
-                            <motion.div
-                                className="mt-6 flex flex-wrap justify-center gap-3"
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 0.4, duration: 0.5 }}
-                            >
-                                <ClippedButton
-                                    variant="primary"
-                                    size="md"
-                                    label="EXPLORE SERIES"
-                                    onClick={() => console.log('Explore Series')}
-                                />
-                                <ClippedButton
-                                    variant="outline"
-                                    size="md"
-                                    label="LATEST RESULTS"
-                                    onClick={() => console.log('Latest Results')}
-                                />
-                            </motion.div>
-                        </motion.div>
-                    </AnimatePresence>
+                        <div className="flex flex-wrap gap-6 pt-4">
+                            <ClippedButton
+                                variant="primary"
+                                size="lg"
+                                label="EXPLORE DATA"
+                                onClick={() => { }}
+                            />
+                            <ClippedButton
+                                variant="outline"
+                                size="lg"
+                                label="VIEW SCHEDULE"
+                                onClick={() => { }}
+                            />
+                        </div>
+                    </motion.div>
                 </div>
             </div>
 
-            {/* Navigation Arrows with Dark Background */}
-            <button
-                onClick={prevSlide}
-                className="absolute left-6 md:left-10 top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center transition-all duration-300 hover:opacity-100 opacity-70 group bg-black/30 backdrop-blur-sm rounded-full"
-                style={{ color: DESIGN_SYSTEM.COLORS.WHITE }}
-                aria-label="Previous slide"
-            >
-                <ChevronLeft size={28} className="group-hover:-translate-x-0.5 transition-transform" />
-            </button>
+            <div className="absolute top-0 right-0 bottom-0 w-32 hidden lg:flex flex-col items-center justify-center gap-8 z-20 border-l border-white/10 backdrop-blur-md bg-white/5">
+                <button
+                    onClick={prevSlide}
+                    className="p-4 transition-colors hover:scale-110 active:scale-95"
+                    style={{ color: DESIGN_SYSTEM.COLORS.WHITE }}
+                >
+                    <ChevronLeft size={32} strokeWidth={1.5} />
+                </button>
 
-            <button
-                onClick={nextSlide}
-                className="absolute right-6 md:right-10 top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center transition-all duration-300 hover:opacity-100 opacity-70 group bg-black/30 backdrop-blur-sm rounded-full"
-                style={{ color: DESIGN_SYSTEM.COLORS.WHITE }}
-                aria-label="Next slide"
-            >
-                <ChevronRight size={28} className="group-hover:translate-x-0.5 transition-transform" />
-            </button>
+                <div className="flex flex-col gap-4">
+                    {displaySlides.map((_, idx) => (
+                        <button
+                            key={idx}
+                            onClick={() => goToSlide(idx)}
+                            className="group relative flex items-center justify-center p-2"
+                        >
+                            <div
+                                className="transition-all duration-300"
+                                style={{
+                                    height: idx === currentIndex ? '24px' : '8px',
+                                    width: '2px',
+                                    backgroundColor: idx === currentIndex ? DESIGN_SYSTEM.COLORS.PRIMARY : DESIGN_SYSTEM.COLORS.ZINC_500
+                                }}
+                            />
+                        </button>
+                    ))}
+                </div>
 
-            {/* Pagination Dots */}
-            <div className="absolute bottom-6 left-0 right-0 z-20 flex justify-center gap-2">
-                {displaySlides.map((_, idx) => (
+                <button
+                    onClick={nextSlide}
+                    className="p-4 transition-colors hover:scale-110 active:scale-95"
+                    style={{ color: DESIGN_SYSTEM.COLORS.WHITE }}
+                >
+                    <ChevronRight size={32} strokeWidth={1.5} />
+                </button>
+            </div>
+
+            <div className="absolute bottom-0 left-0 right-0 h-24 px-8 md:px-24 flex items-center justify-between z-20 border-t border-white/10 backdrop-blur-xl bg-black/20">
+                <div className="flex items-baseline gap-2">
+                    <span className="text-4xl font-black italic" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }}>
+                        {String(currentIndex + 1).padStart(2, '0')}
+                    </span>
+                    <span className="text-sm font-bold opacity-40" style={{ color: DESIGN_SYSTEM.COLORS.WHITE }}>
+                        / {String(displaySlides.length).padStart(2, '0')}
+                    </span>
+                </div>
+
+                <div className="flex items-center gap-12">
                     <button
-                        key={idx}
-                        onClick={() => goToSlide(idx)}
-                        className="transition-all duration-300 rounded-full"
-                        style={{
-                            backgroundColor: idx === currentIndex ? DESIGN_SYSTEM.COLORS.PRIMARY : DESIGN_SYSTEM.COLORS.ZINC_400,
-                            width: idx === currentIndex ? 32 : 6,
-                            height: 2,
-                        }}
-                        aria-label={`Go to slide ${idx + 1}`}
-                    />
-                ))}
-            </div>
-
-            {/* Slide Counter */}
-            <div className="absolute bottom-6 left-6 md:left-10 z-20">
-                <span className="text-xs font-mono tracking-wider" style={{ color: DESIGN_SYSTEM.COLORS.ZINC_300 }}>
-                    {String(currentIndex + 1).padStart(2, '0')} / {String(displaySlides.length).padStart(2, '0')}
-                </span>
-            </div>
-
-            {/* Auto-Play Toggle */}
-            <button
-                onClick={() => setIsAutoPlaying(!isAutoPlaying)}
-                className="absolute bottom-6 right-6 md:right-10 z-20 w-8 h-8 flex items-center justify-center transition-all duration-300 hover:opacity-100 opacity-70 bg-black/30 backdrop-blur-sm rounded-full"
-                style={{ color: DESIGN_SYSTEM.COLORS.WHITE }}
-                aria-label={isAutoPlaying ? 'Pause' : 'Play'}
-            >
-                {isAutoPlaying ? <Pause size={14} /> : <Play size={14} />}
-            </button>
-
-            {/* Keyboard Key Press Indicator */}
-            <AnimatePresence>
-                {keyPressed && (
-                    <motion.div
-                        className="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 pointer-events-none"
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: 10 }}
-                        transition={{ duration: 0.15 }}
+                        onClick={() => setIsAutoPlaying(!isAutoPlaying)}
+                        className="flex items-center gap-3 group"
+                        style={{ color: DESIGN_SYSTEM.COLORS.WHITE }}
                     >
-                        <div className="px-3 py-1.5 text-xs font-mono font-bold bg-black/80 backdrop-blur-sm" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY, border: `1px solid ${DESIGN_SYSTEM.COLORS.PRIMARY}` }}>
-                            {keyPressed === ' ' ? 'SPACE' : keyPressed.toUpperCase()}
+                        <div className="w-10 h-10 flex items-center justify-center rounded-full border border-white/20 group-hover:border-primary transition-colors">
+                            {isAutoPlaying ? <Pause size={16} fill="currentColor" /> : <Play size={16} fill="currentColor" />}
                         </div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
+                        <span className={`text-xs font-bold ${DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_XL}`}>
+                            {isAutoPlaying ? 'PAUSE ENGINE' : 'START AUTO'}
+                        </span>
+                    </button>
+                </div>
+
+                <div className="hidden md:block">
+                    <div
+                        className="h-1 bg-white/10 overflow-hidden"
+                        style={{ width: '200px' }}
+                    >
+                        <motion.div
+                            key={`progress-${currentIndex}-${isAutoPlaying}`}
+                            initial={{ x: '-100%' }}
+                            animate={{ x: '0%' }}
+                            transition={{
+                                duration: isAutoPlaying ? 6 : 0,
+                                ease: 'linear'
+                            }}
+                            className="h-full w-full"
+                            style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY }}
+                        />
+                    </div>
+                </div>
+            </div>
+
+            <div
+                className="absolute top-0 left-0 h-full w-1 z-30"
+                style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY }}
+            />
         </section>
     );
 }

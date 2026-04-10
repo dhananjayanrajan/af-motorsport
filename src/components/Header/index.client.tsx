@@ -1,28 +1,27 @@
 'use client'
 
-import React, { Suspense, useState, useMemo } from 'react'
+import {
+  ArrowRight,
+  Facebook,
+  Github,
+  Instagram,
+  Link2,
+  Linkedin,
+  LogOut,
+  Twitter,
+  User,
+  Youtube
+} from 'lucide-react'
+import { AnimatePresence, motion } from 'motion/react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { motion, AnimatePresence } from 'motion/react'
-import {
-  Link2,
-  Instagram,
-  Twitter,
-  Facebook,
-  Youtube,
-  Linkedin,
-  Github,
-  ShoppingCart,
-  ArrowRight,
-  User,
-  LogOut
-} from 'lucide-react'
+import React, { Suspense, useMemo, useState } from 'react'
 
 import { Cart } from '@/components/Cart'
+import { ClippedButton } from '@/components/Custom/ui/ClippedButton'
 import { CMSLink } from '@/components/Link'
 import { LogoIcon } from '@/components/icons/logo'
 import { MobileMenu } from './MobileMenu'
-import { ClippedButton } from '@/components/Custom/ui/ClippedButton'
 
 import { DESIGN_SYSTEM } from '@/lib/constants'
 import { useAuth } from '@/providers/Auth'
@@ -48,7 +47,7 @@ const NavItem = ({ item }: { item: any }) => {
     <Link
       href={item.link || '#'}
       className={cn(
-        'relative h-full px-8 flex items-center justify-center transition-all duration-300 group skew-x-[-15deg] border-r border-zinc-200 pointer-events-auto overflow-hidden',
+        'relative h-full px-10 flex items-center justify-center transition-all duration-300 group skew-x-[-15deg] border-r border-zinc-200 pointer-events-auto overflow-hidden',
         isActive ? 'text-white bg-black' : 'text-zinc-950 hover:text-black hover:italic'
       )}
       style={{
@@ -144,11 +143,11 @@ export function HeaderClient({ header, socials }: { header: Header; socials: Soc
   const socialAccounts = useMemo(() => socials?.accounts?.filter((a: any) => a.visible !== false) || [], [socials?.accounts])
 
   return (
-    <div className="sticky top-0 left-0 w-full z-[9999] bg-white">
+    <div className="sticky top-0 left-0 w-full z-[9999] bg-white overflow-x-hidden">
       <div className="w-full h-1 bg-primary relative z-[100]" />
 
       <header
-        className="w-full h-16 flex items-stretch border-b relative"
+        className="w-full h-16 flex items-stretch border-b relative overflow-hidden"
         style={{ backgroundColor: DESIGN_SYSTEM.COLORS.WHITE, borderColor: DESIGN_SYSTEM.COLORS.ZINC_200 }}
       >
         <div className="flex md:hidden w-full items-center justify-between px-4 bg-white z-50">
@@ -158,7 +157,7 @@ export function HeaderClient({ header, socials }: { header: Header; socials: Soc
         </div>
 
         <div
-          className="hidden md:flex items-center px-12 border-r relative skew-x-[-15deg] -ml-4 bg-white z-20 pointer-events-auto"
+          className="hidden md:flex items-center px-12 border-r relative skew-x-[-15deg] -ml-6 bg-white z-20 pointer-events-auto"
           style={{ borderRightColor: DESIGN_SYSTEM.COLORS.ZINC_200 }}
         >
           <Link href="/" className="skew-x-[15deg] relative z-10 flex items-center justify-center">
@@ -167,7 +166,7 @@ export function HeaderClient({ header, socials }: { header: Header; socials: Soc
         </div>
 
         <div className="hidden md:flex flex-1 items-center justify-between min-w-0">
-          <nav className="flex h-full items-stretch px-8 pointer-events-auto overflow-visible">
+          <nav className="flex h-full items-stretch px-4 pointer-events-auto overflow-visible">
             <div className="flex h-full items-stretch border-l border-zinc-200">
               {navItems.map((item: any) => (
                 <NavItem key={item.id} item={item} />
