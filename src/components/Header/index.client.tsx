@@ -47,7 +47,7 @@ const NavItem = ({ item }: { item: any }) => {
     <Link
       href={item.link || '#'}
       className={cn(
-        'relative h-full px-10 flex items-center justify-center transition-all duration-300 group skew-x-[-15deg] border-r border-zinc-200 pointer-events-auto overflow-hidden',
+        'relative h-full px-4 lg:px-5 flex items-center justify-center transition-all duration-300 group skew-x-[-12deg] border-r border-zinc-200 pointer-events-auto overflow-hidden',
         isActive ? 'text-white bg-black' : 'text-zinc-950 hover:text-black hover:italic'
       )}
       style={{
@@ -59,8 +59,8 @@ const NavItem = ({ item }: { item: any }) => {
         style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY }}
       />
 
-      <div className="skew-x-[15deg] flex items-center justify-center relative z-10">
-        <span className="font-black uppercase italic tracking-[0.1em] text-[11px] whitespace-nowrap transition-all duration-300 group-hover:[text-shadow:0_0_12px_rgba(0,255,65,0.5)]">
+      <div className="skew-x-[12deg] flex items-center justify-center relative z-10">
+        <span className="font-black uppercase italic tracking-tight lg:tracking-normal text-[12px] whitespace-nowrap transition-all duration-300 group-hover:[text-shadow:0_0_12px_rgba(0,255,65,0.5)]">
           {item.label}
         </span>
       </div>
@@ -74,17 +74,17 @@ const AuthComboButton = () => {
 
   return (
     <div
-      className="hidden md:flex items-center h-10 relative z-[100] pointer-events-auto"
+      className="hidden md:flex items-center h-9 relative z-[100] pointer-events-auto flex-shrink-0"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       <div
-        className="group relative flex items-center h-full min-w-[130px] border skew-x-[-15deg] overflow-hidden transition-all duration-200 bg-white"
+        className="group relative flex items-center h-full min-w-[100px] border skew-x-[-12deg] overflow-hidden transition-all duration-200 bg-white"
         style={{ borderColor: DESIGN_SYSTEM.COLORS.ZINC_300 }}
       >
-        <div className="flex w-full items-center justify-center gap-2 px-4 z-10 skew-x-[15deg]">
+        <div className="flex w-full items-center justify-center gap-2 px-3 z-10 skew-x-[12deg]">
           {user ? <User className="h-3 w-3 text-zinc-950" /> : <div className="w-1.5 h-1.5 bg-zinc-400 rounded-full" />}
-          <span className="text-[10px] font-black uppercase tracking-widest text-zinc-950">
+          <span className="text-[10px] font-black uppercase tracking-tight text-zinc-950">
             {user ? 'ACCOUNT' : 'LOGIN'}
           </span>
         </div>
@@ -105,13 +105,13 @@ const AuthComboButton = () => {
                     href="/account"
                     className="flex-1 flex items-center justify-center h-full hover:bg-black/10 transition-colors border-r border-black/10"
                   >
-                    <span className="skew-x-[15deg] text-[9px] font-black text-black italic">PROFILE</span>
+                    <span className="skew-x-[12deg] text-[9px] font-black text-black italic">PROFILE</span>
                   </Link>
                   <button
                     onClick={(e) => { e.preventDefault(); logout(); }}
                     className="flex-1 flex items-center justify-center h-full hover:bg-black transition-colors group/exit"
                   >
-                    <LogOut className="skew-x-[15deg] h-3 w-3 text-black group-hover/exit:text-white" />
+                    <LogOut className="skew-x-[12deg] h-3 w-3 text-black group-hover/exit:text-white" />
                   </button>
                 </div>
               ) : (
@@ -120,13 +120,13 @@ const AuthComboButton = () => {
                     href="/login"
                     className="flex-1 flex items-center justify-center h-full hover:bg-black/10 transition-colors border-r border-black/10"
                   >
-                    <span className="skew-x-[15deg] text-[9px] font-black text-black italic">IN</span>
+                    <span className="skew-x-[12deg] text-[9px] font-black text-black italic">IN</span>
                   </Link>
                   <Link
                     href="/create-account"
                     className="flex-1 flex items-center justify-center h-full transition-all hover:bg-black/10"
                   >
-                    <span className="skew-x-[15deg] text-[9px] font-black text-black italic">JOIN</span>
+                    <span className="skew-x-[12deg] text-[9px] font-black text-black italic">JOIN</span>
                   </Link>
                 </div>
               )}
@@ -143,11 +143,11 @@ export function HeaderClient({ header, socials }: { header: Header; socials: Soc
   const socialAccounts = useMemo(() => socials?.accounts?.filter((a: any) => a.visible !== false) || [], [socials?.accounts])
 
   return (
-    <div className="sticky top-0 left-0 w-full z-[9999] bg-white overflow-x-hidden">
+    <div className="sticky top-0 left-0 w-full z-[9999] bg-white">
       <div className="w-full h-1 bg-primary relative z-[100]" />
 
       <header
-        className="w-full h-16 flex items-stretch border-b relative overflow-hidden"
+        className="w-full h-16 flex items-stretch border-b relative"
         style={{ backgroundColor: DESIGN_SYSTEM.COLORS.WHITE, borderColor: DESIGN_SYSTEM.COLORS.ZINC_200 }}
       >
         <div className="flex md:hidden w-full items-center justify-between px-4 bg-white z-50">
@@ -157,16 +157,16 @@ export function HeaderClient({ header, socials }: { header: Header; socials: Soc
         </div>
 
         <div
-          className="hidden md:flex items-center px-12 border-r relative skew-x-[-15deg] -ml-6 bg-white z-20 pointer-events-auto"
+          className="hidden xl:flex items-center px-6 border-r relative skew-x-[-12deg] -ml-4 bg-white z-20 pointer-events-auto flex-shrink-0"
           style={{ borderRightColor: DESIGN_SYSTEM.COLORS.ZINC_200 }}
         >
-          <Link href="/" className="skew-x-[15deg] relative z-10 flex items-center justify-center">
-            <LogoIcon className="h-6 w-auto" />
+          <Link href="/" className="skew-x-[12deg] relative z-10 flex items-center justify-center">
+            <LogoIcon className="h-5 w-auto" />
           </Link>
         </div>
 
         <div className="hidden md:flex flex-1 items-center justify-between min-w-0">
-          <nav className="flex h-full items-stretch px-4 pointer-events-auto overflow-visible">
+          <nav className="flex h-full items-stretch px-1 pointer-events-auto overflow-hidden">
             <div className="flex h-full items-stretch border-l border-zinc-200">
               {navItems.map((item: any) => (
                 <NavItem key={item.id} item={item} />
@@ -174,8 +174,8 @@ export function HeaderClient({ header, socials }: { header: Header; socials: Soc
             </div>
           </nav>
 
-          <div className="flex items-center gap-6 px-10 flex-shrink-0">
-            <div className="hidden lg:flex items-center gap-6 pr-6 border-r border-zinc-200">
+          <div className="flex items-center gap-3 lg:gap-4 px-3 lg:px-6 flex-shrink-0">
+            <div className="hidden lg:flex items-center gap-3 pr-3 border-r border-zinc-200">
               {socialAccounts.slice(0, 3).map((acc: any) => {
                 const Icon = socialIcons[acc.platform] || Link2
                 return (
@@ -189,16 +189,16 @@ export function HeaderClient({ header, socials }: { header: Header; socials: Soc
                     onMouseEnter={(e) => (e.currentTarget.style.color = DESIGN_SYSTEM.COLORS.PRIMARY)}
                     onMouseLeave={(e) => (e.currentTarget.style.color = DESIGN_SYSTEM.COLORS.ZINC_950)}
                   >
-                    <Icon className="h-5 w-5" />
+                    <Icon className="h-4 w-4" />
                   </a>
                 )
               })}
             </div>
 
-            <div className="flex items-center gap-6">
+            <div className="flex items-center gap-3 lg:gap-4">
               <Suspense fallback={null}>
                 <div
-                  className="text-zinc-950 p-2 transition-all cursor-pointer rounded-sm pointer-events-auto active:scale-90"
+                  className="text-zinc-950 p-1 transition-all cursor-pointer rounded-sm pointer-events-auto active:scale-90"
                   onMouseEnter={(e) => (e.currentTarget.style.color = DESIGN_SYSTEM.COLORS.PRIMARY)}
                   onMouseLeave={(e) => (e.currentTarget.style.color = DESIGN_SYSTEM.COLORS.ZINC_950)}
                 >
@@ -209,9 +209,9 @@ export function HeaderClient({ header, socials }: { header: Header; socials: Soc
               <AuthComboButton />
 
               {header.cta?.enable && header.cta.link && (
-                <div className="hidden xl:block pointer-events-auto active:scale-95 transition-transform">
+                <div className="hidden xl:block pointer-events-auto active:scale-95 transition-transform flex-shrink-0">
                   <ClippedButton size="sm" label={header.cta.label || header.cta.link.label}>
-                    <div className="flex items-center gap-1.5">
+                    <div className="flex items-center gap-1">
                       <CMSLink {...header.cta.link} label={header.cta.label || header.cta.link.label} />
                       <ArrowRight className="h-3 w-3" />
                     </div>
