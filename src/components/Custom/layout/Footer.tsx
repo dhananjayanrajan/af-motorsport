@@ -1,9 +1,9 @@
 'use client'
 
+import { ClippedButton } from '@/components/Clipped/ClippedButton'
+import { ClippedInput } from '@/components/Clipped/ClippedInput'
 import { FAQAccordionBlock } from '@/components/Custom/layout/questions'
 import { CheckeredBackground } from '@/components/Custom/ui/CheckeredBackground'
-import { ClippedButton } from '@/components/Custom/ui/ClippedButton'
-import { ClippedInput } from '@/components/Custom/ui/ClippedInput'
 import { CMSLink } from '@/components/Link'
 import ShinyText from '@/components/Reactbits/shiny-text'
 import { DESIGN_SYSTEM } from '@/lib/constants'

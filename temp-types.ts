@@ -540,20 +540,83 @@ export interface Organization {
         description?: string | null;
         type?:
         | (
-            | 'sponsors'
-            | 'investors'
-            | 'partners'
-            | 'supporters'
-            | 'promoters'
-            | 'organizers'
-            | 'media'
-            | 'government'
+            | 'Sponsors'
+            | 'Investors'
+            | 'Partners'
+            | 'Supporters'
+            | 'Promoters'
+            | 'Organizers'
+            | 'Media'
+            | 'Government'
             | 'NGO'
-            | 'developers'
-            | 'distributors'
-            | 'retailers'
-            | 'manufacturers'
-            | 'suppliers'
+            | 'Developers'
+            | 'Distributors'
+            | 'Retailers'
+            | 'Manufacturers'
+            | 'Suppliers'
+            | 'Providers'
+            | 'Recipients'
+            | 'Others'
+        )
+        | null;
+        industry?:
+        | (
+            | 'Aerospace'
+            | 'Agriculture'
+            | 'AI & Machine Learning'
+            | 'Apparel & Fashion'
+            | 'Automotive'
+            | 'Banking & Finance'
+            | 'Betting & Gambling'
+            | 'Blockchain & Crypto'
+            | 'Chemicals'
+            | 'Cloud Computing'
+            | 'Construction'
+            | 'Consulting'
+            | 'Cybersecurity'
+            | 'Data Analytics'
+            | 'E-commerce'
+            | 'Education'
+            | 'Electronics'
+            | 'Energy & Utilities'
+            | 'Engineering'
+            | 'Entertainment'
+            | 'Environmental Services'
+            | 'Esports & Gaming'
+            | 'Event Management'
+            | 'Fitness & Wellness'
+            | 'Food & Beverage'
+            | 'Government'
+            | 'Healthcare'
+            | 'Hospitality'
+            | 'Human Resources'
+            | 'Insurance'
+            | 'Legal Services'
+            | 'Logistics & Supply Chain'
+            | 'Lubricants'
+            | 'Luxury Goods'
+            | 'Manufacturing'
+            | 'Marketing & Advertising'
+            | 'Materials Science'
+            | 'Media & Broadcasting'
+            | 'Mining'
+            | 'Non-Profit'
+            | 'Oil & Gas'
+            | 'Pharmaceuticals'
+            | 'Printing & Publishing'
+            | 'Property'
+            | 'Public Sector'
+            | 'Railway'
+            | 'Real Estate'
+            | 'Retail'
+            | 'Security'
+            | 'Shipping'
+            | 'Sports'
+            | 'Telecommunications'
+            | 'Textiles'
+            | 'Tourism'
+            | 'Transportation'
+            | 'Utilities'
         )
         | null;
     };
@@ -577,23 +640,23 @@ export interface Organization {
         merged?: string | null;
         rebranded?: string | null;
         defunct?: string | null;
-        prestige?: ('unknown' | 'emerging' | 'established' | 'prestigious' | 'iconic') | null;
+        prestige?: ('Unknown' | 'Emerging' | 'Established' | 'Prestigious' | 'Iconic') | null;
         impact?:
         | (
-            | 'low'
-            | 'medium'
-            | 'deep'
-            | 'heavy'
-            | 'profound'
-            | 'rare'
-            | 'catastrophic'
-            | 'moderate'
-            | 'minor'
-            | 'negligible'
-            | 'major'
-            | 'severe'
-            | 'permanent'
-            | 'temporary'
+            | 'Low'
+            | 'Medium'
+            | 'Deep'
+            | 'Heavy'
+            | 'Profound'
+            | 'Rare'
+            | 'Catastrophic'
+            | 'Moderate'
+            | 'Minor'
+            | 'Negligible'
+            | 'Major'
+            | 'Severe'
+            | 'Permanent'
+            | 'Temporary'
         )
         | null;
         benefits?: {
@@ -736,12 +799,14 @@ export interface Driver {
                 | (
                     | 'Twitter'
                     | 'Instagram'
+                    | 'Threads'
                     | 'Facebook'
                     | 'LinkedIn'
                     | 'TikTok'
                     | 'YouTube'
                     | 'Twitch'
                     | 'Discord'
+                    | 'Reddit'
                     | 'Telegram'
                     | 'WhatsApp'
                 )
@@ -909,6 +974,18 @@ export interface Car {
         } | null;
         manufacturers?: (number | Organization)[] | null;
         members?: (number | Member)[] | null;
+        technicalCategories?:
+        | (
+            | 'Power Unit / Engine'
+            | 'Chassis & Aerodynamics'
+            | 'Drivetrain & Transmission'
+            | 'Suspension & Steering'
+            | 'Electronic Systems / ECU'
+            | 'Tires & Wheels'
+            | 'Safety Equipment'
+            | 'Fuel & Lubricants'
+        )
+        | null;
         classifications?: {
             list?:
             | {
@@ -1138,6 +1215,25 @@ export interface Regulation {
     basics?: {
         description?: string | null;
         status?: ('Published' | 'Draft' | 'Archived') | null;
+        type?:
+        | (
+            | 'Sporting & Competition'
+            | 'Technical & Engineering'
+            | 'Financial & Budgetary'
+            | 'Safety & Medical'
+            | 'Judicial & Disciplinary'
+            | 'Commercial & Media'
+        )
+        | null;
+        enforcement?:
+        | (
+            | 'Live Scrutineering'
+            | 'Post-Event Inspection'
+            | 'Telemetry Monitoring'
+            | 'Self-Declaration'
+            | 'Financial Audit'
+        )
+        | null;
         code?: string | null;
         version?: string | null;
         effective_date?: string | null;
@@ -1341,12 +1437,14 @@ export interface Leader {
                 | (
                     | 'Twitter'
                     | 'Instagram'
+                    | 'Threads'
                     | 'Facebook'
                     | 'LinkedIn'
                     | 'TikTok'
                     | 'YouTube'
                     | 'Twitch'
                     | 'Discord'
+                    | 'Reddit'
                     | 'Telegram'
                     | 'WhatsApp'
                 )
@@ -1551,141 +1649,6 @@ export interface Product {
     createdAt: string;
     deletedAt?: string | null;
     _status?: ('draft' | 'published') | null;
-}
-
-// VariantOption
-export interface VariantOption {
-    id: number;
-    _variantOptions_options_order?: string | null;
-    variantType: number | VariantType;
-    label: string;
-    value: string;
-    updatedAt: string;
-    createdAt: string;
-    deletedAt?: string | null;
-}
-
-// VariantType
-export interface VariantType {
-    id: number;
-    label: string;
-    name: string;
-    options?: {
-        docs?: (number | VariantOption)[];
-        hasNextPage?: boolean;
-        totalDocs?: number;
-    };
-    updatedAt: string;
-    createdAt: string;
-    deletedAt?: string | null;
-}
-
-// CallToActionBlock
-export interface CallToActionBlock {
-    richText?: {
-        root: {
-            type: string;
-            children: {
-                type: any;
-                version: number;
-                [k: string]: unknown;
-            }[];
-            direction: ('ltr' | 'rtl') | null;
-            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-            indent: number;
-            version: number;
-        };
-        [k: string]: unknown;
-    } | null;
-    links?:
-    | {
-        link: {
-            type?: ('reference' | 'custom') | null;
-            newTab?: boolean | null;
-            reference?: {
-                relationTo: 'pages';
-                value: number | Page;
-            } | null;
-            url?: string | null;
-            label: string;
-            appearance?: ('default' | 'outline') | null;
-        };
-        id?: string | null;
-    }[]
-    | null;
-    id?: string | null;
-    blockName?: string | null;
-    blockType: 'cta';
-}
-
-// Page
-export interface Page {
-    id: number;
-    basics?: {};
-    details?: {};
-    traits?: {};
-    metrics?: {};
-    assets?: {};
-    contexts?: {};
-    seo?: {
-        title?: string | null;
-        image?: (number | null) | Media;
-        description?: string | null;
-    };
-    generateSlug?: boolean | null;
-    slug?: string | null;
-    categories?: (number | Category)[] | null;
-    tags?: (number | Tag)[] | null;
-    updatedAt: string;
-    createdAt: string;
-}
-
-// ContentBlock
-export interface ContentBlock {
-    columns?:
-    | {
-        size?: ('oneThird' | 'half' | 'twoThirds' | 'full') | null;
-        richText?: {
-            root: {
-                type: string;
-                children: {
-                    type: any;
-                    version: number;
-                    [k: string]: unknown;
-                }[];
-                direction: ('ltr' | 'rtl') | null;
-                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-                indent: number;
-                version: number;
-            };
-            [k: string]: unknown;
-        } | null;
-        enableLink?: boolean | null;
-        link?: {
-            type?: ('reference' | 'custom') | null;
-            newTab?: boolean | null;
-            reference?: {
-                relationTo: 'pages';
-                value: number | Page;
-            } | null;
-            url?: string | null;
-            label: string;
-            appearance?: ('default' | 'outline') | null;
-        };
-        id?: string | null;
-    }[]
-    | null;
-    id?: string | null;
-    blockName?: string | null;
-    blockType: 'content';
-}
-
-// MediaBlock
-export interface MediaBlock {
-    media: number | Media;
-    id?: string | null;
-    blockName?: string | null;
-    blockType: 'mediaBlock';
 }
 
 // Variant
@@ -2857,184 +2820,6 @@ export interface Program {
     slug?: string | null;
     categories?: (number | Category)[] | null;
     tags?: (number | Tag)[] | null;
-    updatedAt: string;
-    createdAt: string;
-}
-
-// Form
-export interface Form {
-    id: number;
-    title: string;
-    fields?:
-    | (
-        | {
-            name: string;
-            label?: string | null;
-            width?: number | null;
-            required?: boolean | null;
-            defaultValue?: boolean | null;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'checkbox';
-        }
-        | {
-            name: string;
-            label?: string | null;
-            width?: number | null;
-            required?: boolean | null;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'country';
-        }
-        | {
-            name: string;
-            label?: string | null;
-            width?: number | null;
-            required?: boolean | null;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'email';
-        }
-        | {
-            message?: {
-                root: {
-                    type: string;
-                    children: {
-                        type: any;
-                        version: number;
-                        [k: string]: unknown;
-                    }[];
-                    direction: ('ltr' | 'rtl') | null;
-                    format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-                    indent: number;
-                    version: number;
-                };
-                [k: string]: unknown;
-            } | null;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'message';
-        }
-        | {
-            name: string;
-            label?: string | null;
-            width?: number | null;
-            defaultValue?: number | null;
-            required?: boolean | null;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'number';
-        }
-        | {
-            name: string;
-            label?: string | null;
-            width?: number | null;
-            defaultValue?: string | null;
-            placeholder?: string | null;
-            options?:
-            | {
-                label: string;
-                value: string;
-                id?: string | null;
-            }[]
-            | null;
-            required?: boolean | null;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'select';
-        }
-        | {
-            name: string;
-            label?: string | null;
-            width?: number | null;
-            required?: boolean | null;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'state';
-        }
-        | {
-            name: string;
-            label?: string | null;
-            width?: number | null;
-            defaultValue?: string | null;
-            required?: boolean | null;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'text';
-        }
-        | {
-            name: string;
-            label?: string | null;
-            width?: number | null;
-            defaultValue?: string | null;
-            required?: boolean | null;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'textarea';
-        }
-    )[]
-    | null;
-    submitButtonLabel?: string | null;
-    confirmationType?: ('message' | 'redirect') | null;
-    confirmationMessage?: {
-        root: {
-            type: string;
-            children: {
-                type: any;
-                version: number;
-                [k: string]: unknown;
-            }[];
-            direction: ('ltr' | 'rtl') | null;
-            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-            indent: number;
-            version: number;
-        };
-        [k: string]: unknown;
-    } | null;
-    redirect?: {
-        url: string;
-    };
-    emails?:
-    | {
-        emailTo?: string | null;
-        cc?: string | null;
-        bcc?: string | null;
-        replyTo?: string | null;
-        emailFrom?: string | null;
-        subject: string;
-        message?: {
-            root: {
-                type: string;
-                children: {
-                    type: any;
-                    version: number;
-                    [k: string]: unknown;
-                }[];
-                direction: ('ltr' | 'rtl') | null;
-                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-                indent: number;
-                version: number;
-            };
-            [k: string]: unknown;
-        } | null;
-        id?: string | null;
-    }[]
-    | null;
-    updatedAt: string;
-    createdAt: string;
-}
-
-// FormSubmission
-export interface FormSubmission {
-    id: number;
-    form: number | Form;
-    submissionData?:
-    | {
-        field: string;
-        value: string;
-        id?: string | null;
-    }[]
-    | null;
     updatedAt: string;
     createdAt: string;
 }

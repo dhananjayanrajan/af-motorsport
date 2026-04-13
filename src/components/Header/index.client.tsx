@@ -18,7 +18,7 @@ import { usePathname } from 'next/navigation'
 import React, { Suspense, useMemo, useState } from 'react'
 
 import { Cart } from '@/components/Cart'
-import { ClippedButton } from '@/components/Custom/ui/ClippedButton'
+import { ClippedButton } from '@/components/Clipped/ClippedButton'
 import { CMSLink } from '@/components/Link'
 import { LogoIcon } from '@/components/icons/logo'
 import { MobileMenu } from './MobileMenu'

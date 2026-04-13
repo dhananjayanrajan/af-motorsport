@@ -1,6 +1,6 @@
-import CircuitMapLayout from './sections/CircuitMapLayout';
-import HistoryRecordsSection from './sections/HistoryRecordsSection';
-import RaceWinnersHistory from './sections/RaceWinnersHistory';
+import CircuitMapLayout from '../../../OLD/sections/CircuitMapLayout';
+import HistoryRecordsSection from '../../../OLD/sections/HistoryRecordsSection';
+import RaceWinnersHistory from '../../../OLD/sections/RaceWinnersHistory';
 
 async function getCircuitData(slug: string) {
     const url = process.env.NEXT_PUBLIC_PAYLOAD_URL;

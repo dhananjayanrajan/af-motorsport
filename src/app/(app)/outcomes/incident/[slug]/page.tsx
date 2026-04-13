@@ -1,5 +1,5 @@
-import IncidentMediaGallery from './sections/IncidentMediaGallery';
-import IncidentNarrative from './sections/IncidentNarrative';
+import IncidentMediaGallery from '../../../OLD/sections/IncidentMediaGallery';
+import IncidentNarrative from '../../../OLD/sections/IncidentNarrative';
 
 async function getIncidentData(slug: string) {
     const url = process.env.NEXT_PUBLIC_PAYLOAD_URL;

@@ -1,44 +1,41 @@
-import DutiesResponsibilities from './sections/DutiesResponsibilities'
-import MemberBiography from './sections/MemberBiography'
-import SkillsTrainingSection from './sections/SkillsTrainingSection'
+import { DESIGN_SYSTEM } from '@/lib/constants';
 
 async function getMemberData(slug: string) {
-    const url = process.env.NEXT_PUBLIC_PAYLOAD_URL
-    const memberRes = await fetch(`${url}/api/members?where[slug][equals]=${slug}&limit=1`).then((res) => res.json())
+    const url = process.env.NEXT_PUBLIC_PAYLOAD_URL;
+    if (!url) throw new Error("PAYLOAD_URL is not defined");
 
-    if (!memberRes.docs.length) return null
+    const memberRes = await fetch(
+        `${url}/api/members?where[slug][equals]=${slug}&depth=2`
+    ).then((res) => res.json());
 
-    const member = memberRes.docs[0]
+    const member = memberRes.docs?.[0];
+    if (!member) return null;
 
-    const [skills, trainings] = await Promise.all([
-        fetch(`${url}/api/skills?where[categories][in]=${member.id}&limit=100`).then((res) => res.json()),
-        fetch(`${url}/api/trainings?where[categories][in]=${member.id}&limit=100`).then((res) => res.json()),
-    ])
+    const trainingRes = await fetch(
+        `${url}/api/trainings?where[attendees.members][contains]=${member.id}`
+    ).then((res) => res.json());
 
     return {
         member,
-        skills: skills.docs,
-        trainings: trainings.docs
-    }
+        trainings: trainingRes.docs || []
+    };
 }
 
-export default async function Page({ params }: { params: { slug: string } }) {
-    const data = await getMemberData(params.slug)
+export default async function MemberDetailPage({
+    params,
+}: {
+    params: Promise<{ slug: string }>;
+}) {
+    const { slug } = await params;
+    const data = await getMemberData(slug);
 
-    if (!data) return null
+    if (!data) return null;
 
     return (
-        <main className="bg-black min-h-screen">
-            <DutiesResponsibilities
-                member={data.member}
-            />
-            <SkillsTrainingSection
-                skills={data.skills}
-                trainings={data.trainings}
-            />
-            <MemberBiography
-                member={data.member}
-            />
+        <main style={{ backgroundColor: DESIGN_SYSTEM.COLORS.ZINC_950 }} className="min-h-screen">
+            {/* <IdentitySection member={data.member} />
+      <SkillsSection skills={data.member.skills} />
+      <TrainingSection trainings={data.trainings} /> */}
         </main>
-    )
+    );
 }

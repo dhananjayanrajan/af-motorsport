@@ -1,44 +1,42 @@
-import CapabilitiesSection from './sections/CapabilitiesSection'
-import GuidingPrinciples from './sections/GuidingPrinciples'
-import VisionMissionSection from './sections/VisionMissionSection'
+import { DESIGN_SYSTEM } from '@/lib/constants';
 
 async function getLeaderData(slug: string) {
-    const url = process.env.NEXT_PUBLIC_PAYLOAD_URL
-    const leaderRes = await fetch(`${url}/api/leaders?where[slug][equals]=${slug}&limit=1`).then((res) => res.json())
+    const url = process.env.NEXT_PUBLIC_PAYLOAD_URL;
+    if (!url) throw new Error("PAYLOAD_URL is not defined");
 
-    if (!leaderRes.docs.length) return null
+    const leaderRes = await fetch(
+        `${url}/api/leaders?where[slug][equals]=${slug}&depth=2`
+    ).then((res) => res.json());
 
-    const leader = leaderRes.docs[0]
+    const leader = leaderRes.docs?.[0];
+    if (!leader) return null;
 
-    const [skills, awards] = await Promise.all([
-        fetch(`${url}/api/skills?where[categories][in]=${leader.id}&limit=100`).then((res) => res.json()),
-        fetch(`${url}/api/awards?where[categories][in]=${leader.id}&limit=100`).then((res) => res.json()),
-    ])
+    const awardsRes = await fetch(
+        `${url}/api/awards?where[recipients.leaders][contains]=${leader.id}`
+    ).then((res) => res.json());
 
     return {
         leader,
-        skills: skills.docs,
-        awards: awards.docs
-    }
+        awards: awardsRes.docs || []
+    };
 }
 
-export default async function Page({ params }: { params: { slug: string } }) {
-    const data = await getLeaderData(params.slug)
+export default async function LeaderDetailPage({
+    params,
+}: {
+    params: Promise<{ slug: string }>;
+}) {
+    const { slug } = await params;
+    const data = await getLeaderData(slug);
 
-    if (!data) return null
+    if (!data) return null;
 
     return (
-        <main className="bg-black min-h-screen">
-            <VisionMissionSection
-                leader={data.leader}
-            />
-            <GuidingPrinciples
-                leader={data.leader}
-            />
-            <CapabilitiesSection
-                skills={data.skills}
-                awards={data.awards}
-            />
+        <main style={{ backgroundColor: DESIGN_SYSTEM.COLORS.ZINC_950 }} className="min-h-screen">
+            {/* <IdentitySection leader={data.leader} />
+      <BiographySection leader={data.leader} />
+      <PrinciplesSection leader={data.leader} />
+      <AwardsSection awards={data.awards} /> */}
         </main>
-    )
+    );
 }

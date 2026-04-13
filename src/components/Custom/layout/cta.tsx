@@ -1,6 +1,6 @@
 'use client'
 
-import { ClippedButton } from '@/components/Custom/ui/ClippedButton'
+import { ClippedButton } from '@/components/Clipped/ClippedButton'
 import LogoLoop from '@/components/Reactbits/logo-loop'
 import { DESIGN_SYSTEM } from '@/lib/constants'
 import type { Organization } from '@/payload-types'

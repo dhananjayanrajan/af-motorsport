@@ -1,13 +1,13 @@
 'use client'
 
-import { ClippedInput } from '@/components/Custom/ui/ClippedInput'
+import { ClippedInput } from '@/components/Clipped/ClippedInput'
 import {
   ClippedSelect,
   ClippedSelectContent,
   ClippedSelectItem,
   ClippedSelectTrigger,
   ClippedSelectValue,
-} from '@/components/Custom/ui/ClippedSelect'
+} from '@/components/Clipped/ClippedSelect'
 import { FormError } from '@/components/forms/FormError'
 import { FormItem } from '@/components/forms/FormItem'
 import { DESIGN_SYSTEM } from '@/lib/constants'

@@ -1,6 +1,6 @@
 'use client'
 
-import { ClippedButton } from '@/components/Custom/ui/ClippedButton'
+import { ClippedButton } from '@/components/Clipped/ClippedButton'
 import { RichText } from '@/components/RichText'
 import { DESIGN_SYSTEM } from '@/lib/constants'
 import type { Question } from '@/payload-types'

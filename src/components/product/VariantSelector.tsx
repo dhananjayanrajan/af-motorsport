@@ -2,7 +2,7 @@
 import { Product } from '@/payload-types'
 import { createUrl } from '@/utilities/createUrl'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import { ClippedButton } from '../Custom/ui/ClippedButton'
+import { ClippedButton } from '../Clipped/ClippedButton'
 
 export function VariantSelector({ product }: { product: Product }) {
   const router = useRouter()

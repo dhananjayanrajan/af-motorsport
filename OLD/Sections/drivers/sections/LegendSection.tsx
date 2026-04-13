@@ -1,6 +1,6 @@
 'use client'
 
-import { ClippedButton } from '@/components/Custom/ui/ClippedButton'
+import { ClippedButton } from '@/components/Clipped/ClippedButton'
 import { CMSLink } from '@/components/Link'
 import Magnet from '@/components/Magnet'
 import { DESIGN_SYSTEM } from '@/lib/constants'

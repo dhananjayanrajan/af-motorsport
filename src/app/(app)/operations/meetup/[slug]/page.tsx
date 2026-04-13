@@ -1,6 +1,6 @@
-import HostsAttendeesSection from './sections/HostsAttendeesSection';
-import MediaGallerySection from './sections/MediaGallerySection';
-import MeetupSchedule from './sections/MeetupSchedule';
+import HostsAttendeesSection from '../../../OLD/sections/HostsAttendeesSection';
+import MediaGallerySection from '../../../OLD/sections/MediaGallerySection';
+import MeetupSchedule from '../../../OLD/sections/MeetupSchedule';
 
 async function getMeetupData(slug: string) {
     const url = process.env.NEXT_PUBLIC_PAYLOAD_URL;

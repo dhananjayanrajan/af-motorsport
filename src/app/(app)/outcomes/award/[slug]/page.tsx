@@ -1,5 +1,5 @@
-import AwardMediaGallery from './sections/AwardMediaGallery';
-import AwardStoryCitation from './sections/AwardStoryCitation';
+import AwardMediaGallery from '../../../OLD/sections/AwardMediaGallery';
+import AwardStoryCitation from '../../../OLD/sections/AwardStoryCitation';
 
 async function getAwardData(slug: string) {
     const url = process.env.NEXT_PUBLIC_PAYLOAD_URL;

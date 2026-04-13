@@ -1,6 +1,6 @@
-import EntryListSection from './sections/EntryListSection';
-import IncidentReportSection from './sections/IncidentReportSection';
-import SessionBreakdown from './sections/SessionBreakdown';
+import EntryListSection from '../../OLD/sections/EntryListSection';
+import IncidentReportSection from '../../OLD/sections/IncidentReportSection';
+import SessionBreakdown from '../../OLD/sections/SessionBreakdown';
 
 async function getRaceDetail(slug: string) {
     const url = process.env.NEXT_PUBLIC_PAYLOAD_URL;

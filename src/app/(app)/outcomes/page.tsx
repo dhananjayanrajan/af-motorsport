@@ -1,6 +1,6 @@
-import AwardsArchive from './sections/AwardsArchive';
-import CelebrationGallery from './sections/CelebrationGallery';
-import IncidentLog from './sections/IncidentLog';
+import AwardsArchive from '../OLD/sections/AwardsArchive';
+import CelebrationGallery from '../OLD/sections/CelebrationGallery';
+import IncidentLog from '../OLD/sections/IncidentLog';
 
 async function getOutcomesData() {
     const url = process.env.NEXT_PUBLIC_PAYLOAD_URL;

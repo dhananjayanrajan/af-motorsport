@@ -1,6 +1,6 @@
 'use client'
 
-import { ClippedInput } from '@/components/Custom/ui/ClippedInput'
+import { ClippedInput } from '@/components/Clipped/ClippedInput'
 import { FormError } from '@/components/forms/FormError'
 import { FormItem } from '@/components/forms/FormItem'
 import {

@@ -1,6 +1,6 @@
 'use client'
 
-import { ClippedButton } from '@/components/Custom/ui/ClippedButton'
+import { ClippedButton } from '@/components/Clipped/ClippedButton'
 import Lenis from 'lenis'
 import { motion, useScroll, useSpring, useTransform } from 'motion/react'
 import Image from 'next/image'

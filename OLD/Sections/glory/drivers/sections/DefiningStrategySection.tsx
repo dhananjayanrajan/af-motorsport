@@ -1,6 +1,6 @@
 'use client'
 
-import { ClippedButton } from "@/components/Custom/ui/ClippedButton"
+import { ClippedButton } from "@/components/Clipped/ClippedButton"
 import { Badge } from "@/components/ui/badge"
 import { DESIGN_SYSTEM } from "@/lib/constants"
 import { cn } from "@/utilities/cn"

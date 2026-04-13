@@ -1,6 +1,6 @@
-import InitiativeExpectations from './sections/InitiativeExpectations';
-import InitiativeStakeholders from './sections/InitiativeStakeholders';
-import InitiativeTimeline from './sections/InitiativeTimeline';
+import InitiativeExpectations from '../../../OLD/sections/InitiativeExpectations';
+import InitiativeStakeholders from '../../../OLD/sections/InitiativeStakeholders';
+import InitiativeTimeline from '../../../OLD/sections/InitiativeTimeline';
 
 async function getInitiativeData(slug: string) {
     const url = process.env.NEXT_PUBLIC_PAYLOAD_URL;

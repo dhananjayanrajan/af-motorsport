@@ -1,66 +1,59 @@
-import CareerStatistics from './sections/CareerStatistics'
-import CarsDriven from './sections/CarsDriven'
-import PerformanceProgression from './sections/PerformanceProgression'
+import { DESIGN_SYSTEM } from '@/lib/constants';
 
-async function getDriverData(slug: string) {
-    const url = process.env.NEXT_PUBLIC_PAYLOAD_URL
-    const driverRes = await fetch(`${url}/api/drivers?where[slug][equals]=${slug}&limit=1`).then((res) => res.json())
+async function getDriverDetailData(slug: string) {
+    const url = process.env.NEXT_PUBLIC_PAYLOAD_URL;
+    if (!url) throw new Error("PAYLOAD_URL is not defined");
 
-    if (!driverRes.docs.length) return null
+    const driverRes = await fetch(
+        `${url}/api/drivers?where[slug][equals]=${slug}&depth=2`
+    ).then((res) => res.json());
 
-    const driver = driverRes.docs[0]
-    const dId = driver.id
+    const driver = driverRes.docs?.[0];
 
-    const [results, points, awards, seasons, cars, entries] = await Promise.all([
-        fetch(`${url}/api/results?where[categories][in]=${dId}&limit=100`).then((res) => res.json()),
-        fetch(`${url}/api/points?where[categories][in]=${dId}&limit=100`).then((res) => res.json()),
-        fetch(`${url}/api/awards?where[categories][in]=${dId}&limit=100`).then((res) => res.json()),
-        fetch(`${url}/api/seasons?limit=100`).then((res) => res.json()),
-        fetch(`${url}/api/cars?limit=100`).then((res) => res.json()),
-        fetch(`${url}/api/entries?where[categories][in]=${dId}&limit=100`).then((res) => res.json()),
-    ])
+    if (!driver) return null;
+
+    const driverId = driver.id;
+
+    const [history, awards] = await Promise.all([
+        fetch(`${url}/api/entries?where[driver][equals]=${driverId}&limit=100&sort=-createdAt`).then((res) => res.json()),
+        fetch(`${url}/api/awards?where[recipients.drivers][contains]=${driverId}&limit=100`).then((res) => res.json()),
+    ]);
 
     return {
         driver,
-        stats: {
-            results: results.docs,
-            points: points.docs,
-            awards: awards.docs
-        },
-        progression: {
-            seasons: seasons.docs,
-            results: results.docs,
-            points: points.docs
-        },
-        machines: {
-            cars: cars.docs,
-            entries: entries.docs,
-            results: results.docs
-        },
-    }
+        history: history.docs || [],
+        awards: awards.docs || [],
+    };
 }
 
-export default async function Page({ params }: { params: { slug: string } }) {
-    const data = await getDriverData(params.slug)
+export default async function DriverDetailPage({
+    params,
+}: {
+    params: Promise<{ slug: string }>;
+}) {
+    const { slug } = await params;
+    const data = await getDriverDetailData(slug);
 
-    if (!data) return null
+    if (!data) return null;
 
     return (
-        <main className="bg-black min-h-screen">
-            <CareerStatistics
-                results={data.stats.results}
-                points={data.stats.points}
-                awards={data.stats.awards}
-            />
-            <PerformanceProgression
-                seasons={data.progression.seasons}
-                results={data.progression.results}
-                points={data.progression.points}
-            />
-            <CarsDriven
-                cars={data.machines.cars}
-                results={data.machines.results}
-            />
+        <main
+            style={{ backgroundColor: DESIGN_SYSTEM.COLORS.ZINC_950 }}
+            className="min-h-screen"
+        >
+            {/* <IdentitySection driver={data.driver} />
+
+      <BiographySection driver={data.driver} />
+
+      <StatsSection driver={data.driver} />
+
+      <RaceHistorySection entries={data.history} />
+
+      <SkillsSection skills={data.driver.skills} />
+
+      <AwardsSection awards={data.awards} />
+
+      <GallerySection media={data.driver.assets?.gallery} /> */}
         </main>
-    )
+    );
 }

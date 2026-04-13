@@ -1,5 +1,5 @@
-import CelebrationMediaGallery from './sections/CelebrationMediaGallery';
-import CelebrationStoryParticipants from './sections/CelebrationStoryParticipants';
+import CelebrationMediaGallery from '../../../OLD/sections/CelebrationMediaGallery';
+import CelebrationStoryParticipants from '../../../OLD/sections/CelebrationStoryParticipants';
 
 async function getCelebrationData(slug: string) {
     const url = process.env.NEXT_PUBLIC_PAYLOAD_URL;

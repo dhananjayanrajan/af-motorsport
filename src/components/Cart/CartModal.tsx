@@ -16,7 +16,7 @@ import { ShoppingCart } from 'lucide-react'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { useEffect, useMemo, useState } from 'react'
-import { ClippedButton } from '../Custom/ui/ClippedButton'
+import { ClippedButton } from '../Clipped/ClippedButton'
 
 import { DeleteItemButton } from './DeleteItemButton'
 import { EditItemQuantityButton } from './EditItemQuantityButton'

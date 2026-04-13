@@ -1,6 +1,6 @@
-import TrainingExpectations from './sections/TrainingExpectations';
-import TrainingSchedule from './sections/TrainingSchedule';
-import TrainingSpecsSkills from './sections/TrainingSpecsSkills';
+import TrainingExpectations from '../../../OLD/sections/TrainingExpectations';
+import TrainingSchedule from '../../../OLD/sections/TrainingSchedule';
+import TrainingSpecsSkills from '../../../OLD/sections/TrainingSpecsSkills';
 
 async function getTrainingDetail(slug: string) {
     const url = process.env.NEXT_PUBLIC_PAYLOAD_URL;
