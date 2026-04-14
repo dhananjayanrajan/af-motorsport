@@ -14,7 +14,7 @@ export const ProductGridItem: React.FC<{ product: Partial<Product> }> = ({ produ
       <div className="relative aspect-[1/1] overflow-hidden bg-white border border-zinc-200 transition-all duration-300 group-hover:border-primary group-hover:shadow-[10px_10px_0px_rgba(0,255,65,0.05)]">
         <div className="absolute top-4 left-4 z-10">
           <div className="px-2 py-0.5 bg-zinc-900 text-[8px] font-black text-white uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-            Asset_01
+            Product Id: {product.id}
           </div>
         </div>
 
@@ -27,7 +27,7 @@ export const ProductGridItem: React.FC<{ product: Partial<Product> }> = ({ produ
         )}
 
         <div className="absolute bottom-0 left-0 right-0 p-4 bg-zinc-900 translate-y-full group-hover:translate-y-0 transition-transform duration-300 flex justify-between items-center z-20">
-          <span className="text-[9px] font-black text-primary uppercase italic tracking-widest">Load_Sequence</span>
+          <span className="text-[9px] font-black text-primary uppercase italic tracking-widest">Product Price</span>
           <Price amount={product.priceInUSD || 0} className="text-sm font-black text-white italic" />
         </div>
       </div>
