@@ -2,21 +2,42 @@ import LifeAtMotorsport from './sections/LifeAtMotorsport';
 import TrainingCatalog from './sections/TrainingCatalog';
 import VacancyBoard from './sections/VacancyBoard';
 
+export const dynamic = 'force-dynamic'
+
 async function getCareersData() {
   const url = process.env.NEXT_PUBLIC_PAYLOAD_URL;
+
+  const fetcher = async (endpoint: string) => {
+    try {
+      const res = await fetch(`${url}/api/${endpoint}`);
+      if (!res.ok) return { docs: [] };
+      const data = await res.json();
+      return data;
+    } catch (err) {
+      return { docs: [] };
+    }
+  };
+
   const [vacancies, trainings, programs, celebrations, meetups, interviews] = await Promise.all([
-    fetch(`${url}/api/vacancies`).then(res => res.json()),
-    fetch(`${url}/api/trainings`).then(res => res.json()),
-    fetch(`${url}/api/programs`).then(res => res.json()),
-    fetch(`${url}/api/celebrations`).then(res => res.json()),
-    fetch(`${url}/api/meetups`).then(res => res.json()),
-    fetch(`${url}/api/interviews`).then(res => res.json())
+    fetcher('vacancies'),
+    fetcher('trainings'),
+    fetcher('programs'),
+    fetcher('celebrations'),
+    fetcher('meetups'),
+    fetcher('interviews')
   ]);
 
   return {
-    board: vacancies.docs,
-    catalog: { trainings: trainings.docs, programs: programs.docs },
-    culture: { celebrations: celebrations.docs, meetups: meetups.docs, interviews: interviews.docs }
+    board: vacancies.docs || [],
+    catalog: {
+      trainings: trainings.docs || [],
+      programs: programs.docs || []
+    },
+    culture: {
+      celebrations: celebrations.docs || [],
+      meetups: meetups.docs || [],
+      interviews: interviews.docs || []
+    }
   };
 }
 

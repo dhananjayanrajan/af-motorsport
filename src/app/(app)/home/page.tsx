@@ -1,13 +1,30 @@
 import { DESIGN_SYSTEM } from '@/lib/constants';
 
+export const dynamic = 'force-dynamic'
+
+async function safeFetch(url: string) {
+  try {
+    const res = await fetch(url);
+    if (!res.ok) return { docs: [] };
+    const text = await res.text();
+    try {
+      return JSON.parse(text);
+    } catch (e) {
+      return { docs: [] };
+    }
+  } catch (e) {
+    return { docs: [] };
+  }
+}
+
 async function getHomeData() {
   const url = process.env.NEXT_PUBLIC_PAYLOAD_URL;
   const [seasons, races, results, drivers, orgs] = await Promise.all([
-    fetch(`${url}/api/seasons?limit=1`).then(res => res.json()),
-    fetch(`${url}/api/races?limit=1`).then(res => res.json()),
-    fetch(`${url}/api/results?limit=1`).then(res => res.json()),
-    fetch(`${url}/api/drivers?limit=1`).then(res => res.json()),
-    fetch(`${url}/api/organizations?limit=20`).then(res => res.json())
+    safeFetch(`${url}/api/seasons?limit=1`),
+    safeFetch(`${url}/api/races?limit=1`),
+    safeFetch(`${url}/api/results?limit=1`),
+    safeFetch(`${url}/api/drivers?limit=1`),
+    safeFetch(`${url}/api/organizations?limit=20`)
   ]);
 
   return {

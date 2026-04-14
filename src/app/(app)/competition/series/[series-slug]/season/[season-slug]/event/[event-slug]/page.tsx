@@ -1,10 +1,10 @@
 import LightboxGallery from '@/app/(app)/competition/sections/Gallery';
-import configPromise from '@payload-config';
-import { getPayloadHMR } from '@payloadcms/next/utilities';
 import { notFound } from 'next/navigation';
 import EntryGrid from '../../sections/Grid';
 import EventHero from './sections/Hero';
 import SessionStack from './sections/Stack';
+
+export const dynamic = 'force-dynamic'
 
 interface PageProps {
     params: Promise<{
@@ -14,6 +14,21 @@ interface PageProps {
     }>;
 }
 
+async function safeFetch(url: string) {
+    try {
+        const res = await fetch(url);
+        if (!res.ok) return { docs: [] };
+        const text = await res.text();
+        try {
+            return JSON.parse(text);
+        } catch (e) {
+            return { docs: [] };
+        }
+    } catch (e) {
+        return { docs: [] };
+    }
+}
+
 export default async function EventPage({ params }: PageProps) {
     const {
         'series-slug': seriesSlug,
@@ -21,68 +36,38 @@ export default async function EventPage({ params }: PageProps) {
         'event-slug': eventSlug
     } = await params;
 
-    const payload = await getPayloadHMR({ config: configPromise });
+    const url = process.env.PAYLOAD_PUBLIC_SERVER_URL;
 
-    const eventResult = await payload.find({
-        collection: 'events',
-        where: {
-            and: [
-                {
-                    slug: {
-                        equals: eventSlug,
-                    },
-                },
-                {
-                    'details.season.slug': {
-                        equals: seasonSlug,
-                    },
-                },
-            ],
-        },
-        depth: 2,
-    });
+    const eventData = await safeFetch(
+        `${url}/api/events?where[slug][equals]=${eventSlug}&where[details.season.slug][equals]=${seasonSlug}&depth=2`
+    );
 
-    const event = eventResult.docs[0];
+    const event = eventData.docs?.[0];
 
     if (!event) {
         notFound();
     }
 
-    const siblingEventsResult = await payload.find({
-        collection: 'events',
-        where: {
-            'details.season': {
-                equals: (event.details.season as any).id || event.details.season,
-            },
-        },
-        sort: 'details.start_date',
-        depth: 1,
-    });
+    const seasonId = (event.details.season as any).id || event.details.season;
 
-    const currentIndex = siblingEventsResult.docs.findIndex((e) => e.id === event.id);
-    const previousEvent = currentIndex > 0 ? siblingEventsResult.docs[currentIndex - 1] : null;
-    const nextEvent = currentIndex < siblingEventsResult.docs.length - 1 ? siblingEventsResult.docs[currentIndex + 1] : null;
+    const [siblingEventsData, racesData] = await Promise.all([
+        safeFetch(`${url}/api/events?where[details.season][equals]=${seasonId}&sort=details.start_date&depth=1`),
+        safeFetch(`${url}/api/races?where[details.event][equals]=${event.id}&sort=details.start_date&depth=1`)
+    ]);
 
-    const racesResult = await payload.find({
-        collection: 'races',
-        where: {
-            'details.event': {
-                equals: event.id,
-            },
-        },
-        sort: 'details.start_date',
-        depth: 1,
-    });
+    const siblings = siblingEventsData.docs || [];
+    const currentIndex = siblings.findIndex((e: any) => e.id === event.id);
+    const previousEvent = currentIndex > 0 ? siblings[currentIndex - 1] : null;
+    const nextEvent = currentIndex < siblings.length - 1 ? siblings[currentIndex + 1] : null;
 
-    const entriesResult = await payload.find({
-        collection: 'entries',
-        where: {
-            'details.session': {
-                in: racesResult.docs.map((r) => r.id),
-            },
-        },
-        depth: 2,
-    });
+    const raceIds = (racesData.docs || []).map((r: any) => r.id);
+    let entriesDocs = [];
+
+    if (raceIds.length > 0) {
+        const entriesQuery = raceIds.map((id: string | number) => `where[details.session][in]=${id}`).join('&');
+        const entriesData = await safeFetch(`${url}/api/entries?${entriesQuery}&depth=2`);
+        entriesDocs = entriesData.docs || [];
+    }
 
     return (
         <main className="min-h-screen bg-white">
@@ -94,12 +79,12 @@ export default async function EventPage({ params }: PageProps) {
                 nextEvent={nextEvent ? { slug: nextEvent.slug!, name: nextEvent.name } : null}
             />
 
-            <SessionStack sessions={racesResult.docs} />
+            <SessionStack sessions={racesData.docs || []} />
 
-            <EntryGrid entries={entriesResult.docs} />
+            <EntryGrid entries={entriesDocs} />
 
             <LightboxGallery
-                items={siblingEventsResult.docs}
+                items={siblings}
                 title="Gallery"
                 label="Media Assets"
             />

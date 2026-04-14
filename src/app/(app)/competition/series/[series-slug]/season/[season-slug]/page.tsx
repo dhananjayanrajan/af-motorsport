@@ -1,12 +1,12 @@
 import LightboxGallery from '@/app/(app)/competition/sections/Gallery';
-import configPromise from '@payload-config';
-import { getPayloadHMR } from '@payloadcms/next/utilities';
 import { notFound } from 'next/navigation';
 import RaceCalendar from '../../../../sections/Calendar';
 import EntryGrid from './sections/Grid';
 import SeasonHero from './sections/Hero';
 import EventsList from './sections/List';
 import PointsStandings from './sections/Standings';
+
+export const dynamic = 'force-dynamic'
 
 interface PageProps {
     params: Promise<{
@@ -15,84 +15,70 @@ interface PageProps {
     }>;
 }
 
+async function safeFetch(url: string) {
+    try {
+        const res = await fetch(url);
+        if (!res.ok) return { docs: [] };
+        const text = await res.text();
+        try {
+            return JSON.parse(text);
+        } catch (e) {
+            return { docs: [] };
+        }
+    } catch (e) {
+        return { docs: [] };
+    }
+}
+
 export default async function SeasonPage({ params }: PageProps) {
     const { 'series-slug': seriesSlug, 'season-slug': seasonSlug } = await params;
-    const payload = await getPayloadHMR({ config: configPromise });
+    const url = process.env.PAYLOAD_PUBLIC_SERVER_URL;
 
-    const seasonResult = await payload.find({
-        collection: 'seasons',
-        where: {
-            and: [
-                {
-                    slug: {
-                        equals: seasonSlug,
-                    },
-                },
-                {
-                    'details.series.slug': {
-                        equals: seriesSlug,
-                    },
-                },
-            ],
-        },
-        depth: 2,
-    });
+    const seasonData = await safeFetch(
+        `${url}/api/seasons?where[slug][equals]=${seasonSlug}&where[details.series.slug][equals]=${seriesSlug}&depth=2`
+    );
 
-    const season = seasonResult.docs[0];
+    const season = seasonData.docs?.[0];
 
     if (!season) {
         notFound();
     }
 
-    const eventsResult = await payload.find({
-        collection: 'events',
-        where: {
-            'details.season': {
-                equals: season.id,
-            },
-        },
-        sort: 'details.start_date',
-        depth: 2,
-    });
+    const [eventsData, racesData] = await Promise.all([
+        safeFetch(`${url}/api/events?where[details.season][equals]=${season.id}&sort=details.start_date&depth=2`),
+        safeFetch(`${url}/api/races?where[details.season][equals]=${season.id}&sort=details.start_date&depth=2`)
+    ]);
 
-    const racesResult = await payload.find({
-        collection: 'races',
-        where: {
-            'details.season': {
-                equals: season.id,
-            },
-        },
-        sort: 'details.start_date',
-        depth: 2,
-    });
+    const raceIds = (racesData.docs || []).map((r: any) => r.id);
+    let entriesDocs = [];
 
-    const entriesResult = await payload.find({
-        collection: 'entries',
-        where: {
-            'details.session': {
-                in: racesResult.docs.map((r) => r.id),
-            },
-        },
-        depth: 2,
-    });
+    if (raceIds.length > 0) {
+        const entriesQuery = raceIds.map((id: string | number) => `where[details.session][in]=${id}`).join('&');
+        const entriesData = await safeFetch(`${url}/api/entries?${entriesQuery}&depth=2`);
+        entriesDocs = entriesData.docs || [];
+    }
 
     return (
         <main className="min-h-screen bg-white">
             <SeasonHero season={season} />
 
-            <RaceCalendar races={racesResult.docs} />
+            <RaceCalendar races={racesData.docs || []} />
 
             <PointsStandings
-                races={racesResult.docs}
-                entries={entriesResult.docs}
+                races={racesData.docs || []}
+                entries={entriesDocs}
             />
 
-            <EventsList events={eventsResult.docs} seriesSlug={seriesSlug} seasonSlug={seasonSlug} />
+            <EventsList
+                events={eventsData.docs || []}
+                seriesSlug={seriesSlug}
+                seasonSlug={seasonSlug}
+            />
 
-            <EntryGrid entries={entriesResult.docs} />
+            <EntryGrid entries={entriesDocs} />
 
             <LightboxGallery
-                items={eventsResult.docs}
+                items={eventsData.docs || []}
                 title="Gallery"
                 label="Media Assets"
             />

@@ -1,6 +1,3 @@
-// page.tsx
-import configPromise from '@payload-config';
-import { getPayloadHMR } from '@payloadcms/next/utilities';
 import { notFound } from 'next/navigation';
 import OrganizationsSection from '../../sections/Organizations';
 import AutographSection from './sections/Autograph';
@@ -17,45 +14,50 @@ import SkillsSection from './sections/Skills';
 import StatSection from './sections/Stats';
 import VideoSection from './sections/Video';
 
+export const dynamic = 'force-dynamic'
+
 interface PageProps {
     params: Promise<{
         'driver-slug': string;
     }>;
 }
 
+async function safeFetch(url: string) {
+    try {
+        const res = await fetch(url);
+        if (!res.ok) return { docs: [] };
+        const text = await res.text();
+        try {
+            return JSON.parse(text);
+        } catch (e) {
+            return { docs: [] };
+        }
+    } catch (e) {
+        return { docs: [] };
+    }
+}
+
 export default async function DriverPage({ params }: PageProps) {
     const { 'driver-slug': driverSlug } = await params;
-    const payload = await getPayloadHMR({ config: configPromise });
+    const url = process.env.PAYLOAD_PUBLIC_SERVER_URL;
 
-    const driverResult = await payload.find({
-        collection: 'drivers',
-        where: {
-            slug: { equals: driverSlug },
-        },
-        depth: 3, // Increased depth to 3 to resolve Members inside Cars
-    });
+    const [driverData, meetupsData, orgsData] = await Promise.all([
+        safeFetch(`${url}/api/drivers?where[slug][equals]=${driverSlug}&depth=3`),
+        safeFetch(`${url}/api/meetups?limit=100&depth=2`),
+        safeFetch(`${url}/api/organizations?limit=100`)
+    ]);
 
-    const driver = driverResult.docs[0];
+    const driver = driverData.docs?.[0];
     if (!driver) notFound();
 
-    // The cars associated with the driver
     const driverCars = (driver.details?.cars || []) as any[];
 
-    const allMeetups = await payload.find({
-        collection: 'meetups',
-        limit: 100,
-        depth: 2,
-    });
-
-    const filteredMeetups = allMeetups.docs.filter(meetup => {
-        const attendeeIds = meetup.details.attendees?.drivers?.map(d =>
+    const filteredMeetups = (meetupsData.docs || []).filter((meetup: any) => {
+        const attendeeIds = meetup.details?.attendees?.drivers?.map((d: any) =>
             typeof d === 'object' ? String(d.id) : String(d)
         );
         return attendeeIds?.includes(String(driver.id));
     });
-
-    const orgsRes = await fetch(`${process.env.PAYLOAD_PUBLIC_SERVER_URL}/api/organizations?limit=100`, { next: { revalidate: 3600 } });
-    const orgsData = orgsRes.ok ? await orgsRes.json() : { docs: [] };
 
     return (
         <main className="min-h-screen">
@@ -71,7 +73,7 @@ export default async function DriverPage({ params }: PageProps) {
             <section><CelebrationsSection data={[]} /></section>
             <section><InterviewsSection data={[]} /></section>
             <section><MeetupsSection data={filteredMeetups} /></section>
-            <section><OrganizationsSection organizations={orgsData.docs} /></section>
+            <section><OrganizationsSection organizations={orgsData.docs || []} /></section>
             <section><GallerySection driver={driver} /></section>
         </main>
     );

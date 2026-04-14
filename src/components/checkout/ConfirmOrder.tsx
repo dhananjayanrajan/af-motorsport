@@ -30,14 +30,14 @@ export const ConfirmOrder: React.FC = () => {
   }, [cart, searchParams, router, confirmOrder])
 
   return (
-    <div className="grow flex flex-col items-center justify-center bg-black min-h-[60vh]">
-      <div className="p-12 border border-zinc-900 bg-zinc-950 flex flex-col items-center gap-8 min-w-[320px]">
-        <div className="relative h-10 w-10">
+    <div className="grow flex flex-col items-center justify-center bg-zinc-50 min-h-[60vh] p-4">
+      <div className="p-8 md:p-12 border border-zinc-200 bg-white flex flex-col items-center gap-6 w-full max-w-sm">
+        <div className="relative h-8 w-8">
           <LoadingSpinner />
         </div>
-        <div className="space-y-1 text-center">
-          <h1 className="text-[10px] font-black uppercase tracking-[0.5em] text-white italic">Confirming Settlement</h1>
-          <p className="text-[8px] font-black text-zinc-600 uppercase tracking-widest animate-pulse">Synchronizing Ledger</p>
+        <div className="space-y-2 text-center">
+          <h1 className="text-xs font-black uppercase tracking-widest text-zinc-900 italic">Confirming Payment</h1>
+          <p className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest animate-pulse">Processing Transaction</p>
         </div>
       </div>
     </div>

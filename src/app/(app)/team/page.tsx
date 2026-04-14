@@ -6,6 +6,8 @@ import LeaderStrip from './sections/LeaderStrip'
 import MembersGrid from './sections/MembersGrid'
 import OrganizationsSection from './sections/Organizations'
 
+export const dynamic = 'force-dynamic'
+
 interface TeamPageProps {
     searchParams: Promise<{
         tag?: string
@@ -25,8 +27,17 @@ export default async function TeamPage({ searchParams }: TeamPageProps) {
         ? allMembers.filter((m) => m.tags?.some((t: any) => t.slug === params.tag))
         : allMembers
 
-    const orgsRes = await fetch(`${process.env.PAYLOAD_PUBLIC_SERVER_URL}/api/organizations?limit=100`, { next: { revalidate: 3600 } });
-    const orgsData = orgsRes.ok ? await orgsRes.json() : { docs: [] };
+    const orgsUrl = `${process.env.PAYLOAD_PUBLIC_SERVER_URL}/api/organizations?limit=100`
+    let orgsDocs = []
+    try {
+        const orgsRes = await fetch(orgsUrl, { next: { revalidate: 3600 } })
+        if (orgsRes.ok) {
+            const orgsData = await orgsRes.json()
+            orgsDocs = orgsData.docs || []
+        }
+    } catch (e) {
+        orgsDocs = []
+    }
 
     return (
         <main className="min-h-screen bg-white">
@@ -35,47 +46,39 @@ export default async function TeamPage({ searchParams }: TeamPageProps) {
             <section><MembersGrid members={filteredMembers} /></section>
             <section><CelebrationsSection data={celebrations} /></section>
             <section><InterviewsSection data={interviews} /></section>
-            <section><OrganizationsSection organizations={orgsData.docs} /></section>
+            <section><OrganizationsSection organizations={orgsDocs} /></section>
         </main>
     )
 }
 
+async function safeFetch(endpoint: string): Promise<any[]> {
+    const url = `${process.env.PAYLOAD_PUBLIC_SERVER_URL}/api/${endpoint}`
+    try {
+        const res = await fetch(url, { next: { revalidate: 3600 } })
+        if (!res.ok) return []
+        const data = await res.json()
+        return data.docs || []
+    } catch (e) {
+        return []
+    }
+}
+
 async function fetchDrivers(): Promise<Driver[]> {
-    const res = await fetch(`${process.env.PAYLOAD_PUBLIC_SERVER_URL}/api/drivers?limit=100&sort=last_name`, {
-        next: { revalidate: 3600 },
-    })
-    const data = await res.json()
-    return data.docs
+    return safeFetch('drivers?limit=100&sort=last_name')
 }
 
 async function fetchLeaders(): Promise<Leader[]> {
-    const res = await fetch(`${process.env.PAYLOAD_PUBLIC_SERVER_URL}/api/leaders?limit=100&sort=last_name`, {
-        next: { revalidate: 3600 },
-    })
-    const data = await res.json()
-    return data.docs
+    return safeFetch('leaders?limit=100&sort=last_name')
 }
 
 async function fetchMembers(): Promise<Member[]> {
-    const res = await fetch(`${process.env.PAYLOAD_PUBLIC_SERVER_URL}/api/members?limit=500&sort=last_name`, {
-        next: { revalidate: 3600 },
-    })
-    const data = await res.json()
-    return data.docs
+    return safeFetch('members?limit=500&sort=last_name')
 }
 
 async function fetchCelebrations(): Promise<Celebration[]> {
-    const res = await fetch(`${process.env.PAYLOAD_PUBLIC_SERVER_URL}/api/celebrations?limit=50&sort=-date`, {
-        next: { revalidate: 3600 },
-    })
-    const data = await res.json()
-    return data.docs
+    return safeFetch('celebrations?limit=50&sort=-date')
 }
 
 async function fetchInterviews(): Promise<Interview[]> {
-    const res = await fetch(`${process.env.PAYLOAD_PUBLIC_SERVER_URL}/api/interviews?limit=50&sort=-published_at`, {
-        next: { revalidate: 3600 },
-    })
-    const data = await res.json()
-    return data.docs
+    return safeFetch('interviews?limit=50&sort=-published_at')
 }

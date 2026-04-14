@@ -1,10 +1,10 @@
-import configPromise from '@payload-config';
-import { getPayloadHMR } from '@payloadcms/next/utilities';
 import { notFound } from 'next/navigation';
 import LightboxGallery from '../../sections/Gallery';
 import SeriesHero from './sections/Hero';
 import SeasonsList from './sections/List';
 import Regulations from './sections/Regulations';
+
+export const dynamic = 'force-dynamic'
 
 interface PageProps {
     params: Promise<{
@@ -12,69 +12,57 @@ interface PageProps {
     }>;
 }
 
+async function safeFetch(url: string) {
+    try {
+        const res = await fetch(url);
+        if (!res.ok) return { docs: [] };
+        const text = await res.text();
+        try {
+            return JSON.parse(text);
+        } catch (e) {
+            return { docs: [] };
+        }
+    } catch (e) {
+        return { docs: [] };
+    }
+}
+
 export default async function SeriesPage({ params }: PageProps) {
-    const resolvedParams = await params;
-    const slug = resolvedParams['series-slug'];
-    const payload = await getPayloadHMR({ config: configPromise });
+    const { 'series-slug': slug } = await params;
+    const url = process.env.PAYLOAD_PUBLIC_SERVER_URL;
 
-    const seriesResult = await payload.find({
-        collection: 'series',
-        where: {
-            slug: {
-                equals: slug,
-            },
-        },
-        depth: 2,
-    });
-
-    const series = seriesResult.docs[0];
+    const seriesData = await safeFetch(`${url}/api/series?where[slug][equals]=${slug}&depth=2`);
+    const series = seriesData.docs?.[0];
 
     if (!series) {
         notFound();
     }
 
-    const seasonsResult = await payload.find({
-        collection: 'seasons',
-        where: {
-            'details.series': {
-                equals: series.id,
-            },
-        },
-        sort: '-name',
-        depth: 1,
-    });
+    const seasonsData = await safeFetch(`${url}/api/seasons?where[details.series][equals]=${series.id}&sort=-name&depth=1`);
 
     const categoryIds = series.categories?.map((c: any) => (typeof c === 'object' ? c.id : c)) || [];
-
-    let regulations: any[] = [];
+    let regulationsDocs: any[] = [];
 
     if (categoryIds.length > 0) {
-        const regulationsResult = await payload.find({
-            collection: 'regulations',
-            where: {
-                categories: {
-                    in: categoryIds,
-                },
-            },
-            depth: 1,
-        });
-        regulations = regulationsResult.docs;
+        const categoryQuery = categoryIds.map((id: string | number) => `where[categories][in]=${id}`).join('&');
+        const regulationsData = await safeFetch(`${url}/api/regulations?${categoryQuery}&depth=1`);
+        regulationsDocs = regulationsData.docs || [];
     }
 
     return (
         <main className="min-h-screen bg-white">
             <SeriesHero series={series} />
 
-            {seasonsResult.docs.length > 0 && (
-                <SeasonsList seasons={seasonsResult.docs} seriesSlug={slug} />
+            {(seasonsData.docs || []).length > 0 && (
+                <SeasonsList seasons={seasonsData.docs} seriesSlug={slug} />
             )}
 
-            {regulations.length > 0 && (
-                <Regulations regulations={regulations} />
+            {regulationsDocs.length > 0 && (
+                <Regulations regulations={regulationsDocs} />
             )}
 
             <LightboxGallery
-                items={seasonsResult.docs}
+                items={seasonsData.docs || []}
                 title="Gallery"
                 label="Media Assets"
             />

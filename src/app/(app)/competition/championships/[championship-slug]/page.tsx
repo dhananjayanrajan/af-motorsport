@@ -1,60 +1,54 @@
-import { Championship, Point, Regulation } from '@/payload-types'
 import { notFound } from 'next/navigation'
 import ChampionshipHeader from './sections/Header'
 import Podium from './sections/Podium'
 import Regulations from './sections/Regulations'
 import DriverStandings from './sections/Standings'
 
+export const dynamic = 'force-dynamic'
+
 interface ChampionshipPageProps {
-    params: {
+    params: Promise<{
         'championship-slug': string
+    }>
+}
+
+async function safeFetch(url: string) {
+    try {
+        const res = await fetch(url, { next: { revalidate: 3600 } })
+        if (!res.ok) return { docs: [] }
+        const text = await res.text()
+        try {
+            return JSON.parse(text)
+        } catch (e) {
+            return { docs: [] }
+        }
+    } catch (e) {
+        return { docs: [] }
     }
 }
 
 export default async function ChampionshipPage({ params }: ChampionshipPageProps) {
-    const slug = params['championship-slug']
-    const championship = await fetchChampionshipBySlug(slug)
+    const { 'championship-slug': slug } = await params
+    const url = process.env.PAYLOAD_PUBLIC_SERVER_URL
+
+    const championshipData = await safeFetch(`${url}/api/championships?where[slug][equals]=${slug}&limit=1`)
+    const championship = championshipData.docs?.[0]
 
     if (!championship) {
         notFound()
     }
 
-    const points = await fetchPointsForChampionship(championship.id)
-    const regulations = await fetchRegulationsForChampionship(championship.id)
+    const [pointsData, regulationsData] = await Promise.all([
+        safeFetch(`${url}/api/points?where[categories][contains]=${championship.id}&limit=100&sort=-details.after`),
+        safeFetch(`${url}/api/regulations?where[categories][contains]=${championship.id}&limit=50`)
+    ])
 
     return (
         <main className="min-h-screen bg-white">
             <ChampionshipHeader championship={championship} />
-
             <Podium championship={championship} />
-
-            <DriverStandings points={points} />
-
-            <Regulations regulations={regulations} />
+            <DriverStandings points={pointsData.docs || []} />
+            <Regulations regulations={regulationsData.docs || []} />
         </main>
     )
-}
-
-async function fetchChampionshipBySlug(slug: string): Promise<Championship | null> {
-    const res = await fetch(`${process.env.PAYLOAD_PUBLIC_SERVER_URL}/api/championships?where[slug][equals]=${slug}&limit=1`, {
-        next: { revalidate: 3600 },
-    })
-    const data = await res.json()
-    return data.docs[0] || null
-}
-
-async function fetchPointsForChampionship(championshipId: number): Promise<Point[]> {
-    const res = await fetch(`${process.env.PAYLOAD_PUBLIC_SERVER_URL}/api/points?where[categories][contains]=${championshipId}&limit=100&sort=-details.after`, {
-        next: { revalidate: 3600 },
-    })
-    const data = await res.json()
-    return data.docs
-}
-
-async function fetchRegulationsForChampionship(championshipId: number): Promise<Regulation[]> {
-    const res = await fetch(`${process.env.PAYLOAD_PUBLIC_SERVER_URL}/api/regulations?where[categories][contains]=${championshipId}&limit=50`, {
-        next: { revalidate: 3600 },
-    })
-    const data = await res.json()
-    return data.docs
 }

@@ -1,21 +1,20 @@
-import type { Metadata } from 'next'
-
-import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
-import React, { Fragment } from 'react'
-
 import { CheckoutPage } from '@/components/checkout/CheckoutPage'
+import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
+import type { Metadata } from 'next'
+import { Fragment } from 'react'
 
 export default function Checkout() {
   return (
-    <div className="container min-h-[90vh] flex">
+    <div className="w-full min-h-screen bg-white">
       {!process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY && (
-        <div>
+        <div className="p-6 bg-amber-50 border-b border-amber-200 text-[10px] font-bold uppercase tracking-widest text-amber-800">
           <Fragment>
             {'To enable checkout, you must '}
             <a
               href="https://dashboard.stripe.com/test/apikeys"
               rel="noopener noreferrer"
               target="_blank"
+              className="underline"
             >
               obtain your Stripe API Keys
             </a>
@@ -24,6 +23,7 @@ export default function Checkout() {
               href="https://github.com/payloadcms/payload/blob/main/templates/ecommerce/README.md#stripe"
               rel="noopener noreferrer"
               target="_blank"
+              className="underline"
             >
               README
             </a>

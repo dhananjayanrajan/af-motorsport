@@ -1,7 +1,4 @@
-// app/(app)/leaders/[slug]/page.tsx
-import { Celebration, Interview, Leader, Meetup } from '@/payload-types';
 import { notFound } from 'next/navigation';
-
 import CelebrationsSection from '../../driver/[driver-slug]/sections/Celebration';
 import MeetupsSection from '../../driver/[driver-slug]/sections/Meetups';
 import OrganizationsSection from '../../sections/Organizations';
@@ -12,28 +9,53 @@ import HeroSection from './sections/Hero';
 import InterviewsSection from './sections/Interviews';
 import QuoteSection from './sections/Quote';
 
+export const dynamic = 'force-dynamic'
+
 interface PageProps {
     params: Promise<{
         slug: string;
     }>;
 }
 
+async function safeFetch(url: string) {
+    try {
+        const res = await fetch(url);
+        if (!res.ok) return { docs: [] };
+        const text = await res.text();
+        try {
+            return JSON.parse(text);
+        } catch (e) {
+            return { docs: [] };
+        }
+    } catch (e) {
+        return { docs: [] };
+    }
+}
+
 export default async function LeaderPage({ params }: PageProps) {
     const { slug } = await params;
-    const leader = await fetchLeaderBySlug(slug);
+    const url = process.env.PAYLOAD_PUBLIC_SERVER_URL;
+
+    const leaderData = await safeFetch(`${url}/api/leaders?where[slug][equals]=${slug}&depth=2`);
+    const leader = leaderData.docs?.[0];
 
     if (!leader) {
         return notFound();
     }
 
-    const [celebrations, interviews, meetups] = await Promise.all([
-        fetchCelebrations(leader.id),
-        fetchInterviews(leader.id),
-        fetchMeetups(leader.id),
+    const [celebrationsData, interviewsData, meetupsData, orgsData] = await Promise.all([
+        safeFetch(`${url}/api/celebrations?where[basics.leader][equals]=${leader.id}&depth=1`),
+        safeFetch(`${url}/api/interviews?where[basics.leader][equals]=${leader.id}&depth=1`),
+        safeFetch(`${url}/api/meetups?limit=100&depth=2`),
+        safeFetch(`${url}/api/organizations?limit=100`)
     ]);
 
-    const orgsRes = await fetch(`${process.env.PAYLOAD_PUBLIC_SERVER_URL}/api/organizations?limit=100`, { next: { revalidate: 3600 } });
-    const orgsData = orgsRes.ok ? await orgsRes.json() : { docs: [] };
+    const filteredMeetups = (meetupsData.docs || []).filter((meetup: any) => {
+        const attendeeIds = meetup.details?.attendees?.leaders?.map((l: any) =>
+            typeof l === 'object' ? String(l.id) : String(l)
+        );
+        return attendeeIds?.includes(String(leader.id));
+    });
 
     return (
         <main className="w-full">
@@ -41,57 +63,11 @@ export default async function LeaderPage({ params }: PageProps) {
             <section><QuoteSection leader={leader} /></section>
             <section><AwardSection leader={leader} /></section>
             <section><AutographSection leader={leader} /></section>
-            <section><CelebrationsSection data={celebrations} /></section>
-            <section><InterviewsSection data={interviews} /></section>
-            <section><MeetupsSection data={meetups} /></section>
-            <section><OrganizationsSection organizations={orgsData.docs} /></section>
+            <section><CelebrationsSection data={celebrationsData.docs || []} /></section>
+            <section><InterviewsSection data={interviewsData.docs || []} /></section>
+            <section><MeetupsSection data={filteredMeetups} /></section>
+            <section><OrganizationsSection organizations={orgsData.docs || []} /></section>
             <section><GallerySection leader={leader} /></section>
         </main>
     );
-}
-
-async function fetchLeaderBySlug(slug: string): Promise<Leader | null> {
-    const res = await fetch(
-        `${process.env.PAYLOAD_PUBLIC_SERVER_URL}/api/leaders?where[slug][equals]=${slug}&depth=2`,
-        { next: { revalidate: 3600 } }
-    );
-    if (!res.ok) return null;
-    const data = await res.json();
-    return data.docs[0] || null;
-}
-
-async function fetchCelebrations(leaderId: number): Promise<Celebration[]> {
-    const res = await fetch(
-        `${process.env.PAYLOAD_PUBLIC_SERVER_URL}/api/celebrations?where[basics.leader][equals]=${leaderId}&depth=1`,
-        { next: { revalidate: 3600 } }
-    );
-    if (!res.ok) return [];
-    const data = await res.json();
-    return data.docs;
-}
-
-async function fetchInterviews(leaderId: number): Promise<Interview[]> {
-    const res = await fetch(
-        `${process.env.PAYLOAD_PUBLIC_SERVER_URL}/api/interviews?where[basics.leader][equals]=${leaderId}&depth=1`,
-        { next: { revalidate: 3600 } }
-    );
-    if (!res.ok) return [];
-    const data = await res.json();
-    return data.docs;
-}
-
-async function fetchMeetups(leaderId: number): Promise<Meetup[]> {
-    const res = await fetch(
-        `${process.env.PAYLOAD_PUBLIC_SERVER_URL}/api/meetups?limit=100&depth=2`,
-        { next: { revalidate: 3600 } }
-    );
-    if (!res.ok) return [];
-    const data = await res.json();
-
-    return data.docs.filter((meetup: Meetup) => {
-        const attendeeIds = meetup.details?.attendees?.leaders?.map((l: any) =>
-            typeof l === 'object' ? String(l.id) : String(l)
-        );
-        return attendeeIds?.includes(String(leaderId));
-    });
 }

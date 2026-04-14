@@ -19,56 +19,55 @@ export const OrderItem: React.FC<Props> = ({ order }) => {
 
   return (
     <div className={cn(
-      "bg-card border rounded-lg px-4 py-2 md:px-6 md:py-4 flex flex-col sm:flex-row gap-12 sm:items-center sm:justify-between group transition-all duration-300",
-      `hover:border-[${DESIGN_SYSTEM.COLORS.PRIMARY}] hover:shadow-[0_0_20px_${DESIGN_SYSTEM.COLORS.PRIMARY}33]`
+      "bg-white border border-zinc-200 p-6 md:p-8 flex flex-col md:flex-row gap-8 md:items-center md:justify-between group transition-all duration-200",
+      `hover:border-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`
     )}>
-      <div className="flex flex-col gap-4">
-        <h3 className={cn(
-          "text-sm uppercase font-mono truncate max-w-32 sm:max-w-none transition-colors duration-300",
-          DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_XL,
-          `text-[${DESIGN_SYSTEM.COLORS.PRIMARY}]/50 group-hover:text-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`
-        )}>
-          {`#${order.id}`}
-        </h3>
+      <div className="flex flex-col gap-4 grow">
+        <div className="flex flex-wrap items-center gap-4">
+          <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-400 font-mono">
+            {`#${order.id}`}
+          </h3>
+          {order.status && <OrderStatus status={order.status} />}
+        </div>
 
-        <div className="flex flex-col-reverse sm:flex-row sm:items-center gap-6">
-          <p className="text-xl">
+        <div className="space-y-1">
+          <p className="text-xs font-black text-zinc-900 uppercase tracking-tight italic">
             <time dateTime={order.createdAt}>
               {formatDateTime({ date: order.createdAt, format: 'MMMM dd, yyyy' })}
             </time>
           </p>
 
-          {order.status && <OrderStatus status={order.status} />}
+          <div className="flex items-center gap-3 text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-500">
+            <span>
+              {order.items?.length} {itemsLabel}
+            </span>
+            {order.amount && (
+              <>
+                <span className="text-zinc-300">/</span>
+                <Price
+                  as="span"
+                  className="text-zinc-900 font-black"
+                  amount={order.amount}
+                  currencyCode={order.currency ?? undefined}
+                />
+              </>
+            )}
+          </div>
         </div>
-
-        <p className={cn("flex gap-2 text-xs transition-colors duration-300", `text-[${DESIGN_SYSTEM.COLORS.PRIMARY}]/80 group-hover:text-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`)}>
-          <span>
-            {order.items?.length} {itemsLabel}
-          </span>
-          {order.amount && (
-            <>
-              <span>•</span>
-              <Price
-                as="span"
-                className={`transition-all duration-300 group-hover:drop-shadow-[0_0_8px_${DESIGN_SYSTEM.COLORS.PRIMARY}]`}
-                amount={order.amount}
-                currencyCode={order.currency ?? undefined}
-              />
-            </>
-          )}
-        </p>
       </div>
 
-      <Button
-        variant="outline"
-        asChild
-        className={cn(
-          "self-start sm:self-auto transition-all duration-300",
-          `hover:border-[${DESIGN_SYSTEM.COLORS.PRIMARY}] hover:text-[${DESIGN_SYSTEM.COLORS.PRIMARY}] hover:shadow-[0_0_10px_${DESIGN_SYSTEM.COLORS.PRIMARY}4d]`
-        )}
-      >
-        <Link href={`/orders/${order.id}`}>View Order</Link>
-      </Button>
+      <div className="flex items-center pt-4 md:pt-0 border-t md:border-t-0 border-zinc-100">
+        <Button
+          variant="outline"
+          asChild
+          className={cn(
+            "rounded-none border-zinc-200 bg-white text-[10px] font-black uppercase tracking-[0.3em] h-12 px-10 transition-all w-full md:w-auto",
+            `hover:bg-[${DESIGN_SYSTEM.COLORS.PRIMARY}] hover:border-[${DESIGN_SYSTEM.COLORS.PRIMARY}] hover:text-white`
+          )}
+        >
+          <Link href={`/orders/${order.id}`}>View Order</Link>
+        </Button>
+      </div>
     </div>
   )
 }
