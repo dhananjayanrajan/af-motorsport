@@ -19,11 +19,11 @@ export function VariantSelector({ product }: { product: Product }) {
     if (!options?.length) return null
 
     return (
-      <dl className="flex flex-col gap-6" key={type.id}>
-        <dt className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.3em]">
-          Select {type.label}
+      <dl className="flex flex-col gap-4" key={type.id}>
+        <dt className="text-xs font-bold text-zinc-500 uppercase tracking-widest">
+          {type.label}
         </dt>
-        <dd className="flex flex-wrap gap-4">
+        <dd className="flex flex-wrap gap-3">
           {options?.map((option) => {
             if (!option || typeof option !== 'object') return null
             const optionSearchParams = new URLSearchParams(searchParams.toString())
@@ -38,6 +38,7 @@ export function VariantSelector({ product }: { product: Product }) {
                 label={option.label!}
                 variant={isActive ? 'primary' : 'outline'}
                 size="sm"
+                className="rounded-none h-10 px-6 font-bold uppercase tracking-wide text-xs"
                 onClick={() => router.replace(optionUrl, { scroll: false })}
               />
             )

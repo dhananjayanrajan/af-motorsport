@@ -26,20 +26,19 @@ export const StockIndicator: React.FC<{ product: Product }> = ({ product }) => {
   const isLowStock = stock > 0 && stock < 10
 
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center gap-2">
       <div
         className="size-2 rounded-full"
         style={{
-          backgroundColor: stock > 0 ? DESIGN_SYSTEM.COLORS.PRIMARY : '#ef4444',
-          boxShadow: stock > 0 ? `0 0 10px ${DESIGN_SYSTEM.COLORS.PRIMARY}` : 'none',
+          backgroundColor: stock > 0 ? DESIGN_SYSTEM.COLORS.PRIMARY : '#ef4444'
         }}
       />
-      <span className="text-[10px] font-black uppercase tracking-[0.2em] text-black italic">
+      <span className="text-xs font-bold uppercase tracking-widest text-black">
         {stock > 0
           ? isLowStock
-            ? `Limited Supply: ${stock} Units`
-            : 'Inventory Available'
-          : 'Currently Out of Stock'}
+            ? `Limited: ${stock} Units`
+            : 'In Stock'
+          : 'Out of Stock'}
       </span>
     </div>
   )

@@ -24,11 +24,7 @@ export default async function Page() {
 
   return (
     <main style={{ backgroundColor: DESIGN_SYSTEM.COLORS.ZINC_950 }}>
-      {/* <Hero season={data.hero} />
-      <SeasonPulse race={data.pulse} />
-      <LatestResult result={data.latestResult} />
-      <DriverSpotlight driver={data.spotlight} />
-      <Partners organizations={data.partners} /> */}
+      HOME PAGE
     </main>
   );
 }

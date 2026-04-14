@@ -8,34 +8,30 @@ export const Gallery: React.FC<{ gallery: any[] }> = ({ gallery }) => {
   const [api, setApi] = React.useState<CarouselApi>()
 
   const activeItem = gallery[current]
-  const slabClip = 'polygon(0 0, 100% 0, 100% calc(100% - 30px), calc(100% - 30px) 100%, 0 100%)'
 
   if (!activeItem || !activeItem.image) return null
 
   return (
-    <div className="flex flex-col gap-10">
-      <div
-        className="relative w-full aspect-square bg-white border border-zinc-100 overflow-hidden group"
-        style={{ clipPath: slabClip }}
-      >
+    <div className="flex flex-col gap-6">
+      <div className="relative w-full aspect-square bg-zinc-100 overflow-hidden">
         <Media
           resource={activeItem.image}
-          className="w-full h-full p-12 transition-all duration-1000 grayscale group-hover:grayscale-0"
-          imgClassName="w-full h-full object-contain scale-110 group-hover:scale-100"
+          className="w-full h-full p-6 md:p-10 transition-transform duration-700"
+          imgClassName="w-full h-full object-contain"
         />
       </div>
 
       <Carousel setApi={setApi} className="w-full" opts={{ align: 'start', loop: false }}>
-        <CarouselContent className="-ml-4">
+        <CarouselContent className="-ml-3">
           {gallery.map((item, i) => {
             const isActive = i === current
             return (
-              <CarouselItem className="basis-1/4 pl-4" key={i} onClick={() => setCurrent(i)}>
+              <CarouselItem className="basis-1/4 sm:basis-1/5 pl-3" key={i} onClick={() => setCurrent(i)}>
                 <div
-                  className={`relative aspect-square cursor-pointer border transition-all duration-300 p-2 ${isActive ? 'bg-zinc-900 border-zinc-900' : 'bg-white border-zinc-100 opacity-40 hover:opacity-100'
+                  className={`relative aspect-square cursor-pointer border-2 transition-all duration-200 p-1 ${isActive ? 'border-zinc-900 bg-white' : 'border-transparent bg-zinc-100'
                     }`}
                 >
-                  <Media resource={item.image} className="w-full h-full object-contain grayscale" />
+                  <Media resource={item.image} className="w-full h-full object-contain" />
                 </div>
               </CarouselItem>
             )
