@@ -1,9 +1,10 @@
 import configPromise from '@payload-config';
 import { getPayloadHMR } from '@payloadcms/next/utilities';
 import { notFound } from 'next/navigation';
+import LightboxGallery from '../../sections/Gallery';
+import SeriesHero from './sections/Hero';
+import SeasonsList from './sections/List';
 import Regulations from './sections/Regulations';
-import SeasonsList from './sections/SeasonsLIst';
-import SeriesIdentity from './sections/SeriesIdentity';
 
 interface PageProps {
     params: Promise<{
@@ -45,29 +46,38 @@ export default async function SeriesPage({ params }: PageProps) {
 
     const categoryIds = series.categories?.map((c: any) => (typeof c === 'object' ? c.id : c)) || [];
 
-    const regulationsResult = await payload.find({
-        collection: 'regulations',
-        where: {
-            categories: {
-                in: categoryIds,
+    let regulations: any[] = [];
+
+    if (categoryIds.length > 0) {
+        const regulationsResult = await payload.find({
+            collection: 'regulations',
+            where: {
+                categories: {
+                    in: categoryIds,
+                },
             },
-        },
-        depth: 1,
-    });
+            depth: 1,
+        });
+        regulations = regulationsResult.docs;
+    }
 
     return (
         <main className="min-h-screen bg-white">
-            <SeriesIdentity series={series} />
+            <SeriesHero series={series} />
 
             {seasonsResult.docs.length > 0 && (
-                <>
-                    <SeasonsList seasons={seasonsResult.docs} seriesSlug={slug} />
-                </>
+                <SeasonsList seasons={seasonsResult.docs} seriesSlug={slug} />
             )}
 
-            {regulationsResult.docs.length > 0 && (
-                <Regulations regulations={regulationsResult.docs} />
+            {regulations.length > 0 && (
+                <Regulations regulations={regulations} />
             )}
+
+            <LightboxGallery
+                items={seasonsResult.docs}
+                title="Gallery"
+                label="Media Assets"
+            />
         </main>
     );
 }

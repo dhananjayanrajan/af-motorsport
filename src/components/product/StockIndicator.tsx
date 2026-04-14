@@ -11,9 +11,7 @@ export const StockIndicator: React.FC<{ product: Product }> = ({ product }) => {
   const selectedVariant = useMemo(() => {
     if (product.enableVariants && variants.length) {
       const variantId = searchParams.get('variant')
-      return variants.find(
-        (v) => String(typeof v === 'object' ? v.id : v) === variantId
-      ) as Variant | undefined
+      return variants.find(v => String(typeof v === 'object' ? v.id : v) === variantId) as Variant | undefined
     }
     return undefined
   }, [product.enableVariants, searchParams, variants])
@@ -25,21 +23,23 @@ export const StockIndicator: React.FC<{ product: Product }> = ({ product }) => {
 
   if (product.enableVariants && !selectedVariant) return null
 
+  const isLowStock = stock > 0 && stock < 10
+
   return (
     <div className="flex items-center gap-3">
       <div
-        className="size-2.5"
+        className="size-2 rounded-full"
         style={{
-          backgroundColor: stock > 0 ? DESIGN_SYSTEM.COLORS.PRIMARY : '#dc2626',
-          boxShadow: stock > 0 ? `0 0 8px ${DESIGN_SYSTEM.COLORS.PRIMARY}` : 'none',
+          backgroundColor: stock > 0 ? DESIGN_SYSTEM.COLORS.PRIMARY : '#ef4444',
+          boxShadow: stock > 0 ? `0 0 10px ${DESIGN_SYSTEM.COLORS.PRIMARY}` : 'none',
         }}
       />
-      <span className="text-xs font-black uppercase tracking-widest text-zinc-400">
+      <span className="text-[10px] font-black uppercase tracking-[0.2em] text-black italic">
         {stock > 0
-          ? stock < 10
-            ? `Limited_Supply: ${stock}_Units`
-            : 'System_Ready'
-          : 'Stock_Depleted'}
+          ? isLowStock
+            ? `Limited Supply: ${stock} Units`
+            : 'Inventory Available'
+          : 'Currently Out of Stock'}
       </span>
     </div>
   )

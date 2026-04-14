@@ -1,10 +1,10 @@
 import { Championship, Circuit, Incident, Race, Season, Series } from '@/payload-types'
-import ChampionshipStandings from './sections/ChampionshipStandings'
-import CircuitBoard from './sections/CircuitBoard'
-import Incidents from './sections/Incidents'
-import RaceCalendar from './sections/RaceCalendar'
-import SeasonSelector from './sections/SeasonSelector'
-import SeasonsSection from './sections/SeasonsSection'
+import RaceCalendar from './sections/Calendar'
+import Incidents from './sections/Collapses'
+import LightboxGallery from './sections/Gallery'
+import ChampionshipTable from './sections/List'
+import CircuitBoard from './sections/Map'
+import SeasonSelector from './sections/Selector'
 
 interface CompetitionPageProps {
     searchParams: {
@@ -46,11 +46,7 @@ export default async function CompetitionPage({ searchParams }: CompetitionPageP
 
             <RaceCalendar races={filteredRaces} />
 
-            <SeasonsSection seasons={seasons} />
-
-            <ChampionshipStandings
-                championship={activeChampionship}
-            />
+            <ChampionshipTable championships={allChampionships} />
 
             <CircuitBoard
                 circuits={activeCircuits}
@@ -58,6 +54,12 @@ export default async function CompetitionPage({ searchParams }: CompetitionPageP
 
             <Incidents
                 incidents={allIncidents}
+            />
+
+            <LightboxGallery
+                items={allRaces}
+                title="Gallery"
+                label="Media Assets"
             />
         </main>
     )

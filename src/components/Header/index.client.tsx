@@ -143,7 +143,7 @@ export function HeaderClient({ header, socials }: { header: Header; socials: Soc
   const socialAccounts = useMemo(() => socials?.accounts?.filter((a: any) => a.visible !== false) || [], [socials?.accounts])
 
   return (
-    <div className="sticky top-0 left-0 w-full z-[9999] bg-white">
+    <div className="sticky top-0 left-0 w-full z-[110] bg-white">
       <div className="w-full h-1 bg-primary relative z-[100]" />
 
       <header

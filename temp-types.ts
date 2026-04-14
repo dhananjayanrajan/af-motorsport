@@ -55,6 +55,59 @@ export interface Series {
     createdAt: string;
 }
 
+// Season
+export interface Season {
+    id: number;
+    name: string;
+    alias?: string | null;
+    basics?: {
+        identifiers?: {
+            code?: string | null;
+            abbreviation?: string | null;
+        };
+        tagline?: string | null;
+        description?: string | null;
+    };
+    details: {
+        series: number | Series;
+        history?: {
+            root: {
+                type: string;
+                children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+            };
+            [k: string]: unknown;
+        } | null;
+        entries?: number | null;
+        races?: number | null;
+        notes?: string | null;
+    };
+    assets?: {
+        cover?: (number | null) | Media;
+        trailer?: (number | null) | Media;
+        gallery?: (number | Media)[] | null;
+        highlights?: (number | Media)[] | null;
+    };
+    seo?: {
+        title?: string | null;
+        image?: (number | null) | Media;
+        description?: string | null;
+    };
+    generateSlug?: boolean | null;
+    slug?: string | null;
+    categories?: (number | Category)[] | null;
+    tags?: (number | Tag)[] | null;
+    updatedAt: string;
+    createdAt: string;
+}
+
 // Media
 export interface Media {
     id: number;
@@ -124,59 +177,6 @@ export interface Tag {
     basics?: {
         description?: string | null;
         context?: string | null;
-    };
-    seo?: {
-        title?: string | null;
-        image?: (number | null) | Media;
-        description?: string | null;
-    };
-    generateSlug?: boolean | null;
-    slug?: string | null;
-    categories?: (number | Category)[] | null;
-    tags?: (number | Tag)[] | null;
-    updatedAt: string;
-    createdAt: string;
-}
-
-// Season
-export interface Season {
-    id: number;
-    name: string;
-    alias?: string | null;
-    basics?: {
-        identifiers?: {
-            code?: string | null;
-            abbreviation?: string | null;
-        };
-        tagline?: string | null;
-        description?: string | null;
-    };
-    details: {
-        series: number | Series;
-        history?: {
-            root: {
-                type: string;
-                children: {
-                    type: any;
-                    version: number;
-                    [k: string]: unknown;
-                }[];
-                direction: ('ltr' | 'rtl') | null;
-                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-                indent: number;
-                version: number;
-            };
-            [k: string]: unknown;
-        } | null;
-        entries?: number | null;
-        races?: number | null;
-        notes?: string | null;
-    };
-    assets?: {
-        cover?: (number | null) | Media;
-        trailer?: (number | null) | Media;
-        gallery?: (number | Media)[] | null;
-        highlights?: (number | Media)[] | null;
     };
     seo?: {
         title?: string | null;
@@ -527,329 +527,6 @@ export interface Country {
     createdAt: string;
 }
 
-// Organization
-export interface Organization {
-    id: number;
-    name: string;
-    alias?: string | null;
-    basics?: {
-        identifiers?: {
-            code?: string | null;
-        };
-        tagline?: string | null;
-        description?: string | null;
-        type?:
-        | (
-            | 'Sponsors'
-            | 'Investors'
-            | 'Partners'
-            | 'Supporters'
-            | 'Promoters'
-            | 'Organizers'
-            | 'Media'
-            | 'Government'
-            | 'NGO'
-            | 'Developers'
-            | 'Distributors'
-            | 'Retailers'
-            | 'Manufacturers'
-            | 'Suppliers'
-            | 'Providers'
-            | 'Recipients'
-            | 'Others'
-        )
-        | null;
-        industry?:
-        | (
-            | 'Aerospace'
-            | 'Agriculture'
-            | 'AI & Machine Learning'
-            | 'Apparel & Fashion'
-            | 'Automotive'
-            | 'Banking & Finance'
-            | 'Betting & Gambling'
-            | 'Blockchain & Crypto'
-            | 'Chemicals'
-            | 'Cloud Computing'
-            | 'Construction'
-            | 'Consulting'
-            | 'Cybersecurity'
-            | 'Data Analytics'
-            | 'E-commerce'
-            | 'Education'
-            | 'Electronics'
-            | 'Energy & Utilities'
-            | 'Engineering'
-            | 'Entertainment'
-            | 'Environmental Services'
-            | 'Esports & Gaming'
-            | 'Event Management'
-            | 'Fitness & Wellness'
-            | 'Food & Beverage'
-            | 'Government'
-            | 'Healthcare'
-            | 'Hospitality'
-            | 'Human Resources'
-            | 'Insurance'
-            | 'Legal Services'
-            | 'Logistics & Supply Chain'
-            | 'Lubricants'
-            | 'Luxury Goods'
-            | 'Manufacturing'
-            | 'Marketing & Advertising'
-            | 'Materials Science'
-            | 'Media & Broadcasting'
-            | 'Mining'
-            | 'Non-Profit'
-            | 'Oil & Gas'
-            | 'Pharmaceuticals'
-            | 'Printing & Publishing'
-            | 'Property'
-            | 'Public Sector'
-            | 'Railway'
-            | 'Real Estate'
-            | 'Retail'
-            | 'Security'
-            | 'Shipping'
-            | 'Sports'
-            | 'Telecommunications'
-            | 'Textiles'
-            | 'Tourism'
-            | 'Transportation'
-            | 'Utilities'
-        )
-        | null;
-    };
-    details?: {
-        history?: {
-            root: {
-                type: string;
-                children: {
-                    type: any;
-                    version: number;
-                    [k: string]: unknown;
-                }[];
-                direction: ('ltr' | 'rtl') | null;
-                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-                indent: number;
-                version: number;
-            };
-            [k: string]: unknown;
-        } | null;
-        founded?: string | null;
-        merged?: string | null;
-        rebranded?: string | null;
-        defunct?: string | null;
-        prestige?: ('Unknown' | 'Emerging' | 'Established' | 'Prestigious' | 'Iconic') | null;
-        impact?:
-        | (
-            | 'Low'
-            | 'Medium'
-            | 'Deep'
-            | 'Heavy'
-            | 'Profound'
-            | 'Rare'
-            | 'Catastrophic'
-            | 'Moderate'
-            | 'Minor'
-            | 'Negligible'
-            | 'Major'
-            | 'Severe'
-            | 'Permanent'
-            | 'Temporary'
-        )
-        | null;
-        benefits?: {
-            list?:
-            | {
-                name?: string | null;
-                description?: string | null;
-                type?: string | null;
-                id?: string | null;
-            }[]
-            | null;
-        };
-        websites?: {
-            list?:
-            | {
-                name?: string | null;
-                path?: string | null;
-                description?: string | null;
-                id?: string | null;
-            }[]
-            | null;
-        };
-        socials?: {
-            list?:
-            | {
-                platform?:
-                | (
-                    | 'Twitter'
-                    | 'Instagram'
-                    | 'Facebook'
-                    | 'LinkedIn'
-                    | 'TikTok'
-                    | 'YouTube'
-                    | 'Twitch'
-                    | 'Discord'
-                    | 'Telegram'
-                    | 'WhatsApp'
-                )
-                | null;
-                username?: string | null;
-                description?: string | null;
-                id?: string | null;
-            }[]
-            | null;
-        };
-    };
-    assets?: {
-        logo?: (number | null) | Media;
-        alt_logo?: (number | null) | Media;
-    };
-    seo?: {
-        title?: string | null;
-        image?: (number | null) | Media;
-        description?: string | null;
-    };
-    generateSlug?: boolean | null;
-    slug?: string | null;
-    categories?: (number | Category)[] | null;
-    tags?: (number | Tag)[] | null;
-    updatedAt: string;
-    createdAt: string;
-}
-
-// Driver
-export interface Driver {
-    id: number;
-    first_name: string;
-    middle_name?: string | null;
-    last_name: string;
-    alias?: string | null;
-    basics?: {
-        racing_number?: number | null;
-        nickname?: string | null;
-        competition_name?: string | null;
-        callsign?: string | null;
-        catchphrase?: string | null;
-        birth_date?: string | null;
-        debut_date?: string | null;
-        retirement_date?: string | null;
-        nationality?: (number | null) | Country;
-        gender?: ('Male' | 'Female' | 'NonBinary' | 'Undisclosed') | null;
-        pronouns?: string | null;
-    };
-    details?: {
-        story?: {
-            root: {
-                type: string;
-                children: {
-                    type: any;
-                    version: number;
-                    [k: string]: unknown;
-                }[];
-                direction: ('ltr' | 'rtl') | null;
-                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-                indent: number;
-                version: number;
-            };
-            [k: string]: unknown;
-        } | null;
-        biography?: {
-            root: {
-                type: string;
-                children: {
-                    type: any;
-                    version: number;
-                    [k: string]: unknown;
-                }[];
-                direction: ('ltr' | 'rtl') | null;
-                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-                indent: number;
-                version: number;
-            };
-            [k: string]: unknown;
-        } | null;
-        addresses?: {
-            list?:
-            | {
-                name?: string | null;
-                label?: string | null;
-                description?: string | null;
-                location?: [number, number] | null;
-                id?: string | null;
-            }[]
-            | null;
-        };
-        websites?: {
-            list?:
-            | {
-                name?: string | null;
-                path?: string | null;
-                description?: string | null;
-                id?: string | null;
-            }[]
-            | null;
-        };
-        socials?: {
-            list?:
-            | {
-                platform?:
-                | (
-                    | 'Twitter'
-                    | 'Instagram'
-                    | 'Threads'
-                    | 'Facebook'
-                    | 'LinkedIn'
-                    | 'TikTok'
-                    | 'YouTube'
-                    | 'Twitch'
-                    | 'Discord'
-                    | 'Reddit'
-                    | 'Telegram'
-                    | 'WhatsApp'
-                )
-                | null;
-                username?: string | null;
-                description?: string | null;
-                id?: string | null;
-            }[]
-            | null;
-        };
-        skills?: (number | Skill)[] | null;
-        points?: (number | Point)[] | null;
-        results?: (number | Result)[] | null;
-        awards?: (number | Award)[] | null;
-        cars?: (number | Car)[] | null;
-    };
-    assets?: {
-        avatar?: (number | null) | Media;
-        autograph?: (number | null) | Media;
-        cover?: (number | null) | Media;
-        gallery?: {
-            list?:
-            | {
-                image: number | Media;
-                caption?: string | null;
-                id?: string | null;
-            }[]
-            | null;
-        };
-    };
-    seo?: {
-        title?: string | null;
-        image?: (number | null) | Media;
-        description?: string | null;
-    };
-    generateSlug?: boolean | null;
-    slug?: string | null;
-    categories?: (number | Category)[] | null;
-    tags?: (number | Tag)[] | null;
-    updatedAt: string;
-    createdAt: string;
-}
-
 // Skill
 export interface Skill {
     id: number;
@@ -1015,56 +692,6 @@ export interface Car {
         gallery?: (number | Media)[] | null;
         video?: (number | null) | Media;
         documents?: (number | Media)[] | null;
-    };
-    seo?: {
-        title?: string | null;
-        image?: (number | null) | Media;
-        description?: string | null;
-    };
-    generateSlug?: boolean | null;
-    slug?: string | null;
-    categories?: (number | Category)[] | null;
-    tags?: (number | Tag)[] | null;
-    updatedAt: string;
-    createdAt: string;
-}
-
-// Member
-export interface Member {
-    id: number;
-    first_name: string;
-    middle_name?: string | null;
-    last_name: string;
-    alias?: string | null;
-    basics?: {
-        nickname?: string | null;
-        description?: string | null;
-        gender?: ('Male' | 'Female' | 'NonBinary' | 'Undisclosed') | null;
-        pronouns?: string | null;
-        nationality?: (number | null) | Country;
-        birth_date?: string | null;
-        joining_date?: string | null;
-        retirement_date?: string | null;
-    };
-    details?: {
-        duties?: string | null;
-        skills?: (number | Skill)[] | null;
-        trainings?: (number | Training)[] | null;
-        addresses?: {
-            list?:
-            | {
-                name?: string | null;
-                label?: string | null;
-                description?: string | null;
-                location?: [number, number] | null;
-                id?: string | null;
-            }[]
-            | null;
-        };
-    };
-    assets?: {
-        avatar?: (number | null) | Media;
-        cover?: (number | null) | Media;
     };
     seo?: {
         title?: string | null;
@@ -1322,6 +949,27 @@ export interface Race {
     createdAt: string;
 }
 
+// Designation
+export interface Designation {
+    id: number;
+    name: string;
+    alias?: string | null;
+    basics?: {
+        description?: string | null;
+    };
+    seo?: {
+        title?: string | null;
+        image?: (number | null) | Media;
+        description?: string | null;
+    };
+    generateSlug?: boolean | null;
+    slug?: string | null;
+    categories?: (number | Category)[] | null;
+    tags?: (number | Tag)[] | null;
+    updatedAt: string;
+    createdAt: string;
+}
+
 // Team
 export interface Team {
     id: number;
@@ -1356,6 +1004,136 @@ export interface Team {
         logo?: (number | null) | Media;
         cover?: (number | null) | Media;
         gallery?: (number | Media)[] | null;
+    };
+    seo?: {
+        title?: string | null;
+        image?: (number | null) | Media;
+        description?: string | null;
+    };
+    generateSlug?: boolean | null;
+    slug?: string | null;
+    categories?: (number | Category)[] | null;
+    tags?: (number | Tag)[] | null;
+    updatedAt: string;
+    createdAt: string;
+}
+
+// Driver
+export interface Driver {
+    id: number;
+    first_name: string;
+    middle_name?: string | null;
+    last_name: string;
+    alias?: string | null;
+    basics?: {
+        racing_number?: number | null;
+        nickname?: string | null;
+        competition_name?: string | null;
+        callsign?: string | null;
+        catchphrase?: string | null;
+        birth_date?: string | null;
+        debut_date?: string | null;
+        retirement_date?: string | null;
+        nationality?: (number | null) | Country;
+        gender?: ('Male' | 'Female' | 'NonBinary' | 'Undisclosed') | null;
+        pronouns?: string | null;
+    };
+    details?: {
+        story?: {
+            root: {
+                type: string;
+                children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+            };
+            [k: string]: unknown;
+        } | null;
+        biography?: {
+            root: {
+                type: string;
+                children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+            };
+            [k: string]: unknown;
+        } | null;
+        addresses?: {
+            list?:
+            | {
+                name?: string | null;
+                label?: string | null;
+                description?: string | null;
+                location?: [number, number] | null;
+                id?: string | null;
+            }[]
+            | null;
+        };
+        websites?: {
+            list?:
+            | {
+                name?: string | null;
+                path?: string | null;
+                description?: string | null;
+                id?: string | null;
+            }[]
+            | null;
+        };
+        socials?: {
+            list?:
+            | {
+                platform?:
+                | (
+                    | 'Twitter'
+                    | 'Instagram'
+                    | 'Threads'
+                    | 'Facebook'
+                    | 'LinkedIn'
+                    | 'TikTok'
+                    | 'YouTube'
+                    | 'Twitch'
+                    | 'Discord'
+                    | 'Reddit'
+                    | 'Telegram'
+                    | 'WhatsApp'
+                )
+                | null;
+                username?: string | null;
+                description?: string | null;
+                id?: string | null;
+            }[]
+            | null;
+        };
+        skills?: (number | Skill)[] | null;
+        points?: (number | Point)[] | null;
+        results?: (number | Result)[] | null;
+        awards?: (number | Award)[] | null;
+        cars?: (number | Car)[] | null;
+    };
+    assets?: {
+        avatar?: (number | null) | Media;
+        autograph?: (number | null) | Media;
+        cover?: (number | null) | Media;
+        gallery?: {
+            list?:
+            | {
+                image: number | Media;
+                caption?: string | null;
+                id?: string | null;
+            }[]
+            | null;
+        };
     };
     seo?: {
         title?: string | null;
@@ -1474,13 +1252,235 @@ export interface Leader {
     createdAt: string;
 }
 
-// Designation
-export interface Designation {
+// Member
+export interface Member {
+    id: number;
+    first_name: string;
+    middle_name?: string | null;
+    last_name: string;
+    alias?: string | null;
+    basics?: {
+        nickname?: string | null;
+        description?: string | null;
+        gender?: ('Male' | 'Female' | 'NonBinary' | 'Undisclosed') | null;
+        pronouns?: string | null;
+        nationality?: (number | null) | Country;
+        birth_date?: string | null;
+        joining_date?: string | null;
+        retirement_date?: string | null;
+    };
+    details?: {
+        duties?: string | null;
+        skills?: (number | Skill)[] | null;
+        trainings?: (number | Training)[] | null;
+        addresses?: {
+            list?:
+            | {
+                name?: string | null;
+                label?: string | null;
+                description?: string | null;
+                location?: [number, number] | null;
+                id?: string | null;
+            }[]
+            | null;
+        };
+    };
+    assets?: {
+        avatar?: (number | null) | Media;
+        cover?: (number | null) | Media;
+    };
+    seo?: {
+        title?: string | null;
+        image?: (number | null) | Media;
+        description?: string | null;
+    };
+    generateSlug?: boolean | null;
+    slug?: string | null;
+    categories?: (number | Category)[] | null;
+    tags?: (number | Tag)[] | null;
+    updatedAt: string;
+    createdAt: string;
+}
+
+// Organization
+export interface Organization {
     id: number;
     name: string;
     alias?: string | null;
     basics?: {
+        identifiers?: {
+            code?: string | null;
+        };
+        tagline?: string | null;
         description?: string | null;
+        type?:
+        | (
+            | 'Sponsors'
+            | 'Investors'
+            | 'Partners'
+            | 'Supporters'
+            | 'Promoters'
+            | 'Organizers'
+            | 'Media'
+            | 'Government'
+            | 'NGO'
+            | 'Developers'
+            | 'Distributors'
+            | 'Retailers'
+            | 'Manufacturers'
+            | 'Suppliers'
+            | 'Providers'
+            | 'Recipients'
+            | 'Others'
+        )
+        | null;
+        industry?:
+        | (
+            | 'Aerospace'
+            | 'Agriculture'
+            | 'AI & Machine Learning'
+            | 'Apparel & Fashion'
+            | 'Automotive'
+            | 'Banking & Finance'
+            | 'Betting & Gambling'
+            | 'Blockchain & Crypto'
+            | 'Chemicals'
+            | 'Cloud Computing'
+            | 'Construction'
+            | 'Consulting'
+            | 'Cybersecurity'
+            | 'Data Analytics'
+            | 'E-commerce'
+            | 'Education'
+            | 'Electronics'
+            | 'Energy & Utilities'
+            | 'Engineering'
+            | 'Entertainment'
+            | 'Environmental Services'
+            | 'Esports & Gaming'
+            | 'Event Management'
+            | 'Fitness & Wellness'
+            | 'Food & Beverage'
+            | 'Government'
+            | 'Healthcare'
+            | 'Hospitality'
+            | 'Human Resources'
+            | 'Insurance'
+            | 'Legal Services'
+            | 'Logistics & Supply Chain'
+            | 'Lubricants'
+            | 'Luxury Goods'
+            | 'Manufacturing'
+            | 'Marketing & Advertising'
+            | 'Materials Science'
+            | 'Media & Broadcasting'
+            | 'Mining'
+            | 'Non-Profit'
+            | 'Oil & Gas'
+            | 'Pharmaceuticals'
+            | 'Printing & Publishing'
+            | 'Property'
+            | 'Public Sector'
+            | 'Railway'
+            | 'Real Estate'
+            | 'Retail'
+            | 'Security'
+            | 'Shipping'
+            | 'Sports'
+            | 'Telecommunications'
+            | 'Textiles'
+            | 'Tourism'
+            | 'Transportation'
+            | 'Utilities'
+        )
+        | null;
+    };
+    details?: {
+        history?: {
+            root: {
+                type: string;
+                children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+            };
+            [k: string]: unknown;
+        } | null;
+        founded?: string | null;
+        merged?: string | null;
+        rebranded?: string | null;
+        defunct?: string | null;
+        prestige?: ('Unknown' | 'Emerging' | 'Established' | 'Prestigious' | 'Iconic') | null;
+        impact?:
+        | (
+            | 'Low'
+            | 'Medium'
+            | 'Deep'
+            | 'Heavy'
+            | 'Profound'
+            | 'Rare'
+            | 'Catastrophic'
+            | 'Moderate'
+            | 'Minor'
+            | 'Negligible'
+            | 'Major'
+            | 'Severe'
+            | 'Permanent'
+            | 'Temporary'
+        )
+        | null;
+        benefits?: {
+            list?:
+            | {
+                name?: string | null;
+                description?: string | null;
+                type?: string | null;
+                id?: string | null;
+            }[]
+            | null;
+        };
+        websites?: {
+            list?:
+            | {
+                name?: string | null;
+                path?: string | null;
+                description?: string | null;
+                id?: string | null;
+            }[]
+            | null;
+        };
+        socials?: {
+            list?:
+            | {
+                platform?:
+                | (
+                    | 'Twitter'
+                    | 'Instagram'
+                    | 'Facebook'
+                    | 'LinkedIn'
+                    | 'TikTok'
+                    | 'YouTube'
+                    | 'Twitch'
+                    | 'Discord'
+                    | 'Telegram'
+                    | 'WhatsApp'
+                )
+                | null;
+                username?: string | null;
+                description?: string | null;
+                id?: string | null;
+            }[]
+            | null;
+        };
+    };
+    assets?: {
+        logo?: (number | null) | Media;
+        alt_logo?: (number | null) | Media;
     };
     seo?: {
         title?: string | null;
@@ -2160,6 +2160,53 @@ export interface Celebration {
     createdAt: string;
 }
 
+// Incident
+export interface Incident {
+    id: number;
+    name: string;
+    alias?: string | null;
+    basics?: {
+        description?: string | null;
+    };
+    details?: {
+        date_time?: string | null;
+        story?: {
+            root: {
+                type: string;
+                children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+            };
+            [k: string]: unknown;
+        } | null;
+        location?: [number, number] | null;
+        cars?: (number | Car)[] | null;
+        drivers?: (number | Driver)[] | null;
+    };
+    assets?: {
+        thumbnail?: (number | null) | Media;
+        video?: (number | null) | Media;
+        gallery?: (number | Media)[] | null;
+    };
+    seo?: {
+        title?: string | null;
+        image?: (number | null) | Media;
+        description?: string | null;
+    };
+    generateSlug?: boolean | null;
+    slug?: string | null;
+    categories?: (number | Category)[] | null;
+    tags?: (number | Tag)[] | null;
+    updatedAt: string;
+    createdAt: string;
+}
+
 // Interview
 export interface Interview {
     id: number;
@@ -2202,53 +2249,6 @@ export interface Interview {
         audio?: (number | null) | Media;
         gallery?: (number | Media)[] | null;
         documents?: (number | Media)[] | null;
-    };
-    seo?: {
-        title?: string | null;
-        image?: (number | null) | Media;
-        description?: string | null;
-    };
-    generateSlug?: boolean | null;
-    slug?: string | null;
-    categories?: (number | Category)[] | null;
-    tags?: (number | Tag)[] | null;
-    updatedAt: string;
-    createdAt: string;
-}
-
-// Incident
-export interface Incident {
-    id: number;
-    name: string;
-    alias?: string | null;
-    basics?: {
-        description?: string | null;
-    };
-    details?: {
-        date_time?: string | null;
-        story?: {
-            root: {
-                type: string;
-                children: {
-                    type: any;
-                    version: number;
-                    [k: string]: unknown;
-                }[];
-                direction: ('ltr' | 'rtl') | null;
-                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-                indent: number;
-                version: number;
-            };
-            [k: string]: unknown;
-        } | null;
-        location?: [number, number] | null;
-        cars?: (number | Car)[] | null;
-        drivers?: (number | Driver)[] | null;
-    };
-    assets?: {
-        thumbnail?: (number | null) | Media;
-        video?: (number | null) | Media;
-        gallery?: (number | Media)[] | null;
     };
     seo?: {
         title?: string | null;

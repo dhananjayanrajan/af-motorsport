@@ -37,7 +37,7 @@ export function AddToCart({ product }: Props) {
         product: product.id,
         variant: selectedVariant?.id ?? undefined,
       }).then(() => {
-        toast.success('Item added to cart.')
+        toast.success('Item added to cart')
       })
     },
     [addItem, product, selectedVariant],
@@ -71,16 +71,19 @@ export function AddToCart({ product }: Props) {
       onClick={addToCart}
       type="submit"
       className={cn(
-        "relative group h-14 w-full md:w-64 overflow-hidden transition-all duration-300",
-        disabled || isLoading ? "opacity-50 grayscale cursor-not-allowed" : "cursor-pointer"
+        "relative group h-14 w-full md:w-72 overflow-hidden transition-all duration-300",
+        disabled || isLoading ? "opacity-40 grayscale cursor-not-allowed" : "cursor-pointer active:scale-[0.98]"
       )}
-      style={{ clipPath: 'polygon(10% 0%, 100% 0%, 90% 100%, 0% 100%)' }}
+      style={{ clipPath: 'polygon(0 0, 100% 0, 92% 100%, 0% 100%)' }}
     >
-      <div className={cn("absolute inset-0 transition-transform duration-500 group-hover:scale-105 group-active:scale-95", `bg-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`)} />
-      <div className="relative z-10 flex items-center justify-center gap-3 text-white">
-        <ShoppingCart className="h-4 w-4 fill-current" />
-        <span className="text-xs font-black uppercase tracking-[0.4em] italic">
-          {disabled ? 'Out of Stock' : 'Add To Cart'}
+      <div
+        className="absolute inset-0 transition-transform duration-500 group-hover:scale-110"
+        style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY }}
+      />
+      <div className="relative z-10 flex items-center justify-center gap-4 text-white">
+        <ShoppingCart className="size-4" strokeWidth={2.5} />
+        <span className="text-xs font-black uppercase tracking-[0.2em] italic">
+          {disabled ? 'Out of Stock' : 'Add to Cart'}
         </span>
       </div>
     </button>

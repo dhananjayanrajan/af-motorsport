@@ -2,8 +2,6 @@ import localFont from 'next/font/local'
 import type { ReactNode } from 'react'
 
 import { AdminBar } from '@/components/AdminBar'
-import { Footer } from '@/components/Footer'
-import { Header } from '@/components/Header'
 import { LivePreviewListener } from '@/components/LivePreviewListener'
 import { Providers } from '@/providers'
 import { InitTheme } from '@/providers/Theme/InitTheme'
@@ -11,6 +9,8 @@ import { GeistMono } from 'geist/font/mono'
 import { GeistSans } from 'geist/font/sans'
 import { Mail } from 'lucide-react'
 
+import { Footer } from '@/components/Footer'
+import { Header } from '@/components/Header'
 import './globals.css'
 
 const brunoAce = localFont({

@@ -25,7 +25,7 @@ export const CheckoutAddresses: React.FC<Props> = ({
 
   return (
     <div className="space-y-12">
-      <div className="border-l-2 border-[#00FF41] pl-6 mb-12 shadow-[0_0_15px_rgba(0,255,65,0.1)]">
+      <div className="border-l-2 border-primary pl-6 mb-12">
         <h3 className="text-[11px] font-black uppercase tracking-[0.5em] text-white italic mb-1">{heading}</h3>
         <p className="text-[9px] font-bold text-zinc-600 uppercase tracking-widest">{description}</p>
       </div>
@@ -45,19 +45,19 @@ export const CheckoutAddresses: React.FC<Props> = ({
             showAddForm ? "text-black" : "text-white group-hover:text-black"
           )}>
             {showAddForm ? (
-              <><X className="h-3 w-3" /> Cancel_Entry</>
+              <><X className="h-3 w-3" /> Cancel</>
             ) : (
-              <><Plus className="h-3 w-3 text-[#00FF41]" /> Add_Coordinate</>
+              <><Plus className="h-3 w-3 text-primary" /> Add New Address</>
             )}
           </span>
         </button>
       </div>
 
       {showAddForm && (
-        <div className="border-l border-[#00FF41] pl-8 md:pl-16 py-4 animate-in fade-in slide-in-from-top-4 duration-500 shadow-[inset_10px_0_20px_-15px_rgba(0,255,65,0.2)]">
+        <div className="border-l border-primary pl-8 md:pl-16 py-4 animate-in fade-in slide-in-from-top-4 duration-500">
           <div className="mb-10">
             <span className="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-600">
-              Initialize_Manual_Input
+              Input Form
             </span>
           </div>
           <AddressForm callback={(newAddress) => {
@@ -71,7 +71,7 @@ export const CheckoutAddresses: React.FC<Props> = ({
         {!addresses || addresses.length === 0 ? (
           <div className="py-20 border-t border-zinc-900">
             <p className="text-[10px] font-black uppercase tracking-[0.5em] text-zinc-800 italic">
-              No_Coordinates_Registered
+              No Addresses Registered
             </p>
           </div>
         ) : (
@@ -87,26 +87,26 @@ export const CheckoutAddresses: React.FC<Props> = ({
                   >
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 w-full relative z-10">
                       <div className="flex items-center gap-5">
-                        <MapPin className="h-4 w-4 text-zinc-700 group-hover:text-[#00FF41] transition-colors drop-shadow-[0_0_5px_rgba(0,255,65,0.3)]" />
+                        <MapPin className="h-4 w-4 text-zinc-700 group-hover:text-primary transition-colors" />
                         <div className="flex flex-col min-w-0">
                           <span className="text-[11px] font-black uppercase tracking-[0.2em] text-white italic leading-none truncate">
-                            {address.title || 'UNNAMED_LOC'}
+                            {address.title || 'Address'}
                           </span>
                           <span className="text-[8px] font-bold uppercase tracking-tighter text-zinc-700 mt-2">
-                            REF: {address.id?.toString().substring(0, 8).toUpperCase() || 'LOG-00'}
+                            ID: {address.id?.toString().substring(0, 8).toUpperCase() || '00'}
                           </span>
                         </div>
                       </div>
 
                       <div className="flex flex-col justify-center border-l border-zinc-900/50 pl-8">
-                        <span className="text-[8px] font-black uppercase tracking-[0.4em] text-zinc-700 mb-1">Vector</span>
+                        <span className="text-[8px] font-black uppercase tracking-[0.4em] text-zinc-700 mb-1">Street</span>
                         <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest truncate">
                           {address.addressLine1}, {address.city}
                         </p>
                       </div>
 
                       <div className="flex flex-col justify-center border-l border-zinc-900/50 pl-8">
-                        <span className="text-[8px] font-black uppercase tracking-[0.4em] text-zinc-700 mb-1">Designee</span>
+                        <span className="text-[8px] font-black uppercase tracking-[0.4em] text-zinc-700 mb-1">Recipient</span>
                         <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
                           {address.firstName} {address.lastName}
                         </p>
@@ -126,8 +126,8 @@ export const CheckoutAddresses: React.FC<Props> = ({
                   >
                     <div className="absolute inset-0 bg-white translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300" />
                     <div className="flex items-center gap-3 relative z-10 text-white group-hover/btn:text-black transition-colors duration-300">
-                      <ChevronRight className="h-3 w-3 group-hover/btn:drop-shadow-[0_0_8px_rgba(0,0,0,0.5)]" />
-                      <span className="text-[10px] font-black uppercase tracking-[0.4em] italic">Select_Node</span>
+                      <ChevronRight className="h-3 w-3" />
+                      <span className="text-[10px] font-black uppercase tracking-[0.4em] italic">Select</span>
                     </div>
                   </button>
                 </div>
