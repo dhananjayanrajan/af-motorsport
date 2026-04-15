@@ -11,6 +11,7 @@ import { Mail } from 'lucide-react'
 
 import { Footer } from '@/components/Footer'
 import { Header } from '@/components/Header'
+import Loader from '@/components/Loader'
 import './globals.css'
 
 const brunoAce = localFont({
@@ -51,6 +52,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
       </head>
       <body>
         <Providers>
+          <Loader />
           <AdminBar />
           <LivePreviewListener />
 

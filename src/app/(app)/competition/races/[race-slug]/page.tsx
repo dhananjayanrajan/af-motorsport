@@ -40,10 +40,17 @@ export default async function RacePage({ params }: PageProps) {
     const race = raceData.docs?.[0];
     if (!race) notFound();
 
-    const [entriesData, resultsData] = await Promise.all([
-        safeFetch(`${url}/api/entries?where[details.session][equals]=${race.id}&sort=details.finish_position&depth=2`),
-        safeFetch(`${url}/api/results?where[categories.slug][equals]=${race.slug}&sort=details.overall&depth=1`)
-    ]);
+    const sessionsData = await safeFetch(`${url}/api/sessions?where[details.race][equals]=${race.id}&depth=1`);
+    const sessions = sessionsData.docs || [];
+    const sessionIds = sessions.map((s: any) => s.id);
+
+    let entriesDocs: any[] = [];
+    if (sessionIds.length > 0) {
+        const entriesData = await safeFetch(`${url}/api/entries?where[details.session][in]=${sessionIds.join(',')}&sort=details.finish_position&depth=2`);
+        entriesDocs = entriesData.docs || [];
+    }
+
+    const resultsData = await safeFetch(`${url}/api/results?where[race][equals]=${race.id}&sort=details.overall&depth=1`);
 
     return (
         <main className="min-h-screen bg-white">
@@ -53,8 +60,8 @@ export default async function RacePage({ params }: PageProps) {
                 <ClassificationTable results={resultsData.docs} />
             )}
 
-            {(entriesData.docs || []).length > 0 && (
-                <EntryStackedGrid entries={entriesData.docs} />
+            {entriesDocs.length > 0 && (
+                <EntryStackedGrid entries={entriesDocs} />
             )}
         </main>
     );

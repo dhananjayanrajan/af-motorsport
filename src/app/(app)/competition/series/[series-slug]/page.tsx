@@ -44,8 +44,7 @@ export default async function SeriesPage({ params }: PageProps) {
     let regulationsDocs: any[] = [];
 
     if (categoryIds.length > 0) {
-        const categoryQuery = categoryIds.map((id: string | number) => `where[categories][in]=${id}`).join('&');
-        const regulationsData = await safeFetch(`${url}/api/regulations?${categoryQuery}&depth=1`);
+        const regulationsData = await safeFetch(`${url}/api/regulations?where[categories][in]=${categoryIds.join(',')}&depth=1`);
         regulationsDocs = regulationsData.docs || [];
     }
 

@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/sheet'
 import { DESIGN_SYSTEM } from '@/lib/constants'
 import { useCart } from '@payloadcms/plugin-ecommerce/client/react'
-import { ShoppingCart } from 'lucide-react'
+import { ShoppingBag } from 'lucide-react'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { useEffect, useMemo, useState } from 'react'
@@ -33,8 +33,6 @@ export function CartModal() {
     return cart.items.reduce((quantity, item) => (item?.quantity || 0) + quantity, 0)
   }, [cart])
 
-  const slabClip = 'polygon(0 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%)'
-
   return (
     <Sheet onOpenChange={setIsOpen} open={isOpen}>
       <SheetTrigger asChild>
@@ -43,27 +41,37 @@ export function CartModal() {
 
       <SheetContent
         className="flex flex-col bg-white border-l p-0 outline-none w-full sm:max-w-md z-[112]"
-        style={{ borderColor: DESIGN_SYSTEM.COLORS.PRIMARY_MUTED }}
+        style={{ borderColor: DESIGN_SYSTEM.COLORS.ZINC[200] }}
       >
-        <SheetHeader className="p-8 border-b bg-white" style={{ borderColor: DESIGN_SYSTEM.COLORS.PRIMARY_MUTED }}>
-          <div className="space-y-1">
-            <SheetTitle className="text-3xl font-black italic uppercase tracking-tighter text-black leading-none">
-              Shopping Cart
+        <SheetHeader className="p-8 border-b bg-white relative overflow-hidden" style={{ borderColor: DESIGN_SYSTEM.COLORS.ZINC[200] }}>
+          <div
+            className="absolute top-0 left-0 w-full h-1"
+            style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}
+          />
+          <div className="space-y-1 relative z-10">
+            <SheetTitle
+              className="text-3xl font-black italic uppercase tracking-tighter text-black leading-none"
+              style={{ textShadow: `0 0 15px ${DESIGN_SYSTEM.COLORS.PRIMARY.GLOW}` }}
+            >
+              Your Cart
             </SheetTitle>
-            <SheetDescription className="text-[10px] uppercase font-bold text-zinc-500 tracking-widest">
-              Review items and quantity before checkout
+            <SheetDescription className="text-[10px] uppercase font-black text-zinc-400 tracking-[0.2em]">
+              Review Manifest / {totalQuantity || 0} Items
             </SheetDescription>
           </div>
         </SheetHeader>
 
         {!cart || !cart.items || cart.items.length === 0 ? (
-          <div className="grow flex flex-col items-center justify-center p-12 text-center">
-            <ShoppingCart className="size-10 text-zinc-200 mb-4" strokeWidth={1.5} />
-            <p className="text-xs font-bold uppercase tracking-widest text-zinc-400">Cart is empty</p>
+          <div className="grow flex flex-col items-center justify-center p-12 text-center bg-zinc-50">
+            <div className="relative mb-6">
+              <ShoppingBag className="size-12 text-zinc-200" strokeWidth={1} />
+              <div className="absolute inset-0 blur-2xl bg-primary/10 rounded-full" />
+            </div>
+            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400">Empty Inventory</p>
           </div>
         ) : (
-          <div className="grow flex flex-col overflow-hidden bg-zinc-50">
-            <ul className="grow overflow-auto py-6 px-6 space-y-4 no-scrollbar">
+          <div className="grow flex flex-col overflow-hidden bg-zinc-50/50">
+            <ul className="grow overflow-auto py-6 px-6 space-y-3 no-scrollbar">
               {cart.items.map((item, i) => {
                 if (!item || !item.product || typeof item.product !== 'object') return null
 
@@ -80,44 +88,51 @@ export function CartModal() {
                 return (
                   <li
                     key={`${productId}-${i}`}
-                    className="relative bg-white border p-1 shadow-sm transition-colors hover:border-zinc-300"
+                    className="group relative bg-white border p-0 transition-all duration-300 hover:border-black skew-x-[-4deg] overflow-hidden"
                     style={{
-                      borderColor: DESIGN_SYSTEM.COLORS.PRIMARY_MUTED,
-                      clipPath: slabClip
+                      borderColor: DESIGN_SYSTEM.COLORS.ZINC[200],
                     }}
                   >
-                    <div className="flex gap-4">
-                      <div className="relative h-20 w-20 flex-shrink-0 bg-zinc-100 border-r" style={{ borderColor: DESIGN_SYSTEM.COLORS.PRIMARY_MUTED }}>
+                    <div className="flex gap-4 skew-x-[4deg]">
+                      <div className="relative h-24 w-20 flex-shrink-0 bg-zinc-100 border-r" style={{ borderColor: DESIGN_SYSTEM.COLORS.ZINC[200] }}>
                         {image?.url && (
                           <Image
                             alt={product.title}
-                            className="object-cover grayscale hover:grayscale-0 transition-all duration-300"
+                            className="object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
                             fill
                             src={image.url}
                           />
                         )}
                       </div>
 
-                      <div className="flex flex-col justify-between py-2 flex-1 pr-3">
+                      <div className="flex flex-col justify-between py-3 flex-1 pr-4">
                         <div className="space-y-1">
-                          <div className="flex justify-between items-start">
-                            <h4 className="text-xs font-black uppercase italic text-black tracking-tight leading-none">
+                          <div className="flex justify-between items-start gap-2">
+                            <h4 className="text-[11px] font-black uppercase italic text-black tracking-tight leading-tight">
                               {product.title}
                             </h4>
-                            <DeleteItemButton item={item} />
+                            <div className="opacity-40 hover:opacity-100 transition-opacity">
+                              <DeleteItemButton item={item} />
+                            </div>
                           </div>
                           {variant && (
-                            <p className="text-[9px] font-bold uppercase text-zinc-500 mt-1">
+                            <p className="text-[8px] font-black uppercase text-zinc-400">
                               {(variant as any).options?.map((o: any) => o?.label || 'Default').join(' / ')}
                             </p>
                           )}
                         </div>
 
-                        <div className="flex items-center justify-between mt-3">
-                          <Price amount={price || 0} className="text-xs font-black text-black italic" />
-                          <div className="flex items-center border bg-white" style={{ borderColor: DESIGN_SYSTEM.COLORS.PRIMARY_MUTED }}>
+                        <div className="flex items-center justify-between mt-4">
+                          <Price amount={price || 0} className="text-[13px] font-black text-black italic" />
+
+                          <div
+                            className="flex items-center border bg-zinc-50 group-hover:bg-white transition-colors"
+                            style={{ borderColor: DESIGN_SYSTEM.COLORS.ZINC[200] }}
+                          >
                             <EditItemQuantityButton item={item} type="minus" />
-                            <span className="w-6 text-center text-[10px] font-bold text-black tabular-nums">{item.quantity}</span>
+                            <span className="w-8 text-center text-[10px] font-black text-black tabular-nums border-x border-zinc-100">
+                              {item.quantity}
+                            </span>
                             <EditItemQuantityButton item={item} type="plus" />
                           </div>
                         </div>
@@ -128,27 +143,37 @@ export function CartModal() {
               })}
             </ul>
 
-            <div className="p-8 bg-white border-t space-y-6" style={{ borderColor: DESIGN_SYSTEM.COLORS.PRIMARY_MUTED }}>
+            <div className="p-8 bg-white border-t space-y-6 shadow-[0_-10px_40px_rgba(0,0,0,0.03)]" style={{ borderColor: DESIGN_SYSTEM.COLORS.ZINC[200] }}>
               {typeof cart?.subtotal === 'number' && (
                 <div className="flex items-end justify-between">
                   <div className="flex flex-col">
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">Subtotal</span>
-                    <span className="text-[8px] font-bold text-zinc-300 uppercase mt-1">Shipping calculated at next step</span>
+                    <span className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400">Subtotal</span>
+                    <span className="text-[9px] font-bold text-zinc-300 uppercase mt-1 italic">Taxes calculated at checkout</span>
                   </div>
-                  <Price amount={cart.subtotal} className="text-2xl font-black italic tracking-tighter text-black" />
+                  <Price
+                    amount={cart.subtotal}
+                    className="text-3xl font-black italic tracking-tighter text-black"
+                    style={{ textShadow: `0 0 20px ${DESIGN_SYSTEM.COLORS.PRIMARY.GLOW}` }}
+                  />
                 </div>
               )}
 
-              <ClippedButton
-                label="Proceed to Checkout"
-                variant="primary"
-                size="lg"
-                className="w-full"
-                onClick={() => {
-                  setIsOpen(false)
-                  window.location.href = '/checkout'
-                }}
-              />
+              <div className="relative group">
+                <div
+                  className="absolute inset-0 bg-black blur-xl opacity-20 group-hover:opacity-30 transition-opacity"
+                  style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}
+                />
+                <ClippedButton
+                  label="Initiate Checkout"
+                  variant="primary"
+                  size="lg"
+                  className="w-full relative z-10"
+                  onClick={() => {
+                    setIsOpen(false)
+                    window.location.href = '/checkout'
+                  }}
+                />
+              </div>
             </div>
           </div>
         )}

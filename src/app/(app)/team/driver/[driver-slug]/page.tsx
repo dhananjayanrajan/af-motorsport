@@ -38,14 +38,17 @@ export default async function DriverPage({ params }: PageProps) {
     const { 'driver-slug': driverSlug } = await params;
     const url = process.env.PAYLOAD_PUBLIC_SERVER_URL;
 
-    const [driverData] = await Promise.all([
-        safeFetch(`${url}/api/drivers?where[slug][equals]=${driverSlug}&depth=3`),
-    ]);
-
+    const driverData = await safeFetch(`${url}/api/drivers?where[slug][equals]=${driverSlug}&depth=3`);
     const driver = driverData.docs?.[0];
+
     if (!driver) notFound();
 
+    const driverId = driver.id;
     const driverCars = (driver.details?.cars || []) as any[];
+
+    const [celebrationsData] = await Promise.all([
+        safeFetch(`${url}/api/celebrations?where[details.drivers][contains]=${driverId}&depth=2&limit=50`)
+    ]);
 
     return (
         <main className="min-h-screen">
@@ -58,7 +61,7 @@ export default async function DriverPage({ params }: PageProps) {
             <section><MembersSection cars={driverCars} /></section>
             <section><AwardSection driver={driver} /></section>
             <section><SkillsSection driver={driver} /></section>
-            <section><CelebrationsSection data={[]} /></section>
+            <section><CelebrationsSection data={celebrationsData.docs || []} /></section>
             <section><GallerySection driver={driver} /></section>
         </main>
     );

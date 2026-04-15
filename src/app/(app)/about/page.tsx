@@ -15,7 +15,7 @@ async function safeFetch(endpoint: string) {
 
   try {
     const res = await fetch(url, {
-      next: { revalidate: 0 },
+      next: { revalidate: 3600 },
       headers: {
         'Content-Type': 'application/json',
       }
@@ -43,14 +43,14 @@ export default async function AboutPage() {
     organizationsRes,
     identityRes
   ] = await Promise.all([
-    safeFetch('initiatives?limit=100'),
-    safeFetch('programs?limit=100'),
-    safeFetch('plans?limit=100'),
-    safeFetch('timelines?limit=100'),
-    safeFetch('statements?limit=100'),
-    safeFetch('individuals?limit=100'),
-    safeFetch('organizations?limit=100'),
-    safeFetch('globals/identity?draft=false&depth=1'),
+    safeFetch('initiatives?depth=2&limit=100'),
+    safeFetch('programs?depth=2&limit=100'),
+    safeFetch('plans?depth=2&limit=100'),
+    safeFetch('timelines?depth=2&limit=100'),
+    safeFetch('statements?depth=2&limit=100'),
+    safeFetch('individuals?depth=2&limit=100'),
+    safeFetch('organizations?depth=2&limit=100'),
+    safeFetch('globals/identity?draft=false&depth=2'),
   ])
 
   const initiatives = initiativesRes?.docs || []
@@ -60,7 +60,7 @@ export default async function AboutPage() {
   const statements = statementsRes?.docs || []
   const individuals = individualsRes?.docs || []
   const organizations = organizationsRes?.docs || []
-  const identity = identityRes?.docs ? identityRes.docs[0] : identityRes
+  const identity = identityRes
 
   return (
     <main className="min-h-screen bg-white">

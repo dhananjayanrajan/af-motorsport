@@ -34,15 +34,17 @@ export default async function LeaderPage({ params }: PageProps) {
     const { slug } = await params;
     const url = process.env.PAYLOAD_PUBLIC_SERVER_URL;
 
-    const leaderData = await safeFetch(`${url}/api/leaders?where[slug][equals]=${slug}&depth=2`);
+    const leaderData = await safeFetch(`${url}/api/leaders?where[slug][equals]=${slug}&depth=3`);
     const leader = leaderData.docs?.[0];
 
     if (!leader) {
-        return notFound();
+        notFound();
     }
 
+    const leaderId = leader.id;
+
     const [celebrationsData] = await Promise.all([
-        safeFetch(`${url}/api/celebrations?where[basics.leader][equals]=${leader.id}&depth=1`),
+        safeFetch(`${url}/api/celebrations?where[details.leaders][contains]=${leaderId}&depth=2&limit=50`)
     ]);
 
     return (

@@ -34,17 +34,14 @@ export default async function ChampionshipPage({ params }: ChampionshipPageProps
     const { 'championship-slug': slug } = await params
     const url = process.env.PAYLOAD_PUBLIC_SERVER_URL
 
-    const championshipData = await safeFetch(`${url}/api/championships?where[slug][equals]=${slug}&limit=1`)
+    const championshipData = await safeFetch(`${url}/api/championships?where[slug][equals]=${slug}&depth=2&limit=1`)
     const championship = championshipData.docs?.[0]
 
     if (!championship) {
         notFound()
     }
 
-    const [pointsData, regulationsData] = await Promise.all([
-        safeFetch(`${url}/api/points?where[categories][contains]=${championship.id}&limit=100&sort=-details.after`),
-        safeFetch(`${url}/api/regulations?where[categories][contains]=${championship.id}&limit=50`)
-    ])
+    const regulationsData = await safeFetch(`${url}/api/regulations?where[categories][contains]=${championship.id}&limit=50`)
 
     return (
         <main className="min-h-screen bg-white">

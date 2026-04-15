@@ -1,6 +1,6 @@
 import LightboxGallery from '@/app/(app)/competition/sections/Gallery';
 import { notFound } from 'next/navigation';
-import EntryGrid from '../../sections/Grid';
+import EntryGrid from '../../seasons/[season-slug]/sections/Grid';
 import EventHero from './sections/Hero';
 import SessionStack from './sections/Stack';
 
@@ -50,9 +50,9 @@ export default async function EventPage({ params }: PageProps) {
 
     const seasonId = (event.details.season as any).id || event.details.season;
 
-    const [siblingEventsData, racesData] = await Promise.all([
+    const [siblingEventsData, sessionsData] = await Promise.all([
         safeFetch(`${url}/api/events?where[details.season][equals]=${seasonId}&sort=details.start_date&depth=1`),
-        safeFetch(`${url}/api/races?where[details.event][equals]=${event.id}&sort=details.start_date&depth=1`)
+        safeFetch(`${url}/api/sessions?where[details.event][equals]=${event.id}&sort=createdAt&depth=1`)
     ]);
 
     const siblings = siblingEventsData.docs || [];
@@ -60,12 +60,12 @@ export default async function EventPage({ params }: PageProps) {
     const previousEvent = currentIndex > 0 ? siblings[currentIndex - 1] : null;
     const nextEvent = currentIndex < siblings.length - 1 ? siblings[currentIndex + 1] : null;
 
-    const raceIds = (racesData.docs || []).map((r: any) => r.id);
+    const sessions = sessionsData.docs || [];
+    const sessionIds = sessions.map((s: any) => s.id);
     let entriesDocs = [];
 
-    if (raceIds.length > 0) {
-        const entriesQuery = raceIds.map((id: string | number) => `where[details.session][in]=${id}`).join('&');
-        const entriesData = await safeFetch(`${url}/api/entries?${entriesQuery}&depth=2`);
+    if (sessionIds.length > 0) {
+        const entriesData = await safeFetch(`${url}/api/entries?where[details.session][in]=${sessionIds.join(',')}&depth=2`);
         entriesDocs = entriesData.docs || [];
     }
 
@@ -79,7 +79,7 @@ export default async function EventPage({ params }: PageProps) {
                 nextEvent={nextEvent ? { slug: nextEvent.slug!, name: nextEvent.name } : null}
             />
 
-            <SessionStack sessions={racesData.docs || []} />
+            <SessionStack sessions={sessions} />
 
             <EntryGrid entries={entriesDocs} />
 

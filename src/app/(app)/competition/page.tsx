@@ -30,11 +30,11 @@ async function safeFetch(endpoint: string) {
 export default async function CompetitionPage({ searchParams }: CompetitionPageProps) {
     const params = await searchParams
     const [seasonsRes, seriesRes, racesRes, championshipsRes, incidentsRes] = await Promise.all([
-        safeFetch('seasons?limit=100'),
-        safeFetch('series?limit=100'),
-        safeFetch('races?limit=500'),
-        safeFetch('championships?limit=100'),
-        safeFetch('incidents?limit=100')
+        safeFetch('seasons?depth=1&limit=100'),
+        safeFetch('series?depth=1&limit=100'),
+        safeFetch('races?depth=2&limit=500'),
+        safeFetch('championships?depth=1&limit=100'),
+        safeFetch('incidents?depth=1&limit=100')
     ])
 
     const seasons = seasonsRes.docs || []
@@ -48,12 +48,23 @@ export default async function CompetitionPage({ searchParams }: CompetitionPageP
         : seasons[0]
 
     const filteredRaces = activeSeason
-        ? allRaces.filter((race: Race) => (race.details.season as Season)?.id === activeSeason.id)
+        ? allRaces.filter((race: Race) => {
+            const seasonRef = race.details.season
+            return typeof seasonRef === 'number'
+                ? seasonRef === activeSeason.id
+                : seasonRef?.id === activeSeason.id
+        })
         : []
 
     const activeCircuits = filteredRaces
-        .map((r: Race) => r.details.circuit as Circuit)
-        .filter((v: Circuit, i: number, a: Circuit[]) => v && a.findIndex((t) => t.id === v.id) === i)
+        .map((r: Race) => r.details.circuit)
+        .filter((circuit: Circuit | number | null | undefined) => {
+            if (!circuit) return false
+            return true
+        })
+        .filter((v: Circuit, i: number, a: Circuit[]) =>
+            v && a.findIndex((t) => t?.id === v.id) === i
+        )
 
     return (
         <main className="min-h-screen bg-white">

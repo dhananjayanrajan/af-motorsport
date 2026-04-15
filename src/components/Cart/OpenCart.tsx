@@ -2,6 +2,7 @@
 
 import { DESIGN_SYSTEM } from '@/lib/constants'
 import { cn } from '@/utilities/cn'
+import { ShoppingBag } from 'lucide-react'
 
 export function OpenCartButton({
   className,
@@ -16,34 +17,54 @@ export function OpenCartButton({
   return (
     <button
       className={cn(
-        'group relative flex items-center h-10 px-6 bg-white border transition-all duration-200 outline-none select-none overflow-hidden',
+        'group relative flex items-center h-9 px-4 bg-white border skew-x-[-12deg] transition-all duration-300 outline-none select-none overflow-hidden',
         className
       )}
       style={{
-        borderColor: DESIGN_SYSTEM.COLORS.PRIMARY_MUTED,
-        clipPath: 'polygon(0 0, 100% 0, 90% 100%, 0% 100%)'
+        borderColor: DESIGN_SYSTEM.COLORS.ZINC[300]
       }}
       {...rest}
     >
-      <div className="flex items-center gap-4 z-10">
+      <div
+        className="absolute inset-0 translate-x-[-101%] group-hover:translate-x-0 transition-transform duration-300 ease-out"
+        style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}
+      />
+
+      <div className="flex items-center gap-3 z-10 skew-x-[12deg]">
         <div className="flex items-center gap-2">
-          <div
-            className={cn("size-1.5 rounded-full transition-all duration-300", hasItems ? "animate-pulse" : "opacity-20")}
-            style={{ backgroundColor: hasItems ? DESIGN_SYSTEM.COLORS.PRIMARY : 'black' }}
-          />
-          <span className="text-[10px] font-black uppercase tracking-[0.2em] italic text-black">
+          {hasItems ? (
+            <div
+              className="size-1.5 rounded-full animate-pulse"
+              style={{
+                backgroundColor: DESIGN_SYSTEM.COLORS.BLACK[950],
+                boxShadow: `0 0 8px ${DESIGN_SYSTEM.COLORS.PRIMARY.GLOW}`
+              }}
+            />
+          ) : (
+            <ShoppingBag className="size-3 text-zinc-400 group-hover:text-black transition-colors" />
+          )}
+
+          <span
+            className="text-[10px] font-black uppercase tracking-tight italic text-zinc-950 transition-all duration-300"
+            style={{
+              textShadow: hasItems ? `0 0 10px ${DESIGN_SYSTEM.COLORS.PRIMARY.GLOW}` : 'none'
+            }}
+          >
             Cart
           </span>
         </div>
 
         {hasItems && (
-          <span className="text-[10px] font-black tabular-nums border-l pl-4" style={{ borderLeftColor: DESIGN_SYSTEM.COLORS.PRIMARY_MUTED }}>
-            {String(quantity).padStart(2, '0')}
-          </span>
+          <div
+            className="flex items-center border-l pl-3 h-3"
+            style={{ borderLeftColor: 'rgba(0,0,0,0.1)' }}
+          >
+            <span className="text-[10px] font-black tabular-nums text-zinc-950">
+              {String(quantity).padStart(2, '0')}
+            </span>
+          </div>
         )}
       </div>
-
-      <div className="absolute inset-0 bg-zinc-50 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
     </button>
   )
 }

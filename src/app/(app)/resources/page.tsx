@@ -1,5 +1,6 @@
 import CarsSection from './sections/Cars'
 import GaragesSection from './sections/Garages'
+import HelmetsSection from './sections/Helmets'
 import SuitsSection from './sections/Suits'
 
 export const dynamic = 'force-dynamic'
@@ -26,18 +27,12 @@ async function safeFetch(endpoint: string) {
 }
 
 export default async function ResourcesPage() {
-    const [
-        carsRes,
-        garagesRes,
-        helmetsRes,
-        suitsRes,
-        driversRes
-    ] = await Promise.all([
-        safeFetch('cars?limit=100&depth=2'),
-        safeFetch('garages?limit=100&depth=2'),
-        safeFetch('helmets?limit=100&depth=2'),
-        safeFetch('suits?limit=100&depth=2'),
-        safeFetch('drivers?limit=100&depth=2'),
+    const [carsRes, garagesRes, helmetsRes, suitsRes, driversRes] = await Promise.all([
+        safeFetch('cars?depth=2&limit=100'),
+        safeFetch('garages?depth=2&limit=100'),
+        safeFetch('helmets?depth=2&limit=100'),
+        safeFetch('suits?depth=2&limit=100'),
+        safeFetch('drivers?depth=2&limit=100'),
     ])
 
     const cars = carsRes?.docs || []
@@ -50,7 +45,7 @@ export default async function ResourcesPage() {
         <main className="min-h-screen bg-white">
             <CarsSection cars={cars} />
             <GaragesSection garages={garages} />
-            {/* <HelmetsSection helmets={helmets} drivers={drivers} /> */}
+            <HelmetsSection helmets={helmets} drivers={drivers} />
             <SuitsSection suits={suits} drivers={drivers} />
         </main>
     )

@@ -210,7 +210,7 @@ export function HeaderClient({ header, socials }: { header: Header; socials: Soc
               style={{ borderColor: DESIGN_SYSTEM.COLORS.ZINC[200] }}
             >
               {socialAccounts.slice(0, 3).map((acc: any) => {
-                const Icon = socialIcons[acc.platform] || Link2
+                const Icon = (socialIcons[acc.platform as keyof typeof socialIcons]) || Link2
                 return (
                   <a
                     key={acc.id}

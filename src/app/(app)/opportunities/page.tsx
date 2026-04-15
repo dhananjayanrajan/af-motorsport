@@ -25,12 +25,9 @@ async function safeFetch(endpoint: string) {
 }
 
 export default async function OpportunitiesPage() {
-    const [
-        vacanciesRes,
-        meetupsRes
-    ] = await Promise.all([
-        safeFetch('vacancies?limit=100&depth=2'),
-        safeFetch('meetups?limit=100&depth=2'),
+    const [vacanciesRes, meetupsRes] = await Promise.all([
+        safeFetch('vacancies?depth=2&limit=100'),
+        safeFetch('meetups?depth=2&limit=100'),
     ])
 
     const vacancies = vacanciesRes?.docs || []
