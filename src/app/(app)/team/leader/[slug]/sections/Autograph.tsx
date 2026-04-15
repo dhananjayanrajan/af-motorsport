@@ -21,9 +21,13 @@ export default function AutographSection({ leader }: AutographSectionProps) {
     return (
         <section
             ref={sectionRef}
-            className="relative w-full py-32 md:py-48 bg-white overflow-hidden flex flex-col items-center"
+            className="relative w-full py-32 md:py-48 overflow-hidden flex flex-col items-center select-none"
+            style={{ backgroundColor: DESIGN_SYSTEM.COLORS.WHITE.PURE }}
         >
-            <div className="absolute inset-0 opacity-[0.03] pointer-events-none select-none">
+            <div
+                className="absolute inset-0 opacity-[0.03] pointer-events-none"
+                style={{ color: DESIGN_SYSTEM.COLORS.BLACK.PURE }}
+            >
                 <div className="flex flex-col gap-8 rotate-[-10deg] scale-125">
                     {[...Array(8)].map((_, i) => (
                         <span key={i} className="text-[12vw] font-black uppercase italic leading-none whitespace-nowrap">
@@ -39,10 +43,16 @@ export default function AutographSection({ leader }: AutographSectionProps) {
                     animate={isInView ? { opacity: 1, y: 0 } : {}}
                     className="flex flex-col items-center gap-4 mb-20 text-center"
                 >
-                    <span className="text-xs font-black uppercase tracking-[0.5em] text-zinc-400">
-                        {leader.alias || 'leader'} Profile
+                    <span
+                        className="text-xs font-black uppercase tracking-[0.5em]"
+                        style={{ color: DESIGN_SYSTEM.COLORS.ZINC[400] }}
+                    >
+                        {leader.alias || 'Executive'} Profile
                     </span>
-                    <h2 className="text-5xl md:text-7xl font-black italic uppercase leading-none tracking-tighter text-zinc-900">
+                    <h2
+                        className="text-6xl md:text-8xl font-black italic uppercase leading-none tracking-tighter"
+                        style={{ color: DESIGN_SYSTEM.COLORS.BLACK.PURE }}
+                    >
                         Signature <span style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}>Series</span>
                     </h2>
                 </motion.div>
@@ -52,7 +62,11 @@ export default function AutographSection({ leader }: AutographSectionProps) {
                         initial={{ opacity: 0, scale: 0.9, rotateY: 20 }}
                         animate={isInView ? { opacity: 1, scale: 1, rotateY: 0 } : {}}
                         transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-                        className="relative w-[320px] md:w-[450px] aspect-[2/3] bg-zinc-950 border-[12px] border-zinc-900 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] overflow-hidden"
+                        className="relative w-[320px] md:w-[450px] aspect-[2/3] border-[12px] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] overflow-hidden"
+                        style={{
+                            backgroundColor: DESIGN_SYSTEM.COLORS.BLACK.PURE,
+                            borderColor: DESIGN_SYSTEM.COLORS.ZINC[900]
+                        }}
                     >
                         <div className="absolute inset-0 z-0">
                             <img
@@ -62,13 +76,24 @@ export default function AutographSection({ leader }: AutographSectionProps) {
                             />
                         </div>
 
-                        <div className="absolute inset-0 z-10 bg-gradient-to-t from-zinc-950 via-transparent to-zinc-950/20" />
+                        <div
+                            className="absolute inset-0 z-10 bg-gradient-to-t via-transparent"
+                            style={{
+                                backgroundImage: `linear-gradient(to top, ${DESIGN_SYSTEM.COLORS.BLACK.PURE}, transparent, ${DESIGN_SYSTEM.COLORS.BLACK.PURE}33)`
+                            }}
+                        />
 
                         <div className="absolute top-8 left-8 z-20 flex flex-col">
-                            <span className="text-5xl md:text-7xl font-black italic text-white/20 leading-none">
+                            <span
+                                className="text-5xl md:text-7xl font-black italic leading-none"
+                                style={{ color: `${DESIGN_SYSTEM.COLORS.WHITE.PURE}33` }}
+                            >
                                 {racingNumber}
                             </span>
-                            <div className="h-1 w-12 bg-white/20 mt-2" />
+                            <div
+                                className="h-1 w-12 mt-2"
+                                style={{ backgroundColor: `${DESIGN_SYSTEM.COLORS.WHITE.PURE}33` }}
+                            />
                         </div>
 
                         <div className="absolute inset-x-8 bottom-12 z-20 flex flex-col items-center">
@@ -88,23 +113,38 @@ export default function AutographSection({ leader }: AutographSectionProps) {
                             )}
 
                             <div className="flex flex-col items-center">
-                                <span className="text-2xl md:text-3xl font-black italic uppercase text-white tracking-tighter">
+                                <span
+                                    className="text-2xl md:text-3xl font-black italic uppercase tracking-tighter"
+                                    style={{ color: DESIGN_SYSTEM.COLORS.WHITE.PURE }}
+                                >
                                     {fullName}
                                 </span>
-                                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40 mt-1">
-                                    {leader.basics?.catchphrase || 'Professional leader'}
+                                <span
+                                    className="text-[10px] font-black uppercase tracking-[0.3em] mt-1"
+                                    style={{ color: `${DESIGN_SYSTEM.COLORS.WHITE.PURE}66` }}
+                                >
+                                    {leader.basics?.catchphrase || 'Professional Leader'}
                                 </span>
                             </div>
                         </div>
 
                         <div className="absolute top-0 right-0 p-8 z-20">
-                            <div className="w-10 h-10 border border-white/10 flex items-center justify-center rotate-45">
-                                <div className="w-2 h-2 bg-white" />
+                            <div
+                                className="w-10 h-10 border flex items-center justify-center rotate-45"
+                                style={{ borderColor: `${DESIGN_SYSTEM.COLORS.WHITE.PURE}1A` }}
+                            >
+                                <div
+                                    className="w-2 h-2"
+                                    style={{ backgroundColor: DESIGN_SYSTEM.COLORS.WHITE.PURE }}
+                                />
                             </div>
                         </div>
                     </motion.div>
 
-                    <div className="absolute -inset-4 border border-zinc-100 -z-10 pointer-events-none" />
+                    <div
+                        className="absolute -inset-4 border -z-10 pointer-events-none"
+                        style={{ borderColor: DESIGN_SYSTEM.COLORS.ZINC[100] }}
+                    />
                 </div>
 
                 <motion.div
@@ -114,14 +154,26 @@ export default function AutographSection({ leader }: AutographSectionProps) {
                     className="mt-20 flex flex-col items-center gap-6"
                 >
                     <div className="flex items-center gap-8">
-                        <div className="h-px w-20 bg-zinc-200" />
-                        <span className="text-[10px] font-black uppercase tracking-[0.5em] text-zinc-400">
+                        <div
+                            className="h-px w-20"
+                            style={{ backgroundColor: DESIGN_SYSTEM.COLORS.ZINC[200] }}
+                        />
+                        <span
+                            className="text-[10px] font-black uppercase tracking-[0.5em]"
+                            style={{ color: DESIGN_SYSTEM.COLORS.ZINC[400] }}
+                        >
                             Serial ID: {leader.id} // Established {entryDate}
                         </span>
-                        <div className="h-px w-20 bg-zinc-200" />
+                        <div
+                            className="h-px w-20"
+                            style={{ backgroundColor: DESIGN_SYSTEM.COLORS.ZINC[200] }}
+                        />
                     </div>
 
-                    <p className="max-w-md text-center text-xs font-bold uppercase italic text-zinc-400 leading-relaxed">
+                    <p
+                        className="max-w-md text-center text-xs font-bold uppercase italic leading-relaxed"
+                        style={{ color: DESIGN_SYSTEM.COLORS.ZINC[400] }}
+                    >
                         {leader.seo?.description || `Digital record of ${fullName}. All competitive parameters and career achievements verified via system archive.`}
                     </p>
                 </motion.div>

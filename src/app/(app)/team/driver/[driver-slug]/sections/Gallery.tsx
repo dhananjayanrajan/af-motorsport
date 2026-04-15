@@ -90,7 +90,7 @@ export default function GallerySection({ driver }: { driver: Driver }) {
                 ) : (
                     <div
                         className="w-full py-32 flex flex-col items-center justify-center border border-dashed"
-                        style={{ borderColor: DESIGN_SYSTEM.COLORS.PRIMARY_MUTED, backgroundColor: DESIGN_SYSTEM.COLORS.BACKGROUND }}
+                        style={{ borderColor: DESIGN_SYSTEM.COLORS.PRIMARY[400], backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[200] }}
                     >
                         <div className="relative mb-6">
                             <FileSearch size={48} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} strokeWidth={1.5} />

@@ -3,7 +3,7 @@
 import { DESIGN_SYSTEM } from '@/lib/constants';
 import { Calendar, ExternalLink, MapPin, Trophy, X } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 interface AwardSectionProps {
     leader: any;
@@ -27,19 +27,31 @@ export default function AwardSection({ leader }: AwardSectionProps) {
     if (awards.length === 0) return null;
 
     return (
-        <section className="relative w-full py-24 bg-white overflow-hidden">
-            <div className="mx-auto px-6 md:px-20 ">
-                <div className="flex flex-col gap-16">
-                    <div className="flex flex-col gap-2 border-l-2 border-zinc-900 pl-6">
-                        <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-zinc-400">
+        <section
+            className="relative w-full py-32 overflow-hidden select-none"
+            style={{ backgroundColor: DESIGN_SYSTEM.COLORS.WHITE.PURE }}
+        >
+            <div className="mx-auto px-6 md:px-20">
+                <div className="flex flex-col gap-20">
+                    <div
+                        className="flex flex-col gap-4 border-l-4 pl-8"
+                        style={{ borderLeftColor: DESIGN_SYSTEM.COLORS.BLACK.PURE }}
+                    >
+                        <span
+                            className="text-[11px] font-black uppercase tracking-[0.5em]"
+                            style={{ color: DESIGN_SYSTEM.COLORS.ZINC[400] }}
+                        >
                             Competitive Achievement Log
                         </span>
-                        <h2 className="text-4xl font-black italic uppercase text-zinc-900">
+                        <h2
+                            className="text-6xl md:text-8xl font-black italic uppercase tracking-tighter leading-none"
+                            style={{ color: DESIGN_SYSTEM.COLORS.BLACK.PURE }}
+                        >
                             Hall of <span style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}>Fame</span>
                         </h2>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-5 lg:grid-cols-6 gap-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10">
                         {awards.map((award: any, i: number) => (
                             <AwardEsportsCard
                                 key={award.id || i}
@@ -59,82 +71,112 @@ export default function AwardSection({ leader }: AwardSectionProps) {
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             onClick={() => setSelectedAward(null)}
-                            className="fixed inset-0 bg-zinc-950/60 backdrop-blur-md z-[100]"
+                            className="fixed inset-0 z-[100] backdrop-blur-xl"
+                            style={{ backgroundColor: `${DESIGN_SYSTEM.COLORS.BLACK.PURE}CC` }}
                         />
                         <motion.div
-                            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                            initial={{ opacity: 0, scale: 0.95, y: 30 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
-                            exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                            className="fixed inset-4 md:inset-12 lg:inset-24 bg-white z-[101] shadow-2xl flex flex-col md:flex-row overflow-hidden rounded-sm"
+                            exit={{ opacity: 0, scale: 0.95, y: 30 }}
+                            className="fixed inset-4 md:inset-12 lg:inset-20 z-[101] flex flex-col md:flex-row overflow-hidden border-4 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)]"
+                            style={{
+                                backgroundColor: DESIGN_SYSTEM.COLORS.WHITE.PURE,
+                                borderColor: DESIGN_SYSTEM.COLORS.BLACK.PURE
+                            }}
                         >
-                            <div className="w-full md:w-1/2 h-64 md:h-full relative bg-zinc-100">
+                            <div
+                                className="w-full md:w-5/12 h-80 md:h-auto relative border-b-4 md:border-b-0 md:border-r-4"
+                                style={{ borderColor: DESIGN_SYSTEM.COLORS.BLACK.PURE }}
+                            >
                                 <img
                                     src={selectedAward.assets?.candid?.url || selectedAward.assets?.thumbnail?.url || `https://picsum.photos/seed/${selectedAward.id}/1200/1600`}
-                                    className="w-full h-full object-cover"
+                                    className="w-full h-full object-cover grayscale contrast-125"
                                     alt={selectedAward.name}
                                 />
-                                <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/80 via-transparent to-transparent" />
-                                <div className="absolute bottom-8 left-8 flex flex-col gap-1">
-                                    <span className="text-xs font-bold text-white/60 uppercase tracking-widest">Victory Asset Archive</span>
-                                    <span className="text-white font-black italic uppercase">Internal Reference_{selectedAward.id}</span>
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                                <div className="absolute bottom-10 left-10 flex flex-col gap-2">
+                                    <span className="text-[10px] font-black text-white/60 uppercase tracking-[0.3em]">Victory Asset Archive</span>
+                                    <span className="text-white text-lg font-black italic uppercase tracking-tighter">REF_ID_{selectedAward.id.slice(-8).toUpperCase()}</span>
                                 </div>
                             </div>
 
-                            <div className="flex-1 flex flex-col p-8 md:p-16 relative overflow-y-auto">
+                            <div className="flex-1 flex flex-col p-10 md:p-20 relative overflow-y-auto">
                                 <button
                                     onClick={() => setSelectedAward(null)}
-                                    className="absolute top-8 right-8 size-10 border border-zinc-200 flex items-center justify-center hover:bg-zinc-900 hover:text-white transition-all"
+                                    className="absolute top-0 right-0 size-20 border-l-4 border-b-4 flex items-center justify-center transition-colors group"
+                                    style={{
+                                        borderColor: DESIGN_SYSTEM.COLORS.BLACK.PURE,
+                                        backgroundColor: DESIGN_SYSTEM.COLORS.WHITE.PURE
+                                    }}
                                 >
-                                    <X className="size-5" />
+                                    <X className="size-8 transition-transform group-hover:rotate-90" style={{ color: DESIGN_SYSTEM.COLORS.BLACK.PURE }} />
                                 </button>
 
-                                <div className="flex flex-col gap-10">
-                                    <div className="flex flex-col gap-4">
-                                        <div className="flex items-center gap-3">
-                                            <Trophy className="size-5 text-zinc-900" />
-                                            <span className="text-[11px] font-black uppercase tracking-widest text-zinc-400">Award Dossier</span>
+                                <div className="flex flex-col gap-16">
+                                    <div className="flex flex-col gap-6">
+                                        <div className="flex items-center gap-4">
+                                            <Trophy className="size-6" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
+                                            <span
+                                                className="text-[11px] font-black uppercase tracking-[0.4em]"
+                                                style={{ color: DESIGN_SYSTEM.COLORS.ZINC[400] }}
+                                            >
+                                                Award Dossier
+                                            </span>
                                         </div>
-                                        <h3 className="text-4xl md:text-6xl font-black italic uppercase leading-none tracking-tighter text-zinc-900">
+                                        <h3
+                                            className="text-5xl md:text-7xl font-black italic uppercase leading-[0.85] tracking-tighter"
+                                            style={{ color: DESIGN_SYSTEM.COLORS.BLACK.PURE }}
+                                        >
                                             {selectedAward.name}
                                         </h3>
-                                        <div className="h-1 w-20" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
+                                        <div className="h-[4px] w-24" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
                                     </div>
 
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-zinc-100 border border-zinc-100">
-                                        <div className="bg-white p-6 flex flex-col gap-1">
-                                            <div className="flex items-center gap-2 text-zinc-400 mb-1">
-                                                <Calendar className="size-3" />
-                                                <span className="text-[10px] font-bold uppercase tracking-wider">Date Awarded</span>
+                                    <div
+                                        className="grid grid-cols-1 md:grid-cols-2 gap-px border-2"
+                                        style={{ backgroundColor: DESIGN_SYSTEM.COLORS.ZINC[100], borderColor: DESIGN_SYSTEM.COLORS.ZINC[100] }}
+                                    >
+                                        <div className="bg-white p-8 flex flex-col gap-2">
+                                            <div className="flex items-center gap-2 mb-1" style={{ color: DESIGN_SYSTEM.COLORS.ZINC[400] }}>
+                                                <Calendar className="size-4" />
+                                                <span className="text-[10px] font-black uppercase tracking-widest">Date Awarded</span>
                                             </div>
-                                            <span className="font-black italic text-zinc-900 uppercase">
+                                            <span className="text-xl font-black italic uppercase tabular-nums" style={{ color: DESIGN_SYSTEM.COLORS.BLACK.PURE }}>
                                                 {selectedAward.details?.awarded_date ? new Date(selectedAward.details.awarded_date).toLocaleDateString() : 'N/A'}
                                             </span>
                                         </div>
-                                        <div className="bg-white p-6 flex flex-col gap-1">
-                                            <div className="flex items-center gap-2 text-zinc-400 mb-1">
-                                                <MapPin className="size-3" />
-                                                <span className="text-[10px] font-bold uppercase tracking-wider">Location Code</span>
+                                        <div className="bg-white p-8 flex flex-col gap-2">
+                                            <div className="flex items-center gap-2 mb-1" style={{ color: DESIGN_SYSTEM.COLORS.ZINC[400] }}>
+                                                <MapPin className="size-4" />
+                                                <span className="text-[10px] font-black uppercase tracking-widest">Location Code</span>
                                             </div>
-                                            <span className="font-black italic text-zinc-900 uppercase">
+                                            <span className="text-xl font-black italic uppercase" style={{ color: DESIGN_SYSTEM.COLORS.BLACK.PURE }}>
                                                 {selectedAward.details?.awarded_location ? `${selectedAward.details.awarded_location[0]}, ${selectedAward.details.awarded_location[1]}` : 'Remote Circuit'}
                                             </span>
                                         </div>
                                     </div>
 
-                                    <div className="flex flex-col gap-4">
-                                        <span className="text-xs font-black uppercase text-zinc-400 tracking-[0.2em]">Contextual Brief</span>
-                                        <p className="text-xl font-bold italic uppercase leading-tight text-zinc-800">
+                                    <div className="flex flex-col gap-6">
+                                        <span className="text-[11px] font-black uppercase tracking-[0.5em]" style={{ color: DESIGN_SYSTEM.COLORS.ZINC[400] }}>Contextual Brief</span>
+                                        <p
+                                            className="text-2xl md:text-3xl font-bold italic uppercase leading-tight border-l-8 pl-10"
+                                            style={{
+                                                color: DESIGN_SYSTEM.COLORS.ZINC[800],
+                                                borderLeftColor: DESIGN_SYSTEM.COLORS.PRIMARY[500]
+                                            }}
+                                        >
                                             {selectedAward.basics?.description || selectedAward.seo?.description || "High-performance milestone recorded in official circuit archives."}
                                         </p>
                                     </div>
 
                                     {selectedAward.alias && (
-                                        <div className="pt-10 border-t border-zinc-100 mt-auto">
-                                            <div className="flex items-center gap-4">
-                                                <div className="flex flex-col">
-                                                    <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Recognition Alias</span>
-                                                    <span className="text-lg font-black italic uppercase text-zinc-900">{selectedAward.alias}</span>
-                                                </div>
+                                        <div
+                                            className="pt-12 border-t-2 mt-auto"
+                                            style={{ borderTopColor: DESIGN_SYSTEM.COLORS.ZINC[100] }}
+                                        >
+                                            <div className="flex flex-col gap-2">
+                                                <span className="text-[10px] font-black uppercase tracking-widest" style={{ color: DESIGN_SYSTEM.COLORS.ZINC[400] }}>Recognition Alias</span>
+                                                <span className="text-2xl font-black italic uppercase" style={{ color: DESIGN_SYSTEM.COLORS.BLACK.PURE }}>{selectedAward.alias}</span>
                                             </div>
                                         </div>
                                     )}
@@ -149,37 +191,39 @@ export default function AwardSection({ leader }: AwardSectionProps) {
 }
 
 function AwardEsportsCard({ award, onOpen }: { award: any; onOpen: () => void }) {
-    const cardRef = useRef(null);
     const imageUrl = award.assets?.thumbnail?.url || award.assets?.candid?.url || `https://picsum.photos/seed/award_${award.id}/800/1000`;
     const year = award.details?.awarded_date ? new Date(award.details.awarded_date).getFullYear() : null;
 
     return (
         <div
-            ref={cardRef}
-            className="group relative bg-white border border-zinc-200 overflow-hidden flex flex-col transition-all duration-500 hover:border-zinc-900"
+            className="group relative bg-white border-2 overflow-hidden flex flex-col transition-all duration-500"
+            style={{ borderColor: DESIGN_SYSTEM.COLORS.ZINC[100] }}
         >
             <div className="relative aspect-[4/5] overflow-hidden bg-zinc-100">
                 <img
                     src={imageUrl}
                     alt={award.name}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    className="w-full h-full object-cover grayscale contrast-125 transition-all duration-700 group-hover:scale-110 group-hover:grayscale-0 group-hover:contrast-100"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-zinc-900/90 via-zinc-900/20 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
 
-                <div className="absolute top-4 left-4">
-                    <div className="px-3 py-1 bg-white/10 backdrop-blur-md border border-white/20">
-                        <span className="text-[10px] font-black text-white italic tracking-widest">
+                <div className="absolute top-6 left-6">
+                    <div
+                        className="px-4 py-2 border-2 backdrop-blur-md"
+                        style={{ backgroundColor: `${DESIGN_SYSTEM.COLORS.WHITE.PURE}1A`, borderColor: `${DESIGN_SYSTEM.COLORS.WHITE.PURE}33` }}
+                    >
+                        <span className="text-[12px] font-black text-white italic tabular-nums tracking-widest">
                             {year || 'N/A'}
                         </span>
                     </div>
                 </div>
 
-                <div className="absolute bottom-6 left-6 right-6 flex flex-col gap-2">
-                    <div className="flex items-center gap-2">
-                        <div className="w-6 h-[2px]" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
-                        <span className="text-[10px] font-black text-white/60 uppercase tracking-tighter">Verified Achievement</span>
+                <div className="absolute bottom-8 left-8 right-8 flex flex-col gap-3">
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-[3px]" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
+                        <span className="text-[10px] font-black text-white/60 uppercase tracking-[0.2em]">Verified Achievement</span>
                     </div>
-                    <h3 className="text-2xl font-black italic uppercase text-white leading-none tracking-tighter">
+                    <h3 className="text-3xl font-black italic uppercase text-white leading-none tracking-tighter">
                         {award.name}
                     </h3>
                 </div>
@@ -187,13 +231,25 @@ function AwardEsportsCard({ award, onOpen }: { award: any; onOpen: () => void })
 
             <button
                 onClick={onOpen}
-                className="w-full py-5 px-6 flex items-center justify-between bg-white group-hover:bg-zinc-900 transition-colors duration-300"
+                className="w-full py-6 px-8 flex items-center justify-between bg-white transition-colors duration-300 group-hover:bg-black"
             >
-                <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400 group-hover:text-zinc-500 transition-colors">
+                <span
+                    className="text-[11px] font-black uppercase tracking-[0.3em] transition-colors"
+                    style={{ color: DESIGN_SYSTEM.COLORS.ZINC[400] }}
+                >
                     View Dossier
                 </span>
-                <ExternalLink className="size-4 text-zinc-300 group-hover:text-white transition-colors" />
+                <ExternalLink
+                    className="size-5 transition-colors"
+                    style={{ color: DESIGN_SYSTEM.COLORS.ZINC[300] }}
+                />
             </button>
+
+            <style jsx>{`
+                button:hover span { color: ${DESIGN_SYSTEM.COLORS.WHITE.PURE} !important; }
+                button:hover :global(svg) { color: ${DESIGN_SYSTEM.COLORS.WHITE.PURE} !important; }
+                div:hover { border-color: ${DESIGN_SYSTEM.COLORS.BLACK.PURE} !important; }
+            `}</style>
         </div>
     );
 }

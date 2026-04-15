@@ -13,12 +13,12 @@ import {
     X
 } from 'lucide-react';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function GallerySection({ leader }: { leader: Leader }) {
     const [selectedIdx, setSelectedIdx] = useState<number | null>(null);
 
-    const items = leader.assets?.gallery?.list || [];
+    const items = (leader.assets?.gallery as any)?.list || [];
 
     const getData = (item: any) => {
         const media = item.image as Media;
@@ -28,12 +28,21 @@ export default function GallerySection({ leader }: { leader: Leader }) {
             description: item.caption || media.alt || "No additional tactical data logged for this node.",
             status: "VERIFIED",
             timestamp: new Date(media.updatedAt).toLocaleDateString(),
-            code: `DRV-${leader.id}-${media.id}`,
+            code: `LDR-${leader.id}-${media.id}`,
             access: "CORE",
             thumbnail: media.url || `https://picsum.photos/seed/${media.id}/600/600`,
             asset: media.url || `https://picsum.photos/seed/${media.id}/1600/900`
         };
     };
+
+    useEffect(() => {
+        if (selectedIdx !== null) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'unset';
+        }
+        return () => { document.body.style.overflow = 'unset'; };
+    }, [selectedIdx]);
 
     return (
         <section
@@ -58,7 +67,7 @@ export default function GallerySection({ leader }: { leader: Leader }) {
 
                 {items.length > 0 ? (
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-px bg-zinc-200 border-y border-zinc-200">
-                        {items.map((item, idx) => {
+                        {items.map((item: any, idx: number) => {
                             const data = getData(item);
                             return (
                                 <motion.div
@@ -73,6 +82,7 @@ export default function GallerySection({ leader }: { leader: Leader }) {
                                         src={data.thumbnail}
                                         alt={data.name}
                                         fill
+                                        sizes="(max-width: 768px) 50vw, (max-width: 1200px) 25vw, 16vw"
                                         className="object-cover grayscale transition-all duration-500 opacity-60 group-hover:opacity-100 group-hover:grayscale-0 group-hover:scale-105"
                                     />
                                     <div className="absolute top-4 left-4 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-10">
@@ -90,7 +100,7 @@ export default function GallerySection({ leader }: { leader: Leader }) {
                 ) : (
                     <div
                         className="w-full py-32 flex flex-col items-center justify-center border border-dashed"
-                        style={{ borderColor: DESIGN_SYSTEM.COLORS.PRIMARY_MUTED, backgroundColor: DESIGN_SYSTEM.COLORS.BACKGROUND }}
+                        style={{ borderColor: DESIGN_SYSTEM.COLORS.PRIMARY[400], backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[200] }}
                     >
                         <div className="relative mb-6">
                             <FileSearch size={48} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} strokeWidth={1.5} />
@@ -126,7 +136,7 @@ function Lightbox({ data, onClose, onPrev, onNext }: { data: any, onClose: () =>
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[3000] flex items-center justify-center bg-white/95 backdrop-blur-xl p-4 md:p-12"
+            className="fixed inset-0 z-[5000] flex items-center justify-center bg-white/95 backdrop-blur-xl p-4 md:p-12"
         >
             <div
                 className="w-full h-full flex flex-col relative border bg-white"
@@ -189,7 +199,7 @@ function Lightbox({ data, onClose, onPrev, onNext }: { data: any, onClose: () =>
                         <Metric label="TIMESTAMP" value={data.timestamp} />
                         <Metric label="UNIT CODE" value={data.code} />
                         <Metric label="PROTOCOL" value={data.access} />
-                        <Metric label="ID INDEX" value={data.id.toString().padStart(4, '0')} />
+                        <Metric label="ID INDEX" value={String(data.id).padStart(4, '0')} />
                     </div>
                 </div>
             </div>
