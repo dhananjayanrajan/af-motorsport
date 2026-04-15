@@ -41,10 +41,10 @@ export const LogoutPage: React.FC = () => {
         <div className="relative z-10 text-center space-y-8">
           <div className="flex flex-col items-center gap-4">
             <div className="h-12 w-12 rounded-full border border-zinc-800 flex items-center justify-center">
-              <LogOut className="h-5 w-5" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }} />
+              <LogOut className="h-5 w-5" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
             </div>
             <div className="space-y-2">
-              <span className={cn("text-[10px] uppercase font-black block", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_XL)} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }}>
+              <span className={cn("text-[10px] uppercase font-black block", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_XL)} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}>
                 Security Protocol
               </span>
               <h1 className="text-3xl font-black text-white italic uppercase tracking-tighter">

@@ -16,7 +16,7 @@ export default function InterviewsSection({ data }: { data: Interview[] }) {
             style={{ backgroundColor: DESIGN_SYSTEM.COLORS.BACKGROUND }}
         >
             <div className="w-full px-6 md:px-12">
-                <div className="mb-12 border-l-2 pl-6" style={{ borderColor: DESIGN_SYSTEM.COLORS.PRIMARY }}>
+                <div className="mb-12 border-l-2 pl-6" style={{ borderColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}>
                     <h2
                         className="text-3xl font-black uppercase italic tracking-tighter"
                         style={{ color: DESIGN_SYSTEM.COLORS.BLACK }}
@@ -62,7 +62,7 @@ function InterviewCard({ interview, onClick }: { interview: Interview; onClick: 
             className="group cursor-pointer border"
             style={{
                 backgroundColor: DESIGN_SYSTEM.COLORS.SURFACE,
-                borderColor: DESIGN_SYSTEM.COLORS.ZINC_200
+                borderColor: DESIGN_SYSTEM.COLORS.ZINC[200]
             }}
         >
             <div className="relative aspect-[4/5] overflow-hidden bg-zinc-100">
@@ -78,7 +78,7 @@ function InterviewCard({ interview, onClick }: { interview: Interview; onClick: 
                     style={{ background: 'linear-gradient(to top, rgba(17,17,17,0.8), transparent)' }}
                 >
                     <div className="flex items-center gap-2">
-                        <div className="size-2 rounded-full" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY }} />
+                        <div className="size-2 rounded-full" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
                         <span className="text-[10px] font-black text-white uppercase tracking-widest">
                             {interview.details.format}
                         </span>
@@ -90,7 +90,7 @@ function InterviewCard({ interview, onClick }: { interview: Interview; onClick: 
                 <div className="flex flex-col gap-1">
                     <span
                         className="text-[9px] font-black uppercase"
-                        style={{ color: DESIGN_SYSTEM.COLORS.ZINC_500 }}
+                        style={{ color: DESIGN_SYSTEM.COLORS.ZINC[500] }}
                     >
                         {interview.basics?.identifiers?.code || 'MEDIA'}
                     </span>
@@ -102,7 +102,7 @@ function InterviewCard({ interview, onClick }: { interview: Interview; onClick: 
                     </h4>
                     <p
                         className="text-[10px] font-bold uppercase mt-2 line-clamp-1"
-                        style={{ color: DESIGN_SYSTEM.COLORS.ZINC_600 }}
+                        style={{ color: DESIGN_SYSTEM.COLORS.ZINC[600] }}
                     >
                         {interview.basics?.tagline || 'Exclusive Interview'}
                     </p>
@@ -134,18 +134,18 @@ function InterviewModal({ interview, onClose }: { interview: Interview; onClose:
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 className="w-full max-w-6xl bg-white border shadow-2xl overflow-hidden relative"
-                style={{ borderColor: DESIGN_SYSTEM.COLORS.ZINC_200 }}
+                style={{ borderColor: DESIGN_SYSTEM.COLORS.ZINC[200] }}
             >
                 <button
                     onClick={onClose}
                     className="absolute top-0 right-0 z-50 flex items-center justify-center size-16 transition-colors hover:bg-zinc-100 border-l border-b"
-                    style={{ borderColor: DESIGN_SYSTEM.COLORS.ZINC_200, color: DESIGN_SYSTEM.COLORS.BLACK }}
+                    style={{ borderColor: DESIGN_SYSTEM.COLORS.ZINC[200], color: DESIGN_SYSTEM.COLORS.BLACK }}
                 >
                     <X size={32} strokeWidth={2.5} />
                 </button>
 
                 <div className="grid grid-cols-1 lg:grid-cols-12">
-                    <div className="lg:col-span-7 bg-zinc-100 border-b lg:border-b-0 lg:border-r" style={{ borderColor: DESIGN_SYSTEM.COLORS.ZINC_200 }}>
+                    <div className="lg:col-span-7 bg-zinc-100 border-b lg:border-b-0 lg:border-r" style={{ borderColor: DESIGN_SYSTEM.COLORS.ZINC[200] }}>
                         <div className="relative aspect-video w-full bg-black">
                             {videoUrl ? (
                                 <video src={videoUrl} controls autoPlay className="w-full h-full object-contain" />
@@ -167,7 +167,7 @@ function InterviewModal({ interview, onClose }: { interview: Interview; onClose:
                                     <span
                                         key={tag.id}
                                         className="px-3 py-1 text-[9px] font-black uppercase border"
-                                        style={{ borderColor: DESIGN_SYSTEM.COLORS.ZINC_200, color: DESIGN_SYSTEM.COLORS.ZINC_600 }}
+                                        style={{ borderColor: DESIGN_SYSTEM.COLORS.ZINC[200], color: DESIGN_SYSTEM.COLORS.ZINC[600] }}
                                     >
                                         {tag.name}
                                     </span>
@@ -180,8 +180,8 @@ function InterviewModal({ interview, onClose }: { interview: Interview; onClose:
                         <div className="space-y-8">
                             <div>
                                 <div className="flex items-center gap-3 mb-4">
-                                    <div className="h-4 w-1" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY }} />
-                                    <span className="text-[10px] font-black uppercase tracking-[0.3em]" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }}>
+                                    <div className="h-4 w-1" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
+                                    <span className="text-[10px] font-black uppercase tracking-[0.3em]" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}>
                                         {interview.alias || 'Direct Transmission'}
                                     </span>
                                 </div>
@@ -200,7 +200,7 @@ function InterviewModal({ interview, onClose }: { interview: Interview; onClose:
                                 <DataField icon={<FileText size={14} />} label="Format" value={interview.details.format} />
                             </div>
 
-                            <div className="p-6 border-l-2" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.ZINC_50, borderColor: DESIGN_SYSTEM.COLORS.ZINC_200 }}>
+                            <div className="p-6 border-l-2" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.ZINC[50], borderColor: DESIGN_SYSTEM.COLORS.ZINC[200] }}>
                                 <span className="text-[9px] font-black text-zinc-400 uppercase block mb-2">Executive Summary</span>
                                 <p className="text-xs font-bold text-zinc-700 leading-normal uppercase italic">
                                     {interview.basics?.summary}
@@ -208,7 +208,7 @@ function InterviewModal({ interview, onClose }: { interview: Interview; onClose:
                             </div>
                         </div>
 
-                        <div className="mt-12 flex items-center justify-between border-t pt-6" style={{ borderColor: DESIGN_SYSTEM.COLORS.ZINC_100 }}>
+                        <div className="mt-12 flex items-center justify-between border-t pt-6" style={{ borderColor: DESIGN_SYSTEM.COLORS.ZINC[100] }}>
                             <span className="text-[9px] font-black text-zinc-400 uppercase tabular-nums">
                                 Published: {interview.details.published_date || interview.createdAt.split('T')[0]}
                             </span>
@@ -227,7 +227,7 @@ function DataField({ icon, label, value }: { icon: React.ReactNode; label: strin
     return (
         <div className="p-4 bg-white flex flex-col gap-1">
             <div className="flex items-center gap-2 text-[9px] font-black text-zinc-400 uppercase tracking-tighter">
-                <span style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }}>{icon}</span>
+                <span style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}>{icon}</span>
                 {label}
             </div>
             <span className="text-[11px] font-black uppercase truncate" style={{ color: DESIGN_SYSTEM.COLORS.BLACK }}>

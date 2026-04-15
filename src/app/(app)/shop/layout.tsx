@@ -13,7 +13,7 @@ export default function ShopLayout({ children }: { children: React.ReactNode }) 
             <div className="lg:sticky lg:top-10 flex flex-col gap-12">
               <div className="space-y-4">
                 <div className="flex items-center gap-3">
-                  <div className="h-4 w-[3px]" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY }} />
+                  <div className="h-4 w-[3px]" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
                   <span className="text-xs font-bold uppercase tracking-widest text-black">Search</span>
                 </div>
                 <Search className="bg-zinc-100 border-none text-black focus:ring-0 transition-all rounded-none placeholder:text-zinc-500 h-10 px-4 w-full shadow-none" />
@@ -36,7 +36,7 @@ export default function ShopLayout({ children }: { children: React.ReactNode }) 
 
               <div className="mt-12 pt-8 hidden lg:block border-t border-zinc-100">
                 <div className="flex items-center gap-3 relative">
-                  <div className="size-2 rounded-full animate-pulse" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY }} />
+                  <div className="size-2 rounded-full animate-pulse" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
                   <span className="text-xs font-bold text-zinc-900 uppercase tracking-widest relative z-10">Active</span>
                 </div>
               </div>

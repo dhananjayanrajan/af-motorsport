@@ -51,7 +51,7 @@ export default function EventsList({ events, seriesSlug, seasonSlug }: EventsLis
                     <div className="flex items-center gap-3">
                         <div
                             className="w-10 h-[2px]"
-                            style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY }}
+                            style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}
                         />
                         <span className="text-[10px] font-black uppercase tracking-[0.5em] text-zinc-400">
                             Event_Schedule
@@ -99,7 +99,7 @@ export default function EventsList({ events, seriesSlug, seasonSlug }: EventsLis
 
                             <div className="col-span-4 relative z-10 mb-8 md:mb-0">
                                 <div className="flex flex-col gap-1">
-                                    <span className="text-[8px] font-black uppercase tracking-widest transition-colors group-hover:text-white" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }}>
+                                    <span className="text-[8px] font-black uppercase tracking-widest transition-colors group-hover:text-white" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}>
                                         {event.basics?.identifiers?.code || 'EVT_REF'}
                                     </span>
                                     <h4 className="text-xl md:text-2xl font-black uppercase italic tracking-tight text-black group-hover:text-white transition-colors leading-none">

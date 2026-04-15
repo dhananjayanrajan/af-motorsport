@@ -46,7 +46,7 @@ export default function Regulations({ regulations }: RegulationsProps) {
                                 <div className="flex items-center gap-6">
                                     <div
                                         className="w-12 h-12 flex items-center justify-center text-black"
-                                        style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY }}
+                                        style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}
                                     >
                                         {getIcon(reg.basics?.type)}
                                     </div>
@@ -56,7 +56,7 @@ export default function Regulations({ regulations }: RegulationsProps) {
                                                 {reg.basics?.code || 'REG-CORE'}
                                             </span>
                                             <span className="w-1 h-1 bg-zinc-300 rotate-45" />
-                                            <span className="text-[10px] font-black uppercase tracking-widest" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }}>
+                                            <span className="text-[10px] font-black uppercase tracking-widest" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}>
                                                 {reg.basics?.type}
                                             </span>
                                         </div>

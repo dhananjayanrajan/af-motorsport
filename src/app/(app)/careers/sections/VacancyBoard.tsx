@@ -35,7 +35,7 @@ export default function VacancyBoard({ vacancies }: VacancyBoardProps) {
                 <div className="flex flex-col md:flex-row md:items-end justify-between gap-12">
                     <div className="space-y-4">
                         <div className="flex items-center gap-3">
-                            <Cpu size={12} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }} />
+                            <Cpu size={12} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
                             <span className="text-[8px] font-black text-zinc-700 uppercase tracking-[0.6em]">HUMAN_CAPITAL_ACQUISITION</span>
                         </div>
                         <h2 className="text-4xl md:text-6xl font-black italic text-white uppercase tracking-tighter">
@@ -84,7 +84,7 @@ export default function VacancyBoard({ vacancies }: VacancyBoardProps) {
                                     <div className="flex flex-col lg:flex-row items-stretch min-h-[120px]">
                                         <div className="lg:w-2/5 p-8 flex flex-col justify-center space-y-2">
                                             <div className="flex items-center gap-3">
-                                                <span className="text-[7px] font-black text-primary uppercase tracking-widest" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }}>
+                                                <span className="text-[7px] font-black text-primary uppercase tracking-widest" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}>
                                                     {vacancy.details?.department || 'GENERAL_OPERATIONS'}
                                                 </span>
                                                 <div className="size-1 bg-zinc-800 rounded-full" />
@@ -125,7 +125,7 @@ export default function VacancyBoard({ vacancies }: VacancyBoardProps) {
                                                 className="flex items-center justify-between w-full lg:w-auto gap-6 bg-zinc-900 group-hover/btn:bg-white px-6 py-4 transition-all duration-300"
                                             >
                                                 <span className="text-[10px] font-black text-white group-hover/btn:text-black uppercase italic tracking-widest">VIEW_SPEC</span>
-                                                <ArrowUpRight size={14} className="text-primary group-hover/btn:text-black" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }} />
+                                                <ArrowUpRight size={14} className="text-primary group-hover/btn:text-black" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
                                             </a>
                                         </div>
                                     </div>
@@ -139,7 +139,7 @@ export default function VacancyBoard({ vacancies }: VacancyBoardProps) {
                                     <button
                                         onClick={() => { setFilterDept('ALL_SECTORS'); setSearchTerm('') }}
                                         className="text-[8px] font-black text-primary uppercase border-b border-primary italic"
-                                        style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY, borderColor: DESIGN_SYSTEM.COLORS.PRIMARY }}
+                                        style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY, borderColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}
                                     >
                                         RESET_FILTERS
                                     </button>

@@ -87,7 +87,7 @@ export default function EntryGrid({ entries }: EntryGridProps) {
             <div className="w-full px-6 py-24 md:px-20 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
                 <div className="flex flex-col gap-4">
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-[2px]" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY }} />
+                        <div className="w-10 h-[2px]" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
                         <span className="text-[10px] font-black uppercase tracking-[0.5em] text-zinc-400">Race Archives</span>
                     </div>
                     <h2 className="text-5xl md:text-7xl font-black uppercase italic tracking-tighter text-black leading-none">Entries</h2>
@@ -152,7 +152,7 @@ export default function EntryGrid({ entries }: EntryGridProps) {
                                                 style={{
                                                     backgroundColor: entry.details.status === 'Confirmed' || entry.details.status === 'Classified'
                                                         ? DESIGN_SYSTEM.COLORS.PRIMARY
-                                                        : DESIGN_SYSTEM.COLORS.ZINC_200
+                                                        : DESIGN_SYSTEM.COLORS.ZINC[200]
                                                 }}
                                             />
                                             <span className="text-[10px] font-black uppercase text-black group-hover:text-zinc-500 transition-colors whitespace-nowrap">
@@ -179,7 +179,7 @@ export default function EntryGrid({ entries }: EntryGridProps) {
                                                     style={{
                                                         backgroundColor: i < (entry.assets?.gallery?.length || 0)
                                                             ? DESIGN_SYSTEM.COLORS.PRIMARY
-                                                            : DESIGN_SYSTEM.COLORS.ZINC_100
+                                                            : DESIGN_SYSTEM.COLORS.ZINC[100]
                                                     }}
                                                 />
                                             ))}

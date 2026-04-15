@@ -1,46 +1,147 @@
 export const DESIGN_SYSTEM = {
   COLORS: {
-    PRIMARY: '#00FF41',
-    PRIMARY_GLOW: 'rgba(0, 255, 65, 0.15)',
-    PRIMARY_MUTED: 'rgba(0, 255, 65, 0.08)',
-    PRIMARY_STARK: '#000000',
-    BACKGROUND: '#F8F9FA',
-    SURFACE: '#FFFFFF',
-    BLACK: '#111111',
-    ZINC_50: '#fafafa',
-    ZINC_100: '#f4f4f5',
-    ZINC_200: '#e4e4e7',
-    ZINC_300: '#d4d4d8',
-    ZINC_400: '#a1a1aa',
-    ZINC_500: '#71717a',
-    ZINC_600: '#52525b',
-    ZINC_700: '#3f3f46',
-    ZINC_800: '#27272a',
-    ZINC_900: '#18181b',
-    ZINC_950: '#0f0f11',
-    NEUTRAL_600: '#737373',
-    WHITE: '#FFFFFF',
-    WHITE_GLOW: 'rgba(255, 255, 255, 0.95)',
+    // Primary - Green (#00FF41 based)
+    PRIMARY: {
+      50: '#E6FFF0',
+      100: '#B3FFD4',
+      200: '#80FFB8',
+      300: '#4DFF9C',
+      400: '#1AFF80',
+      500: '#00FF41',  // Base
+      600: '#00E63B',
+      700: '#00CC34',
+      800: '#00B32E',
+      900: '#009927',
+      950: '#008022',
+      GLOW: 'rgba(0, 255, 65, 0.15)',
+      MUTED: 'rgba(0, 255, 65, 0.08)',
+    },
+
+    // Secondary - Yellow (same lightness as primary #00FF41)
+    SECONDARY: {
+      50: '#FFFDE6',
+      100: '#FFFAB3',
+      200: '#FFF780',
+      300: '#FFF44D',
+      400: '#FFF11A',
+      500: '#FFEE00',  // Base - matched lightness
+      600: '#E6D600',
+      700: '#CCBF00',
+      800: '#B3A800',
+      900: '#999100',
+      950: '#807A00',
+      GLOW: 'rgba(255, 238, 0, 0.15)',
+      MUTED: 'rgba(255, 238, 0, 0.08)',
+    },
+
+    // Tertiary - Electric Purple (complementary accent)
+    TERTIARY: {
+      50: '#F5E6FF',
+      100: '#E0B3FF',
+      200: '#CC80FF',
+      300: '#B84DFF',
+      400: '#A41AFF',
+      500: '#9000FF',  // Base
+      600: '#8100E6',
+      700: '#7300CC',
+      800: '#6400B3',
+      900: '#560099',
+      950: '#470080',
+      GLOW: 'rgba(144, 0, 255, 0.15)',
+      MUTED: 'rgba(144, 0, 255, 0.08)',
+    },
+
+    // White shades
+    WHITE: {
+      50: '#FFFFFF',  // Pure white
+      100: '#FDFDFD',
+      200: '#FBFBFB',
+      300: '#F8F8F8',
+      400: '#F5F5F5',
+      500: '#F0F0F0',
+      600: '#E8E8E8',
+      700: '#E0E0E0',
+      800: '#D8D8D8',
+      900: '#D0D0D0',
+      950: '#C8C8C8',
+      GLOW: 'rgba(255, 255, 255, 0.95)',
+      PURE: '#FFFFFF',
+    },
+
+    // Black shades
+    BLACK: {
+      50: '#2A2A2A',
+      100: '#252525',
+      200: '#202020',
+      300: '#1C1C1C',
+      400: '#181818',
+      500: '#141414',
+      600: '#111111',  // Base
+      700: '#0E0E0E',
+      800: '#0B0B0B',
+      900: '#080808',
+      950: '#050505',
+      PURE: '#000000',
+    },
+
+    // Zinc palette (preserved from original)
+    ZINC: {
+      50: '#fafafa',
+      100: '#f4f4f5',
+      200: '#e4e4e7',
+      300: '#d4d4d8',
+      400: '#a1a1aa',
+      500: '#71717a',
+      600: '#52525b',
+      700: '#3f3f46',
+      800: '#27272a',
+      900: '#18181b',
+      950: '#0f0f11',
+    },
+
+    NEUTRAL: {
+      600: '#737373',
+    },
+
+    // Semantic backgrounds
+    BACKGROUND: {
+      DEFAULT: '#F8F9FA',
+      DARK: '#0F0F11',
+      CARD: '#FFFFFF',
+      CARD_DARK: '#18181b',
+    },
+
+    SURFACE: {
+      DEFAULT: '#FFFFFF',
+      DARK: '#27272a',
+    },
   },
+
   SHAPES: {
     DIAMOND_CLIP: 'polygon(12% 0%, 88% 0%, 100% 50%, 88% 100%, 12% 100%, 0% 50%)',
     RECT_CLIP: 'polygon(0 0, 100% 0, 100% 100%, 0 100%)',
   },
+
   ANIMATION: {
     DURATION_BASE: 'duration-200',
     DURATION_SLOW: 'duration-300',
     DURATION_GLOW: 'duration-1000',
     EASING_CUBIC: 'cubic-bezier(0.87,0,0.13,1)',
   },
+
   TYPOGRAPHY: {
     TRACKING_DEFAULT: 'tracking-[0.4em]',
     TRACKING_XL: 'tracking-[0.5em]',
     TRACKING_2XL: 'tracking-[0.6em]',
   },
+
   EFFECTS: {
     MEDIA_OVERLAY: 'linear-gradient(to right, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0) 100%)',
-  }
-}
+  },
+} as const;
+
+export type ColorShade = 50 | 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900 | 950;
+export type DesignSystem = typeof DESIGN_SYSTEM;
 
 export type SortFilterItem = {
   reverse: boolean

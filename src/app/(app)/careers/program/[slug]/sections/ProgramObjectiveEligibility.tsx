@@ -18,7 +18,7 @@ export default function ProgramObjectiveEligibility({ program }: ProgramObjectiv
                 <div className="flex flex-col md:flex-row md:items-end justify-between gap-12">
                     <div className="space-y-4">
                         <div className="flex items-center gap-3">
-                            <Target size={12} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }} />
+                            <Target size={12} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
                             <span className="text-[8px] font-black text-zinc-700 uppercase tracking-[0.6em]">PROGRAM_MISSION_SPEC</span>
                         </div>
                         <h2 className="text-4xl md:text-6xl font-black italic text-white uppercase tracking-tighter">
@@ -38,7 +38,7 @@ export default function ProgramObjectiveEligibility({ program }: ProgramObjectiv
                     <div className="lg:col-span-7 space-y-16">
                         <div className="space-y-8">
                             <div className="flex items-center gap-4">
-                                <div className="h-px w-12 bg-primary" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY }} />
+                                <div className="h-px w-12 bg-primary" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
                                 <span className="text-[10px] font-black text-zinc-500 uppercase tracking-widest">MISSION_STATEMENT</span>
                             </div>
 
@@ -91,7 +91,7 @@ export default function ProgramObjectiveEligibility({ program }: ProgramObjectiv
                                     <div className="flex flex-col space-y-4">
                                         <div className="flex justify-between items-start">
                                             <div className="space-y-1">
-                                                <span className="text-[7px] font-black text-primary uppercase" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }}>
+                                                <span className="text-[7px] font-black text-primary uppercase" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}>
                                                     {item.criteria || 'PARAMETER'}
                                                 </span>
                                                 <h4 className="text-xs font-black text-white uppercase italic tracking-widest">

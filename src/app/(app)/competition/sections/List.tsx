@@ -36,24 +36,24 @@ export default function ChampionshipTable({ championships }: ChampionshipTablePr
             onMouseLeave={() => setActiveImage(null)}
             className="relative w-full border-b border-zinc-100 cursor-none bg-white font-sans"
         >
-            <div className="px-20 py-24 flex items-end justify-between border-b border-zinc-200">
+            <div className="px-20 py-24 flex items-center justify-center border-b border-zinc-200">
                 <div className="flex flex-col gap-4">
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center justify-center gap-3">
                         <div
                             className="w-10 h-[2px]"
-                            style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY }}
+                            style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}
                         />
                         <span className="text-[10px] font-black uppercase tracking-[0.5em] text-zinc-400">
-                            Championship_Registry_Archive
+                            Registry Archive
                         </span>
+                        <div
+                            className="w-10 h-[2px]"
+                            style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}
+                        />
                     </div>
                     <h2 className="text-7xl font-black uppercase italic tracking-tighter text-black leading-none">
                         Standings
                     </h2>
-                </div>
-                <div className="flex flex-col items-end gap-2">
-                    <span className="text-[9px] font-black text-zinc-300 uppercase tracking-widest">Active_Titles</span>
-                    <span className="text-3xl font-black italic tabular-nums">{championships.length.toString().padStart(2, '0')}</span>
                 </div>
             </div>
 
@@ -93,7 +93,7 @@ export default function ChampionshipTable({ championships }: ChampionshipTablePr
 
                             <div className="col-span-4 relative z-10">
                                 <div className="flex flex-col gap-1">
-                                    <span className="text-[8px] font-black uppercase tracking-widest transition-colors group-hover:text-white" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }}>
+                                    <span className="text-[8px] font-black uppercase tracking-widest transition-colors group-hover:text-white" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}>
                                         {abbreviation}
                                     </span>
                                     <h4 className="text-xl font-black uppercase italic tracking-tight text-black group-hover:text-white transition-colors leading-none">

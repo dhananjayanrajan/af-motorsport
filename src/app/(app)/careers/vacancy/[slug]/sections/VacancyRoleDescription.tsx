@@ -15,7 +15,7 @@ export default function VacancyRoleDescription({ vacancy }: VacancyRoleDescripti
                 <div className="flex flex-col md:flex-row md:items-end justify-between gap-12">
                     <div className="space-y-4">
                         <div className="flex items-center gap-3">
-                            <Briefcase size={12} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }} />
+                            <Briefcase size={12} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
                             <span className="text-[8px] font-black text-zinc-700 uppercase tracking-[0.6em]">POSITION_SPEC_DECRYPTED</span>
                         </div>
                         <h2 className="text-4xl md:text-6xl font-black italic text-white uppercase tracking-tighter">
@@ -60,7 +60,7 @@ export default function VacancyRoleDescription({ vacancy }: VacancyRoleDescripti
                                 {vacancy.details?.expectations?.list?.map((exp, idx) => (
                                     <div key={exp.id || idx} className="bg-black p-8 space-y-4 group">
                                         <div className="flex items-center justify-between">
-                                            <span className="text-[7px] font-black text-primary uppercase tracking-widest" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }}>
+                                            <span className="text-[7px] font-black text-primary uppercase tracking-widest" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}>
                                                 {exp.type || 'PROTOCOL'}
                                             </span>
                                             <ChevronRight size={10} className="text-zinc-800 group-hover:text-primary transition-colors" />
@@ -95,7 +95,7 @@ export default function VacancyRoleDescription({ vacancy }: VacancyRoleDescripti
                                     <div className="flex justify-between items-center py-2 border-b border-zinc-900/50">
                                         <span className="text-[8px] font-black text-zinc-600 uppercase">CONTRACT_TYPE</span>
                                         <div className="flex items-center gap-2">
-                                            <Clock size={10} className="text-primary" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }} />
+                                            <Clock size={10} className="text-primary" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
                                             <span className="text-[9px] font-black text-zinc-400 uppercase italic">
                                                 {vacancy.details?.contract?.replace('_', ' ') || 'UNDEFINED'}
                                             </span>

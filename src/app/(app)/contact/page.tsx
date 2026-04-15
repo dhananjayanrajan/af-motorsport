@@ -14,15 +14,15 @@ import {
 import { DESIGN_SYSTEM } from '@/lib/constants'
 import {
   ArrowRight,
-  Globe,
+  Building2,
+  Clock,
   Mail,
+  MapPin,
   Phone,
   Send,
-  ShieldCheck,
-  Zap
+  ShieldCheck
 } from 'lucide-react'
-import { motion } from 'motion/react'
-import React, { useCallback, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { useForm } from 'react-hook-form'
 
 type ContactFormData = {
@@ -39,16 +39,18 @@ const GLOBAL_GARAGES = [
     city: 'New York',
     coord: [-74.0060, 40.7128] as [number, number],
     label: 'NODE_NY',
-    details: 'US Deployment Hub',
+    details: 'North American Operations Hub',
+    address: 'Brooklyn Navy Yard, NY',
     viewport: { center: [-74.0060, 40.7128], zoom: 12, bearing: 0, pitch: 0 } as MapViewport
   },
   {
     id: 'portugal_deploy',
-    city: 'Portugal',
-    coord: [-8.2245, 39.3999] as [number, number],
+    city: 'Lisbon',
+    coord: [-9.1393, 38.7223] as [number, number],
     label: 'NODE_EU',
-    details: 'European R&D Node',
-    viewport: { center: [-8.2245, 39.3999], zoom: 11, bearing: 0, pitch: 0 } as MapViewport
+    details: 'European R&D Center',
+    address: 'Parque das Nações, Lisbon',
+    viewport: { center: [-9.1393, 38.7223], zoom: 12, bearing: 0, pitch: 0 } as MapViewport
   }
 ]
 
@@ -67,210 +69,261 @@ export default function ContactUsSection() {
       await new Promise(resolve => setTimeout(resolve, 2000))
       setIsSuccess(true)
       reset()
+      setTimeout(() => setIsSuccess(false), 3000)
     } catch (error) {
       console.error("SUBMISSION_ERROR", error)
     }
   }, [reset])
 
   return (
-    <section className="relative w-full bg-white py-16 px-4 md:px-12 lg:px-24 overflow-hidden border-t border-zinc-100">
-      <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col md:flex-row md:items-end justify-between md:mb-12 gap-6">
+    <section className="relative w-full bg-white py-24 md:py-32 border-t border-zinc-100">
+      <div className="max-w-[1400px] mx-auto px-6 md:px-10">
+        {/* Header */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16 md:mb-24">
           <div className="space-y-4">
-            <motion.div
-              initial={{ opacity: 0, x: -10 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              className="flex items-center gap-4"
-            >
-              <div className="h-[1px] w-12" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY }} />
-              <span className="text-[12px] font-black italic text-zinc-400 uppercase tracking-[0.4em]">Direct Uplink</span>
-            </motion.div>
-
-            <motion.h2
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              className="text-5xl md:text-6xl font-black italic text-black tracking-tighter uppercase leading-[0.9]"
-            >
-              SECURE<br />
-              <span style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }}>CHANNEL</span>
-            </motion.h2>
+            <div className="flex items-center gap-3">
+              <div className="h-px w-8" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
+              <span className="text-[10px] font-black uppercase tracking-[0.4em]" style={{ color: DESIGN_SYSTEM.COLORS.ZINC[400] }}>
+                Direct Uplink
+              </span>
+            </div>
+            <h2 className="text-5xl md:text-7xl font-black uppercase tracking-tighter italic leading-[0.9]" style={{ color: DESIGN_SYSTEM.COLORS.BLACK[600] }}>
+              Secure<br />
+              <span style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}>Channel</span>
+            </h2>
           </div>
-
-          <div className="hidden md:flex flex-col text-right">
-            <span className="text-[12px] font-black text-zinc-300 uppercase tracking-[0.4em] mb-2">Technical Inquiry</span>
-            <span className="text-[10px] font-mono text-zinc-400 uppercase">Response_Protocol_Active</span>
+          <div className="text-right">
+            <p className="text-[11px] font-mono uppercase tracking-wider" style={{ color: DESIGN_SYSTEM.COLORS.ZINC[400] }}>
+              Response Protocol • Active
+            </p>
           </div>
         </div>
 
-        <div className="relative w-full border border-zinc-100 overflow-hidden grid grid-cols-1 lg:grid-cols-12 gap-px bg-zinc-100 mb-12 shadow-sm">
-          <div className="lg:col-span-7 bg-white p-8 md:p-12 lg:p-16">
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-10">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <FormItem className="space-y-3">
-                  <label className="text-[11px] font-black text-zinc-400 uppercase tracking-widest italic px-2">Operator Name</label>
-                  <ClippedInput
-                    placeholder="NAME"
-                    {...register('name', { required: 'Name is required' })}
-                  />
-                  {errors.name && <FormError message={errors.name.message} className="text-[10px] uppercase font-bold mt-2" />}
-                </FormItem>
+        {/* Two Column Layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-20">
+          {/* Form */}
+          <div className="lg:col-span-7">
+            <div className="border border-zinc-100 bg-white">
+              <div className="p-8 md:p-10">
+                <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <FormItem className="space-y-2">
+                      <label className="text-[10px] font-black uppercase tracking-wider" style={{ color: DESIGN_SYSTEM.COLORS.ZINC[500] }}>
+                        Full Name
+                      </label>
+                      <ClippedInput
+                        placeholder="Enter your name"
+                        {...register('name', { required: 'Name is required' })}
+                      />
+                      {errors.name && <FormError message={errors.name.message} className="text-[9px] mt-1" />}
+                    </FormItem>
 
-                <FormItem className="space-y-3">
-                  <label className="text-[11px] font-black text-zinc-400 uppercase tracking-widest italic px-2">Return Email</label>
-                  <ClippedInput
-                    type="email"
-                    placeholder="EMAIL"
-                    {...register('email', { required: 'Email is required' })}
-                  />
-                  {errors.email && <FormError message={errors.email.message} className="text-[10px] uppercase font-bold mt-2" />}
-                </FormItem>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <FormItem className="space-y-3">
-                  <label className="text-[11px] font-black text-zinc-400 uppercase tracking-widest italic px-2">Subject</label>
-                  <ClippedInput
-                    placeholder="INQUIRY"
-                    {...register('subject')}
-                  />
-                </FormItem>
-
-                <FormItem className="space-y-3">
-                  <label className="text-[11px] font-black text-zinc-400 uppercase tracking-widest italic px-2">Phone</label>
-                  <ClippedInput
-                    placeholder="+91 [REDACTED]"
-                    {...register('phone')}
-                  />
-                </FormItem>
-              </div>
-
-              <FormItem className="space-y-3">
-                <label className="text-[11px] font-black text-zinc-400 uppercase tracking-widest italic px-2">Message Body</label>
-                <textarea
-                  {...register('message', { required: 'Please enter a message' })}
-                  rows={6}
-                  placeholder="START TYPING..."
-                  className="w-full bg-zinc-50 border border-zinc-100 p-6 text-black font-bold text-[12px] uppercase italic focus:outline-none focus:border-black transition-colors resize-none"
-                  style={{ clipPath: 'polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%)' }}
-                />
-                {errors.message && <FormError message={errors.message.message} className="text-[10px] uppercase font-bold mt-2" />}
-              </FormItem>
-
-              <button
-                type="submit"
-                disabled={isLoading || isSuccess}
-                className="group relative flex items-center gap-6 cursor-pointer transition-all active:scale-95 disabled:opacity-50"
-              >
-                <div className="size-14 bg-black text-white flex items-center justify-center group-hover:bg-zinc-800 transition-colors" style={{ backgroundColor: isSuccess ? DESIGN_SYSTEM.COLORS.PRIMARY : '#000000' }}>
-                  {isLoading ? <Zap className="animate-spin" size={20} /> : isSuccess ? <ShieldCheck size={20} /> : <Send size={20} />}
-                </div>
-                <div className="text-left">
-                  <span className="block text-[13px] font-black uppercase tracking-widest text-black">
-                    {isLoading ? 'TRANSMITTING...' : isSuccess ? 'DATA RECEIVED' : 'SEND MESSAGE'}
-                  </span>
-                  <span className="block text-[10px] font-bold text-zinc-400 uppercase">
-                    {isSuccess ? 'Response protocol active' : 'End-to-end encrypted'}
-                  </span>
-                </div>
-              </button>
-            </form>
-          </div>
-
-          <div className="lg:col-span-5 bg-zinc-50 p-8 md:p-12 lg:p-16 flex flex-col justify-between">
-            <div className="space-y-12">
-              <ContactDetail icon={<Mail size={18} />} label="EMAIL" value="GENERAL@AFMOTORSPORT.COM" sub="Official Inquiry" />
-              <ContactDetail icon={<Phone size={18} />} label="PHONE" value="[TEMPORARILY HIDDEN]" sub="Mon - Fri, 9am - 6pm" />
-            </div>
-
-            <div className="space-y-8 mt-16 pb-12">
-              <h5 className="text-[11px] font-black text-zinc-300 uppercase tracking-[0.4em] border-b border-zinc-200 pb-4 italic">Personnel_Nodes</h5>
-              <div className="grid grid-cols-2 gap-px bg-zinc-100 border border-zinc-100">
-                <SocialLink label="INSTAGRAM" value="@af_motorsport" />
-                <SocialLink label="LINKEDIN" value="/company/afms" />
-                <SocialLink label="X" value="@af_ms" />
-                <SocialLink label="GITHUB" value="/af-motorsport" />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-zinc-100 border border-zinc-100 mb-12">
-          {GLOBAL_GARAGES.map((loc) => (
-            <div key={loc.id} className="relative w-full h-[400px] bg-white overflow-hidden group">
-              <Map
-                viewport={loc.viewport}
-                theme="light"
-                interactive={false}
-              >
-                <MapControls position="bottom-right" showZoom />
-                <MapMarker longitude={loc.coord[0]} latitude={loc.coord[1]}>
-                  <MarkerContent className="flex flex-col items-center">
-                    <div className="size-4 rotate-45 border border-black bg-white flex items-center justify-center shadow-sm">
-                      <div className="size-2 bg-primary animate-pulse" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY }} />
-                    </div>
-                  </MarkerContent>
-                  <MarkerLabel position="bottom" className="bg-white border border-zinc-100 text-[10px] font-black text-black px-2 py-0.5 mt-2 tracking-widest uppercase shadow-sm">
-                    {loc.label}
-                  </MarkerLabel>
-                </MapMarker>
-              </Map>
-
-              <div className="absolute top-6 left-6 z-10 bg-white/95 backdrop-blur-sm border border-zinc-100 p-5 min-w-[200px] shadow-sm">
-                <div className="flex justify-between items-start mb-3">
-                  <div className="flex items-center gap-3">
-                    <Globe className="size-4 animate-pulse" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }} />
-                    <h4 className="text-2xl font-black text-black italic tracking-tighter uppercase leading-none">{loc.city}</h4>
+                    <FormItem className="space-y-2">
+                      <label className="text-[10px] font-black uppercase tracking-wider" style={{ color: DESIGN_SYSTEM.COLORS.ZINC[500] }}>
+                        Email
+                      </label>
+                      <ClippedInput
+                        type="email"
+                        placeholder="your@email.com"
+                        {...register('email', { required: 'Email is required' })}
+                      />
+                      {errors.email && <FormError message={errors.email.message} className="text-[9px] mt-1" />}
+                    </FormItem>
                   </div>
-                  <a href={`https://www.google.com/maps/search/?api=1&query=${loc.coord[1]},${loc.coord[0]}`} target="_blank" rel="noopener noreferrer" className="size-10 bg-white border border-zinc-100 flex items-center justify-center text-zinc-300 group-hover:text-white group-hover:bg-black transition-all hover:border-black">
-                    <ArrowRight size={18} className="-rotate-45" />
-                  </a>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <FormItem className="space-y-2">
+                      <label className="text-[10px] font-black uppercase tracking-wider" style={{ color: DESIGN_SYSTEM.COLORS.ZINC[500] }}>
+                        Subject
+                      </label>
+                      <ClippedInput
+                        placeholder="Inquiry type"
+                        {...register('subject')}
+                      />
+                    </FormItem>
+
+                    <FormItem className="space-y-2">
+                      <label className="text-[10px] font-black uppercase tracking-wider" style={{ color: DESIGN_SYSTEM.COLORS.ZINC[500] }}>
+                        Phone (Optional)
+                      </label>
+                      <ClippedInput
+                        placeholder="Contact number"
+                        {...register('phone')}
+                      />
+                    </FormItem>
+                  </div>
+
+                  <FormItem className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-wider" style={{ color: DESIGN_SYSTEM.COLORS.ZINC[500] }}>
+                      Message
+                    </label>
+                    <textarea
+                      {...register('message', { required: 'Message is required' })}
+                      rows={5}
+                      placeholder="How can we help you?"
+                      className="w-full bg-zinc-50 border border-zinc-100 p-4 text-sm focus:outline-none focus:border-black transition-colors resize-none"
+                    />
+                    {errors.message && <FormError message={errors.message.message} className="text-[9px] mt-1" />}
+                  </FormItem>
+
+                  <button
+                    type="submit"
+                    disabled={isLoading || isSuccess}
+                    className="flex items-center gap-3 px-8 py-4 bg-black text-white transition-all hover:bg-zinc-800 disabled:opacity-50"
+                  >
+                    <span className="text-[11px] font-black uppercase tracking-[0.2em]">
+                      {isLoading ? 'Sending...' : isSuccess ? 'Message Sent' : 'Send Message'}
+                    </span>
+                    {isLoading ? (
+                      <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    ) : isSuccess ? (
+                      <ShieldCheck size={14} />
+                    ) : (
+                      <Send size={14} />
+                    )}
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          {/* Contact Info */}
+          <div className="lg:col-span-5">
+            <div className="border border-zinc-100 bg-white h-full">
+              <div className="p-8 md:p-10">
+                <h3 className="text-[10px] font-black uppercase tracking-[0.3em] mb-8" style={{ color: DESIGN_SYSTEM.COLORS.ZINC[400] }}>
+                  Contact Information
+                </h3>
+
+                <div className="space-y-8">
+                  <div className="flex items-start gap-4">
+                    <div className="w-10 h-10 flex items-center justify-center bg-zinc-50 shrink-0">
+                      <Mail size={16} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
+                    </div>
+                    <div>
+                      <p className="text-[8px] font-black uppercase tracking-wider mb-1" style={{ color: DESIGN_SYSTEM.COLORS.ZINC[400] }}>Email</p>
+                      <a href="mailto:general@afmotorsport.com" className="text-sm font-black uppercase tracking-tight hover:text-primary-500 transition-colors" style={{ color: DESIGN_SYSTEM.COLORS.BLACK[600] }}>
+                        general@afmotorsport.com
+                      </a>
+                      <p className="text-[9px] mt-1" style={{ color: DESIGN_SYSTEM.COLORS.ZINC[400] }}>Primary contact for inquiries</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-4">
+                    <div className="w-10 h-10 flex items-center justify-center bg-zinc-50 shrink-0">
+                      <Phone size={16} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
+                    </div>
+                    <div>
+                      <p className="text-[8px] font-black uppercase tracking-wider mb-1" style={{ color: DESIGN_SYSTEM.COLORS.ZINC[400] }}>Phone</p>
+                      <p className="text-sm font-black uppercase tracking-tight" style={{ color: DESIGN_SYSTEM.COLORS.BLACK[600] }}>+351 21 123 4567</p>
+                      <p className="text-[9px] mt-1" style={{ color: DESIGN_SYSTEM.COLORS.ZINC[400] }}>Mon-Fri, 9am - 6pm WET</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-4">
+                    <div className="w-10 h-10 flex items-center justify-center bg-zinc-50 shrink-0">
+                      <Clock size={16} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
+                    </div>
+                    <div>
+                      <p className="text-[8px] font-black uppercase tracking-wider mb-1" style={{ color: DESIGN_SYSTEM.COLORS.ZINC[400] }}>Response Time</p>
+                      <p className="text-sm font-black uppercase tracking-tight" style={{ color: DESIGN_SYSTEM.COLORS.BLACK[600] }}>Within 24 Hours</p>
+                      <p className="text-[9px] mt-1" style={{ color: DESIGN_SYSTEM.COLORS.ZINC[400] }}>Business days excluding holidays</p>
+                    </div>
+                  </div>
                 </div>
-                <div className="pt-3 border-t border-zinc-100 flex flex-col gap-1">
-                  <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">{loc.details}</span>
-                  <span className="text-[11px] font-mono text-zinc-500 uppercase tracking-tight">{`${loc.coord[1].toFixed(4)}° N, ${loc.coord[0].toFixed(4)}° E`}</span>
+
+                <div className="mt-10 pt-8 border-t border-zinc-100">
+                  <p className="text-[9px] font-black uppercase tracking-wider mb-4" style={{ color: DESIGN_SYSTEM.COLORS.ZINC[400] }}>Digital Network</p>
+                  <div className="flex gap-3">
+                    {['Instagram', 'LinkedIn', 'X', 'GitHub'].map((social, i) => (
+                      <div key={i} className="text-[11px] font-black uppercase tracking-wide hover:text-primary-500 transition-colors cursor-pointer" style={{ color: DESIGN_SYSTEM.COLORS.ZINC[400] }}>
+                        {social}
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
-          ))}
+          </div>
         </div>
 
-        <div className="w-full h-24 bg-zinc-50 border border-zinc-100 flex items-center justify-between px-12 relative overflow-hidden"
-          style={{ clipPath: 'polygon(0 0, 100% 0, 98% 100%, 0% 100%)' }}>
-          <div className="flex flex-col gap-2">
-            <span className="text-[32px] md:text-[40px] font-black italic text-zinc-100 leading-none tracking-tighter uppercase select-none">
-              AF MOTORSPORT
+        {/* Map Section */}
+        <div className="mb-20">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="h-px w-8" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
+            <span className="text-[10px] font-black uppercase tracking-[0.3em]" style={{ color: DESIGN_SYSTEM.COLORS.ZINC[400] }}>
+              Global Facilities
             </span>
           </div>
-          <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-zinc-200/20 to-transparent pointer-events-none" />
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {GLOBAL_GARAGES.map((loc) => (
+              <div key={loc.id} className="border border-zinc-100 bg-white overflow-hidden">
+                <div className="relative h-[280px] bg-zinc-50">
+                  <Map viewport={loc.viewport} theme="light" interactive={false}>
+                    <MapControls position="bottom-right" showZoom />
+                    <MapMarker longitude={loc.coord[0]} latitude={loc.coord[1]}>
+                      <MarkerContent className="flex flex-col items-center">
+                        <div className="w-3 h-3 rotate-45 border-2 border-primary-500 bg-white flex items-center justify-center">
+                          <div className="w-1.5 h-1.5" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
+                        </div>
+                      </MarkerContent>
+                      <MarkerLabel position="bottom" className="text-[8px] font-black px-2 py-1 mt-2 tracking-wider bg-black text-white">
+                        {loc.label}
+                      </MarkerLabel>
+                    </MapMarker>
+                  </Map>
+                </div>
+
+                <div className="p-6">
+                  <div className="flex items-start justify-between mb-4">
+                    <div>
+                      <h4 className="text-xl font-black uppercase italic tracking-tighter" style={{ color: DESIGN_SYSTEM.COLORS.BLACK[600] }}>{loc.city}</h4>
+                      <p className="text-[9px] font-black uppercase tracking-wider mt-1" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}>{loc.details}</p>
+                    </div>
+                    <Building2 size={20} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
+                  </div>
+
+                  <div className="flex items-center gap-2 text-[10px]" style={{ color: DESIGN_SYSTEM.COLORS.ZINC[500] }}>
+                    <MapPin size={12} />
+                    <span>{loc.address}</span>
+                  </div>
+
+                  <a
+                    href={`https://www.google.com/maps/search/?api=1&query=${loc.coord[1]},${loc.coord[0]}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 mt-4 text-[9px] font-black uppercase tracking-wider hover:gap-3 transition-all"
+                    style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}
+                  >
+                    Get Directions <ArrowRight size={10} />
+                  </a>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Stats Footer */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-zinc-100 border border-zinc-100">
+          <div className="bg-white p-6 text-center">
+            <p className="text-2xl font-black" style={{ color: DESIGN_SYSTEM.COLORS.BLACK[600] }}>50+</p>
+            <p className="text-[8px] font-black uppercase tracking-wider mt-1" style={{ color: DESIGN_SYSTEM.COLORS.ZINC[400] }}>Team Members</p>
+          </div>
+          <div className="bg-white p-6 text-center">
+            <p className="text-2xl font-black" style={{ color: DESIGN_SYSTEM.COLORS.BLACK[600] }}>12+</p>
+            <p className="text-[8px] font-black uppercase tracking-wider mt-1" style={{ color: DESIGN_SYSTEM.COLORS.ZINC[400] }}>Global Locations</p>
+          </div>
+          <div className="bg-white p-6 text-center">
+            <p className="text-2xl font-black" style={{ color: DESIGN_SYSTEM.COLORS.BLACK[600] }}>100%</p>
+            <p className="text-[8px] font-black uppercase tracking-wider mt-1" style={{ color: DESIGN_SYSTEM.COLORS.ZINC[400] }}>Commitment</p>
+          </div>
+          <div className="bg-white p-6 text-center">
+            <p className="text-2xl font-black" style={{ color: DESIGN_SYSTEM.COLORS.BLACK[600] }}>24/7</p>
+            <p className="text-[8px] font-black uppercase tracking-wider mt-1" style={{ color: DESIGN_SYSTEM.COLORS.ZINC[400] }}>Support</p>
+          </div>
         </div>
       </div>
     </section>
-  )
-}
-
-function ContactDetail({ icon, label, value, sub }: { icon: React.ReactNode, label: string, value: string, sub: string }) {
-  return (
-    <div className="flex items-start gap-6 group">
-      <div className="size-12 bg-white border border-zinc-100 flex items-center justify-center text-zinc-300 group-hover:text-black transition-all">
-        {icon}
-      </div>
-      <div className="space-y-1">
-        <span className="block text-[10px] font-black text-zinc-400 uppercase tracking-widest">{label}</span>
-        <span className="block text-xl font-black text-black uppercase italic tracking-tighter leading-none">{value}</span>
-        <span className="block text-[11px] font-bold text-zinc-400 uppercase italic">{sub}</span>
-      </div>
-    </div>
-  )
-}
-
-function SocialLink({ label, value }: { label: string, value: string }) {
-  return (
-    <div className="bg-white p-6 hover:bg-zinc-50 transition-colors group cursor-pointer">
-      <span className="block text-[10px] font-black text-zinc-400 uppercase mb-1 tracking-widest">{label}</span>
-      <div className="flex items-center justify-between">
-        <span className="text-[11px] font-bold text-zinc-500 uppercase tracking-tight group-hover:text-black transition-colors">{value}</span>
-        <ArrowRight size={14} className="text-zinc-200 group-hover:text-black group-hover:translate-x-1 transition-all" />
-      </div>
-    </div>
   )
 }

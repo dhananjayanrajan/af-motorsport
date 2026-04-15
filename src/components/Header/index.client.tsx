@@ -47,20 +47,25 @@ const NavItem = ({ item }: { item: any }) => {
     <Link
       href={item.link || '#'}
       className={cn(
-        'relative h-full px-4 lg:px-5 flex items-center justify-center transition-all duration-300 group skew-x-[-12deg] border-r border-zinc-200 pointer-events-auto overflow-hidden',
+        'relative h-full px-4 lg:px-5 flex items-center justify-center transition-all duration-300 group skew-x-[-12deg] border-r overflow-hidden',
         isActive ? 'text-white bg-black' : 'text-zinc-950 hover:text-black hover:italic'
       )}
       style={{
-        borderColor: DESIGN_SYSTEM.COLORS.ZINC_200,
+        borderColor: DESIGN_SYSTEM.COLORS.ZINC[200],
       }}
     >
       <span
         className="absolute inset-0 translate-x-[-101%] group-hover:translate-x-0 transition-transform duration-300 ease-out -z-10"
-        style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY }}
+        style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}
       />
 
       <div className="skew-x-[12deg] flex items-center justify-center relative z-10">
-        <span className="font-black uppercase italic tracking-tight lg:tracking-normal text-[12px] whitespace-nowrap transition-all duration-300 group-hover:[text-shadow:0_0_12px_rgba(0,255,65,0.5)]">
+        <span
+          className="font-black uppercase italic tracking-tight lg:tracking-normal text-[12px] whitespace-nowrap transition-all duration-300"
+          style={{
+            textShadow: `0 0 12px ${DESIGN_SYSTEM.COLORS.PRIMARY.GLOW}`,
+          }}
+        >
           {item.label}
         </span>
       </div>
@@ -80,7 +85,7 @@ const AuthComboButton = () => {
     >
       <div
         className="group relative flex items-center h-full min-w-[100px] border skew-x-[-12deg] overflow-hidden transition-all duration-200 bg-white"
-        style={{ borderColor: DESIGN_SYSTEM.COLORS.ZINC_300 }}
+        style={{ borderColor: DESIGN_SYSTEM.COLORS.ZINC[300] }}
       >
         <div className="flex w-full items-center justify-center gap-2 px-3 z-10 skew-x-[12deg]">
           {user ? <User className="h-3 w-3 text-zinc-950" /> : <div className="w-1.5 h-1.5 bg-zinc-400 rounded-full" />}
@@ -97,7 +102,7 @@ const AuthComboButton = () => {
               exit={{ x: '101%' }}
               transition={{ type: 'tween', ease: 'circOut', duration: 0.15 }}
               className="absolute inset-0 z-[110] flex"
-              style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY }}
+              style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}
             >
               {user ? (
                 <div className="flex w-full h-full">
@@ -144,21 +149,43 @@ export function HeaderClient({ header, socials }: { header: Header; socials: Soc
 
   return (
     <div className="sticky top-0 left-0 w-full z-[110] bg-white">
-      <div className="w-full h-1 bg-primary relative z-[100]" />
+      <div
+        className="w-full h-1 relative z-[100] overflow-hidden"
+        style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}
+      >
+        <motion.div
+          className="absolute inset-0 w-20 bg-gradient-to-r from-transparent via-white to-transparent"
+          animate={{ x: ['-100%', '200%'] }}
+          transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+        />
+      </div>
 
       <header
         className="w-full h-16 flex items-stretch border-b relative"
-        style={{ backgroundColor: DESIGN_SYSTEM.COLORS.WHITE, borderColor: DESIGN_SYSTEM.COLORS.ZINC_200 }}
+        style={{
+          backgroundColor: DESIGN_SYSTEM.COLORS.WHITE.PURE,
+          borderColor: DESIGN_SYSTEM.COLORS.ZINC[200]
+        }}
       >
         <div className="flex md:hidden w-full items-center justify-between px-4 bg-white z-50">
-          <div className="flex-1"><Suspense fallback={null}><MobileMenu menu={navItems} socials={socialAccounts} /></Suspense></div>
-          <Link href="/"><LogoIcon className="h-5 w-auto" /></Link>
-          <div className="flex-1 flex justify-end text-zinc-950"><Suspense fallback={null}><Cart /></Suspense></div>
+          <div className="flex-1">
+            <Suspense fallback={null}>
+              <MobileMenu menu={navItems} socials={socialAccounts} />
+            </Suspense>
+          </div>
+          <Link href="/">
+            <LogoIcon className="h-5 w-auto" />
+          </Link>
+          <div className="flex-1 flex justify-end text-zinc-950">
+            <Suspense fallback={null}>
+              <Cart />
+            </Suspense>
+          </div>
         </div>
 
         <div
           className="hidden xl:flex items-center px-6 border-r relative skew-x-[-12deg] -ml-4 bg-white z-20 pointer-events-auto flex-shrink-0"
-          style={{ borderRightColor: DESIGN_SYSTEM.COLORS.ZINC_200 }}
+          style={{ borderRightColor: DESIGN_SYSTEM.COLORS.ZINC[200] }}
         >
           <Link href="/" className="skew-x-[12deg] relative z-10 flex items-center justify-center">
             <LogoIcon className="h-5 w-auto" />
@@ -167,7 +194,10 @@ export function HeaderClient({ header, socials }: { header: Header; socials: Soc
 
         <div className="hidden md:flex flex-1 items-center justify-between min-w-0">
           <nav className="flex h-full items-stretch px-1 pointer-events-auto overflow-hidden">
-            <div className="flex h-full items-stretch border-l border-zinc-200">
+            <div
+              className="flex h-full items-stretch"
+              style={{ borderColor: DESIGN_SYSTEM.COLORS.ZINC[200] }}
+            >
               {navItems.map((item: any) => (
                 <NavItem key={item.id} item={item} />
               ))}
@@ -175,7 +205,10 @@ export function HeaderClient({ header, socials }: { header: Header; socials: Soc
           </nav>
 
           <div className="flex items-center gap-3 lg:gap-4 px-3 lg:px-6 flex-shrink-0">
-            <div className="hidden lg:flex items-center gap-3 pr-3 border-r border-zinc-200">
+            <div
+              className="hidden lg:flex items-center gap-3 pr-3 border-r"
+              style={{ borderColor: DESIGN_SYSTEM.COLORS.ZINC[200] }}
+            >
               {socialAccounts.slice(0, 3).map((acc: any) => {
                 const Icon = socialIcons[acc.platform] || Link2
                 return (
@@ -184,10 +217,10 @@ export function HeaderClient({ header, socials }: { header: Header; socials: Soc
                     href={acc.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-zinc-950 transition-all duration-200 hover:scale-110"
-                    style={{ color: DESIGN_SYSTEM.COLORS.ZINC_950 }}
-                    onMouseEnter={(e) => (e.currentTarget.style.color = DESIGN_SYSTEM.COLORS.PRIMARY)}
-                    onMouseLeave={(e) => (e.currentTarget.style.color = DESIGN_SYSTEM.COLORS.ZINC_950)}
+                    className="transition-all duration-200 hover:scale-110"
+                    style={{ color: DESIGN_SYSTEM.COLORS.BLACK[50] }}
+                    onMouseEnter={(e) => (e.currentTarget.style.color = DESIGN_SYSTEM.COLORS.PRIMARY[500])}
+                    onMouseLeave={(e) => (e.currentTarget.style.color = DESIGN_SYSTEM.COLORS.BLACK[50])}
                   >
                     <Icon className="h-4 w-4" />
                   </a>
@@ -198,9 +231,10 @@ export function HeaderClient({ header, socials }: { header: Header; socials: Soc
             <div className="flex items-center gap-3 lg:gap-4">
               <Suspense fallback={null}>
                 <div
-                  className="text-zinc-950 p-1 transition-all cursor-pointer rounded-sm pointer-events-auto active:scale-90"
-                  onMouseEnter={(e) => (e.currentTarget.style.color = DESIGN_SYSTEM.COLORS.PRIMARY)}
-                  onMouseLeave={(e) => (e.currentTarget.style.color = DESIGN_SYSTEM.COLORS.ZINC_950)}
+                  className="p-1 transition-all cursor-pointer rounded-sm pointer-events-auto active:scale-90"
+                  style={{ color: DESIGN_SYSTEM.COLORS.BLACK[50] }}
+                  onMouseEnter={(e) => (e.currentTarget.style.color = DESIGN_SYSTEM.COLORS.PRIMARY[500])}
+                  onMouseLeave={(e) => (e.currentTarget.style.color = DESIGN_SYSTEM.COLORS.BLACK[50])}
                 >
                   <Cart />
                 </div>
@@ -225,8 +259,8 @@ export function HeaderClient({ header, socials }: { header: Header; socials: Soc
         <div
           className="absolute bottom-[-1px] left-1/2 -translate-x-1/2 w-64 h-[2.5px] z-[100] pointer-events-none"
           style={{
-            background: 'radial-gradient(ellipse at center, #22c55e 0%, transparent 85%)',
-            boxShadow: '0 0 14px rgba(34, 197, 94, 0.5)'
+            background: `radial-gradient(ellipse at center, ${DESIGN_SYSTEM.COLORS.PRIMARY[500]} 0%, transparent 85%)`,
+            boxShadow: `0 0 14px ${DESIGN_SYSTEM.COLORS.PRIMARY.GLOW}`
           }}
         />
       </header>

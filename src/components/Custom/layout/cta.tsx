@@ -4,8 +4,7 @@ import { ClippedButton } from '@/components/Clipped/ClippedButton'
 import LogoLoop from '@/components/Reactbits/logo-loop'
 import { DESIGN_SYSTEM } from '@/lib/constants'
 import type { Media, Organization } from '@/payload-types'
-import { cn } from '@/utilities/cn'
-import { AnimatePresence, motion, Variants } from 'motion/react'
+import { AnimatePresence, motion } from 'motion/react'
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
 
@@ -36,6 +35,7 @@ export function CTA({
 }: CTAProps) {
   const currentYear = new Date().getFullYear()
   const [wordIndex, setWordIndex] = useState(0)
+  const [hoveredCard, setHoveredCard] = useState<string | null>(null)
   const safeButtonUrl = buttonUrl || '/ambition'
 
   useEffect(() => {
@@ -53,136 +53,224 @@ export function CTA({
         return {
           src: logo?.url,
           alt: org.name,
-          node: <span className="text-2xl font-black italic tracking-tighter text-zinc-900">{org.name.charAt(0)}</span>,
+          node: <span className="text-2xl font-black italic tracking-tighter" style={{ color: DESIGN_SYSTEM.COLORS.BLACK[600] }}>{org.name.charAt(0)}</span>,
         }
       })
     : Array.from({ length: 6 }).map((_, i) => ({
       src: undefined,
       alt: `Partner ${i + 1}`,
-      node: <div className="px-6 py-2 border border-zinc-200 bg-zinc-50 text-[10px] font-black text-zinc-400 italic tracking-[0.3em]">PARTNER_0{i + 1}</div>,
+      node: (
+        <div
+          className="px-6 py-2 text-[10px] font-black italic tracking-[0.3em]"
+          style={{
+            borderColor: DESIGN_SYSTEM.COLORS.ZINC[200],
+            backgroundColor: DESIGN_SYSTEM.COLORS.ZINC[50],
+            color: DESIGN_SYSTEM.COLORS.ZINC[400]
+          }}
+        >
+          PARTNER_0{i + 1}
+        </div>
+      ),
     }))
 
-  const containerVariants: Variants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.1 }
-    }
-  }
-
   return (
-    <section className="relative w-full bg-white py-20 px-4 overflow-hidden">
+    <section className="relative w-full py-20 md:py-32 overflow-hidden" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.WHITE[50] }}>
+      {/* Podium-style background grid */}
       <motion.div
-        variants={containerVariants}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true }}
-        className="max-w-7xl mx-auto relative"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 0.05 }}
+        className="absolute inset-0 pointer-events-none"
       >
-        <div
-          className="relative bg-zinc-50 border border-zinc-100 overflow-hidden group/cta"
-          style={{ clipPath: 'polygon(0 0, 97% 0, 100% 10%, 100% 100%, 3% 100%, 0 90%)' }}
-        >
-          <div className="absolute inset-y-0 left-0 w-full pointer-events-none z-0">
+        <div className="absolute top-1/2 left-0 w-full h-px" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.BLACK[600] }} />
+        <div className="absolute top-0 left-1/4 w-px h-full" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.BLACK[600] }} />
+        <div className="absolute top-0 right-1/4 w-px h-full" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.BLACK[600] }} />
+      </motion.div>
+
+      <div className="max-w-[1400px] mx-auto px-6 md:px-10 relative">
+        {/* Podium-style header */}
+        <div className="flex flex-col mb-12 md:mb-20 relative">
+          <motion.div
+            initial={{ x: -20, opacity: 0 }}
+            whileInView={{ x: 0, opacity: 1 }}
+            className="flex items-center gap-3 mb-4"
+          >
+            <div className="w-4 h-px" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.BLACK.PURE }} />
+            <span className="text-[10px] font-black uppercase tracking-[0.2em]" style={{ color: DESIGN_SYSTEM.COLORS.BLACK.PURE }}>
+              JOIN THE MOVEMENT
+            </span>
+          </motion.div>
+
+          <motion.h2
+            initial={{ x: -50, opacity: 0 }}
+            whileInView={{ x: 0, opacity: 1 }}
+            viewport={{ once: true }}
+            className="text-5xl md:text-7xl font-black uppercase tracking-tighter italic leading-none"
+          >
+            <span style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}>{headline}</span>
+          </motion.h2>
+
+          <motion.div
+            initial={{ width: 0 }}
+            whileInView={{ width: 120 }}
+            viewport={{ once: true }}
+            transition={{ duration: 1, delay: 0.5 }}
+            className="h-1 mt-6"
+            style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}
+          />
+        </div>
+
+        {/* Main CTA Cards */}
+        <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-stretch">
+          {/* Left card - Content */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="relative group"
+            onMouseEnter={() => setHoveredCard('left')}
+            onMouseLeave={() => setHoveredCard(null)}
+          >
             <div
-              className={cn("absolute inset-y-0 left-0 w-[40%] opacity-0 group-hover/cta:opacity-100 transition-all duration-300 group-hover/cta:animate-[rev_1s_infinite_cubic-bezier(0.4,0,0.2,1)] bg-gradient-to-r", `from-[${DESIGN_SYSTEM.COLORS.PRIMARY}]/10 via-[${DESIGN_SYSTEM.COLORS.PRIMARY}]/5 to-transparent`)}
-              style={{ transformOrigin: 'left' }}
-            />
-          </div>
+              className="relative h-full overflow-hidden shadow-lg transition-all duration-500"
+              style={{
+                backgroundColor: DESIGN_SYSTEM.COLORS.ZINC[50],
+                border: `1px solid ${DESIGN_SYSTEM.COLORS.ZINC[200]}`,
+                clipPath: 'polygon(0 0, 100% 0, 100% 95%, 98% 100%, 0 100%)'
+              }}
+            >
+              {/* Hover gradient sweep */}
+              <motion.div
+                className="absolute inset-0 pointer-events-none transition-opacity duration-700"
+                animate={{ opacity: hoveredCard === 'left' ? 1 : 0 }}
+                style={{ background: `linear-gradient(135deg, ${DESIGN_SYSTEM.COLORS.PRIMARY.GLOW}, transparent 50%)` }}
+              />
 
-          <style jsx>{`
-            @keyframes rev {
-              0%, 100% { transform: scaleX(1); opacity: 0.2; }
-              20% { transform: scaleX(2.5); opacity: 0.4; }
-              40% { transform: scaleX(1.8); opacity: 0.3; }
-            }
-          `}</style>
+              <div className="p-8 md:p-10 space-y-8">
+                <p className="leading-relaxed" style={{ color: DESIGN_SYSTEM.COLORS.ZINC[600] }}>
+                  {subtext}
+                </p>
 
-          <div className="absolute left-0 top-0 w-[2px] h-full z-20 pointer-events-none">
-            <div className={cn("w-full h-full bg-gradient-to-b", `from-[${DESIGN_SYSTEM.COLORS.PRIMARY}] via-[${DESIGN_SYSTEM.COLORS.PRIMARY}]/20 to-transparent`)} />
-          </div>
+                <div className="space-y-4">
+                  <div className="flex gap-6 text-sm">
+                    <div>
+                      <span className="text-[9px] font-black uppercase tracking-wider block" style={{ color: DESIGN_SYSTEM.COLORS.ZINC[400] }}>SEASON</span>
+                      <span className="text-xl font-black italic" style={{ color: DESIGN_SYSTEM.COLORS.BLACK[600] }}>{currentYear}</span>
+                    </div>
+                    <div>
+                      <span className="text-[9px] font-black uppercase tracking-wider block" style={{ color: DESIGN_SYSTEM.COLORS.ZINC[400] }}>STATUS</span>
+                      <span className="text-xl font-black italic" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}>ACTIVE</span>
+                    </div>
+                  </div>
 
-          <div className="relative z-10 p-8 md:p-16 flex flex-col lg:flex-row gap-12 items-center lg:items-center justify-between">
-            <div className="flex-1 space-y-8">
-              <div className="space-y-4">
-                <div className="flex gap-2 mb-8">
-                  {[...Array(5)].map((_, i) => (
-                    <div key={i} className="relative w-4 h-4">
-                      <div className="absolute inset-0 bg-zinc-100 border border-zinc-200 rotate-45" />
-                      <motion.div
-                        initial={{ opacity: 0 }}
-                        whileInView={{ opacity: 1 }}
-                        transition={{ delay: i * 0.1, duration: 0.05 }}
-                        className={cn("absolute inset-0 rotate-45", `bg-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`)}
+                  <div className="flex flex-wrap gap-4 pt-4">
+                    <Link href={safeButtonUrl}>
+                      <ClippedButton label={buttonLabel || ''} size="lg" />
+                    </Link>
+                    <Link href="/contact">
+                      <ClippedButton
+                        label="GET IN TOUCH"
+                        variant="outline"
+                        size="lg"
                       />
-                    </div>
-                  ))}
-                </div>
-
-                <h2 className="text-4xl md:text-7xl font-black italic uppercase tracking-tighter text-zinc-900 leading-none">
-                  {headline?.split(' ').map((word, i) => (
-                    <span key={i} className={i === 0 ? `text-[${DESIGN_SYSTEM.COLORS.PRIMARY}]` : "text-zinc-900"}>
-                      {word}{' '}
-                    </span>
-                  ))}
-                </h2>
-
-                <div className="max-w-xl relative mt-10">
-                  <div className="absolute -left-4 top-0 bottom-0 w-[2px] bg-zinc-200">
-                    <div className={cn("absolute top-0 left-0 w-full h-1/3", `bg-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`)} />
-                  </div>
-                  <div className="flex flex-col gap-1">
-                    <div className="flex items-center gap-2">
-                      <span className={cn("text-[10px] font-bold tracking-tighter", `text-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`)}>SPEC_01</span>
-                      <div className="h-[1px] flex-1 bg-zinc-100" />
-                    </div>
-                    <p className={cn("text-[11px] md:text-xs font-black text-zinc-500 uppercase leading-relaxed italic", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_XL)}>
-                      {subtext}
-                    </p>
-                    <div className="flex justify-end gap-1 mt-2">
-                      <div className="w-1 h-1 bg-zinc-200" />
-                      <div className="w-1 h-1 bg-zinc-200" />
-                      <div className={cn("w-4 h-1", `bg-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`)} />
-                    </div>
+                    </Link>
                   </div>
                 </div>
               </div>
 
-              <div className="flex flex-wrap gap-4 pt-4 relative z-30">
-                <Link href={safeButtonUrl}>
-                  <ClippedButton label={buttonLabel || ''} size="lg" />
-                </Link>
-                <Link href="/contact">
-                  <ClippedButton label="GET_IN_TOUCH" variant="outline" size="lg" className="border-zinc-200 text-zinc-900 hover:bg-zinc-100" />
-                </Link>
-              </div>
+              {/* Bottom accent bar */}
+              <motion.div
+                initial={{ width: 0 }}
+                whileInView={{ width: '100%' }}
+                transition={{ duration: 0.8, delay: 0.6 }}
+                className="absolute bottom-0 left-0 h-1"
+                style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}
+              />
             </div>
+          </motion.div>
 
-            <div className="hidden lg:flex flex-col items-end text-right border-r border-zinc-100 pr-8 min-w-[240px]">
-              <span className="text-[90px] font-black italic leading-none text-zinc-100 group-hover/cta:text-zinc-900 transition-all duration-700 select-none">
-                {currentYear}
-              </span>
-              <div className="h-5 relative w-full overflow-hidden flex justify-end">
-                <AnimatePresence mode="wait">
-                  <motion.span
-                    key={wordIndex}
-                    initial={{ x: 20, opacity: 0 }}
-                    animate={{ x: 0, opacity: 1 }}
-                    exit={{ x: -20, opacity: 0 }}
-                    transition={{ duration: 0.3 }}
-                    className={cn("absolute text-[9px] font-black uppercase whitespace-nowrap mr-[-1em]", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_XL, `text-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`)}
-                  >
-                    {CHAMPIONSHIP_WORDS[wordIndex]}
-                  </motion.span>
-                </AnimatePresence>
+          {/* Right card - Animated word rotator */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="relative group"
+            onMouseEnter={() => setHoveredCard('right')}
+            onMouseLeave={() => setHoveredCard(null)}
+          >
+            <div
+              className="relative h-full overflow-hidden shadow-lg transition-all duration-500"
+              style={{
+                backgroundColor: DESIGN_SYSTEM.COLORS.BLACK[600],
+                border: `1px solid ${DESIGN_SYSTEM.COLORS.ZINC[800]}`,
+                clipPath: 'polygon(2% 0, 100% 0, 100% 100%, 0 100%, 0 5%)'
+              }}
+            >
+              <motion.div
+                className="absolute inset-0 transition-opacity duration-700"
+                animate={{ opacity: hoveredCard === 'right' ? 1 : 0 }}
+                style={{ background: `radial-gradient(circle at 30% 50%, ${DESIGN_SYSTEM.COLORS.PRIMARY.GLOW}, transparent 70%)` }}
+              />
+
+              <div className="p-8 md:p-10 flex flex-col items-center justify-center text-center h-full space-y-6">
+                <span className="text-[10px] font-black uppercase tracking-[0.3em]" style={{ color: DESIGN_SYSTEM.COLORS.ZINC[500] }}>
+                  CHAMPIONSHIP SPIRIT
+                </span>
+
+                <div className="text-7xl md:text-8xl font-black italic" style={{ color: DESIGN_SYSTEM.COLORS.WHITE[50] }}>
+                  #{currentYear}
+                </div>
+
+                <div className="h-20 relative overflow-hidden">
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key={wordIndex}
+                      initial={{ y: 30, opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
+                      exit={{ y: -30, opacity: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="text-2xl md:text-3xl font-black uppercase tracking-wider"
+                      style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}
+                    >
+                      {CHAMPIONSHIP_WORDS[wordIndex]}
+                    </motion.div>
+                  </AnimatePresence>
+                </div>
+
+                <div className="flex gap-4 text-[10px] font-mono" style={{ color: DESIGN_SYSTEM.COLORS.ZINC[600] }}>
+                  <span>● ENGINEERING</span>
+                  <span>● EXCELLENCE</span>
+                </div>
               </div>
-            </div>
-          </div>
 
-          {showPartners && (
-            <div className="relative border-t border-zinc-100 bg-zinc-50/50 py-12 px-8 flex flex-col md:flex-row items-center gap-12">
-              <span className={cn("text-[10px] font-black uppercase text-zinc-300 whitespace-nowrap italic", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_XL)}>Strategic_Network</span>
-              <div className="flex-1 w-full grayscale opacity-40 group-hover/cta:opacity-100 group-hover/cta:grayscale-0 transition-all duration-1000">
+              {/* Corner accent */}
+              <div
+                className="absolute top-0 right-0 w-12 h-12 border-t-2 border-r-2"
+                style={{ borderColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}
+              />
+            </div>
+          </motion.div>
+        </div>
+
+        {/* Partners section */}
+        {showPartners && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            className="mt-16 pt-8 border-t"
+            style={{ borderColor: DESIGN_SYSTEM.COLORS.ZINC[200] }}
+          >
+            <div className="flex flex-col md:flex-row items-center gap-8">
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-px" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
+                <span className="text-[9px] font-black uppercase tracking-[0.2em]" style={{ color: DESIGN_SYSTEM.COLORS.ZINC[400] }}>
+                  STRATEGIC NETWORK
+                </span>
+              </div>
+
+              <div className="flex-1 w-full transition-opacity duration-500 hover:opacity-100" style={{ opacity: 0.6 }}>
                 <LogoLoop
                   logos={partnerLogos}
                   speed={20}
@@ -194,9 +282,9 @@ export function CTA({
                 />
               </div>
             </div>
-          )}
-        </div>
-      </motion.div>
+          </motion.div>
+        )}
+      </div>
     </section>
   )
 }

@@ -1,4 +1,3 @@
-// sections/Celebration.tsx
 'use client';
 
 import { ClippedButton } from '@/components/Clipped/ClippedButton';
@@ -39,11 +38,29 @@ export default function CelebrationsSection({ data }: { data: Celebration[] }) {
     const springX = useSpring(canvasX, { stiffness: 60, damping: 20 });
     const springY = useSpring(canvasY, { stiffness: 60, damping: 20 });
 
+    useEffect(() => {
+        if (selectedId) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'unset';
+        }
+        return () => { document.body.style.overflow = 'unset'; };
+    }, [selectedId]);
+
     return (
         <section
-            className="relative w-full h-screen overflow-hidden select-none border-t touch-none"
-            style={{ backgroundColor: DESIGN_SYSTEM.COLORS.BACKGROUND, borderTopColor: DESIGN_SYSTEM.COLORS.PRIMARY_MUTED }}
+            className="relative w-full h-screen overflow-hidden select-none touch-none border-t"
+            style={{
+                backgroundColor: DESIGN_SYSTEM.COLORS.WHITE.PURE,
+                borderTopColor: DESIGN_SYSTEM.COLORS.ZINC[100]
+            }}
         >
+            <style jsx global>{`
+                .slab-hover:hover { border-color: ${DESIGN_SYSTEM.COLORS.BLACK.PURE} !important; }
+                .control-btn:hover { background-color: ${DESIGN_SYSTEM.COLORS.ZINC[50]} !important; }
+                .modal-close:hover { background-color: ${DESIGN_SYSTEM.COLORS.ZINC[50]} !important; }
+            `}</style>
+
             <motion.div
                 drag
                 dragMomentum={true}
@@ -52,7 +69,10 @@ export default function CelebrationsSection({ data }: { data: Celebration[] }) {
             >
                 <div
                     className="absolute inset-0 w-[5000px] h-[5000px] -translate-x-1/2 -translate-y-1/2 opacity-20 pointer-events-none"
-                    style={{ backgroundImage: `radial-gradient(${DESIGN_SYSTEM.COLORS.ZINC_300} 1px, transparent 1px)`, backgroundSize: '80px 80px' }}
+                    style={{
+                        backgroundImage: `radial-gradient(${DESIGN_SYSTEM.COLORS.ZINC[300]} 1px, transparent 1px)`,
+                        backgroundSize: '80px 80px'
+                    }}
                 />
 
                 <AnimatePresence>
@@ -70,10 +90,14 @@ export default function CelebrationsSection({ data }: { data: Celebration[] }) {
                         <motion.div
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
-                            className="absolute flex flex-col items-center justify-center p-12 border border-dashed text-center bg-white/50 backdrop-blur-sm"
-                            style={{ borderColor: DESIGN_SYSTEM.COLORS.PRIMARY_MUTED, width: 400 }}
+                            className="absolute flex flex-col items-center justify-center p-12 border-2 border-dashed text-center"
+                            style={{
+                                borderColor: DESIGN_SYSTEM.COLORS.ZINC[200],
+                                backgroundColor: DESIGN_SYSTEM.COLORS.WHITE.PURE,
+                                width: 400
+                            }}
                         >
-                            <FileSearch size={48} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }} className="mb-4" />
+                            <FileSearch size={48} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} className="mb-4" />
                             <h3 className="text-xl font-black uppercase italic tracking-tighter text-black mb-1">
                                 No Archives Located
                             </h3>
@@ -87,35 +111,39 @@ export default function CelebrationsSection({ data }: { data: Celebration[] }) {
 
             <div className="absolute top-10 left-10 z-[100] pointer-events-none">
                 <div
-                    className="p-8 border-l-4 pointer-events-auto bg-white"
-                    style={{ borderLeftColor: DESIGN_SYSTEM.COLORS.PRIMARY, boxShadow: '10px 10px 0px rgba(0,0,0,0.05)' }}
+                    className="p-8 border-l-4 pointer-events-auto shadow-2xl"
+                    style={{
+                        backgroundColor: DESIGN_SYSTEM.COLORS.WHITE.PURE,
+                        borderLeftColor: DESIGN_SYSTEM.COLORS.BLACK.PURE
+                    }}
                 >
-                    <h2 className="text-5xl md:text-7xl font-black italic tracking-tighter uppercase text-black leading-[0.85]">
-                        Archive
+                    <h2
+                        className="text-4xl md:text-5xl font-black italic uppercase tracking-tighter leading-none transition-colors"
+                        style={{ color: DESIGN_SYSTEM.COLORS.BLACK.PURE }}
+                    >
+                        Celebrations
                     </h2>
-                    <div className="flex items-center gap-2 mt-2">
-                        <div className="size-1.5 rounded-full animate-pulse" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY }} />
-                        <span className="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-400">Tactical_Visual_Nodes</span>
-                    </div>
                 </div>
             </div>
 
             <div className="absolute bottom-10 left-1/2 -translate-x-1/2 md:bottom-auto md:top-10 md:right-10 md:left-auto md:translate-x-0 z-[100] flex gap-2">
-                <button
-                    onClick={() => setZoom(z => Math.min(z + 0.1, 2))}
-                    className="size-14 border flex items-center justify-center bg-white transition-all hover:bg-zinc-50 active:scale-95 shadow-sm"
-                    style={{ borderColor: DESIGN_SYSTEM.COLORS.PRIMARY_MUTED }}
-                ><ZoomIn size={20} className="text-black" /></button>
-                <button
-                    onClick={() => setZoom(z => Math.max(z - 0.1, 0.4))}
-                    className="size-14 border flex items-center justify-center bg-white transition-all hover:bg-zinc-50 active:scale-95 shadow-sm"
-                    style={{ borderColor: DESIGN_SYSTEM.COLORS.PRIMARY_MUTED }}
-                ><ZoomOut size={20} className="text-black" /></button>
-                <button
-                    onClick={() => { canvasX.set(0); canvasY.set(0); setZoom(isMobile ? 0.6 : 0.8); }}
-                    className="size-14 border flex items-center justify-center bg-white transition-all hover:bg-zinc-50 active:scale-95 shadow-sm"
-                    style={{ borderColor: DESIGN_SYSTEM.COLORS.PRIMARY_MUTED }}
-                ><Globe size={20} className="text-black" /></button>
+                {[
+                    { icon: ZoomIn, action: () => setZoom(z => Math.min(z + 0.1, 2)) },
+                    { icon: ZoomOut, action: () => setZoom(z => Math.max(z - 0.1, 0.4)) },
+                    { icon: Globe, action: () => { canvasX.set(0); canvasY.set(0); setZoom(isMobile ? 0.6 : 0.8); } }
+                ].map((ctrl, i) => (
+                    <button
+                        key={i}
+                        onClick={ctrl.action}
+                        className="control-btn size-14 border-2 flex items-center justify-center transition-all active:scale-95 shadow-xl"
+                        style={{
+                            backgroundColor: DESIGN_SYSTEM.COLORS.WHITE.PURE,
+                            borderColor: DESIGN_SYSTEM.COLORS.ZINC[100]
+                        }}
+                    >
+                        <ctrl.icon size={20} style={{ color: DESIGN_SYSTEM.COLORS.BLACK.PURE }} />
+                    </button>
+                ))}
             </div>
 
             <AnimatePresence mode="wait">
@@ -131,10 +159,10 @@ export default function CelebrationsSection({ data }: { data: Celebration[] }) {
     );
 }
 
-function CelebrationSlab({ item, index, isMobile, onExpand }: { item: Celebration, index: number, isMobile: boolean, onExpand: () => void }) {
+function CelebrationSlab({ item, isMobile, onExpand }: { item: Celebration, index: number, isMobile: boolean, onExpand: () => void }) {
     const initialX = useMemo(() => (Math.random() - 0.5) * (isMobile ? 600 : 1400), [isMobile]);
     const initialY = useMemo(() => (Math.random() - 0.5) * (isMobile ? 1000 : 800), [isMobile]);
-    const rotation = useMemo(() => (Math.random() - 0.5) * 4, []);
+    const rotation = useMemo(() => (Math.random() - 0.5) * 6, []);
     const imageUrl = (item.assets?.thumbnail as Media)?.url || `https://picsum.photos/seed/${item.id}/800/500`;
 
     return (
@@ -144,10 +172,10 @@ function CelebrationSlab({ item, index, isMobile, onExpand }: { item: Celebratio
             initial={{ x: initialX, y: initialY, opacity: 0, rotate: rotation }}
             animate={{ opacity: 1 }}
             whileHover={{ scale: 1.05, zIndex: 1000, rotate: 0 }}
-            onClick={() => onExpand()}
-            className="absolute w-[320px] p-1 border bg-white cursor-pointer shadow-xl transition-all duration-300"
+            onClick={onExpand}
+            className="slab-hover absolute w-[340px] p-1 border-2 bg-white cursor-pointer shadow-2xl transition-all duration-300"
             style={{
-                borderColor: DESIGN_SYSTEM.COLORS.PRIMARY_MUTED,
+                borderColor: DESIGN_SYSTEM.COLORS.ZINC[200],
                 clipPath: 'polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%)'
             }}
         >
@@ -156,29 +184,31 @@ function CelebrationSlab({ item, index, isMobile, onExpand }: { item: Celebratio
                     src={imageUrl}
                     alt={item.name}
                     fill
-                    className="object-cover grayscale hover:grayscale-0 transition-all duration-700 scale-105 hover:scale-100"
+                    className="object-cover grayscale hover:grayscale-0 transition-all duration-700 scale-110 hover:scale-100"
                 />
                 <div
-                    className="absolute bottom-0 right-0 px-4 py-2 text-[9px] font-black uppercase tracking-[0.2em]"
-                    style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY, color: DESIGN_SYSTEM.COLORS.BLACK }}
+                    className="absolute bottom-0 right-0 px-4 py-2 text-[10px] font-black uppercase tracking-[0.2em]"
+                    style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500], color: DESIGN_SYSTEM.COLORS.BLACK.PURE }}
                 >
                     {item.details?.exclusivity || 'Standard'}
                 </div>
             </div>
 
-            <div className="p-6 space-y-4 bg-white">
+            <div className="p-6 space-y-4">
                 <div className="space-y-1">
-                    <span className="text-[8px] font-black uppercase tracking-widest text-zinc-400">Entry_Node_{item.id}</span>
-                    <h4 className="text-xl font-black italic text-black uppercase tracking-tighter leading-[0.9]">
+                    <h4
+                        className="text-2xl font-black italic uppercase tracking-tighter leading-[0.9]"
+                        style={{ color: DESIGN_SYSTEM.COLORS.BLACK.PURE }}
+                    >
                         {item.name}
                     </h4>
                 </div>
-                <div className="flex justify-between items-center border-t pt-4" style={{ borderTopColor: DESIGN_SYSTEM.COLORS.PRIMARY_MUTED }}>
-                    <div className="flex items-center gap-2 text-[10px] text-black font-black uppercase tracking-tighter">
-                        <Calendar size={12} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }} />
+                <div className="flex justify-between items-center border-t pt-4" style={{ borderTopColor: DESIGN_SYSTEM.COLORS.ZINC[100] }}>
+                    <div className="flex items-center gap-2 text-[11px] font-black uppercase tracking-tighter" style={{ color: DESIGN_SYSTEM.COLORS.BLACK.PURE }}>
+                        <Calendar size={12} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
                         {item.details?.date_time ? new Date(item.details.date_time).getFullYear() : new Date(item.createdAt).getFullYear()}
                     </div>
-                    <Maximize2 size={12} className="text-zinc-400" />
+                    <Maximize2 size={12} style={{ color: DESIGN_SYSTEM.COLORS.ZINC[300] }} />
                 </div>
             </div>
         </motion.div>
@@ -192,60 +222,75 @@ function CelebrationModal({ item, onClose, onNavigate }: { item: Celebration, on
     return (
         <motion.div
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[2000] flex items-center justify-center p-4 md:p-12 bg-white/95 backdrop-blur-2xl"
+            className="fixed inset-0 z-[2000] flex items-center justify-center p-4 md:p-12 backdrop-blur-3xl"
+            style={{ backgroundColor: `${DESIGN_SYSTEM.COLORS.WHITE.PURE}F2` }}
             onClick={onClose}
         >
             <div
-                className="w-full max-w-7xl h-fit max-h-[90vh] flex flex-col md:flex-row bg-white border overflow-hidden relative"
-                style={{ borderColor: DESIGN_SYSTEM.COLORS.PRIMARY_MUTED }}
+                className="w-full max-w-7xl h-fit max-h-[90vh] flex flex-col md:flex-row border-4 overflow-hidden relative shadow-[0_0_100px_rgba(0,0,0,0.1)]"
+                style={{
+                    borderColor: DESIGN_SYSTEM.COLORS.BLACK.PURE,
+                    backgroundColor: DESIGN_SYSTEM.COLORS.WHITE.PURE
+                }}
                 onClick={(e) => e.stopPropagation()}
             >
                 <button
                     onClick={onClose}
-                    className="absolute top-0 right-0 z-[2100] flex items-center justify-center size-16 transition-colors hover:bg-zinc-100 border-l border-b"
-                    style={{ borderColor: DESIGN_SYSTEM.COLORS.PRIMARY_MUTED, color: DESIGN_SYSTEM.COLORS.BLACK }}
+                    className="modal-close absolute top-0 right-0 z-[2100] flex items-center justify-center size-20 transition-colors border-l-4 border-b-4"
+                    style={{
+                        borderColor: DESIGN_SYSTEM.COLORS.BLACK.PURE,
+                        color: DESIGN_SYSTEM.COLORS.BLACK.PURE
+                    }}
                 >
-                    <X size={32} strokeWidth={3} />
+                    <X size={32} strokeWidth={4} />
                 </button>
 
-                <div className="relative w-full md:w-1/2 aspect-video md:aspect-auto bg-zinc-50 border-b md:border-b-0 md:border-r" style={{ borderColor: DESIGN_SYSTEM.COLORS.PRIMARY_MUTED }}>
+                <div className="relative w-full md:w-1/2 aspect-video md:aspect-auto bg-zinc-50 border-b-4 md:border-b-0 md:border-r-4" style={{ borderColor: DESIGN_SYSTEM.COLORS.BLACK.PURE }}>
                     <Image
                         src={imageUrl}
                         alt={item.name}
                         fill
-                        className="object-cover grayscale hover:grayscale-0 transition-all duration-700"
+                        className="object-cover grayscale contrast-125 transition-all duration-700 hover:grayscale-0 hover:contrast-100"
                         priority
                     />
                 </div>
 
-                <div className="flex-1 p-10 md:p-16 flex flex-col justify-between bg-white">
-                    <div className="space-y-10">
+                <div className="flex-1 p-10 md:p-20 flex flex-col justify-between">
+                    <div className="space-y-12">
                         <div className="space-y-6">
                             <div className="flex items-center gap-3">
-                                <div className="h-[2px] w-8" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY }} />
-                                <span className="text-[11px] font-black uppercase tracking-[0.4em]" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }}>
+                                <div className="h-[3px] w-12" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
+                                <span className="text-[12px] font-black uppercase tracking-[0.4em]" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}>
                                     {item.alias || 'Tactical_Archive_Entry'}
                                 </span>
                             </div>
-                            <h3 className="text-5xl md:text-7xl font-black italic text-black uppercase tracking-tighter leading-[0.85]">
+                            <h3
+                                className="text-6xl md:text-8xl font-black italic uppercase tracking-tighter leading-[0.8]"
+                                style={{ color: DESIGN_SYSTEM.COLORS.BLACK.PURE }}
+                            >
                                 {item.name}
                             </h3>
                         </div>
 
-                        <div className="space-y-8">
-                            <p className="text-black text-sm md:text-base font-black uppercase leading-relaxed border-l-4 pl-8 italic"
-                                style={{ borderLeftColor: DESIGN_SYSTEM.COLORS.PRIMARY }}>
+                        <div className="space-y-10">
+                            <p
+                                className="text-lg font-bold uppercase leading-tight border-l-8 pl-10 italic"
+                                style={{
+                                    borderLeftColor: DESIGN_SYSTEM.COLORS.PRIMARY[500],
+                                    color: DESIGN_SYSTEM.COLORS.ZINC[800]
+                                }}
+                            >
                                 {item.basics?.description || 'No operational description logged for this entry.'}
                             </p>
 
-                            <div className="grid grid-cols-2 gap-px bg-zinc-100 border" style={{ borderColor: DESIGN_SYSTEM.COLORS.PRIMARY_MUTED }}>
-                                <div className="p-6 bg-white flex flex-col gap-1.5">
-                                    <span className="text-[8px] font-black text-zinc-400 uppercase tracking-widest">Clearance_Level</span>
-                                    <span className="text-[11px] font-black text-black uppercase">{item.details?.exclusivity || 'PUBLIC'}</span>
+                            <div className="grid grid-cols-2 gap-px border-2" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.ZINC[100], borderColor: DESIGN_SYSTEM.COLORS.ZINC[100] }}>
+                                <div className="p-8 bg-white flex flex-col gap-2">
+                                    <span className="text-[10px] font-black uppercase tracking-widest" style={{ color: DESIGN_SYSTEM.COLORS.ZINC[400] }}>Clearance_Level</span>
+                                    <span className="text-[13px] font-black uppercase" style={{ color: DESIGN_SYSTEM.COLORS.BLACK.PURE }}>{item.details?.exclusivity || 'PUBLIC'}</span>
                                 </div>
-                                <div className="p-6 bg-white flex flex-col gap-1.5 text-right">
-                                    <span className="text-[8px] font-black text-zinc-400 uppercase tracking-widest">Timestamp_Sync</span>
-                                    <span className="text-[11px] font-black text-black uppercase tabular-nums">
+                                <div className="p-8 bg-white flex flex-col gap-2 text-right">
+                                    <span className="text-[10px] font-black uppercase tracking-widest" style={{ color: DESIGN_SYSTEM.COLORS.ZINC[400] }}>Timestamp_Sync</span>
+                                    <span className="text-[13px] font-black uppercase tabular-nums" style={{ color: DESIGN_SYSTEM.COLORS.BLACK.PURE }}>
                                         {item.details?.date_time ? new Date(item.details.date_time).toLocaleDateString() : new Date(item.createdAt).toLocaleDateString()}
                                     </span>
                                 </div>
@@ -253,7 +298,7 @@ function CelebrationModal({ item, onClose, onNavigate }: { item: Celebration, on
                         </div>
                     </div>
 
-                    <div className="mt-12 flex flex-col sm:flex-row items-center gap-4">
+                    <div className="mt-16 flex flex-col sm:flex-row items-center gap-6">
                         <ClippedButton
                             label="INITIALIZE FULL REPORT"
                             variant="primary"
@@ -261,9 +306,9 @@ function CelebrationModal({ item, onClose, onNavigate }: { item: Celebration, on
                             className="w-full sm:w-fit"
                             onClick={() => onNavigate(item.slug || '')}
                         />
-                        <div className="hidden sm:flex items-center gap-2 px-6">
-                            <div className="size-1 rounded-full" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY }} />
-                            <span className="text-[8px] font-black text-zinc-400 uppercase tracking-[0.3em]">Protocol_v.4.0</span>
+                        <div className="hidden sm:flex items-center gap-3 px-8">
+                            <div className="size-2 rounded-full" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
+                            <span className="text-[10px] font-black uppercase tracking-[0.4em]" style={{ color: DESIGN_SYSTEM.COLORS.ZINC[400] }}>Protocol_v.4.0</span>
                         </div>
                     </div>
                 </div>

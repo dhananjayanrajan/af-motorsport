@@ -19,7 +19,7 @@ export default function VacancySpecsExpectations({ vacancy }: VacancySpecsExpect
                 <div className="flex flex-col md:flex-row md:items-end justify-between gap-12">
                     <div className="space-y-4">
                         <div className="flex items-center gap-3">
-                            <Settings2 size={12} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }} />
+                            <Settings2 size={12} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
                             <span className="text-[8px] font-black text-zinc-700 uppercase tracking-[0.6em]">TECHNICAL_REQUISITION_LOG</span>
                         </div>
                         <h2 className="text-4xl md:text-6xl font-black italic text-white uppercase tracking-tighter">
@@ -48,7 +48,7 @@ export default function VacancySpecsExpectations({ vacancy }: VacancySpecsExpect
                                 >
                                     <div className="flex flex-col space-y-3">
                                         <div className="flex justify-between items-start">
-                                            <span className="text-[7px] font-black text-primary uppercase tracking-[0.2em]" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }}>
+                                            <span className="text-[7px] font-black text-primary uppercase tracking-[0.2em]" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}>
                                                 {spec.parameter || 'PARAMETER'}
                                             </span>
                                             <div className="h-px flex-1 bg-zinc-900 mx-4 mt-1.5" />
@@ -89,13 +89,13 @@ export default function VacancySpecsExpectations({ vacancy }: VacancySpecsExpect
                                     transition={{ delay: idx * 0.05 }}
                                     className="relative p-8 bg-zinc-950 border border-zinc-900 group overflow-hidden"
                                 >
-                                    <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-100 group-hover:text-primary transition-all" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }}>
+                                    <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-100 group-hover:text-primary transition-all" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}>
                                         <ShieldCheck size={40} strokeWidth={1} />
                                     </div>
 
                                     <div className="space-y-6 relative z-10">
                                         <div className="flex items-center gap-3">
-                                            <div className="size-1 bg-primary" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY }} />
+                                            <div className="size-1 bg-primary" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
                                             <span className="text-[8px] font-black text-zinc-500 uppercase tracking-widest">
                                                 {exp.type || 'KPI_METRIC'}
                                             </span>

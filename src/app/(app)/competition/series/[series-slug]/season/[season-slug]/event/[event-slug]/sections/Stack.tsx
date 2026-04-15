@@ -15,7 +15,7 @@ export default function SessionStack({ sessions }: SessionStackProps) {
                 <div className="flex items-center gap-3">
                     <div
                         className="w-10 h-[2px]"
-                        style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY }}
+                        style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}
                     />
                     <span className="text-[10px] font-black uppercase tracking-[0.5em] text-zinc-400">
                         Operational Segments

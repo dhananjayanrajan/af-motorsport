@@ -90,7 +90,7 @@ export default function StatSection({ driver }: StatSectionProps) {
     });
 
     return (
-        <div ref={containerRef} className="relative bg-white">
+        <div ref={containerRef} className="relative" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.WHITE.PURE }}>
             <motion.div
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: isInView ? 1 : 0, x: isInView ? 0 : 20 }}
@@ -99,12 +99,12 @@ export default function StatSection({ driver }: StatSectionProps) {
             >
                 {driverStats.map((_, i) => (
                     <div key={i} className="flex flex-col items-center gap-2">
-                        <span className="text-[10px] font-black text-black">0{i + 1}</span>
-                        <div className="w-[4px] h-20 bg-black/10 rounded-full overflow-hidden border border-black/20">
+                        <span className={`text-[10px] font-black transition-colors ${DESIGN_SYSTEM.ANIMATION.DURATION_BASE}`} style={{ color: DESIGN_SYSTEM.COLORS.BLACK.PURE }}>0{i + 1}</span>
+                        <div className="w-[4px] h-20 rounded-full overflow-hidden border" style={{ backgroundColor: `${DESIGN_SYSTEM.COLORS.BLACK.PURE}1A`, borderColor: `${DESIGN_SYSTEM.COLORS.BLACK.PURE}33` }}>
                             <motion.div
                                 className="w-full origin-top"
                                 style={{
-                                    backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY,
+                                    backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500],
                                     height: useTransform(
                                         scrollYProgress,
                                         [i / driverStats.length, (i + 1) / driverStats.length],
@@ -126,10 +126,11 @@ export default function StatSection({ driver }: StatSectionProps) {
             <motion.div
                 style={{
                     scaleX,
-                    backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY,
-                    opacity: isInView ? 1 : 0
+                    backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500],
+                    opacity: isInView ? 1 : 0,
+                    borderTopColor: DESIGN_SYSTEM.COLORS.BLACK.PURE
                 }}
-                className="fixed bottom-0 left-0 right-0 h-2 origin-left z-50 transition-opacity duration-300 shadow-[0_-4px_15px_rgba(0,0,0,0.3)] border-t border-black"
+                className="fixed bottom-0 left-0 right-0 h-2 origin-left z-50 transition-opacity duration-300 shadow-[0_-4px_15px_rgba(0,0,0,0.3)] border-t"
             />
         </div>
     );
@@ -143,13 +144,14 @@ function StatSlide({ stat, index, driver }: { stat: StatItem; index: number; dri
     return (
         <section
             ref={slideRef}
-            className="relative min-h-screen w-full flex items-center justify-center overflow-hidden sticky top-0 bg-white border-b border-black/20 py-20"
+            className="relative min-h-screen w-full flex items-center justify-center overflow-hidden sticky top-0 border-b py-20"
+            style={{ backgroundColor: DESIGN_SYSTEM.COLORS.WHITE.PURE, borderBottomColor: `${DESIGN_SYSTEM.COLORS.BLACK.PURE}33` }}
         >
             <div className="absolute inset-0 z-0">
                 <img src={coverUrl} className="w-full h-full object-cover grayscale opacity-15 contrast-125" alt="" />
-                <div className="absolute inset-0 bg-white/70" />
+                <div className="absolute inset-0" style={{ backgroundColor: `${DESIGN_SYSTEM.COLORS.WHITE.PURE}B3` }} />
                 <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center pointer-events-none">
-                    <span className="text-[30vw] font-black text-black/[0.05] select-none leading-none">
+                    <span className="text-[30vw] font-black select-none leading-none" style={{ color: `${DESIGN_SYSTEM.COLORS.BLACK.PURE}0D` }}>
                         {stat.id}
                     </span>
                 </div>
@@ -163,16 +165,16 @@ function StatSlide({ stat, index, driver }: { stat: StatItem; index: number; dri
                             initial={{ opacity: 0, x: -20 }}
                             whileInView={{ opacity: 1, x: 0 }}
                             transition={{ duration: 0.5 }}
-                            className="flex items-center gap-4 md:gap-6"
+                            className="flex items-center gap-4 md:gap-6 group pointer-events-auto"
                         >
-                            <div className="p-3 bg-black">
-                                <stat.icon className="size-6 md:size-7" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }} />
+                            <div className="p-3 transition-colors duration-200 group-hover:bg-primary-600" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.BLACK.PURE }}>
+                                <stat.icon className="size-6 md:size-7" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
                             </div>
                             <div className="flex flex-col">
-                                <span className={cn("text-xs md:text-sm font-black uppercase italic text-black leading-none", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_2XL)}>
+                                <span className={cn("text-xs md:text-sm font-black uppercase italic leading-none transition-colors", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_2XL)} style={{ color: DESIGN_SYSTEM.COLORS.BLACK.PURE }}>
                                     {stat.label}
                                 </span>
-                                <div className="h-1 w-full mt-1" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY }} />
+                                <div className="h-1 w-full mt-1 transition-all group-hover:h-2" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
                             </div>
                         </motion.div>
 
@@ -180,12 +182,12 @@ function StatSlide({ stat, index, driver }: { stat: StatItem; index: number; dri
                             initial={{ opacity: 0, y: 40 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.8, ease: parsedEase }}
-                            className="flex flex-wrap items-baseline gap-4 md:gap-6"
+                            className="flex flex-wrap items-baseline gap-4 md:gap-6 group pointer-events-auto"
                         >
-                            <h2 className="text-6xl sm:text-8xl md:text-[11rem] font-black italic leading-none tracking-tighter text-black">
+                            <h2 className={`text-6xl sm:text-8xl md:text-[11rem] font-black italic leading-none tracking-tighter transition-colors ${DESIGN_SYSTEM.ANIMATION.DURATION_BASE} group-hover:text-primary-500`} style={{ color: DESIGN_SYSTEM.COLORS.BLACK.PURE }}>
                                 {stat.value}
                             </h2>
-                            <span className="text-2xl sm:text-4xl md:text-6xl font-black italic uppercase" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }}>
+                            <span className={`text-2xl sm:text-4xl md:text-6xl font-black italic uppercase transition-colors ${DESIGN_SYSTEM.ANIMATION.DURATION_BASE} group-hover:text-secondary-500`} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}>
                                 {stat.suffix}
                             </span>
                         </motion.div>
@@ -194,10 +196,11 @@ function StatSlide({ stat, index, driver }: { stat: StatItem; index: number; dri
                             initial={{ opacity: 0, y: 20 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.3 }}
-                            className="w-full md:max-w-xl p-6 md:p-10 border-l-8 relative bg-white border-black shadow-xl h-auto"
+                            className="w-full md:max-w-xl p-6 md:p-10 border-l-8 relative shadow-xl h-auto group pointer-events-auto transition-all"
+                            style={{ backgroundColor: DESIGN_SYSTEM.COLORS.WHITE.PURE, borderLeftColor: DESIGN_SYSTEM.COLORS.BLACK.PURE }}
                         >
-                            <div className="absolute -top-[1px] right-0 w-12 h-[1px] bg-black" />
-                            <p className={cn("text-sm sm:text-base md:text-lg font-black uppercase italic leading-tight text-black", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_DEFAULT)}>
+                            <div className="absolute -top-[1px] right-0 w-12 h-[1px]" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.BLACK.PURE }} />
+                            <p className={cn("text-sm sm:text-base md:text-lg font-black uppercase italic leading-tight transition-colors group-hover:text-primary-600", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_DEFAULT)} style={{ color: DESIGN_SYSTEM.COLORS.BLACK.PURE }}>
                                 {stat.description}
                             </p>
                         </motion.div>
@@ -210,10 +213,11 @@ function StatSlide({ stat, index, driver }: { stat: StatItem; index: number; dri
                                 initial={{ opacity: 0, x: 20 }}
                                 whileInView={{ opacity: 1, x: 0 }}
                                 transition={{ delay: 0.4 + (i * 0.1) }}
-                                className="p-6 md:p-8 flex flex-col gap-2 transition-all duration-500 bg-white border-l-4 border-black shadow-lg h-auto"
+                                className="p-6 md:p-8 flex flex-col gap-2 transition-all duration-500 border-l-4 shadow-lg h-auto group pointer-events-auto hover:translate-x-2"
+                                style={{ backgroundColor: DESIGN_SYSTEM.COLORS.WHITE.PURE, borderLeftColor: DESIGN_SYSTEM.COLORS.BLACK.PURE }}
                             >
-                                <span className="text-[10px] md:text-xs font-black uppercase tracking-[0.4em] text-black/60">{spec.label}</span>
-                                <span className="text-2xl sm:text-3xl md:text-5xl font-black italic text-black break-words">{spec.value}</span>
+                                <span className="text-[10px] md:text-xs font-black uppercase tracking-[0.4em] transition-colors group-hover:text-primary-500" style={{ color: `${DESIGN_SYSTEM.COLORS.BLACK.PURE}99` }}>{spec.label}</span>
+                                <span className="text-2xl sm:text-3xl md:text-5xl font-black italic break-words transition-colors group-hover:text-secondary-600" style={{ color: DESIGN_SYSTEM.COLORS.BLACK.PURE }}>{spec.value}</span>
                             </motion.div>
                         ))}
                     </div>

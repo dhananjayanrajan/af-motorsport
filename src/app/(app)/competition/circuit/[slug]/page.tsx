@@ -1,8 +1,13 @@
 import { notFound } from 'next/navigation';
 import RaceCalendar from '../../sections/Calendar';
 import LightboxGallery from '../../sections/Gallery';
+import RenovationsTimeline from '../../sections/Timeline';
+import CircuitDocuments from './sections/Documents';
 import CircuitStatGrid from './sections/Grid';
 import CircuitHero from './sections/Hero';
+import TopographicHistory from './sections/History';
+import LapRecordArchive from './sections/Record';
+import PhysicalSpecs from './sections/Specs';
 import CircuitStatement from './sections/Statement';
 
 export const dynamic = 'force-dynamic'
@@ -44,7 +49,12 @@ export default async function CircuitPage({ params }: PageProps) {
     return (
         <main className="min-h-screen bg-white">
             <CircuitHero circuit={circuit} />
+            <PhysicalSpecs circuit={circuit} />
             <RaceCalendar races={historyData.docs || []} />
+            <TopographicHistory circuit={circuit} />
+            <CircuitDocuments circuit={circuit} />
+            <RenovationsTimeline circuit={circuit} />
+            <LapRecordArchive circuit={circuit} />
             <CircuitStatement circuit={circuit} />
             <CircuitStatGrid circuit={circuit} />
             <LightboxGallery items={historyData.docs || []} title="Gallery" label="Media Assets" />

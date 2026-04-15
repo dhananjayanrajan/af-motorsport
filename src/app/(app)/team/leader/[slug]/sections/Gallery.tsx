@@ -38,14 +38,14 @@ export default function GallerySection({ leader }: { leader: Leader }) {
     return (
         <section
             className="relative w-full py-24 bg-white border-b font-sans"
-            style={{ borderBottomColor: DESIGN_SYSTEM.COLORS.ZINC_100 }}
+            style={{ borderBottomColor: DESIGN_SYSTEM.COLORS.ZINC[100] }}
         >
             <div className="w-full px-6 md:px-20">
                 <div className="flex flex-col gap-4 mb-20">
                     <div className="flex items-center gap-3">
                         <div
                             className="w-10 h-[2px]"
-                            style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY }}
+                            style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}
                         />
                         <span className="text-[10px] font-black uppercase tracking-[0.5em] text-zinc-400">
                             Visual Archives
@@ -76,12 +76,12 @@ export default function GallerySection({ leader }: { leader: Leader }) {
                                         className="object-cover grayscale transition-all duration-500 opacity-60 group-hover:opacity-100 group-hover:grayscale-0 group-hover:scale-105"
                                     />
                                     <div className="absolute top-4 left-4 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-10">
-                                        <Hash size={10} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }} />
+                                        <Hash size={10} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
                                         <span className="text-[10px] font-black text-black">{(idx + 1).toString().padStart(2, '0')}</span>
                                     </div>
                                     <div
                                         className="absolute inset-0 border-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10"
-                                        style={{ borderColor: DESIGN_SYSTEM.COLORS.PRIMARY }}
+                                        style={{ borderColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}
                                     />
                                 </motion.div>
                             );
@@ -93,8 +93,8 @@ export default function GallerySection({ leader }: { leader: Leader }) {
                         style={{ borderColor: DESIGN_SYSTEM.COLORS.PRIMARY_MUTED, backgroundColor: DESIGN_SYSTEM.COLORS.BACKGROUND }}
                     >
                         <div className="relative mb-6">
-                            <FileSearch size={48} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }} strokeWidth={1.5} />
-                            <div className="absolute -top-1 -right-1 size-3 rounded-full animate-pulse" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY }} />
+                            <FileSearch size={48} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} strokeWidth={1.5} />
+                            <div className="absolute -top-1 -right-1 size-3 rounded-full animate-pulse" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
                         </div>
                         <h3 className="text-xl font-black uppercase italic tracking-tight text-black mb-2">
                             No Media Assets Located
@@ -130,16 +130,16 @@ function Lightbox({ data, onClose, onPrev, onNext }: { data: any, onClose: () =>
         >
             <div
                 className="w-full h-full flex flex-col relative border bg-white"
-                style={{ borderColor: DESIGN_SYSTEM.COLORS.ZINC_200 }}
+                style={{ borderColor: DESIGN_SYSTEM.COLORS.ZINC[200] }}
             >
                 <div className="p-8 border-b border-zinc-100 flex items-center justify-between">
                     <div className="flex items-center gap-8">
                         <div className="flex items-center gap-3">
-                            <Database size={16} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }} />
+                            <Database size={16} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
                             <span className="text-[12px] font-black text-black uppercase tracking-[0.4em]">{data.name}</span>
                         </div>
                         <div className="hidden md:flex items-center gap-2">
-                            <div className="size-1.5 rounded-full" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY }} />
+                            <div className="size-1.5 rounded-full" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
                             <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">{data.status}</span>
                         </div>
                     </div>
@@ -176,7 +176,7 @@ function Lightbox({ data, onClose, onPrev, onNext }: { data: any, onClose: () =>
                     <div className="flex-1 space-y-6">
                         <div className="space-y-3">
                             <div className="flex items-center gap-2">
-                                <Info size={14} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }} />
+                                <Info size={14} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
                                 <span className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.3em]">Operational Summary</span>
                             </div>
                             <p className="text-sm font-bold text-black uppercase italic tracking-tight leading-relaxed max-w-3xl">

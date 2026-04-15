@@ -42,7 +42,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ leader }) => {
                         <div className="flex items-center gap-3 animate-in fade-in slide-in-from-left duration-700">
                             <span
                                 className="text-[9px] md:text-[11px] font-black uppercase tracking-[0.4em]"
-                                style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }}
+                                style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}
                             >
                                 Executive_Archive
                             </span>
@@ -91,7 +91,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ leader }) => {
                             </div>
                             <div
                                 className="absolute -bottom-2 -right-2 size-10 flex items-center justify-center rotate-45 shadow-lg"
-                                style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY }}
+                                style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}
                             >
                                 <span className="text-black font-black text-[9px] -rotate-45 tracking-tighter">LEADER</span>
                             </div>
@@ -103,7 +103,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ leader }) => {
             <div className="absolute bottom-0 right-0 w-full h-1 md:h-1.5 bg-zinc-100/50">
                 <div
                     className="h-full w-1/4 animate-in slide-in-from-left duration-1000"
-                    style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY }}
+                    style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}
                 />
             </div>
         </section>

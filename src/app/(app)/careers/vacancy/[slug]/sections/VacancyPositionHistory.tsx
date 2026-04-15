@@ -18,7 +18,7 @@ export default function VacancyPositionHistory({ vacancy }: VacancyPositionHisto
                 <div className="flex flex-col md:flex-row md:items-end justify-between gap-12">
                     <div className="space-y-4">
                         <div className="flex items-center gap-3">
-                            <History size={12} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }} />
+                            <History size={12} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
                             <span className="text-[8px] font-black text-zinc-700 uppercase tracking-[0.6em]">ROLE_EVOLUTION_TIMELINE</span>
                         </div>
                         <h2 className="text-4xl md:text-6xl font-black italic text-white uppercase tracking-tighter">
@@ -69,7 +69,7 @@ export default function VacancyPositionHistory({ vacancy }: VacancyPositionHisto
                                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                                         <div className="space-y-2">
                                             <div className="flex items-center gap-3">
-                                                <UserPlus size={12} className="text-primary" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }} />
+                                                <UserPlus size={12} className="text-primary" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
                                                 <span className="text-[8px] font-black text-zinc-500 uppercase tracking-widest">ASSIGNED_RANK</span>
                                             </div>
                                             <h3 className="text-2xl font-black text-white uppercase italic tracking-tighter">

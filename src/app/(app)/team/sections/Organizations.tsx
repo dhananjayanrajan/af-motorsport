@@ -36,7 +36,7 @@ export default function OrganizationsSection({ organizations }: OrganizationsSec
                         </span>
                     </div>
                     <h2 className="text-5xl font-black italic uppercase text-white tracking-tighter">
-                        The <span style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }}>Network</span>
+                        The <span style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}>Network</span>
                     </h2>
                 </div>
             </div>

@@ -19,7 +19,7 @@ export default function LifeAtMotorsport({ celebrations, interviews, meetups }: 
                 <div className="flex flex-col md:flex-row md:items-end justify-between gap-12">
                     <div className="space-y-4">
                         <div className="flex items-center gap-3">
-                            <Sparkles size={12} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }} />
+                            <Sparkles size={12} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
                             <span className="text-[8px] font-black text-zinc-700 uppercase tracking-[0.6em]">CULTURE_RECONSTRUCTION_ENGINE</span>
                         </div>
                         <h2 className="text-4xl md:text-6xl font-black italic text-white uppercase tracking-tighter">
@@ -121,7 +121,7 @@ export default function LifeAtMotorsport({ celebrations, interviews, meetups }: 
                             >
                                 <div className="space-y-4">
                                     <div className="flex justify-between items-start">
-                                        <span className="text-[7px] font-black text-primary uppercase italic" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }}>{meetup.details.format}</span>
+                                        <span className="text-[7px] font-black text-primary uppercase italic" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}>{meetup.details.format}</span>
                                         <Binary size={10} className="text-zinc-800" />
                                     </div>
                                     <h4 className="text-sm font-black text-white uppercase italic tracking-tighter group-hover:translate-x-1 transition-transform">

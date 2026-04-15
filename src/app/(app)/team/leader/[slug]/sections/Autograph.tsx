@@ -43,7 +43,7 @@ export default function AutographSection({ leader }: AutographSectionProps) {
                         {leader.alias || 'leader'} Profile
                     </span>
                     <h2 className="text-5xl md:text-7xl font-black italic uppercase leading-none tracking-tighter text-zinc-900">
-                        Signature <span style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }}>Series</span>
+                        Signature <span style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}>Series</span>
                     </h2>
                 </motion.div>
 

@@ -68,7 +68,7 @@ export const CustomFooter = ({ footer, socials, organizations = [], questions, a
       )}
 
       {questions && (
-        <div className="relative z-20 pb-12 bg-black">
+        <div className="relative z-20">
           <FAQAccordionBlock data={questions} />
         </div>
       )}
@@ -87,7 +87,7 @@ export const CustomFooter = ({ footer, socials, organizations = [], questions, a
       )}
 
       <footer
-        className="relative bg-black text-white pt-20 border-t border-zinc-900 transition-colors duration-500 font-sans overflow-hidden"
+        className="relative text-white pt-20 border-t border-zinc-900 transition-colors duration-500 font-sans overflow-hidden"
       >
         <div
           className="absolute inset-0 z-0 opacity-60 transition-opacity duration-700"
@@ -127,7 +127,7 @@ export const CustomFooter = ({ footer, socials, organizations = [], questions, a
                       speed={4}
                       delay={0.5}
                       color="#3b3b3b"
-                      shineColor={DESIGN_SYSTEM.COLORS.PRIMARY}
+                      shineColor={DESIGN_SYSTEM.COLORS.PRIMARY[500]}
                       spread={150}
                       direction="left"
                       pauseOnHover={false}
@@ -140,7 +140,7 @@ export const CustomFooter = ({ footer, socials, organizations = [], questions, a
           )}
         </div>
 
-        <div className="relative z-20 bg-black pt-16 pb-20 border-t border-zinc-900 px-8">
+        <div className="relative z-20 pt-16 pb-20 border-t border-zinc-900 px-8">
           <div className="max-w-7xl mx-auto">
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-x-8 gap-y-16 mb-16">
               {columns?.filter(col => col.visible).map((column, index) => (

@@ -21,7 +21,7 @@ const LatestResult: React.FC<ResultProps> = ({ result }) => {
     return (
         <section
             className="relative w-full py-24 px-20 overflow-hidden"
-            style={{ backgroundColor: DESIGN_SYSTEM.COLORS.ZINC_950 }}
+            style={{ backgroundColor: DESIGN_SYSTEM.COLORS.ZINC[950] }}
         >
             <div className="flex justify-between items-end mb-12">
                 <motion.div
@@ -30,7 +30,7 @@ const LatestResult: React.FC<ResultProps> = ({ result }) => {
                     viewport={{ once: true }}
                     transition={zipTransition}
                 >
-                    <h2 className={`text-xs font-black uppercase ${DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_2XL}`} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }}>
+                    <h2 className={`text-xs font-black uppercase ${DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_2XL}`} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}>
                         {race?.name || 'Latest Result'}
                     </h2>
                     <p className="text-white text-4xl font-black italic uppercase mt-2">Classified Winner</p>
@@ -91,7 +91,7 @@ const LatestResult: React.FC<ResultProps> = ({ result }) => {
                         </div>
                         <div className="flex justify-between border-b border-zinc-800 pb-2">
                             <span className="text-zinc-500 uppercase text-[10px] font-bold">Points</span>
-                            <span style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }} className="font-mono">+25</span>
+                            <span style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} className="font-mono">+25</span>
                         </div>
                     </div>
                 </motion.div>

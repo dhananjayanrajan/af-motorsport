@@ -112,7 +112,7 @@ export default async function Order({ params, searchParams }: PageProps) {
         {user ? (
           <Link
             href="/orders"
-            style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }}
+            style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}
             className={cn("group flex items-center gap-2 text-[10px] font-black uppercase transition-colors brightness-50 hover:brightness-100", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_XL)}
           >
             <ChevronLeftIcon className="size-3 transition-transform group-hover:-translate-x-1" />
@@ -123,7 +123,7 @@ export default async function Order({ params, searchParams }: PageProps) {
         )}
 
         <div className="flex items-center gap-2">
-          <Hash className="size-3" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }} />
+          <Hash className="size-3" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
           <h1 className="text-[10px] font-black uppercase tracking-widest text-white">
             Manifest_{order.id}
           </h1>

@@ -91,7 +91,7 @@ export default function PointsStandings({ races, entries }: PointsStandingsProps
                 <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-12">
                     <div className="flex flex-col gap-4">
                         <div className="flex items-center gap-3">
-                            <div className="w-8 h-[2px]" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY }} />
+                            <div className="w-8 h-[2px]" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
                             <span className="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-400">
                                 Competition Metrics
                             </span>
@@ -179,7 +179,7 @@ export default function PointsStandings({ races, entries }: PointsStandingsProps
                                     </div>
 
                                     <div className="w-8 flex justify-end">
-                                        {index === 0 && <Award size={16} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }} />}
+                                        {index === 0 && <Award size={16} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />}
                                     </div>
                                 </motion.div>
                             );

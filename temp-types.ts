@@ -1302,6 +1302,36 @@ export interface Member {
     createdAt: string;
 }
 
+// Individual
+export interface Individual {
+    id: number;
+    first_name: string;
+    last_name: string;
+    alias?: string | null;
+    basics?: {
+        type?: ('mentor' | 'trainee' | 'intern' | 'advisor' | 'consultant' | 'guest') | null;
+        description?: string | null;
+        is_contact?: boolean | null;
+        gender?: ('Male' | 'Female' | 'NonBinary' | 'Undisclosed') | null;
+        pronouns?: string | null;
+    };
+    assets?: {
+        avatar?: (number | null) | Media;
+        thumbnail?: (number | null) | Media;
+    };
+    seo?: {
+        title?: string | null;
+        image?: (number | null) | Media;
+        description?: string | null;
+    };
+    generateSlug?: boolean | null;
+    slug?: string | null;
+    categories?: (number | Category)[] | null;
+    tags?: (number | Tag)[] | null;
+    updatedAt: string;
+    createdAt: string;
+}
+
 // Organization
 export interface Organization {
     id: number;
@@ -1481,36 +1511,6 @@ export interface Organization {
     assets?: {
         logo?: (number | null) | Media;
         alt_logo?: (number | null) | Media;
-    };
-    seo?: {
-        title?: string | null;
-        image?: (number | null) | Media;
-        description?: string | null;
-    };
-    generateSlug?: boolean | null;
-    slug?: string | null;
-    categories?: (number | Category)[] | null;
-    tags?: (number | Tag)[] | null;
-    updatedAt: string;
-    createdAt: string;
-}
-
-// Individual
-export interface Individual {
-    id: number;
-    first_name: string;
-    last_name: string;
-    alias?: string | null;
-    basics?: {
-        type?: ('mentor' | 'trainee' | 'intern' | 'advisor' | 'consultant' | 'guest') | null;
-        description?: string | null;
-        is_contact?: boolean | null;
-        gender?: ('Male' | 'Female' | 'NonBinary' | 'Undisclosed') | null;
-        pronouns?: string | null;
-    };
-    assets?: {
-        avatar?: (number | null) | Media;
-        thumbnail?: (number | null) | Media;
     };
     seo?: {
         title?: string | null;
@@ -2507,45 +2507,6 @@ export interface Policy {
     createdAt: string;
 }
 
-// Statement
-export interface Statement {
-    id: number;
-    name: string;
-    alias?: string | null;
-    basics?: {
-        description?: string | null;
-        status?: ('Published' | 'Draft' | 'Archived') | null;
-        statement?: {
-            root: {
-                type: string;
-                children: {
-                    type: any;
-                    version: number;
-                    [k: string]: unknown;
-                }[];
-                direction: ('ltr' | 'rtl') | null;
-                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-                indent: number;
-                version: number;
-            };
-            [k: string]: unknown;
-        } | null;
-        issued_date?: string | null;
-        authority?: (number | null) | Organization;
-    };
-    seo?: {
-        title?: string | null;
-        image?: (number | null) | Media;
-        description?: string | null;
-    };
-    generateSlug?: boolean | null;
-    slug?: string | null;
-    categories?: (number | Category)[] | null;
-    tags?: (number | Tag)[] | null;
-    updatedAt: string;
-    createdAt: string;
-}
-
 // Slide
 export interface Slide {
     id: number;
@@ -2697,65 +2658,6 @@ export interface Plan {
     createdAt: string;
 }
 
-// Timeline
-export interface Timeline {
-    id: number;
-    name: string;
-    alias?: string | null;
-    basics?: {
-        description?: string | null;
-    };
-    details?: {
-        scope?: ('personal' | 'team' | 'project' | 'championship' | 'organizational') | null;
-        status?: ('draft' | 'active' | 'archived') | null;
-        start_date?: string | null;
-        end_date?: string | null;
-        color_scheme?: ('light' | 'dark' | 'vibrant' | 'monochrome') | null;
-        orientation?: ('horizontal' | 'vertical' | 'zigzag') | null;
-        notes?: string | null;
-    };
-    traits?: {
-        milestones?: {
-            list?:
-            | {
-                name?: string | null;
-                date?: string | null;
-                description?: string | null;
-                icon?: (number | null) | Media;
-                id?: string | null;
-            }[]
-            | null;
-        };
-        events?: {
-            list?:
-            | {
-                name?: string | null;
-                date?: string | null;
-                description?: string | null;
-                location?: [number, number] | null;
-                id?: string | null;
-            }[]
-            | null;
-        };
-    };
-    assets?: {
-        thumbnail?: (number | null) | Media;
-        cover?: (number | null) | Media;
-        documents?: (number | Media)[] | null;
-    };
-    seo?: {
-        title?: string | null;
-        image?: (number | null) | Media;
-        description?: string | null;
-    };
-    generateSlug?: boolean | null;
-    slug?: string | null;
-    categories?: (number | Category)[] | null;
-    tags?: (number | Tag)[] | null;
-    updatedAt: string;
-    createdAt: string;
-}
-
 // Program
 export interface Program {
     id: number;
@@ -2822,4 +2724,163 @@ export interface Program {
     tags?: (number | Tag)[] | null;
     updatedAt: string;
     createdAt: string;
+}
+
+// Timeline
+export interface Timeline {
+    id: number;
+    name: string;
+    alias?: string | null;
+    basics?: {
+        description?: string | null;
+    };
+    details?: {
+        scope?: ('personal' | 'team' | 'project' | 'championship' | 'organizational') | null;
+        status?: ('draft' | 'active' | 'archived') | null;
+        start_date?: string | null;
+        end_date?: string | null;
+        color_scheme?: ('light' | 'dark' | 'vibrant' | 'monochrome') | null;
+        orientation?: ('horizontal' | 'vertical' | 'zigzag') | null;
+        notes?: string | null;
+    };
+    traits?: {
+        milestones?: {
+            list?:
+            | {
+                name?: string | null;
+                date?: string | null;
+                description?: string | null;
+                icon?: (number | null) | Media;
+                id?: string | null;
+            }[]
+            | null;
+        };
+        events?: {
+            list?:
+            | {
+                name?: string | null;
+                date?: string | null;
+                description?: string | null;
+                location?: [number, number] | null;
+                id?: string | null;
+            }[]
+            | null;
+        };
+    };
+    assets?: {
+        thumbnail?: (number | null) | Media;
+        cover?: (number | null) | Media;
+        documents?: (number | Media)[] | null;
+    };
+    seo?: {
+        title?: string | null;
+        image?: (number | null) | Media;
+        description?: string | null;
+    };
+    generateSlug?: boolean | null;
+    slug?: string | null;
+    categories?: (number | Category)[] | null;
+    tags?: (number | Tag)[] | null;
+    updatedAt: string;
+    createdAt: string;
+}
+
+// Statement
+export interface Statement {
+    id: number;
+    name: string;
+    alias?: string | null;
+    basics?: {
+        description?: string | null;
+        status?: ('Published' | 'Draft' | 'Archived') | null;
+        statement?: {
+            root: {
+                type: string;
+                children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+            };
+            [k: string]: unknown;
+        } | null;
+        issued_date?: string | null;
+        authority?: (number | null) | Organization;
+    };
+    seo?: {
+        title?: string | null;
+        image?: (number | null) | Media;
+        description?: string | null;
+    };
+    generateSlug?: boolean | null;
+    slug?: string | null;
+    categories?: (number | Category)[] | null;
+    tags?: (number | Tag)[] | null;
+    updatedAt: string;
+    createdAt: string;
+}
+
+// Identity
+export interface Identity {
+    id: number;
+    vision?: string | null;
+    mission?: string | null;
+    story?: {
+        root: {
+            type: string;
+            children: {
+                type: any;
+                version: number;
+                [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+        };
+        [k: string]: unknown;
+    } | null;
+    values?:
+    | {
+        value: string;
+        description?: string | null;
+        principleName?: string | null;
+        id?: string | null;
+    }[]
+    | null;
+    voice?: {
+        toneKeywords?:
+        | {
+            keyword: string;
+            id?: string | null;
+        }[]
+        | null;
+        description?: string | null;
+    };
+    leadership?: (number | Leader)[] | null;
+    sustainability?: {
+        stance?: string | null;
+        initiativeNames?:
+        | {
+            name: string;
+            description?: string | null;
+            id?: string | null;
+        }[]
+        | null;
+    };
+    visual?: {
+        logo?: (number | null) | Media;
+        logoInverted?: (number | null) | Media;
+        wordmark?: (number | null) | Media;
+        favicon?: (number | null) | Media;
+        primaryColour?: string | null;
+        secondaryColour?: string | null;
+        guidelines?: (number | null) | Media;
+    };
+    updatedAt?: string | null;
+    createdAt?: string | null;
 }

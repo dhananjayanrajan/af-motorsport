@@ -18,7 +18,7 @@ export default function TrainingCatalog({ trainings, programs }: TrainingCatalog
                 <div className="flex flex-col md:flex-row md:items-end justify-between gap-12">
                     <div className="space-y-4">
                         <div className="flex items-center gap-3">
-                            <Target size={12} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }} />
+                            <Target size={12} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
                             <span className="text-[8px] font-black text-zinc-700 uppercase tracking-[0.6em]">SKILL_ACQUISITION_MATRIX</span>
                         </div>
                         <h2 className="text-4xl md:text-6xl font-black italic text-white uppercase tracking-tighter">
@@ -105,7 +105,7 @@ export default function TrainingCatalog({ trainings, programs }: TrainingCatalog
                                     <div className="flex-1 space-y-6">
                                         <div className="space-y-2">
                                             <div className="flex items-center gap-3">
-                                                <span className="text-[8px] font-black text-primary uppercase" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }}>
+                                                <span className="text-[8px] font-black text-primary uppercase" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}>
                                                     {prog.details?.type || 'CORE_TRACK'}
                                                 </span>
                                                 <div className="h-px w-8 bg-zinc-800" />
@@ -142,7 +142,7 @@ export default function TrainingCatalog({ trainings, programs }: TrainingCatalog
                                             <div className="space-y-1">
                                                 <span className="text-[6px] font-black text-zinc-700 uppercase">CURRENT_STATUS</span>
                                                 <div className="flex items-center gap-2">
-                                                    <div className="size-1 bg-primary animate-pulse" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY }} />
+                                                    <div className="size-1 bg-primary animate-pulse" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
                                                     <span className="text-[9px] font-black text-white uppercase italic">{prog.details?.status}</span>
                                                 </div>
                                             </div>

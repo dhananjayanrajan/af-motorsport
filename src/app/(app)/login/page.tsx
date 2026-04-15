@@ -25,14 +25,14 @@ export default async function Login() {
 
           <div className="flex flex-col items-center text-center space-y-6 relative z-10">
             <div className="relative">
-              <ShieldCheck className="h-12 w-12 animate-pulse" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }} />
+              <ShieldCheck className="h-12 w-12 animate-pulse" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
               <div className={cn("absolute -inset-4 blur-xl rounded-full", `bg-[${DESIGN_SYSTEM.COLORS.PRIMARY}]/10`)} />
             </div>
 
             <div className="space-y-2">
               <div className="flex flex-col items-center gap-2">
                 <div className={cn("h-[1px] w-12 mb-1", `bg-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`)} />
-                <span className={cn("text-[10px] uppercase font-black leading-none", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_XL)} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }}>
+                <span className={cn("text-[10px] uppercase font-black leading-none", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_XL)} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}>
                   Session Active
                 </span>
               </div>

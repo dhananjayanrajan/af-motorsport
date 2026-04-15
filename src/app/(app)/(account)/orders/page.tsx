@@ -43,8 +43,8 @@ export default async function Orders() {
     <div className="w-full space-y-12">
       <div className="flex flex-col gap-4 border-b border-zinc-900 pb-12">
         <div className="flex items-center gap-3">
-          <History className="h-4 w-4" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }} />
-          <span className={cn("text-[9px] uppercase font-black", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_XL)} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }}>
+          <History className="h-4 w-4" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
+          <span className={cn("text-[9px] uppercase font-black", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_XL)} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}>
             Transaction Registry
           </span>
         </div>
@@ -76,7 +76,7 @@ export default async function Orders() {
               >
                 <div
                   className="absolute -left-4 top-0 bottom-0 w-[1px] bg-zinc-900 transition-colors group-hover:bg-[currentColor]"
-                  style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }}
+                  style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}
                 />
                 <OrderItem order={order} />
               </li>

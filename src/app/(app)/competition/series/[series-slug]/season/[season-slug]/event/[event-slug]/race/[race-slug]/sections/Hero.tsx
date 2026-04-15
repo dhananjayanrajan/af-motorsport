@@ -23,17 +23,17 @@ export default function RaceHero({ race }: RaceHeroProps) {
     const statusColors: Record<string, string> = {
         completed: DESIGN_SYSTEM.COLORS.PRIMARY,
         ongoing: '#3b82f6',
-        scheduled: DESIGN_SYSTEM.COLORS.ZINC_400,
+        scheduled: DESIGN_SYSTEM.COLORS.ZINC[400],
         cancelled: '#ef4444',
         postponed: '#f59e0b',
     };
 
     const statusColor = race.details.status
-        ? statusColors[race.details.status] || DESIGN_SYSTEM.COLORS.ZINC_600
-        : DESIGN_SYSTEM.COLORS.ZINC_600;
+        ? statusColors[race.details.status] || DESIGN_SYSTEM.COLORS.ZINC[600]
+        : DESIGN_SYSTEM.COLORS.ZINC[600];
 
     return (
-        <section className="relative w-full min-h-[85vh] flex flex-col lg:flex-row overflow-hidden border-b font-sans" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.SURFACE, borderColor: DESIGN_SYSTEM.COLORS.ZINC_200 }}>
+        <section className="relative w-full min-h-[85vh] flex flex-col lg:flex-row overflow-hidden border-b font-sans" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.SURFACE, borderColor: DESIGN_SYSTEM.COLORS.ZINC[200] }}>
             <div className="flex-none lg:flex-[1.8] relative overflow-hidden">
                 <img
                     src={coverImage}
@@ -45,7 +45,7 @@ export default function RaceHero({ race }: RaceHeroProps) {
                 <div className="absolute inset-0 p-8 sm:p-12 lg:p-20 flex flex-col justify-end">
                     <div className="flex flex-col gap-6 max-w-4xl">
                         <div className="flex items-center gap-4">
-                            <div className="w-12 h-1" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY }} />
+                            <div className="w-12 h-1" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
                             <span className="text-[10px] font-black uppercase tracking-[0.5em]" style={{ color: DESIGN_SYSTEM.COLORS.WHITE_GLOW }}>
                                 {race.details.type?.replace('_', ' ') || 'Race Session'}
                             </span>
@@ -62,7 +62,7 @@ export default function RaceHero({ race }: RaceHeroProps) {
                 </div>
             </div>
 
-            <div className="flex-none lg:w-[500px] flex flex-col justify-between p-8 sm:p-12 lg:p-16 border-l" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.SURFACE, borderColor: DESIGN_SYSTEM.COLORS.ZINC_100 }}>
+            <div className="flex-none lg:w-[500px] flex flex-col justify-between p-8 sm:p-12 lg:p-16 border-l" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.SURFACE, borderColor: DESIGN_SYSTEM.COLORS.ZINC[100] }}>
                 <div className="flex flex-col gap-10">
                     <div className="flex flex-wrap items-center gap-6">
                         <div className="flex items-center gap-3">
@@ -71,26 +71,26 @@ export default function RaceHero({ race }: RaceHeroProps) {
                                 {race.details.status || 'PROVISIONAL'}
                             </span>
                         </div>
-                        <div className="w-1 h-1 rounded-full" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.ZINC_300 }} />
-                        <span className="text-[10px] font-black uppercase tracking-widest" style={{ color: DESIGN_SYSTEM.COLORS.ZINC_400 }}>
+                        <div className="w-1 h-1 rounded-full" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.ZINC[300] }} />
+                        <span className="text-[10px] font-black uppercase tracking-widest" style={{ color: DESIGN_SYSTEM.COLORS.ZINC[400] }}>
                             {race.basics?.identifiers?.code || 'RC_REF'}
                         </span>
                     </div>
 
                     <div className="flex flex-col gap-4">
                         <div className="flex items-center gap-2">
-                            <Flag size={12} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }} />
-                            <span className="text-[10px] font-black uppercase tracking-widest" style={{ color: DESIGN_SYSTEM.COLORS.ZINC_300 }}>Deployment Zone</span>
+                            <Flag size={12} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
+                            <span className="text-[10px] font-black uppercase tracking-widest" style={{ color: DESIGN_SYSTEM.COLORS.ZINC[300] }}>Deployment Zone</span>
                         </div>
                         <p className="text-lg font-black uppercase italic tracking-tight" style={{ color: DESIGN_SYSTEM.COLORS.BLACK }}>
                             {circuit?.name || 'Street Circuit'}
                         </p>
-                        <p className="text-xs font-bold leading-relaxed" style={{ color: DESIGN_SYSTEM.COLORS.ZINC_500 }}>
+                        <p className="text-xs font-bold leading-relaxed" style={{ color: DESIGN_SYSTEM.COLORS.ZINC[500] }}>
                             {race.basics?.description || 'Strategic parameters for this session have been logged under the primary event manifest.'}
                         </p>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-px bg-zinc-100 border shadow-sm" style={{ borderColor: DESIGN_SYSTEM.COLORS.ZINC_100 }}>
+                    <div className="grid grid-cols-2 gap-px bg-zinc-100 border shadow-sm" style={{ borderColor: DESIGN_SYSTEM.COLORS.ZINC[100] }}>
                         <div className="p-6 flex flex-col gap-1 bg-white">
                             <span className="text-[8px] font-black uppercase tracking-widest text-zinc-400">Total Laps</span>
                             <span className="text-3xl font-black italic tabular-nums text-black leading-none">
@@ -111,14 +111,14 @@ export default function RaceHero({ race }: RaceHeroProps) {
                     <div className="space-y-4">
                         <div className="flex items-center justify-between py-3 border-b border-zinc-50">
                             <div className="flex items-center gap-3">
-                                <Zap size={14} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }} />
+                                <Zap size={14} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
                                 <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Atmospherics</span>
                             </div>
                             <span className="text-[10px] font-black uppercase text-black italic">{race.details.weather || 'Controlled'}</span>
                         </div>
                         <div className="flex items-center justify-between py-3 border-b border-zinc-50">
                             <div className="flex items-center gap-3">
-                                <Timer size={14} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }} />
+                                <Timer size={14} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
                                 <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Fastest Lap</span>
                             </div>
                             <span className="text-[10px] font-black text-black tabular-nums">{race.details.fastest_lap_time || '--:--.---'}</span>
@@ -135,14 +135,14 @@ export default function RaceHero({ race }: RaceHeroProps) {
                                         src={(winner.assets.avatar as Media).url || ''}
                                         alt=""
                                         className="w-full h-full object-cover border"
-                                        style={{ borderColor: DESIGN_SYSTEM.COLORS.ZINC_700 }}
+                                        style={{ borderColor: DESIGN_SYSTEM.COLORS.ZINC[700] }}
                                     />
                                 </div>
                             ) : (
-                                <Trophy size={18} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }} />
+                                <Trophy size={18} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
                             )}
                             <div className="flex flex-col">
-                                <span className="text-[8px] font-black uppercase tracking-widest" style={{ color: DESIGN_SYSTEM.COLORS.ZINC_500 }}>Session Winner</span>
+                                <span className="text-[8px] font-black uppercase tracking-widest" style={{ color: DESIGN_SYSTEM.COLORS.ZINC[500] }}>Session Winner</span>
                                 <span className="text-lg font-black uppercase italic tracking-tighter" style={{ color: DESIGN_SYSTEM.COLORS.WHITE }}>
                                     {winner ? `${winner.first_name} ${winner.last_name}` : 'Classified'}
                                 </span>

@@ -35,7 +35,7 @@ export default function AwardSection({ leader }: AwardSectionProps) {
                             Competitive Achievement Log
                         </span>
                         <h2 className="text-4xl font-black italic uppercase text-zinc-900">
-                            Hall of <span style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }}>Fame</span>
+                            Hall of <span style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}>Fame</span>
                         </h2>
                     </div>
 
@@ -97,7 +97,7 @@ export default function AwardSection({ leader }: AwardSectionProps) {
                                         <h3 className="text-4xl md:text-6xl font-black italic uppercase leading-none tracking-tighter text-zinc-900">
                                             {selectedAward.name}
                                         </h3>
-                                        <div className="h-1 w-20" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY }} />
+                                        <div className="h-1 w-20" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
                                     </div>
 
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-zinc-100 border border-zinc-100">
@@ -176,7 +176,7 @@ function AwardEsportsCard({ award, onOpen }: { award: any; onOpen: () => void })
 
                 <div className="absolute bottom-6 left-6 right-6 flex flex-col gap-2">
                     <div className="flex items-center gap-2">
-                        <div className="w-6 h-[2px]" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY }} />
+                        <div className="w-6 h-[2px]" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
                         <span className="text-[10px] font-black text-white/60 uppercase tracking-tighter">Verified Achievement</span>
                     </div>
                     <h3 className="text-2xl font-black italic uppercase text-white leading-none tracking-tighter">

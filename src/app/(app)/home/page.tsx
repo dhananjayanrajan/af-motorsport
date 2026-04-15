@@ -40,7 +40,7 @@ export default async function Page() {
   const data = await getHomeData();
 
   return (
-    <main style={{ backgroundColor: DESIGN_SYSTEM.COLORS.ZINC_950 }}>
+    <main style={{ backgroundColor: DESIGN_SYSTEM.COLORS.ZINC[950] }}>
       HOME PAGE
     </main>
   );

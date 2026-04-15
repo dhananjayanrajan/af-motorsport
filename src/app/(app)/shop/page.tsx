@@ -28,7 +28,7 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 border-b border-zinc-300 pb-10">
         <div className="space-y-3">
           <div className="flex items-center gap-2">
-            <div className="size-1.5 rotate-45" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY }} />
+            <div className="size-1.5 rotate-45" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
             <span className="text-xs font-bold text-zinc-500 uppercase tracking-widest">Inventory</span>
           </div>
           <h1 className="text-2xl font-bold text-black uppercase tracking-tight">

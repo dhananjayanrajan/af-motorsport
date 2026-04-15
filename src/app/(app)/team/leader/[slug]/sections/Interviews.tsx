@@ -17,7 +17,7 @@ export default function InterviewsSection({ data }: { data: Interview[] }) {
             style={{ backgroundColor: DESIGN_SYSTEM.COLORS.BACKGROUND }}
         >
             <div className="w-full px-6 md:px-12 lg:px-20">
-                <div className="mb-16 border-l-4 pl-8" style={{ borderLeftColor: DESIGN_SYSTEM.COLORS.PRIMARY }}>
+                <div className="mb-16 border-l-4 pl-8" style={{ borderLeftColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}>
                     <h2
                         className="text-4xl md:text-5xl font-black uppercase italic tracking-tighter"
                         style={{ color: DESIGN_SYSTEM.COLORS.BLACK }}
@@ -45,8 +45,8 @@ export default function InterviewsSection({ data }: { data: Interview[] }) {
                         style={{ borderColor: DESIGN_SYSTEM.COLORS.PRIMARY_MUTED, backgroundColor: DESIGN_SYSTEM.COLORS.SURFACE }}
                     >
                         <div className="relative mb-6">
-                            <FileSearch size={48} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }} strokeWidth={1.5} />
-                            <div className="absolute -top-1 -right-1 size-3 rounded-full animate-pulse" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY }} />
+                            <FileSearch size={48} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} strokeWidth={1.5} />
+                            <div className="absolute -top-1 -right-1 size-3 rounded-full animate-pulse" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
                         </div>
                         <h3 className="text-xl font-black uppercase italic tracking-tight text-black mb-2">
                             No Interview Archives Located
@@ -97,7 +97,7 @@ function InterviewCard({ interview, onClick }: { interview: Interview; onClick: 
                     style={{ background: 'linear-gradient(to top, rgba(17,17,17,0.9), transparent)' }}
                 >
                     <div className="flex items-center gap-2">
-                        <div className="size-2 rounded-full animate-pulse" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY }} />
+                        <div className="size-2 rounded-full animate-pulse" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
                         <span className="text-[10px] font-black text-white uppercase tracking-widest">
                             {interview.details.format || 'Standard'}
                         </span>
@@ -131,7 +131,7 @@ function InterviewCard({ interview, onClick }: { interview: Interview; onClick: 
                 </div>
             </div>
 
-            <div className="h-1 w-0 group-hover:w-full transition-all duration-500" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY }} />
+            <div className="h-1 w-0 group-hover:w-full transition-all duration-500" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
         </motion.div>
     )
 }
@@ -178,7 +178,7 @@ function InterviewModal({ interview, onClose }: { interview: Interview; onClose:
                                 <div className="relative w-full h-full flex items-center justify-center">
                                     <Image src={coverUrl} alt={interview.name} fill className="object-cover opacity-40 grayscale" />
                                     <div className="relative z-10 flex flex-col items-center gap-4">
-                                        <Play size={64} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }} />
+                                        <Play size={64} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
                                         <span className="text-[10px] font-black text-white uppercase tracking-[0.4em]">Encrypted_Stream_Preview</span>
                                     </div>
                                 </div>
@@ -187,7 +187,7 @@ function InterviewModal({ interview, onClose }: { interview: Interview; onClose:
 
                         <div className="p-10">
                             <h3 className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-6 flex items-center gap-2">
-                                <Database size={12} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }} />
+                                <Database size={12} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
                                 Unit_Metadata_Tags
                             </h3>
                             <div className="flex flex-wrap gap-2">
@@ -208,8 +208,8 @@ function InterviewModal({ interview, onClose }: { interview: Interview; onClose:
                         <div className="space-y-10">
                             <div className="space-y-6">
                                 <div className="flex items-center gap-3">
-                                    <div className="h-[2px] w-8" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY }} />
-                                    <span className="text-[11px] font-black uppercase tracking-[0.4em]" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }}>
+                                    <div className="h-[2px] w-8" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
+                                    <span className="text-[11px] font-black uppercase tracking-[0.4em]" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}>
                                         {interview.alias || 'Direct_Archive'}
                                     </span>
                                 </div>
@@ -228,7 +228,7 @@ function InterviewModal({ interview, onClose }: { interview: Interview; onClose:
                                 <DataField icon={<FileText size={14} />} label="Format" value={interview.details.format} />
                             </div>
 
-                            <div className="p-8 border-l-2" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.BACKGROUND, borderLeftColor: DESIGN_SYSTEM.COLORS.PRIMARY }}>
+                            <div className="p-8 border-l-2" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.BACKGROUND, borderLeftColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}>
                                 <span className="text-[9px] font-black text-zinc-400 uppercase block mb-3 tracking-widest">Protocol_Summary</span>
                                 <p className="text-xs font-black text-black leading-relaxed uppercase">
                                     {interview.basics?.summary || 'No operational summary provided for this transmission.'}
@@ -245,7 +245,7 @@ function InterviewModal({ interview, onClose }: { interview: Interview; onClose:
                             </div>
                             <div className="flex flex-col items-end gap-1">
                                 <span className="text-[8px] font-black text-zinc-400 uppercase tracking-widest">Access_Clearance</span>
-                                <span className="text-[10px] font-black text-black uppercase" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }}>
+                                <span className="text-[10px] font-black text-black uppercase" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}>
                                     {interview.details.access || 'LEVEL_01'}
                                 </span>
                             </div>
@@ -261,7 +261,7 @@ function DataField({ icon, label, value }: { icon: React.ReactNode; label: strin
     return (
         <div className="p-5 bg-white flex flex-col gap-1.5">
             <div className="flex items-center gap-2 text-[8px] font-black text-zinc-400 uppercase tracking-widest">
-                <span style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }}>{icon}</span>
+                <span style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}>{icon}</span>
                 {label}
             </div>
             <span className="text-[11px] font-black uppercase truncate text-black">

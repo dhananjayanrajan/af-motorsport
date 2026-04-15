@@ -2,169 +2,195 @@
 
 import { DESIGN_SYSTEM } from '@/lib/constants';
 import { Country, Leader, Media } from '@/payload-types';
-import { ArrowUpRight, Crown, Shield, Star } from 'lucide-react';
-import { motion } from 'motion/react';
+import { cn } from '@/utilities/cn';
+import { AnimatePresence, motion } from 'framer-motion';
+import { ArrowUpRight, Crown, Zap } from 'lucide-react';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function LeaderStrip({ leaders }: { leaders: Leader[] }) {
-    const [activeIndex, setActiveIndex] = useState<number | null>(null);
+    const [hoveredId, setHoveredId] = useState<number | null>(null);
+    const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+
+    useEffect(() => {
+        const handleMouseMove = (e: MouseEvent) => {
+            setMousePos({ x: e.clientX, y: e.clientY });
+        };
+        window.addEventListener('mousemove', handleMouseMove);
+        return () => window.removeEventListener('mousemove', handleMouseMove);
+    }, []);
 
     return (
         <section
-            className="w-full min-h-screen py-32 px-6 md:px-12 lg:px-20"
-            style={{ backgroundColor: DESIGN_SYSTEM.COLORS.BLACK }}
+            className="w-full py-40 px-6 md:px-12 lg:px-24 overflow-hidden"
+            style={{ backgroundColor: DESIGN_SYSTEM.COLORS.BLACK.PURE }}
         >
-            <div className="max-w-[1600px] mx-auto">
-                <motion.div
-                    initial={{ opacity: 0, y: 40 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    className="mb-24"
-                >
-                    <div className="flex items-center gap-4 mb-6">
-                        <Crown size={20} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }} />
-                        <span
-                            className="text-xs font-black uppercase tracking-[0.3em]"
-                            style={{ color: DESIGN_SYSTEM.COLORS.ZINC_500 }}
-                        >
-                            Executive Leadership
-                        </span>
-                    </div>
-                    <h2
-                        className="text-6xl md:text-8xl lg:text-9xl font-black uppercase italic tracking-tighter leading-[0.85] max-w-5xl"
-                        style={{ color: DESIGN_SYSTEM.COLORS.WHITE }}
-                    >
-                        The <span style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }}>Council</span><br />
-                        of Visionaries
-                    </h2>
-                </motion.div>
-
-                <div className="space-y-1">
-                    {leaders.map((leader, index) => {
-                        const avatarUrl = (leader.assets?.avatar as Media)?.url || `https://picsum.photos/seed/${leader.id}/1000/1200`;
-                        const nationality = (leader.basics?.nationality as Country)?.name;
-                        const isActive = activeIndex === index;
-
-                        return (
-                            <motion.div
-                                key={leader.id}
-                                initial={{ opacity: 0, x: -40 }}
-                                whileInView={{ opacity: 1, x: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ delay: index * 0.1 }}
-                                onMouseEnter={() => setActiveIndex(index)}
-                                onMouseLeave={() => setActiveIndex(null)}
-                                className="group relative border-b last:border-b-0"
-                                style={{ borderColor: 'rgba(255,255,255,0.05)' }}
+            <div className="max-w-[1440px] mx-auto">
+                {/* Header Logic */}
+                <div className="mb-40 flex flex-col md:flex-row md:items-end justify-between gap-12">
+                    <div className="space-y-8">
+                        <div className="flex items-center gap-4">
+                            <Crown size={16} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
+                            <span
+                                className="text-[10px] font-black uppercase tracking-[0.4em]"
+                                style={{ color: DESIGN_SYSTEM.COLORS.ZINC[500] }}
                             >
-                                <Link href={`/team/leader/${leader.slug}`} className="block">
-                                    <div className="flex flex-col md:flex-row md:items-center py-8 md:py-10 transition-all duration-500 group-hover:py-12">
-                                        <div className="flex items-center gap-6 md:gap-12 mb-4 md:mb-0">
-                                            <motion.span
-                                                animate={{
-                                                    color: isActive ? DESIGN_SYSTEM.COLORS.PRIMARY : DESIGN_SYSTEM.COLORS.ZINC_700
-                                                }}
-                                                className="text-5xl md:text-6xl lg:text-7xl font-black italic tabular-nums tracking-tighter"
-                                            >
-                                                {(index + 1).toString().padStart(2, '0')}
-                                            </motion.span>
-
-                                            <div className="relative">
-                                                <motion.div
-                                                    animate={{ opacity: isActive ? 1 : 0 }}
-                                                    className="absolute -inset-2 rounded-full opacity-20 blur-xl"
-                                                    style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY }}
-                                                />
-                                                <div className="relative size-16 md:size-20 rounded-full overflow-hidden border-2 transition-colors"
-                                                    style={{
-                                                        borderColor: isActive ? DESIGN_SYSTEM.COLORS.PRIMARY : 'rgba(255,255,255,0.1)'
-                                                    }}
-                                                >
-                                                    <img
-                                                        src={avatarUrl}
-                                                        alt={`${leader.first_name} ${leader.last_name}`}
-                                                        className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
-                                                    />
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div className="flex-1 ml-0 md:ml-8">
-                                            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                                                <div>
-                                                    <div className="flex items-center gap-3 mb-2">
-                                                        <span
-                                                            className="text-xs font-black uppercase tracking-wider"
-                                                            style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }}
-                                                        >
-                                                            {leader.basics?.title}
-                                                        </span>
-                                                        <Shield size={12} style={{ color: DESIGN_SYSTEM.COLORS.ZINC_600 }} />
-                                                    </div>
-                                                    <h3
-                                                        className="text-4xl md:text-5xl lg:text-6xl font-black uppercase italic tracking-tighter leading-[0.9] transition-colors"
-                                                        style={{
-                                                            color: isActive ? DESIGN_SYSTEM.COLORS.WHITE : DESIGN_SYSTEM.COLORS.ZINC_400
-                                                        }}
-                                                    >
-                                                        {leader.first_name} {leader.last_name}
-                                                    </h3>
-                                                </div>
-
-                                                <motion.div
-                                                    animate={{ x: isActive ? 0 : -10, opacity: isActive ? 1 : 0 }}
-                                                    className="flex items-center gap-6"
-                                                >
-                                                    <div className="flex flex-col items-end gap-1">
-                                                        <span className="text-[10px] font-black uppercase tracking-wider text-zinc-500">
-                                                            {nationality}
-                                                        </span>
-                                                        <div className="flex items-center gap-1">
-                                                            <Star size={12} fill={DESIGN_SYSTEM.COLORS.PRIMARY} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }} />
-                                                            <span className="text-xs font-bold text-zinc-400 uppercase">
-                                                                {leader.basics?.debut_date}
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                    <ArrowUpRight
-                                                        size={32}
-                                                        strokeWidth={2.5}
-                                                        style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }}
-                                                    />
-                                                </motion.div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </Link>
-
-                                <motion.div
-                                    animate={{ scaleX: isActive ? 1 : 0 }}
-                                    className="absolute bottom-0 left-0 right-0 h-0.5 origin-left"
-                                    style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY }}
-                                />
-                            </motion.div>
-                        );
-                    })}
-                </div>
-
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    whileInView={{ opacity: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.5 }}
-                    className="mt-16 flex justify-end"
-                >
-                    <div className="text-right">
-                        <span className="text-xs font-black uppercase tracking-[0.2em] text-zinc-600 block mb-2">
-                            Strategic Command
-                        </span>
-                        <p className="text-sm font-medium text-zinc-500 uppercase max-w-md">
-                            {leaders.length} executives shaping the future of motorsport excellence
+                                Management_Core_v2.0
+                            </span>
+                        </div>
+                        <h2
+                            className="text-5xl md:text-7xl font-black uppercase italic tracking-tighter leading-[0.85]"
+                            style={{ color: DESIGN_SYSTEM.COLORS.WHITE.PURE }}
+                        >
+                            The <span style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}>Vision</span><br />
+                            Collective
+                        </h2>
+                    </div>
+                    <div className="hidden md:block text-right max-w-xs">
+                        <p className="text-[10px] font-bold uppercase leading-relaxed text-zinc-500">
+                            Strategically driving the technical and creative evolution of the motorsport grid through precision leadership.
                         </p>
                     </div>
-                </motion.div>
+                </div>
+
+                {/* Interactive List */}
+                <div className="relative border-t" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>
+                    {leaders.map((leader, index) => (
+                        <LeaderRow
+                            key={leader.id}
+                            leader={leader}
+                            index={index}
+                            isHovered={hoveredId === leader.id}
+                            onHover={() => setHoveredId(leader.id)}
+                            onLeave={() => setHoveredId(null)}
+                        />
+                    ))}
+                </div>
+
+                {/* Floating Preview Asset */}
+                <AnimatePresence>
+                    {hoveredId !== null && (
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.8 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.8 }}
+                            className="fixed pointer-events-none z-50 overflow-hidden border-2"
+                            style={{
+                                width: '320px',
+                                height: '400px',
+                                left: mousePos.x + 40,
+                                top: mousePos.y - 200,
+                                borderColor: DESIGN_SYSTEM.COLORS.PRIMARY[500],
+                                backgroundColor: DESIGN_SYSTEM.COLORS.BLACK[900]
+                            }}
+                        >
+                            <img
+                                src={(leaders.find(l => l.id === hoveredId)?.assets?.avatar as Media)?.url || `https://picsum.photos/seed/${hoveredId}/600/800`}
+                                alt="Preview"
+                                className="w-full h-full object-cover grayscale-0 brightness-75"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
+                        </motion.div>
+                    )}
+                </AnimatePresence>
             </div>
         </section>
+    );
+}
+
+function LeaderRow({
+    leader,
+    index,
+    isHovered,
+    onHover,
+    onLeave
+}: {
+    leader: Leader;
+    index: number;
+    isHovered: boolean;
+    onHover: () => void;
+    onLeave: () => void;
+}) {
+    const nationality = (leader.basics?.nationality as Country)?.name || 'Global';
+
+    return (
+        <motion.div
+            onMouseEnter={onHover}
+            onMouseLeave={onLeave}
+            className="group relative border-b transition-colors"
+            style={{
+                borderColor: 'rgba(255,255,255,0.05)',
+                backgroundColor: isHovered ? 'rgba(255,255,255,0.02)' : 'transparent'
+            }}
+        >
+            <Link href={`/team/leader/${leader.slug}`} className="block py-12 md:py-16">
+                <div className="flex flex-col md:flex-row md:items-center gap-12">
+                    {/* Index & Status */}
+                    <div className="flex items-center gap-8 min-w-[120px]">
+                        <span
+                            className="text-sm font-black italic tabular-nums"
+                            style={{ color: isHovered ? DESIGN_SYSTEM.COLORS.PRIMARY[500] : DESIGN_SYSTEM.COLORS.ZINC[700] }}
+                        >
+                            {(index + 1).toString().padStart(2, '0')}
+                        </span>
+                        <div
+                            className={cn("w-1.5 h-1.5 rounded-full transition-all duration-500", isHovered ? "scale-150 animate-pulse" : "scale-100")}
+                            style={{ backgroundColor: isHovered ? DESIGN_SYSTEM.COLORS.PRIMARY[500] : DESIGN_SYSTEM.COLORS.ZINC[800] }}
+                        />
+                    </div>
+
+                    {/* Main Name & Title Stack */}
+                    <div className="flex-1">
+                        <div className="flex flex-col gap-2 mb-4">
+                            <span
+                                className="text-[10px] font-black uppercase tracking-widest"
+                                style={{ color: isHovered ? DESIGN_SYSTEM.COLORS.PRIMARY[300] : DESIGN_SYSTEM.COLORS.ZINC[500] }}
+                            >
+                                {leader.basics?.title || 'Operational Lead'}
+                            </span>
+                            <h3
+                                className="text-4xl md:text-6xl font-black uppercase italic tracking-tighter transition-all duration-500"
+                                style={{ color: isHovered ? DESIGN_SYSTEM.COLORS.WHITE.PURE : DESIGN_SYSTEM.COLORS.ZINC[400] }}
+                            >
+                                {leader.first_name} <span className="text-zinc-500 group-hover:text-white transition-colors">{leader.last_name}</span>
+                            </h3>
+                        </div>
+                    </div>
+
+                    {/* Metadata Specs */}
+                    <div className="flex items-center gap-16">
+                        <div className="hidden lg:flex flex-col items-end text-right">
+                            <span className="text-[8px] font-black uppercase text-zinc-600 tracking-widest mb-1">Origin_ID</span>
+                            <span className="text-[10px] font-bold text-zinc-400 uppercase">{nationality}</span>
+                        </div>
+
+                        <div className="hidden sm:flex flex-col items-end text-right">
+                            <span className="text-[8px] font-black uppercase text-zinc-600 tracking-widest mb-1">Access_Protocol</span>
+                            <div className="flex items-center gap-2">
+                                <Zap size={10} style={{ color: isHovered ? DESIGN_SYSTEM.COLORS.PRIMARY[500] : DESIGN_SYSTEM.COLORS.ZINC[800] }} />
+                                <span className="text-[10px] font-bold text-zinc-400 uppercase">Lvl_0{index + 1}</span>
+                            </div>
+                        </div>
+
+                        <div className="flex items-center justify-center p-4 border transition-colors group-hover:bg-primary-500"
+                            style={{
+                                borderColor: isHovered ? DESIGN_SYSTEM.COLORS.PRIMARY[500] : 'rgba(255,255,255,0.1)',
+                                backgroundColor: isHovered ? DESIGN_SYSTEM.COLORS.PRIMARY[500] : 'transparent'
+                            }}
+                        >
+                            <ArrowUpRight size={24} className={isHovered ? "text-black" : "text-zinc-700"} />
+                        </div>
+                    </div>
+                </div>
+            </Link>
+
+            {/* Background Hover Stripe */}
+            <motion.div
+                initial={{ scaleX: 0 }}
+                animate={{ scaleX: isHovered ? 1 : 0 }}
+                className="absolute top-0 left-0 w-full h-[1px] origin-left"
+                style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}
+            />
+        </motion.div>
     );
 }

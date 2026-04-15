@@ -20,7 +20,7 @@ export default function ProgramParticipantsPartners({ program }: ProgramParticip
                 <div className="flex flex-col md:flex-row md:items-end justify-between gap-12">
                     <div className="space-y-4">
                         <div className="flex items-center gap-3">
-                            <Handshake size={12} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }} />
+                            <Handshake size={12} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
                             <span className="text-[8px] font-black text-zinc-700 uppercase tracking-[0.6em]">ALLIANCE_INTEGRATION_NETWORK</span>
                         </div>
                         <h2 className="text-4xl md:text-6xl font-black italic text-white uppercase tracking-tighter">
@@ -57,7 +57,7 @@ export default function ProgramParticipantsPartners({ program }: ProgramParticip
                                             )}
                                         </div>
                                         <div className="flex flex-col">
-                                            <span className="text-[7px] font-black text-primary uppercase" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }}>
+                                            <span className="text-[7px] font-black text-primary uppercase" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}>
                                                 NODE_ID_{driver.id}
                                             </span>
                                             <h4 className="text-sm font-black text-white uppercase italic tracking-tighter">
@@ -103,7 +103,7 @@ export default function ProgramParticipantsPartners({ program }: ProgramParticip
                                                 <span className="text-[7px] font-black text-zinc-600 uppercase tracking-widest">
                                                     {sponsors.some(s => s.id === org.id) ? 'OFFICIAL_SPONSOR' : 'STRATEGIC_PARTNER'}
                                                 </span>
-                                                {sponsors.some(s => s.id === org.id) && <Shield size={8} className="text-primary" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }} />}
+                                                {sponsors.some(s => s.id === org.id) && <Shield size={8} className="text-primary" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />}
                                             </div>
                                             <h4 className="text-lg font-black text-white uppercase italic tracking-tighter">
                                                 {org.name}

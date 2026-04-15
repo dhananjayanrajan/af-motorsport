@@ -3,6 +3,8 @@
 import { DESIGN_SYSTEM } from '@/lib/constants';
 import { Car, Driver, Incident, Media } from '@/payload-types';
 import { AnimatePresence, motion } from 'framer-motion';
+import { Calendar, ChevronRight, User, Users, X } from 'lucide-react';
+import Link from 'next/link';
 import { useState } from 'react';
 
 interface IncidentsProps {
@@ -10,167 +12,284 @@ interface IncidentsProps {
 }
 
 export default function Incidents({ incidents }: IncidentsProps) {
-    const [activeId, setActiveId] = useState<number | null>(null);
+    const [sidebarOpen, setSidebarOpen] = useState(false);
+    const [selectedIncident, setSelectedIncident] = useState<Incident | null>(null);
+
+    const miniBevel = "polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px)";
+
+    const handleIncidentClick = (incident: Incident) => {
+        setSelectedIncident(incident);
+        setSidebarOpen(true);
+    };
 
     return (
-        <section className="py-16 md:py-24 lg:py-32 border-t font-sans" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.SURFACE, borderColor: DESIGN_SYSTEM.COLORS.ZINC_100 }}>
-            <div className="px-4 sm:px-6 lg:px-10 mb-12 md:mb-16 lg:mb-20 flex flex-col sm:flex-row items-start sm:items-end justify-between gap-6 sm:gap-0">
-                <div className="flex flex-col gap-3">
-                    <div className="flex items-center gap-4">
-                        <div
-                            className="w-1.5 h-6"
-                            style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY }}
-                        />
-                        <span className="text-[10px] font-black uppercase tracking-[0.4em] sm:tracking-[0.6em]" style={{ color: DESIGN_SYSTEM.COLORS.ZINC_400 }}>
-                            Incident Reports
+        <section className="relative w-full border-t" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.WHITE[50], borderTopColor: DESIGN_SYSTEM.COLORS.ZINC[200] }}>
+            <div className="px-6 md:px-10 lg:px-20 py-16 lg:py-20 flex items-end justify-between border-b" style={{ borderBottomColor: DESIGN_SYSTEM.COLORS.ZINC[200] }}>
+                <div className="flex flex-col gap-4">
+                    <div className="flex items-center gap-3">
+                        <div className="w-2 h-2" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
+                        <span className="text-[10px] font-black uppercase tracking-[0.4em]" style={{ color: DESIGN_SYSTEM.COLORS.ZINC[400] }}>
+                            Race Control
                         </span>
                     </div>
-                    <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black uppercase italic tracking-tighter leading-none" style={{ color: DESIGN_SYSTEM.COLORS.BLACK }}>
+                    <h2 className="text-5xl md:text-7xl font-black uppercase italic tracking-tighter leading-none" style={{ color: DESIGN_SYSTEM.COLORS.BLACK[600] }}>
                         Incidents Log
                     </h2>
                 </div>
-                <div className="flex flex-row sm:flex-col items-center sm:items-end gap-4 sm:gap-0">
-                    <span className="text-[9px] font-black uppercase tracking-widest" style={{ color: DESIGN_SYSTEM.COLORS.ZINC_300 }}>Official Records</span>
-                    <span className="text-xs font-black uppercase italic" style={{ color: DESIGN_SYSTEM.COLORS.BLACK }}>Registry Archive</span>
+                <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-black uppercase tracking-widest" style={{ color: DESIGN_SYSTEM.COLORS.ZINC[500] }}>
+                        {incidents.length} Records
+                    </span>
                 </div>
             </div>
 
-            <div className="flex flex-col border-t" style={{ borderColor: DESIGN_SYSTEM.COLORS.ZINC_100 }}>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
                 {incidents.map((incident) => {
-                    const isOpen = activeId === incident.id;
                     const drivers = incident.details?.drivers as Driver[];
                     const cars = incident.details?.cars as Car[];
+                    const incidentImage = (incident.assets?.thumbnail as Media)?.url || (incident.assets?.thumbnail as Media)?.url;
+                    const placeholderImage = `https://picsum.photos/seed/incident-${incident.id}/600/400`;
 
                     return (
-                        <div key={incident.id} className="border-b last:border-0" style={{ borderColor: DESIGN_SYSTEM.COLORS.ZINC_100 }}>
-                            <button
-                                onClick={() => setActiveId(isOpen ? null : incident.id)}
-                                className="w-full px-4 sm:px-6 lg:px-10 py-6 md:py-8 lg:py-12 flex flex-col lg:flex-row lg:items-center justify-between group transition-all duration-200 hover:bg-zinc-50 text-left outline-none"
-                            >
-                                <div className="flex flex-col gap-3 mb-4 lg:mb-0">
-                                    <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-                                        <span className="text-[10px] font-black tabular-nums uppercase tracking-widest" style={{ color: DESIGN_SYSTEM.COLORS.ZINC_400 }}>
-                                            {incident.details?.date_time ? new Date(incident.details.date_time).toLocaleString('en-GB', { hour12: false }) : '00:00:00'}
-                                        </span>
-                                        <div className="hidden sm:block w-[1px] h-3" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.ZINC_200 }} />
-                                        <span className="text-[10px] font-black uppercase tracking-widest" style={{ color: DESIGN_SYSTEM.COLORS.ZINC_300 }}>
-                                            REF_{incident.id}
+                        <motion.div
+                            key={incident.id}
+                            initial={{ opacity: 0 }}
+                            whileInView={{ opacity: 1 }}
+                            transition={{ duration: 0.5 }}
+                            className="group relative border-r border-b last:border-r-0 cursor-pointer"
+                            style={{ borderColor: DESIGN_SYSTEM.COLORS.ZINC[200] }}
+                            onClick={() => handleIncidentClick(incident)}
+                        >
+                            <div className="relative aspect-video overflow-hidden" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.ZINC[100] }}>
+                                <img
+                                    src={incidentImage || placeholderImage}
+                                    alt={incident.name}
+                                    className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
+                                    onError={(e) => {
+                                        e.currentTarget.src = placeholderImage;
+                                    }}
+                                />
+
+                                <div className="absolute top-4 left-4">
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-[8px] font-black uppercase tracking-widest px-2 py-1 backdrop-blur-sm" style={{ backgroundColor: `${DESIGN_SYSTEM.COLORS.BLACK[600]}CC`, color: DESIGN_SYSTEM.COLORS.WHITE.PURE }}>
+                                            INCIDENT #{incident.id}
                                         </span>
                                     </div>
-                                    <h3 className={`text-2xl sm:text-3xl lg:text-4xl font-black uppercase italic tracking-tighter transition-colors duration-200 ${isOpen ? 'text-black' : 'text-zinc-300 group-hover:text-black'}`} style={{ color: isOpen ? DESIGN_SYSTEM.COLORS.BLACK : DESIGN_SYSTEM.COLORS.ZINC_300 }}>
-                                        {incident.name}
-                                    </h3>
                                 </div>
 
-                                <div className="flex flex-row items-center justify-between lg:justify-end gap-4 lg:gap-16 w-full lg:w-auto">
-                                    <div className="flex -space-x-3 sm:-space-x-4 lg:-space-x-6">
-                                        {drivers?.map((driver) => {
+                                <div className="absolute bottom-4 right-4">
+                                    <div className="flex -space-x-2">
+                                        {drivers?.slice(0, 3).map((driver) => {
                                             const avatarUrl = (driver.assets?.avatar as Media)?.url;
                                             return (
-                                                <div key={driver.id} className="w-10 h-10 sm:w-12 sm:h-12 lg:w-16 lg:h-16 border-2 sm:border-4 overflow-hidden relative group/avatar shadow-sm" style={{ borderColor: DESIGN_SYSTEM.COLORS.SURFACE, backgroundColor: DESIGN_SYSTEM.COLORS.ZINC_100 }}>
+                                                <div key={driver.id} className="w-8 h-8 border-2 overflow-hidden" style={{ borderColor: DESIGN_SYSTEM.COLORS.WHITE.PURE, backgroundColor: DESIGN_SYSTEM.COLORS.ZINC[200] }}>
                                                     {avatarUrl ? (
-                                                        <img
-                                                            src={avatarUrl}
-                                                            className="w-full h-full object-cover grayscale transition-all duration-200 group-hover/avatar:grayscale-0"
-                                                            alt=""
-                                                        />
+                                                        <img src={avatarUrl} className="w-full h-full object-cover" alt="" />
                                                     ) : (
-                                                        <div className="w-full h-full flex items-center justify-center" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.ZINC_200 }}>
-                                                            <img
-                                                                src="https://picsum.photos/seed/driver/64/64"
-                                                                className="w-full h-full object-cover"
-                                                                alt=""
-                                                            />
-                                                        </div>
+                                                        <User size={12} style={{ color: DESIGN_SYSTEM.COLORS.ZINC[500] }} />
                                                     )}
                                                 </div>
                                             );
                                         })}
                                     </div>
-                                    <div className="flex flex-row lg:flex-col items-center lg:items-end gap-4 lg:gap-2">
-                                        <span className="text-[8px] font-black uppercase tracking-widest hidden sm:block" style={{ color: DESIGN_SYSTEM.COLORS.ZINC_400 }}>Vehicle Registry</span>
-                                        <div className="flex gap-1 sm:gap-2">
-                                            {cars?.map((car) => (
-                                                <span key={car.id} className="px-2 sm:px-3 py-1 border text-[8px] sm:text-[10px] font-black uppercase tabular-nums" style={{ borderColor: DESIGN_SYSTEM.COLORS.ZINC_200, backgroundColor: DESIGN_SYSTEM.COLORS.SURFACE, color: DESIGN_SYSTEM.COLORS.BLACK }}>
-                                                    CAR_{car.id}
-                                                </span>
-                                            ))}
-                                        </div>
-                                    </div>
-                                    <motion.div
-                                        animate={{ rotate: isOpen ? 180 : 0 }}
-                                        transition={{ duration: 0.2 }}
-                                        className="w-6 h-6 flex items-center justify-center"
-                                    >
-                                        <div className="w-2 h-2 border-r-2 border-b-2 rotate-45" style={{ borderColor: DESIGN_SYSTEM.COLORS.ZINC_300 }} />
-                                    </motion.div>
                                 </div>
-                            </button>
+                            </div>
 
-                            <AnimatePresence>
-                                {isOpen && (
-                                    <motion.div
-                                        initial={{ height: 0, opacity: 0 }}
-                                        animate={{ height: 'auto', opacity: 1 }}
-                                        exit={{ height: 0, opacity: 0 }}
-                                        transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-                                        className="overflow-hidden"
-                                        style={{ backgroundColor: DESIGN_SYSTEM.COLORS.ZINC_50 }}
-                                    >
-                                        <div className="px-4 sm:px-6 lg:px-10 py-12 md:py-16 lg:py-24 border-t grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-20" style={{ borderColor: DESIGN_SYSTEM.COLORS.ZINC_100 }}>
-                                            <div className="lg:col-span-7">
-                                                <div className="flex items-center gap-4 mb-6 lg:mb-10">
-                                                    <div className="w-8 lg:w-12 h-[2px]" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY }} />
-                                                    <span className="text-[10px] font-black uppercase tracking-[0.3em] lg:tracking-[0.5em]" style={{ color: DESIGN_SYSTEM.COLORS.BLACK }}>
-                                                        Incident Summary
+                            <div className="p-6 md:p-8">
+                                <div className="flex items-start justify-between mb-4">
+                                    <div>
+                                        <div className="flex items-center gap-3 mb-2">
+                                            {incident.details?.date_time && (
+                                                <>
+                                                    <span className="text-[8px] font-black uppercase tracking-widest" style={{ color: DESIGN_SYSTEM.COLORS.ZINC[400] }}>
+                                                        {new Date(incident.details.date_time).toLocaleDateString('en-GB')}
                                                     </span>
-                                                </div>
-                                                <div className="max-w-3xl">
-                                                    <p className="text-base lg:text-lg font-black uppercase italic leading-tight tracking-tight" style={{ color: DESIGN_SYSTEM.COLORS.ZINC_600 }}>
-                                                        {incident.basics?.description || 'No descriptive metadata available for this incident ID. Investigation status: Pending.'}
-                                                    </p>
-                                                    <div className="mt-8 lg:mt-12 grid grid-cols-1 sm:grid-cols-3 gap-6 lg:gap-10">
-                                                        <div>
-                                                            <p className="text-[8px] font-black uppercase tracking-widest mb-1" style={{ color: DESIGN_SYSTEM.COLORS.ZINC_400 }}>Severity</p>
-                                                            <p className="text-sm font-black uppercase" style={{ color: DESIGN_SYSTEM.COLORS.BLACK }}>Level_02</p>
-                                                        </div>
-                                                        <div>
-                                                            <p className="text-[8px] font-black uppercase tracking-widest mb-1" style={{ color: DESIGN_SYSTEM.COLORS.ZINC_400 }}>Review</p>
-                                                            <p className="text-sm font-black uppercase" style={{ color: DESIGN_SYSTEM.COLORS.BLACK }}>Completed</p>
-                                                        </div>
-                                                        <div>
-                                                            <p className="text-[8px] font-black uppercase tracking-widest mb-1" style={{ color: DESIGN_SYSTEM.COLORS.ZINC_400 }}>Status</p>
-                                                            <p className="text-sm font-black uppercase" style={{ color: DESIGN_SYSTEM.COLORS.BLACK }}>Logged</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div className="lg:col-span-5">
-                                                <div className="relative aspect-video border flex items-center justify-center overflow-hidden" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.ZINC_200, borderColor: DESIGN_SYSTEM.COLORS.ZINC_300 }}>
-                                                    <img
-                                                        src="https://picsum.photos/seed/incident/800/450"
-                                                        className="w-full h-full object-cover"
-                                                        alt=""
-                                                    />
-                                                    <div className="absolute top-4 left-4 lg:top-6 lg:left-6 flex items-center gap-2">
-                                                        <div className="w-2 h-2 rounded-full" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.ZINC_400 }} />
-                                                        <span className="text-[8px] font-black uppercase" style={{ color: DESIGN_SYSTEM.COLORS.ZINC_400 }}>Standby</span>
-                                                    </div>
-                                                    <div
-                                                        className="absolute bottom-0 left-0 w-full h-1"
-                                                        style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY }}
-                                                    />
-                                                </div>
-                                            </div>
+                                                    <span className="w-1 h-1 rounded-full" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.ZINC[300] }} />
+                                                </>
+                                            )}
+                                            <span className="text-[8px] font-black uppercase tracking-widest" style={{ color: DESIGN_SYSTEM.COLORS.ZINC[400] }}>
+                                                ID: {incident.id}
+                                            </span>
                                         </div>
-                                    </motion.div>
+                                        <h3 className="text-xl font-black uppercase italic tracking-tighter group-hover:text-primary-500 transition-colors" style={{ color: DESIGN_SYSTEM.COLORS.BLACK[600] }}>
+                                            {incident.name}
+                                        </h3>
+                                    </div>
+                                    <div
+                                        className="w-8 h-8 flex items-center justify-center transition-all group-hover:bg-black"
+                                        style={{
+                                            clipPath: miniBevel,
+                                            border: `1px solid ${DESIGN_SYSTEM.COLORS.ZINC[200]}`
+                                        }}
+                                    >
+                                        <ChevronRight size={14} className="group-hover:text-white transition-colors" style={{ color: DESIGN_SYSTEM.COLORS.ZINC[500] }} />
+                                    </div>
+                                </div>
+
+                                {incident.basics?.description && (
+                                    <p className="text-xs font-bold uppercase leading-relaxed line-clamp-2 mb-4" style={{ color: DESIGN_SYSTEM.COLORS.ZINC[500] }}>
+                                        {incident.basics.description}
+                                    </p>
                                 )}
-                            </AnimatePresence>
-                        </div>
+
+                                <div className="flex items-center gap-4 pt-4 border-t" style={{ borderColor: DESIGN_SYSTEM.COLORS.ZINC[100] }}>
+                                    <div className="flex items-center gap-2">
+                                        <Users size={12} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
+                                        <span className="text-[9px] font-black uppercase" style={{ color: DESIGN_SYSTEM.COLORS.ZINC[600] }}>
+                                            {drivers?.length || 0} Drivers
+                                        </span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <Calendar size={12} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
+                                        <span className="text-[9px] font-black uppercase" style={{ color: DESIGN_SYSTEM.COLORS.ZINC[600] }}>
+                                            {cars?.length || 0} Cars
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="absolute top-0 left-0 w-1 h-0 group-hover:h-full transition-all duration-500" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
+                        </motion.div>
                     );
                 })}
             </div>
+
+            {/* Sidebar Drawer */}
+            <AnimatePresence>
+                {sidebarOpen && selectedIncident && (
+                    <>
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            className="fixed inset-0 z-[100] bg-black/50 backdrop-blur-sm"
+                            onClick={() => setSidebarOpen(false)}
+                        />
+                        <motion.div
+                            initial={{ x: '100%' }}
+                            animate={{ x: 0 }}
+                            exit={{ x: '100%' }}
+                            transition={{ type: "spring", damping: 30, stiffness: 300 }}
+                            className="fixed right-0 top-0 h-full w-full max-w-2xl z-[101] overflow-y-auto"
+                            style={{
+                                backgroundColor: DESIGN_SYSTEM.COLORS.WHITE.PURE,
+                                borderLeft: `1px solid ${DESIGN_SYSTEM.COLORS.ZINC[200]}`
+                            }}
+                        >
+                            <div className="p-8 md:p-12">
+                                <div className="flex items-start justify-between mb-8">
+                                    <div>
+                                        <div className="flex items-center gap-3 mb-4">
+                                            <div className="w-2 h-8" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
+                                            <span className="text-[10px] font-black uppercase tracking-[0.4em]" style={{ color: DESIGN_SYSTEM.COLORS.ZINC[400] }}>
+                                                Incident Dossier
+                                            </span>
+                                        </div>
+                                        <h3 className="text-4xl font-black uppercase italic tracking-tighter" style={{ color: DESIGN_SYSTEM.COLORS.BLACK.PURE }}>
+                                            {selectedIncident.name}
+                                        </h3>
+                                        {selectedIncident.alias && (
+                                            <p className="text-sm font-black uppercase tracking-widest mt-2" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}>
+                                                {selectedIncident.alias}
+                                            </p>
+                                        )}
+                                    </div>
+                                    <button
+                                        onClick={() => setSidebarOpen(false)}
+                                        className="p-2 hover:bg-zinc-100 transition-colors"
+                                        style={{ clipPath: miniBevel }}
+                                    >
+                                        <X size={20} style={{ color: DESIGN_SYSTEM.COLORS.ZINC[500] }} />
+                                    </button>
+                                </div>
+
+                                <div className="space-y-8">
+                                    {selectedIncident.details?.date_time && (
+                                        <div className="flex items-center gap-4 p-4 border" style={{ borderColor: DESIGN_SYSTEM.COLORS.ZINC[100] }}>
+                                            <Calendar size={16} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
+                                            <div>
+                                                <span className="text-[8px] font-black uppercase tracking-widest block" style={{ color: DESIGN_SYSTEM.COLORS.ZINC[400] }}>
+                                                    Date & Time
+                                                </span>
+                                                <span className="text-sm font-black uppercase" style={{ color: DESIGN_SYSTEM.COLORS.BLACK[600] }}>
+                                                    {new Date(selectedIncident.details.date_time).toLocaleString('en-GB', { hour12: false })}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {selectedIncident.basics?.description && (
+                                        <p className="text-sm font-bold uppercase leading-relaxed" style={{ color: DESIGN_SYSTEM.COLORS.ZINC[500] }}>
+                                            {selectedIncident.basics.description}
+                                        </p>
+                                    )}
+
+                                    {/* Involved Drivers */}
+                                    {selectedIncident.details?.drivers && (selectedIncident.details.drivers as Driver[]).length > 0 && (
+                                        <div className="space-y-4">
+                                            <h4 className="text-xs font-black uppercase tracking-widest flex items-center gap-2" style={{ color: DESIGN_SYSTEM.COLORS.BLACK[600] }}>
+                                                <Users size={14} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
+                                                Involved Drivers
+                                            </h4>
+                                            <div className="grid grid-cols-2 gap-2">
+                                                {(selectedIncident.details.drivers as Driver[]).map((driver) => (
+                                                    <Link
+                                                        key={driver.id}
+                                                        href={`/team/driver/${driver.slug || '#'}`}
+                                                        className="flex items-center gap-3 p-3 border hover:bg-zinc-50 transition-colors"
+                                                        style={{ borderColor: DESIGN_SYSTEM.COLORS.ZINC[100] }}
+                                                    >
+                                                        <div className="w-10 h-10 border overflow-hidden" style={{ borderColor: DESIGN_SYSTEM.COLORS.ZINC[200] }}>
+                                                            {(driver.assets?.avatar as Media)?.url ? (
+                                                                <img src={(driver.assets?.avatar as Media).url!} className="w-full h-full object-cover" alt="" />
+                                                            ) : (
+                                                                <User size={20} style={{ color: DESIGN_SYSTEM.COLORS.ZINC[400] }} />
+                                                            )}
+                                                        </div>
+                                                        <div>
+                                                            <span className="text-[10px] font-black uppercase block" style={{ color: DESIGN_SYSTEM.COLORS.BLACK[600] }}>
+                                                                {driver.first_name} {driver.last_name}
+                                                            </span>
+                                                            <span className="text-[8px] font-black uppercase tracking-widest" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}>
+                                                                {driver.basics?.callsign || `#${driver.basics?.racing_number || 'N/A'}`}
+                                                            </span>
+                                                        </div>
+                                                    </Link>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* Involved Cars */}
+                                    {selectedIncident.details?.cars && (selectedIncident.details.cars as Car[]).length > 0 && (
+                                        <div className="space-y-4">
+                                            <h4 className="text-xs font-black uppercase tracking-widest flex items-center gap-2" style={{ color: DESIGN_SYSTEM.COLORS.BLACK[600] }}>
+                                                <Calendar size={14} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
+                                                Involved Cars
+                                            </h4>
+                                            <div className="flex flex-wrap gap-2">
+                                                {(selectedIncident.details.cars as Car[]).map((car) => (
+                                                    <Link
+                                                        key={car.id}
+                                                        href={`/cars/${car.slug || car.id}`}
+                                                        className="px-4 py-2 border hover:bg-primary-50 hover:border-primary-300 transition-colors"
+                                                        style={{ borderColor: DESIGN_SYSTEM.COLORS.ZINC[200] }}
+                                                    >
+                                                        <span className="text-[10px] font-black uppercase" style={{ color: DESIGN_SYSTEM.COLORS.BLACK[600] }}>
+                                                            {car.name}
+                                                        </span>
+                                                    </Link>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </motion.div>
+                    </>
+                )}
+            </AnimatePresence>
         </section>
     );
 }

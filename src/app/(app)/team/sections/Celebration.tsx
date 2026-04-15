@@ -41,7 +41,7 @@ export default function CelebrationsSection({ data }: { data: Celebration[] }) {
     return (
         <section
             className="relative w-full h-screen overflow-hidden select-none border-t touch-none"
-            style={{ backgroundColor: DESIGN_SYSTEM.COLORS.BACKGROUND, borderTopColor: DESIGN_SYSTEM.COLORS.ZINC_200 }}
+            style={{ backgroundColor: DESIGN_SYSTEM.COLORS.BACKGROUND, borderTopColor: DESIGN_SYSTEM.COLORS.ZINC[200] }}
         >
             <motion.div
                 drag
@@ -51,7 +51,7 @@ export default function CelebrationsSection({ data }: { data: Celebration[] }) {
             >
                 <div
                     className="absolute inset-0 w-[5000px] h-[5000px] -translate-x-1/2 -translate-y-1/2 opacity-20 pointer-events-none"
-                    style={{ backgroundImage: `radial-gradient(${DESIGN_SYSTEM.COLORS.ZINC_300} 1px, transparent 1px)`, backgroundSize: '80px 80px' }}
+                    style={{ backgroundImage: `radial-gradient(${DESIGN_SYSTEM.COLORS.ZINC[300]} 1px, transparent 1px)`, backgroundSize: '80px 80px' }}
                 />
 
                 <AnimatePresence>
@@ -82,17 +82,17 @@ export default function CelebrationsSection({ data }: { data: Celebration[] }) {
                 <button
                     onClick={() => setZoom(z => Math.min(z + 0.1, 2))}
                     className="size-12 border flex items-center justify-center bg-white transition-colors hover:bg-zinc-50"
-                    style={{ borderColor: DESIGN_SYSTEM.COLORS.ZINC_200 }}
+                    style={{ borderColor: DESIGN_SYSTEM.COLORS.ZINC[200] }}
                 ><ZoomIn size={18} className="text-black" /></button>
                 <button
                     onClick={() => setZoom(z => Math.max(z - 0.1, 0.4))}
                     className="size-12 border flex items-center justify-center bg-white transition-colors hover:bg-zinc-50"
-                    style={{ borderColor: DESIGN_SYSTEM.COLORS.ZINC_200 }}
+                    style={{ borderColor: DESIGN_SYSTEM.COLORS.ZINC[200] }}
                 ><ZoomOut size={18} className="text-black" /></button>
                 <button
                     onClick={() => { canvasX.set(0); canvasY.set(0); setZoom(isMobile ? 0.6 : 0.8); }}
                     className="size-12 border flex items-center justify-center bg-white transition-colors hover:bg-zinc-50"
-                    style={{ borderColor: DESIGN_SYSTEM.COLORS.ZINC_200 }}
+                    style={{ borderColor: DESIGN_SYSTEM.COLORS.ZINC[200] }}
                 ><Globe size={18} className="text-black" /></button>
             </div>
 
@@ -125,7 +125,7 @@ function CelebrationSlab({ item, index, isMobile, onExpand }: { item: Celebratio
             onClick={() => onExpand()}
             className="absolute w-[300px] p-1 border bg-white cursor-pointer shadow-xl transition-shadow hover:shadow-2xl"
             style={{
-                borderColor: DESIGN_SYSTEM.COLORS.ZINC_200,
+                borderColor: DESIGN_SYSTEM.COLORS.ZINC[200],
                 clipPath: 'polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%)'
             }}
         >
@@ -148,9 +148,9 @@ function CelebrationSlab({ item, index, isMobile, onExpand }: { item: Celebratio
                 <h4 className="text-base font-black italic text-black uppercase tracking-tight leading-tight">
                     {item.name}
                 </h4>
-                <div className="flex justify-between items-center border-t pt-4" style={{ borderTopColor: DESIGN_SYSTEM.COLORS.ZINC_100 }}>
+                <div className="flex justify-between items-center border-t pt-4" style={{ borderTopColor: DESIGN_SYSTEM.COLORS.ZINC[100] }}>
                     <div className="flex items-center gap-2 text-xs text-zinc-600 font-bold uppercase">
-                        <Calendar size={14} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }} />
+                        <Calendar size={14} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
                         {item.details?.date_time ? new Date(item.details.date_time).getFullYear() : new Date(item.createdAt).getFullYear()}
                     </div>
                     <Maximize2 size={14} className="text-zinc-400" />
@@ -170,7 +170,7 @@ function CelebrationModal({ item, onClose, onNavigate }: { item: Celebration, on
         >
             <div
                 className="w-full max-w-6xl h-fit max-h-[90vh] flex flex-col md:flex-row bg-white border shadow-2xl relative overflow-hidden"
-                style={{ borderColor: DESIGN_SYSTEM.COLORS.ZINC_200 }}
+                style={{ borderColor: DESIGN_SYSTEM.COLORS.ZINC[200] }}
             >
                 <button
                     onClick={onClose}
@@ -179,7 +179,7 @@ function CelebrationModal({ item, onClose, onNavigate }: { item: Celebration, on
                     <X size={24} />
                 </button>
 
-                <div className="relative w-full md:w-1/2 aspect-video md:aspect-auto bg-zinc-100 border-b md:border-b-0 md:border-r" style={{ borderColor: DESIGN_SYSTEM.COLORS.ZINC_200 }}>
+                <div className="relative w-full md:w-1/2 aspect-video md:aspect-auto bg-zinc-100 border-b md:border-b-0 md:border-r" style={{ borderColor: DESIGN_SYSTEM.COLORS.ZINC[200] }}>
                     <Image
                         src={imageUrl}
                         alt={item.name}
@@ -194,7 +194,7 @@ function CelebrationModal({ item, onClose, onNavigate }: { item: Celebration, on
                         <div className="flex flex-col gap-2">
                             <span
                                 className={cn("text-xs font-black uppercase tracking-wider", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_XL)}
-                                style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }}
+                                style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}
                             >
                                 {item.alias || 'Entry'}
                             </span>
@@ -206,7 +206,7 @@ function CelebrationModal({ item, onClose, onNavigate }: { item: Celebration, on
                         <div className="space-y-6">
                             <p
                                 className="text-zinc-700 text-base md:text-lg font-medium leading-relaxed border-l-4 pl-6"
-                                style={{ borderLeftColor: DESIGN_SYSTEM.COLORS.PRIMARY }}
+                                style={{ borderLeftColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}
                             >
                                 {item.basics?.description}
                             </p>
