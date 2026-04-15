@@ -1,6 +1,7 @@
 'use client'
 
 import { AddressForm } from '@/components/forms/AddressForm'
+import { DESIGN_SYSTEM } from '@/lib/constants'
 import { Address } from '@/payload-types'
 import { cn } from '@/utilities/cn'
 import { useAddresses } from '@payloadcms/plugin-ecommerce/client/react'
@@ -18,46 +19,53 @@ type Props = {
 export const CheckoutAddresses: React.FC<Props> = ({
   setAddress,
   heading = 'Addresses',
-  description = 'Please select or add your shipping and billing addresses.',
+  description = 'Select a saved address or add a new one.',
 }) => {
   const { addresses } = useAddresses()
   const [showAddForm, setShowAddForm] = useState(false)
 
   return (
-    <div className="space-y-12">
-      <div className="border-l-2 border-primary pl-6 mb-12">
-        <h3 className="text-[11px] font-black uppercase tracking-[0.5em] text-white italic mb-1">{heading}</h3>
-        <p className="text-[9px] font-bold text-zinc-600 uppercase tracking-widest">{description}</p>
+    <div className="space-y-10">
+      <div className="space-y-2 border-l-4 border-black pl-6">
+        <h3 className="text-[14px] font-black uppercase italic tracking-widest text-black leading-none">
+          {heading}
+        </h3>
+        <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">
+          {description}
+        </p>
       </div>
 
       <div className="flex justify-start">
         <button
           onClick={() => setShowAddForm(!showAddForm)}
-          className="group relative h-12 px-10 overflow-hidden transition-all active:scale-95 bg-zinc-950 border border-zinc-800"
-          style={{ clipPath: 'polygon(10% 0%, 100% 0%, 90% 100%, 0% 100%)' }}
+          className="group relative h-12 px-8 bg-black transition-all active:scale-[0.98] overflow-hidden"
         >
-          <div className={cn(
-            "absolute inset-0 bg-white transition-transform duration-300",
-            showAddForm ? "translate-y-0" : "translate-y-full group-hover:translate-y-0"
-          )} />
+          <div
+            className={cn(
+              "absolute inset-0 translate-x-[-101%] group-hover:translate-x-0 transition-transform duration-300 ease-out",
+              showAddForm && "translate-x-0"
+            )}
+            style={{ backgroundColor: showAddForm ? '#ef4444' : DESIGN_SYSTEM.COLORS.PRIMARY[500] }}
+          />
           <span className={cn(
-            "relative z-10 text-[10px] font-black uppercase tracking-[0.4em] italic flex items-center gap-2 transition-colors duration-300",
-            showAddForm ? "text-black" : "text-white group-hover:text-black"
+            "relative z-10 text-[11px] font-black uppercase italic flex items-center gap-2 transition-colors",
+            showAddForm ? "text-white" : "text-white group-hover:text-black"
           )}>
             {showAddForm ? (
-              <><X className="h-3 w-3" /> Cancel</>
+              <><X className="h-4 w-4" /> Cancel</>
             ) : (
-              <><Plus className="h-3 w-3 text-primary" /> Add New Address</>
+              <><Plus className="h-4 w-4" /> Add New Address</>
             )}
           </span>
         </button>
       </div>
 
       {showAddForm && (
-        <div className="border-l border-primary pl-8 md:pl-16 py-4 animate-in fade-in slide-in-from-top-4 duration-500">
-          <div className="mb-10">
-            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-600">
-              Input Form
+        <div className="bg-zinc-50 border border-zinc-200 p-8 md:p-12 shadow-sm animate-in fade-in slide-in-from-top-4 duration-500">
+          <div className="mb-8 flex items-center gap-3">
+            <div className="h-4 w-1 bg-black" />
+            <span className="text-[11px] font-black uppercase italic tracking-widest text-black">
+              Address Details
             </span>
           </div>
           <AddressForm callback={(newAddress) => {
@@ -67,73 +75,45 @@ export const CheckoutAddresses: React.FC<Props> = ({
         </div>
       )}
 
-      <div className="space-y-4">
+      <div className="grid grid-cols-1 gap-4">
         {!addresses || addresses.length === 0 ? (
-          <div className="py-20 border-t border-zinc-900">
-            <p className="text-[10px] font-black uppercase tracking-[0.5em] text-zinc-800 italic">
-              No Addresses Registered
+          <div className="py-16 border border-dashed border-zinc-200 flex items-center justify-center">
+            <p className="text-[10px] font-black uppercase tracking-widest text-zinc-300 italic">
+              No saved addresses found
             </p>
           </div>
         ) : (
-          <div className="divide-y divide-zinc-900 border-t border-zinc-900">
-            {addresses.map((address) => (
-              <div key={address.id} className="py-8">
-                <div className="group relative flex flex-col md:flex-row items-stretch gap-0 w-full">
-                  <div
-                    className="flex-1 flex flex-col md:flex-row items-center justify-between h-auto md:h-24 px-10 py-6 md:py-0 bg-zinc-900/10 transition-all duration-300 group-hover:bg-zinc-900/30"
-                    style={{
-                      clipPath: 'polygon(0% 0%, 95% 0%, 100% 50%, 95% 100%, 0% 100%)',
-                    }}
-                  >
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 w-full relative z-10">
-                      <div className="flex items-center gap-5">
-                        <MapPin className="h-4 w-4 text-zinc-700 group-hover:text-primary transition-colors" />
-                        <div className="flex flex-col min-w-0">
-                          <span className="text-[11px] font-black uppercase tracking-[0.2em] text-white italic leading-none truncate">
-                            {address.title || 'Address'}
-                          </span>
-                          <span className="text-[8px] font-bold uppercase tracking-tighter text-zinc-700 mt-2">
-                            ID: {address.id?.toString().substring(0, 8).toUpperCase() || '00'}
-                          </span>
-                        </div>
-                      </div>
-
-                      <div className="flex flex-col justify-center border-l border-zinc-900/50 pl-8">
-                        <span className="text-[8px] font-black uppercase tracking-[0.4em] text-zinc-700 mb-1">Street</span>
-                        <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest truncate">
-                          {address.addressLine1}, {address.city}
-                        </p>
-                      </div>
-
-                      <div className="flex flex-col justify-center border-l border-zinc-900/50 pl-8">
-                        <span className="text-[8px] font-black uppercase tracking-[0.4em] text-zinc-700 mb-1">Recipient</span>
-                        <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
-                          {address.firstName} {address.lastName}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <button
-                    onClick={(e) => {
-                      e.preventDefault()
-                      setAddress(address)
-                    }}
-                    className="group/btn relative flex items-center justify-center w-full md:w-48 h-14 md:h-24 bg-zinc-900 border border-zinc-800 transition-all duration-300 active:scale-95 md:-ml-6 overflow-hidden"
-                    style={{
-                      clipPath: 'polygon(10% 0%, 100% 0%, 90% 100%, 0% 100%)',
-                    }}
-                  >
-                    <div className="absolute inset-0 bg-white translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300" />
-                    <div className="flex items-center gap-3 relative z-10 text-white group-hover/btn:text-black transition-colors duration-300">
-                      <ChevronRight className="h-3 w-3" />
-                      <span className="text-[10px] font-black uppercase tracking-[0.4em] italic">Select</span>
-                    </div>
-                  </button>
+          addresses.map((address) => (
+            <div
+              key={address.id}
+              className="group flex flex-col md:flex-row items-center justify-between p-6 bg-white border border-zinc-200 hover:border-black transition-all"
+            >
+              <div className="flex gap-5 items-center">
+                <div className="p-3 bg-zinc-50 text-zinc-300 group-hover:text-black transition-colors">
+                  <MapPin className="h-5 w-5" />
+                </div>
+                <div className="space-y-1">
+                  <span className="text-[12px] font-black uppercase italic text-black leading-none">
+                    {address.title || 'Untitled Address'}
+                  </span>
+                  <p className="text-[11px] font-medium text-zinc-500 uppercase">
+                    {address.addressLine1}, {address.city}
+                  </p>
                 </div>
               </div>
-            ))}
-          </div>
+
+              <button
+                onClick={(e) => {
+                  e.preventDefault()
+                  setAddress(address)
+                }}
+                className="mt-6 md:mt-0 w-full md:w-auto h-12 px-8 border border-zinc-200 text-black hover:bg-black hover:text-white transition-all flex items-center justify-center gap-3 active:scale-[0.98]"
+              >
+                <span className="text-[11px] font-black uppercase italic">Select Address</span>
+                <ChevronRight className="h-4 w-4" />
+              </button>
+            </div>
+          ))
         )}
       </div>
     </div>

@@ -1,6 +1,4 @@
 import { AddressListing } from '@/components/addresses/AddressListing'
-import { DESIGN_SYSTEM } from '@/lib/constants'
-import { cn } from '@/utilities/cn'
 import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
 import configPromise from '@payload-config'
 import { MapPin } from 'lucide-react'
@@ -19,33 +17,37 @@ export default async function AddressesPage() {
   }
 
   return (
-    <div className="min-h-screen bg-black text-white pt-12 pb-32 px-8 max-w-7xl mx-auto">
-      <section className="space-y-16">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 border-b border-zinc-900 pb-10">
-          <div className="space-y-3">
-            <div className="flex items-center gap-3">
-              <MapPin className="h-3 w-3" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
-              <span className={cn("text-[10px] font-black uppercase leading-none", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_XL)} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}>Logistics Protocol</span>
+    <div className="space-y-12">
+      <section className="space-y-12">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-zinc-200 pb-8">
+          <div className="space-y-4">
+            <div className="flex items-center gap-2">
+              <MapPin className="h-3.5 w-3.5 text-zinc-400" />
+              <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400">
+                Delivery Management
+              </span>
             </div>
-            <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tighter italic leading-none">
-              Shipping <span className="text-zinc-800">/ Registry</span>
+            <h1 className="text-4xl font-black italic uppercase tracking-tighter text-black leading-none">
+              Saved <span className="text-zinc-300">Addresses</span>
             </h1>
           </div>
-          <div className="max-w-xs text-right hidden md:block">
-            <p className="text-[10px] font-bold text-zinc-700 uppercase tracking-widest leading-relaxed">
-              Manage deployment locations and delivery coordinates.
+          <div className="hidden md:block">
+            <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-tight text-right max-w-[220px] leading-relaxed">
+              Configure your primary shipping and billing locations for faster checkout.
             </p>
           </div>
         </div>
 
-        <AddressListing />
+        <div className="bg-white border border-zinc-200 p-8 md:p-12 shadow-sm">
+          <AddressListing />
+        </div>
       </section>
     </div>
   )
 }
 
 export const metadata: Metadata = {
-  description: 'Manage your addresses.',
+  description: 'Manage your shipping and billing addresses.',
   openGraph: mergeOpenGraph({ title: 'Addresses', url: '/account/addresses' }),
   title: 'Addresses',
 }

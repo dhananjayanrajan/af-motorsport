@@ -2,6 +2,7 @@
 
 import { AddressItem } from '@/components/addresses/AddressItem'
 import { AddressForm } from '@/components/forms/AddressForm'
+import { DESIGN_SYSTEM } from '@/lib/constants'
 import { cn } from '@/utilities/cn'
 import { useAddresses } from '@payloadcms/plugin-ecommerce/client/react'
 import { Plus, X } from 'lucide-react'
@@ -16,50 +17,51 @@ export const AddressListing: React.FC = () => {
       <div className="flex justify-start">
         <button
           onClick={() => setShowAddForm(!showAddForm)}
-          className="group relative h-12 px-10 overflow-hidden transition-all active:scale-95 bg-zinc-950 border border-zinc-800"
-          style={{ clipPath: 'polygon(10% 0%, 100% 0%, 90% 100%, 0% 100%)' }}
+          className="group relative h-12 px-8 transition-all active:scale-[0.98] bg-black overflow-hidden"
         >
-          <div className={cn(
-            "absolute inset-0 bg-white transition-transform duration-300",
-            showAddForm ? "translate-y-0" : "translate-y-full group-hover:translate-y-0"
-          )} />
+          <div
+            className={cn(
+              "absolute inset-0 translate-x-[-101%] group-hover:translate-x-0 transition-transform duration-300 ease-out",
+              showAddForm && "translate-x-0"
+            )}
+            style={{ backgroundColor: showAddForm ? '#ef4444' : DESIGN_SYSTEM.COLORS.PRIMARY[500] }}
+          />
           <span className={cn(
-            "relative z-10 text-[10px] font-black uppercase tracking-[0.4em] italic flex items-center gap-2 transition-colors duration-300",
-            showAddForm ? "text-black" : "text-white group-hover:text-black"
+            "relative z-10 text-[11px] font-black uppercase italic flex items-center gap-2 transition-colors",
+            showAddForm || "text-white group-hover:text-black"
           )}>
             {showAddForm ? (
-              <><X className="h-3 w-3" /> Cancel Entry</>
+              <><X className="h-4 w-4" /> Cancel</>
             ) : (
-              <><Plus className="h-3 w-3 text-[#00FF41]" /> Add Coordinate</>
+              <><Plus className="h-4 w-4" /> Add New Address</>
             )}
           </span>
         </button>
       </div>
 
       {showAddForm && (
-        <div className="border-l border-[#00FF41] pl-8 md:pl-16 py-4 animate-in fade-in slide-in-from-top-4 duration-500">
-          <div className="mb-10">
-            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-600">
-              Initialize Manual Input
+        <div className="bg-zinc-50 border border-zinc-200 p-8 md:p-12 shadow-sm animate-in fade-in slide-in-from-top-4 duration-500">
+          <div className="mb-8 flex items-center gap-3">
+            <div className="h-4 w-1 bg-black" />
+            <span className="text-[11px] font-black uppercase italic tracking-widest text-black">
+              Enter Address Details
             </span>
           </div>
           <AddressForm callback={() => setShowAddForm(false)} />
         </div>
       )}
 
-      <div className="space-y-4">
+      <div className="space-y-6">
         {!addresses || addresses.length === 0 ? (
-          <div className="py-20 border-t border-zinc-900">
-            <p className="text-[10px] font-black uppercase tracking-[0.5em] text-zinc-800 italic">
-              No coordinates registered in registry
+          <div className="py-20 border-t border-zinc-100 flex flex-col items-center">
+            <p className="text-[11px] font-black uppercase tracking-widest text-zinc-300 italic">
+              No addresses saved to your profile
             </p>
           </div>
         ) : (
-          <div className="divide-y divide-zinc-900 border-t border-zinc-900">
+          <div className="grid grid-cols-1 gap-6">
             {addresses.map((address) => (
-              <div key={address.id} className="py-8">
-                <AddressItem address={address} />
-              </div>
+              <AddressItem key={address.id} address={address} />
             ))}
           </div>
         )}

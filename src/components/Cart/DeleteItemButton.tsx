@@ -18,11 +18,23 @@ export function DeleteItemButton({ item }: { item: CartItem }) {
         e.preventDefault()
         if (itemId) removeItem(itemId)
       }}
-      className="group flex h-6 w-6 items-center justify-center bg-white border transition-all active:scale-90"
-      style={{ borderColor: DESIGN_SYSTEM.COLORS.PRIMARY_MUTED }}
+      className="group flex h-6 w-6 items-center justify-center bg-white border skew-x-[-12deg] transition-all duration-200 active:scale-90 overflow-hidden"
+      style={{
+        borderColor: DESIGN_SYSTEM.COLORS.ZINC[200]
+      }}
       type="button"
     >
-      <X className="h-3 w-3 text-zinc-300 transition-colors group-hover:text-black" strokeWidth={3} />
+      <div
+        className="absolute inset-0 translate-x-[-101%] group-hover:translate-x-0 transition-transform duration-200 ease-out"
+        style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}
+      />
+
+      <div className="relative z-10 skew-x-[12deg] flex items-center justify-center">
+        <X
+          className="h-3 w-3 text-zinc-400 transition-colors group-hover:text-black"
+          strokeWidth={4}
+        />
+      </div>
     </button>
   )
 }

@@ -1,4 +1,3 @@
-// @/components/Custom/ui/ClippedSelect.tsx
 'use client'
 
 import { DESIGN_SYSTEM } from '@/lib/constants'
@@ -19,10 +18,10 @@ const ClippedSelectTrigger = React.forwardRef<
         <SelectPrimitive.Trigger
             ref={ref}
             className={cn(
-                "relative flex h-14 w-full items-center justify-between px-10 text-[12px] font-[950] uppercase tracking-[0.2em] outline-none transition-all duration-300 italic z-10",
-                "bg-black text-[#00FF41]",
-                !filled && "text-[#00FF41]/50",
-                error && "bg-red-950 text-red-500",
+                "relative flex h-14 w-full items-center justify-between px-10 text-[11px] font-black uppercase tracking-[0.2em] outline-none transition-all duration-300 italic z-10",
+                "bg-white text-black",
+                !filled && "text-zinc-400",
+                error && "bg-red-50 text-red-600",
                 className,
             )}
             style={{ clipPath: DESIGN_SYSTEM.SHAPES.DIAMOND_CLIP }}
@@ -36,22 +35,23 @@ const ClippedSelectTrigger = React.forwardRef<
             <div
                 className={cn(
                     "absolute inset-0 pointer-events-none border transition-colors duration-300 z-20",
-                    error ? "border-red-500" : "border-[#00FF41]/40 group-data-[state=open]:border-[#00FF41]"
+                    error ? "border-red-600" : "border-zinc-200 group-data-[state=open]:border-black"
                 )}
                 style={{ clipPath: DESIGN_SYSTEM.SHAPES.DIAMOND_CLIP }}
             />
 
             <div className={cn(
-                "absolute bottom-0 left-0 h-[4px] w-full transition-transform duration-500 ease-[0.87,0,0.13,1] translate-x-[-100%] group-data-[state=open]:translate-x-0 z-30",
-                error ? "bg-red-500 shadow-[0_0_15px_rgba(239,68,68,0.8)]" :
-                    "bg-[#00FF41] shadow-[0_0_15px_rgba(0,255,65,0.6)]"
-            )} />
+                "absolute bottom-0 left-0 h-[3px] w-full transition-transform duration-500 ease-[0.16,1,0.3,1] translate-x-[-100%] group-data-[state=open]:translate-x-0 z-30",
+                error ? "bg-red-600" : ""
+            )}
+                style={!error ? { backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] } : {}}
+            />
         </SelectPrimitive.Trigger>
 
         <div
             className={cn(
-                "absolute -inset-[1px] -z-10 opacity-40 group-data-[state=open]:opacity-100 transition-opacity duration-300",
-                error ? "bg-red-500" : "bg-[#00FF41]"
+                "absolute -inset-[1px] -z-10 opacity-10 group-data-[state=open]:opacity-30 transition-opacity duration-300",
+                error ? "bg-red-600" : "bg-black"
             )}
             style={{ clipPath: DESIGN_SYSTEM.SHAPES.DIAMOND_CLIP }}
         />
@@ -67,7 +67,7 @@ const ClippedSelectContent = React.forwardRef<
         <SelectPrimitive.Content
             ref={ref}
             className={cn(
-                'relative z-[100] min-w-[8rem] overflow-hidden bg-black text-[#00FF41] border-2 border-[#00FF41] shadow-[0_0_50px_rgba(0,255,65,0.2)]',
+                'relative z-[100] min-w-[8rem] overflow-hidden bg-white text-black border-2 border-black shadow-xl',
                 'data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95',
                 position === 'popper' && 'data-[side=bottom]:translate-y-2',
                 className,
@@ -77,7 +77,7 @@ const ClippedSelectContent = React.forwardRef<
         >
             <SelectPrimitive.Viewport
                 className={cn(
-                    'p-0',
+                    'p-1',
                     position === 'popper' && 'h-[var(--radix-select-content-available-height)] w-full min-w-[var(--radix-select-trigger-width)]',
                 )}
             >
@@ -95,14 +95,14 @@ const ClippedSelectItem = React.forwardRef<
     <SelectPrimitive.Item
         ref={ref}
         className={cn(
-            "relative flex w-full cursor-pointer select-none items-center py-4 pl-12 pr-4 text-[12px] font-[950] uppercase tracking-[0.2em] outline-none transition-colors italic focus:bg-[#00FF41] focus:text-black",
+            "relative flex w-full cursor-pointer select-none items-center py-4 pl-12 pr-4 text-[10px] font-black uppercase tracking-[0.2em] outline-none transition-colors italic focus:bg-zinc-100",
             className,
         )}
         {...props}
     >
         <span className="absolute left-4 flex h-3.5 w-3.5 items-center justify-center">
             <SelectPrimitive.ItemIndicator>
-                <div className="w-2 h-2 bg-current rotate-45" />
+                <div className="w-2 h-2 rotate-45" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
             </SelectPrimitive.ItemIndicator>
         </span>
         <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>

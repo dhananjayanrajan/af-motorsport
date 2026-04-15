@@ -1,4 +1,5 @@
 'use client'
+import { DESIGN_SYSTEM } from '@/lib/constants'
 import { useCurrency } from '@payloadcms/plugin-ecommerce/client/react'
 import React, { useMemo } from 'react'
 
@@ -6,6 +7,7 @@ type BaseProps = {
   className?: string
   currencyCodeClassName?: string
   as?: 'span' | 'p'
+  style?: React.CSSProperties
 }
 
 type PriceFixed = {
@@ -31,6 +33,7 @@ export const Price = ({
   lowestAmount,
   currencyCode: currencyCodeFromProps,
   as = 'p',
+  style,
 }: Props & React.ComponentProps<'p'>) => {
   const { formatCurrency, supportedCurrencies } = useCurrency()
 
@@ -43,9 +46,18 @@ export const Price = ({
     return undefined
   }, [currencyCodeFromProps, supportedCurrencies])
 
+  const baseStyle = {
+    color: DESIGN_SYSTEM.COLORS.BLACK.PURE,
+    ...style,
+  }
+
   if (typeof amount === 'number') {
     return (
-      <Element className={className} suppressHydrationWarning>
+      <Element
+        className={`${className} transition-colors duration-200 hover:text-primary-500`}
+        style={baseStyle}
+        suppressHydrationWarning
+      >
         {formatCurrency(amount, { currency: currencyToUse })}
       </Element>
     )
@@ -53,7 +65,11 @@ export const Price = ({
 
   if (highestAmount && highestAmount !== lowestAmount) {
     return (
-      <Element className={className} suppressHydrationWarning>
+      <Element
+        className={`${className} transition-colors duration-200 hover:text-primary-500`}
+        style={baseStyle}
+        suppressHydrationWarning
+      >
         {`${formatCurrency(lowestAmount, { currency: currencyToUse })} - ${formatCurrency(highestAmount, { currency: currencyToUse })}`}
       </Element>
     )
@@ -61,7 +77,11 @@ export const Price = ({
 
   if (lowestAmount) {
     return (
-      <Element className={className} suppressHydrationWarning>
+      <Element
+        className={`${className} transition-colors duration-200 hover:text-primary-500`}
+        style={baseStyle}
+        suppressHydrationWarning
+      >
         {`${formatCurrency(lowestAmount, { currency: currencyToUse })}`}
       </Element>
     )

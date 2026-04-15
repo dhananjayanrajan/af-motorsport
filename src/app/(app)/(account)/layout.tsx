@@ -1,10 +1,10 @@
 import type { ReactNode } from 'react'
 
-import { headers as getHeaders } from 'next/headers.js'
-import configPromise from '@payload-config'
-import { getPayload } from 'payload'
-import { RenderParams } from '@/components/RenderParams'
 import { AccountNav } from '@/components/AccountNav'
+import { RenderParams } from '@/components/RenderParams'
+import configPromise from '@payload-config'
+import { headers as getHeaders } from 'next/headers.js'
+import { getPayload } from 'payload'
 
 export default async function RootLayout({ children }: { children: ReactNode }) {
   const headers = await getHeaders()
@@ -12,15 +12,19 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
   const { user } = await payload.auth({ headers })
 
   return (
-    <div>
-      <div className="container">
-        <RenderParams className="" />
+    <div className="min-h-screen bg-zinc-50">
+      <div className="max-w-7xl mx-auto px-6 pt-12">
+        <RenderParams className="mb-8" />
       </div>
 
-      <div className="container mt-16 pb-8 flex gap-8">
-        {user && <AccountNav className="max-w-62 grow flex-col items-start gap-4 hidden md:flex" />}
+      <div className="max-w-7xl mx-auto px-6 pb-24 flex flex-col md:flex-row gap-12">
+        {user && (
+          <aside className="md:w-64 flex-shrink-0">
+            <AccountNav className="flex flex-col items-start gap-1 sticky top-12" />
+          </aside>
+        )}
 
-        <div className="flex flex-col gap-12 grow">{children}</div>
+        <main className="grow flex flex-col gap-16">{children}</main>
       </div>
     </div>
   )

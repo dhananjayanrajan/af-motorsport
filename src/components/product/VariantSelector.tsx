@@ -1,8 +1,8 @@
 'use client'
 import { Product } from '@/payload-types'
+import { cn } from '@/utilities/cn'
 import { createUrl } from '@/utilities/createUrl'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import { ClippedButton } from '../Clipped/ClippedButton'
 
 export function VariantSelector({ product }: { product: Product }) {
   const router = useRouter()
@@ -19,11 +19,11 @@ export function VariantSelector({ product }: { product: Product }) {
     if (!options?.length) return null
 
     return (
-      <dl className="flex flex-col gap-4" key={type.id}>
-        <dt className="text-xs font-bold text-zinc-500 uppercase tracking-widest">
-          {type.label}
+      <dl className="flex flex-col gap-3" key={type.id}>
+        <dt className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em] italic">
+          Select {type.label}
         </dt>
-        <dd className="flex flex-wrap gap-3">
+        <dd className="flex flex-wrap gap-2">
           {options?.map((option) => {
             if (!option || typeof option !== 'object') return null
             const optionSearchParams = new URLSearchParams(searchParams.toString())
@@ -33,14 +33,18 @@ export function VariantSelector({ product }: { product: Product }) {
             const isActive = searchParams.get(type.name) === String(option.id)
 
             return (
-              <ClippedButton
+              <button
                 key={option.id}
-                label={option.label!}
-                variant={isActive ? 'primary' : 'outline'}
-                size="sm"
-                className="rounded-none h-10 px-6 font-bold uppercase tracking-wide text-xs"
                 onClick={() => router.replace(optionUrl, { scroll: false })}
-              />
+                className={cn(
+                  "h-12 px-6 text-[11px] font-black uppercase italic tracking-widest transition-all active:scale-[0.98]",
+                  isActive
+                    ? "bg-black text-white"
+                    : "bg-white text-black border border-zinc-200 hover:border-black"
+                )}
+              >
+                {option.label}
+              </button>
             )
           })}
         </dd>

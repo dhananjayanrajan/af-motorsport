@@ -7,7 +7,7 @@ import { DESIGN_SYSTEM } from '@/lib/constants'
 import { User } from '@/payload-types'
 import { useAuth } from '@/providers/Auth'
 import { cn } from '@/utilities/cn'
-import { AlertCircle, ChevronRight } from 'lucide-react'
+import { ChevronRight, Lock, User as UserIcon } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -22,7 +22,7 @@ type FormData = {
 
 export const AccountForm: React.FC = () => {
   const { setUser, user } = useAuth()
-  const [changePassword, setChangePassword] = useState(false)
+  const [activeTab, setActiveTab] = useState<'profile' | 'security'>('profile')
   const router = useRouter()
 
   const {
@@ -51,8 +51,8 @@ export const AccountForm: React.FC = () => {
         if (response.ok) {
           const json = await response.json()
           setUser(json.doc)
-          toast.success('IDENTITY SYNCHRONIZED')
-          setChangePassword(false)
+          toast.success('Account updated successfully')
+          setActiveTab('profile')
           reset({
             name: json.doc.name,
             email: json.doc.email,
@@ -60,7 +60,7 @@ export const AccountForm: React.FC = () => {
             passwordConfirm: '',
           })
         } else {
-          toast.error('SYNC ERROR')
+          toast.error('Failed to update account')
         }
       }
     },
@@ -81,165 +81,99 @@ export const AccountForm: React.FC = () => {
     }
   }, [user, router, reset])
 
+  const labelClasses = "text-[11px] font-black uppercase italic text-black flex items-center gap-2 mb-2"
+  const inputClasses = "bg-white border-zinc-200 h-14 px-5 text-black placeholder:text-zinc-400 focus:border-black focus:ring-0 transition-all rounded-none w-full"
+
   return (
     <div className="w-full">
-      <div className="flex gap-2 mb-16">
+      <div className="flex border-b border-zinc-100 mb-16">
         <button
           type="button"
-          onClick={() => setChangePassword(false)}
+          onClick={() => setActiveTab('profile')}
           className={cn(
-            "px-10 py-4 text-[9px] font-black uppercase transition-all relative overflow-hidden",
-            DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_DEFAULT,
-            DESIGN_SYSTEM.ANIMATION.DURATION_BASE,
-            !changePassword ? "text-black" : "bg-zinc-900 text-zinc-600 hover:text-zinc-400"
+            "px-10 py-5 text-[11px] font-black uppercase italic transition-all relative flex items-center gap-3",
+            activeTab === 'profile' ? "text-black border-b-2 border-black" : "text-zinc-300 hover:text-zinc-500"
           )}
-          style={{
-            clipPath: DESIGN_SYSTEM.SHAPES.DIAMOND_CLIP,
-            backgroundColor: !changePassword ? DESIGN_SYSTEM.COLORS.PRIMARY : undefined,
-            boxShadow: !changePassword ? `0 0 20px ${DESIGN_SYSTEM.COLORS.PRIMARY_GLOW}` : 'none'
-          }}
         >
-          01. Identity
+          <UserIcon className="size-4" /> Profile Details
         </button>
         <button
           type="button"
-          onClick={() => setChangePassword(true)}
+          onClick={() => setActiveTab('security')}
           className={cn(
-            "px-10 py-4 text-[9px] font-black uppercase transition-all relative overflow-hidden",
-            DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_DEFAULT,
-            DESIGN_SYSTEM.ANIMATION.DURATION_BASE,
-            changePassword ? "text-black" : "bg-zinc-900 text-zinc-600 hover:text-zinc-400"
+            "px-10 py-5 text-[11px] font-black uppercase italic transition-all relative flex items-center gap-3",
+            activeTab === 'security' ? "text-black border-b-2 border-black" : "text-zinc-300 hover:text-zinc-500"
           )}
-          style={{
-            clipPath: DESIGN_SYSTEM.SHAPES.DIAMOND_CLIP,
-            backgroundColor: changePassword ? DESIGN_SYSTEM.COLORS.PRIMARY : undefined,
-            boxShadow: changePassword ? `0 0 20px ${DESIGN_SYSTEM.COLORS.PRIMARY_GLOW}` : 'none'
-          }}
         >
-          02. Security
+          <Lock className="size-4" /> Security
         </button>
       </div>
 
       <form className="space-y-16" onSubmit={handleSubmit(onSubmit)}>
-        {!changePassword ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-12">
-            <FormItem className="space-y-3">
-              <label className={cn("text-[9px] uppercase font-black text-zinc-500 px-1 flex items-center gap-2", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_DEFAULT)}>
-                <span
-                  className={cn("w-1 h-1 transition-colors", DESIGN_SYSTEM.ANIMATION.DURATION_BASE, dirtyFields.name ? "" : "bg-zinc-800")}
-                  style={{ backgroundColor: dirtyFields.name ? DESIGN_SYSTEM.COLORS.PRIMARY : undefined }}
-                /> Pilot Designation
-              </label>
+        {activeTab === 'profile' ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10">
+            <FormItem className="space-y-1">
+              <label className={labelClasses}>Full Name</label>
               <ClippedInput
                 id="name"
-                placeholder="PILOT_ID"
-                error={!!errors.name}
-                valid={!!dirtyFields.name && !errors.name}
-                {...register('name', { required: 'REQUIRED_FIELD' })}
+                placeholder="Enter your name"
+                className={inputClasses}
+                {...register('name', { required: 'Required' })}
               />
-              {errors.name && (
-                <FormError
-                  message={errors.name.message}
-                  className={cn("px-1 text-[8px] uppercase font-bold mt-2 italic", `text-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`)}
-                />
-              )}
+              {errors.name && <FormError message={errors.name.message} className="text-[10px] font-bold text-red-600 mt-1 uppercase" />}
             </FormItem>
 
-            <FormItem className="space-y-3">
-              <label className={cn("text-[9px] uppercase font-black text-zinc-500 px-1 flex items-center gap-2", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_DEFAULT)}>
-                <span
-                  className={cn("w-1 h-1 transition-colors", DESIGN_SYSTEM.ANIMATION.DURATION_BASE, dirtyFields.email ? "" : "bg-zinc-800")}
-                  style={{ backgroundColor: dirtyFields.email ? DESIGN_SYSTEM.COLORS.PRIMARY : undefined }}
-                /> Comm Channel
-              </label>
+            <FormItem className="space-y-1">
+              <label className={labelClasses}>Email Address</label>
               <ClippedInput
                 id="email"
                 type="email"
-                placeholder="EMAIL_ADDR"
-                error={!!errors.email}
-                valid={!!dirtyFields.email && !errors.email}
-                {...register('email', { required: 'REQUIRED_FIELD' })}
+                placeholder="email@example.com"
+                className={inputClasses}
+                {...register('email', { required: 'Required' })}
               />
-              {errors.email && (
-                <FormError
-                  message={errors.email.message}
-                  className={cn("px-1 text-[8px] uppercase font-bold mt-2 italic", `text-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`)}
-                />
-              )}
+              {errors.email && <FormError message={errors.email.message} className="text-[10px] font-bold text-red-600 mt-1 uppercase" />}
             </FormItem>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-12">
-            <FormItem className="space-y-3">
-              <label className={cn("text-[9px] uppercase font-black text-zinc-500 px-1 flex items-center gap-2", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_DEFAULT)}>
-                <span
-                  className={cn("w-1 h-1 transition-colors", DESIGN_SYSTEM.ANIMATION.DURATION_BASE, dirtyFields.password ? "" : "bg-zinc-800")}
-                  style={{ backgroundColor: dirtyFields.password ? DESIGN_SYSTEM.COLORS.PRIMARY : undefined }}
-                /> New Secret Key
-              </label>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10">
+            <FormItem className="space-y-1">
+              <label className={labelClasses}>New Password</label>
               <ClippedInput
                 id="password"
                 type="password"
                 placeholder="••••••••"
-                error={!!errors.password}
-                valid={!!dirtyFields.password && !errors.password}
-                {...register('password', { required: 'REQUIRED_FIELD' })}
+                className={inputClasses}
+                {...register('password', { required: 'Required' })}
               />
-              {errors.password && (
-                <FormError
-                  message={errors.password.message}
-                  className={cn("px-1 text-[8px] uppercase font-bold mt-2 italic", `text-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`)}
-                />
-              )}
+              {errors.password && <FormError message={errors.password.message} className="text-[10px] font-bold text-red-600 mt-1 uppercase" />}
             </FormItem>
 
-            <FormItem className="space-y-3">
-              <label className={cn("text-[9px] uppercase font-black text-zinc-500 px-1 flex items-center gap-2", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_DEFAULT)}>
-                <span
-                  className={cn("w-1 h-1 transition-colors", DESIGN_SYSTEM.ANIMATION.DURATION_BASE, dirtyFields.passwordConfirm ? "" : "bg-zinc-800")}
-                  style={{ backgroundColor: dirtyFields.passwordConfirm ? DESIGN_SYSTEM.COLORS.PRIMARY : undefined }}
-                /> Verify Key
-              </label>
+            <FormItem className="space-y-1">
+              <label className={labelClasses}>Confirm New Password</label>
               <ClippedInput
                 id="passwordConfirm"
                 type="password"
                 placeholder="••••••••"
-                error={!!errors.passwordConfirm}
-                valid={!!dirtyFields.passwordConfirm && !errors.passwordConfirm}
+                className={inputClasses}
                 {...register('passwordConfirm', {
-                  required: 'REQUIRED_FIELD',
-                  validate: (value) => value === password.current || 'MISMATCH_DETECTED',
+                  required: 'Required',
+                  validate: (value) => value === password.current || 'Passwords do not match',
                 })}
               />
-              {errors.passwordConfirm && (
-                <FormError
-                  message={errors.passwordConfirm.message}
-                  className={cn("px-1 text-[8px] uppercase font-bold mt-2 italic", `text-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`)}
-                />
-              )}
+              {errors.passwordConfirm && <FormError message={errors.passwordConfirm.message} className="text-[10px] font-bold text-red-600 mt-1 uppercase" />}
             </FormItem>
           </div>
         )}
 
-        <div className="pt-12 flex items-center justify-between border-t border-zinc-900">
+        <div className="pt-12 flex flex-col md:flex-row items-center justify-between gap-8 border-t border-zinc-100">
           <div className="flex items-center gap-6">
-            <div
-              className={cn("h-1 w-12 transition-all", DESIGN_SYSTEM.ANIMATION.DURATION_GLOW, isDirty ? "animate-pulse" : "bg-zinc-800")}
-              style={{
-                backgroundColor: isDirty ? DESIGN_SYSTEM.COLORS.PRIMARY : undefined,
-                boxShadow: isDirty ? `0 0 12px ${DESIGN_SYSTEM.COLORS.PRIMARY_GLOW}` : 'none'
-              }}
-            />
             <div className="flex flex-col">
-              <span className="text-[7px] font-mono text-zinc-800 uppercase tracking-widest leading-none mb-1">Database Buffer</span>
-              <div className="flex items-center gap-2">
-                <span
-                  className={cn("text-[9px] font-black uppercase transition-colors", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_DEFAULT)}
-                  style={{ color: isDirty ? DESIGN_SYSTEM.COLORS.PRIMARY : DESIGN_SYSTEM.COLORS.NEUTRAL_600 }}
-                >
-                  {isDirty ? 'UNCOMMITTED_CHANGES' : 'LOCAL_SYNC_STABLE'}
+              <div className="flex items-center gap-3">
+                <div className={cn("size-2 rounded-full", isDirty ? "bg-orange-500 animate-pulse" : "bg-zinc-200")} />
+                <span className="text-[10px] font-black uppercase italic tracking-widest text-zinc-400">
+                  {isDirty ? 'Unsaved changes detected' : 'Account in sync'}
                 </span>
-                {isDirty && <AlertCircle className="h-2.5 w-2.5 animate-pulse" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY }} />}
               </div>
             </div>
           </div>
@@ -247,22 +181,14 @@ export const AccountForm: React.FC = () => {
           <button
             type="submit"
             disabled={isLoading || isSubmitting || !isDirty}
-            className={cn(
-              "group relative h-14 px-20 overflow-hidden transition-all active:scale-95 disabled:opacity-30 disabled:cursor-not-allowed",
-              DESIGN_SYSTEM.ANIMATION.DURATION_BASE,
-              isDirty ? "bg-white text-black" : "bg-zinc-900 text-zinc-500"
-            )}
-            style={{ clipPath: 'polygon(8% 0%, 100% 0%, 92% 100%, 0% 100%)' }}
+            className="group relative h-16 w-full md:w-auto md:px-20 bg-black text-white transition-all active:scale-[0.98] disabled:opacity-10 overflow-hidden"
           >
             <div
-              className={cn("absolute inset-0 translate-x-[-101%] group-hover:translate-x-0 transition-transform", DESIGN_SYSTEM.ANIMATION.DURATION_SLOW)}
-              style={{
-                backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY,
-                transitionTimingFunction: DESIGN_SYSTEM.ANIMATION.EASING_CUBIC
-              }}
+              className="absolute inset-0 translate-x-[-101%] group-hover:translate-x-0 transition-transform duration-300 ease-out"
+              style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}
             />
-            <span className={cn("relative z-10 text-[10px] font-black uppercase italic flex items-center gap-4 group-hover:text-black transition-colors", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_XL)}>
-              {isLoading || isSubmitting ? 'UPLOADING...' : 'COMMIT_IDENTITY'} <ChevronRight className="h-3 w-3 group-hover:translate-x-1 transition-transform" />
+            <span className="relative z-10 text-[12px] font-black uppercase italic flex items-center justify-center gap-4 group-hover:text-black transition-colors">
+              {isLoading || isSubmitting ? 'Saving...' : 'Update Settings'} <ChevronRight className="size-4" />
             </span>
           </button>
         </div>

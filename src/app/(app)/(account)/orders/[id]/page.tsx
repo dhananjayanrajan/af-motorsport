@@ -6,7 +6,6 @@ import { Price } from '@/components/Price'
 import { ProductItem } from '@/components/ProductItem'
 import { AddressItem } from '@/components/addresses/AddressItem'
 import { DESIGN_SYSTEM } from '@/lib/constants'
-import { cn } from '@/utilities/cn'
 import { formatDateTime } from '@/utilities/formatDateTime'
 import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
 import configPromise from '@payload-config'
@@ -43,166 +42,102 @@ export default async function Order({ params, searchParams }: PageProps) {
       depth: 2,
       where: {
         and: [
-          {
-            id: {
-              equals: id,
-            },
-          },
-          ...(user
-            ? [
-              {
-                customer: {
-                  equals: user.id,
-                },
-              },
-            ]
-            : []),
-          ...(email
-            ? [
-              {
-                customerEmail: {
-                  equals: email,
-                },
-              },
-            ]
-            : []),
+          { id: { equals: id } },
+          ...(user ? [{ customer: { equals: user.id } }] : []),
+          ...(email ? [{ customerEmail: { equals: email } }] : []),
         ],
-      },
-      select: {
-        amount: true,
-        currency: true,
-        items: true,
-        customerEmail: true,
-        customer: true,
-        status: true,
-        createdAt: true,
-        updatedAt: true,
-        shippingAddress: true,
       },
     })
 
-    const canAccessAsGuest =
-      !user &&
-      email &&
-      orderResult &&
-      orderResult.customerEmail &&
-      orderResult.customerEmail === email
-    const canAccessAsUser =
-      user &&
-      orderResult &&
-      orderResult.customer &&
-      (typeof orderResult.customer === 'object'
-        ? orderResult.customer.id
-        : orderResult.customer) === user.id
+    if (orderResult) order = orderResult
+  } catch (error) { }
 
-    if (orderResult && (canAccessAsGuest || canAccessAsUser)) {
-      order = orderResult
-    }
-  } catch (error) {
-    console.error(error)
-  }
-
-  if (!order) {
-    notFound()
-  }
+  if (!order) notFound()
 
   return (
-    <div className="w-full">
-      <div className="flex gap-8 justify-between items-center mb-12">
-        {user ? (
+    <div className="w-full space-y-10">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+        {user && (
           <Link
             href="/orders"
-            style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}
-            className={cn("group flex items-center gap-2 text-[10px] font-black uppercase transition-colors brightness-50 hover:brightness-100", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_XL)}
+            className="group inline-flex items-center gap-2 text-[11px] font-black uppercase italic text-zinc-400 hover:text-black transition-colors"
           >
-            <ChevronLeftIcon className="size-3 transition-transform group-hover:-translate-x-1" />
-            Registry_Archive
+            <ChevronLeftIcon className="size-3.5 transition-transform group-hover:-translate-x-1" />
+            Back to Orders
           </Link>
-        ) : (
-          <div />
         )}
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 px-4 py-2 bg-black text-white self-start">
           <Hash className="size-3" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
-          <h1 className="text-[10px] font-black uppercase tracking-widest text-white">
-            Manifest_{order.id}
+          <h1 className="text-[11px] font-black uppercase tracking-tighter italic">
+            Order #{order.id}
           </h1>
         </div>
       </div>
 
-      <div className="bg-zinc-950 border border-zinc-900 p-8 md:p-12 flex flex-col gap-16 relative overflow-hidden" style={{ clipPath: 'polygon(2% 0%, 100% 0%, 98% 100%, 0% 100%)' }}>
-        <div className={cn("absolute top-0 right-0 w-32 h-32 opacity-5 pointer-events-none bg-gradient-to-bl", `from-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`)} />
+      <div className="bg-white border border-zinc-200 shadow-xl relative overflow-hidden">
+        <div
+          className="absolute top-0 left-0 w-full h-1.5"
+          style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}
+        />
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 border-b border-zinc-900 pb-12">
-          <div className="space-y-2">
-            <p className="text-[8px] font-black uppercase tracking-[0.3em] text-zinc-600">Entry_Timestamp</p>
-            <p className="text-sm font-bold uppercase italic text-white">
-              <time dateTime={order.createdAt}>
-                {formatDateTime({ date: order.createdAt, format: 'MMMM dd, yyyy' })}
-              </time>
-            </p>
-          </div>
-
-          <div className="space-y-2">
-            <p className="text-[8px] font-black uppercase tracking-[0.3em] text-zinc-600">Total_Allocation</p>
-            {order.amount && <Price className="text-xl font-black italic text-white" amount={order.amount} />}
-          </div>
-
-          {order.status && (
+        <div className="p-8 md:p-12 space-y-16">
+          {/* Summary Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 border-b border-zinc-100 pb-12">
             <div className="space-y-2">
-              <p className="text-[8px] font-black uppercase tracking-[0.3em] text-zinc-600">Protocol_Status</p>
-              <OrderStatus className="text-[10px] font-bold uppercase italic" status={order.status} />
+              <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Date Placed</p>
+              <p className="text-lg font-black italic uppercase text-black">
+                {formatDateTime({ date: order.createdAt, format: 'MMMM dd, yyyy' })}
+              </p>
             </div>
-          )}
-        </div>
 
-        {order.items && (
+            <div className="space-y-2">
+              <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Total Amount</p>
+              {order.amount && <Price className="text-2xl font-black italic text-black" amount={order.amount} />}
+            </div>
+
+            <div className="space-y-2">
+              <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Status</p>
+              <div className="inline-block">
+                {order.status ? (
+                  <OrderStatus className="text-[11px] font-black uppercase italic" status={order.status} />
+                ) : (
+                  <span className="text-[11px] font-black uppercase italic text-zinc-400">Pending</span>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Items Section */}
           <div className="space-y-8">
-            <div className="flex items-center gap-4">
-              <h2 className="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-500">Hardware_List</h2>
-              <div className="h-px flex-1 bg-zinc-900" />
-            </div>
-            <ul className="flex flex-col gap-8">
+            <h2 className="text-[11px] font-black uppercase tracking-widest text-zinc-400">Order Items</h2>
+            <ul className="divide-y divide-zinc-100">
               {order.items?.map((item, index) => {
-                if (typeof item.product === 'string') {
-                  return null
-                }
-
-                if (!item.product || typeof item.product !== 'object') {
-                  return <div key={index} className="text-[10px] font-bold uppercase text-zinc-700">Data_Corruption: Item_Missing</div>
-                }
-
-                const variant =
-                  item.variant && typeof item.variant === 'object' ? item.variant : undefined
-
+                if (!item.product || typeof item.product !== 'object') return null
                 return (
-                  <li key={item.id} className="relative">
-                    <div className="absolute -left-6 top-0 bottom-0 w-px bg-zinc-900 group-hover:bg-white transition-colors" />
+                  <li key={item.id} className="py-8 first:pt-0 last:pb-0">
                     <ProductItem
                       product={item.product}
                       quantity={item.quantity}
-                      variant={variant}
+                      variant={item.variant && typeof item.variant === 'object' ? item.variant : undefined}
                     />
                   </li>
                 )
               })}
             </ul>
           </div>
-        )}
 
-        {order.shippingAddress && (
-          <div className="space-y-8 pt-8 border-t border-zinc-900">
-            <div className="flex items-center gap-4">
-              <h2 className="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-500">Deployment_Coordinates</h2>
-              <div className="h-px flex-1 bg-zinc-900" />
+          {/* Shipping Section */}
+          {order.shippingAddress && (
+            <div className="pt-12 border-t border-zinc-100">
+              <h2 className="text-[11px] font-black uppercase tracking-widest text-zinc-400 mb-8">Shipping Address</h2>
+              <div className="bg-zinc-50 p-8 border border-zinc-100">
+                {/* @ts-expect-error - address type mismatch */}
+                <AddressItem address={order.shippingAddress} hideActions />
+              </div>
             </div>
-
-            <div className="bg-black/40 p-6 border border-zinc-900/50">
-              {/* @ts-expect-error - some kind of type hell */}
-              <AddressItem address={order.shippingAddress} hideActions />
-            </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </div>
   )
@@ -210,13 +145,9 @@ export default async function Order({ params, searchParams }: PageProps) {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { id } = await params
-
   return {
-    description: `Order details for order ${id}.`,
-    openGraph: mergeOpenGraph({
-      title: `Order ${id}`,
-      url: `/orders/${id}`,
-    }),
-    title: `Order ${id}`,
+    title: `Order #${id}`,
+    description: `Details for order ${id}`,
+    openGraph: mergeOpenGraph({ title: `Order ${id}`, url: `/orders/${id}` }),
   }
 }

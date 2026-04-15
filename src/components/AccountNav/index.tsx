@@ -1,9 +1,11 @@
 'use client'
 
+import { DESIGN_SYSTEM } from '@/lib/constants'
 import { cn } from '@/utilities/cn'
 import { ChevronRight, LogOut, MapPin, Package, User } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import React from 'react'
 
 type Props = {
   className?: string
@@ -11,74 +13,86 @@ type Props = {
 
 const navItems = [
   {
-    label: 'Profile Settings',
-    href: '/account',
     icon: User,
-    code: 'USR-01'
+    href: '/account',
+    label: 'Profile Settings',
   },
   {
-    label: 'Shipping Registry',
-    href: '/account/addresses',
     icon: MapPin,
-    code: 'LOG-02'
+    href: '/account/addresses',
+    label: 'Shipping Addresses',
   },
   {
-    label: 'Order History',
-    href: '/orders',
     icon: Package,
-    code: 'ORD-03'
-  }
+    href: '/orders',
+    label: 'Order History',
+  },
 ]
 
 export const AccountNav: React.FC<Props> = ({ className }) => {
   const pathname = usePathname()
 
   return (
-    <nav className={cn('flex flex-col gap-8 w-full max-w-[280px]', className)}>
-      <div className="space-y-1">
-        <span className="text-[9px] font-black uppercase tracking-[0.4em] text-zinc-600 px-4">
-          Terminal Menu
-        </span>
-        <ul className="flex flex-col gap-2">
+    <nav className={cn('flex flex-col gap-8 w-full', className)}>
+      <div className="space-y-4">
+        <div className="flex items-center gap-2 px-1">
+          <div
+            className="h-3 w-1"
+            style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}
+          />
+          <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400">
+            Navigation
+          </span>
+        </div>
+
+        <ul className="flex flex-col border-l border-zinc-200">
           {navItems.map((item) => {
-            const isActive = pathname === item.href || (item.href !== '/account' && pathname.includes(item.href))
+            const isActive =
+              pathname === item.href || (item.href !== '/account' && pathname.includes(item.href))
 
             return (
               <li key={item.href}>
                 <Link
                   href={item.href}
                   className={cn(
-                    'group relative flex items-center justify-between h-14 px-6 transition-all duration-300',
-                    isActive
-                      ? 'bg-white text-black translate-x-2 shadow-[0_0_20px_rgba(255,255,255,0.05)]'
-                      : 'bg-zinc-900/50 text-zinc-500 hover:bg-zinc-900 hover:text-white'
+                    'group relative flex items-center justify-between py-4 px-6 transition-all duration-200 border-b border-zinc-100 last:border-0',
+                    isActive ? 'bg-white' : 'hover:bg-zinc-100/50',
                   )}
-                  style={{
-                    clipPath: 'polygon(0% 0%, 90% 0%, 100% 50%, 90% 100%, 0% 100%)'
-                  }}
                 >
-                  <div className="flex items-center gap-4 relative z-10">
-                    <item.icon className={cn('h-4 w-4 transition-colors', isActive ? 'text-[#00FF41] drop-shadow-[0_0_5px_rgba(0,255,65,0.5)]' : 'text-zinc-700 group-hover:text-[#00FF41]')} />
-                    <div className="flex flex-col">
-                      <span className="text-[10px] font-black uppercase tracking-widest leading-none">
-                        {item.label}
-                      </span>
-                      <span className={cn(
-                        'text-[7px] font-bold uppercase tracking-tighter mt-1',
-                        isActive ? 'text-zinc-400' : 'text-zinc-800'
-                      )}>
-                        {item.code}
-                      </span>
-                    </div>
+                  {/* Active Indicator Line */}
+                  {isActive && (
+                    <div
+                      className="absolute left-[-1px] top-0 bottom-0 w-1 z-10"
+                      style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}
+                    />
+                  )}
+
+                  <div className="flex items-center gap-4">
+                    <item.icon
+                      className={cn(
+                        'h-4 w-4 transition-colors',
+                        isActive ? 'text-black' : 'text-zinc-400 group-hover:text-black',
+                      )}
+                      strokeWidth={isActive ? 2.5 : 2}
+                    />
+                    <span
+                      className={cn(
+                        'text-[11px] font-black uppercase italic tracking-tight transition-colors',
+                        isActive ? 'text-black' : 'text-zinc-500 group-hover:text-black',
+                      )}
+                    >
+                      {item.label}
+                    </span>
                   </div>
 
-                  {isActive && (
-                    <div className="absolute right-0 top-0 bottom-0 w-2 bg-[#00FF41] z-20 shadow-[0_0_10px_#00FF41]" style={{ clipPath: 'polygon(100% 0%, 100% 100%, 0% 50%)' }} />
-                  )}
-
-                  {!isActive && (
-                    <ChevronRight className="h-3 w-3 opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-2 transition-all text-[#00FF41] relative z-10 drop-shadow-[0_0_3px_#00FF41]" />
-                  )}
+                  <ChevronRight
+                    className={cn(
+                      'h-3 w-3 transition-all',
+                      isActive
+                        ? 'text-black opacity-100 translate-x-0'
+                        : 'text-zinc-300 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0',
+                    )}
+                  />
                 </Link>
               </li>
             )
@@ -86,14 +100,14 @@ export const AccountNav: React.FC<Props> = ({ className }) => {
         </ul>
       </div>
 
-      <div className="mt-auto pt-8 border-t border-zinc-900">
+      <div className="pt-4 px-1">
         <Link
           href="/logout"
-          className="group flex items-center gap-4 px-6 py-4 text-zinc-600 hover:text-[#00FF41] transition-colors"
+          className="group flex items-center gap-4 text-zinc-400 hover:text-black transition-colors"
         >
-          <LogOut className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-          <span className="text-[10px] font-black uppercase tracking-[0.3em]">
-            Terminate Session
+          <LogOut className="h-4 w-4" />
+          <span className="text-[10px] font-black uppercase italic tracking-widest">
+            Sign Out
           </span>
         </Link>
       </div>

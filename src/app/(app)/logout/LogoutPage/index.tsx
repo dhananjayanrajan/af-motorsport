@@ -28,60 +28,68 @@ export const LogoutPage: React.FC = () => {
   }, [logout])
 
   return (
-    <div className="min-h-[60vh] flex flex-col items-center justify-center px-8">
+    <div className="min-h-[60vh] flex flex-col items-center justify-center px-8 bg-zinc-50/50">
       <motion.div
         initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-        className="w-full max-w-lg border border-zinc-900 bg-zinc-950 p-12 relative overflow-hidden"
+        className="w-full max-w-lg border border-zinc-200 bg-white p-12 relative overflow-hidden shadow-2xl"
         style={{ clipPath: 'polygon(5% 0%, 100% 0%, 95% 100%, 0% 100%)' }}
       >
-        <div className={cn("absolute inset-0 via-transparent to-transparent opacity-50 pointer-events-none bg-gradient-to-br", `from-[${DESIGN_SYSTEM.COLORS.PRIMARY}]/5`)} />
+        <div
+          className="absolute top-0 left-0 w-full h-[2px] z-20"
+          style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}
+        />
 
-        <div className="relative z-10 text-center space-y-8">
-          <div className="flex flex-col items-center gap-4">
-            <div className="h-12 w-12 rounded-full border border-zinc-800 flex items-center justify-center">
-              <LogOut className="h-5 w-5" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
+        <div className="relative z-10 text-center space-y-10">
+          <div className="flex flex-col items-center gap-5">
+            <div className="h-14 w-14 border-2 border-zinc-100 flex items-center justify-center bg-zinc-50">
+              <LogOut className="h-6 w-6" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
             </div>
-            <div className="space-y-2">
-              <span className={cn("text-[10px] uppercase font-black block", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_XL)} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}>
-                Security Protocol
+            <div className="space-y-3">
+              <span className={cn("text-[10px] uppercase font-black block tracking-[0.4em] italic text-zinc-400")}>
+                System Access Protocol
               </span>
-              <h1 className="text-3xl font-black text-white italic uppercase tracking-tighter">
+              <h1 className="text-4xl font-black text-black italic uppercase tracking-tighter leading-none">
                 {error || success || 'DE-AUTHENTICATING...'}
               </h1>
             </div>
           </div>
 
-          <div className="w-full h-[1px] bg-zinc-900" />
+          <div className="w-full h-[1px] bg-zinc-100" />
 
-          <div className="grid grid-cols-1 gap-4">
+          <div className="grid grid-cols-1 gap-5">
             <Link
               href="/login"
-              className="relative group flex items-center justify-center w-full h-14 bg-white text-black overflow-hidden transition-all active:scale-95"
+              className="relative group flex items-center justify-center w-full h-16 bg-black text-white overflow-hidden transition-all active:scale-95"
               style={{ clipPath: 'polygon(5% 0%, 100% 0%, 95% 100%, 0% 100%)' }}
             >
-              <div className={cn("absolute inset-0 translate-y-full group-hover:translate-y-0 transition-transform duration-500", `bg-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`)} />
-              <span className={cn("relative z-10 text-[10px] font-black uppercase italic flex items-center gap-3 group-hover:text-white transition-colors", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_XL)}>
-                RE-AUTHORIZE <ChevronRight className="h-4 w-4" />
+              <div
+                className="absolute inset-0 translate-y-full group-hover:translate-y-0 transition-transform duration-500"
+                style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}
+              />
+              <span className={cn("relative z-10 text-[11px] font-black uppercase italic flex items-center gap-4 group-hover:text-black transition-colors tracking-[0.2em]")}>
+                RE-AUTHORIZE <ChevronRight className="h-5 w-5" />
               </span>
             </Link>
 
             <Link
               href="/search"
-              className="relative group flex items-center justify-center w-full h-14 bg-zinc-900 text-zinc-400 overflow-hidden transition-all active:scale-95 border border-zinc-800 hover:border-zinc-700 hover:text-white"
+              className="relative group flex items-center justify-center w-full h-16 bg-white text-black overflow-hidden transition-all active:scale-95 border border-zinc-200 hover:border-black"
               style={{ clipPath: 'polygon(5% 0%, 100% 0%, 95% 100%, 0% 100%)' }}
             >
-              <span className={cn("relative z-10 text-[10px] font-black uppercase italic flex items-center gap-3 transition-colors", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_XL)}>
-                RETURN_TO_STORE <ShoppingBag className="h-4 w-4" />
+              <span className={cn("relative z-10 text-[11px] font-black uppercase italic flex items-center gap-4 transition-colors tracking-[0.2em]")}>
+                RETURN_TO_CATALOG <ShoppingBag className="h-5 w-5" />
               </span>
             </Link>
           </div>
         </div>
       </motion.div>
 
-      <div className="mt-8 flex items-center gap-4 text-zinc-900">
-        <span className="text-[8px] font-bold uppercase tracking-[0.5em] italic">Connection Status: OFFLINE</span>
+      <div className="mt-12 flex items-center gap-4 text-zinc-300">
+        <div className="h-2 w-2 bg-zinc-200" />
+        <span className="text-[9px] font-black uppercase tracking-[0.6em] italic">Status: Link_Severed</span>
+        <div className="h-2 w-2 bg-zinc-200" />
       </div>
     </div>
   )

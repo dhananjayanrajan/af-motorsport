@@ -1,10 +1,9 @@
 import { CreateAccountForm } from '@/components/forms/CreateAccountForm'
 import { RenderParams } from '@/components/RenderParams'
 import { DESIGN_SYSTEM } from '@/lib/constants'
-import { cn } from '@/utilities/cn'
 import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
 import configPromise from '@payload-config'
-import { ChevronRight, LogOut, ShieldCheck } from 'lucide-react'
+import { ChevronRight, LogOut, UserPlus } from 'lucide-react'
 import type { Metadata } from 'next'
 import { headers as getHeaders } from 'next/headers'
 import Link from 'next/link'
@@ -17,52 +16,44 @@ export default async function CreateAccount() {
 
   if (user) {
     return (
-      <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center px-8 pb-32">
-        <div
-          className="w-full max-w-lg overflow-hidden border border-zinc-800 bg-zinc-950 p-12 backdrop-blur-3xl relative shadow-2xl"
-          style={{ clipPath: 'polygon(5% 0%, 100% 0%, 95% 100%, 0% 100%)' }}
-        >
-          <div className={cn("absolute inset-0 via-transparent to-transparent opacity-50 pointer-events-none bg-gradient-to-br", `from-[${DESIGN_SYSTEM.COLORS.PRIMARY}]/5`)} />
+      <div className="min-h-screen bg-zinc-50 flex flex-col items-center justify-center px-6">
+        <div className="w-full max-w-md bg-white border border-zinc-200 shadow-2xl p-10 md:p-12 relative">
+          <div
+            className="absolute top-0 left-0 w-full h-1.5"
+            style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}
+          />
 
-          <div className="flex flex-col items-center text-center space-y-6 relative z-10">
-            <div className="relative">
-              <ShieldCheck className="h-12 w-12 animate-pulse" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
-              <div className={cn("absolute -inset-4 blur-xl rounded-full", `bg-[${DESIGN_SYSTEM.COLORS.PRIMARY}]/10`)} />
+          <div className="flex flex-col items-center text-center">
+            <div className="w-16 h-16 bg-black flex items-center justify-center mb-8 shadow-xl">
+              <UserPlus className="text-white h-8 w-8" strokeWidth={1.5} />
             </div>
 
-            <div className="space-y-2">
-              <div className="flex flex-col items-center gap-2">
-                <div className={cn("h-[1px] w-12 mb-1", `bg-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`)} />
-                <span className={cn("text-[10px] uppercase font-black leading-none", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_XL)} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}>
-                  Registry Active
-                </span>
-              </div>
-              <h1 className="text-4xl font-black italic uppercase tracking-tighter leading-none text-white">
-                Identity Verified
-              </h1>
-            </div>
-
-            <p className="text-[10px] text-zinc-500 uppercase tracking-[0.2em] font-bold max-w-[280px] leading-relaxed">
-              Your profile is already synchronized. Duplicate registration is not required.
+            <h1 className="text-3xl font-black italic uppercase tracking-tighter text-black mb-2">
+              Already Registered
+            </h1>
+            <p className="text-[11px] font-bold uppercase tracking-widest text-zinc-400 mb-10">
+              You are currently logged in
             </p>
 
-            <div className="pt-8 w-full space-y-4">
+            <div className="w-full space-y-4">
               <Link
                 href="/account"
-                className="relative group flex items-center justify-center w-full h-14 bg-white text-black overflow-hidden transition-all active:scale-95"
-                style={{ clipPath: 'polygon(5% 0%, 100% 0%, 95% 100%, 0% 100%)' }}
+                className="group relative flex items-center justify-center w-full h-14 bg-black text-white transition-all active:scale-[0.98] overflow-hidden"
               >
-                <div className={cn("absolute inset-0 translate-y-full group-hover:translate-y-0 transition-transform duration-500", `bg-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`)} />
-                <span className={cn("relative z-10 text-[11px] font-black uppercase italic flex items-center gap-2 group-hover:text-white transition-colors", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_XL)}>
+                <div
+                  className="absolute inset-0 translate-x-[-101%] group-hover:translate-x-0 transition-transform duration-300 ease-out"
+                  style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}
+                />
+                <span className="relative z-10 text-[12px] font-black uppercase italic flex items-center gap-2 group-hover:text-black transition-colors">
                   Go to Dashboard <ChevronRight className="h-4 w-4" />
                 </span>
               </Link>
 
               <Link
                 href="/logout"
-                className={cn("flex items-center justify-center gap-2 text-[9px] font-black uppercase tracking-[0.4em] text-zinc-600 transition-colors py-2", `hover:text-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`)}
+                className="flex items-center justify-center gap-2 text-[10px] font-black uppercase tracking-tight text-zinc-400 hover:text-black transition-colors py-2"
               >
-                <LogOut className="h-3 w-3" /> Terminate Session
+                <LogOut className="h-3.5 w-3.5" /> Logout
               </Link>
             </div>
           </div>
@@ -72,8 +63,8 @@ export default async function CreateAccount() {
   }
 
   return (
-    <div className="min-h-screen bg-black flex flex-col items-center justify-center px-8 pb-32">
-      <div className="w-full max-w-lg">
+    <div className="min-h-screen bg-zinc-50 flex flex-col items-center justify-center px-6 py-20">
+      <div className="w-full max-w-md">
         <RenderParams />
         <CreateAccountForm />
       </div>
@@ -82,10 +73,10 @@ export default async function CreateAccount() {
 }
 
 export const metadata: Metadata = {
-  description: 'Create an account or log in to your existing account.',
+  description: 'Create an account to manage your orders.',
   openGraph: mergeOpenGraph({
-    title: 'Account',
-    url: '/account',
+    title: 'Create Account',
+    url: '/create-account',
   }),
-  title: 'Account',
+  title: 'Create Account',
 }

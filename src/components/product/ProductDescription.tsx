@@ -4,6 +4,7 @@ import { AddToCart } from '@/components/Cart/AddToCart'
 import { Price } from '@/components/Price'
 import { StockIndicator } from '@/components/product/StockIndicator'
 import { RichText } from '@/components/RichText'
+import { DESIGN_SYSTEM } from '@/lib/constants'
 import type { Product, Variant } from '@/payload-types'
 import { useCurrency } from '@payloadcms/plugin-ecommerce/client/react'
 import { Suspense } from 'react'
@@ -27,53 +28,64 @@ export function ProductDescription({ product }: { product: Product }) {
   }
 
   return (
-    <div className="flex flex-col gap-10">
-      <div className="space-y-4">
-        <div className="flex items-center gap-2">
-          <span className="text-xs font-bold text-zinc-500 uppercase tracking-widest">
-            Product Details
+    <div className="flex flex-col gap-12 text-left">
+      <div className="pb-10 border-b border-black/10">
+        <div className="flex items-center justify-between mb-4">
+          <span
+            className="text-[11px] font-black uppercase italic"
+            style={{
+              color: DESIGN_SYSTEM.COLORS.PRIMARY[500],
+              letterSpacing: DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_DEFAULT
+            }}
+          >
+            UNIT PRICING
           </span>
+          <StockIndicator product={product} />
         </div>
-        <h1 className="text-3xl md:text-4xl font-bold text-black uppercase tracking-tight leading-tight">
-          {product.title}
-        </h1>
-        <div className="flex items-center gap-4">
+
+        <div className="flex items-baseline">
           {hasVariants ? (
             <Price
               highestAmount={highestAmount}
               lowestAmount={lowestAmount}
-              className="text-2xl font-bold text-black tracking-tight"
+              className="text-5xl font-black italic tracking-tighter"
+              style={{ color: DESIGN_SYSTEM.COLORS.BLACK.PURE }}
             />
           ) : (
             <Price
               amount={amount}
-              className="text-2xl font-bold text-black tracking-tight"
+              className="text-5xl font-black italic tracking-tighter"
+              style={{ color: DESIGN_SYSTEM.COLORS.BLACK.PURE }}
             />
           )}
         </div>
       </div>
 
-      <div className="py-6 border-y border-zinc-200">
-        <div className="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-4">Description</div>
-        {product.description ? (
+      <div className="space-y-4">
+        <span
+          className="text-[11px] font-black uppercase italic"
+          style={{
+            color: DESIGN_SYSTEM.COLORS.BLACK.PURE,
+            letterSpacing: DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_DEFAULT
+          }}
+        >
+          DESCRIPTION
+        </span>
+        {product.description && (
           <RichText
-            className="text-zinc-700 text-sm leading-relaxed max-w-2xl"
+            className="text-[15px] leading-relaxed font-bold uppercase"
+            style={{ color: DESIGN_SYSTEM.COLORS.BLACK.PURE }}
             data={product.description}
           />
-        ) : (
-          <p className="text-zinc-400 text-sm italic">No description available</p>
         )}
       </div>
 
-      <div className="space-y-8">
+      <div className="pt-6 space-y-12">
         <Suspense fallback={null}>
           <VariantSelector product={product} />
         </Suspense>
 
-        <div className="flex flex-col gap-6">
-          <div className="flex justify-between items-center">
-            <StockIndicator product={product} />
-          </div>
+        <div className="w-full">
           <AddToCart product={product} />
         </div>
       </div>

@@ -2,8 +2,8 @@
 import React, { useCallback, useMemo } from 'react'
 
 import { Category } from '@/payload-types'
-import { usePathname, useSearchParams, useRouter } from 'next/navigation'
 import clsx from 'clsx'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 
 type Props = {
   category: Category
@@ -39,7 +39,7 @@ export const CategoryItem: React.FC<Props> = ({ category }) => {
         ' underline': isActive,
       })}
     >
-      {category.title}
+      {category.name}
     </button>
   )
 }

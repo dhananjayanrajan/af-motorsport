@@ -2,10 +2,9 @@ import { AccountForm } from '@/components/forms/AccountForm'
 import { OrderItem } from '@/components/OrderItem'
 import { DESIGN_SYSTEM } from '@/lib/constants'
 import { Order } from '@/payload-types'
-import { cn } from '@/utilities/cn'
 import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
 import configPromise from '@payload-config'
-import { ChevronRight, History, Settings } from 'lucide-react'
+import { ChevronRight, History } from 'lucide-react'
 import type { Metadata } from 'next'
 import { headers as getHeaders } from 'next/headers.js'
 import Link from 'next/link'
@@ -36,54 +35,71 @@ export default async function AccountPage() {
   } catch (error) { }
 
   return (
-    <div className="min-h-screen bg-black text-white pb-32 px-8 max-w-7xl mx-auto space-y-48">
-      <section className="space-y-16">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 border-b border-zinc-900 pb-10">
-          <div className="space-y-3">
-            <div className="flex items-center gap-3">
-              <Settings className="h-3 w-3 animate-pulse" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
-              <span className={cn("text-[10px] font-black uppercase leading-none", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_XL)} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}>Identity Protocol</span>
+    <div className="space-y-32">
+      <section className="space-y-12">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-zinc-200 pb-8">
+          <div className="space-y-4">
+            <div className="flex items-center gap-2">
+              <div
+                className="h-1 w-6"
+                style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}
+              />
+              <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400">
+                Member Profile
+              </span>
             </div>
-            <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tighter italic leading-none">
-              Account <span className="text-zinc-800">/ Profile</span>
+            <h1 className="text-4xl font-black italic uppercase tracking-tighter text-black leading-none">
+              Account <span className="text-zinc-300">Settings</span>
             </h1>
           </div>
-          <div className="max-w-xs text-right hidden md:block">
-            <p className="text-[10px] font-bold text-zinc-700 uppercase tracking-widest leading-relaxed">
-              Verify your designation and active communication channels.
+          <div className="hidden md:block">
+            <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-tight text-right max-w-[200px]">
+              Manage your personal information and contact preferences.
             </p>
           </div>
         </div>
-        <AccountForm />
+
+        <div className="bg-white border border-zinc-200 p-8 md:p-12 shadow-sm">
+          <AccountForm />
+        </div>
       </section>
 
-      <section className="space-y-16">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 border-b border-zinc-900 pb-10">
-          <div className="space-y-3">
-            <div className="flex items-center gap-3">
-              <History className="h-3 w-3 text-zinc-700" />
-              <span className="text-[10px] font-black uppercase tracking-[0.5em] text-zinc-700 leading-none">Mission History</span>
+      <section className="space-y-12">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-zinc-200 pb-8">
+          <div className="space-y-4">
+            <div className="flex items-center gap-2">
+              <History className="h-3 w-3 text-zinc-400" />
+              <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400">
+                Purchase History
+              </span>
             </div>
-            <h2 className="text-4xl md:text-5xl font-black uppercase tracking-tighter italic text-white leading-none">
-              Recent <span className="text-zinc-800">/ Orders</span>
+            <h2 className="text-4xl font-black italic uppercase tracking-tighter text-black leading-none">
+              Recent <span className="text-zinc-300">Orders</span>
             </h2>
           </div>
-          <Link href="/orders" className={cn("group flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.4em] text-zinc-500 transition-colors mb-2", `hover:text-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`)}>
-            Archive Access <ChevronRight className="h-3 w-3 group-hover:translate-x-1 transition-transform" />
+          <Link
+            href="/orders"
+            className="group flex items-center gap-2 text-[10px] font-black uppercase tracking-tight text-black hover:opacity-60 transition-all mb-1"
+          >
+            View All Orders <ChevronRight className="h-3 w-3 group-hover:translate-x-1 transition-transform" />
           </Link>
         </div>
 
-        <div className="divide-y divide-zinc-900">
+        <div className="bg-white border border-zinc-200 shadow-sm overflow-hidden">
           {(!orders || orders.length === 0) ? (
-            <div className="py-24 text-center border border-dashed border-zinc-900 bg-zinc-950/20">
-              <span className="text-[10px] font-black uppercase tracking-[0.8em] text-zinc-800 italic">No mission data available</span>
+            <div className="py-24 text-center bg-zinc-50/50">
+              <span className="text-[11px] font-black uppercase tracking-widest text-zinc-300 italic">
+                No orders found
+              </span>
             </div>
           ) : (
-            orders.map((order) => (
-              <div key={order.id} className="py-6 transition-all duration-300 hover:bg-zinc-950 hover:px-4">
-                <OrderItem order={order} />
-              </div>
-            ))
+            <div className="divide-y divide-zinc-100">
+              {orders.map((order) => (
+                <div key={order.id} className="p-6 transition-colors hover:bg-zinc-50">
+                  <OrderItem order={order} />
+                </div>
+              ))}
+            </div>
           )}
         </div>
       </section>
@@ -92,7 +108,7 @@ export default async function AccountPage() {
 }
 
 export const metadata: Metadata = {
-  description: 'Manage your AF Motorsport profile.',
+  description: 'Manage your profile and view orders.',
   openGraph: mergeOpenGraph({ title: 'Account', url: '/account' }),
   title: 'Account',
 }

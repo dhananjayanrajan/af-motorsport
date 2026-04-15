@@ -1,6 +1,7 @@
 import { RenderBlocks } from '@/blocks/RenderBlocks'
 import { Gallery } from '@/components/product/Gallery'
 import { ProductDescription } from '@/components/product/ProductDescription'
+import { DESIGN_SYSTEM } from '@/lib/constants'
 import type { Media } from '@/payload-types'
 import configPromise from '@payload-config'
 import { Box, ChevronLeftIcon, Cpu, ShieldCheck } from 'lucide-react'
@@ -19,51 +20,127 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     .map((item) => ({ ...item, image: item.image as Media })) || []
 
   return (
-    <div className="bg-white min-h-screen">
-      <div className="border-b bg-white border-zinc-200 sticky top-0 z-40">
-        <div className="max-w-screen-2xl mx-auto h-20 flex items-center justify-between px-4 md:px-8 lg:px-12">
-          <Link href="/shop" className="group flex items-center gap-3 text-xs font-bold uppercase tracking-widest text-black">
-            <ChevronLeftIcon size={18} className="group-hover:-translate-x-1 transition-transform" />
-            Back to Inventory
+    <div
+      className="min-h-screen"
+      style={{ backgroundColor: DESIGN_SYSTEM.COLORS.WHITE.PURE }}
+    >
+      <nav className="sticky top-0 z-50 bg-white border-b border-zinc-100">
+        <div className="max-w-screen-2xl mx-auto h-20 flex items-center justify-between px-6 md:px-12">
+          <Link
+            href="/shop"
+            className="flex items-center gap-4 text-[11px] font-black uppercase italic transition-all duration-300 group"
+            style={{
+              color: DESIGN_SYSTEM.COLORS.BLACK.PURE,
+              letterSpacing: DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_DEFAULT
+            }}
+          >
+            <ChevronLeftIcon
+              size={18}
+              className="transition-transform group-hover:-translate-x-1"
+              style={{ color: DESIGN_SYSTEM.COLORS.BLACK.PURE }}
+            />
+            <span className="group-hover:text-zinc-500 transition-colors">
+              BACK TO INVENTORY
+            </span>
           </Link>
-          <div className="flex items-center gap-6">
-            <span className="text-xs font-bold text-zinc-400 uppercase tracking-widest tabular-nums">ID: {product.slug?.toUpperCase()}</span>
+
+          <div className="flex flex-col items-end group cursor-default">
+            <span
+              className="text-[10px] font-black uppercase italic transition-colors group-hover:text-black"
+              style={{ color: DESIGN_SYSTEM.COLORS.ZINC[400] }}
+            >
+              PRODUCT ID
+            </span>
+            <span
+              className="text-[12px] font-black uppercase tabular-nums transition-colors group-hover:text-primary-500"
+              style={{ color: DESIGN_SYSTEM.COLORS.BLACK.PURE }}
+            >
+              {product.slug?.toUpperCase()}
+            </span>
           </div>
         </div>
-      </div>
+      </nav>
 
-      <div className="max-w-screen-2xl mx-auto py-8 md:py-12 lg:py-16 px-4 md:px-8 lg:px-12">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20">
-          <div className="lg:col-span-7">
-            <div className="relative bg-zinc-100 p-4 md:p-8 lg:p-12">
+      <main className="max-w-screen-2xl mx-auto py-12 lg:py-24 px-6 md:px-12">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24">
+
+          <div className="lg:col-span-7 flex flex-col gap-12">
+            <div
+              className="relative p-12 lg:p-20 border border-zinc-100 bg-white transition-colors hover:border-zinc-300"
+            >
               <Gallery gallery={gallery} />
             </div>
 
-            <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {[
-                { label: 'Authenticity', icon: ShieldCheck, val: 'Verified' },
-                { label: 'Logistics', icon: Box, val: 'Express' },
-                { label: 'Grade', icon: Cpu, val: 'Professional' }
+                { label: 'AUTHENTICITY', icon: ShieldCheck, val: 'VERIFIED' },
+                { label: 'LOGISTICS', icon: Box, val: 'EXPRESS' },
+                { label: 'GRADE', icon: Cpu, val: 'PROFESSIONAL' }
               ].map((item, i) => (
-                <div key={i} className="p-6 bg-zinc-50 border border-zinc-200 group">
-                  <item.icon size={20} className="text-zinc-400 mb-4 transition-colors" />
-                  <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-1">{item.label}</p>
-                  <p className="text-sm font-bold text-black uppercase">{item.val}</p>
+                <div
+                  key={i}
+                  className="p-8 border border-zinc-100 bg-white transition-all duration-300 hover:border-black group"
+                >
+                  <item.icon
+                    size={22}
+                    className="mb-6 transition-colors group-hover:scale-110"
+                    style={{ color: i === 0 ? DESIGN_SYSTEM.COLORS.PRIMARY[500] : DESIGN_SYSTEM.COLORS.ZINC[300] }}
+                  />
+                  <span
+                    className="block text-[9px] font-black uppercase mb-2 italic transition-colors group-hover:text-zinc-900"
+                    style={{
+                      color: DESIGN_SYSTEM.COLORS.ZINC[400],
+                      letterSpacing: DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_DEFAULT
+                    }}
+                  >
+                    {item.label}
+                  </span>
+                  <p
+                    className="text-sm font-black uppercase italic tracking-tight transition-colors group-hover:text-primary-600"
+                    style={{ color: DESIGN_SYSTEM.COLORS.BLACK.PURE }}
+                  >
+                    {item.val}
+                  </p>
                 </div>
               ))}
             </div>
           </div>
 
           <div className="lg:col-span-5 flex flex-col gap-10">
-            <ProductDescription product={product} />
+            <div className="space-y-12">
+              <header className="space-y-4 group">
+                <span
+                  className="text-[11px] font-black uppercase italic transition-colors group-hover:text-black"
+                  style={{
+                    color: DESIGN_SYSTEM.COLORS.PRIMARY[500],
+                    letterSpacing: DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_XL
+                  }}
+                >
+                  PRODUCT DETAILS
+                </span>
+                <h1
+                  className="text-5xl md:text-7xl font-black italic uppercase leading-none tracking-tighter transition-colors group-hover:text-zinc-700"
+                  style={{ color: DESIGN_SYSTEM.COLORS.BLACK.PURE }}
+                >
+                  {product.title}
+                </h1>
+              </header>
+
+              <div className="h-px w-full bg-zinc-100 transition-colors hover:bg-zinc-300" />
+
+              <div className="min-h-[200px]">
+                <ProductDescription product={product} />
+              </div>
+            </div>
           </div>
+
         </div>
-      </div>
+      </main>
 
       {product.layout?.length ? (
-        <div className="border-t border-zinc-200">
+        <section className="border-t border-zinc-100 bg-white">
           <RenderBlocks blocks={product.layout} />
-        </div>
+        </section>
       ) : null}
     </div>
   )

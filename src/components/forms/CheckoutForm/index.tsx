@@ -1,13 +1,11 @@
 'use client'
 
 import { Message } from '@/components/Message'
-import ShinyText from '@/components/Reactbits/shiny-text'
 import { DESIGN_SYSTEM } from '@/lib/constants'
 import { Address } from '@/payload-types'
 import { useCart, usePayments } from '@payloadcms/plugin-ecommerce/client/react'
 import { PaymentElement, useElements, useStripe } from '@stripe/react-stripe-js'
-import { motion, useReducedMotion } from 'framer-motion'
-import { ChevronRight, CreditCard, ShieldCheck } from 'lucide-react'
+import { ChevronRight, Lock, ShieldCheck } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import React, { FormEvent, useCallback } from 'react'
 
@@ -30,7 +28,6 @@ export const CheckoutForm: React.FC<Props> = ({
   const router = useRouter()
   const { clearCart } = useCart()
   const { confirmOrder } = usePayments()
-  const shouldReduceMotion = useReducedMotion()
 
   const handleSubmit = useCallback(
     async (e: FormEvent) => {
@@ -85,7 +82,7 @@ export const CheckoutForm: React.FC<Props> = ({
               }
             } catch (err) {
               const msg = err instanceof Error ? err.message : 'Something went wrong.'
-              setError(`Error while confirming order: ${msg}`)
+              setError(`Order confirmation failed: ${msg}`)
               setIsLoading(false)
             }
           }
@@ -95,7 +92,7 @@ export const CheckoutForm: React.FC<Props> = ({
           }
         } catch (err) {
           const msg = err instanceof Error ? err.message : 'Something went wrong.'
-          setError(`Error while submitting payment: ${msg}`)
+          setError(`Payment submission failed: ${msg}`)
           setIsLoading(false)
           setProcessingPayment(false)
         }
@@ -120,70 +117,60 @@ export const CheckoutForm: React.FC<Props> = ({
   )
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-      className={`w-full max-w-xl overflow-hidden border bg-zinc-950 p-8 md:p-12 backdrop-blur-3xl relative shadow-2xl mx-auto border-zinc-800 transition-all duration-300 hover:border-[${DESIGN_SYSTEM.COLORS.PRIMARY}]/30`}
-      style={{ clipPath: 'polygon(5% 0%, 100% 0%, 95% 100%, 0% 100%)' }}
-    >
-      <div className={`absolute inset-0 via-transparent to-transparent opacity-50 pointer-events-none bg-gradient-to-br from-[${DESIGN_SYSTEM.COLORS.PRIMARY}]/5`} />
-
-      <div className="mb-12 space-y-4 text-center relative z-10">
-        <div className="flex flex-col items-center gap-2">
-          <CreditCard className={`h-5 w-5 mb-1 text-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`} />
-          <span className={`text-[10px] uppercase tracking-[0.6em] font-black text-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`}>
-            Payment Terminal
+    <div className="w-full bg-white transition-all duration-300">
+      <div className="mb-10 space-y-2">
+        <div className="flex items-center gap-3">
+          <Lock className="size-4 text-black" />
+          <span className="text-[11px] font-black uppercase italic tracking-widest text-black">
+            Secure Payment
           </span>
         </div>
-        <h1 className="text-4xl font-black italic uppercase tracking-tighter leading-none">
-          <ShinyText
-            text="Secure Checkout"
-            speed={1}
-            delay={0}
-            color="#27272a"
-            shineColor={DESIGN_SYSTEM.COLORS.PRIMARY}
-            spread={150}
-            direction="left"
-            yoyo={false}
-            pauseOnHover={false}
-            disabled={false}
-          />
-        </h1>
-        <p className="text-[10px] text-zinc-500 uppercase tracking-widest font-bold">
-          Encrypted Financial Authorization
+        <p className="text-[10px] text-zinc-400 uppercase font-bold tracking-widest">
+          All transactions are encrypted and secure.
         </p>
       </div>
 
-      <Message
-        className={`mb-8 border text-[10px] uppercase tracking-wider p-4 bg-[${DESIGN_SYSTEM.COLORS.PRIMARY}]/5 border-[${DESIGN_SYSTEM.COLORS.PRIMARY}]/20 text-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`}
-        error={error}
-      />
+      {error && (
+        <Message
+          className="mb-8 border-l-4 border-red-600 bg-red-50 p-4 text-[10px] font-bold uppercase tracking-wider text-red-600"
+          error={error}
+        />
+      )}
 
-      <form onSubmit={handleSubmit} className="relative z-10">
-        <PaymentElement />
+      <form onSubmit={handleSubmit} className="space-y-10">
+        <div className="p-4 border border-zinc-100 bg-zinc-50/50">
+          <PaymentElement />
+        </div>
 
-        <div className="flex flex-col gap-6 pt-8">
+        <div className="space-y-6">
           <button
             type="submit"
             disabled={!stripe || isLoading}
-            className="relative group flex items-center justify-center w-full h-14 bg-white text-black overflow-hidden transition-all active:scale-95 disabled:opacity-50 disabled:grayscale"
-            style={{ clipPath: 'polygon(5% 0%, 100% 0%, 95% 100%, 0% 100%)' }}
+            className="group relative flex items-center justify-center w-full h-16 bg-black text-white transition-all active:scale-[0.98] disabled:opacity-10 overflow-hidden"
           >
-            <div className={`absolute inset-0 translate-y-full group-hover:translate-y-0 transition-transform duration-500 bg-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`} />
-            <span className="relative z-10 text-[11px] font-black uppercase tracking-[0.5em] italic flex items-center gap-3 group-hover:text-black transition-colors">
-              {isLoading ? 'Processing...' : 'Authorize Transaction'} <ChevronRight className="h-4 w-4" />
+            <div
+              className="absolute inset-0 translate-x-[-101%] group-hover:translate-x-0 transition-transform duration-300 ease-out"
+              style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}
+            />
+            <span className="relative z-10 text-[12px] font-black uppercase italic tracking-widest flex items-center gap-4 group-hover:text-black transition-colors">
+              {isLoading ? 'Processing...' : 'Complete Purchase'} <ChevronRight className="size-5" />
             </span>
           </button>
 
-          <div className="flex items-center justify-center gap-3 py-2">
-            <ShieldCheck className="h-3 w-3 text-zinc-700" />
-            <span className="text-[8px] font-black uppercase tracking-[0.4em] text-zinc-700 italic">
-              SSL Encrypted Tunnel Active
+          <div className="flex items-center justify-center gap-4 pt-2">
+            <div className="flex items-center gap-2">
+              <ShieldCheck className="size-3 text-zinc-300" />
+              <span className="text-[9px] font-bold uppercase tracking-widest text-zinc-300 italic">
+                Verified Security
+              </span>
+            </div>
+            <div className="size-1 rounded-full bg-zinc-200" />
+            <span className="text-[9px] font-bold uppercase tracking-widest text-zinc-300 italic">
+              Powered by Stripe
             </span>
           </div>
         </div>
       </form>
-    </motion.div>
+    </div>
   )
 }

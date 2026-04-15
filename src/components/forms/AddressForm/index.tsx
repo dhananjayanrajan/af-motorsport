@@ -16,7 +16,7 @@ import {
   defaultCountries as supportedCountries,
   useAddresses,
 } from '@payloadcms/plugin-ecommerce/client/react'
-import { ChevronRight, Cpu } from 'lucide-react'
+import { ChevronRight } from 'lucide-react'
 import { deepMergeSimple } from 'payload/shared'
 import React, { useCallback } from 'react'
 import { useForm } from 'react-hook-form'
@@ -52,7 +52,7 @@ export const AddressForm: React.FC<Props> = ({
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting, isLoading, dirtyFields },
+    formState: { errors, isSubmitting, isLoading },
     setValue,
     watch,
   } = useForm<AddressFormValues>({
@@ -65,7 +65,6 @@ export const AddressForm: React.FC<Props> = ({
   const onSubmit = useCallback(
     async (data: AddressFormValues) => {
       const newData = deepMergeSimple(initialData || {}, data)
-
       if (!skipSubmission) {
         if (addressID) {
           await updateAddress(addressID, newData)
@@ -73,7 +72,6 @@ export const AddressForm: React.FC<Props> = ({
           await createAddress(newData)
         }
       }
-
       if (callback) {
         callback(newData)
       }
@@ -81,25 +79,24 @@ export const AddressForm: React.FC<Props> = ({
     [initialData, skipSubmission, callback, addressID, updateAddress, createAddress],
   )
 
+  const labelClasses = "text-[11px] font-black uppercase italic text-black flex items-center gap-2 mb-2"
+  const inputClasses = "bg-white border-zinc-300 h-14 px-5 text-black placeholder:text-zinc-500 focus:border-black focus:ring-0 transition-all rounded-none w-full"
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="w-full space-y-16">
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-x-12 gap-y-12">
-        <FormItem className="md:col-span-4 space-y-3">
-          <label className="text-[9px] uppercase tracking-[0.4em] font-black text-zinc-700 px-1 flex items-center gap-2">
-            <span className={`w-1 h-1 bg-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`} /> Title
-          </label>
+    <form onSubmit={handleSubmit(onSubmit)} className="w-full space-y-12">
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-x-8 gap-y-10">
+
+        <FormItem className="md:col-span-4 space-y-1">
+          <label className={labelClasses}>Title</label>
           <ClippedSelect
             onValueChange={(value) => setValue('title', value, { shouldDirty: true, shouldValidate: true })}
             defaultValue={initialData?.title || ''}
           >
             <ClippedSelectTrigger
               id="title"
-              error={!!errors.title}
-              valid={!!dirtyFields.title && !errors.title}
-              filled={!!watchAllFields.title}
-              className="max-w-full"
+              className={inputClasses}
             >
-              <ClippedSelectValue placeholder="DESIGNATION" />
+              <ClippedSelectValue placeholder="Select Title" />
             </ClippedSelectTrigger>
             <ClippedSelectContent>
               {titles.map((title) => (
@@ -109,156 +106,124 @@ export const AddressForm: React.FC<Props> = ({
               ))}
             </ClippedSelectContent>
           </ClippedSelect>
-          {errors.title && <FormError message={errors.title.message} className={`px-1 text-[${DESIGN_SYSTEM.COLORS.PRIMARY}] text-[8px] uppercase font-bold mt-2 italic`} />}
+          {errors.title && <FormError message={errors.title.message} className="text-[10px] font-bold text-red-600 mt-1 uppercase" />}
         </FormItem>
 
-        <FormItem className="md:col-span-4 space-y-3">
-          <label className="text-[9px] uppercase tracking-[0.4em] font-black text-zinc-700 px-1 flex items-center gap-2">
-            <span className={`w-1 h-1 bg-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`} /> First Name*
-          </label>
+        <FormItem className="md:col-span-4 space-y-1">
+          <label className={labelClasses}>First Name*</label>
           <ClippedInput
             id="firstName"
             autoComplete="given-name"
-            placeholder="ALPHA_NAME"
-            error={!!errors.firstName}
-            valid={!!dirtyFields.firstName && !errors.firstName}
-            {...register('firstName', { required: 'REQUIRED_FIELD' })}
+            placeholder="e.g. John"
+            className={inputClasses}
+            {...register('firstName', { required: 'Required' })}
           />
-          {errors.firstName && <FormError message={errors.firstName.message} className={`px-1 text-[${DESIGN_SYSTEM.COLORS.PRIMARY}] text-[8px] uppercase font-bold mt-2 italic`} />}
+          {errors.firstName && <FormError message={errors.firstName.message} className="text-[10px] font-bold text-red-600 mt-1 uppercase" />}
         </FormItem>
 
-        <FormItem className="md:col-span-4 space-y-3">
-          <label className="text-[9px] uppercase tracking-[0.4em] font-black text-zinc-700 px-1 flex items-center gap-2">
-            <span className={`w-1 h-1 bg-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`} /> Last Name*
-          </label>
+        <FormItem className="md:col-span-4 space-y-1">
+          <label className={labelClasses}>Last Name*</label>
           <ClippedInput
             id="lastName"
             autoComplete="family-name"
-            placeholder="OMEGA_NAME"
-            error={!!errors.lastName}
-            valid={!!dirtyFields.lastName && !errors.lastName}
-            {...register('lastName', { required: 'REQUIRED_FIELD' })}
+            placeholder="e.g. Doe"
+            className={inputClasses}
+            {...register('lastName', { required: 'Required' })}
           />
-          {errors.lastName && <FormError message={errors.lastName.message} className={`px-1 text-[${DESIGN_SYSTEM.COLORS.PRIMARY}] text-[8px] uppercase font-bold mt-2 italic`} />}
+          {errors.lastName && <FormError message={errors.lastName.message} className="text-[10px] font-bold text-red-600 mt-1 uppercase" />}
         </FormItem>
 
-        <FormItem className="md:col-span-6 space-y-3">
-          <label className="text-[9px] uppercase tracking-[0.4em] font-black text-zinc-700 px-1 flex items-center gap-2">
-            <span className="w-1 h-1 bg-zinc-800" /> Comm Link (Phone)
-          </label>
+        <FormItem className="md:col-span-6 space-y-1">
+          <label className={labelClasses}>Phone Number</label>
           <ClippedInput
             type="tel"
             id="phone"
             autoComplete="tel"
-            placeholder="+00 000 000 000"
-            error={!!errors.phone}
-            valid={!!dirtyFields.phone && !errors.phone}
+            placeholder="+1 (555) 000-0000"
+            className={inputClasses}
             {...register('phone')}
           />
         </FormItem>
 
-        <FormItem className="md:col-span-6 space-y-3">
-          <label className="text-[9px] uppercase tracking-[0.4em] font-black text-zinc-700 px-1 flex items-center gap-2">
-            <span className="w-1 h-1 bg-zinc-800" /> Organization
-          </label>
+        <FormItem className="md:col-span-6 space-y-1">
+          <label className={labelClasses}>Company</label>
           <ClippedInput
             id="company"
             autoComplete="organization"
-            placeholder="CORP_ENTITY"
-            error={!!errors.company}
-            valid={!!dirtyFields.company && !errors.company}
+            placeholder="Company Name (Optional)"
+            className={inputClasses}
             {...register('company')}
           />
         </FormItem>
 
-        <FormItem className="md:col-span-8 space-y-3">
-          <label className="text-[9px] uppercase tracking-[0.4em] font-black text-zinc-700 px-1 flex items-center gap-2">
-            <span className={`w-1 h-1 bg-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`} /> Primary Vector*
-          </label>
+        <FormItem className="md:col-span-8 space-y-1">
+          <label className={labelClasses}>Address Line 1*</label>
           <ClippedInput
             id="addressLine1"
             autoComplete="address-line1"
-            placeholder="STREET_DATA"
-            error={!!errors.addressLine1}
-            valid={!!dirtyFields.addressLine1 && !errors.addressLine1}
-            {...register('addressLine1', { required: 'REQUIRED_FIELD' })}
+            placeholder="123 Motorsport Way"
+            className={inputClasses}
+            {...register('addressLine1', { required: 'Required' })}
           />
-          {errors.addressLine1 && <FormError message={errors.addressLine1.message} className={`px-1 text-[${DESIGN_SYSTEM.COLORS.PRIMARY}] text-[8px] uppercase font-bold mt-2 italic`} />}
+          {errors.addressLine1 && <FormError message={errors.addressLine1.message} className="text-[10px] font-bold text-red-600 mt-1 uppercase" />}
         </FormItem>
 
-        <FormItem className="md:col-span-4 space-y-3">
-          <label className="text-[9px] uppercase tracking-[0.4em] font-black text-zinc-700 px-1 flex items-center gap-2">
-            <span className="w-1 h-1 bg-zinc-800" /> Secondary Vector
-          </label>
+        <FormItem className="md:col-span-4 space-y-1">
+          <label className={labelClasses}>Address Line 2</label>
           <ClippedInput
             id="addressLine2"
             autoComplete="address-line2"
-            placeholder="UNIT_SUITE"
-            error={!!errors.addressLine2}
-            valid={!!dirtyFields.addressLine2 && !errors.addressLine2}
+            placeholder="Suite, Floor, etc."
+            className={inputClasses}
             {...register('addressLine2')}
           />
         </FormItem>
 
-        <FormItem className="md:col-span-4 space-y-3">
-          <label className="text-[9px] uppercase tracking-[0.4em] font-black text-zinc-700 px-1 flex items-center gap-2">
-            <span className={`w-1 h-1 bg-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`} /> Node / City*
-          </label>
+        <FormItem className="md:col-span-4 space-y-1">
+          <label className={labelClasses}>City*</label>
           <ClippedInput
             id="city"
             autoComplete="address-level2"
-            placeholder="CITY_LOCAL"
-            error={!!errors.city}
-            valid={!!dirtyFields.city && !errors.city}
-            {...register('city', { required: 'REQUIRED_FIELD' })}
+            placeholder="City"
+            className={inputClasses}
+            {...register('city', { required: 'Required' })}
           />
-          {errors.city && <FormError message={errors.city.message} className={`px-1 text-[${DESIGN_SYSTEM.COLORS.PRIMARY}] text-[8px] uppercase font-bold mt-2 italic`} />}
+          {errors.city && <FormError message={errors.city.message} className="text-[10px] font-bold text-red-600 mt-1 uppercase" />}
         </FormItem>
 
-        <FormItem className="md:col-span-4 space-y-3">
-          <label className="text-[9px] uppercase tracking-[0.4em] font-black text-zinc-700 px-1 flex items-center gap-2">
-            <span className="w-1 h-1 bg-zinc-800" /> Sector / State
-          </label>
+        <FormItem className="md:col-span-4 space-y-1">
+          <label className={labelClasses}>State / Province</label>
           <ClippedInput
             id="state"
             autoComplete="address-level1"
-            placeholder="STATE_REGION"
-            error={!!errors.state}
-            valid={!!dirtyFields.state && !errors.state}
+            placeholder="State"
+            className={inputClasses}
             {...register('state')}
           />
         </FormItem>
 
-        <FormItem className="md:col-span-4 space-y-3">
-          <label className="text-[9px] uppercase tracking-[0.4em] font-black text-zinc-700 px-1 flex items-center gap-2">
-            <span className={`w-1 h-1 bg-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`} /> Postal Index*
-          </label>
+        <FormItem className="md:col-span-4 space-y-1">
+          <label className={labelClasses}>Zip / Postal Code*</label>
           <ClippedInput
             id="postalCode"
-            placeholder="ZIP_CODE"
-            error={!!errors.postalCode}
-            valid={!!dirtyFields.postalCode && !errors.postalCode}
-            {...register('postalCode', { required: 'REQUIRED_FIELD' })}
+            placeholder="Postal Code"
+            className={inputClasses}
+            {...register('postalCode', { required: 'Required' })}
           />
-          {errors.postalCode && <FormError message={errors.postalCode.message} className={`px-1 text-[${DESIGN_SYSTEM.COLORS.PRIMARY}] text-[8px] uppercase font-bold mt-2 italic`} />}
+          {errors.postalCode && <FormError message={errors.postalCode.message} className="text-[10px] font-bold text-red-600 mt-1 uppercase" />}
         </FormItem>
 
-        <FormItem className="md:col-span-12 space-y-3">
-          <label className="text-[9px] uppercase tracking-[0.4em] font-black text-zinc-700 px-1 flex items-center gap-2">
-            <span className={`w-1 h-1 bg-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`} /> Geopolitical Zone*
-          </label>
+        <FormItem className="md:col-span-12 space-y-1">
+          <label className={labelClasses}>Country*</label>
           <ClippedSelect
             onValueChange={(value) => setValue('country', value, { shouldDirty: true, shouldValidate: true })}
             defaultValue={initialData?.country || ''}
           >
             <ClippedSelectTrigger
               id="country"
-              error={!!errors.country}
-              valid={!!dirtyFields.country && !errors.country}
-              filled={!!watchAllFields.country}
-              className="max-w-full"
+              className={inputClasses}
             >
-              <ClippedSelectValue placeholder="SELECT_COUNTRY_ORIGIN" />
+              <ClippedSelectValue placeholder="Select Country" />
             </ClippedSelectTrigger>
             <ClippedSelectContent className="max-h-[300px]">
               {supportedCountries.map((country) => {
@@ -272,25 +237,26 @@ export const AddressForm: React.FC<Props> = ({
               })}
             </ClippedSelectContent>
           </ClippedSelect>
-          {errors.country && <FormError message={errors.country.message} className={`px-1 text-[${DESIGN_SYSTEM.COLORS.PRIMARY}] text-[8px] uppercase font-bold mt-2 italic`} />}
+          {errors.country && <FormError message={errors.country.message} className="text-[10px] font-bold text-red-600 mt-1 uppercase" />}
         </FormItem>
       </div>
 
-      <div className="pt-12 flex items-center justify-between border-t border-zinc-900/50">
-        <div className="hidden md:flex items-center gap-4 text-zinc-800">
-          <Cpu className="h-4 w-4" />
-          <span className="text-[8px] font-bold uppercase tracking-widest italic">Encrypted Registry Protocol v2.0</span>
-        </div>
+      <div className="pt-10 flex flex-col md:flex-row items-center justify-between gap-6 border-t border-zinc-200">
+        <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">
+          * Required Information
+        </p>
 
         <button
           type="submit"
           disabled={isLoading || isSubmitting}
-          className="group relative h-14 px-20 bg-zinc-900 text-white overflow-hidden transition-all active:scale-95 disabled:opacity-20"
-          style={{ clipPath: 'polygon(8% 0%, 100% 0%, 92% 100%, 0% 100%)' }}
+          className="group relative h-16 w-full md:w-auto md:px-20 bg-black text-white transition-all active:scale-[0.98] disabled:opacity-50 overflow-hidden"
         >
-          <div className={`absolute inset-0 translate-x-[-100%] group-hover:translate-x-0 transition-transform duration-500 ease-[cubic-bezier(0.87,0,0.13,1)] bg-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`} />
-          <span className="relative z-10 text-[10px] font-black uppercase tracking-[0.5em] italic flex items-center gap-4 group-hover:text-black transition-colors">
-            {isSubmitting ? 'UPLOADING...' : 'COMMIT_COORDINATES'} <ChevronRight className="h-3 w-3 group-hover:translate-x-1 transition-transform" />
+          <div
+            className="absolute inset-0 translate-x-[-101%] group-hover:translate-x-0 transition-transform duration-300 ease-out"
+            style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}
+          />
+          <span className="relative z-10 text-[12px] font-black uppercase italic flex items-center justify-center gap-3 group-hover:text-black transition-colors">
+            {isSubmitting ? 'Saving...' : 'Save Address'} <ChevronRight className="h-4 w-4" />
           </span>
         </button>
       </div>

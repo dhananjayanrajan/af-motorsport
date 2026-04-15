@@ -2,7 +2,6 @@
 
 import type { SortFilterItem as SortFilterItemType } from '@/lib/constants'
 
-import { DESIGN_SYSTEM } from '@/lib/constants'
 import { createUrl } from '@/utilities/createUrl'
 import clsx from 'clsx'
 import Link from 'next/link'
@@ -20,13 +19,13 @@ function PathFilterItem({ item }: { item: PathFilterItemType }) {
   newParams.delete('q')
 
   return (
-    <li className="mt-2 flex" key={item.title}>
+    <li className="flex" key={item.title}>
       <DynamicTag
         className={clsx(
-          'w-full text-sm underline-offset-4 transition-all duration-300',
+          'w-full text-[11px] font-black uppercase italic tracking-widest py-2 px-3 transition-all duration-200 flex items-center gap-3',
           {
-            [`text-[${DESIGN_SYSTEM.COLORS.PRIMARY}] underline drop-shadow-[0_0_8px_${DESIGN_SYSTEM.COLORS.PRIMARY}66]`]: active,
-            [`text-zinc-400 hover:text-white hover:underline`]: !active,
+            'text-black bg-zinc-100 border-l-4 border-black': active,
+            'text-zinc-400 hover:text-black hover:bg-zinc-50 border-l-4 border-transparent': !active,
           },
         )}
         href={createUrl(item.path, newParams)}
@@ -52,12 +51,15 @@ function SortFilterItem({ item }: { item: SortFilterItemType }) {
   const DynamicTag = active ? 'p' : Link
 
   return (
-    <li className="mt-2 flex text-sm" key={item.title}>
+    <li className="flex" key={item.title}>
       <DynamicTag
-        className={clsx('w-full transition-all duration-300', {
-          [`text-[${DESIGN_SYSTEM.COLORS.PRIMARY}] underline underline-offset-4 drop-shadow-[0_0_8px_${DESIGN_SYSTEM.COLORS.PRIMARY}66]`]: active,
-          [`text-zinc-400 hover:text-white hover:underline hover:underline-offset-4`]: !active,
-        })}
+        className={clsx(
+          'w-full text-[11px] font-black uppercase italic tracking-widest py-2 px-3 transition-all duration-200 flex items-center gap-3',
+          {
+            'text-black bg-zinc-100 border-l-4 border-black': active,
+            'text-zinc-400 hover:text-black hover:bg-zinc-50 border-l-4 border-transparent': !active,
+          },
+        )}
         href={href}
         prefetch={!active ? false : undefined}
       >

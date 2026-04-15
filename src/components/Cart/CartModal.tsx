@@ -158,16 +158,11 @@ export function CartModal() {
                 </div>
               )}
 
-              <div className="relative group">
-                <div
-                  className="absolute inset-0 bg-black blur-xl opacity-20 group-hover:opacity-30 transition-opacity"
-                  style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}
-                />
+              <div className="relative flex justify-center items-center w-full group">
                 <ClippedButton
-                  label="Initiate Checkout"
+                  label="Checkout"
                   variant="primary"
                   size="lg"
-                  className="w-full relative z-10"
                   onClick={() => {
                     setIsOpen(false)
                     window.location.href = '/checkout'

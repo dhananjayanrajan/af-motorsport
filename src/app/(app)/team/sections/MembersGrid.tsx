@@ -33,10 +33,10 @@ export default function MembersGrid({ members }: { members: Member[] }) {
                     <div className="space-y-4">
                         <div className="flex items-center gap-3">
                             <Cpu size={14} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
-                            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-400">Personnel_Database</span>
+                            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-400">Pit Crew</span>
                         </div>
                         <h2 className="text-5xl md:text-7xl font-black italic text-black tracking-tighter uppercase leading-none">
-                            Active_<span style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}>Units</span>
+                            <span style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}>Members</span>
                         </h2>
                     </div>
                 </div>
@@ -193,7 +193,7 @@ function MemberDossierModal({ member, onClose }: { member: Member; onClose: () =
                             <header className="space-y-6">
                                 <div className="flex items-center gap-4">
                                     <div className="h-px w-12 bg-primary-500" />
-                                    <span className="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-400">Personnel_Record</span>
+                                    <span className="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-400">Pit Crew Memeber</span>
                                 </div>
                                 <h2 className="text-6xl md:text-8xl font-black italic uppercase leading-[0.8] tracking-tighter text-black">
                                     {member.first_name}<br />
@@ -203,11 +203,11 @@ function MemberDossierModal({ member, onClose }: { member: Member; onClose: () =
 
                             <div className="grid grid-cols-2 gap-16">
                                 <div className="space-y-3">
-                                    <span className="text-[9px] font-black text-zinc-300 uppercase tracking-widest block">Designation</span>
+                                    <span className="text-[9px] font-black uppercase tracking-widest block" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}>Designation</span>
                                     <p className="text-lg font-black uppercase italic text-black">{member.basics?.nickname || 'Class_Alpha'}</p>
                                 </div>
                                 <div className="space-y-3">
-                                    <span className="text-[9px] font-black text-zinc-300 uppercase tracking-widest block">Operational_Hub</span>
+                                    <span className="text-[9px] font-black uppercase tracking-widest block" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}>Headquarters</span>
                                     <div className="flex items-center gap-2">
                                         <Globe size={14} className="text-primary-500" />
                                         <p className="text-lg font-black uppercase italic text-black">
@@ -220,7 +220,7 @@ function MemberDossierModal({ member, onClose }: { member: Member; onClose: () =
                             <div className="space-y-6 pt-12 border-t border-zinc-100">
                                 <div className="flex items-center gap-3 text-primary-600">
                                     <Zap size={14} fill="currentColor" />
-                                    <span className="text-[10px] font-black uppercase tracking-widest">Active_Directives</span>
+                                    <span className="text-[10px] font-black uppercase tracking-widest" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}>Duties</span>
                                 </div>
                                 <p className="text-base text-zinc-600 font-medium uppercase leading-relaxed max-w-xl">
                                     {member.details?.duties || 'Specific operational parameters remain classified for this unit profile.'}
@@ -232,7 +232,7 @@ function MemberDossierModal({ member, onClose }: { member: Member; onClose: () =
                                     onClick={onClose}
                                     className="px-12 py-5 bg-black text-white text-[10px] font-black uppercase tracking-widest hover:bg-primary-500 hover:text-black transition-all duration-300 flex items-center gap-4 group/btn"
                                 >
-                                    Close_Profile_Session
+                                    GET BACK TO THE ROSTER
                                     <X size={14} className="transition-transform group-hover/btn:rotate-90" />
                                 </button>
                             </div>

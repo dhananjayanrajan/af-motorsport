@@ -72,22 +72,29 @@ export function MobileMenu({ menu, socials }: Props) {
   return (
     <Sheet onOpenChange={setIsOpen} open={isOpen}>
       <SheetTrigger className="flex h-10 w-10 items-center justify-center bg-white border border-zinc-200 text-zinc-950 transition-all active:scale-95 group skew-x-[-12deg]">
-        <MenuIcon className="h-4 w-4 transition-colors group-hover:text-primary skew-x-[12deg]" />
+        <MenuIcon className="h-4 w-4 transition-colors group-hover:text-black skew-x-[12deg]" />
       </SheetTrigger>
 
-      <SheetContent side="left" className="flex flex-col bg-white border-r border-zinc-200 text-zinc-950 w-[300px] p-0 gap-0">
-        <SheetHeader className="p-8 border-b border-zinc-100 bg-zinc-50/50 text-left">
-          <div className="flex flex-col gap-1">
-            <SheetTitle className={cn("text-[11px] font-black uppercase italic text-zinc-950", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_XL)}>
-              NAVIGATION_MENU
+      <SheetContent side="left" className="flex flex-col bg-white border-r border-zinc-200 text-zinc-950 w-[300px] p-0 gap-0 z-[120]">
+        <SheetHeader className="p-8 border-b border-zinc-100 bg-white text-left relative overflow-hidden">
+          <div
+            className="absolute top-0 left-0 w-full h-1"
+            style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}
+          />
+          <div className="flex flex-col gap-1 relative z-10">
+            <SheetTitle
+              className="text-[14px] font-black uppercase italic text-zinc-950 tracking-tight"
+              style={{ textShadow: `0 0 10px ${DESIGN_SYSTEM.COLORS.PRIMARY.GLOW}` }}
+            >
+              Menu
             </SheetTitle>
-            <div className="h-1 w-12 bg-primary" />
+            <div className="h-0.5 w-8" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
           </div>
         </SheetHeader>
 
-        <nav className="flex-1 overflow-y-auto py-4 overflow-x-hidden">
+        <nav className="flex-1 overflow-y-auto py-6 overflow-x-hidden bg-zinc-50/30">
           {menu?.length ? (
-            <ul className="flex flex-col gap-2 px-6">
+            <ul className="flex flex-col gap-3 px-6">
               {menu.map((item: any) => {
                 const isActive = item.link && (item.link === '/' ? pathname === '/' : pathname.startsWith(item.link))
                 return (
@@ -95,18 +102,19 @@ export function MobileMenu({ menu, socials }: Props) {
                     <Link
                       href={item.link || '#'}
                       className={cn(
-                        "flex items-center justify-between p-4 transition-all skew-x-[-12deg] border border-zinc-200 relative overflow-hidden",
-                        isActive ? "bg-black text-white" : "bg-white text-zinc-950 hover:border-primary"
+                        "flex items-center justify-between p-4 transition-all duration-300 skew-x-[-12deg] border relative overflow-hidden",
+                        isActive ? "bg-black text-white border-black" : "bg-white text-zinc-950 border-zinc-200 hover:border-black"
                       )}
                     >
                       {!isActive && (
                         <div
-                          className="absolute inset-0 translate-x-[-101%] group-hover:translate-x-0 transition-transform duration-300 bg-primary"
+                          className="absolute inset-0 translate-x-[-101%] group-hover:translate-x-0 transition-transform duration-300 ease-out"
+                          style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}
                         />
                       )}
 
                       <div className="flex items-center gap-4 skew-x-[12deg] relative z-10">
-                        <span className={cn("text-[14px] font-black uppercase italic transition-all group-hover:translate-x-1", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_DEFAULT)}>
+                        <span className="text-[13px] font-black uppercase italic transition-all group-hover:translate-x-1 tracking-tight">
                           {item.label}
                         </span>
                       </div>
@@ -120,24 +128,24 @@ export function MobileMenu({ menu, socials }: Props) {
           ) : null}
         </nav>
 
-        <div className="p-8 bg-zinc-50 border-t border-zinc-200">
+        <div className="p-8 bg-white border-t border-zinc-200">
           <div className="grid gap-3 mb-8">
             {user ? (
               <div className="flex flex-col gap-2">
                 <Link
                   href="/account"
-                  className="flex items-center justify-center w-full h-12 bg-white border border-zinc-200 text-[12px] font-black uppercase italic text-zinc-950 transition-all hover:bg-zinc-100 skew-x-[-12deg]"
+                  className="flex items-center justify-center w-full h-12 bg-white border border-zinc-200 text-[11px] font-black uppercase italic text-zinc-950 transition-all hover:border-black skew-x-[-12deg]"
                 >
                   <span className="skew-x-[12deg] flex items-center gap-2">
-                    <User className="h-3 w-3" /> ACCOUNT
+                    <User className="h-3 w-3" /> Account
                   </span>
                 </Link>
                 <button
                   onClick={() => logout()}
-                  className="flex items-center justify-center w-full h-12 bg-black text-[12px] font-black uppercase italic text-white transition-all hover:bg-zinc-800 skew-x-[-12deg]"
+                  className="flex items-center justify-center w-full h-12 bg-black text-[11px] font-black uppercase italic text-white transition-all hover:bg-zinc-800 skew-x-[-12deg]"
                 >
                   <span className="skew-x-[12deg] flex items-center gap-2">
-                    <LogOut className="h-3 w-3" /> SIGN_OUT
+                    <LogOut className="h-3 w-3" /> Logout
                   </span>
                 </button>
               </div>
@@ -145,32 +153,33 @@ export function MobileMenu({ menu, socials }: Props) {
               <div className="grid grid-cols-2 gap-3">
                 <Link
                   href="/login"
-                  className="flex items-center justify-center h-12 bg-white border border-zinc-200 text-[12px] font-black uppercase italic text-zinc-950 transition-all hover:bg-zinc-100 skew-x-[-12deg]"
+                  className="flex items-center justify-center h-12 bg-white border border-zinc-200 text-[11px] font-black uppercase italic text-zinc-950 transition-all hover:border-black skew-x-[-12deg]"
                 >
-                  <span className="skew-x-[12deg]">LOGIN</span>
+                  <span className="skew-x-[12deg]">Login</span>
                 </Link>
                 <Link
                   href="/create-account"
-                  className="flex items-center justify-center h-12 text-[12px] font-black uppercase italic text-black transition-all hover:opacity-90 skew-x-[-12deg]"
-                  style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY }}
+                  className="flex items-center justify-center h-12 text-[11px] font-black uppercase italic text-black transition-all hover:opacity-90 skew-x-[-12deg]"
+                  style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}
                 >
-                  <span className="skew-x-[12deg]">JOIN</span>
+                  <span className="skew-x-[12deg]">Join</span>
                 </Link>
               </div>
             )}
           </div>
 
           {validSocials.length > 0 && (
-            <div className="flex flex-wrap gap-6 justify-center py-4 border-t border-zinc-200">
+            <div className="flex flex-wrap gap-5 justify-center py-6 border-t border-zinc-100">
               {validSocials.map((account: any) => {
-                const Icon = socialIcons[account.platform] || Link2
+                const platformKey = account.platform as string
+                const Icon = socialIcons[platformKey] || Link2
                 return (
                   <a
                     key={account.id}
                     href={account.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-zinc-400 transition-all hover:text-primary hover:scale-110"
+                    className="text-zinc-400 transition-all hover:text-black hover:scale-110"
                   >
                     <Icon className="h-5 w-5" />
                   </a>
@@ -178,12 +187,6 @@ export function MobileMenu({ menu, socials }: Props) {
               })}
             </div>
           )}
-
-          <div className="mt-4 text-center">
-            <span className="text-[8px] font-bold text-zinc-400 uppercase tracking-[0.3em]">
-              VER_2026.04.05
-            </span>
-          </div>
         </div>
       </SheetContent>
     </Sheet>

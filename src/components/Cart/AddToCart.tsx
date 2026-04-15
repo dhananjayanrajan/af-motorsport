@@ -51,12 +51,15 @@ export function AddToCart({ product }: Props) {
         if (product.enableVariants) return variantID === selectedVariant?.id
         return true
       }
+      return false
     })
+
     if (existingItem) {
-      const existingQuantity = existingItem.quantity
+      const existingQuantity = existingItem.quantity || 0
       if (product.enableVariants) return existingQuantity >= (selectedVariant?.inventory || 0)
       return existingQuantity >= (product.inventory || 0)
     }
+
     if (product.enableVariants) {
       if (!selectedVariant || selectedVariant.inventory === 0) return true
     } else {
@@ -71,18 +74,30 @@ export function AddToCart({ product }: Props) {
       onClick={addToCart}
       type="submit"
       className={cn(
-        "relative group h-14 w-full md:w-72 overflow-hidden transition-all duration-300",
-        disabled || isLoading ? "opacity-40 grayscale cursor-not-allowed" : "cursor-pointer active:scale-[0.98]"
+        "relative group h-14 w-full md:w-72 overflow-hidden transition-all duration-300 skew-x-[-12deg] border border-transparent",
+        (disabled || isLoading) ? "opacity-50 grayscale cursor-not-allowed" : "cursor-pointer active:scale-[0.97]"
       )}
-      style={{ clipPath: 'polygon(0 0, 100% 0, 92% 100%, 0% 100%)' }}
     >
       <div
-        className="absolute inset-0 transition-transform duration-500 group-hover:scale-110"
-        style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY }}
+        className="absolute inset-0 transition-all duration-500 group-hover:brightness-110"
+        style={{
+          backgroundColor: (disabled || isLoading) ? DESIGN_SYSTEM.COLORS.ZINC[200] : DESIGN_SYSTEM.COLORS.PRIMARY[500]
+        }}
       />
-      <div className="relative z-10 flex items-center justify-center gap-4 text-white">
+
+      <div
+        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+        style={{ boxShadow: `inset 0 0 25px ${DESIGN_SYSTEM.COLORS.PRIMARY.GLOW}` }}
+      />
+
+      <div className="relative z-10 flex items-center justify-center gap-4 text-black skew-x-[12deg]">
         <ShoppingCart className="size-4" strokeWidth={2.5} />
-        <span className="text-xs font-black uppercase tracking-[0.2em] italic">
+        <span
+          className="text-xs font-black uppercase tracking-tight italic"
+          style={{
+            textShadow: !(disabled || isLoading) ? `0 0 10px ${DESIGN_SYSTEM.COLORS.PRIMARY.GLOW}` : 'none'
+          }}
+        >
           {disabled ? 'Out of Stock' : 'Add to Cart'}
         </span>
       </div>

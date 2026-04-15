@@ -2,11 +2,10 @@
 
 import type { PayloadAdminBarProps } from '@payloadcms/admin-bar'
 
-import ShinyText from '@/components/Reactbits/shiny-text'
 import { User } from '@/payload-types'
 import { cn } from '@/utilities/cn'
 import { PayloadAdminBar } from '@payloadcms/admin-bar'
-import { Terminal } from 'lucide-react'
+import { Settings } from 'lucide-react'
 import { useSelectedLayoutSegments } from 'next/navigation'
 import React, { useState } from 'react'
 
@@ -26,21 +25,12 @@ const collectionLabels = {
 }
 
 const Title: React.FC = () => (
-  <div className="flex items-center gap-2">
-    <Terminal className="h-3 w-3 text-[#00FF41] drop-shadow-[0_0_5px_#00FF41]" />
-    <span className="text-[10px] font-black uppercase tracking-[0.3em] italic">
-      <ShinyText
-        text="Terminal"
-        speed={1}
-        delay={0}
-        color="#52525b"
-        shineColor="#00FF41"
-        spread={150}
-        direction="left"
-        yoyo={false}
-        pauseOnHover={false}
-        disabled={false}
-      />
+  <div className="flex items-center gap-3">
+    <div className="size-5 bg-black flex items-center justify-center">
+      <Settings className="h-3 w-3 text-white" />
+    </div>
+    <span className="text-[11px] font-black uppercase tracking-widest italic text-black">
+      CMS_EDITOR
     </span>
   </div>
 )
@@ -51,44 +41,39 @@ export const AdminBar: React.FC<{
   const { adminBarProps } = props || {}
   const segments = useSelectedLayoutSegments()
   const [show, setShow] = useState(false)
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore - todo fix, not sure why this is erroring
-  const collection = collectionLabels?.[segments?.[1]] ? segments?.[1] : 'pages'
+
+  const collection = collectionLabels?.[segments?.[1] as keyof typeof collectionLabels]
+    ? (segments?.[1] as keyof typeof collectionLabels)
+    : 'pages'
 
   const onAuthChange = React.useCallback((user: User) => {
     const canSeeAdmin = user?.roles && Array.isArray(user?.roles) && user?.roles?.includes('admin')
-
     setShow(Boolean(canSeeAdmin))
   }, [])
 
   return (
     <div
-      className={cn('py-1 bg-zinc-950 border-b border-zinc-900 sticky top-0 z-[100] shadow-[0_1px_10px_rgba(0,0,0,0.5)]', {
+      className={cn('py-2 bg-white border-b-2 border-black sticky top-0 z-[100] shadow-sm', {
         block: show,
         hidden: !show,
       })}
     >
-      <div className="container max-w-none px-6">
+      <div className="container max-w-none px-8">
         <PayloadAdminBar
           {...adminBarProps}
-          className="py-1 text-white"
+          className="py-1"
           classNames={{
-            controls: 'text-[9px] font-black uppercase tracking-widest text-zinc-400',
-            logo: 'flex items-center mr-8',
-            user: 'text-[9px] font-mono text-zinc-500 uppercase tracking-tighter',
+            controls: 'text-[10px] font-black uppercase tracking-widest text-black italic',
+            logo: 'flex items-center mr-10',
+            user: 'text-[10px] font-bold text-zinc-400 uppercase tracking-tight italic',
           }}
           cmsURL={process.env.NEXT_PUBLIC_SERVER_URL}
           collectionLabels={{
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore - todo fix, not sure why this is erroring
             plural: collectionLabels[collection]?.plural || 'Pages',
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore - todo fix, not sure why this is erroring
             singular: collectionLabels[collection]?.singular || 'Page',
           }}
           logo={<Title />}
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore - todo fix, not sure why this is erroring
+          // @ts-ignore
           onAuthChange={onAuthChange}
           style={{
             backgroundColor: 'transparent',

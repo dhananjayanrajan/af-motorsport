@@ -2,77 +2,69 @@
 
 import { ClippedInput } from '@/components/Clipped/ClippedInput'
 import { Media } from '@/components/Media'
-import { Message } from '@/components/Message'
 import { Price } from '@/components/Price'
-import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { useAuth } from '@/providers/Auth'
-import { useTheme } from '@/providers/Theme'
 import { Elements } from '@stripe/react-stripe-js'
 import { loadStripe } from '@stripe/stripe-js'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 import React, { Suspense, useCallback, useEffect, useState } from 'react'
 
 import { AddressItem } from '@/components/addresses/AddressItem'
 import { CreateAddressModal } from '@/components/addresses/CreateAddressModal'
-import { CheckoutAddresses } from '@/components/checkout/CheckoutAddresses'
 import { CheckoutForm } from '@/components/forms/CheckoutForm'
 import { FormItem } from '@/components/forms/FormItem'
 import { LoadingSpinner } from '@/components/LoadingSpinner'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Address } from '@/payload-types'
 import { useAddresses, useCart, usePayments } from '@payloadcms/plugin-ecommerce/client/react'
+import { ChevronRight, Lock, ShoppingBag } from 'lucide-react'
 import { toast } from 'sonner'
+import { CheckoutAddresses } from './CheckoutAddresses'
 
 const apiKey = `${process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY}`
 const stripe = loadStripe(apiKey)
 
 export const CheckoutPage: React.FC = () => {
   const { user } = useAuth()
-  const router = useRouter()
   const { cart } = useCart()
-  const [error, setError] = useState<null | string>(null)
-  const { theme } = useTheme()
+  const { addresses } = useAddresses()
   const [email, setEmail] = useState('')
   const [emailEditable, setEmailEditable] = useState(true)
   const [paymentData, setPaymentData] = useState<null | Record<string, unknown>>(null)
   const { initiatePayment } = usePayments()
-  const { addresses } = useAddresses()
-  const [shippingAddress, setShippingAddress] = useState<Partial<Address>>()
-  const [billingAddress, setBillingAddress] = useState<Partial<Address>>()
+  const [shippingAddress, setShippingAddress] = useState<Partial<Address> | undefined>()
+  const [billingAddress, setBillingAddress] = useState<Partial<Address> | undefined>()
   const [billingAddressSameAsShipping, setBillingAddressSameAsShipping] = useState(true)
   const [isProcessingPayment, setProcessingPayment] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const cartIsEmpty = !cart || !cart.items || !cart.items.length
 
   const canGoToPayment = Boolean(
-    (email || user) && billingAddress && (billingAddressSameAsShipping || shippingAddress),
+    (email || user) && billingAddress,
   )
 
   useEffect(() => {
-    if (!shippingAddress) {
-      if (addresses && addresses.length > 0) {
-        const defaultAddress = addresses[0]
-        if (defaultAddress) {
-          setBillingAddress(defaultAddress)
-        }
-      }
+    if (user && addresses && addresses.length > 0 && !billingAddress) {
+      const defaultAddress = addresses.find((addr: Address) =>
+        addr.id === user.id || true
+      ) || addresses[0]
+      setBillingAddress(defaultAddress)
     }
-  }, [addresses])
+  }, [user, addresses, billingAddress])
 
   useEffect(() => {
-    return () => {
-      setShippingAddress(undefined)
-      setBillingAddress(undefined)
-      setBillingAddressSameAsShipping(true)
-      setEmail('')
-      setEmailEditable(true)
+    if (billingAddressSameAsShipping) {
+      setShippingAddress(billingAddress)
     }
-  }, [])
+  }, [billingAddressSameAsShipping, billingAddress])
 
   const initiatePaymentIntent = useCallback(
     async (paymentID: string) => {
+      setError(null)
+      setProcessingPayment(true)
+
       try {
         const paymentData = (await initiatePayment(paymentID, {
           additionalData: {
@@ -86,15 +78,11 @@ export const CheckoutPage: React.FC = () => {
           setPaymentData(paymentData)
         }
       } catch (error) {
-        const errorData = error instanceof Error ? JSON.parse(error.message) : {}
-        let errorMessage = 'An error occurred while initiating payment.'
-
-        if (errorData?.cause?.code === 'OutOfStock') {
-          errorMessage = 'One or more items in your cart are out of stock.'
-        }
-
+        const errorMessage = error instanceof Error ? error.message : 'Payment initiation failed.'
         setError(errorMessage)
         toast.error(errorMessage)
+      } finally {
+        setProcessingPayment(false)
       }
     },
     [billingAddress, billingAddressSameAsShipping, shippingAddress, email, initiatePayment],
@@ -102,292 +90,254 @@ export const CheckoutPage: React.FC = () => {
 
   if (!stripe) return null
 
-  if (cartIsEmpty && isProcessingPayment) {
-    return (
-      <div className="py-24 w-full flex flex-col items-center justify-center bg-zinc-950 min-h-screen">
-        <div className="text-center mb-8">
-          <p className="text-[10px] font-black uppercase tracking-[0.5em] text-[#00FF41] animate-pulse italic">Processing</p>
-        </div>
-        <LoadingSpinner />
-      </div>
-    )
-  }
-
   if (cartIsEmpty) {
     return (
-      <div className="py-24 w-full flex flex-col items-center justify-center bg-zinc-950 min-h-screen border border-zinc-900">
-        <p className="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-500 mb-8 italic">Empty</p>
-        <Link href="/search" className="text-[#00FF41] text-[9px] font-black uppercase tracking-widest underline decoration-[#00FF41]/30 underline-offset-8">Continue Shopping</Link>
+      <div className="py-24 w-full flex flex-col items-center justify-center bg-white min-h-screen">
+        <ShoppingBag className="size-12 text-zinc-200 mb-6" />
+        <p className="text-[11px] font-black uppercase tracking-widest text-zinc-400 mb-8 italic">Your cart is empty</p>
+        <Link href="/search" className="h-14 px-10 bg-black text-white text-[11px] font-black uppercase italic flex items-center justify-center">
+          Return to Shop
+        </Link>
       </div>
     )
   }
 
   return (
-    <div className="flex flex-col lg:flex-row w-full min-h-screen bg-zinc-950 border-t border-zinc-900">
-      <div className="flex-1 flex flex-col gap-16 bg-zinc-950 p-6 md:p-12 lg:p-20 border-r border-zinc-900">
-        <section className="space-y-10">
-          <div className="flex items-center gap-4 border-l-2 border-[#00FF41] pl-6">
-            <h2 className="text-xs font-black uppercase tracking-[0.6em] italic text-white">01 Contact</h2>
-          </div>
+    <div className="flex flex-col lg:flex-row w-full min-h-screen bg-white text-black">
+      <div className="flex-1 p-6 md:p-12 lg:p-20 border-r border-zinc-100">
+        <div className="max-w-2xl mx-auto space-y-24">
 
-          {!user ? (
-            <div className="space-y-10">
-              <div className="bg-zinc-900/10 border border-zinc-900 p-8 flex flex-wrap items-center justify-between gap-6">
-                <div className="flex items-center gap-6">
-                  <Button asChild className="rounded-none border-zinc-800 bg-zinc-950 text-[9px] font-black uppercase tracking-widest h-12 px-10 hover:bg-[#00FF41] hover:text-black transition-colors" variant="outline">
-                    <Link href="/login">Log in</Link>
-                  </Button>
-                  <span className="text-[9px] font-black uppercase text-zinc-800 tracking-widest italic">or</span>
-                  <Link href="/create-account" className="text-[9px] font-black uppercase tracking-widest text-[#00FF41] hover:underline">create account</Link>
+          <section className="space-y-10">
+            <div className="flex items-center gap-4">
+              <span className="text-2xl font-black italic text-zinc-200">01</span>
+              <h2 className="text-[14px] font-black uppercase italic tracking-widest text-black">Customer Information</h2>
+            </div>
+
+            {!user ? (
+              <div className="space-y-10">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Link href="/login" className="flex items-center justify-center h-14 border border-zinc-200 text-black text-[11px] font-black uppercase italic hover:bg-zinc-50 transition-colors">
+                    Login to Account
+                  </Link>
+                  <Link href="/create-account" className="flex items-center justify-center h-14 bg-black text-white text-[11px] font-black uppercase italic hover:bg-zinc-800 transition-colors">
+                    Register
+                  </Link>
+                </div>
+
+                <div className="relative flex items-center">
+                  <div className="grow border-t border-zinc-100" />
+                  <span className="px-4 text-[10px] font-black text-zinc-300 uppercase italic">Or Checkout as Guest</span>
+                  <div className="grow border-t border-zinc-100" />
+                </div>
+
+                <div className="space-y-6">
+                  <FormItem>
+                    <Label className="text-[11px] font-black uppercase italic text-zinc-500 mb-3 block">Email Address</Label>
+                    <ClippedInput
+                      disabled={!emailEditable}
+                      className="bg-white border-zinc-300 h-14 px-5 focus:border-black transition-all rounded-none"
+                      placeholder="Enter your email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                    />
+                  </FormItem>
+
+                  {emailEditable && (
+                    <button
+                      disabled={!email}
+                      onClick={() => setEmailEditable(false)}
+                      className="h-14 px-12 bg-black text-white text-[11px] font-black uppercase italic transition-all disabled:opacity-20 flex items-center gap-3"
+                    >
+                      Continue to Shipping <ChevronRight className="size-4" />
+                    </button>
+                  )}
                 </div>
               </div>
+            ) : (
+              <div className="p-8 border border-zinc-200 bg-zinc-50 flex justify-between items-center">
+                <div>
+                  <p className="text-[10px] font-black uppercase text-zinc-400 mb-1">Signed in as</p>
+                  <p className="text-[14px] font-black text-black uppercase italic">{user.email}</p>
+                </div>
+                <Link href="/logout" className="text-[10px] font-black uppercase text-zinc-400 hover:text-black underline transition-colors">Sign Out</Link>
+              </div>
+            )}
+          </section>
 
-              <div className="space-y-8 max-w-md">
-                <FormItem>
-                  <Label htmlFor="email" className="text-[9px] font-black uppercase tracking-[0.3em] text-zinc-600 mb-4 block italic">Email Address</Label>
-                  <ClippedInput
-                    disabled={!emailEditable}
-                    id="email"
-                    name="email"
-                    placeholder="EMAIL@MOTORSPORT.NET"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                    type="email"
-                  />
-                </FormItem>
+          <section className="space-y-10">
+            <div className="flex items-center gap-4">
+              <span className="text-2xl font-black italic text-zinc-200">02</span>
+              <h2 className="text-[14px] font-black uppercase italic tracking-widest text-black">Shipping & Billing</h2>
+            </div>
 
-                {emailEditable && (
-                  <Button
-                    disabled={!email}
-                    onClick={() => setEmailEditable(false)}
-                    className="rounded-none bg-white text-black text-[10px] font-black uppercase tracking-[0.4em] h-14 px-12 hover:bg-[#00FF41] transition-all"
-                  >
-                    Continue as guest
-                  </Button>
+            <div className="space-y-8">
+              <div className="space-y-6">
+                <h3 className="text-[11px] font-black uppercase text-zinc-400 italic">Billing Address</h3>
+                {billingAddress ? (
+                  <div className="border border-zinc-200 p-6 bg-zinc-50">
+                    <AddressItem address={billingAddress} />
+                    <button
+                      onClick={() => setBillingAddress(undefined)}
+                      className="mt-4 text-[10px] font-black uppercase text-zinc-400 hover:text-black underline italic"
+                    >
+                      Change Address
+                    </button>
+                  </div>
+                ) : user ? (
+                  <CheckoutAddresses heading="" setAddress={setBillingAddress} />
+                ) : (
+                  <div className="border border-dashed border-zinc-200 p-12 flex flex-col items-center justify-center bg-zinc-50/50">
+                    <CreateAddressModal
+                      disabled={!user && (!email || emailEditable)}
+                      callback={setBillingAddress}
+                      skipSubmission={true}
+                      buttonText="Add Billing Address"
+                    />
+                  </div>
                 )}
               </div>
-            </div>
-          ) : (
-            <div className="bg-zinc-900/5 border border-zinc-900 p-8 flex justify-between items-center">
-              <div className="space-y-1">
-                <p className="text-[9px] font-black uppercase text-zinc-700 tracking-widest">Logged in as</p>
-                <p className="text-[11px] font-black text-[#00FF41] uppercase italic tracking-tight">{user.email}</p>
-              </div>
-              <Link className="text-[9px] font-black uppercase text-white underline decoration-zinc-800 hover:decoration-[#00FF41] transition-all" href="/logout">Logout</Link>
-            </div>
-          )}
-        </section>
 
-        <section className="space-y-12">
-          <div className="flex items-center gap-4 border-l-2 border-[#00FF41] pl-6">
-            <h2 className="text-xs font-black uppercase tracking-[0.6em] italic text-white">02 Address</h2>
-          </div>
-
-          <div className="space-y-6">
-            <h3 className="text-[9px] font-black uppercase tracking-[0.4em] text-zinc-700 italic">Billing Address</h3>
-            {billingAddress ? (
-              <div className="p-8 border border-zinc-800 bg-zinc-900/5">
-                <AddressItem
-                  address={billingAddress}
-                  actions={
-                    <Button
-                      variant="outline"
-                      className="rounded-none border-zinc-800 text-[8px] font-black uppercase italic bg-zinc-950 hover:bg-red-950 hover:text-white hover:border-red-900 h-10 px-8 transition-all mt-6"
-                      disabled={Boolean(paymentData)}
-                      onClick={() => setBillingAddress(undefined)}
-                    >
-                      Remove
-                    </Button>
-                  }
-                />
-              </div>
-            ) : user ? (
-              <CheckoutAddresses heading="" setAddress={setBillingAddress} />
-            ) : (
-              <CreateAddressModal
-                disabled={!email || emailEditable}
-                callback={(address) => setBillingAddress(address)}
-                skipSubmission={true}
-              />
-            )}
-          </div>
-
-          <div className="flex gap-6 items-center p-8 bg-zinc-900/5 border border-zinc-900">
-            <Checkbox
-              id="shippingTheSameAsBilling"
-              checked={billingAddressSameAsShipping}
-              disabled={Boolean(paymentData || (!user && emailEditable))}
-              onCheckedChange={(state) => setBillingAddressSameAsShipping(state as boolean)}
-              className="border-zinc-800 data-[state=checked]:bg-[#00FF41] data-[state=checked]:border-[#00FF41] rounded-none w-5 h-5"
-            />
-            <Label htmlFor="shippingTheSameAsBilling" className="text-[9px] font-black uppercase tracking-[0.4em] text-zinc-700 cursor-pointer italic">Shipping is the same as billing</Label>
-          </div>
-
-          {!billingAddressSameAsShipping && (
-            <div className="space-y-6 pt-10 border-t border-zinc-900">
-              <h3 className="text-[9px] font-black uppercase tracking-[0.4em] text-zinc-700 italic">Shipping Address</h3>
-              {shippingAddress ? (
-                <div className="p-8 border border-zinc-800 bg-zinc-900/5">
-                  <AddressItem
-                    address={shippingAddress}
-                    actions={
-                      <Button
-                        variant="outline"
-                        className="rounded-none border-zinc-800 text-[8px] font-black uppercase italic bg-zinc-950 hover:bg-red-950 h-10 px-8 transition-all mt-6"
-                        disabled={Boolean(paymentData)}
-                        onClick={() => setShippingAddress(undefined)}
-                      >
-                        Remove
-                      </Button>
+              <div className="flex gap-4 items-center p-6 border border-zinc-100 bg-zinc-50/50">
+                <Checkbox
+                  id="same"
+                  checked={billingAddressSameAsShipping}
+                  onCheckedChange={(checked) => {
+                    setBillingAddressSameAsShipping(checked as boolean)
+                    if (checked) {
+                      setShippingAddress(billingAddress)
+                    } else {
+                      setShippingAddress(undefined)
                     }
-                  />
-                </div>
-              ) : user ? (
-                <CheckoutAddresses heading="" setAddress={setShippingAddress} />
-              ) : (
-                <CreateAddressModal
-                  callback={(address) => setShippingAddress(address)}
-                  disabled={!email || emailEditable}
-                  skipSubmission={true}
+                  }}
+                  className="border-zinc-300 data-[state=checked]:bg-black data-[state=checked]:border-black"
                 />
+                <Label htmlFor="same" className="text-[11px] font-black uppercase text-zinc-500 cursor-pointer italic">
+                  Billing matches shipping address
+                </Label>
+              </div>
+
+              {!billingAddressSameAsShipping && (
+                <div className="space-y-6">
+                  <h3 className="text-[11px] font-black uppercase text-zinc-400 italic">Shipping Address</h3>
+                  {shippingAddress ? (
+                    <div className="border border-zinc-200 p-6 bg-zinc-50">
+                      <AddressItem address={shippingAddress} />
+                      <button
+                        onClick={() => setShippingAddress(undefined)}
+                        className="mt-4 text-[10px] font-black uppercase text-zinc-400 hover:text-black underline italic"
+                      >
+                        Change Address
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="border border-dashed border-zinc-200 p-12 flex flex-col items-center justify-center bg-zinc-50/50">
+                      <CreateAddressModal
+                        disabled={!user && (!email || emailEditable)}
+                        callback={setShippingAddress}
+                        skipSubmission={true}
+                        buttonText="Add Shipping Address"
+                      />
+                    </div>
+                  )}
+                </div>
               )}
             </div>
+          </section>
+
+          {!paymentData && (
+            <button
+              disabled={!canGoToPayment || isProcessingPayment}
+              onClick={() => initiatePaymentIntent('stripe')}
+              className="h-16 px-16 bg-black text-white text-[12px] font-black uppercase italic transition-all disabled:opacity-10 flex items-center gap-4"
+            >
+              {isProcessingPayment ? 'Processing...' : (
+                <>
+                  Initialize Secure Checkout <Lock className="size-4" />
+                </>
+              )}
+            </button>
           )}
-        </section>
 
-        {!paymentData && (
-          <Button
-            className="rounded-none bg-white text-black text-[11px] font-black uppercase tracking-[0.5em] italic h-16 px-16 hover:bg-[#00FF41] transition-all self-start"
-            disabled={!canGoToPayment}
-            onClick={(e) => {
-              e.preventDefault()
-              void initiatePaymentIntent('stripe')
-            }}
-          >
-            Go to payment
-          </Button>
-        )}
+          {error && (
+            <div className="p-6 border border-red-200 bg-red-50">
+              <p className="text-[11px] font-black uppercase text-red-600 italic">{error}</p>
+            </div>
+          )}
 
-        <Suspense fallback={<LoadingSpinner />}>
-          {/* @ts-ignore */}
-          {paymentData && paymentData?.['clientSecret'] && (
-            <div className="pb-16 space-y-12">
-              <div className="flex items-center gap-4 border-l-2 border-[#00FF41] pl-6">
-                <h2 className="text-xs font-black uppercase tracking-[0.6em] italic text-white">03 Payment</h2>
-              </div>
-              {error && <p className="text-red-500 text-[10px] uppercase font-bold tracking-widest bg-red-950/20 p-6 border border-red-900">Error: {error}</p>}
-              <div className="p-10 bg-zinc-950 border border-zinc-900">
-                <Elements
-                  options={{
-                    appearance: {
-                      theme: 'stripe',
-                      variables: {
-                        borderRadius: '0px',
-                        colorPrimary: '#00FF41',
-                        colorBackground: '#0a0a0a',
-                        colorText: '#ffffff',
-                        fontFamily: 'Geist Mono, monospace',
+          <Suspense fallback={<LoadingSpinner />}>
+            {/* @ts-ignore */}
+            {paymentData?.['clientSecret'] && (
+              <section className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
+                <div className="flex items-center gap-4">
+                  <span className="text-2xl font-black italic text-zinc-200">03</span>
+                  <h2 className="text-[14px] font-black uppercase italic tracking-widest text-black">Payment Details</h2>
+                </div>
+                <div className="p-8 md:p-12 border border-zinc-200 shadow-2xl bg-white">
+                  <Elements
+                    options={{
+                      appearance: {
+                        theme: 'stripe',
+                        variables: {
+                          colorPrimary: '#000',
+                          borderRadius: '0px',
+                          fontFamily: 'Inter, sans-serif'
+                        },
                       },
-                    },
-                    clientSecret: paymentData['clientSecret'] as string,
-                  }}
-                  stripe={stripe}
-                >
-                  <div className="flex flex-col gap-10">
+                      clientSecret: paymentData['clientSecret'] as string,
+                    }}
+                    stripe={stripe}
+                  >
                     <CheckoutForm
-                      customerEmail={email}
+                      customerEmail={email || user?.email}
                       billingAddress={billingAddress}
                       setProcessingPayment={setProcessingPayment}
                     />
-                    <Button
-                      variant="ghost"
-                      className="self-start text-[9px] font-black uppercase tracking-widest text-zinc-800 hover:text-[#00FF41] hover:bg-transparent transition-colors"
-                      onClick={(e) => {
-                        e.preventDefault()
-                        setPaymentData(null)
-                      }}
-                    >
-                      Cancel payment
-                    </Button>
-                  </div>
-                </Elements>
-              </div>
-            </div>
-          )}
-        </Suspense>
-
-        {!paymentData?.['clientSecret'] && error && (
-          <div className="my-8 p-10 border border-red-900 bg-red-950/10 space-y-8">
-            <Message error={error} />
-            <Button
-              onClick={(e) => {
-                e.preventDefault()
-                router.refresh()
-              }}
-              className="rounded-none border-red-800 bg-zinc-950 text-red-500 text-[9px] font-black uppercase italic hover:bg-red-900 hover:text-white transition-all h-12 px-10"
-              variant="outline"
-            >
-              Try again
-            </Button>
-          </div>
-        )}
+                  </Elements>
+                </div>
+              </section>
+            )}
+          </Suspense>
+        </div>
       </div>
 
-      <aside className="w-full lg:w-[450px] bg-zinc-950 p-6 md:p-12 lg:p-16 space-y-16 h-fit sticky top-0 border-l border-zinc-900">
-        <h2 className="text-[11px] font-black uppercase tracking-[0.6em] italic text-white border-b border-zinc-900 pb-10">Cart Manifest</h2>
-        <div className="space-y-10">
-          {cart?.items?.map((item: any, index: number) => {
-            if (typeof item.product === 'object' && item.product) {
-              const {
-                product,
-                product: { meta, title, gallery },
-                quantity,
-                variant,
-              } = item
+      <aside className="w-full lg:w-[480px] bg-zinc-50 p-6 md:p-12 lg:p-16 border-l border-zinc-100">
+        <div className="sticky top-20">
+          <h2 className="text-[16px] font-black uppercase italic text-black mb-12 tracking-tighter border-b border-zinc-200 pb-4">
+            Order Summary
+          </h2>
 
-              if (!quantity) return null
-              let image = gallery?.[0]?.image || meta?.image
-              let price = product?.priceInUSD
-              const isVariant = Boolean(variant) && typeof variant === 'object'
-
-              if (isVariant) {
-                price = variant?.priceInUSD
-                const imageVariant = product.gallery?.find((gItem: any) => {
-                  if (!gItem.variantOption) return false
-                  const variantOptionID = typeof gItem.variantOption === 'object' ? gItem.variantOption.id : gItem.variantOption
-                  return variant?.options?.some((option: any) => (typeof option === 'object' ? option.id === variantOptionID : option === variantOptionID))
-                })
-                if (imageVariant && typeof imageVariant.image !== 'string') image = imageVariant.image
-              }
-
+          <div className="space-y-8 overflow-y-auto max-h-[50vh] pr-4">
+            {cart?.items?.map((item: any, i: number) => {
+              const product = item.product
+              const image = product?.gallery?.[0]?.image || product?.meta?.image
               return (
-                <div className="flex gap-6 group" key={index}>
-                  <div className="h-20 w-20 bg-zinc-900 border border-zinc-800 p-1 flex-shrink-0 relative overflow-hidden" style={{ clipPath: 'polygon(15% 0%, 100% 0%, 85% 100%, 0% 100%)' }}>
-                    <div className="relative w-full h-full grayscale group-hover:grayscale-0 transition-all duration-500">
-                      {image && typeof image !== 'string' && (
-                        <Media fill imgClassName="object-cover" resource={image} />
-                      )}
+                <div className="flex gap-6 items-center" key={i}>
+                  <div className="h-20 w-16 bg-white border border-zinc-200 p-1 flex-shrink-0">
+                    <div className="relative w-full h-full">
+                      {image && <Media fill imgClassName="object-cover" resource={image} />}
                     </div>
                   </div>
-                  <div className="flex grow flex-col justify-center min-w-0">
-                    <p className="font-black text-[10px] uppercase text-white truncate italic tracking-tighter group-hover:text-[#00FF41] transition-colors">{title}</p>
-                    <div className="flex items-center gap-4 mt-2">
-                      <span className="text-[9px] font-mono text-zinc-700 uppercase tracking-widest">x{quantity}</span>
-                      {typeof price === 'number' && <Price className="text-[11px] font-black text-zinc-500 italic" amount={price} />}
+                  <div className="flex grow flex-col">
+                    <h4 className="font-black text-[11px] uppercase text-black italic tracking-tight">{product?.title}</h4>
+                    <div className="flex items-center justify-between mt-1">
+                      <span className="text-[10px] font-bold text-zinc-400">Qty: {item.quantity}</span>
+                      <Price className="text-[12px] font-black text-black italic" amount={item.variant?.priceInUSD || product?.priceInUSD} />
                     </div>
                   </div>
                 </div>
               )
-            }
-            return null
-          })}
-        </div>
+            })}
+          </div>
 
-        <div className="pt-16 border-t border-zinc-900 space-y-6">
-          <div className="flex justify-between items-end">
-            <span className="text-[11px] font-black uppercase text-zinc-800 tracking-[0.3em] italic">Total</span>
-            <Price className="text-4xl font-black italic text-white tracking-tighter" amount={cart.subtotal || 0} />
+          <div className="mt-12 pt-8 border-t border-zinc-200 space-y-4">
+            <div className="flex justify-between items-center text-zinc-400">
+              <span className="text-[11px] font-black uppercase italic">Subtotal</span>
+              <Price className="text-lg font-bold italic" amount={cart?.subtotal || 0} />
+            </div>
+            <div className="flex justify-between items-end pt-4">
+              <span className="text-[13px] font-black uppercase italic text-black">Total</span>
+              <Price className="text-4xl font-black italic text-black tracking-tighter" amount={cart?.subtotal || 0} />
+            </div>
           </div>
         </div>
       </aside>

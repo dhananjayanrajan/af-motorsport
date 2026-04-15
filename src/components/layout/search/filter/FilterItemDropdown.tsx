@@ -1,6 +1,5 @@
 'use client'
 
-import { DESIGN_SYSTEM } from '@/lib/constants'
 import { cn } from '@/utilities/cn'
 import { ChevronDownIcon } from 'lucide-react'
 import { usePathname, useSearchParams } from 'next/navigation'
@@ -41,32 +40,34 @@ export function FilterItemDropdown({ list }: { list: ListItem[] }) {
 
   return (
     <div className="relative" ref={ref}>
-      <div
+      <button
+        type="button"
         className={cn(
-          "flex w-full items-center justify-between rounded border px-4 py-2 text-sm transition-all duration-300 cursor-pointer",
-          `border-zinc-800 bg-black text-white`,
-          openSelect && `border-[${DESIGN_SYSTEM.COLORS.PRIMARY}] shadow-[0_0_15px_${DESIGN_SYSTEM.COLORS.PRIMARY}33]`
+          "flex w-full items-center justify-between border-2 px-5 h-12 text-[11px] font-black uppercase italic tracking-widest transition-all duration-200",
+          openSelect
+            ? "border-black bg-black text-white"
+            : "border-zinc-200 bg-white text-black hover:border-zinc-400"
         )}
         onClick={() => {
           setOpenSelect(!openSelect)
         }}
       >
-        <div className={cn(openSelect && `text-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`)}>{active}</div>
-        <ChevronDownIcon className={cn("h-4 transition-transform duration-300", openSelect && "rotate-180")} />
-      </div>
+        <span>{active}</span>
+        <ChevronDownIcon className={cn("h-4 w-4 transition-transform duration-300", openSelect && "rotate-180")} />
+      </button>
+
       {openSelect && (
         <div
-          className={cn(
-            "absolute z-40 w-full rounded-b-md p-4 shadow-md mt-1 border-x border-b transition-all duration-300",
-            `bg-black border-[${DESIGN_SYSTEM.COLORS.PRIMARY}]/30 shadow-[0_10px_20px_rgba(0,0,0,0.5)]`
-          )}
+          className="absolute z-50 w-full bg-white border-2 border-t-0 border-black shadow-2xl mt-0 animate-in fade-in slide-in-from-top-1 duration-200"
           onClick={() => {
             setOpenSelect(false)
           }}
         >
-          {list.map((item: ListItem, i) => (
-            <FilterItem item={item} key={i} />
-          ))}
+          <ul className="py-2">
+            {list.map((item: ListItem, i) => (
+              <FilterItem item={item} key={i} />
+            ))}
+          </ul>
         </div>
       )}
     </div>
