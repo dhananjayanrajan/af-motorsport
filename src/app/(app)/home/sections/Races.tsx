@@ -51,6 +51,7 @@ const LatestRaces: React.FC<LatestRacesProps> = ({ races = [] }) => {
                 velocity={40}
                 backgroundColor="bg-secondary"
                 textColor="text-black-pure"
+                variant={5}
             />
 
             <div className="flex-1 flex flex-col lg:flex-row w-full border-b-2 border-black-pure">

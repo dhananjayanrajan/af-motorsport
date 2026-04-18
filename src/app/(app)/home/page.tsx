@@ -73,9 +73,9 @@ export default async function Page() {
 
   return (
     <main className="min-h-screen bg-black-pure">
-      <HeroSlides slides={data.slides} />
-
       <VideoSection videoUrls={data.videoUrls} />
+
+      <HeroSlides slides={data.slides} />
 
       <HyperspeedSection navigation={data.navigation} />
 

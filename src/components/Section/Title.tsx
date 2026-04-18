@@ -41,7 +41,7 @@ const SectionMainTitle: React.FC<SectionMainTitleProps> = ({ label, lineOne, lin
             <div className="flex flex-col">
                 <div className="flex items-end gap-4 mb-4">
                     <div className="w-2 h-16 bg-black-pure" />
-                    <h2 className="text-3xl md:text-5xl lg:text-6xl font-black uppercase tracking-tighter text-foreground leading-none">
+                    <h2 className="text-3xl md:text-4xl lg:text-5xl font-black uppercase tracking-tighter text-foreground leading-none">
                         {lineOne}<br />{lineTwo}
                     </h2>
                     <div className="w-12 h-12 bg-primary-500 rotate-45 mb-2" />
@@ -66,11 +66,11 @@ const SectionMainTitle: React.FC<SectionMainTitleProps> = ({ label, lineOne, lin
                 </p>
             </div>
             <div className="flex flex-col">
-                <h2 className="text-3xl md:text-5xl lg:text-6xl flex gap-4 md:gap-6 font-black uppercase tracking-tighter text-foreground">
+                <h2 className="text-3xl md:text-4xl lg:text-5xl flex gap-4 md:gap-6 font-black uppercase tracking-tighter text-foreground">
                     {lineOne}
                     <span className="text-primary-500">{highlight}</span>
                 </h2>
-                <h2 className="text-3xl md:text-5xl lg:text-6xl font-black uppercase tracking-tighter text-foreground">
+                <h2 className="text-3xl md:text-4xl lg:text-5xl font-black uppercase tracking-tighter text-foreground">
                     {lineTwo}
                 </h2>
             </div>
