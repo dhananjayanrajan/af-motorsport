@@ -1,90 +1,79 @@
 export const DESIGN_SYSTEM = {
   COLORS: {
-    // Primary - Green (#00FF41 based)
     PRIMARY: {
-      50: '#E6FFF0',
-      100: '#B3FFD4',
-      200: '#80FFB8',
-      300: '#4DFF9C',
-      400: '#1AFF80',
-      500: '#00FF41',  // Base
-      600: '#00E63B',
-      700: '#00CC34',
-      800: '#00B32E',
-      900: '#009927',
-      950: '#008022',
+      50: '#F0FFF4',
+      100: '#DCFFE6',
+      200: '#B8FFCE',
+      300: '#85FFAD',
+      400: '#4DFF85',
+      500: '#00FF41',
+      600: '#00EB3C',
+      700: '#00D136',
+      800: '#00B830',
+      900: '#009426',
+      950: '#00701D',
       GLOW: 'rgba(0, 255, 65, 0.15)',
       MUTED: 'rgba(0, 255, 65, 0.08)',
     },
-
-    // Secondary - Yellow (same lightness as primary #00FF41)
     SECONDARY: {
-      50: '#FFFDE6',
-      100: '#FFFAB3',
-      200: '#FFF780',
-      300: '#FFF44D',
-      400: '#FFF11A',
-      500: '#FFEE00',  // Base - matched lightness
-      600: '#E6D600',
+      50: '#FFFFF0',
+      100: '#FFFEE0',
+      200: '#FFFBB3',
+      300: '#FFF780',
+      400: '#FFF34D',
+      500: '#FFEE00',
+      600: '#E6D700',
       700: '#CCBF00',
       800: '#B3A800',
-      900: '#999100',
-      950: '#807A00',
+      900: '#999000',
+      950: '#7A7300',
       GLOW: 'rgba(255, 238, 0, 0.15)',
       MUTED: 'rgba(255, 238, 0, 0.08)',
     },
-
-    // Tertiary - Electric Purple (complementary accent)
     TERTIARY: {
-      50: '#F5E6FF',
-      100: '#E0B3FF',
-      200: '#CC80FF',
-      300: '#B84DFF',
-      400: '#A41AFF',
-      500: '#9000FF',  // Base
-      600: '#8100E6',
-      700: '#7300CC',
-      800: '#6400B3',
-      900: '#560099',
-      950: '#470080',
+      50: '#FAF5FF',
+      100: '#F3E8FF',
+      200: '#E9D5FF',
+      300: '#D8B4FE',
+      400: '#C084FC',
+      500: '#9000FF',
+      600: '#7E00E0',
+      700: '#6C00C2',
+      800: '#5B00A3',
+      900: '#4A0085',
+      950: '#32005C',
       GLOW: 'rgba(144, 0, 255, 0.15)',
       MUTED: 'rgba(144, 0, 255, 0.08)',
     },
-
-    // White shades
     WHITE: {
-      50: '#FFFFFF',  // Pure white
-      100: '#FDFDFD',
-      200: '#FBFBFB',
-      300: '#F8F8F8',
-      400: '#F5F5F5',
-      500: '#F0F0F0',
-      600: '#E8E8E8',
-      700: '#E0E0E0',
-      800: '#D8D8D8',
-      900: '#D0D0D0',
-      950: '#C8C8C8',
+      50: '#FFFFFF',
+      100: '#FAFAFA',
+      200: '#F5F5F5',
+      300: '#F0F0F0',
+      400: '#EBEBEB',
+      500: '#E0E0E0',
+      600: '#D6D6D6',
+      700: '#CCCCCC',
+      800: '#BDBDBD',
+      900: '#ADADAD',
+      950: '#9E9E9E',
       GLOW: 'rgba(255, 255, 255, 0.95)',
       PURE: '#FFFFFF',
     },
-
-    // Black shades
     BLACK: {
-      50: '#2A2A2A',
-      100: '#252525',
-      200: '#202020',
-      300: '#1C1C1C',
-      400: '#181818',
-      500: '#141414',
-      600: '#111111',  // Base
-      700: '#0E0E0E',
-      800: '#0B0B0B',
+      50: '#323232',
+      100: '#2D2D2D',
+      200: '#282828',
+      300: '#232323',
+      400: '#1E1E1E',
+      500: '#191919',
+      600: '#141414',
+      700: '#101010',
+      800: '#0C0C0C',
       900: '#080808',
-      950: '#050505',
+      950: '#040404',
       PURE: '#000000',
     },
-
-    // Zinc palette (preserved from original)
     ZINC: {
       50: '#fafafa',
       100: '#f4f4f5',
@@ -98,45 +87,63 @@ export const DESIGN_SYSTEM = {
       900: '#18181b',
       950: '#0f0f11',
     },
-
     NEUTRAL: {
-      600: '#737373',
+      50: '#F9F9F9',
+      100: '#F2F2F2',
+      200: '#E5E5E5',
+      300: '#D4D4D4',
+      400: '#A3A3A3',
+      500: '#737373',
+      600: '#525252',
+      700: '#404040',
+      800: '#262626',
+      900: '#171717',
+      950: '#0A0A0A',
     },
-
-    // Semantic backgrounds
     BACKGROUND: {
       DEFAULT: '#F8F9FA',
       DARK: '#0F0F11',
       CARD: '#FFFFFF',
       CARD_DARK: '#18181b',
     },
-
     SURFACE: {
       DEFAULT: '#FFFFFF',
       DARK: '#27272a',
     },
   },
-
   SHAPES: {
     DIAMOND_CLIP: 'polygon(12% 0%, 88% 0%, 100% 50%, 88% 100%, 12% 100%, 0% 50%)',
     RECT_CLIP: 'polygon(0 0, 100% 0, 100% 100%, 0 100%)',
+    HEX_CLIP: 'polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)',
+    BEVEL_CLIP: 'polygon(20% 0%, 80% 0%, 100% 20%, 100% 80%, 80% 100%, 20% 100%, 0% 80%, 0% 20%)',
   },
-
   ANIMATION: {
+    DURATION_FAST: 'duration-100',
     DURATION_BASE: 'duration-200',
     DURATION_SLOW: 'duration-300',
     DURATION_GLOW: 'duration-1000',
     EASING_CUBIC: 'cubic-bezier(0.87,0,0.13,1)',
+    EASING_OUT: 'cubic-bezier(0,0,0.2,1)',
+    EASING_IN: 'cubic-bezier(0.4,0,1,1)',
   },
-
   TYPOGRAPHY: {
+    TRACKING_TIGHT: 'tracking-tight',
     TRACKING_DEFAULT: 'tracking-[0.4em]',
     TRACKING_XL: 'tracking-[0.5em]',
     TRACKING_2XL: 'tracking-[0.6em]',
+    SIZE_XS: 'text-[10px]',
+    SIZE_SM: 'text-sm',
+    SIZE_BASE: 'text-base',
+    SIZE_LG: 'text-lg',
+    SIZE_XL: 'text-xl',
+    SIZE_2XL: 'text-2xl',
   },
-
   EFFECTS: {
     MEDIA_OVERLAY: 'linear-gradient(to right, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0) 100%)',
+    GLOW_SHADOW_PRIMARY: '0 0 20px rgba(0, 255, 65, 0.3)',
+    GLOW_SHADOW_SECONDARY: '0 0 20px rgba(255, 238, 0, 0.3)',
+    GLASS_BG: 'rgba(255, 255, 255, 0.03)',
+    GLASS_BORDER: 'rgba(255, 255, 255, 0.1)',
   },
 } as const;
 

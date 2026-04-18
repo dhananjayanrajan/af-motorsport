@@ -1,79 +1,87 @@
-import { DESIGN_SYSTEM } from '@/lib/constants';
-import HomeGallery from './sections/Gallery';
-import HeroSection from './sections/Hero';
-import NextRaceSection from './sections/NextRace';
-import LatestResults from './sections/Results';
-import DriverSpotlight from './sections/Spotlight';
-import ChampionshipTicker from './sections/Ticker';
+import HyperspeedSection from './sections/Hyperspeed'
+import LatestRaces from './sections/Races'
+import HeroSlides from './sections/Slides'
+import ChampionshipTicker from './sections/Ticker'
+import VideoSection from './sections/Video'
 
 export const dynamic = 'force-dynamic'
 
 async function safeFetch(url: string) {
   try {
-    const res = await fetch(url);
-    if (!res.ok) return { docs: [] };
-    const text = await res.text();
-    try {
-      return JSON.parse(text);
-    } catch (e) {
-      return { docs: [] };
-    }
+    const res = await fetch(url, { next: { revalidate: 0 } })
+    if (!res.ok) return { docs: [], totalDocs: 0 }
+    return await res.json()
   } catch (e) {
-    return { docs: [] };
+    return { docs: [], totalDocs: 0 }
   }
 }
 
 async function getHomeData() {
-  const url = process.env.NEXT_PUBLIC_PAYLOAD_URL;
-  const [championships, races, drivers] = await Promise.all([
-    safeFetch(`${url}/api/championships?limit=10`),
-    safeFetch(`${url}/api/races?limit=5&sort=-details.start_date`),
-    safeFetch(`${url}/api/drivers?limit=5`)
-  ]);
+  const url = process.env.NEXT_PUBLIC_PAYLOAD_URL
 
-  const championshipDocs = championships.docs || [];
-  const raceDocs = races.docs || [];
-  const driverDocs = drivers.docs || [];
+  const [
+    championships,
+    races,
+    slides,
+    sessions,
+    events,
+    seasons
+  ] = await Promise.all([
+    safeFetch(`${url}/api/championships?sort=-createdAt&limit=10`),
+    safeFetch(`${url}/api/races?sort=-createdAt&limit=10`),
+    safeFetch(`${url}/api/slides?limit=10`),
+    safeFetch(`${url}/api/sessions?sort=-createdAt&limit=10`),
+    safeFetch(`${url}/api/events?sort=-createdAt&limit=10`),
+    safeFetch(`${url}/api/seasons?sort=-createdAt&limit=10`),
+  ])
 
-  const combinedGalleryItems = [
-    ...championshipDocs.map((item: any) => ({
-      ...item,
-      code: item.basics?.identifiers?.code || 'CHMP',
-      type: 'Championship'
-    })),
-    ...raceDocs.map((item: any) => ({
-      ...item,
-      code: item.basics?.identifiers?.code || 'RACE',
-      type: 'Race'
-    })),
-    ...driverDocs.map((item: any) => ({
-      ...item,
-      name: `${item.first_name} ${item.last_name}`,
-      code: item.basics?.callsign || 'DRVR',
-      type: 'Driver'
-    }))
-  ].filter(item => item.assets?.thumbnail || item.assets?.cover || item.assets?.avatar);
+  const extractVideoUrls = (items: any[]) => {
+    const urls: string[] = []
+    items.forEach(item => {
+      const v = item.assets?.video || item.assets?.videos
+      if (Array.isArray(v)) {
+        v.forEach((vid: any) => {
+          const videoUrl = typeof vid === 'object' ? vid?.url : vid
+          if (typeof videoUrl === 'string') urls.push(videoUrl)
+        })
+      } else if (v) {
+        const videoUrl = typeof v === 'object' ? v.url : v
+        if (typeof videoUrl === 'string') urls.push(videoUrl)
+      }
+    })
+    return urls
+  }
+
+  const allVideoUrls = extractVideoUrls([...races.docs, ...sessions.docs, ...events.docs])
 
   return {
-    championships: championshipDocs,
-    nextRace: raceDocs[0] || null,
-    races: raceDocs,
-    drivers: driverDocs,
-    galleryItems: combinedGalleryItems
-  };
+    championships: championships.docs || [],
+    races: races.docs || [],
+    slides: slides.docs || [],
+    videoUrls: allVideoUrls,
+    navigation: {
+      series: championships.docs[0]?.slug || 'global',
+      seasons: seasons.docs[0]?.slug || '2026',
+      events: events.docs[0]?.slug || 'grand-prix',
+      sessions: sessions.docs[0]?.slug || 'qualifying'
+    }
+  }
 }
 
 export default async function Page() {
-  const data = await getHomeData();
+  const data = await getHomeData()
 
   return (
-    <main style={{ backgroundColor: DESIGN_SYSTEM.COLORS.WHITE[50] }}>
-      <HeroSection />
+    <main className="min-h-screen bg-black-pure">
+      <HeroSlides slides={data.slides} />
+
+      <VideoSection videoUrls={data.videoUrls} />
+
+      <HyperspeedSection navigation={data.navigation} />
+
+      <LatestRaces races={data.races} />
+
       <ChampionshipTicker championships={data.championships} />
-      {data.nextRace && <NextRaceSection race={data.nextRace} />}
-      <LatestResults races={data.races} />
-      <DriverSpotlight drivers={data.drivers} />
-      <HomeGallery items={data.galleryItems} />
     </main>
-  );
+  )
 }
