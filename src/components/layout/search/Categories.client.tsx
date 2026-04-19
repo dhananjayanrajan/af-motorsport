@@ -45,7 +45,7 @@ export const CategoryItem: React.FC<Props> = ({ category }) => {
           "size-2.5 transition-all duration-300 shrink-0",
           isActive ? "bg-secondary scale-110 rotate-45" : "bg-black-pure opacity-10 group-hover:opacity-100"
         )} />
-        <span className="text-sm md:text-sm font-mono font-bold uppercase tracking-tight">
+        <span className="text-xs md:text-xs font-mono font-bold uppercase tracking-tight">
           {category.name}
         </span>
       </div>

@@ -19,12 +19,12 @@ export const ProductGridItem: React.FC<{ product: Product; index?: number }> = (
       className="group block w-full h-full border border-black-pure bg-white-pure hover:bg-white-100 transition-colors duration-200 relative overflow-hidden"
     >
       <div className="flex flex-col h-full">
-        <div className="h-12 border-b border-black-pure flex items-center justify-between px-5 bg-white-pure group-hover:bg-primary transition-colors duration-300">
+        <div className="h-12 border-b border-black-pure flex items-center justify-between px-5 bg-secondary group-hover:bg-primary transition-colors duration-300">
           <span className="text-xs font-mono font-black uppercase tracking-widest text-black-pure">
             ITEM {index + 1}
           </span>
           <div className="flex items-center gap-2">
-            <span className="text-[10px] font-mono font-black text-black-pure opacity-40 uppercase">STATUS</span>
+            <span className="text-[10px] font-mono font-black text-black-pure opacity-40 uppercase">{product._status}</span>
             <div className="size-2 bg-black-pure rounded-full animate-pulse" />
           </div>
         </div>
@@ -43,17 +43,17 @@ export const ProductGridItem: React.FC<{ product: Product; index?: number }> = (
 
         <div className="p-6 bg-white-pure border-t border-black-pure">
           <div className="flex justify-between items-start gap-4 mb-4">
-            <h3 className="text-xl font-mono font-black uppercase leading-tight tracking-tight text-black-pure">
+            <h3 className="text-base lg:text-lg font-mono font-black uppercase leading-tight tracking-tight text-black-pure">
               {product.title}
             </h3>
-            <div className="size-10 border border-black-pure flex items-center justify-center bg-white-pure group-hover:bg-black-pure group-hover:text-white-pure transition-all duration-300">
+            <div className="size-10 border border-black-pure flex items-center justify-center aspect-square bg-white-pure group-hover:bg-black-pure group-hover:text-white-pure transition-all duration-300">
               <ArrowUpRight className="size-5" />
             </div>
           </div>
 
           <div className="flex items-center justify-between pt-4 border-t border-black-pure/10">
             <div className="flex flex-col">
-              <span className="text-[10px] font-mono font-black text-black-pure opacity-30 uppercase tracking-widest mb-1">PRICE</span>
+              <span className="text-[10px] font-mono font-black text-black-pure opacity-60 uppercase tracking-widest mb-1">PRICE</span>
               <Price
                 amount={product.priceInUSD || 0}
                 className="text-lg font-mono font-black text-black-pure"
@@ -61,7 +61,7 @@ export const ProductGridItem: React.FC<{ product: Product; index?: number }> = (
             </div>
 
             <div className="flex flex-col items-end">
-              <span className="text-[10px] font-mono font-black text-black-pure opacity-30 uppercase tracking-widest mb-1">AVAILABILITY</span>
+              <span className="text-[10px] font-mono font-black text-black-pure opacity-60 uppercase tracking-widest mb-1">AVAILABILITY</span>
               <span className="text-sm font-mono font-black text-black-pure">{product.inventory ?? 0}</span>
             </div>
           </div>

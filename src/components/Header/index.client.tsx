@@ -70,7 +70,7 @@ export function HeaderClient({ header, socials }: { header: Header; socials: Soc
   const socialAccounts = useMemo(() => socials?.accounts?.filter((a: any) => a.visible !== false) || [], [socials?.accounts])
 
   return (
-    <header className="sticky top-0 left-0 w-full z-[110] bg-white-pure border-b border-black-pure h-16 md:h-20 flex items-stretch">
+    <header className="sticky top-0 left-0 w-full z-[110] bg-white-pure border-b border-black-pure h-14 flex items-stretch">
 
       <div className="w-16 md:w-20 flex items-center justify-center border-r border-black-pure bg-black-pure shrink-0 group transition-colors duration-300 hover:bg-primary">
         <Link href="/" className="flex items-center justify-center w-full h-full">
@@ -113,7 +113,7 @@ export function HeaderClient({ header, socials }: { header: Header; socials: Soc
           </div>
 
           <div className="flex items-stretch">
-            <div className="flex items-center px-6 border-r border-black-pure hover:bg-primary transition-colors duration-300 cursor-pointer">
+            <div className="flex items-center border-r border-black-pure hover:bg-primary transition-colors duration-300 cursor-pointer">
               <Suspense fallback={null}>
                 <Cart />
               </Suspense>

@@ -16,7 +16,7 @@ async function CategoryList() {
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center gap-4">
           <div className="size-6 bg-primary" />
-          <h3 className="text-base font-mono font-black uppercase tracking-widest text-black-pure">
+          <h3 className="text-sm font-mono font-black uppercase tracking-widest text-black-pure">
             Classification
           </h3>
         </div>

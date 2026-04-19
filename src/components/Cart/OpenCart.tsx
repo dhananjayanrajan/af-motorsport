@@ -15,14 +15,14 @@ export function OpenCartButton({
   return (
     <button
       className={cn(
-        'group flex items-center h-10 bg-white-pure border border-black-pure transition-colors overflow-hidden',
+        'group flex items-center h-full bg-white-pure transition-colors overflow-hidden',
         className
       )}
       {...rest}
     >
       <div className={cn(
-        "h-full px-4 flex items-center justify-center transition-colors border-r border-black-pure",
-        hasItems ? "bg-secondary text-white-pure" : "bg-white-pure text-black-pure"
+        "h-full aspect-square flex items-center justify-center transition-colors border-r border-black-pure",
+        hasItems ? "group-hover:bg-primary text-black-pure" : "bg-white-pure text-black-pure"
       )}>
         <span className="text-[10px] font-mono font-black uppercase">
           {hasItems ? String(quantity).padStart(2, '0') : '00'}

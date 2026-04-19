@@ -53,7 +53,7 @@ export default async function ShopPage(props: {
 
       <div className="relative">
         {products.docs.length > 0 ? (
-          <Grid className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+          <Grid className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {products.docs.map((product, index) => (
               <ProductGridItem key={product.id} product={product} index={index} />
             ))}
