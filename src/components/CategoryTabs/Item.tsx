@@ -15,34 +15,23 @@ export function Item({ href, title }: Props) {
   const DynamicTag = active ? 'div' : Link
 
   return (
-    <li className="relative">
+    <li className="flex-none">
       <DynamicTag
         href={href}
         className={cn(
-          'flex flex-col justify-between h-32 p-6 border-y-4 border-r-4 border-black transition-all duration-300',
+          'flex items-center px-6 h-10 border-r border-b border-black-pure transition-colors duration-200',
           active
-            ? 'bg-primary text-black'
-            : 'bg-white text-black hover:bg-zinc-100 group'
+            ? 'bg-secondary text-white-pure'
+            : 'bg-white-pure text-black-pure hover:bg-primary cursor-pointer'
         )}
       >
-        <div className="flex justify-between items-start">
-          <span className="text-[10px] font-bold uppercase tracking-widest leading-none">
-            {active ? 'Selected' : 'Catalog'}
-          </span>
-          <div className={cn(
-            "size-4 border-4 border-black transition-transform duration-500",
-            active ? "bg-black rotate-45" : "bg-transparent group-hover:rotate-90"
-          )} />
-        </div>
-
-        <span className="text-sm font-bold uppercase tracking-tighter leading-none break-words">
+        <span className="text-[10px] font-mono font-black uppercase tracking-widest leading-none">
           {title}
         </span>
+        {active && (
+          <div className="ml-3 size-1.5 bg-white-pure rounded-full" />
+        )}
       </DynamicTag>
-
-      {active && (
-        <div className="absolute -top-1 left-0 w-full h-1 bg-white/30" />
-      )}
     </li>
   )
 }

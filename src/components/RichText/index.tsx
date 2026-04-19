@@ -22,17 +22,17 @@ type NodeTypes =
 const jsxConverters: JSXConvertersFunction<NodeTypes> = ({ defaultConverters }) => ({
   ...defaultConverters,
   blocks: {
-    banner: ({ node }) => <BannerBlock className="my-12" {...node.fields} />,
+    banner: ({ node }) => <BannerBlock className="my-8" {...node.fields} />,
     mediaBlock: ({ node }) => (
       <MediaBlock
-        className="my-16 border-4 border-black"
-        imgClassName="m-0"
+        className="my-10 border border-black-pure"
+        imgClassName="m-0 grayscale hover:grayscale-0 transition-all duration-300"
         {...node.fields}
         enableGutter={false}
         disableInnerContainer={true}
       />
     ),
-    code: ({ node }) => <CodeBlock className="my-12 border-2 border-black" {...node.fields} />,
+    code: ({ node }) => <CodeBlock className="my-8 border border-black-pure" {...node.fields} />,
     cta: ({ node }) => <CallToActionBlock {...node.fields} />,
   },
 })
@@ -46,28 +46,30 @@ type Props = {
 export const RichText: React.FC<Props> = (props) => {
   const { className, enableProse = true, enableGutter = true, ...rest } = props
   return (
-    <div className="w-full bg-white">
+    <div className="w-full bg-white-pure">
       <RichTextWithoutBlocks
         converters={jsxConverters}
         className={cn(
-          'text-black',
+          'text-black-pure',
           {
-            'px-8 md:px-12': enableGutter,
-            'max-w-4xl mx-auto': enableProse,
+            'px-6 md:px-10': enableGutter,
+            'max-w-3xl mx-auto': enableProse,
           },
-          'prose-headings:text-black prose-headings:font-bold prose-headings:uppercase prose-headings:tracking-tighter',
-          'prose-p:text-sm prose-p:font-bold prose-p:uppercase prose-p:leading-normal',
-          'prose-strong:text-primary prose-strong:font-bold',
-          'prose-a:text-black prose-a:underline prose-a:decoration-4 prose-a:decoration-primary hover:prose-a:bg-primary transition-colors',
-          'prose-img:border-4 prose-img:border-black',
+          'prose-headings:text-black-pure prose-headings:font-mono prose-headings:font-black prose-headings:uppercase prose-headings:tracking-tight',
+          'prose-h1:text-4xl prose-h2:text-2xl prose-h3:text-xl',
+          'prose-p:text-sm prose-p:font-mono prose-p:font-black prose-p:uppercase prose-p:leading-relaxed prose-p:opacity-90',
+          'prose-strong:text-primary prose-strong:font-black',
+          'prose-a:text-black-pure prose-a:underline prose-a:decoration-1 prose-a:underline-offset-4 hover:prose-a:text-primary transition-colors',
+          'prose-img:border prose-img:border-black-pure',
+          'prose-li:font-mono prose-li:font-black prose-li:uppercase prose-li:text-sm',
           className,
         )}
         {...rest}
       />
-      <div className="mt-16 flex gap-2">
-        <div className="h-1 flex-1 bg-black" />
-        <div className="h-1 w-12 bg-primary" />
-        <div className="h-1 w-12 bg-secondary" />
+      <div className="mt-12 pt-6 border-t border-black-pure opacity-10 flex gap-1.5">
+        <div className="size-1.5 bg-black-pure" />
+        <div className="size-1.5 bg-black-pure" />
+        <div className="size-1.5 bg-black-pure" />
       </div>
     </div>
   )

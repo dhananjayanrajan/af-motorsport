@@ -39,43 +39,41 @@ export function FilterItemDropdown({ list }: { list: ListItem[] }) {
       <button
         type="button"
         className={cn(
-          "flex w-full items-center justify-between border-4 px-6 h-16 transition-all duration-300",
+          "flex w-full items-center justify-between border border-black-pure px-6 h-20 transition-colors duration-200",
           openSelect
-            ? "border-black bg-primary text-black"
-            : "border-black bg-white text-black hover:bg-zinc-50"
+            ? "bg-black-pure text-white-pure"
+            : "bg-white-pure text-black-pure hover:bg-white-50"
         )}
         onClick={() => setOpenSelect(!openSelect)}
       >
-        <div className="flex flex-col items-start">
-          <span className="text-[10px] font-bold uppercase tracking-widest opacity-50 leading-none mb-1">
-            Filter Selection
+        <div className="flex flex-col items-start text-left">
+          <span className="text-[10px] font-mono font-black uppercase tracking-widest opacity-40 leading-none mb-2">
+            Catalog Filter
           </span>
-          <span className="text-sm font-bold uppercase tracking-tighter leading-none">
-            {active}
+          <span className="text-base font-mono font-black uppercase tracking-tight leading-none">
+            {active || 'Select Option'}
           </span>
         </div>
 
-        <div className="flex flex-col gap-1 items-center">
-          <div className={cn("w-4 h-1 bg-black transition-transform duration-300", openSelect && "translate-y-1 rotate-45")} />
-          <div className={cn("w-4 h-1 bg-black transition-transform duration-300", openSelect && "-translate-y-1 -rotate-45")} />
+        <div className="flex flex-col gap-1.5 items-center shrink-0">
+          <div className={cn("w-6 h-1 bg-current transition-transform duration-300", openSelect && "translate-y-2.5 rotate-45")} />
+          <div className={cn("w-6 h-1 bg-current transition-opacity duration-300", openSelect && "opacity-0")} />
+          <div className={cn("w-6 h-1 bg-current transition-transform duration-300", openSelect && "-translate-y-2.5 -rotate-45")} />
         </div>
       </button>
 
       {openSelect && (
         <div
-          className="absolute z-50 w-full bg-white border-x-4 border-b-4 border-black mt-0 animate-in fade-in slide-in-from-top-2 duration-300"
+          className="absolute z-50 w-full bg-white-pure border-x border-b border-black-pure mt-[-1px] shadow-2xl overflow-hidden"
           onClick={() => setOpenSelect(false)}
         >
-          <ul className="flex flex-col divide-y-4 divide-black">
+          <ul className="flex flex-col">
             {list.map((item: ListItem, i) => (
               <FilterItem item={item} key={i} />
             ))}
           </ul>
         </div>
       )}
-
-      {/* Structural accent line */}
-      <div className="absolute -left-1 top-0 h-full w-1 bg-black" />
     </div>
   )
 }

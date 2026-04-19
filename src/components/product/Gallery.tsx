@@ -21,18 +21,18 @@ export const Gallery: React.FC<{ gallery: any[] }> = ({ gallery }) => {
   if (!activeItem || !activeItem.image) return null
 
   return (
-    <div className="flex flex-col gap-8">
-      <div className="relative w-full aspect-square bg-white border-4 border-black overflow-hidden group">
+    <div className="flex flex-col gap-6">
+      <div className="relative w-full aspect-square bg-white-50 border border-black-pure overflow-hidden">
         <Media
           resource={activeItem.image}
-          className="w-full h-full p-12 transition-all duration-500 group-hover:scale-105"
-          imgClassName="w-full h-full object-contain"
+          className="w-full h-full p-8 transition-transform duration-700 ease-out"
+          imgClassName="w-full h-full object-contain grayscale hover:grayscale-0 transition-all duration-500"
         />
 
-        <div className="absolute top-4 right-4 flex gap-1">
-          <div className="size-2 bg-primary" />
-          <div className="size-2 bg-secondary" />
-          <div className="size-2 bg-accent" />
+        <div className="absolute top-0 right-0 flex border-l border-b border-black-pure">
+          <div className="size-10 flex items-center justify-center bg-primary text-black-pure font-mono font-black text-xs">
+            {String(current + 1).padStart(2, '0')}
+          </div>
         </div>
       </div>
 
@@ -57,9 +57,9 @@ export const Gallery: React.FC<{ gallery: any[] }> = ({ gallery }) => {
                 }}
               >
                 <div
-                  className={`relative aspect-square cursor-pointer border-2 transition-colors p-3 ${isActive
-                      ? 'border-black bg-zinc-100'
-                      : 'border-zinc-200 bg-white hover:border-black'
+                  className={`relative aspect-square cursor-pointer border transition-all duration-200 p-2 ${isActive
+                    ? 'border-black-pure bg-white-pure'
+                    : 'border-black-pure/10 bg-white-50 hover:border-black-pure'
                     }`}
                 >
                   <Media
@@ -67,7 +67,7 @@ export const Gallery: React.FC<{ gallery: any[] }> = ({ gallery }) => {
                     className="w-full h-full object-contain"
                   />
                   {isActive && (
-                    <div className="absolute bottom-0 left-0 w-full h-1 bg-primary" />
+                    <div className="absolute inset-0 border-2 border-primary pointer-events-none" />
                   )}
                 </div>
               </CarouselItem>
@@ -76,15 +76,15 @@ export const Gallery: React.FC<{ gallery: any[] }> = ({ gallery }) => {
         </CarouselContent>
       </Carousel>
 
-      <div className="flex justify-between items-center pt-4 border-t-2 border-zinc-100">
-        <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-zinc-300">
-          Viewing: 0{current + 1} / 0{gallery.length}
+      <div className="flex justify-between items-center pt-4 border-t border-black-pure/10">
+        <span className="text-[10px] font-mono font-black uppercase tracking-widest text-black-pure opacity-40">
+          Sequence Phase
         </span>
-        <div className="flex gap-1">
+        <div className="flex gap-1.5">
           {gallery.map((_, i) => (
             <div
               key={i}
-              className={`h-1 transition-all ${i === current ? 'w-8 bg-black' : 'w-2 bg-zinc-200'}`}
+              className={`h-1.5 transition-all duration-300 ${i === current ? 'w-8 bg-secondary' : 'w-1.5 bg-black-pure/10'}`}
             />
           ))}
         </div>

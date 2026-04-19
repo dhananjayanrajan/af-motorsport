@@ -15,21 +15,21 @@ export function OpenCartButton({
   return (
     <button
       className={cn(
-        'group flex items-center h-12 bg-white border-2 border-black transition-all overflow-hidden',
+        'group flex items-center h-10 bg-white-pure border border-black-pure transition-colors overflow-hidden',
         className
       )}
       {...rest}
     >
       <div className={cn(
-        "h-full px-4 flex items-center justify-center transition-colors",
-        hasItems ? "bg-black text-white" : "bg-white text-black"
+        "h-full px-4 flex items-center justify-center transition-colors border-r border-black-pure",
+        hasItems ? "bg-secondary text-white-pure" : "bg-white-pure text-black-pure"
       )}>
-        <span className="text-[10px] font-bold uppercase tracking-widest">
+        <span className="text-[10px] font-mono font-black uppercase">
           {hasItems ? String(quantity).padStart(2, '0') : '00'}
         </span>
       </div>
-      <div className="px-5 py-2">
-        <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-black">
+      <div className="px-5 group-hover:bg-primary transition-colors h-full flex items-center">
+        <span className="text-[10px] font-mono font-black uppercase tracking-widest text-black-pure">
           Cart
         </span>
       </div>

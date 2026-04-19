@@ -16,109 +16,68 @@ type Props = {
 
 export const ProductItem: React.FC<Props> = ({
   product,
-  quantity,
+  quantity = 1,
   variant,
   currencyCode,
 }) => {
-  const { title } = product
-
-  const metaImage = product.meta?.image && typeof product.meta?.image !== 'string'
-    ? (product.meta.image as MediaType)
-    : undefined
-
-  const firstGalleryImage = product.gallery?.[0]?.image && typeof product.gallery?.[0]?.image !== 'string'
-    ? (product.gallery[0].image as MediaType)
-    : undefined
-
-  let image: MediaType | undefined = (firstGalleryImage || metaImage) ?? undefined
-
-  const isVariant = Boolean(variant) && typeof variant === 'object'
-
-  if (isVariant) {
-    const imageVariant = product.gallery?.find((item) => {
-      if (!item.variantOption) return false
-      const variantOptionID = typeof item.variantOption === 'object' ? item.variantOption.id : item.variantOption
-      const hasMatch = (variant as any)?.options?.some((option: any) => {
-        const optionID = typeof option === 'object' ? option.id : option
-        return String(optionID) === String(variantOptionID)
-      })
-      return hasMatch
-    })
-
-    if (imageVariant && typeof imageVariant.image !== 'string') {
-      image = (imageVariant.image as MediaType) ?? undefined
-    }
-  }
-
+  const image = (product.gallery?.[0]?.image as MediaType) ?? undefined
   const itemPrice = variant?.priceInUSD || product.priceInUSD
   const itemURL = `/products/${product.slug}${variant ? `?variant=${variant.id}` : ''}`
 
   return (
     <Link
       href={itemURL}
-      className="group block w-full border-t border-black/10 first:border-t-0 bg-white hover:bg-[#FFD100] transition-colors duration-200"
+      className="group block w-full bg-white-pure border-b border-black-pure transition-colors duration-200 hover:bg-white-100"
     >
-      <div className="flex items-center gap-4 px-4 py-4 md:px-6">
-        <div className="flex-none w-16 h-16 relative bg-[#F5F5F5]">
-          <div className="absolute top-0 left-0 w-4 h-4 border-l-2 border-t-2 border-black/20" />
-          <div className="absolute bottom-0 right-0 w-4 h-4 border-r-2 border-b-2 border-black/20" />
+      <div className="flex items-stretch h-24">
+        <div className="w-24 bg-white-100 border-r border-black-pure flex items-center justify-center p-4 shrink-0 relative overflow-hidden group-hover:bg-white-pure transition-colors">
           {image && (
             <Media
               fill
-              imgClassName="object-contain p-1 grayscale group-hover:grayscale-0 transition-all duration-300"
+              imgClassName="object-contain grayscale p-2 group-hover:grayscale-0 group-hover:scale-110 transition-all duration-500"
               resource={image}
             />
           )}
         </div>
 
-        <div className="flex-1 min-w-0">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-2">
-            <div className="min-w-0">
-              <div className="flex items-center gap-2 mb-1">
-                <div className="w-4 h-0.5 bg-black/40" />
-                <span className="text-[9px] font-mono uppercase tracking-wider text-black/50">
-                  NR.{String(product.id).slice(-4)}
-                </span>
-              </div>
-              <h4 className="text-base md:text-lg font-bold uppercase tracking-tight text-black group-hover:text-black">
-                {title}
-              </h4>
-              {variant && (
-                <p className="text-[9px] font-mono uppercase text-black/40 group-hover:text-black/60 mt-1">
-                  {(variant as any).options
-                    ?.map((option: any) => (typeof option === 'object' ? option.label : null))
-                    .filter(Boolean)
-                    .join(' / ')}
-                </p>
-              )}
+        <div className="flex-1 flex items-stretch">
+          <div className="flex-1 px-8 flex flex-col justify-center gap-1">
+            <span className="text-[10px] font-mono font-black text-black-pure opacity-30 uppercase tracking-widest">
+              REFERENCE {String(product.id).slice(-4)}
+            </span>
+            <h4 className="text-base font-mono font-black uppercase tracking-tight text-black-pure group-hover:text-secondary transition-colors">
+              {product.title}
+            </h4>
+          </div>
+
+          <div className="flex items-stretch">
+            <div className="hidden md:flex flex-col justify-center px-10 border-l border-black-pure bg-white-pure group-hover:bg-primary transition-colors duration-300">
+              <span className="text-[10px] font-mono font-black text-black-pure opacity-40 uppercase mb-1">UNIT</span>
+              <Price
+                amount={itemPrice || 0}
+                currencyCode={currencyCode}
+                className="text-sm font-mono font-black text-black-pure"
+              />
             </div>
 
-            <div className="flex items-center gap-3 shrink-0">
-              <div className="text-right">
-                <span className="text-[8px] font-mono uppercase tracking-wider text-black/40 block">
-                  QTY
-                </span>
-                <span className="text-sm font-bold font-mono text-black">
-                  {quantity}
-                </span>
-              </div>
+            <div className="flex flex-col justify-center px-10 border-l border-black-pure text-center">
+              <span className="text-[10px] font-mono font-black text-black-pure opacity-40 uppercase mb-1">QTY</span>
+              <span className="text-sm font-mono font-black text-black-pure">
+                {quantity}
+              </span>
+            </div>
 
-              {itemPrice && quantity && (
-                <div className="text-right">
-                  <span className="text-[8px] font-mono uppercase tracking-wider text-black/40 block">
-                    TOTAL
-                  </span>
-                  <Price
-                    amount={itemPrice * quantity}
-                    currencyCode={currencyCode}
-                    className="text-sm font-bold font-mono text-black"
-                  />
-                </div>
-              )}
+            <div className="flex flex-col justify-center px-10 border-l border-black-pure min-w-[140px] bg-white-pure group-hover:bg-secondary transition-colors duration-300">
+              <span className="text-[10px] font-mono font-black text-black-pure opacity-40 uppercase mb-1">TOTAL</span>
+              <Price
+                amount={(itemPrice || 0) * quantity}
+                currencyCode={currencyCode}
+                className="text-sm font-mono font-black text-black-pure group-hover:text-white-pure transition-colors"
+              />
+            </div>
 
-              <div className="w-7 h-7 flex items-center justify-center border-2 border-black bg-transparent group-hover:bg-black transition-colors">
-                <ArrowUpRight size={12} className="text-black group-hover:text-white" />
-              </div>
+            <div className="w-16 flex items-center justify-center border-l border-black-pure bg-white-pure group-hover:bg-black-pure group-hover:text-white-pure transition-all duration-300">
+              <ArrowUpRight className="size-5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
             </div>
           </div>
         </div>

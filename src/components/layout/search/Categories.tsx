@@ -12,29 +12,32 @@ async function CategoryList() {
   })
 
   return (
-    <div className="relative">
-      <div className="flex items-center gap-4 mb-8">
-        <div className="size-8 bg-primary" />
-        <h3 className="text-sm font-bold uppercase tracking-[0.3em] text-black">
-          Classification
-        </h3>
-        <div className="grow h-[2px] bg-black" />
+    <div className="w-full">
+      <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center gap-4">
+          <div className="size-6 bg-primary" />
+          <h3 className="text-base font-mono font-black uppercase tracking-widest text-black-pure">
+            Classification
+          </h3>
+        </div>
+        <div className="hidden sm:flex gap-1.5">
+          <div className="size-2 bg-black-pure" />
+          <div className="size-2 bg-black-pure opacity-20" />
+        </div>
       </div>
 
-      <ul className="grid grid-cols-1 gap-0 border-t-2 border-black">
-        {categories.docs.map((category) => {
-          return (
-            <li key={category.id} className="border-b-2 border-black">
-              <CategoryItem category={category} />
-            </li>
-          )
-        })}
-      </ul>
+      <div className="border-t border-black-pure">
+        {categories.docs.map((category) => (
+          <CategoryItem key={category.id} category={category} />
+        ))}
+      </div>
 
-      <div className="mt-4 flex gap-1">
-        <div className="size-2 bg-black" />
-        <div className="size-2 bg-zinc-200" />
-        <div className="size-2 bg-zinc-200" />
+      <div className="mt-10 flex items-center justify-between opacity-20">
+        <div className="h-px grow bg-black-pure" />
+        <div className="pl-6 flex gap-2">
+          <div className="size-1.5 bg-black-pure" />
+          <div className="size-1.5 bg-black-pure" />
+        </div>
       </div>
     </div>
   )
@@ -44,11 +47,14 @@ export function Categories() {
   return (
     <Suspense
       fallback={
-        <div className="w-full space-y-4">
-          <div className="h-8 bg-black w-1/2 animate-pulse" />
-          <div className="space-y-2">
-            {[...Array(6)].map((_, i) => (
-              <div key={i} className="h-12 bg-zinc-100 w-full animate-pulse" />
+        <div className="w-full space-y-10">
+          <div className="flex items-center gap-4">
+            <div className="size-6 bg-white-200 animate-pulse" />
+            <div className="h-4 w-32 bg-white-200 animate-pulse" />
+          </div>
+          <div className="flex flex-col border-t border-black-pure">
+            {[...Array(5)].map((_, i) => (
+              <div key={i} className="h-16 border-b border-black-pure bg-white-50 animate-pulse" />
             ))}
           </div>
         </div>

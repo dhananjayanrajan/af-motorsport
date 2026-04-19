@@ -100,8 +100,8 @@ export function MobileMenu({ menu, socials }: Props) {
                       )}
                     >
                       <span className={cn(
-                        "text-[10px] font-mono font-black mb-1",
-                        isActive ? "opacity-40" : "opacity-20 group-hover:text-primary group-hover:opacity-100"
+                        "text-[10px] font-mono font-black mb-1 transition-colors",
+                        isActive ? "text-black-pure/40" : "text-black-pure/20 group-hover:text-primary"
                       )}>
                         0{index + 1}
                       </span>
@@ -110,10 +110,13 @@ export function MobileMenu({ menu, socials }: Props) {
                           {item.label}
                         </span>
                         <ArrowRight className={cn(
-                          "h-5 w-5 transition-transform duration-300",
-                          isActive ? "translate-x-0" : "-translate-x-4 opacity-0 group-hover:translate-x-0 group-hover:opacity-100"
+                          "h-5 w-5 transition-all duration-300",
+                          isActive ? "translate-x-0 opacity-100" : "-translate-x-4 opacity-0 group-hover:translate-x-0 group-hover:opacity-100"
                         )} />
                       </div>
+                      {isActive && (
+                        <div className="absolute left-0 top-0 w-2 h-full bg-black-pure" />
+                      )}
                     </Link>
                   </li>
                 )

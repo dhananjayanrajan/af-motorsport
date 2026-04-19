@@ -15,21 +15,20 @@ export function VariantSelector({ product }: { product: Product }) {
   if (!product.enableVariants || !variants?.length) return null
 
   return (
-    <div className="flex flex-col gap-10">
+    <div className="flex flex-col gap-8">
       {variantTypes?.map((type) => {
         if (!type || typeof type !== 'object') return null
         const options = type.options?.docs
         if (!options?.length) return null
 
         return (
-          <dl className="flex flex-col gap-4" key={type.id}>
-            <dt className="flex items-center gap-3">
-              <div className="size-2 bg-black" />
-              <span className="text-xs font-bold text-black uppercase tracking-widest">
-                Select {type.label}
+          <dl className="flex flex-col gap-3" key={type.id}>
+            <dt className="flex items-center gap-2">
+              <span className="text-[10px] font-mono font-black text-black-pure opacity-30 uppercase tracking-widest">
+                Parameter: {type.label}
               </span>
             </dt>
-            <dd className="flex flex-wrap gap-3">
+            <dd className="flex flex-wrap gap-2">
               {options?.map((option) => {
                 if (!option || typeof option !== 'object') return null
                 const optionSearchParams = new URLSearchParams(searchParams.toString())
@@ -43,10 +42,10 @@ export function VariantSelector({ product }: { product: Product }) {
                     key={option.id}
                     onClick={() => router.replace(optionUrl, { scroll: false })}
                     className={cn(
-                      'h-14 px-8 text-xs font-bold uppercase tracking-widest transition-all border-2',
+                      'h-12 px-6 text-[10px] font-mono font-black uppercase tracking-widest transition-all border',
                       isActive
-                        ? 'bg-black text-white border-black'
-                        : 'bg-white text-black border-zinc-200 hover:border-black',
+                        ? 'bg-secondary text-white-pure border-black-pure translate-y-[-2px] shadow-[0_2px_0_0_#000]'
+                        : 'bg-white-pure text-black-pure border-black-pure/10 hover:border-black-pure',
                     )}
                   >
                     {option.label}

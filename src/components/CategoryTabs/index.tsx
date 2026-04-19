@@ -19,19 +19,17 @@ async function List() {
   const categories = categoriesData.docs.map((category) => {
     return {
       href: `/shop/${category.slug}`,
-      title: (category as any).title || 'UNTITLED',
+      title: (category as any).title || 'Untitled',
     }
   })
 
   return (
-    <nav className="mb-20">
-      <ul className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 border-l-4 border-black">
-        <Item title="All Products" href="/shop" />
-        <Suspense fallback={null}>
-          {categories.map((category) => (
-            <Item {...category} key={category.href} />
-          ))}
-        </Suspense>
+    <nav className="mb-12">
+      <ul className="flex flex-wrap border-t border-l border-black-pure">
+        <Item title="All" href="/shop" />
+        {categories.map((category) => (
+          <Item {...category} key={category.href} />
+        ))}
       </ul>
     </nav>
   )
@@ -41,9 +39,9 @@ export function CategoryTabs() {
   return (
     <Suspense
       fallback={
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 border-l-4 border-black mb-20">
+        <div className="flex flex-wrap border-t border-l border-black-pure opacity-20 mb-12">
           {[...Array(4)].map((_, i) => (
-            <div key={i} className="h-24 border-y-4 border-r-4 border-black bg-zinc-50 animate-pulse" />
+            <div key={i} className="h-10 w-24 border-r border-b border-black-pure animate-pulse" />
           ))}
         </div>
       }

@@ -17,27 +17,33 @@ function PathFilterItem({ item }: { item: PathFilterItemType }) {
   newParams.delete('q')
 
   return (
-    <li className="w-full" key={item.title}>
+    <li className="w-full">
       <DynamicTag
         className={cn(
-          'group relative flex items-center justify-between w-full h-14 px-6 border-b-4 border-black transition-colors duration-300',
-          active ? 'bg-secondary text-black' : 'bg-white text-black hover:bg-zinc-100'
+          'group flex items-center justify-between w-full min-h-16 py-4 px-6 border-b border-black-pure transition-colors duration-150',
+          active
+            ? 'bg-black-pure text-white-pure'
+            : 'bg-white-pure text-black-pure hover:bg-primary'
         )}
         href={createUrl(item.path, newParams)}
       >
-        <span className="text-xs font-bold uppercase tracking-widest">
-          {item.title}
-        </span>
+        <div className="flex items-center gap-5">
+          <div className={cn(
+            "size-2.5 transition-all duration-300 shrink-0",
+            active ? "bg-secondary rotate-45" : "bg-black-pure opacity-10 group-hover:opacity-100"
+          )} />
+          <span className="text-sm md:text-base font-mono font-black uppercase tracking-tight">
+            {item.title}
+          </span>
+        </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-6 shrink-0">
           <div className={cn(
-            "size-2 rounded-full border-2 border-black transition-all",
-            active ? "bg-black scale-125" : "bg-transparent group-hover:scale-110"
-          )} />
-          <div className={cn(
-            "w-8 h-[2px] bg-black transition-transform origin-right",
-            active ? "scale-x-100" : "scale-x-0 group-hover:scale-x-50"
-          )} />
+            "size-8 border border-current flex items-center justify-center transition-transform",
+            active ? "rotate-90" : "opacity-20 group-hover:opacity-100"
+          )}>
+            <div className="size-1.5 bg-current" />
+          </div>
         </div>
       </DynamicTag>
     </li>
@@ -59,24 +65,34 @@ function SortFilterItem({ item }: { item: SortFilterItemType }) {
   const DynamicTag = active ? 'div' : Link
 
   return (
-    <li className="w-full" key={item.title}>
+    <li className="w-full">
       <DynamicTag
         className={cn(
-          'group relative flex items-center justify-between w-full h-14 px-6 border-b-4 border-black transition-colors duration-300',
-          active ? 'bg-accent text-black' : 'bg-white text-black hover:bg-zinc-100'
+          'group flex items-center justify-between w-full min-h-16 py-4 px-6 border-b border-black-pure transition-colors duration-150',
+          active
+            ? 'bg-black-pure text-white-pure'
+            : 'bg-white-pure text-black-pure hover:bg-primary'
         )}
         href={href}
         prefetch={!active ? false : undefined}
       >
-        <span className="text-xs font-bold uppercase tracking-widest">
-          {item.title}
-        </span>
+        <div className="flex items-center gap-5">
+          <div className={cn(
+            "size-2.5 transition-all duration-300 shrink-0",
+            active ? "bg-primary rotate-45" : "bg-black-pure opacity-10 group-hover:opacity-100"
+          )} />
+          <span className="text-sm md:text-sm font-mono font-bold uppercase tracking-tight">
+            {item.title}
+          </span>
+        </div>
 
-        <div className={cn(
-          "size-4 border-2 border-black flex items-center justify-center transition-all",
-          active ? "bg-black rotate-45" : "bg-transparent group-hover:rotate-90"
-        )}>
-          {active && <div className="size-1 bg-white" />}
+        <div className="flex items-center gap-6 shrink-0">
+          <div className={cn(
+            "size-8 border border-current flex items-center justify-center transition-transform",
+            active ? "rotate-90" : "opacity-20 group-hover:opacity-100"
+          )}>
+            <div className="size-1.5 bg-current" />
+          </div>
         </div>
       </DynamicTag>
     </li>

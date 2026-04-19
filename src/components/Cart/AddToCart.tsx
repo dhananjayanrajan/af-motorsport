@@ -35,7 +35,7 @@ export function AddToCart({ product }: Props) {
         product: product.id,
         variant: selectedVariant?.id ?? undefined,
       }).then(() => {
-        toast.success('REGISTRY UPDATED')
+        toast.success('Cart updated')
       })
     },
     [addItem, product, selectedVariant],
@@ -72,29 +72,17 @@ export function AddToCart({ product }: Props) {
       onClick={addToCart}
       type="submit"
       className={cn(
-        "group flex w-full h-24 bg-primary border-t-2 border-black-pure transition-all duration-300",
-        (disabled || isLoading) ? "opacity-50 grayscale cursor-not-allowed" : "hover:bg-black-pure active:scale-[0.99]"
+        "group flex w-full h-16 border border-black-pure transition-colors duration-200",
+        (disabled || isLoading) ? "bg-white-100 opacity-50 cursor-not-allowed" : "bg-white-pure hover:bg-primary"
       )}
     >
-      <div className="flex-1 flex flex-col items-start justify-center px-8 text-left">
-        <span className={cn(
-          "text-[10px] font-mono font-black tracking-[0.3em] uppercase mb-1",
-          "text-black-pure group-hover:text-primary"
-        )}>
-          {disabled ? 'INVENTORY_NULL' : 'ACTION_REQUIRED'}
+      <div className="flex-1 flex items-center px-6">
+        <span className="text-sm font-mono font-black uppercase tracking-widest text-black-pure">
+          {disabled ? 'Unavailable' : 'Add to Cart'}
         </span>
-        <h4 className={cn(
-          "text-xl font-black uppercase tracking-tighter",
-          "text-black-pure group-hover:text-white-pure"
-        )}>
-          {disabled ? 'OUT OF STOCK' : 'ADD TO REGISTRY'}
-        </h4>
       </div>
-      <div className="w-24 border-l-2 border-black-pure flex items-center justify-center">
-        <div className={cn(
-          "size-4 border-2 border-black-pure transition-all duration-500",
-          "group-hover:bg-primary group-hover:rotate-90 group-hover:border-white-pure"
-        )} />
+      <div className="w-16 border-l border-black-pure flex items-center justify-center bg-black-pure text-white-pure group-hover:bg-secondary transition-colors">
+        <div className="size-2 bg-current" />
       </div>
     </button>
   )

@@ -41,25 +41,24 @@ const NavItem = ({ item, index }: { item: any; index: number }) => {
     <Link
       href={item.link || '#'}
       className={cn(
-        'h-full px-8 flex flex-col justify-center border-r border-black-pure transition-all duration-300 group relative overflow-hidden',
-        isActive ? 'bg-primary text-black-pure' : 'bg-white-pure hover:bg-black-pure hover:text-white-pure'
+        'h-full px-8 flex flex-col justify-center border-r border-black-pure transition-all duration-300 group relative',
+        isActive ? 'bg-primary' : 'bg-white-pure hover:bg-black-pure hover:text-white-pure'
       )}
     >
-      <div className="absolute top-0 left-0 w-full h-0.5 bg-secondary scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
-
       <span className={cn(
         "text-[10px] font-mono font-black mb-1 transition-colors duration-300",
         isActive ? "text-black-pure/40" : "text-black-pure/20 group-hover:text-primary"
       )}>
         0{index + 1}
       </span>
-
-      <span className="text-xs font-mono font-black uppercase tracking-widest relative z-10 transition-transform duration-300 group-hover:translate-x-1">
+      <span className={cn(
+        "text-xs font-mono font-black uppercase tracking-widest relative z-10 transition-transform duration-300",
+        isActive ? "text-black-pure" : "group-hover:translate-x-1"
+      )}>
         {item.label}
       </span>
-
       {isActive && (
-        <div className="absolute bottom-0 left-0 w-full h-1 bg-black-pure" />
+        <div className="absolute bottom-0 left-0 w-full h-1.5 bg-black-pure" />
       )}
     </Link>
   )

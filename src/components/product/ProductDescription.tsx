@@ -29,13 +29,13 @@ export function ProductDescription({ product }: { product: Product }) {
   }
 
   return (
-    <div className="flex flex-col gap-12 text-left bg-white">
-      <div className="pb-10 border-b-4 border-black">
-        <div className="flex items-center justify-between mb-6">
+    <div className="flex flex-col gap-10 bg-white-pure">
+      <div className="pb-8 border-b border-black-pure">
+        <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-3">
-            <div className="size-3 bg-primary" />
-            <span className="text-xs font-bold uppercase tracking-widest text-black">
-              Unit Pricing
+            <div className="size-2 bg-primary" />
+            <span className="text-xs font-mono font-black uppercase tracking-widest text-black-pure">
+              Market Value
             </span>
           </div>
           <StockIndicator product={product} />
@@ -46,34 +46,33 @@ export function ProductDescription({ product }: { product: Product }) {
             <Price
               highestAmount={highestAmount}
               lowestAmount={lowestAmount}
-              className="text-6xl font-bold uppercase tracking-tighter text-black leading-none"
+              className="text-5xl font-mono font-black uppercase tracking-tighter text-black-pure"
             />
           ) : (
             <Price
               amount={amount}
-              className="text-6xl font-bold uppercase tracking-tighter text-black leading-none"
+              className="text-5xl font-mono font-black uppercase tracking-tighter text-black-pure"
             />
           )}
         </div>
       </div>
 
-      <div className="space-y-6">
-        <div className="flex items-center gap-3">
-          <div className="h-4 w-1 bg-black" />
-          <span className="text-xs font-bold uppercase tracking-widest text-black">
-            Description
+      <div className="space-y-4">
+        <div className="flex items-center gap-2">
+          <span className="text-[10px] font-mono font-black uppercase tracking-widest text-black-pure opacity-30">
+            Specifications
           </span>
         </div>
         {product.description && (
           <RichText
-            className="text-sm font-bold uppercase leading-normal text-black"
+            className="text-sm font-mono font-black uppercase leading-relaxed text-black-pure"
             data={product.description}
           />
         )}
       </div>
 
-      <div className="pt-8 space-y-12 border-t-2 border-black">
-        <Suspense fallback={<div className="h-20 w-full bg-zinc-100 animate-pulse" />}>
+      <div className="pt-8 space-y-10 border-t border-black-pure">
+        <Suspense fallback={<div className="h-20 w-full bg-white-100 animate-pulse" />}>
           <VariantSelector product={product} />
         </Suspense>
 
@@ -81,14 +80,14 @@ export function ProductDescription({ product }: { product: Product }) {
           <AddToCart product={product} />
         </div>
 
-        <div className="flex items-center justify-between pt-4">
-          <div className="flex gap-1">
-            <div className="size-2 bg-black" />
-            <div className="size-2 bg-black opacity-40" />
-            <div className="size-2 bg-black opacity-10" />
+        <div className="flex items-center justify-between pt-4 border-t border-black-pure/10">
+          <div className="flex gap-2">
+            <div className="size-2 bg-black-pure" />
+            <div className="size-2 bg-secondary" />
+            <div className="size-2 bg-primary" />
           </div>
-          <span className="text-[10px] font-bold uppercase tracking-[0.4em] text-zinc-300">
-            Secure checkout protocol
+          <span className="text-[9px] font-mono font-black uppercase tracking-widest text-black-pure opacity-30">
+            System Checkout Active
           </span>
         </div>
       </div>

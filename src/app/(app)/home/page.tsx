@@ -1,4 +1,7 @@
+import HyperspeedSection from './sections/Hyperspeed'
 import LatestRaces from './sections/Races'
+import HeroSlides from './sections/Slides'
+import VideoSection from './sections/Video'
 
 export const dynamic = 'force-dynamic'
 
@@ -66,9 +69,9 @@ export default async function Page() {
 
   return (
     <main className="min-h-screen bg-black-pure">
-      {/* <VideoSection videoUrls={data.videoUrls} />
+      <VideoSection videoUrls={data.videoUrls} />
       <HeroSlides slides={data.slides} />
-      <HyperspeedSection navigation={data.navigation} /> */}
+      <HyperspeedSection navigation={data.navigation} />
       <LatestRaces races={data.races} />
     </main>
   )

@@ -7,11 +7,11 @@ export function CloseCart({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        "flex h-12 w-12 items-center justify-center border-4 border-black bg-white text-black hover:bg-error hover:text-white transition-colors cursor-pointer",
+        "flex size-10 items-center justify-center border border-black-pure bg-white-pure text-black-pure hover:bg-primary transition-colors cursor-pointer",
         className
       )}
     >
-      <X className="h-6 w-6" strokeWidth={4} />
+      <X size={16} />
     </div>
   )
 }

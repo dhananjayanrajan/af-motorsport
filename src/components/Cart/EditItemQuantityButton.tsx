@@ -12,8 +12,8 @@ export function EditItemQuantityButton({ type, item }: { item: CartItem; type: '
     <button
       disabled={isLoading}
       className={cn(
-        "size-8 flex items-center justify-center transition-colors",
-        isLoading ? "bg-zinc-50 text-zinc-200" : "text-black hover:bg-zinc-100"
+        "size-10 flex items-center justify-center transition-colors bg-white-pure",
+        isLoading ? "text-black-pure/10" : "text-black-pure hover:bg-primary"
       )}
       onClick={(e) => {
         e.preventDefault()
@@ -21,7 +21,7 @@ export function EditItemQuantityButton({ type, item }: { item: CartItem; type: '
       }}
       type="button"
     >
-      {type === 'plus' ? <Plus size={12} strokeWidth={3} /> : <Minus size={12} strokeWidth={3} />}
+      {type === 'plus' ? <Plus size={12} /> : <Minus size={12} />}
     </button>
   )
 }

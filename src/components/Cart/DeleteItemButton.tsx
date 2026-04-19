@@ -10,7 +10,7 @@ export function DeleteItemButton({ item }: { item: CartItem }) {
     <button
       disabled={!item.id || isLoading}
       onClick={(e) => { e.preventDefault(); if (item.id) removeItem(item.id) }}
-      className="text-[9px] font-bold uppercase tracking-widest text-zinc-300 hover:text-error transition-colors underline underline-offset-4"
+      className="text-[10px] font-mono font-black uppercase text-black-pure opacity-30 hover:opacity-100 hover:text-secondary transition-all"
       type="button"
     >
       Remove
