@@ -1,6 +1,5 @@
 'use client'
 
-import { DESIGN_SYSTEM } from '@/lib/constants'
 import { cn } from '@/utilities/cn'
 import { motion } from 'framer-motion'
 import React, { useState } from 'react'
@@ -26,22 +25,20 @@ export const ClippedInput = React.forwardRef<HTMLInputElement, ClippedInputProps
     }
 
     return (
-      <div className={cn('group relative w-full max-w-md', containerClassName)}>
+      <div className={cn('group relative w-full', containerClassName)}>
         <div
           className={cn(
-            "relative h-14 w-full overflow-hidden transition-all duration-300",
-            error ? "bg-red-50" : "bg-white"
+            "relative h-16 w-full transition-all duration-200 border border-black-pure",
+            error ? "bg-secondary/10" : "bg-white-pure"
           )}
-          style={{ clipPath: DESIGN_SYSTEM.SHAPES.DIAMOND_CLIP }}
         >
           <motion.div
             initial={false}
             animate={{
-              x: isFocused ? '0%' : '-110%',
+              width: isFocused ? '100%' : '0%',
             }}
-            transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-            className="absolute inset-0 z-0 opacity-10"
-            style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}
+            transition={{ duration: 0.3, ease: [0.25, 1, 0.5, 1] }}
+            className="absolute inset-y-0 left-0 z-0 bg-primary opacity-20"
           />
 
           <input
@@ -51,9 +48,9 @@ export const ClippedInput = React.forwardRef<HTMLInputElement, ClippedInputProps
             onFocus={handleFocus}
             onBlur={handleBlur}
             className={cn(
-              "relative z-10 w-full h-full bg-transparent px-10 text-[11px] uppercase tracking-[0.2em] font-black outline-none italic",
-              "text-black placeholder:text-zinc-300",
-              error && "text-red-600 placeholder:text-red-300",
+              "relative z-10 w-full h-full bg-transparent px-8 text-sm uppercase tracking-widest font-black outline-none font-mono",
+              "text-black-pure placeholder:text-black-pure/20",
+              error && "text-secondary placeholder:text-secondary/40",
               className
             )}
             {...props}
@@ -61,28 +58,11 @@ export const ClippedInput = React.forwardRef<HTMLInputElement, ClippedInputProps
 
           <div
             className={cn(
-              "absolute inset-0 z-20 pointer-events-none border transition-colors duration-300",
-              error ? "border-red-600" : "border-zinc-200 group-focus-within:border-black"
+              "absolute bottom-0 left-0 h-1 w-full transition-transform duration-300 translate-x-[-100%] group-focus-within:translate-x-0 z-30",
+              error ? "bg-secondary translate-x-0" : "bg-primary"
             )}
-            style={{ clipPath: DESIGN_SYSTEM.SHAPES.DIAMOND_CLIP }}
-          />
-
-          <div
-            className={cn(
-              "absolute bottom-0 left-0 h-[3px] w-full transition-transform duration-500 ease-[0.16,1,0.3,1] translate-x-[-100%] group-focus-within:translate-x-0 z-30",
-              error ? "bg-red-600" : ""
-            )}
-            style={!error ? { backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] } : {}}
           />
         </div>
-
-        <div
-          className={cn(
-            "absolute -inset-[1px] -z-10 opacity-10 group-focus-within:opacity-30 transition-opacity duration-300",
-            error ? "bg-red-600" : "bg-black"
-          )}
-          style={{ clipPath: DESIGN_SYSTEM.SHAPES.DIAMOND_CLIP }}
-        />
       </div>
     )
   }

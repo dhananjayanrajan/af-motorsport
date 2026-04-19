@@ -1,6 +1,5 @@
 'use client'
 
-import { DESIGN_SYSTEM } from '@/lib/constants'
 import { cn } from '@/utilities/cn'
 import * as SelectPrimitive from '@radix-ui/react-select'
 import { ChevronDown } from 'lucide-react'
@@ -14,47 +13,29 @@ const ClippedSelectTrigger = React.forwardRef<
     React.ElementRef<typeof SelectPrimitive.Trigger>,
     React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger> & { error?: boolean; valid?: boolean; filled?: boolean }
 >(({ className, children, error, valid, filled, ...props }, ref) => (
-    <div className="group relative w-full max-w-xs">
+    <div className="group relative w-full">
         <SelectPrimitive.Trigger
             ref={ref}
             className={cn(
-                "relative flex h-14 w-full items-center justify-between px-10 text-[11px] font-black uppercase tracking-[0.2em] outline-none transition-all duration-300 italic z-10",
-                "bg-white text-black",
-                !filled && "text-zinc-400",
-                error && "bg-red-50 text-red-600",
+                "relative flex h-16 w-full items-center justify-between px-8 text-sm font-black font-mono uppercase tracking-widest outline-none transition-all duration-200 z-10",
+                "bg-white-pure border border-black-pure text-black-pure",
+                !filled && "opacity-40",
+                error && "border-secondary text-secondary bg-secondary/5",
                 className,
             )}
-            style={{ clipPath: DESIGN_SYSTEM.SHAPES.DIAMOND_CLIP }}
             {...props}
         >
             <span className="truncate relative z-10">{children}</span>
             <SelectPrimitive.Icon asChild>
-                <ChevronDown className="relative z-10 h-4 w-4 transition-transform duration-300 group-data-[state=open]:rotate-180" />
+                <ChevronDown className="relative z-10 h-5 w-5 transition-transform duration-200 group-data-[state=open]:rotate-180" />
             </SelectPrimitive.Icon>
 
-            <div
-                className={cn(
-                    "absolute inset-0 pointer-events-none border transition-colors duration-300 z-20",
-                    error ? "border-red-600" : "border-zinc-200 group-data-[state=open]:border-black"
-                )}
-                style={{ clipPath: DESIGN_SYSTEM.SHAPES.DIAMOND_CLIP }}
-            />
-
             <div className={cn(
-                "absolute bottom-0 left-0 h-[3px] w-full transition-transform duration-500 ease-[0.16,1,0.3,1] translate-x-[-100%] group-data-[state=open]:translate-x-0 z-30",
-                error ? "bg-red-600" : ""
+                "absolute bottom-0 left-0 h-1 w-full transition-transform duration-300 translate-x-[-100%] group-data-[state=open]:translate-x-0 z-30",
+                error ? "bg-secondary translate-x-0" : "bg-primary"
             )}
-                style={!error ? { backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] } : {}}
             />
         </SelectPrimitive.Trigger>
-
-        <div
-            className={cn(
-                "absolute -inset-[1px] -z-10 opacity-10 group-data-[state=open]:opacity-30 transition-opacity duration-300",
-                error ? "bg-red-600" : "bg-black"
-            )}
-            style={{ clipPath: DESIGN_SYSTEM.SHAPES.DIAMOND_CLIP }}
-        />
     </div>
 ))
 ClippedSelectTrigger.displayName = SelectPrimitive.Trigger.displayName
@@ -67,9 +48,9 @@ const ClippedSelectContent = React.forwardRef<
         <SelectPrimitive.Content
             ref={ref}
             className={cn(
-                'relative z-[100] min-w-[8rem] overflow-hidden bg-white text-black border-2 border-black shadow-xl',
-                'data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95',
-                position === 'popper' && 'data-[side=bottom]:translate-y-2',
+                'relative z-[100] min-w-[8rem] bg-white-pure border border-black-pure',
+                'data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
+                position === 'popper' && 'mt-2',
                 className,
             )}
             position={position}
@@ -77,7 +58,7 @@ const ClippedSelectContent = React.forwardRef<
         >
             <SelectPrimitive.Viewport
                 className={cn(
-                    'p-1',
+                    'p-0',
                     position === 'popper' && 'h-[var(--radix-select-content-available-height)] w-full min-w-[var(--radix-select-trigger-width)]',
                 )}
             >
@@ -95,14 +76,14 @@ const ClippedSelectItem = React.forwardRef<
     <SelectPrimitive.Item
         ref={ref}
         className={cn(
-            "relative flex w-full cursor-pointer select-none items-center py-4 pl-12 pr-4 text-[10px] font-black uppercase tracking-[0.2em] outline-none transition-colors italic focus:bg-zinc-100",
+            "relative flex w-full cursor-pointer select-none items-center py-5 px-8 text-xs font-black font-mono uppercase tracking-widest outline-none transition-colors focus:bg-primary focus:text-black-pure",
             className,
         )}
         {...props}
     >
-        <span className="absolute left-4 flex h-3.5 w-3.5 items-center justify-center">
+        <span className="absolute left-3 flex h-3.5 w-3.5 items-center justify-center">
             <SelectPrimitive.ItemIndicator>
-                <div className="w-2 h-2 rotate-45" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
+                <div className="size-2 bg-black-pure" />
             </SelectPrimitive.ItemIndicator>
         </span>
         <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>

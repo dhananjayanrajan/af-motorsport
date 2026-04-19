@@ -24,45 +24,47 @@ export const CheckoutAddresses: React.FC<Props> = ({
   const [showAddForm, setShowAddForm] = useState(false)
 
   return (
-    <div className="space-y-12">
-      <div className="space-y-3 border-l-8 border-black pl-8">
-        <h3 className="text-xl font-bold uppercase tracking-tighter text-black leading-none">
-          {heading}
-        </h3>
-        <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest">
+    <div className="w-full">
+      <div className="mb-10 flex flex-col gap-2">
+        <div className="flex items-center gap-3">
+          <div className="size-2 bg-black-pure" />
+          <h3 className="text-sm font-mono font-black uppercase tracking-widest text-black-pure">
+            {heading}
+          </h3>
+        </div>
+        <p className="text-[10px] font-mono font-black uppercase tracking-widest text-black-pure opacity-40">
           {description}
         </p>
       </div>
 
-      <div className="flex justify-start">
+      <div className="mb-12">
         <button
           onClick={() => setShowAddForm(!showAddForm)}
           className={cn(
-            'group relative h-14 px-10 border-2 border-black transition-all active:scale-95',
-            showAddForm ? 'bg-error text-white' : 'bg-black text-white hover:bg-primary hover:text-black',
+            'group flex items-center gap-4 px-6 h-12 border border-black-pure transition-colors duration-200',
+            showAddForm
+              ? 'bg-black-pure text-white-pure'
+              : 'bg-white-pure text-black-pure hover:bg-primary',
           )}
         >
-          <span className="relative z-10 text-xs font-bold uppercase tracking-widest flex items-center gap-3">
-            {showAddForm ? (
-              <>
-                <X className="h-4 w-4" strokeWidth={3} /> Abort Action
-              </>
-            ) : (
-              <>
-                <Plus className="h-4 w-4" strokeWidth={3} /> Create New Entry
-              </>
-            )}
+          {showAddForm ? (
+            <X size={14} className="shrink-0" />
+          ) : (
+            <Plus size={14} className="shrink-0" />
+          )}
+          <span className="text-[10px] font-mono font-black uppercase tracking-widest">
+            {showAddForm ? 'Cancel Entry' : 'Create New Record'}
           </span>
         </button>
       </div>
 
       {showAddForm && (
-        <div className="bg-white border-4 border-black p-10 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
-          <div className="mb-10 flex items-center gap-4 border-b-2 border-black pb-4">
-            <div className="size-4 bg-primary border-2 border-black" />
-            <span className="text-sm font-bold uppercase tracking-widest text-black">
-              Address Parameters
+        <div className="mb-12 p-8 border border-black-pure bg-white-50 animate-in fade-in slide-in-from-top-4 duration-300">
+          <div className="mb-8 flex items-center justify-between border-b border-black-pure pb-4">
+            <span className="text-[10px] font-mono font-black uppercase tracking-widest">
+              Form Parameters
             </span>
+            <div className="size-2 bg-secondary" />
           </div>
           <AddressForm
             callback={(newAddress) => {
@@ -73,44 +75,45 @@ export const CheckoutAddresses: React.FC<Props> = ({
         </div>
       )}
 
-      <div className="grid grid-cols-1 gap-6">
+      <div className="grid grid-cols-1 gap-4">
         {!addresses || addresses.length === 0 ? (
-          <div className="py-20 border-4 border-dashed border-zinc-200 flex items-center justify-center bg-zinc-50">
-            <p className="text-xs font-bold uppercase tracking-[0.3em] text-zinc-300">
-              Database Empty: No Records
+          <div className="py-16 border border-black-pure border-dashed flex flex-col items-center justify-center opacity-30">
+            <MapPin size={24} className="mb-4" />
+            <p className="text-[10px] font-mono font-black uppercase tracking-widest">
+              Registry Empty
             </p>
           </div>
         ) : (
           addresses.map((address) => (
-            <div
+            <button
               key={address.id}
-              className="group flex flex-col md:flex-row items-center justify-between p-8 bg-white border-2 border-black hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all"
+              onClick={(e) => {
+                e.preventDefault()
+                setAddress(address)
+              }}
+              className="group flex flex-col sm:flex-row sm:items-center justify-between p-6 bg-white-pure border border-black-pure hover:bg-white-50 transition-colors text-left"
             >
-              <div className="flex gap-8 items-center">
-                <div className="p-4 bg-zinc-100 border-2 border-black text-black group-hover:bg-primary transition-colors">
-                  <MapPin className="h-6 w-6" strokeWidth={2.5} />
-                </div>
-                <div className="space-y-2">
-                  <span className="text-base font-bold uppercase tracking-tight text-black leading-none">
-                    {address.title || 'Untitled Entry'}
+              <div className="flex items-start gap-5">
+                <div className="mt-1 size-2 bg-black-pure opacity-20 group-hover:bg-primary group-hover:opacity-100 transition-all" />
+                <div className="flex flex-col gap-1">
+                  <span className="text-sm font-mono font-black uppercase tracking-tight">
+                    {address.title || 'Undefined'}
                   </span>
-                  <p className="text-xs font-bold text-zinc-500 uppercase tracking-widest">
+                  <span className="text-[10px] font-mono font-black uppercase tracking-widest opacity-40">
                     {address.addressLine1}, {address.city}
-                  </p>
+                  </span>
                 </div>
               </div>
 
-              <button
-                onClick={(e) => {
-                  e.preventDefault()
-                  setAddress(address)
-                }}
-                className="mt-8 md:mt-0 w-full md:w-auto h-14 px-10 border-2 border-black bg-white text-black font-bold uppercase tracking-widest hover:bg-black hover:text-white transition-all flex items-center justify-center gap-4"
-              >
-                <span>Select</span>
-                <ChevronRight className="h-5 w-5" strokeWidth={3} />
-              </button>
-            </div>
+              <div className="mt-6 sm:mt-0 flex items-center gap-4">
+                <span className="text-[9px] font-mono font-black uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">
+                  Select
+                </span>
+                <div className="size-8 border border-black-pure flex items-center justify-center group-hover:bg-black-pure group-hover:text-white-pure transition-colors">
+                  <ChevronRight size={14} />
+                </div>
+              </div>
+            </button>
           ))
         )}
       </div>

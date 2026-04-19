@@ -13,7 +13,6 @@ import React, { Suspense, useCallback, useEffect, useState } from 'react'
 import { AddressItem } from '@/components/addresses/AddressItem'
 import { CreateAddressModal } from '@/components/addresses/CreateAddressModal'
 import { CheckoutForm } from '@/components/forms/CheckoutForm'
-import { FormItem } from '@/components/forms/FormItem'
 import { LoadingSpinner } from '@/components/LoadingSpinner'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Address } from '@/payload-types'
@@ -40,13 +39,11 @@ export const CheckoutPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null)
 
   const cartIsEmpty = !cart || !cart.items || !cart.items.length
-
   const canGoToPayment = Boolean((email || user) && billingAddress)
 
   useEffect(() => {
     if (user && addresses && addresses.length > 0 && !billingAddress) {
-      const defaultAddress =
-        addresses.find((addr: Address) => addr.id === user.id || true) || addresses[0]
+      const defaultAddress = addresses[0]
       setBillingAddress(defaultAddress)
     }
   }, [user, addresses, billingAddress])
@@ -75,7 +72,7 @@ export const CheckoutPage: React.FC = () => {
           setPaymentData(paymentData)
         }
       } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : 'Payment initiation failed.'
+        const errorMessage = error instanceof Error ? error.message : 'Action failed.'
         setError(errorMessage)
         toast.error(errorMessage)
       } finally {
@@ -89,241 +86,173 @@ export const CheckoutPage: React.FC = () => {
 
   if (cartIsEmpty) {
     return (
-      <div className="py-32 w-full flex flex-col items-center justify-center bg-white min-h-screen">
-        <div className="size-20 bg-zinc-100 flex items-center justify-center border-4 border-black mb-10">
-          <ShoppingBag className="size-10 text-black" strokeWidth={3} />
+      <div className="flex flex-col items-center justify-center min-h-screen bg-white-pure">
+        <div className="size-20 bg-primary flex items-center justify-center mb-10">
+          <ShoppingBag size={32} className="text-black-pure" />
         </div>
-        <p className="text-sm font-bold uppercase tracking-[0.4em] text-zinc-400 mb-10">
-          Cart Status: Null
-        </p>
+        <h2 className="text-xl font-mono font-black uppercase tracking-tight mb-8">Cart is empty</h2>
         <Link
           href="/shop"
-          className="h-16 px-12 bg-black text-white text-xs font-bold uppercase tracking-widest flex items-center justify-center hover:bg-primary hover:text-black border-2 border-black transition-colors"
+          className="h-14 px-10 bg-black-pure text-white-pure text-sm font-mono font-black uppercase tracking-widest hover:bg-secondary transition-colors"
         >
-          Return to Catalog
+          Return to shop
         </Link>
       </div>
     )
   }
 
   return (
-    <div className="flex flex-col lg:flex-row w-full min-h-screen bg-white text-black">
-      <div className="flex-1 p-8 md:p-12 lg:p-24 border-r-4 border-black">
-        <div className="max-w-3xl mx-auto space-y-32">
-          <section className="space-y-12">
-            <div className="flex items-center gap-6">
-              <span className="text-4xl font-bold text-primary border-b-4 border-black">01</span>
-              <h2 className="text-xl font-bold uppercase tracking-widest text-black">
-                Account Identification
-              </h2>
-            </div>
+    <div className="flex flex-col lg:flex-row min-h-screen w-full bg-white-pure">
+      <div className="flex-1 flex flex-col border-r border-black-pure">
 
+        <section className="flex flex-col">
+          <div className="flex items-stretch h-16 border-b border-black-pure">
+            <div className="w-16 bg-secondary flex items-center justify-center text-white-pure text-lg font-mono font-black">1</div>
+            <div className="flex-1 px-8 flex items-center">
+              <h2 className="text-sm font-mono font-black uppercase tracking-widest">Account</h2>
+            </div>
+          </div>
+
+          <div className="p-10 lg:p-16">
             {!user ? (
               <div className="space-y-12">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <Link
-                    href="/login"
-                    className="flex items-center justify-center h-16 border-2 border-black text-black text-xs font-bold uppercase tracking-widest hover:bg-zinc-100 transition-colors"
-                  >
-                    User Login
+                <div className="grid grid-cols-2 bg-black-pure gap-px border border-black-pure">
+                  <Link href="/login" className="flex items-center justify-center h-16 bg-white-pure text-xs font-mono font-black uppercase tracking-widest hover:bg-primary transition-colors">
+                    Log in
                   </Link>
-                  <Link
-                    href="/create-account"
-                    className="flex items-center justify-center h-16 bg-black text-white text-xs font-bold uppercase tracking-widest hover:bg-primary hover:text-black transition-colors"
-                  >
-                    Create Profile
+                  <Link href="/create-account" className="flex items-center justify-center h-16 bg-white-pure text-xs font-mono font-black uppercase tracking-widest hover:bg-primary transition-colors">
+                    Sign up
                   </Link>
                 </div>
-
-                <div className="relative flex items-center">
-                  <div className="grow border-t-2 border-zinc-100" />
-                  <span className="px-6 text-[10px] font-bold text-zinc-400 uppercase tracking-widest">
-                    Manual Input
-                  </span>
-                  <div className="grow border-t-2 border-zinc-100" />
-                </div>
-
-                <div className="space-y-8">
-                  <FormItem>
-                    <Label className="text-xs font-bold uppercase tracking-widest text-black mb-4 block">
-                      Email Address
-                    </Label>
+                <div className="space-y-6">
+                  <div className="space-y-4">
+                    <Label className="text-xs font-mono font-black uppercase tracking-widest opacity-40">Email</Label>
                     <ClippedInput
                       disabled={!emailEditable}
-                      className="bg-zinc-50 border-2 border-black h-16 px-6 focus:bg-white transition-all rounded-none font-bold uppercase text-sm"
-                      placeholder="Enter contact email"
+                      className="bg-white-pure border border-black-pure h-14 px-6 text-sm font-mono uppercase focus:bg-primary/5 transition-colors"
+                      placeholder="Email address"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                     />
-                  </FormItem>
-
+                  </div>
                   {emailEditable && (
                     <button
                       disabled={!email}
                       onClick={() => setEmailEditable(false)}
-                      className="h-16 px-12 bg-black text-white text-xs font-bold uppercase tracking-widest transition-all disabled:opacity-20 flex items-center gap-4 hover:bg-primary hover:text-black"
+                      className="h-14 px-10 bg-black-pure text-white-pure text-xs font-mono font-black uppercase tracking-widest hover:bg-secondary transition-colors disabled:opacity-20 flex items-center gap-4"
                     >
-                      Lock Email & Continue <ChevronRight className="size-5" strokeWidth={3} />
+                      Save and continue <ChevronRight size={18} />
                     </button>
                   )}
                 </div>
               </div>
             ) : (
-              <div className="p-10 border-4 border-black bg-zinc-50 flex justify-between items-center shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
-                <div>
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 mb-2">
-                    Verified User
-                  </p>
-                  <p className="text-lg font-bold text-black uppercase">{user.email}</p>
+              <div className="flex items-center justify-between p-8 bg-white-pure border border-black-pure border-l-8 border-l-secondary">
+                <div className="flex flex-col gap-1">
+                  <span className="text-xs font-mono font-black uppercase opacity-40">Account active</span>
+                  <span className="text-base font-mono font-black uppercase">{user.email}</span>
                 </div>
-                <Link
-                  href="/logout"
-                  className="text-xs font-bold uppercase text-black hover:text-error underline underline-offset-4 decoration-2 transition-colors"
-                >
-                  Logout
-                </Link>
+                <Link href="/logout" className="text-xs font-mono font-black uppercase underline underline-offset-4 hover:text-secondary">Logout</Link>
               </div>
             )}
-          </section>
+          </div>
+        </section>
 
-          <section className="space-y-12">
-            <div className="flex items-center gap-6">
-              <span className="text-4xl font-bold text-secondary border-b-4 border-black">02</span>
-              <h2 className="text-xl font-bold uppercase tracking-widest text-black">
-                Shipping & Logistics
-              </h2>
+        <section className="flex flex-col border-t border-black-pure">
+          <div className="flex items-stretch h-16 border-b border-black-pure">
+            <div className="w-16 bg-primary flex items-center justify-center text-black-pure text-lg font-mono font-black">2</div>
+            <div className="flex-1 px-8 flex items-center">
+              <h2 className="text-sm font-mono font-black uppercase tracking-widest">Shipping</h2>
+            </div>
+          </div>
+
+          <div className="p-10 lg:p-16 space-y-16">
+            <div className="space-y-8">
+              {billingAddress ? (
+                <div className="p-8 bg-white-pure border border-black-pure relative">
+                  <div className="absolute top-0 right-0 size-10 bg-primary border-l border-b border-black-pure flex items-center justify-center">
+                    <div className="size-2 bg-black-pure" />
+                  </div>
+                  <AddressItem address={billingAddress} />
+                  <button onClick={() => setBillingAddress(undefined)} className="mt-8 text-xs font-mono font-black uppercase underline underline-offset-4 hover:text-primary">Change</button>
+                </div>
+              ) : user ? (
+                <CheckoutAddresses heading="Addresses" setAddress={setBillingAddress} />
+              ) : (
+                <div className="p-16 border border-black-pure border-dashed flex items-center justify-center bg-white-pure">
+                  <CreateAddressModal
+                    disabled={!user && (!email || emailEditable)}
+                    callback={setBillingAddress}
+                    skipSubmission={true}
+                    buttonText="Add address"
+                  />
+                </div>
+              )}
             </div>
 
-            <div className="space-y-12">
-              <div className="space-y-8">
-                <div className="flex items-center gap-3">
-                  <div className="h-4 w-1 bg-black" />
-                  <h3 className="text-xs font-bold uppercase tracking-widest text-black">
-                    Billing Parameters
-                  </h3>
-                </div>
-                {billingAddress ? (
-                  <div className="border-2 border-black p-8 bg-zinc-50">
-                    <AddressItem address={billingAddress} />
-                    <button
-                      onClick={() => setBillingAddress(undefined)}
-                      className="mt-6 text-xs font-bold uppercase text-black hover:text-primary underline underline-offset-4 decoration-2"
-                    >
-                      Modify Entry
-                    </button>
+            <div className="flex gap-6 items-center p-8 bg-black-pure text-white-pure">
+              <Checkbox
+                id="same"
+                checked={billingAddressSameAsShipping}
+                onCheckedChange={(checked) => {
+                  setBillingAddressSameAsShipping(checked as boolean)
+                  if (checked) setShippingAddress(billingAddress)
+                  else setShippingAddress(undefined)
+                }}
+                className="size-6 border-white-pure data-[state=checked]:bg-primary"
+              />
+              <Label htmlFor="same" className="text-xs font-mono font-black uppercase tracking-widest cursor-pointer">Shipping same as billing</Label>
+            </div>
+
+            {!billingAddressSameAsShipping && (
+              <div className="space-y-8 animate-in fade-in duration-500">
+                {shippingAddress ? (
+                  <div className="p-8 bg-white-pure border border-black-pure">
+                    <AddressItem address={shippingAddress} />
+                    <button onClick={() => setShippingAddress(undefined)} className="mt-8 text-xs font-mono font-black uppercase underline underline-offset-4 hover:text-primary">Change</button>
                   </div>
-                ) : user ? (
-                  <CheckoutAddresses heading="" setAddress={setBillingAddress} />
                 ) : (
-                  <div className="border-4 border-dashed border-zinc-200 p-16 flex flex-col items-center justify-center bg-zinc-50/50">
+                  <div className="p-16 border border-black-pure border-dashed flex items-center justify-center bg-white-pure">
                     <CreateAddressModal
                       disabled={!user && (!email || emailEditable)}
-                      callback={setBillingAddress}
+                      callback={setShippingAddress}
                       skipSubmission={true}
-                      buttonText="Set Billing Address"
+                      buttonText="Add shipping address"
                     />
                   </div>
                 )}
               </div>
+            )}
+          </div>
+        </section>
 
-              <div className="flex gap-6 items-center p-8 border-2 border-black bg-white">
-                <Checkbox
-                  id="same"
-                  checked={billingAddressSameAsShipping}
-                  onCheckedChange={(checked) => {
-                    setBillingAddressSameAsShipping(checked as boolean)
-                    if (checked) {
-                      setShippingAddress(billingAddress)
-                    } else {
-                      setShippingAddress(undefined)
-                    }
-                  }}
-                  className="size-6 border-2 border-black rounded-none data-[state=checked]:bg-black data-[state=checked]:text-white"
-                />
-                <Label htmlFor="same" className="text-xs font-bold uppercase text-black cursor-pointer">
-                  Sync billing with shipping data
-                </Label>
+        {!paymentData && (
+          <button
+            disabled={!canGoToPayment || isProcessingPayment}
+            onClick={() => initiatePaymentIntent('stripe')}
+            className="h-20 w-full bg-black-pure text-white-pure text-sm font-mono font-black uppercase tracking-[0.2em] hover:bg-secondary transition-colors disabled:opacity-10 flex items-center justify-center gap-6 border-t border-black-pure"
+          >
+            {isProcessingPayment ? 'Syncing...' : <><Lock size={20} /> Continue to payment</>}
+          </button>
+        )}
+
+        <Suspense fallback={<LoadingSpinner />}>
+          {/* @ts-ignore */}
+          {paymentData?.['clientSecret'] && (
+            <section className="flex flex-col border-t border-black-pure animate-in fade-in duration-700">
+              <div className="flex items-stretch h-16 border-b border-black-pure">
+                <div className="w-16 bg-black-pure flex items-center justify-center text-white-pure text-lg font-mono font-black">3</div>
+                <div className="flex-1 px-8 flex items-center">
+                  <h2 className="text-sm font-mono font-black uppercase tracking-widest">Payment</h2>
+                </div>
               </div>
-
-              {!billingAddressSameAsShipping && (
-                <div className="space-y-8">
-                  <div className="flex items-center gap-3">
-                    <div className="h-4 w-1 bg-black" />
-                    <h3 className="text-xs font-bold uppercase tracking-widest text-black">
-                      Shipping Parameters
-                    </h3>
-                  </div>
-                  {shippingAddress ? (
-                    <div className="border-2 border-black p-8 bg-zinc-50">
-                      <AddressItem address={shippingAddress} />
-                      <button
-                        onClick={() => setShippingAddress(undefined)}
-                        className="mt-6 text-xs font-bold uppercase text-black hover:text-primary underline underline-offset-4 decoration-2"
-                      >
-                        Modify Entry
-                      </button>
-                    </div>
-                  ) : (
-                    <div className="border-4 border-dashed border-zinc-200 p-16 flex flex-col items-center justify-center bg-zinc-50/50">
-                      <CreateAddressModal
-                        disabled={!user && (!email || emailEditable)}
-                        callback={setShippingAddress}
-                        skipSubmission={true}
-                        buttonText="Set Shipping Address"
-                      />
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-          </section>
-
-          {!paymentData && (
-            <button
-              disabled={!canGoToPayment || isProcessingPayment}
-              onClick={() => initiatePaymentIntent('stripe')}
-              className="h-20 w-full bg-black text-white text-sm font-bold uppercase tracking-widest transition-all disabled:opacity-10 flex items-center justify-center gap-6 border-2 border-black hover:bg-primary hover:text-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]"
-            >
-              {isProcessingPayment ? (
-                'Syncing...'
-              ) : (
-                <>
-                  Commit Secure Checkout <Lock className="size-5" strokeWidth={3} />
-                </>
-              )}
-            </button>
-          )}
-
-          {error && (
-            <div className="p-8 border-4 border-error bg-error/10">
-              <p className="text-xs font-bold uppercase tracking-widest text-error">
-                System Error: {error}
-              </p>
-            </div>
-          )}
-
-          <Suspense fallback={<LoadingSpinner />}>
-            {/* @ts-ignore */}
-            {paymentData?.['clientSecret'] && (
-              <section className="space-y-12 animate-in fade-in slide-in-from-bottom-8 duration-700">
-                <div className="flex items-center gap-6">
-                  <span className="text-4xl font-bold text-accent border-b-4 border-black">03</span>
-                  <h2 className="text-xl font-bold uppercase tracking-widest text-black">
-                    Payment Gateway
-                  </h2>
-                </div>
-                <div className="p-10 md:p-16 border-4 border-black shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] bg-white">
+              <div className="p-10 lg:p-16">
+                <div className="p-8 border border-black-pure bg-white-pure">
                   <Elements
                     options={{
                       appearance: {
                         theme: 'stripe',
-                        variables: {
-                          colorPrimary: '#000',
-                          borderRadius: '0px',
-                          fontFamily: 'inherit',
-                          colorBackground: '#ffffff',
-                          colorText: '#000000',
-                        },
+                        variables: { colorPrimary: '#000', borderRadius: '0px', fontFamily: 'monospace' },
                       },
                       clientSecret: paymentData['clientSecret'] as string,
                     }}
@@ -336,69 +265,50 @@ export const CheckoutPage: React.FC = () => {
                     />
                   </Elements>
                 </div>
-              </section>
-            )}
-          </Suspense>
-        </div>
+              </div>
+            </section>
+          )}
+        </Suspense>
       </div>
 
-      <aside className="w-full lg:w-[540px] bg-zinc-100 p-8 md:p-12 lg:p-20">
-        <div className="sticky top-24">
-          <div className="flex items-center justify-between border-b-4 border-black pb-8 mb-12">
-            <h2 className="text-2xl font-bold uppercase tracking-tighter text-black">
-              Order Summary
-            </h2>
-            <div className="flex gap-1">
-              <div className="size-3 bg-primary" />
-              <div className="size-3 bg-secondary" />
-              <div className="size-3 bg-accent" />
-            </div>
+      <aside className="w-full lg:w-[450px] bg-white-pure flex flex-col">
+        <div className="p-8 border-b border-black-pure bg-primary flex justify-between items-center">
+          <h2 className="text-lg font-mono font-black uppercase tracking-widest">Summary</h2>
+          <div className="flex gap-2">
+            <div className="size-3 bg-secondary" />
+            <div className="size-3 bg-black-pure" />
           </div>
+        </div>
 
-          <div className="space-y-10 overflow-y-auto max-h-[45vh] pr-6 custom-scrollbar">
-            {cart?.items?.map((item: any, i: number) => {
-              const product = item.product
-              const image = product?.gallery?.[0]?.image || product?.meta?.image
-              return (
-                <div className="flex gap-8 items-start border-b-2 border-black pb-10 group" key={i}>
-                  <div className="h-28 w-24 bg-white border-2 border-black p-2 flex-shrink-0 transition-transform group-hover:rotate-2">
-                    <div className="relative w-full h-full">
-                      {image && <Media fill imgClassName="object-contain" resource={image} />}
-                    </div>
-                  </div>
-                  <div className="flex grow flex-col">
-                    <h4 className="font-bold text-base uppercase text-black leading-tight mb-2">
-                      {product?.title}
-                    </h4>
-                    <div className="flex items-center justify-between mt-auto pt-4">
-                      <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">
-                        Qty: {item.quantity}
-                      </span>
-                      <Price
-                        className="text-sm font-bold text-black"
-                        amount={item.variant?.priceInUSD || product?.priceInUSD}
-                      />
-                    </div>
+        <div className="flex-1 p-8 space-y-10 overflow-y-auto max-h-[50vh]">
+          {cart?.items?.map((item: any, i: number) => {
+            const product = item.product
+            const image = product?.gallery?.[0]?.image || product?.meta?.image
+            return (
+              <div className="flex gap-6 pb-8 border-b border-black-pure last:border-0" key={i}>
+                <div className="size-20 bg-white-pure border border-black-pure flex-shrink-0 relative overflow-hidden">
+                  {image && <Media fill imgClassName="object-cover" resource={image} />}
+                </div>
+                <div className="flex flex-col justify-between py-1">
+                  <span className="text-xs font-mono font-black uppercase leading-tight">{product?.title}</span>
+                  <div className="flex items-center gap-4">
+                    <span className="text-[10px] font-mono font-black uppercase opacity-40">Qty: {item.quantity}</span>
+                    <Price className="text-xs font-mono font-black" amount={item.variant?.priceInUSD || product?.priceInUSD} />
                   </div>
                 </div>
-              )
-            })}
-          </div>
+              </div>
+            )
+          })}
+        </div>
 
-          <div className="mt-16 pt-10 border-t-4 border-black space-y-6">
-            <div className="flex justify-between items-center text-zinc-400">
-              <span className="text-xs font-bold uppercase tracking-widest">Calculated Subtotal</span>
-              <Price className="text-xl font-bold" amount={cart?.subtotal || 0} />
-            </div>
-            <div className="flex justify-between items-end bg-black p-8 text-white">
-              <span className="text-sm font-bold uppercase tracking-[0.2em] text-zinc-400">
-                Final Total
-              </span>
-              <Price
-                className="text-5xl font-bold uppercase tracking-tighter text-primary leading-none"
-                amount={cart?.subtotal || 0}
-              />
-            </div>
+        <div className="mt-auto border-t border-black-pure bg-black-pure">
+          <div className="flex justify-between items-center p-8 bg-white-pure border-b border-black-pure">
+            <span className="text-xs font-mono font-black uppercase opacity-40">Subtotal</span>
+            <Price className="text-base font-mono font-black" amount={cart?.subtotal || 0} />
+          </div>
+          <div className="flex justify-between items-center p-10 bg-secondary text-white-pure">
+            <span className="text-sm font-mono font-black uppercase">Total</span>
+            <Price className="text-4xl font-mono font-black tracking-tighter" amount={cart?.subtotal || 0} />
           </div>
         </div>
       </aside>
