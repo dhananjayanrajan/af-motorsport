@@ -69,7 +69,7 @@ const VideoSection: React.FC<VideoSectionProps> = ({ videoUrls = [] }) => {
 
             <div className="h-28 md:h-40 bg-white-pure border-t-2 border-black-pure w-full z-20 shrink-0">
                 <SectionCTA
-                    variant={3}
+                    variant={1}
                     label="ACCESS MEDIA HUB"
                     path="/media"
                     buttonBgColor="bg-primary"

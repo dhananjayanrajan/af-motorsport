@@ -1,10 +1,7 @@
 import { Circuit, Race, Season } from '@/payload-types'
-import RaceCalendar from './sections/Calendar'
-import Incidents from './sections/Collapses'
-import LightboxGallery from './sections/Gallery'
-import ChampionshipTable from './sections/List'
-import CircuitBoard from './sections/Map'
-import SeasonSelector from './sections/Selector'
+import ChampionshipDirectory from './sections/Championships'
+import SeasonDirectory from './sections/Seasons'
+import SeriesDirectory from './sections/Series'
 
 export const dynamic = 'force-dynamic'
 
@@ -68,20 +65,9 @@ export default async function CompetitionPage({ searchParams }: CompetitionPageP
 
     return (
         <main className="min-h-screen bg-white">
-            <SeasonSelector
-                seasons={seasons}
-                series={series}
-                activeSeason={activeSeason}
-            />
-            <RaceCalendar races={filteredRaces} />
-            <ChampionshipTable championships={allChampionships} />
-            <CircuitBoard circuits={activeCircuits} />
-            <Incidents incidents={allIncidents} />
-            <LightboxGallery
-                items={allRaces}
-                title="Gallery"
-                label="Media Assets"
-            />
+            <ChampionshipDirectory championships={allChampionships} />
+            <SeriesDirectory series={series} />
+            <SeasonDirectory seasons={seasons} />
         </main>
     )
 }

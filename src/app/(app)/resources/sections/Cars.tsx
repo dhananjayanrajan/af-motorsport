@@ -1,268 +1,140 @@
-'use client';
+"use client"
 
-import { DESIGN_SYSTEM } from '@/lib/constants';
-import { Car, Media } from '@/payload-types';
-import useEmblaCarousel from 'embla-carousel-react';
-import { motion } from 'framer-motion';
-import { ChevronRight, Cpu, Gauge, Settings2 } from 'lucide-react';
-import { useCallback, useEffect, useState } from 'react';
+import SectionFooter from '@/components/Section/Footer'
+import { Car, Media } from '@/payload-types'
+import Image from 'next/image'
+import Link from 'next/link'
+import React, { useEffect, useRef, useState } from 'react'
 
-interface CarsSectionProps {
-    cars: Car[];
+interface CarsDirectoryProps {
+    cars: Car[]
 }
 
-export default function CarsSection({ cars }: CarsSectionProps) {
-    const [emblaRef, emblaApi] = useEmblaCarousel({
-        loop: true,
-        align: 'start',
-        skipSnaps: false,
-        dragFree: true
-    });
-
-    const [selectedIndex, setSelectedIndex] = useState(0);
-    const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);
-
-    const scrollPrev = useCallback(() => emblaApi && emblaApi.scrollPrev(), [emblaApi]);
-    const scrollNext = useCallback(() => emblaApi && emblaApi.scrollNext(), [emblaApi]);
-
-    const onSelect = useCallback(() => {
-        if (!emblaApi) return;
-        setSelectedIndex(emblaApi.selectedScrollSnap());
-    }, [emblaApi]);
+const CarsDirectory: React.FC<CarsDirectoryProps> = ({ cars = [] }) => {
+    const [activeIndex, setActiveIndex] = useState(0)
+    const [isPaused, setIsPaused] = useState(false)
+    const activeCar = cars[activeIndex]
+    const autoplayRef = useRef<NodeJS.Timeout | null>(null)
 
     useEffect(() => {
-        if (!emblaApi) return;
-        onSelect();
-        setScrollSnaps(emblaApi.scrollSnapList());
-        emblaApi.on('select', onSelect);
-        emblaApi.on('reInit', onSelect);
-    }, [emblaApi, onSelect]);
+        if (cars.length > 6 && !isPaused) {
+            autoplayRef.current = setInterval(() => {
+                setActiveIndex((prev) => (prev + 1) % cars.length)
+            }, 4000)
+        }
+        return () => {
+            if (autoplayRef.current) clearInterval(autoplayRef.current)
+        }
+    }, [cars.length, isPaused])
 
     return (
-        <section
-            className="w-full py-32 md:py-48"
-            style={{ backgroundColor: DESIGN_SYSTEM.COLORS.WHITE.PURE }}
-        >
-            <div className="max-w-[1400px] mx-auto px-6 md:px-10 mb-24">
-                <div className="flex flex-col gap-6 border-l-4 pl-8" style={{ borderColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}>
-                    <span className="text-[10px] font-black uppercase tracking-[0.5em]" style={{ color: DESIGN_SYSTEM.COLORS.ZINC[400] }}>
-                        Technical Inventory
-                    </span>
-                    <div className="flex items-end justify-between">
-                        <h2 className="text-6xl md:text-8xl font-black uppercase tracking-tighter italic leading-none" style={{ color: DESIGN_SYSTEM.COLORS.BLACK.PURE }}>
-                            Asset Catalog
-                        </h2>
-                        <div className="flex items-center gap-2">
-                            <span className="text-4xl font-black italic" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}>
-                                {(selectedIndex % cars.length) + 1}
-                            </span>
-                            <span className="text-xl font-black" style={{ color: DESIGN_SYSTEM.COLORS.ZINC[300] }}>/</span>
-                            <span className="text-xl font-black" style={{ color: DESIGN_SYSTEM.COLORS.ZINC[400] }}>{cars.length.toString().padStart(2, '0')}</span>
-                        </div>
-                    </div>
+        <section className="relative w-full min-h-screen bg-white-pure flex flex-col border-b-2 border-black-pure overflow-hidden">
+            <div className="h-20 md:h-24 border-b-2 border-black-pure flex divide-x-2 divide-black-pure bg-white-pure z-30">
+                <div className="w-20 md:w-32 flex items-center justify-center bg-black-pure text-white-pure font-black text-2xl">
+                    {activeCar?.basics?.identifiers?.version?.slice(0, 2) || "V1"}
+                </div>
+                <div className="flex-1 flex items-center px-6 md:px-12 bg-primary-500">
+                    <h2 className="text-sm md:text-lg font-black text-black-pure uppercase tracking-tighter">
+                        {activeCar?.name}
+                    </h2>
+                </div>
+                <div className="hidden lg:flex w-64 items-center justify-center font-mono text-[10px] font-black uppercase text-black-pure tracking-widest">
+                    RACE CAR CATALOGUE
                 </div>
             </div>
 
-            <div className="relative">
-                <div className="overflow-hidden" ref={emblaRef}>
-                    <div className="flex">
-                        {cars.map((car, index) => {
-                            const coverImage = (car.assets?.cover as Media)?.url || (car.assets?.avatar as Media)?.url;
-                            const placeholderImage = `https://picsum.photos/seed/${car.id || index}/800/450`;
-
-                            return (
-                                <div
-                                    key={car.id}
-                                    className="flex-[0_0_100%] min-w-0 pl-6 md:pl-10"
-                                >
-                                    <motion.div
-                                        initial={{ opacity: 0, y: 40 }}
-                                        whileInView={{ opacity: 1, y: 0 }}
-                                        transition={{ duration: 0.8, delay: index * 0.1 }}
-                                        className="group relative grid grid-cols-1 lg:grid-cols-12 gap-12 items-start pr-6 md:pr-10"
-                                    >
-                                        {/* Technical Header - Mobile Only */}
-                                        <div className="lg:hidden flex justify-between items-end border-b pb-4" style={{ borderColor: DESIGN_SYSTEM.COLORS.ZINC[200] }}>
-                                            <h3 className="text-3xl font-black uppercase italic tracking-tighter" style={{ color: DESIGN_SYSTEM.COLORS.BLACK.PURE }}>
-                                                {car.name}
-                                            </h3>
-                                            <span className="text-[10px] font-mono font-bold" style={{ color: DESIGN_SYSTEM.COLORS.ZINC[400] }}>
-                                                {car.basics?.identifiers?.chassis}
-                                            </span>
-                                        </div>
-
-                                        {/* Visual Asset Container */}
-                                        <div className="lg:col-span-7 relative">
-                                            <div className="aspect-[16/9] overflow-hidden relative" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.ZINC[100] }}>
-                                                <img
-                                                    src={coverImage || placeholderImage}
-                                                    alt={car.name}
-                                                    className="w-full h-full object-cover grayscale transition-all duration-700 group-hover:grayscale-0 group-hover:scale-105"
-                                                    onError={(e) => {
-                                                        e.currentTarget.src = placeholderImage;
-                                                    }}
-                                                    draggable={false}
-                                                />
-
-                                                {/* Status Indicator */}
-                                                <div className="absolute bottom-6 left-6 flex items-center gap-3">
-                                                    <div
-                                                        className="px-4 py-2 text-[10px] font-black uppercase tracking-widest backdrop-blur-md border"
-                                                        style={{
-                                                            backgroundColor: DESIGN_SYSTEM.COLORS.BLACK[500],
-                                                            color: DESIGN_SYSTEM.COLORS.WHITE.PURE,
-                                                            borderColor: DESIGN_SYSTEM.COLORS.WHITE[300] + '33'
-                                                        }}
-                                                    >
-                                                        {car.details?.status || 'Active'}
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            {/* Chassis/Model Labels */}
-                                            <div className="mt-6 flex flex-wrap gap-8">
-                                                <div className="flex flex-col gap-1">
-                                                    <span className="text-[9px] font-black uppercase tracking-widest group-hover:text-primary-500 transition-colors" style={{ color: DESIGN_SYSTEM.COLORS.ZINC[400] }}>Chassis_Ref</span>
-                                                    <span className="text-xs font-black uppercase tabular-nums group-hover:text-primary-600 transition-colors" style={{ color: DESIGN_SYSTEM.COLORS.BLACK[600] }}>{car.basics?.identifiers?.chassis || 'TBD'}</span>
-                                                </div>
-                                                <div className="flex flex-col gap-1">
-                                                    <span className="text-[9px] font-black uppercase tracking-widest group-hover:text-primary-500 transition-colors" style={{ color: DESIGN_SYSTEM.COLORS.ZINC[400] }}>Model_Year</span>
-                                                    <span className="text-xs font-black uppercase tabular-nums group-hover:text-primary-600 transition-colors" style={{ color: DESIGN_SYSTEM.COLORS.BLACK[600] }}>{car.basics?.identifiers?.model || '2026'}</span>
-                                                </div>
-                                                <div className="flex flex-col gap-1">
-                                                    <span className="text-[9px] font-black uppercase tracking-widest group-hover:text-primary-500 transition-colors" style={{ color: DESIGN_SYSTEM.COLORS.ZINC[400] }}>Unit_Ver</span>
-                                                    <span className="text-xs font-black uppercase tabular-nums group-hover:text-primary-600 transition-colors" style={{ color: DESIGN_SYSTEM.COLORS.BLACK[600] }}>{car.basics?.identifiers?.version || 'EVO.01'}</span>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        {/* Data Sidebar */}
-                                        <div className="lg:col-span-5 flex flex-col gap-10">
-                                            <div className="hidden lg:block space-y-4">
-                                                <h3
-                                                    className="text-5xl font-black uppercase italic tracking-tighter leading-none"
-                                                    style={{ color: DESIGN_SYSTEM.COLORS.BLACK.PURE }}
-                                                >
-                                                    <span className="group-hover:text-primary-500 transition-colors">
-                                                        {car.name}
-                                                    </span>
-                                                </h3>
-                                                {car.alias && (
-                                                    <p className="text-[11px] font-black uppercase tracking-[0.3em] group-hover:text-primary-500 transition-colors" style={{ color: DESIGN_SYSTEM.COLORS.ZINC[400] }}>
-                                                        {car.alias}
-                                                    </p>
-                                                )}
-                                            </div>
-
-                                            <p className="text-sm font-bold leading-relaxed uppercase group-hover:text-primary-600 transition-colors" style={{ color: DESIGN_SYSTEM.COLORS.ZINC[500] }}>
-                                                {car.basics?.tagline || 'Technical documentation for this unit is restricted to authorized engineers.'}
-                                            </p>
-
-                                            <div className="grid grid-cols-1 gap-px border" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.ZINC[100], borderColor: DESIGN_SYSTEM.COLORS.ZINC[100] }}>
-                                                {car.details?.specifications?.list?.slice(0, 4).map((spec, sIdx) => (
-                                                    <div key={spec.id || sIdx} className="p-4 flex items-center justify-between group/spec" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.WHITE.PURE }}>
-                                                        <div className="flex items-center gap-3">
-                                                            <Settings2 size={12} style={{ color: DESIGN_SYSTEM.COLORS.ZINC[300] }} className="group-hover/spec:text-primary-500 transition-colors" />
-                                                            <span className="text-[10px] font-black uppercase tracking-tight group-hover/spec:text-primary-600 transition-colors" style={{ color: DESIGN_SYSTEM.COLORS.ZINC[400] }}>
-                                                                {spec.parameter}
-                                                            </span>
-                                                        </div>
-                                                        <span className="text-[11px] font-black uppercase italic group-hover/spec:text-primary-600 transition-colors" style={{ color: DESIGN_SYSTEM.COLORS.BLACK.PURE }}>
-                                                            {spec.value}
-                                                        </span>
-                                                    </div>
-                                                ))}
-                                            </div>
-
-                                            <div className="flex flex-col gap-6 pt-10 border-t" style={{ borderColor: DESIGN_SYSTEM.COLORS.ZINC[100] }}>
-                                                <div className="flex items-center gap-4">
-                                                    <Cpu size={18} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
-                                                    <span className="text-[10px] font-black uppercase tracking-widest group-hover:text-primary-600 transition-colors" style={{ color: DESIGN_SYSTEM.COLORS.BLACK[600] }}>
-                                                        {car.details?.technicalCategories || 'General Assembly'}
-                                                    </span>
-                                                </div>
-                                                <div className="flex items-center justify-between">
-                                                    <div className="flex -space-x-2">
-                                                        {[1, 2, 3].map((i) => (
-                                                            <div
-                                                                key={i}
-                                                                className="w-8 h-8 rounded-none border-2"
-                                                                style={{
-                                                                    clipPath: "polygon(5px 0, 100% 0, 100% calc(100% - 5px), calc(100% - 5px) 100%, 0 100%, 0 5px)",
-                                                                    backgroundColor: DESIGN_SYSTEM.COLORS.ZINC[100],
-                                                                    borderColor: DESIGN_SYSTEM.COLORS.WHITE.PURE
-                                                                }}
-                                                            />
-                                                        ))}
-                                                    </div>
-                                                    <div className="flex items-center gap-4 group/btn cursor-pointer">
-                                                        <span className="text-[10px] font-black uppercase tracking-widest group-hover/btn:text-primary-600 transition-colors" style={{ color: DESIGN_SYSTEM.COLORS.BLACK[600] }}>
-                                                            View Specs
-                                                        </span>
-                                                        <div
-                                                            className="w-10 h-10 flex items-center justify-center transition-all"
-                                                            style={{
-                                                                clipPath: "polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px)",
-                                                                backgroundColor: DESIGN_SYSTEM.COLORS.BLACK.PURE
-                                                            }}
-                                                        >
-                                                            <Gauge size={16} className="group-hover/btn:text-primary-500 transition-colors" style={{ color: DESIGN_SYSTEM.COLORS.WHITE.PURE }} />
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </motion.div>
-                                </div>
-                            );
-                        })}
-                    </div>
-                </div>
-
-                {/* Navigation */}
-                <div className="max-w-[1400px] mx-auto px-6 md:px-10 mt-12">
-                    <div className="flex items-center justify-between">
-                        <div className="flex gap-2">
-                            {scrollSnaps.map((_, index) => (
-                                <button
-                                    key={index}
-                                    onClick={() => emblaApi?.scrollTo(index)}
-                                    className="h-1 transition-all duration-300"
-                                    style={{
-                                        width: index === selectedIndex ? '40px' : '20px',
-                                        backgroundColor: index === selectedIndex
-                                            ? DESIGN_SYSTEM.COLORS.PRIMARY[500]
-                                            : DESIGN_SYSTEM.COLORS.ZINC[200]
-                                    }}
-                                />
+            <div className="flex-1 flex flex-col lg:flex-row relative">
+                <div className="flex-1 relative flex flex-col border-r-0 lg:border-r-2 border-black-pure">
+                    <div className="flex-1 relative bg-white-pure overflow-hidden flex items-center justify-center p-8 lg:p-20">
+                        <div className="absolute inset-0 grid grid-cols-12 grid-rows-12 opacity-[0.03] pointer-events-none">
+                            {Array.from({ length: 144 }).map((_, i) => (
+                                <div key={i} className="border-[0.5px] border-black-pure" />
                             ))}
                         </div>
 
-                        <div className="flex gap-2">
-                            <button
-                                onClick={scrollPrev}
-                                className="w-12 h-12 flex items-center justify-center border transition-all group/arrow"
-                                style={{
-                                    borderColor: DESIGN_SYSTEM.COLORS.ZINC[200],
-                                    backgroundColor: DESIGN_SYSTEM.COLORS.WHITE.PURE
-                                }}
-                            >
-                                <ChevronRight size={20} className="rotate-180 group-hover/arrow:text-primary-500 transition-colors" style={{ color: DESIGN_SYSTEM.COLORS.ZINC[400] }} />
-                            </button>
-                            <button
-                                onClick={scrollNext}
-                                className="w-12 h-12 flex items-center justify-center border transition-all group/arrow"
-                                style={{
-                                    borderColor: DESIGN_SYSTEM.COLORS.ZINC[200],
-                                    backgroundColor: DESIGN_SYSTEM.COLORS.WHITE.PURE
-                                }}
-                            >
-                                <ChevronRight size={20} className="group-hover/arrow:text-primary-500 transition-colors" style={{ color: DESIGN_SYSTEM.COLORS.ZINC[400] }} />
-                            </button>
+                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full text-center pointer-events-none select-none">
+                            <span className="text-base md:text-xl lg:text-3xl font-black text-black-pure/[0.03] uppercase leading-none italic">
+                                {activeCar?.basics?.identifiers?.model || "UNIT"}
+                            </span>
+                        </div>
+
+                        <div className="relative w-full h-full max-w-5xl transition-all duration-1000 ease-in-out transform">
+                            <Image
+                                src={(activeCar?.assets?.cover as Media)?.url || `https://picsum.photos/seed/${activeCar?.id}/1200/800`}
+                                alt={activeCar?.name}
+                                fill
+                                className="object-contain grayscale hover:grayscale-0 transition-all duration-700"
+                                priority
+                            />
+                        </div>
+                    </div>
+
+                    <div className="h-auto lg:h-48 border-t-2 border-black-pure flex flex-col md:flex-row divide-y-2 md:divide-y-0 md:divide-x-2 divide-black-pure bg-white-pure">
+                        <div className="flex-1 p-6 flex flex-col justify-between group bg-secondary-500">
+                            <span className="font-mono text-base font-black text-black-pure uppercase">Technical Spec</span>
+                            <div className="flex items-end justify-between">
+                                <span className="text-base md:text-2xl font-black text-black-pure uppercase tracking-tighter leading-none">
+                                    {activeCar?.details?.status || "Active"}
+                                </span>
+                                <Link href={`/resources/cars/${activeCar?.slug}`} className="size-12 bg-black-pure text-white-pure flex items-center justify-center text-2xl font-black hover:bg-white-pure hover:text-black-pure transition-colors">
+                                    +
+                                </Link>
+                            </div>
+                        </div>
+                        <div className="w-full md:w-[40%] p-6 flex flex-col justify-between">
+                            <span className="font-mono text-base font-black text-black-pure/40 uppercase">Chassis Reference</span>
+                            <p className="text-base md:text-2xl font-bold text-black-pure uppercase leading-none truncate">
+                                {activeCar?.basics?.identifiers?.chassis || "NOT_ASSIGNED"}
+                            </p>
                         </div>
                     </div>
                 </div>
+
+                <div
+                    className="w-full lg:w-[25%] xl:w-[20%] bg-black-pure flex flex-col overflow-y-auto no-scrollbar"
+                    onMouseEnter={() => setIsPaused(true)}
+                    onMouseLeave={() => setIsPaused(false)}
+                >
+                    {cars.map((car, idx) => (
+                        <button
+                            key={car.id}
+                            onClick={() => setActiveIndex(idx)}
+                            className={`
+                                relative w-full h-32 md:h-40 border-b-2 border-white-pure/10 flex flex-col justify-between p-6 transition-all duration-500 group
+                                ${activeIndex === idx ? 'bg-primary-500 border-b-black-pure' : 'bg-black-pure hover:bg-white-pure'}
+                            `}
+                        >
+                            <div className="flex justify-between w-full items-start">
+                                <span className={`font-mono text-xs font-black ${activeIndex === idx ? 'text-black-pure' : 'text-white-pure group-hover:text-black-pure'}`}>
+                                    {(idx + 1).toString().padStart(2, '0')}
+                                </span>
+                                <div className={`size-3 rounded-full border-2 ${activeIndex === idx ? 'bg-black-pure border-black-pure' : 'bg-transparent border-white-pure group-hover:border-black-pure'}`} />
+                            </div>
+                            <div className="text-left">
+                                <h3 className={`text-sm md:text-base font-black uppercase tracking-tighter leading-none transition-colors ${activeIndex === idx ? 'text-black-pure' : 'text-white-pure group-hover:text-black-pure'}`}>
+                                    {car.name}
+                                </h3>
+                                <p className={`font-mono text-sm font-bold uppercase mt-2 ${activeIndex === idx ? 'text-black-pure/60' : 'text-white-pure/40 group-hover:text-black-pure/40'}`}>
+                                    {car.basics?.identifiers?.model || "Base Unit"}
+                                </p>
+                            </div>
+                            {activeIndex === idx && (
+                                <div className="absolute bottom-0 left-0 h-1 bg-black-pure animate-[progress_4s_linear]" style={{ width: '100%' }} />
+                            )}
+                        </button>
+                    ))}
+                </div>
             </div>
+
+            <SectionFooter />
+            <style jsx>{`
+                @keyframes progress {
+                    from { width: 0%; }
+                    to { width: 100%; }
+                }
+            `}</style>
         </section>
-    );
+    )
 }
+
+export default CarsDirectory

@@ -1,7 +1,6 @@
 import HyperspeedSection from './sections/Hyperspeed'
 import LatestRaces from './sections/Races'
 import HeroSlides from './sections/Slides'
-import ChampionshipTicker from './sections/Ticker'
 import VideoSection from './sections/Video'
 
 export const dynamic = 'force-dynamic'
@@ -20,14 +19,12 @@ async function getHomeData() {
   const url = process.env.NEXT_PUBLIC_PAYLOAD_URL
 
   const [
-    championships,
     races,
     slides,
     sessions,
     events,
     seasons
   ] = await Promise.all([
-    safeFetch(`${url}/api/championships?sort=-createdAt&limit=10`),
     safeFetch(`${url}/api/races?sort=-createdAt&limit=10`),
     safeFetch(`${url}/api/slides?limit=10`),
     safeFetch(`${url}/api/sessions?sort=-createdAt&limit=10`),
@@ -55,12 +52,11 @@ async function getHomeData() {
   const allVideoUrls = extractVideoUrls([...races.docs, ...sessions.docs, ...events.docs])
 
   return {
-    championships: championships.docs || [],
     races: races.docs || [],
     slides: slides.docs || [],
     videoUrls: allVideoUrls,
     navigation: {
-      series: championships.docs[0]?.slug || 'global',
+      series: 'global',
       seasons: seasons.docs[0]?.slug || '2026',
       events: events.docs[0]?.slug || 'grand-prix',
       sessions: sessions.docs[0]?.slug || 'qualifying'
@@ -74,14 +70,9 @@ export default async function Page() {
   return (
     <main className="min-h-screen bg-black-pure">
       <VideoSection videoUrls={data.videoUrls} />
-
       <HeroSlides slides={data.slides} />
-
       <HyperspeedSection navigation={data.navigation} />
-
       <LatestRaces races={data.races} />
-
-      <ChampionshipTicker championships={data.championships} />
     </main>
   )
 }

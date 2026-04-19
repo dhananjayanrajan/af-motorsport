@@ -27,10 +27,10 @@ const HyperspeedSection: React.FC<HyperspeedSectionProps> = ({ navigation }) => 
     }, [])
 
     const routes = [
-        { id: '01', label: 'SERIES', slug: navigation.series, path: '/competition/series', color: 'bg-primary', meta: { uid: 'CH-491', protocol: 'SSL/TLS', sync: '100%', latency: '24ms' } },
-        { id: '02', label: 'SEASONS', slug: navigation.seasons, path: '/competition/seasons', color: 'bg-secondary', meta: { uid: 'SN-2026', protocol: 'WEBSOCKET', sync: 'ACTIVE', latency: '12ms' } },
-        { id: '03', label: 'EVENTS', slug: navigation.events, path: '/competition/events', color: 'bg-tertiary-500', meta: { uid: 'EV-882', protocol: 'JSON-RPC', sync: 'LOCKED', latency: '42ms' } },
-        { id: '04', label: 'SESSIONS', slug: navigation.sessions, path: '/competition/sessions', color: 'bg-white-400', meta: { uid: 'SS-009', protocol: 'GRAPHQL', sync: 'LIVE', latency: '08ms' } }
+        { id: '01', label: 'SERIES', slug: navigation.series, path: '/competition/series', color: 'bg-primary-500' },
+        { id: '02', label: 'SEASONS', slug: navigation.seasons, path: '/competition/seasons', color: 'bg-secondary-500' },
+        { id: '03', label: 'EVENTS', slug: navigation.events, path: '/competition/events', color: 'bg-tertiary-500' },
+        { id: '04', label: 'SESSIONS', slug: navigation.sessions, path: '/competition/sessions', color: 'bg-white-400' }
     ]
 
     return (
@@ -47,17 +47,17 @@ const HyperspeedSection: React.FC<HyperspeedSectionProps> = ({ navigation }) => 
                             className="group flex flex-col justify-between h-fit p-10 md:p-16 md:pb-10 border-b-2 border-black-pure last:border-b-0 md:flex-1 transition-all duration-500 hover:bg-black-pure"
                         >
                             <div className="flex justify-between items-start mb-4">
-                                <span className="font-mono text-xs font-black text-black-pure/30 group-hover:text-primary transition-colors">
+                                <span className="font-mono text-xs font-black text-black-pure/30 group-hover:text-primary-500 transition-colors">
                                     {route.id}
                                 </span>
-                                <div className={`w-3 h-3 ${route.color} border border-black-pure group-hover:scale-150 transition-transform`} />
+                                <div className={`w-3 h-3 ${route.color} group-hover:scale-150 transition-transform`} />
                             </div>
                             <div className="space-y-1">
                                 <span className="font-mono text-[10px] font-black text-black-pure group-hover:text-white-pure/40 uppercase tracking-widest block">
                                     {route.label}
                                 </span>
                                 <h2 className="text-black-pure group-hover:text-white-pure font-black text-4xl md:text-5xl uppercase tracking-tighter leading-none">
-                                    {route.slug.split('-')[0]}
+                                    {route.label}
                                 </h2>
                             </div>
                         </Link>
@@ -98,17 +98,17 @@ const HyperspeedSection: React.FC<HyperspeedSectionProps> = ({ navigation }) => 
                 </div>
 
                 <div className="relative z-10 h-full w-full flex flex-col justify-end p-6 md:p-16 lg:p-24">
-                    <div className="w-full max-w-2xl border-l-[6px] border-primary bg-black-pure/85 backdrop-blur-xl p-8 md:p-16">
+                    <div className="w-full max-w-2xl border-l-[6px] border-primary-500 bg-black-pure/85 p-8 md:p-16">
                         <div className="flex justify-between items-center mb-10">
-                            <span className="font-mono text-xs md:text-sm font-black text-primary uppercase tracking-[0.6em]">
-                                Telemetric_Status_Matrix
+                            <span className="font-mono text-xs md:text-sm font-black text-primary-500 uppercase tracking-[0.6em]">
+                                Navigation Overview
                             </span>
-                            <span className="text-white-pure/30 font-mono text-[10px]">V.04.2_LOCKED</span>
+                            <span className="text-white-pure/30 font-mono text-[10px]">Available Now</span>
                         </div>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-12 gap-y-10">
                             {routes.map((route) => (
-                                <div key={`telemetry-${route.id}`} className="flex flex-col border-b-2 border-white-pure/10 pb-6">
+                                <div key={`info-${route.id}`} className="flex flex-col border-b-2 border-white-pure/10 pb-6">
                                     <div className="flex items-center gap-4 mb-4">
                                         <div className={`w-3 h-6 ${route.color}`} />
                                         <span className="font-mono text-xs text-white-pure font-black uppercase tracking-widest">
@@ -117,20 +117,20 @@ const HyperspeedSection: React.FC<HyperspeedSectionProps> = ({ navigation }) => 
                                     </div>
                                     <div className="grid grid-cols-2 gap-y-4 gap-x-2">
                                         <div className="flex flex-col">
-                                            <span className="text-[9px] font-mono text-white-pure/50 uppercase font-black">ID</span>
-                                            <span className="text-xs font-mono text-white-pure font-black">{route.meta.uid}</span>
+                                            <span className="text-[9px] font-mono text-white-pure/50 uppercase font-black">Name</span>
+                                            <span className="text-xs font-mono text-white-pure font-black">{route.label}</span>
                                         </div>
                                         <div className="flex flex-col">
-                                            <span className="text-[9px] font-mono text-white-pure/50 uppercase font-black">Sync</span>
-                                            <span className="text-xs font-mono text-primary font-black">{route.meta.sync}</span>
+                                            <span className="text-[9px] font-mono text-white-pure/50 uppercase font-black">Status</span>
+                                            <span className="text-xs font-mono text-primary-500 font-black">Active</span>
                                         </div>
                                         <div className="flex flex-col">
-                                            <span className="text-[9px] font-mono text-white-pure/50 uppercase font-black">Net</span>
-                                            <span className="text-xs font-mono text-white-pure font-black">{route.meta.protocol}</span>
+                                            <span className="text-[9px] font-mono text-white-pure/50 uppercase font-black">Type</span>
+                                            <span className="text-xs font-mono text-white-pure font-black">Collection</span>
                                         </div>
                                         <div className="flex flex-col">
-                                            <span className="text-[9px] font-mono text-white-pure/50 uppercase font-black">Ping</span>
-                                            <span className="text-xs font-mono text-secondary font-black">{route.meta.latency}</span>
+                                            <span className="text-[9px] font-mono text-white-pure/50 uppercase font-black">View</span>
+                                            <span className="text-xs font-mono text-secondary-500 font-black">Available</span>
                                         </div>
                                     </div>
                                 </div>
