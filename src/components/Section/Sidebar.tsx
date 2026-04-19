@@ -19,6 +19,7 @@ interface SectionSidebarProps {
     stats: DetailStat[]
     buttonLabel: string
     onAction?: () => void
+    infoLabel?: string
 }
 
 const SectionSidebar: React.FC<SectionSidebarProps> = ({
@@ -30,7 +31,8 @@ const SectionSidebar: React.FC<SectionSidebarProps> = ({
     idCode,
     stats,
     buttonLabel,
-    onAction
+    onAction,
+    infoLabel = ""
 }) => {
     useEffect(() => {
         if (isOpen) {
@@ -70,7 +72,7 @@ const SectionSidebar: React.FC<SectionSidebarProps> = ({
                     </div>
 
                     <div className="p-8 md:p-12 flex-1">
-                        <span className="text-[10px] font-mono font-black tracking-[0.4em] text-tertiary-500 uppercase mb-4 block">INFORMATION</span>
+                        <span className="text-[10px] font-mono font-black tracking-[0.4em] text-tertiary-500 uppercase mb-4 block">{infoLabel}</span>
                         <h3 className="text-4xl font-black uppercase tracking-tighter text-black-pure leading-none mb-8">
                             {title}
                         </h3>

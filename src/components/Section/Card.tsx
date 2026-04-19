@@ -40,7 +40,7 @@ const SectionCard: React.FC<SectionCardProps> = ({
                 </div>
                 <div className="p-6 flex flex-col items-start">
                     <span className={`font-mono text-[9px] font-black uppercase tracking-widest mb-2 ${active ? 'text-black-pure' : 'text-primary'}`}>
-                        {label || 'RECORD'}
+                        {label || ''}
                     </span>
                     <h4 className={`text-xl font-black uppercase tracking-tighter text-left leading-none ${active ? 'text-black-pure' : 'group-hover:text-white-pure text-black-pure'}`}>
                         {title}
@@ -120,7 +120,7 @@ const SectionCard: React.FC<SectionCardProps> = ({
                 <div className="flex items-center gap-3">
                     <div className="w-8 h-2 bg-primary" />
                     <span className="font-mono text-[10px] font-black text-white-pure uppercase tracking-[0.2em]">
-                        {label || "GP"}
+                        {label || ""}
                     </span>
                 </div>
                 <h4 className="text-xl md:text-2xl font-black uppercase tracking-tighter leading-none text-white-pure text-left group-hover:translate-x-2 transition-all duration-300">

@@ -1,46 +1,42 @@
 'use client'
 
 import {
-  Camera,
-  ChevronRight,
-  Disc, Facebook, Github, Instagram, Link2, Linkedin,
-  LogOut, MenuIcon,
-  MessageCircle, Music, Phone, Send, Twitch, Twitter,
-  User,
+  ArrowRight,
+  Facebook,
+  Github,
+  Instagram,
+  Link2,
+  Linkedin,
+  LucideIcon,
+  MenuIcon,
+  Twitter,
+  X,
   Youtube
 } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname, useSearchParams } from 'next/navigation'
-import React, { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import {
   Sheet,
+  SheetClose,
   SheetContent,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet'
-import { DESIGN_SYSTEM } from '@/lib/constants'
 import { useAuth } from '@/providers/Auth'
 import { cn } from '@/utilities/cn'
 
 import type { Header, Social } from 'src/payload-types'
 
-const socialIcons: Record<string, React.ElementType> = {
+const socialIcons: Record<string, LucideIcon> = {
   instagram: Instagram,
   x: Twitter,
   facebook: Facebook,
   youtube: Youtube,
   linkedin: Linkedin,
-  tiktok: Music,
-  threads: MessageCircle,
-  snapchat: Camera,
-  discord: Disc,
-  twitch: Twitch,
-  whatsapp: Phone,
-  telegram: Send,
   github: Github,
-  spotify: Music,
   other: Link2,
 }
 
@@ -71,55 +67,53 @@ export function MobileMenu({ menu, socials }: Props) {
 
   return (
     <Sheet onOpenChange={setIsOpen} open={isOpen}>
-      <SheetTrigger className="flex h-10 w-10 items-center justify-center bg-white border border-zinc-200 text-zinc-950 transition-all active:scale-95 group skew-x-[-12deg]">
-        <MenuIcon className="h-4 w-4 transition-colors group-hover:text-black skew-x-[12deg]" />
+      <SheetTrigger className="flex h-12 w-12 items-center justify-center bg-black-pure text-white-pure transition-colors hover:bg-primary hover:text-black-pure group">
+        <MenuIcon className="h-5 w-5 transition-transform group-active:scale-90" />
       </SheetTrigger>
 
-      <SheetContent side="left" className="flex flex-col bg-white border-r border-zinc-200 text-zinc-950 w-[300px] p-0 gap-0 z-[120]">
-        <SheetHeader className="p-8 border-b border-zinc-100 bg-white text-left relative overflow-hidden">
-          <div
-            className="absolute top-0 left-0 w-full h-1"
-            style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}
-          />
-          <div className="flex flex-col gap-1 relative z-10">
-            <SheetTitle
-              className="text-[14px] font-black uppercase italic text-zinc-950 tracking-tight"
-              style={{ textShadow: `0 0 10px ${DESIGN_SYSTEM.COLORS.PRIMARY.GLOW}` }}
-            >
-              Menu
+      <SheetContent side="left" className="flex flex-col bg-white-pure border-r-2 border-black-pure w-full sm:w-[380px] p-0 gap-0 z-[120]">
+
+        <SheetHeader className="p-8 border-b-2 border-black-pure bg-white-pure flex flex-row items-center justify-between text-left">
+          <div className="space-y-1">
+            <SheetTitle className="text-xs font-mono font-black uppercase tracking-[0.3em] text-black-pure">
+              System Menu
             </SheetTitle>
-            <div className="h-0.5 w-8" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
+            <div className="h-1 w-12 bg-primary" />
           </div>
+          <SheetClose className="size-10 flex items-center justify-center bg-white-100 border border-black-pure hover:bg-tertiary-500 hover:text-white-pure transition-colors">
+            <X className="h-4 w-4" />
+          </SheetClose>
         </SheetHeader>
 
-        <nav className="flex-1 overflow-y-auto py-6 overflow-x-hidden bg-zinc-50/30">
+        <nav className="flex-1 overflow-y-auto bg-white-50">
           {menu?.length ? (
-            <ul className="flex flex-col gap-3 px-6">
-              {menu.map((item: any) => {
+            <ul className="flex flex-col divide-y-2 divide-black-pure border-b-2 border-black-pure">
+              {menu.map((item: any, index: number) => {
                 const isActive = item.link && (item.link === '/' ? pathname === '/' : pathname.startsWith(item.link))
                 return (
-                  <li key={item.id} className="relative group">
+                  <li key={item.id}>
                     <Link
                       href={item.link || '#'}
                       className={cn(
-                        "flex items-center justify-between p-4 transition-all duration-300 skew-x-[-12deg] border relative overflow-hidden",
-                        isActive ? "bg-black text-white border-black" : "bg-white text-zinc-950 border-zinc-200 hover:border-black"
+                        "flex flex-col justify-center h-24 px-8 transition-all duration-300 relative group",
+                        isActive ? "bg-primary text-black-pure" : "bg-white-pure hover:bg-black-pure hover:text-white-pure"
                       )}
                     >
-                      {!isActive && (
-                        <div
-                          className="absolute inset-0 translate-x-[-101%] group-hover:translate-x-0 transition-transform duration-300 ease-out"
-                          style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}
-                        />
-                      )}
-
-                      <div className="flex items-center gap-4 skew-x-[12deg] relative z-10">
-                        <span className="text-[13px] font-black uppercase italic transition-all group-hover:translate-x-1 tracking-tight">
+                      <span className={cn(
+                        "text-[10px] font-mono font-black mb-1",
+                        isActive ? "opacity-40" : "opacity-20 group-hover:text-primary group-hover:opacity-100"
+                      )}>
+                        0{index + 1}
+                      </span>
+                      <div className="flex items-center justify-between">
+                        <span className="text-xl font-mono font-black uppercase tracking-widest transition-transform group-hover:translate-x-2">
                           {item.label}
                         </span>
+                        <ArrowRight className={cn(
+                          "h-5 w-5 transition-transform duration-300",
+                          isActive ? "translate-x-0" : "-translate-x-4 opacity-0 group-hover:translate-x-0 group-hover:opacity-100"
+                        )} />
                       </div>
-
-                      <ChevronRight className={cn("h-4 w-4 skew-x-[12deg] transition-transform group-hover:translate-x-1 relative z-10", isActive ? "text-primary" : "text-zinc-300 group-hover:text-black")} />
                     </Link>
                   </li>
                 )
@@ -128,65 +122,68 @@ export function MobileMenu({ menu, socials }: Props) {
           ) : null}
         </nav>
 
-        <div className="p-8 bg-white border-t border-zinc-200">
-          <div className="grid gap-3 mb-8">
+        <div className="p-8 bg-white-pure border-t-2 border-black-pure space-y-8">
+          <div className="grid gap-2">
             {user ? (
-              <div className="flex flex-col gap-2">
+              <div className="grid grid-cols-2 gap-2">
                 <Link
                   href="/account"
-                  className="flex items-center justify-center w-full h-12 bg-white border border-zinc-200 text-[11px] font-black uppercase italic text-zinc-950 transition-all hover:border-black skew-x-[-12deg]"
+                  className="flex items-center justify-center h-14 bg-secondary border-2 border-black-pure text-xs font-mono font-black uppercase tracking-widest hover:bg-black-pure hover:text-white-pure transition-colors"
                 >
-                  <span className="skew-x-[12deg] flex items-center gap-2">
-                    <User className="h-3 w-3" /> Account
-                  </span>
+                  Profile
                 </Link>
                 <button
                   onClick={() => logout()}
-                  className="flex items-center justify-center w-full h-12 bg-black text-[11px] font-black uppercase italic text-white transition-all hover:bg-zinc-800 skew-x-[-12deg]"
+                  className="flex items-center justify-center h-14 bg-white-pure border-2 border-black-pure text-xs font-mono font-black uppercase tracking-widest hover:bg-tertiary-500 hover:text-white-pure transition-colors"
                 >
-                  <span className="skew-x-[12deg] flex items-center gap-2">
-                    <LogOut className="h-3 w-3" /> Logout
-                  </span>
+                  Logout
                 </button>
               </div>
             ) : (
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-2">
                 <Link
                   href="/login"
-                  className="flex items-center justify-center h-12 bg-white border border-zinc-200 text-[11px] font-black uppercase italic text-zinc-950 transition-all hover:border-black skew-x-[-12deg]"
+                  className="flex items-center justify-center h-14 bg-white-pure border-2 border-black-pure text-xs font-mono font-black uppercase tracking-widest hover:bg-white-100 transition-colors"
                 >
-                  <span className="skew-x-[12deg]">Login</span>
+                  Login
                 </Link>
                 <Link
                   href="/create-account"
-                  className="flex items-center justify-center h-12 text-[11px] font-black uppercase italic text-black transition-all hover:opacity-90 skew-x-[-12deg]"
-                  style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}
+                  className="flex items-center justify-center h-14 bg-primary border-2 border-black-pure text-xs font-mono font-black uppercase tracking-widest hover:bg-black-pure hover:text-white-pure transition-colors"
                 >
-                  <span className="skew-x-[12deg]">Join</span>
+                  Join
                 </Link>
               </div>
             )}
           </div>
 
           {validSocials.length > 0 && (
-            <div className="flex flex-wrap gap-5 justify-center py-6 border-t border-zinc-100">
-              {validSocials.map((account: any) => {
-                const platformKey = account.platform as string
-                const Icon = socialIcons[platformKey] || Link2
-                return (
-                  <a
-                    key={account.id}
-                    href={account.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-zinc-400 transition-all hover:text-black hover:scale-110"
-                  >
-                    <Icon className="h-5 w-5" />
-                  </a>
-                )
-              })}
+            <div className="flex items-center justify-between py-6 border-t border-black-pure/10">
+              <span className="text-[10px] font-mono font-black uppercase opacity-30 tracking-widest">Connect</span>
+              <div className="flex gap-6">
+                {validSocials.map((account: any) => {
+                  const Icon = socialIcons[account.platform as keyof typeof socialIcons] || Link2
+                  return (
+                    <a
+                      key={account.id}
+                      href={account.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-black-pure opacity-40 hover:text-primary hover:opacity-100 hover:scale-110 transition-all"
+                    >
+                      <Icon className="h-5 w-5" />
+                    </a>
+                  )
+                })}
+              </div>
             </div>
           )}
+
+          <div className="h-1 bg-black-pure flex">
+            <div className="h-full bg-primary w-1/4" />
+            <div className="h-full bg-secondary w-1/4" />
+            <div className="h-full bg-tertiary-500 w-1/4" />
+          </div>
         </div>
       </SheetContent>
     </Sheet>

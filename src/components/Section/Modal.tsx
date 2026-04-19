@@ -19,6 +19,7 @@ interface SectionModalProps {
     stats: DetailStat[]
     buttonLabel: string
     onAction?: () => void
+    infoLabel?: string
 }
 
 const SectionModal: React.FC<SectionModalProps> = ({
@@ -30,7 +31,8 @@ const SectionModal: React.FC<SectionModalProps> = ({
     idCode,
     stats,
     buttonLabel,
-    onAction
+    onAction,
+    infoLabel = ""
 }) => {
     if (!isOpen) return null
 
@@ -70,7 +72,7 @@ const SectionModal: React.FC<SectionModalProps> = ({
                     </button>
 
                     <div className="mb-12">
-                        <span className="text-xs font-mono font-black tracking-[0.4em] text-tertiary-500 uppercase mb-4 block">INFORMATION</span>
+                        <span className="text-xs font-mono font-black tracking-[0.4em] text-tertiary-500 uppercase mb-4 block">{infoLabel}</span>
                         <h3 className="text-4xl md:text-6xl font-black uppercase tracking-tighter text-black-pure leading-[0.85] mb-8">
                             {title}
                         </h3>

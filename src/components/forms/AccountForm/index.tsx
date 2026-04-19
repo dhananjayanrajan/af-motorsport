@@ -19,7 +19,45 @@ type FormData = {
   passwordConfirm: string
 }
 
-export const AccountForm: React.FC = () => {
+type Props = {
+  infoTabLabel?: string
+  passwordTabLabel?: string
+  nameLabel?: string
+  namePlaceholder?: string
+  emailLabel?: string
+  emailPlaceholder?: string
+  newPasswordLabel?: string
+  passwordPlaceholder?: string
+  confirmPasswordLabel?: string
+  savedLabel?: string
+  unsavedLabel?: string
+  saveButtonLabel?: string
+  savingLabel?: string
+  updateSuccessMessage?: string
+  updateErrorMessage?: string
+  requiredErrorMessage?: string
+  passwordMismatchMessage?: string
+}
+
+export const AccountForm: React.FC<Props> = ({
+  infoTabLabel = "INFO",
+  passwordTabLabel = "PASSWORD",
+  nameLabel = "NAME",
+  namePlaceholder = "YOUR NAME",
+  emailLabel = "EMAIL",
+  emailPlaceholder = "YOUR EMAIL",
+  newPasswordLabel = "NEW PASSWORD",
+  passwordPlaceholder = "••••••••",
+  confirmPasswordLabel = "REPEAT PASSWORD",
+  savedLabel = "SAVED",
+  unsavedLabel = "UNSAVED",
+  saveButtonLabel = "SAVE CHANGES",
+  savingLabel = "SAVING",
+  updateSuccessMessage = "PROFILE UPDATED",
+  updateErrorMessage = "SAVE FAILED",
+  requiredErrorMessage = "REQUIRED",
+  passwordMismatchMessage = "NOT THE SAME",
+}) => {
   const { setUser, user } = useAuth()
   const [activeTab, setActiveTab] = useState<'profile' | 'security'>('profile')
   const router = useRouter()
@@ -50,7 +88,7 @@ export const AccountForm: React.FC = () => {
         if (response.ok) {
           const json = await response.json()
           setUser(json.doc)
-          toast.success('PROFILE UPDATED')
+          toast.success(updateSuccessMessage)
           setActiveTab('profile')
           reset({
             name: json.doc.name,
@@ -59,11 +97,11 @@ export const AccountForm: React.FC = () => {
             passwordConfirm: '',
           })
         } else {
-          toast.error('SAVE FAILED')
+          toast.error(updateErrorMessage)
         }
       }
     },
-    [user, setUser, reset],
+    [user, setUser, reset, updateSuccessMessage, updateErrorMessage],
   )
 
   useEffect(() => {
@@ -80,8 +118,8 @@ export const AccountForm: React.FC = () => {
     }
   }, [user, router, reset])
 
-  const labelClasses = "text-xs font-black uppercase tracking-widest text-black-pure flex items-center gap-3 mb-3"
-  const inputClasses = "bg-white-pure border-2 border-black-pure h-16 px-6 text-black-pure placeholder:text-black-pure/30 focus:bg-primary-500 transition-colors duration-300 rounded-none w-full font-black uppercase text-sm tracking-tight"
+  const labelClasses = "text-xs font-black uppercase text-black-pure flex items-center gap-3 mb-3"
+  const inputClasses = "bg-white-pure border-2 border-black-pure h-14 sm:h-16 px-4 sm:px-6 text-black-pure placeholder:text-black-pure/30 focus:bg-primary-500 transition-colors duration-300 rounded-none w-full font-black uppercase text-sm"
 
   return (
     <div className="w-full">
@@ -90,21 +128,21 @@ export const AccountForm: React.FC = () => {
           type="button"
           onClick={() => setActiveTab('profile')}
           className={cn(
-            "flex-1 md:flex-none px-12 py-6 text-xs font-black uppercase tracking-widest transition-all relative flex items-center justify-center gap-4",
-            activeTab === 'profile' ? "bg-black-pure text-white-pure" : "bg-white-pure text-black-pure hover:bg-zinc-100"
+            "flex-1 md:flex-none px-12 py-6 text-xs font-black uppercase transition-all relative flex items-center justify-center gap-4",
+            activeTab === 'profile' ? "bg-black-pure text-white-pure" : "bg-white-pure text-black-pure hover:bg-black-pure hover:text-white-pure"
           )}
         >
-          <UserIcon className="size-4" /> INFO
+          <UserIcon className="size-4" /> {infoTabLabel}
         </button>
         <button
           type="button"
           onClick={() => setActiveTab('security')}
           className={cn(
-            "flex-1 md:flex-none px-12 py-6 text-xs font-black uppercase tracking-widest transition-all relative flex items-center justify-center gap-4",
-            activeTab === 'security' ? "bg-black-pure text-white-pure" : "bg-white-pure text-black-pure hover:bg-zinc-100"
+            "flex-1 md:flex-none px-12 py-6 text-xs font-black uppercase transition-all relative flex items-center justify-center gap-4",
+            activeTab === 'security' ? "bg-black-pure text-white-pure" : "bg-white-pure text-black-pure hover:bg-black-pure hover:text-white-pure"
           )}
         >
-          <Lock className="size-4" /> PASSWORD
+          <Lock className="size-4" /> {passwordTabLabel}
         </button>
       </div>
 
@@ -112,55 +150,55 @@ export const AccountForm: React.FC = () => {
         {activeTab === 'profile' ? (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-12">
             <FormItem className="space-y-1">
-              <label className={labelClasses}>NAME</label>
+              <label className={labelClasses}>{nameLabel}</label>
               <ClippedInput
                 id="name"
-                placeholder="YOUR NAME"
+                placeholder={namePlaceholder}
                 className={inputClasses}
-                {...register('name', { required: 'REQUIRED' })}
+                {...register('name', { required: requiredErrorMessage })}
               />
-              {errors.name && <FormError message={errors.name.message} className="text-xs font-black text-error mt-2 uppercase tracking-tighter" />}
+              {errors.name && <FormError message={errors.name.message} className="text-xs font-black text-error mt-2 uppercase" />}
             </FormItem>
 
             <FormItem className="space-y-1">
-              <label className={labelClasses}>EMAIL</label>
+              <label className={labelClasses}>{emailLabel}</label>
               <ClippedInput
                 id="email"
                 type="email"
-                placeholder="YOUR EMAIL"
+                placeholder={emailPlaceholder}
                 className={inputClasses}
-                {...register('email', { required: 'REQUIRED' })}
+                {...register('email', { required: requiredErrorMessage })}
               />
-              {errors.email && <FormError message={errors.email.message} className="text-xs font-black text-error mt-2 uppercase tracking-tighter" />}
+              {errors.email && <FormError message={errors.email.message} className="text-xs font-black text-error mt-2 uppercase" />}
             </FormItem>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-12">
             <FormItem className="space-y-1">
-              <label className={labelClasses}>NEW PASSWORD</label>
+              <label className={labelClasses}>{newPasswordLabel}</label>
               <ClippedInput
                 id="password"
                 type="password"
-                placeholder="••••••••"
+                placeholder={passwordPlaceholder}
                 className={inputClasses}
-                {...register('password', { required: 'REQUIRED' })}
+                {...register('password', { required: requiredErrorMessage })}
               />
-              {errors.password && <FormError message={errors.password.message} className="text-xs font-black text-error mt-2 uppercase tracking-tighter" />}
+              {errors.password && <FormError message={errors.password.message} className="text-xs font-black text-error mt-2 uppercase" />}
             </FormItem>
 
             <FormItem className="space-y-1">
-              <label className={labelClasses}>REPEAT PASSWORD</label>
+              <label className={labelClasses}>{confirmPasswordLabel}</label>
               <ClippedInput
                 id="passwordConfirm"
                 type="password"
-                placeholder="••••••••"
+                placeholder={passwordPlaceholder}
                 className={inputClasses}
                 {...register('passwordConfirm', {
-                  required: 'REQUIRED',
-                  validate: (value) => value === password.current || 'NOT THE SAME',
+                  required: requiredErrorMessage,
+                  validate: (value) => value === password.current || passwordMismatchMessage,
                 })}
               />
-              {errors.passwordConfirm && <FormError message={errors.passwordConfirm.message} className="text-xs font-black text-error mt-2 uppercase tracking-tighter" />}
+              {errors.passwordConfirm && <FormError message={errors.passwordConfirm.message} className="text-xs font-black text-error mt-2 uppercase" />}
             </FormItem>
           </div>
         )}
@@ -169,8 +207,8 @@ export const AccountForm: React.FC = () => {
           <div className="flex items-center gap-6">
             <div className="flex items-center gap-4 border-2 border-black-pure px-6 py-3">
               <div className={cn("size-3", isDirty ? "bg-secondary-500 animate-pulse" : "bg-primary-500")} />
-              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-black-pure">
-                {isDirty ? 'UNSAVED' : 'SAVED'}
+              <span className="text-xs font-black uppercase text-black-pure">
+                {isDirty ? unsavedLabel : savedLabel}
               </span>
             </div>
           </div>
@@ -178,13 +216,13 @@ export const AccountForm: React.FC = () => {
           <button
             type="submit"
             disabled={isLoading || isSubmitting || !isDirty}
-            className="group relative h-20 w-full md:w-auto md:px-24 bg-black-pure text-white-pure disabled:opacity-5 overflow-hidden transition-all duration-300"
+            className="group relative h-20 w-full md:w-auto md:px-24 bg-black-pure text-white-pure disabled:opacity-50 disabled:pointer-events-none overflow-hidden transition-all duration-300"
           >
             <div
               className="absolute inset-0 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-in-out bg-primary-500"
             />
-            <span className="relative z-10 text-sm font-black uppercase tracking-widest flex items-center justify-center gap-4 group-hover:text-black-pure transition-colors duration-500">
-              {isLoading || isSubmitting ? 'SAVING' : 'SAVE CHANGES'} <ChevronRight className="size-5" />
+            <span className="relative z-10 text-sm font-black uppercase flex items-center justify-center gap-4 group-hover:text-black-pure transition-colors duration-500">
+              {isLoading || isSubmitting ? savingLabel : saveButtonLabel} <ChevronRight className="size-5" />
             </span>
           </button>
         </div>

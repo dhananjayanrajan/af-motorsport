@@ -1,30 +1,15 @@
 'use client'
 
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-} from '@/components/ui/carousel'
 import { Announcement as AnnouncementType } from '@/payload-types'
-import { cn } from '@/utilities/cn'
-import AutoScroll from 'embla-carousel-auto-scroll'
+import Autoplay from 'embla-carousel-autoplay'
+import useEmblaCarousel from 'embla-carousel-react'
 import Link from 'next/link'
-import * as React from 'react'
 
 interface AnnouncementsSectionProps {
   data: AnnouncementType
 }
 
 export const AnnouncementsSection = ({ data }: AnnouncementsSectionProps) => {
-  const plugin = React.useRef(
-    AutoScroll({
-      speed: 1,
-      stopOnInteraction: false,
-      stopOnMouseEnter: true,
-      playOnInit: true
-    })
-  )
-
   const items = data?.items || []
 
   const activeItems = items.filter((item) => {
@@ -35,100 +20,136 @@ export const AnnouncementsSection = ({ data }: AnnouncementsSectionProps) => {
     return true
   })
 
+  const [emblaRef] = useEmblaCarousel(
+    {
+      loop: true,
+      align: 'start',
+      containScroll: false,
+    },
+    [
+      Autoplay({
+        delay: 3000,
+        stopOnInteraction: false,
+        stopOnMouseEnter: true,
+      }),
+    ]
+  )
+
   if (activeItems.length === 0) return null
 
-  const displayItems = activeItems.length < 10
-    ? [...activeItems, ...activeItems, ...activeItems, ...activeItems]
-    : activeItems
-
   return (
-    <section className="relative w-full border-y-2 border-black-pure bg-white-50 overflow-hidden">
-      <Carousel
-        plugins={[plugin.current]}
-        opts={{
-          align: "start",
-          loop: true,
-          dragFree: true,
-        }}
-        className="w-full"
-      >
-        <CarouselContent className="ml-0">
-          {displayItems.map((item, idx) => {
-            const isUrgent = item.type === 'urgent' || item.type === 'warning'
+    <section className="relative w-full bg-white-50 flex flex-col overflow-hidden border-b-2 border-black-pure">
+      <div className="h-16 bg-white-200 flex items-center px-4 md:px-8 border-b-2 border-black-pure justify-between">
+        <div className="flex items-center gap-4 md:gap-6">
+          <span className="text-black-pure font-mono text-[10px] md:text-xs font-black tracking-[0.4em] uppercase">
+            ANNOUNCEMENTS
+          </span>
+          <div className="flex items-center gap-2">
+            <div className="size-2 bg-primary animate-pulse" />
+            <span className="text-[10px] font-mono font-black text-black-pure opacity-40 uppercase">
+              LIVE
+            </span>
+          </div>
+        </div>
+        <span className="text-[10px] font-mono font-black text-black-pure uppercase">
+          COUNT: {String(activeItems.length).padStart(2, '0')}
+        </span>
+      </div>
+
+      <div className="overflow-hidden cursor-grab active:cursor-grabbing" ref={emblaRef}>
+        <div className="flex">
+          {activeItems.map((item, index) => {
+            const isUrgent = item.type === 'urgent'
+            const isWarning = item.type === 'warning'
+            const statusColor = isUrgent ? 'bg-tertiary-500' : isWarning ? 'bg-secondary' : 'bg-primary'
 
             return (
-              <CarouselItem
-                key={`${item.id}-${idx}`}
-                className="pl-0 basis-full md:basis-1/2 lg:basis-1/3 xl:basis-1/4"
+              <div
+                key={item.id}
+                className="flex-[0_0_100%] sm:flex-[0_0_50%] lg:flex-[0_0_33.333%] xl:flex-[0_0_25%] min-w-0"
               >
-                <div className="group relative h-[400px] border-r-2 border-black-pure flex flex-col transition-all duration-300 overflow-hidden">
-
-                  <div className={cn(
-                    "h-16 flex items-center justify-between px-8 border-b-2 border-black-pure z-10 transition-colors duration-300",
-                    isUrgent ? "bg-tertiary-500" : "bg-white-200 group-hover:bg-primary"
-                  )}>
-                    <div className="flex items-center gap-4">
-                      <div className={cn(
-                        "size-4 border-2 border-black-pure transition-all duration-500",
-                        isUrgent ? "bg-white-pure animate-pulse" : "bg-black-pure group-hover:bg-white-pure group-hover:rotate-90"
-                      )} />
-                      <span className={cn(
-                        "text-[10px] font-mono font-black tracking-[0.4em] uppercase",
-                        isUrgent ? "text-white-pure" : "text-black-pure"
-                      )}>
-                        {item.type}
+                <div className="relative h-[450px] md:h-[500px] flex flex-col border-r-2 border-black-pure bg-white-100 group transition-all duration-300">
+                  <div className="h-20 flex items-center px-6 md:px-8 border-b-2 border-black-pure bg-white-50 group-hover:bg-white-200 transition-colors duration-300">
+                    <div className="w-10 h-10 bg-black-pure flex items-center justify-center shrink-0 group-hover:bg-primary transition-colors duration-300">
+                      <span className="text-white-pure font-mono text-sm font-black group-hover:text-black-pure transition-colors duration-300">
+                        {String(index + 1).padStart(2, '0')}
                       </span>
                     </div>
-                    <span className={cn(
-                      "text-[10px] font-mono font-black opacity-30",
-                      isUrgent ? "text-white-pure" : "text-black-pure"
-                    )}>
-                      {String(idx + 1).padStart(2, '0')}
-                    </span>
+                    <div className="ml-4">
+                      <span className={`text-[10px] font-mono font-black uppercase tracking-widest ${isUrgent ? 'text-tertiary-500' : 'text-black-pure/40'}`}>
+                        {item.type || 'INFO'}
+                      </span>
+                    </div>
                   </div>
 
-                  <div className="flex-1 p-8 flex flex-col justify-between relative z-10 bg-white-50 group-hover:bg-white-100 transition-colors duration-300">
-                    <div className="space-y-4">
-                      <h4 className="text-xl font-black uppercase tracking-tighter text-black-pure leading-none">
+                  <div className="flex-1 p-6 md:p-10 flex flex-col justify-between relative">
+                    <div className="relative z-10">
+                      <h4 className="text-2xl md:text-3xl font-black uppercase tracking-tighter text-black-pure leading-[0.9] mb-4 md:mb-6">
                         {item.title}
                       </h4>
-                      <div className="w-12 h-1 bg-black-pure group-hover:w-full transition-all duration-500" />
-                      <p className="text-[11px] font-bold uppercase tracking-tight text-black-pure leading-tight max-w-[90%]">
+                      <p className="text-sm font-mono font-black uppercase leading-tight text-black-pure/60 line-clamp-4">
                         {item.message}
                       </p>
                     </div>
 
-                    <div className="mt-6">
+                    <div className="mt-6 flex flex-col gap-4">
+                      <div className="grid grid-cols-2 border-2 border-black-pure">
+                        <div className={`h-10 flex items-center justify-center border-r-2 border-black-pure ${statusColor}`}>
+                          <span className="text-[10px] font-mono font-black text-black-pure uppercase">
+                            STATUS
+                          </span>
+                        </div>
+                        <div className="h-10 flex items-center justify-center bg-white-pure">
+                          <span className="text-[10px] font-mono font-black text-black-pure uppercase">
+                            {item.from ? new Date(item.from).toLocaleDateString() : 'ACTIVE'}
+                          </span>
+                        </div>
+                      </div>
+
                       {item.link?.enable && item.link.url ? (
                         <Link
                           href={item.link.url}
-                          className="group/link flex items-center justify-between w-full h-14 bg-black-pure px-6 transition-all duration-300 hover:bg-secondary"
+                          className="w-full h-14 bg-black-pure flex items-center justify-between px-6 group/btn hover:bg-primary transition-all duration-300"
                         >
-                          <span className="text-[10px] font-mono font-black tracking-[0.3em] text-white-pure uppercase">
-                            {item.link.label || 'VIEW DETAILS'}
+                          <span className="text-white-pure font-mono text-xs font-black tracking-widest group-hover/btn:text-black-pure transition-colors">
+                            {item.link.label || 'VIEW'}
                           </span>
-                          <div className="size-2 bg-white-pure group-hover/link:translate-x-1 transition-transform" />
+                          <div className="w-2 h-6 bg-primary group-hover/btn:bg-black-pure transition-colors" />
                         </Link>
                       ) : (
-                        <div className="flex gap-1.5">
-                          <div className="size-4 bg-primary" />
-                          <div className="size-4 bg-secondary" />
-                          <div className="size-4 bg-tertiary-500" />
+                        <div className="h-14 border-2 border-black-pure border-dashed flex items-center justify-center opacity-20">
+                          <span className="text-[10px] font-mono font-black uppercase">NO LINK</span>
                         </div>
                       )}
                     </div>
-                  </div>
 
-                  <div className={cn(
-                    "absolute inset-0 z-0 opacity-0 group-hover:opacity-100 transition-all duration-500 pointer-events-none",
-                    isUrgent ? "bg-tertiary-500/10" : "bg-primary/10"
-                  )} />
+                    <div className={`absolute bottom-0 left-0 w-full h-1 origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500 ${statusColor}`} />
+                  </div>
                 </div>
-              </CarouselItem>
+              </div>
             )
           })}
-        </CarouselContent>
-      </Carousel>
+        </div>
+      </div>
+
+      <div className="h-10 bg-black-pure flex items-center px-4 md:px-8 justify-between">
+        <div className="flex gap-4">
+          <div className="flex items-center gap-1">
+            <div className="size-1 bg-primary" />
+            <div className="size-1 bg-primary/40" />
+            <div className="size-1 bg-primary/20" />
+          </div>
+          <span className="text-[8px] md:text-[9px] font-mono font-black text-white-pure/40 tracking-[0.3em] uppercase truncate">
+            SYSTEM FEED
+          </span>
+        </div>
+        <div className="flex items-center gap-4">
+          <span className="text-[9px] font-mono font-black text-primary uppercase hidden sm:inline">READY</span>
+          <div className="w-8 md:w-12 h-0.5 bg-white-pure/10">
+            <div className="h-full bg-primary w-2/3" />
+          </div>
+        </div>
+      </div>
     </section>
   )
 }

@@ -48,7 +48,7 @@ const SectionScroller: React.FC<SectionScrollerProps> = ({
         <div key={groupIndex} className="flex items-center">
             {items.map((item, i) => (
                 <React.Fragment key={i}>
-                    <span className={`text-sm font-black ${currentTextColor} tracking-[0.4em] font-mono uppercase px-8`}>
+                    <span className={`text-sm font-black ${currentTextColor} tracking-[0.4em] font-mono uppercase px-8 whitespace-nowrap`}>
                         {item}
                     </span>
                     {delimiter}

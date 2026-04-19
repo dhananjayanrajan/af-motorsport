@@ -13,7 +13,7 @@ interface SectionMainTitleProps {
 const SectionMainTitle: React.FC<SectionMainTitleProps> = ({ label, lineOne, lineTwo, highlight, variant = 1 }) => {
     if (variant === 2) {
         return (
-            <div className="flex flex-col">
+            <div className="flex flex-col max-w-full">
                 <div className="h-16 md:h-24 flex items-center">
                     <div className="w-12 h-1 bg-black-pure" />
                     <p className="px-6 text-base md:text-xl lg:text-2xl font-mono tracking-[0.3em] text-foreground uppercase font-black">
@@ -38,7 +38,7 @@ const SectionMainTitle: React.FC<SectionMainTitleProps> = ({ label, lineOne, lin
 
     if (variant === 3) {
         return (
-            <div className="flex flex-col">
+            <div className="flex flex-col max-w-full">
                 <div className="flex items-end gap-4 mb-4">
                     <div className="w-2 h-16 bg-black-pure" />
                     <h2 className="text-3xl md:text-4xl lg:text-5xl font-black uppercase tracking-tighter text-foreground leading-none">
@@ -54,7 +54,7 @@ const SectionMainTitle: React.FC<SectionMainTitleProps> = ({ label, lineOne, lin
     }
 
     return (
-        <div className="flex flex-col">
+        <div className="flex flex-col max-w-full">
             <div className="h-16 md:h-24 flex items-start">
                 <div className="w-12 h-12 md:w-20 md:h-20 lg:w-24 lg:h-24 bg-primary-500 hover:bg-primary-400 transition-colors duration-300" />
                 <div className="w-12 h-12 md:w-20 md:h-20 lg:w-24 lg:h-24 bg-secondary-500 hover:bg-secondary-400 transition-colors duration-300 ml-12 md:ml-20 lg:ml-24" />
@@ -66,7 +66,7 @@ const SectionMainTitle: React.FC<SectionMainTitleProps> = ({ label, lineOne, lin
                 </p>
             </div>
             <div className="flex flex-col">
-                <h2 className="text-3xl md:text-4xl lg:text-5xl flex gap-4 md:gap-6 font-black uppercase tracking-tighter text-foreground">
+                <h2 className="text-3xl md:text-4xl lg:text-5xl flex flex-wrap gap-4 md:gap-6 font-black uppercase tracking-tighter text-foreground">
                     {lineOne}
                     <span className="text-primary-500">{highlight}</span>
                 </h2>

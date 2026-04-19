@@ -21,6 +21,13 @@ interface SectionCarouselProps {
     autoplayDelay?: number
     basePath?: string
     slidesPerView?: number
+    distanceLabel?: string
+    statusLabel?: string
+    viewDetailsLabel?: string
+    lengthLabel?: string
+    turnsLabel?: string
+    exploreLabel?: string
+    noItemsLabel?: string
 }
 
 const SectionCarousel: React.FC<SectionCarouselProps> = ({
@@ -29,7 +36,14 @@ const SectionCarousel: React.FC<SectionCarouselProps> = ({
     cardVariant = 'default',
     autoplayDelay = 4000,
     basePath = '',
-    slidesPerView = 1
+    slidesPerView = 1,
+    distanceLabel = "",
+    statusLabel = "",
+    viewDetailsLabel = "",
+    lengthLabel = "",
+    turnsLabel = "",
+    exploreLabel = "",
+    noItemsLabel = ""
 }) => {
     const [progress, setProgress] = useState(0)
 
@@ -120,7 +134,7 @@ const SectionCarousel: React.FC<SectionCarouselProps> = ({
                     {race.name}
                 </h3>
                 <div className="px-2 py-0.5 border-2 border-black-pure font-mono text-[10px] font-black uppercase bg-white-pure group-hover/race:bg-black-pure group-hover/race:text-white-pure shrink-0 ml-2 transition-colors">
-                    {race.basics?.identifiers?.code || 'RCE'}
+                    {race.basics?.identifiers?.code || ''}
                 </div>
             </div>
             <div className="relative h-40 md:h-48 w-full bg-white-200 overflow-hidden border-b-2 border-black-pure">
@@ -135,20 +149,20 @@ const SectionCarousel: React.FC<SectionCarouselProps> = ({
             <div className="p-4 md:p-6 flex-1 flex flex-col justify-between gap-4 bg-white-pure group-hover/race:bg-black-pure transition-colors">
                 <div className="grid grid-cols-2 gap-4">
                     <div className="flex flex-col">
-                        <span className="font-mono text-[10px] text-black-pure/40 uppercase font-black group-hover/race:text-white-pure/40">Distance</span>
+                        <span className="font-mono text-[10px] text-black-pure/40 uppercase font-black group-hover/race:text-white-pure/40">{distanceLabel}</span>
                         <span className="text-lg md:text-xl font-black text-black-pure group-hover/race:text-white-pure">
                             {race.details.distance_km || '---'}<span className="text-xs ml-1">KM</span>
                         </span>
                     </div>
                     <div className="flex flex-col">
-                        <span className="font-mono text-[10px] text-black-pure/40 uppercase font-black group-hover/race:text-white-pure/40">Status</span>
+                        <span className="font-mono text-[10px] text-black-pure/40 uppercase font-black group-hover/race:text-white-pure/40">{statusLabel}</span>
                         <span className="text-lg md:text-xl font-black text-black-pure group-hover/race:text-white-pure uppercase text-sm">
                             {race.details.status || '---'}
                         </span>
                     </div>
                 </div>
                 <div className="flex items-center justify-between pt-4 border-t-2 border-black-pure/10 group-hover/race:border-white-pure/20">
-                    <span className="font-mono text-[10px] font-black text-primary-500 group-hover/race:text-primary-400 uppercase">View Details</span>
+                    <span className="font-mono text-[10px] font-black text-primary-500 group-hover/race:text-primary-400 uppercase">{viewDetailsLabel}</span>
                     <div className="size-8 md:size-10 border-2 border-black-pure flex items-center justify-center group-hover/race:bg-white-pure group-hover/race:text-black-pure transition-colors">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
                             <path d="M7 17L17 7M17 7H7M17 7V17" stroke="currentColor" strokeWidth="4" />
@@ -169,7 +183,7 @@ const SectionCarousel: React.FC<SectionCarouselProps> = ({
                     {circuit.name}
                 </h3>
                 <div className="px-2 py-0.5 border-2 border-black-pure font-mono text-[10px] font-black uppercase bg-white-pure group-hover/circuit:bg-black-pure group-hover/circuit:text-white-pure shrink-0 ml-2 transition-colors">
-                    G{circuit.details?.fia_grade || '1'}
+                    G{circuit.details?.fia_grade || ''}
                 </div>
             </div>
             <div className="relative h-40 md:h-48 w-full bg-white-200 overflow-hidden border-b-2 border-black-pure">
@@ -184,20 +198,20 @@ const SectionCarousel: React.FC<SectionCarouselProps> = ({
             <div className="p-4 md:p-6 flex-1 flex flex-col justify-between gap-4 bg-white-pure group-hover/circuit:bg-black-pure transition-colors">
                 <div className="grid grid-cols-2 gap-4">
                     <div className="flex flex-col">
-                        <span className="font-mono text-[10px] text-black-pure/40 uppercase font-black group-hover/circuit:text-white-pure/40">Length</span>
+                        <span className="font-mono text-[10px] text-black-pure/40 uppercase font-black group-hover/circuit:text-white-pure/40">{lengthLabel}</span>
                         <span className="text-lg md:text-xl font-black text-black-pure group-hover/circuit:text-white-pure">
                             {circuit.details?.length_km || '0.0'}<span className="text-xs ml-1">KM</span>
                         </span>
                     </div>
                     <div className="flex flex-col">
-                        <span className="font-mono text-[10px] text-black-pure/40 uppercase font-black group-hover/circuit:text-white-pure/40">Turns</span>
+                        <span className="font-mono text-[10px] text-black-pure/40 uppercase font-black group-hover/circuit:text-white-pure/40">{turnsLabel}</span>
                         <span className="text-lg md:text-xl font-black text-black-pure group-hover/circuit:text-white-pure">
                             {circuit.details?.turns || '--'}
                         </span>
                     </div>
                 </div>
                 <div className="flex items-center justify-between pt-4 border-t-2 border-black-pure/10 group-hover/circuit:border-white-pure/20">
-                    <span className="font-mono text-[10px] font-black text-secondary-500 group-hover/circuit:text-secondary-400 uppercase">Explore</span>
+                    <span className="font-mono text-[10px] font-black text-secondary-500 group-hover/circuit:text-secondary-400 uppercase">{exploreLabel}</span>
                     <div className="size-8 md:size-10 border-2 border-black-pure flex items-center justify-center group-hover/circuit:bg-white-pure group-hover/circuit:text-black-pure transition-colors">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
                             <path d="M7 17L17 7M17 7H7M17 7V17" stroke="currentColor" strokeWidth="4" />
@@ -221,7 +235,7 @@ const SectionCarousel: React.FC<SectionCarouselProps> = ({
             </div>
             <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black-pure to-transparent">
                 <span className="font-mono text-xs font-black text-white-pure uppercase">
-                    {item.data && 'name' in item.data ? item.data.name : 'Item'}
+                    {item.data && 'name' in item.data ? item.data.name : ''}
                 </span>
             </div>
         </div>
@@ -256,7 +270,7 @@ const SectionCarousel: React.FC<SectionCarouselProps> = ({
     if (items.length === 0) {
         return (
             <div className="relative w-full h-full min-h-[400px] bg-white-200 flex items-center justify-center">
-                <span className="font-mono text-sm text-black-pure/40 uppercase">No items</span>
+                <span className="font-mono text-sm text-black-pure/40 uppercase">{noItemsLabel}</span>
             </div>
         )
     }
