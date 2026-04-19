@@ -1,4 +1,5 @@
 'use client'
+
 import { AddressForm } from '@/components/forms/AddressForm'
 import { Button } from '@/components/ui/button'
 import {
@@ -9,7 +10,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
-import { DESIGN_SYSTEM } from '@/lib/constants'
 import { Address } from '@/payload-types'
 import { DefaultDocumentIDType } from 'payload'
 import React, { useState } from 'react'
@@ -27,8 +27,8 @@ type Props = {
 export const CreateAddressModal: React.FC<Props> = ({
   addressID,
   initialData,
-  buttonText = 'Add Address',
-  modalTitle = 'New Shipping Address',
+  buttonText = 'ADD ADDRESS',
+  modalTitle = 'NEW SHIPPING ADDRESS',
   callback,
   skipSubmission,
   disabled,
@@ -45,23 +45,33 @@ export const CreateAddressModal: React.FC<Props> = ({
       <DialogTrigger asChild disabled={disabled}>
         <Button
           variant={'outline'}
-          className="rounded-none border-zinc-200 bg-white text-[11px] font-black uppercase italic tracking-widest h-14 px-10 hover:bg-black hover:text-white transition-all shadow-sm"
+          className="group relative rounded-none border-4 border-black-pure bg-white-pure text-xs font-black uppercase tracking-widest h-16 px-10 overflow-hidden transition-all duration-300"
         >
-          {buttonText}
+          <div className="absolute inset-0 translate-y-full group-hover:translate-y-0 bg-primary-500 transition-transform duration-500 ease-in-out -z-10" />
+          <span className="relative z-10 text-black-pure">
+            {buttonText}
+          </span>
         </Button>
       </DialogTrigger>
-      <DialogContent className="bg-white border-zinc-200 rounded-none max-w-2xl p-0 overflow-hidden shadow-2xl">
-        <div
-          className="h-1.5 w-full"
-          style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}
-        />
-        <div className="p-8 md:p-12">
-          <DialogHeader className="mb-10 text-left">
-            <DialogTitle className="text-2xl font-black uppercase italic text-black tracking-tighter">
-              {modalTitle}
-            </DialogTitle>
-            <DialogDescription className="text-[11px] uppercase tracking-widest text-zinc-400 font-bold mt-2">
-              Save this address to your account for faster checkout.
+      <DialogContent className="bg-white-pure border-4 border-black-pure rounded-none max-w-2xl p-0 overflow-hidden shadow-none ring-0 focus:ring-0 outline-hidden">
+        <div className="flex w-full h-3 border-b-4 border-black-pure">
+          <div className="flex-1 bg-primary-500" />
+          <div className="flex-1 bg-secondary-500" />
+          <div className="flex-1 bg-tertiary-500" />
+        </div>
+
+        <div className="p-10 lg:p-14">
+          <DialogHeader className="mb-12 text-left space-y-4">
+            <div className="space-y-1">
+              <span className="text-[10px] font-black uppercase tracking-[0.3em] text-tertiary-500">
+                DATA ENTRY REQUIRED
+              </span>
+              <DialogTitle className="text-4xl font-black uppercase tracking-tighter text-black-pure leading-none">
+                {modalTitle}
+              </DialogTitle>
+            </div>
+            <DialogDescription className="text-xs font-black uppercase tracking-tight text-black-pure leading-tight max-w-sm">
+              SAVE THIS LOCATION TO THE DATABASE FOR ACCELERATED TRANSACTION PROCESSING AND LOGISTICS ACCURACY.
             </DialogDescription>
           </DialogHeader>
 
@@ -72,6 +82,8 @@ export const CreateAddressModal: React.FC<Props> = ({
             skipSubmission={skipSubmission}
           />
         </div>
+
+        <div className="h-4 bg-black-pure w-full" />
       </DialogContent>
     </Dialog>
   )

@@ -14,50 +14,48 @@ type Props = {
 }
 
 export const OrderItem: React.FC<Props> = ({ order }) => {
-  const itemsLabel = order.items?.length === 1 ? 'Item' : 'Items'
-
   return (
-    <div className="group bg-white border border-zinc-200 p-8 flex flex-col md:flex-row gap-8 md:items-center justify-between transition-all hover:border-black hover:shadow-md">
-      <div className="flex flex-col gap-6 grow">
-        <div className="flex flex-wrap items-center gap-6">
-          <div className="space-y-1">
-            <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400 block">Order ID</span>
-            <h3 className="text-[12px] font-black uppercase text-black italic leading-none">
+    <div className="group bg-white-pure border-4 border-black-pure p-10 flex flex-col md:flex-row gap-10 md:items-center justify-between transition-all hover:bg-secondary-500/5">
+      <div className="flex flex-col gap-8 grow">
+        <div className="flex flex-wrap items-center gap-10">
+          <div className="space-y-2">
+            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-black-pure/40 block">ORDER ID</span>
+            <h3 className="text-sm font-black uppercase text-black-pure leading-none">
               {order.id}
             </h3>
           </div>
-          <div className="h-8 w-px bg-zinc-100 hidden md:block" />
+          <div className="h-10 w-1 bg-black-pure hidden md:block" />
           {order.status && (
-            <div className="pt-2 md:pt-0">
-              <OrderStatus status={order.status} />
+            <div className="border-2 border-black-pure px-4 py-1.5 bg-white-pure">
+              <OrderStatus status={order.status} className="text-[10px] font-black uppercase tracking-widest" />
             </div>
           )}
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-8 pt-2">
-          <div className="space-y-1">
-            <span className="text-[9px] font-black uppercase tracking-widest text-zinc-300">Timestamp</span>
-            <p className="text-[11px] font-bold text-black uppercase italic">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-10">
+          <div className="space-y-2">
+            <span className="text-[9px] font-black uppercase tracking-[0.3em] text-black-pure/30">DATE</span>
+            <p className="text-xs font-black text-black-pure uppercase">
               <time dateTime={order.createdAt}>
                 {formatDateTime({ date: order.createdAt, format: 'MMM dd, yyyy' })}
               </time>
             </p>
           </div>
 
-          <div className="space-y-1">
-            <span className="text-[9px] font-black uppercase tracking-widest text-zinc-300">Quantity</span>
-            <p className="text-[11px] font-bold text-black uppercase italic">
-              {order.items?.length} {itemsLabel}
+          <div className="space-y-2">
+            <span className="text-[9px] font-black uppercase tracking-[0.3em] text-black-pure/30">COUNT</span>
+            <p className="text-xs font-black text-black-pure uppercase">
+              {order.items?.length} TOTAL
             </p>
           </div>
 
-          <div className="space-y-1 col-span-2 md:col-span-1">
-            <span className="text-[9px] font-black uppercase tracking-widest text-zinc-300">Total Value</span>
+          <div className="space-y-2 col-span-2 md:col-span-1">
+            <span className="text-[9px] font-black uppercase tracking-[0.3em] text-black-pure/30">TOTAL</span>
             <div className="flex items-center">
               {order.amount && (
                 <Price
                   as="span"
-                  className="text-[13px] font-black text-black italic"
+                  className="text-lg font-black text-black-pure"
                   amount={order.amount}
                   currencyCode={order.currency ?? undefined}
                 />
@@ -67,14 +65,17 @@ export const OrderItem: React.FC<Props> = ({ order }) => {
         </div>
       </div>
 
-      <div className="flex items-center pt-6 md:pt-0 border-t md:border-t-0 border-zinc-100">
+      <div className="flex items-center">
         <Button
           asChild
-          variant="outline"
-          className="rounded-none border-zinc-200 bg-white text-[11px] font-black uppercase italic h-14 px-10 transition-all w-full md:w-auto hover:bg-black hover:text-white hover:border-black flex items-center gap-3 active:scale-[0.98]"
+          className="group relative rounded-none bg-black-pure text-white-pure text-xs font-black uppercase tracking-widest h-20 px-12 overflow-hidden transition-all duration-300 w-full md:w-auto"
         >
-          <Link href={`/orders/${order.id}`}>
-            View Details <ChevronRight className="size-4" />
+          <Link href={`/orders/${order.id}`} className="flex items-center justify-center gap-4">
+            <div className="absolute inset-0 translate-y-full group-hover:translate-y-0 bg-secondary-500 transition-transform duration-500 ease-in-out -z-10" />
+            <span className="relative z-10 group-hover:text-black-pure transition-colors duration-500">
+              VIEW DATA
+            </span>
+            <ChevronRight className="size-5 relative z-10 group-hover:text-black-pure group-hover:translate-x-2 transition-all duration-500" />
           </Link>
         </Button>
       </div>

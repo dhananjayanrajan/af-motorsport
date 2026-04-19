@@ -5,7 +5,6 @@ import { OrderStatus } from '@/components/OrderStatus'
 import { Price } from '@/components/Price'
 import { ProductItem } from '@/components/ProductItem'
 import { AddressItem } from '@/components/addresses/AddressItem'
-import { DESIGN_SYSTEM } from '@/lib/constants'
 import { formatDateTime } from '@/utilities/formatDateTime'
 import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
 import configPromise from '@payload-config'
@@ -55,67 +54,73 @@ export default async function Order({ params, searchParams }: PageProps) {
   if (!order) notFound()
 
   return (
-    <div className="w-full space-y-10">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+    <div className="w-full space-y-12">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-8">
         {user && (
           <Link
             href="/orders"
-            className="group inline-flex items-center gap-2 text-[11px] font-black uppercase italic text-zinc-400 hover:text-black transition-colors"
+            className="group inline-flex items-center gap-4 text-xs font-black uppercase tracking-widest text-black-pure transition-colors"
           >
-            <ChevronLeftIcon className="size-3.5 transition-transform group-hover:-translate-x-1" />
-            Back to Orders
+            <ChevronLeftIcon className="size-5 transition-transform group-hover:-translate-x-2" />
+            BACK TO ALL
           </Link>
         )}
 
-        <div className="flex items-center gap-2 px-4 py-2 bg-black text-white self-start">
-          <Hash className="size-3" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
-          <h1 className="text-[11px] font-black uppercase tracking-tighter italic">
-            Order #{order.id}
+        <div className="flex items-center gap-4 bg-black-pure px-8 py-4">
+          <Hash className="size-4 text-primary-500" />
+          <h1 className="text-sm font-black uppercase tracking-widest text-white-pure">
+            ID: {order.id}
           </h1>
         </div>
       </div>
 
-      <div className="bg-white border border-zinc-200 shadow-xl relative overflow-hidden">
-        <div
-          className="absolute top-0 left-0 w-full h-1.5"
-          style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}
-        />
+      <div className="bg-white-pure border-4 border-black-pure relative overflow-hidden">
+        <div className="flex w-full h-3 border-b-4 border-black-pure">
+          <div className="flex-1 bg-primary-500" />
+          <div className="flex-1 bg-secondary-500" />
+          <div className="flex-1 bg-tertiary-500" />
+        </div>
 
-        <div className="p-8 md:p-12 space-y-16">
-          {/* Summary Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 border-b border-zinc-100 pb-12">
-            <div className="space-y-2">
-              <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Date Placed</p>
-              <p className="text-lg font-black italic uppercase text-black">
+        <div className="p-10 lg:p-16 space-y-20">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 border-b-4 border-black-pure pb-16">
+            <div className="space-y-3">
+              <p className="text-[10px] font-black uppercase tracking-[0.3em] text-black-pure/40">DATE</p>
+              <p className="text-2xl font-black uppercase tracking-tighter text-black-pure">
                 {formatDateTime({ date: order.createdAt, format: 'MMMM dd, yyyy' })}
               </p>
             </div>
 
-            <div className="space-y-2">
-              <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Total Amount</p>
-              {order.amount && <Price className="text-2xl font-black italic text-black" amount={order.amount} />}
+            <div className="space-y-3">
+              <p className="text-[10px] font-black uppercase tracking-[0.3em] text-black-pure/40">TOTAL</p>
+              {order.amount && (
+                <div className="flex items-center">
+                  <Price className="text-4xl font-black text-black-pure tracking-tighter" amount={order.amount} />
+                </div>
+              )}
             </div>
 
-            <div className="space-y-2">
-              <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Status</p>
-              <div className="inline-block">
+            <div className="space-y-3">
+              <p className="text-[10px] font-black uppercase tracking-[0.3em] text-black-pure/40">STATUS</p>
+              <div className="inline-block border-2 border-black-pure px-4 py-2 bg-secondary-500/10">
                 {order.status ? (
-                  <OrderStatus className="text-[11px] font-black uppercase italic" status={order.status} />
+                  <OrderStatus className="text-xs font-black uppercase tracking-widest" status={order.status} />
                 ) : (
-                  <span className="text-[11px] font-black uppercase italic text-zinc-400">Pending</span>
+                  <span className="text-xs font-black uppercase tracking-widest text-black-pure/40">WAITING</span>
                 )}
               </div>
             </div>
           </div>
 
-          {/* Items Section */}
-          <div className="space-y-8">
-            <h2 className="text-[11px] font-black uppercase tracking-widest text-zinc-400">Order Items</h2>
-            <ul className="divide-y divide-zinc-100">
-              {order.items?.map((item, index) => {
+          <div className="space-y-12">
+            <div className="flex items-center gap-4">
+              <div className="h-6 w-2 bg-black-pure" />
+              <h2 className="text-sm font-black uppercase tracking-[0.3em] text-black-pure">ITEMS</h2>
+            </div>
+            <ul className="divide-y-4 divide-black-pure">
+              {order.items?.map((item) => {
                 if (!item.product || typeof item.product !== 'object') return null
                 return (
-                  <li key={item.id} className="py-8 first:pt-0 last:pb-0">
+                  <li key={item.id} className="py-12 first:pt-0 last:pb-0">
                     <ProductItem
                       product={item.product}
                       quantity={item.quantity}
@@ -127,17 +132,21 @@ export default async function Order({ params, searchParams }: PageProps) {
             </ul>
           </div>
 
-          {/* Shipping Section */}
           {order.shippingAddress && (
-            <div className="pt-12 border-t border-zinc-100">
-              <h2 className="text-[11px] font-black uppercase tracking-widest text-zinc-400 mb-8">Shipping Address</h2>
-              <div className="bg-zinc-50 p-8 border border-zinc-100">
+            <div className="pt-16 border-t-4 border-black-pure">
+              <div className="flex items-center gap-4 mb-10">
+                <div className="h-6 w-2 bg-tertiary-500" />
+                <h2 className="text-sm font-black uppercase tracking-[0.3em] text-black-pure">LOCATION</h2>
+              </div>
+              <div className="bg-white-pure p-10 border-4 border-black-pure">
                 {/* @ts-expect-error - address type mismatch */}
                 <AddressItem address={order.shippingAddress} hideActions />
               </div>
             </div>
           )}
         </div>
+
+        <div className="h-6 bg-black-pure w-full" />
       </div>
     </div>
   )
@@ -146,7 +155,7 @@ export default async function Order({ params, searchParams }: PageProps) {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { id } = await params
   return {
-    title: `Order #${id}`,
+    title: `ORDER ${id}`,
     description: `Details for order ${id}`,
     openGraph: mergeOpenGraph({ title: `Order ${id}`, url: `/orders/${id}` }),
   }

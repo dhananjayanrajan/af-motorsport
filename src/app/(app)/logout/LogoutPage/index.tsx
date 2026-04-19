@@ -1,9 +1,6 @@
 'use client'
 
-import { DESIGN_SYSTEM } from '@/lib/constants'
 import { useAuth } from '@/providers/Auth'
-import { cn } from '@/utilities/cn'
-import { motion, useReducedMotion } from 'framer-motion'
 import { ChevronRight, LogOut, ShoppingBag } from 'lucide-react'
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
@@ -12,15 +9,14 @@ export const LogoutPage: React.FC = () => {
   const { logout } = useAuth()
   const [success, setSuccess] = useState('')
   const [error, setError] = useState('')
-  const shouldReduceMotion = useReducedMotion()
 
   useEffect(() => {
     const performLogout = async () => {
       try {
         await logout()
-        setSuccess('SESSION_TERMINATED')
+        setSuccess('Session Closed')
       } catch (_) {
-        setError('NO_ACTIVE_SESSION')
+        setError('No Session Found')
       }
     }
 
@@ -28,68 +24,66 @@ export const LogoutPage: React.FC = () => {
   }, [logout])
 
   return (
-    <div className="min-h-[60vh] flex flex-col items-center justify-center px-8 bg-zinc-50/50">
-      <motion.div
-        initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-        className="w-full max-w-lg border border-zinc-200 bg-white p-12 relative overflow-hidden shadow-2xl"
-        style={{ clipPath: 'polygon(5% 0%, 100% 0%, 95% 100%, 0% 100%)' }}
-      >
-        <div
-          className="absolute top-0 left-0 w-full h-[2px] z-20"
-          style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}
-        />
+    <div className="min-h-screen bg-white flex flex-col items-center justify-center p-8">
+      <div className="w-full max-w-md">
+        <div className="mb-16 flex flex-col gap-2">
+          <div className="h-4 w-32 bg-red-600" />
+          <div className="h-4 w-10 bg-yellow-400" />
+          <div className="h-4 w-20 bg-black" />
+        </div>
 
-        <div className="relative z-10 text-center space-y-10">
-          <div className="flex flex-col items-center gap-5">
-            <div className="h-14 w-14 border-2 border-zinc-100 flex items-center justify-center bg-zinc-50">
-              <LogOut className="h-6 w-6" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
+        <div className="border-t-4 border-black pt-12">
+          <header className="flex items-start justify-between mb-16">
+            <div className="space-y-4">
+              <div className="size-16 border-4 border-black flex items-center justify-center bg-white">
+                <LogOut className="size-8 text-black" strokeWidth={3} />
+              </div>
+              <div className="space-y-1">
+                <h1 className="text-3xl font-bold uppercase tracking-tighter text-black leading-none">
+                  {error || success || 'Processing...'}
+                </h1>
+                <p className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-400">
+                  Authentication Terminated
+                </p>
+              </div>
             </div>
-            <div className="space-y-3">
-              <span className={cn("text-[10px] uppercase font-black block tracking-[0.4em] italic text-zinc-400")}>
-                System Access Protocol
-              </span>
-              <h1 className="text-4xl font-black text-black italic uppercase tracking-tighter leading-none">
-                {error || success || 'DE-AUTHENTICATING...'}
-              </h1>
+
+            <div className="flex gap-2">
+              <div className="size-6 rounded-full bg-red-600" />
+              <div className="size-6 bg-black" />
+              <div className="size-0 border-l-[12px] border-l-transparent border-r-[12px] border-r-transparent border-b-[20px] border-b-yellow-400" />
             </div>
-          </div>
+          </header>
 
-          <div className="w-full h-[1px] bg-zinc-100" />
-
-          <div className="grid grid-cols-1 gap-5">
+          <div className="grid grid-cols-1 gap-4">
             <Link
               href="/login"
-              className="relative group flex items-center justify-center w-full h-16 bg-black text-white overflow-hidden transition-all active:scale-95"
-              style={{ clipPath: 'polygon(5% 0%, 100% 0%, 95% 100%, 0% 100%)' }}
+              className="group flex items-center justify-between w-full h-20 px-8 bg-black text-white hover:bg-zinc-100 hover:text-black border-2 border-black transition-colors"
             >
-              <div
-                className="absolute inset-0 translate-y-full group-hover:translate-y-0 transition-transform duration-500"
-                style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}
-              />
-              <span className={cn("relative z-10 text-[11px] font-black uppercase italic flex items-center gap-4 group-hover:text-black transition-colors tracking-[0.2em]")}>
-                RE-AUTHORIZE <ChevronRight className="h-5 w-5" />
-              </span>
+              <span className="text-base font-bold uppercase tracking-tight">Return to Login</span>
+              <ChevronRight className="size-6 transition-transform group-hover:translate-x-2" strokeWidth={3} />
             </Link>
 
             <Link
               href="/search"
-              className="relative group flex items-center justify-center w-full h-16 bg-white text-black overflow-hidden transition-all active:scale-95 border border-zinc-200 hover:border-black"
-              style={{ clipPath: 'polygon(5% 0%, 100% 0%, 95% 100%, 0% 100%)' }}
+              className="group flex items-center justify-between w-full h-20 px-8 border-2 border-black bg-white text-black hover:bg-yellow-400 transition-colors"
             >
-              <span className={cn("relative z-10 text-[11px] font-black uppercase italic flex items-center gap-4 transition-colors tracking-[0.2em]")}>
-                RETURN_TO_CATALOG <ShoppingBag className="h-5 w-5" />
-              </span>
+              <span className="text-base font-bold uppercase tracking-tight">View Catalog</span>
+              <ShoppingBag className="size-6" strokeWidth={3} />
             </Link>
           </div>
-        </div>
-      </motion.div>
 
-      <div className="mt-12 flex items-center gap-4 text-zinc-300">
-        <div className="h-2 w-2 bg-zinc-200" />
-        <span className="text-[9px] font-black uppercase tracking-[0.6em] italic">Status: Link_Severed</span>
-        <div className="h-2 w-2 bg-zinc-200" />
+          <div className="mt-20 pt-8 border-t-2 border-zinc-100 flex justify-between items-center">
+            <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-zinc-300">
+              System State: Neutral
+            </p>
+            <div className="flex gap-1">
+              {[...Array(4)].map((_, i) => (
+                <div key={i} className="size-1 bg-zinc-200" />
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   )

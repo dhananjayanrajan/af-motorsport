@@ -1,7 +1,6 @@
 'use client'
 
 import { AddressForm } from '@/components/forms/AddressForm'
-import { DESIGN_SYSTEM } from '@/lib/constants'
 import { Address } from '@/payload-types'
 import { cn } from '@/utilities/cn'
 import { useAddresses } from '@payloadcms/plugin-ecommerce/client/react'
@@ -25,12 +24,12 @@ export const CheckoutAddresses: React.FC<Props> = ({
   const [showAddForm, setShowAddForm] = useState(false)
 
   return (
-    <div className="space-y-10">
-      <div className="space-y-2 border-l-4 border-black pl-6">
-        <h3 className="text-[14px] font-black uppercase italic tracking-widest text-black leading-none">
+    <div className="space-y-12">
+      <div className="space-y-3 border-l-8 border-black pl-8">
+        <h3 className="text-xl font-bold uppercase tracking-tighter text-black leading-none">
           {heading}
         </h3>
-        <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">
+        <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest">
           {description}
         </p>
       </div>
@@ -38,65 +37,64 @@ export const CheckoutAddresses: React.FC<Props> = ({
       <div className="flex justify-start">
         <button
           onClick={() => setShowAddForm(!showAddForm)}
-          className="group relative h-12 px-8 bg-black transition-all active:scale-[0.98] overflow-hidden"
+          className={cn(
+            'group relative h-14 px-10 border-2 border-black transition-all active:scale-95',
+            showAddForm ? 'bg-error text-white' : 'bg-black text-white hover:bg-primary hover:text-black',
+          )}
         >
-          <div
-            className={cn(
-              "absolute inset-0 translate-x-[-101%] group-hover:translate-x-0 transition-transform duration-300 ease-out",
-              showAddForm && "translate-x-0"
-            )}
-            style={{ backgroundColor: showAddForm ? '#ef4444' : DESIGN_SYSTEM.COLORS.PRIMARY[500] }}
-          />
-          <span className={cn(
-            "relative z-10 text-[11px] font-black uppercase italic flex items-center gap-2 transition-colors",
-            showAddForm ? "text-white" : "text-white group-hover:text-black"
-          )}>
+          <span className="relative z-10 text-xs font-bold uppercase tracking-widest flex items-center gap-3">
             {showAddForm ? (
-              <><X className="h-4 w-4" /> Cancel</>
+              <>
+                <X className="h-4 w-4" strokeWidth={3} /> Abort Action
+              </>
             ) : (
-              <><Plus className="h-4 w-4" /> Add New Address</>
+              <>
+                <Plus className="h-4 w-4" strokeWidth={3} /> Create New Entry
+              </>
             )}
           </span>
         </button>
       </div>
 
       {showAddForm && (
-        <div className="bg-zinc-50 border border-zinc-200 p-8 md:p-12 shadow-sm animate-in fade-in slide-in-from-top-4 duration-500">
-          <div className="mb-8 flex items-center gap-3">
-            <div className="h-4 w-1 bg-black" />
-            <span className="text-[11px] font-black uppercase italic tracking-widest text-black">
-              Address Details
+        <div className="bg-white border-4 border-black p-10 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+          <div className="mb-10 flex items-center gap-4 border-b-2 border-black pb-4">
+            <div className="size-4 bg-primary border-2 border-black" />
+            <span className="text-sm font-bold uppercase tracking-widest text-black">
+              Address Parameters
             </span>
           </div>
-          <AddressForm callback={(newAddress) => {
-            setAddress(newAddress)
-            setShowAddForm(false)
-          }} />
+          <AddressForm
+            callback={(newAddress) => {
+              setAddress(newAddress)
+              setShowAddForm(false)
+            }}
+          />
         </div>
       )}
 
-      <div className="grid grid-cols-1 gap-4">
+      <div className="grid grid-cols-1 gap-6">
         {!addresses || addresses.length === 0 ? (
-          <div className="py-16 border border-dashed border-zinc-200 flex items-center justify-center">
-            <p className="text-[10px] font-black uppercase tracking-widest text-zinc-300 italic">
-              No saved addresses found
+          <div className="py-20 border-4 border-dashed border-zinc-200 flex items-center justify-center bg-zinc-50">
+            <p className="text-xs font-bold uppercase tracking-[0.3em] text-zinc-300">
+              Database Empty: No Records
             </p>
           </div>
         ) : (
           addresses.map((address) => (
             <div
               key={address.id}
-              className="group flex flex-col md:flex-row items-center justify-between p-6 bg-white border border-zinc-200 hover:border-black transition-all"
+              className="group flex flex-col md:flex-row items-center justify-between p-8 bg-white border-2 border-black hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all"
             >
-              <div className="flex gap-5 items-center">
-                <div className="p-3 bg-zinc-50 text-zinc-300 group-hover:text-black transition-colors">
-                  <MapPin className="h-5 w-5" />
+              <div className="flex gap-8 items-center">
+                <div className="p-4 bg-zinc-100 border-2 border-black text-black group-hover:bg-primary transition-colors">
+                  <MapPin className="h-6 w-6" strokeWidth={2.5} />
                 </div>
-                <div className="space-y-1">
-                  <span className="text-[12px] font-black uppercase italic text-black leading-none">
-                    {address.title || 'Untitled Address'}
+                <div className="space-y-2">
+                  <span className="text-base font-bold uppercase tracking-tight text-black leading-none">
+                    {address.title || 'Untitled Entry'}
                   </span>
-                  <p className="text-[11px] font-medium text-zinc-500 uppercase">
+                  <p className="text-xs font-bold text-zinc-500 uppercase tracking-widest">
                     {address.addressLine1}, {address.city}
                   </p>
                 </div>
@@ -107,10 +105,10 @@ export const CheckoutAddresses: React.FC<Props> = ({
                   e.preventDefault()
                   setAddress(address)
                 }}
-                className="mt-6 md:mt-0 w-full md:w-auto h-12 px-8 border border-zinc-200 text-black hover:bg-black hover:text-white transition-all flex items-center justify-center gap-3 active:scale-[0.98]"
+                className="mt-8 md:mt-0 w-full md:w-auto h-14 px-10 border-2 border-black bg-white text-black font-bold uppercase tracking-widest hover:bg-black hover:text-white transition-all flex items-center justify-center gap-4"
               >
-                <span className="text-[11px] font-black uppercase italic">Select Address</span>
-                <ChevronRight className="h-4 w-4" />
+                <span>Select</span>
+                <ChevronRight className="h-5 w-5" strokeWidth={3} />
               </button>
             </div>
           ))

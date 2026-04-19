@@ -38,35 +38,42 @@ export default async function Orders() {
   } catch (error) { }
 
   return (
-    <div className="w-full space-y-12">
-      <div className="flex flex-col gap-6 border-b border-zinc-200 pb-10">
-        <div className="flex items-center gap-2">
-          <History className="h-4 w-4 text-zinc-400" />
-          <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400">
-            Purchase History
+    <div className="w-full space-y-16">
+      <div className="flex flex-col gap-8 border-b-4 border-black-pure pb-12 relative">
+        <div className="flex items-center gap-3">
+          <History className="h-5 w-5 text-black-pure" />
+          <span className="text-xs font-black uppercase tracking-[0.3em] text-black-pure">
+            PAST DATA
           </span>
         </div>
-        <h1 className="text-4xl font-black text-black italic uppercase tracking-tighter leading-none">
-          My <span className="text-zinc-300">Orders</span>
+        <h1 className="text-6xl font-black text-black-pure uppercase tracking-tighter leading-none">
+          MY <span className="text-tertiary-500">ORDERS</span>
         </h1>
-        <p className="text-[11px] text-zinc-400 uppercase tracking-tight font-bold max-w-sm">
-          Review your past orders and track current shipments.
+        <p className="text-xs font-black text-black-pure uppercase tracking-tight max-w-sm leading-tight">
+          VIEW YOUR ENTIRE BUYING HISTORY AND TRACK YOUR CURRENT ITEMS.
         </p>
+        <div className="absolute -bottom-1 left-0 flex gap-1">
+          <div className="h-1 w-32 bg-tertiary-500" />
+          <div className="h-1 w-8 bg-black-pure" />
+        </div>
       </div>
 
-      <div className="bg-white border border-zinc-200 shadow-sm overflow-hidden">
+      <div className="bg-white-pure border-4 border-black-pure overflow-hidden">
         {(!orders || !Array.isArray(orders) || orders?.length === 0) ? (
-          <div className="p-24 flex flex-col items-center justify-center text-center gap-4 bg-zinc-50/50">
-            <p className="text-[11px] uppercase tracking-widest font-black text-zinc-300 italic">
-              No orders found
+          <div className="p-32 flex flex-col items-center justify-center text-center gap-6 bg-white-pure">
+            <div className="size-16 border-4 border-black-pure flex items-center justify-center">
+              <History className="h-8 w-8 text-black-pure opacity-10" />
+            </div>
+            <p className="text-sm uppercase tracking-[0.4em] font-black text-black-pure/20">
+              NO ORDERS FOUND
             </p>
           </div>
         ) : (
-          <div className="divide-y divide-zinc-100">
+          <div className="divide-y-4 divide-black-pure">
             {orders?.map((order) => (
               <div
                 key={order.id}
-                className="p-6 transition-colors hover:bg-zinc-50"
+                className="p-10 transition-colors hover:bg-tertiary-500/5"
               >
                 <OrderItem order={order} />
               </div>

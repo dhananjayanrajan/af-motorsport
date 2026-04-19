@@ -1,4 +1,3 @@
-import { DESIGN_SYSTEM } from '@/lib/constants'
 import { OrderStatus as StatusOptions } from '@/payload-types'
 import { cn } from '@/utilities/cn'
 
@@ -11,12 +10,12 @@ export const OrderStatus: React.FC<Props> = ({ status, className }) => {
   return (
     <div
       className={cn(
-        'text-[9px] font-black uppercase tracking-[0.2em] px-3 py-1 border transition-colors italic',
+        'text-[10px] font-black uppercase tracking-widest px-5 py-2 border-2 transition-all duration-300 inline-block',
         className,
         {
-          [`bg-[${DESIGN_SYSTEM.COLORS.PRIMARY}]/10 border-[${DESIGN_SYSTEM.COLORS.PRIMARY}] text-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`]: status === 'processing',
-          [`bg-[${DESIGN_SYSTEM.COLORS.PRIMARY}] border-[${DESIGN_SYSTEM.COLORS.PRIMARY}] text-white`]: status === 'completed',
-          'bg-zinc-100 border-zinc-200 text-zinc-500': status !== 'processing' && status !== 'completed'
+          'bg-primary-500 border-black-pure text-black-pure': status === 'completed',
+          'bg-secondary-500 border-black-pure text-black-pure': status === 'processing',
+          'bg-white-pure border-black-pure text-black-pure/40': status !== 'processing' && status !== 'completed',
         },
       )}
     >

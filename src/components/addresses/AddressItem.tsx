@@ -16,16 +16,24 @@ export const AddressItem: React.FC<Props> = ({ address, hideActions }) => {
   if (!address) return null
 
   return isEditing ? (
-    <div className="bg-white border border-black p-8 md:p-12 shadow-2xl animate-in fade-in duration-300">
-      <div className="flex justify-between items-center mb-10 border-b border-zinc-100 pb-6">
-        <h3 className="text-xl font-black uppercase italic text-black">
-          Edit <span className="text-zinc-300">{address.title || 'Address'}</span>
-        </h3>
+    <div className="bg-white-pure border-4 border-black-pure p-10 lg:p-16">
+      <div className="flex justify-between items-start mb-12">
+        <div className="space-y-2">
+          <div className="flex gap-1">
+            <div className="size-3 bg-primary-500 border-2 border-black-pure" />
+            <div className="size-3 bg-secondary-500 border-2 border-black-pure" />
+            <div className="size-3 bg-tertiary-500 border-2 border-black-pure" />
+          </div>
+          <h3 className="text-4xl font-black uppercase tracking-tighter text-black-pure leading-none">
+            REVISE LOCATION
+          </h3>
+        </div>
         <button
           onClick={() => setIsEditing(false)}
-          className="flex items-center gap-2 text-[10px] font-black uppercase text-zinc-400 hover:text-red-500 transition-colors"
+          className="flex items-center gap-3 px-6 py-3 bg-black-pure text-white-pure hover:bg-primary-500 hover:text-black-pure transition-colors duration-300"
         >
-          <X className="h-4 w-4" /> Cancel
+          <X className="h-4 w-4" />
+          <span className="text-xs font-black uppercase tracking-widest">DISCARD</span>
         </button>
       </div>
       <AddressForm
@@ -35,30 +43,29 @@ export const AddressItem: React.FC<Props> = ({ address, hideActions }) => {
       />
     </div>
   ) : (
-    <div className="group bg-white border border-zinc-200 p-8 flex flex-col md:flex-row md:items-center justify-between gap-8 transition-all hover:border-black hover:shadow-md">
-      <div className="flex gap-6 items-start">
-        <div className="mt-1">
-          <MapPin className="h-5 w-5 text-zinc-300 group-hover:text-black transition-colors" />
+    <div className="group relative bg-white-pure border-4 border-black-pure p-10 flex flex-col md:flex-row md:items-center justify-between gap-10 overflow-hidden">
+      <div className="absolute inset-0 translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-in-out bg-primary-500 -z-10" />
+
+      <div className="flex gap-8 items-start relative z-10">
+        <div className="size-14 bg-black-pure flex items-center justify-center group-hover:bg-white-pure transition-colors duration-500 border-2 border-black-pure">
+          <MapPin className="h-6 w-6 text-white-pure group-hover:text-black-pure transition-colors duration-500" />
         </div>
-        <div className="space-y-4">
-          <div>
-            <span className="text-[12px] font-black uppercase italic text-black tracking-tight">
-              {address.title || 'Shipping Address'}
+
+        <div className="space-y-6">
+          <div className="space-y-1">
+            <span className="text-xs font-black uppercase tracking-widest text-tertiary-500 group-hover:text-black-pure transition-colors duration-500">
+              {address.title || 'SHIPPING DESTINATION'}
             </span>
-            <div className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mt-1">
-              ID: {address.id?.toString().substring(0, 8).toUpperCase() || 'UNSET'}
-            </div>
+            <h4 className="text-3xl font-black uppercase tracking-tighter text-black-pure leading-none">
+              {address.firstName} {address.lastName}
+            </h4>
           </div>
 
           <div className="space-y-1">
-            <p className="text-sm font-bold text-zinc-800 uppercase tracking-tight">
-              {address.firstName} {address.lastName}
-            </p>
-            <p className="text-[11px] text-zinc-500 font-medium uppercase leading-relaxed">
+            <p className="text-sm font-black uppercase tracking-tight text-black-pure leading-tight max-w-xs">
               {address.addressLine1}
-              {address.addressLine2 && `, ${address.addressLine2}`}
-              <br />
-              {address.city}, {address.state} {address.postalCode}
+              {address.addressLine2 && <span className="block">{address.addressLine2}</span>}
+              <span className="block">{address.city}, {address.state} {address.postalCode}</span>
             </p>
           </div>
         </div>
@@ -67,10 +74,10 @@ export const AddressItem: React.FC<Props> = ({ address, hideActions }) => {
       {!hideActions && (
         <button
           onClick={() => setIsEditing(true)}
-          className="flex items-center justify-center gap-3 h-12 px-6 border border-zinc-200 text-black hover:bg-black hover:text-white transition-all active:scale-[0.98]"
+          className="relative z-10 flex items-center justify-center gap-4 h-16 px-10 bg-black-pure text-white-pure group-hover:bg-secondary-500 group-hover:text-black-pure border-2 border-black-pure transition-all duration-500"
         >
-          <Edit2 className="h-3.5 w-3.5" />
-          <span className="text-[11px] font-black uppercase italic">Edit Details</span>
+          <Edit2 className="h-4 w-4" />
+          <span className="text-xs font-black uppercase tracking-widest">MODIFY DATA</span>
         </button>
       )}
     </div>

@@ -1,38 +1,33 @@
 'use client'
 
-import { DESIGN_SYSTEM } from '@/lib/constants'
 import React from 'react'
 
 export const BeforeLogin: React.FC = () => {
   return (
-    <div
-      className="p-8 border bg-white skew-x-[-4deg]"
-      style={{ borderColor: DESIGN_SYSTEM.COLORS.ZINC[200] }}
-    >
-      <div className="skew-x-[4deg] space-y-4">
-        <h2
-          className="text-2xl font-black italic uppercase tracking-tighter text-black leading-none"
-          style={{ textShadow: `0 0 15px ${DESIGN_SYSTEM.COLORS.PRIMARY.GLOW}` }}
-        >
-          Admin Portal
-        </h2>
+    <div className="bg-white px-8 md:px-12 py-12">
+      <div className="flex flex-col gap-2 mb-12">
+        <div className="h-4 w-32 bg-primary" />
+        <div className="h-4 w-10 bg-accent" />
+        <div className="h-4 w-20 bg-black" />
+      </div>
 
-        <div
-          className="h-1 w-12"
-          style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}
-        />
+      <div className="space-y-6">
+        <header className="space-y-4">
+          <h2 className="text-4xl font-bold uppercase tracking-tighter text-black leading-none">
+            Admin Portal
+          </h2>
+          <div className="h-2 w-16 bg-black" />
+        </header>
 
-        <p className="text-xs font-bold uppercase tracking-widest text-zinc-500 leading-relaxed max-w-md">
-          Welcome to your dashboard. This interface is restricted to site admins for store management.
-          Customers should{' '}
+        <p className="text-sm font-bold uppercase tracking-tight text-black leading-normal max-w-sm">
+          Access restricted. Internal store management protocol. Customers must{' '}
           <a
             href={`${process.env.PAYLOAD_PUBLIC_SERVER_URL}/login`}
-            className="text-black underline decoration-2 transition-colors"
-            style={{ textDecorationColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}
+            className="bg-accent px-1 hover:bg-black hover:text-white transition-colors underline decoration-2 underline-offset-4"
           >
-            login to the main site
+            authenticate via main site
           </a>
-          {' '}to access orders and account settings.
+          {' '}for account and order access.
         </p>
       </div>
     </div>

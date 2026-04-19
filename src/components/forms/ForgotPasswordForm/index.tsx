@@ -4,7 +4,6 @@ import { ClippedInput } from '@/components/Clipped/ClippedInput'
 import { FormError } from '@/components/forms/FormError'
 import { FormItem } from '@/components/forms/FormItem'
 import { Message } from '@/components/Message'
-import { DESIGN_SYSTEM } from '@/lib/constants'
 import { ChevronRight, MailCheck, ShieldAlert } from 'lucide-react'
 import Link from 'next/link'
 import React, { useCallback, useState } from 'react'
@@ -46,65 +45,65 @@ export const ForgotPasswordForm: React.FC = () => {
     }
   }, [])
 
-  const labelClasses = "text-[11px] font-black uppercase italic text-black flex items-center gap-2 mb-2"
-  const inputClasses = "bg-white border-zinc-200 h-14 px-5 text-black placeholder:text-zinc-400 focus:border-black focus:ring-0 transition-all rounded-none w-full"
-
   return (
-    <div className="w-full max-w-lg mx-auto bg-white border border-zinc-200 p-8 md:p-12 shadow-2xl">
+    <div className="w-full bg-white px-8 md:px-12 py-12">
       {!success ? (
-        <div className="relative">
-          <div className="mb-12 space-y-3">
-            <div className="flex items-center gap-3">
-              <ShieldAlert className="size-5 text-black" />
-              <span className="text-[11px] font-black uppercase italic tracking-widest text-black">
-                Password Recovery
-              </span>
+        <div className="flex flex-col">
+          <div className="mb-12 flex flex-col gap-2">
+            <div className="h-4 w-32 bg-red-600" />
+            <div className="h-4 w-10 bg-yellow-400" />
+            <div className="h-4 w-20 bg-black" />
+          </div>
+
+          <header className="mb-10 space-y-4">
+            <div className="flex items-center gap-4">
+              <ShieldAlert className="size-8 text-black" strokeWidth={3} />
+              <h1 className="text-3xl font-bold uppercase tracking-tighter text-black">
+                Recovery
+              </h1>
             </div>
-            <p className="text-[10px] text-zinc-400 uppercase font-bold tracking-widest leading-relaxed">
+            <p className="text-sm font-bold uppercase tracking-tight text-black max-w-sm">
               Enter your email address to receive a secure link to reset your account access.
             </p>
-          </div>
+          </header>
 
           {error && (
             <Message
-              className="mb-8 border-l-4 border-red-600 bg-red-50 p-4 text-[10px] font-bold uppercase tracking-wider text-red-600"
+              className="mb-8 border-2 border-black bg-red-600 p-4 text-xs font-bold uppercase text-white"
               error={error}
             />
           )}
 
-          <form className="space-y-10" onSubmit={handleSubmit(onSubmit)}>
-            <FormItem className="space-y-1">
-              <label htmlFor="email" className={labelClasses}>Email Address</label>
+          <form className="space-y-8" onSubmit={handleSubmit(onSubmit)}>
+            <FormItem className="space-y-2">
+              <label htmlFor="email" className="text-xs font-bold uppercase tracking-tight text-black">Email Address</label>
               <ClippedInput
                 id="email"
                 type="email"
-                placeholder="email@example.com"
+                placeholder="REQUIRED"
                 autoComplete="email"
-                className={inputClasses}
-                {...register('email', { required: 'Email is required' })}
+                className="w-full border-2 border-black h-14 px-4 bg-white outline-none rounded-none text-black font-bold uppercase"
+                {...register('email', { required: 'Required' })}
               />
-              {errors.email && <FormError message={errors.email.message} className="text-[10px] font-bold text-red-600 mt-1 uppercase" />}
+              {errors.email && <FormError message={errors.email.message} className="text-[10px] font-bold text-red-600 mt-2 uppercase" />}
             </FormItem>
 
             <div className="space-y-6 pt-4">
               <button
                 type="submit"
                 disabled={isLoading}
-                className="group relative flex items-center justify-center w-full h-16 bg-black text-white transition-all active:scale-[0.98] disabled:opacity-10 overflow-hidden"
+                className="group flex items-center justify-between w-full h-16 px-6 bg-black text-white hover:bg-zinc-100 hover:text-black border-2 border-black transition-colors disabled:opacity-50"
               >
-                <div
-                  className="absolute inset-0 translate-x-[-101%] group-hover:translate-x-0 transition-transform duration-300 ease-out"
-                  style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}
-                />
-                <span className="relative z-10 text-[12px] font-black uppercase italic tracking-widest flex items-center gap-4 group-hover:text-black transition-colors">
-                  {isLoading ? 'Sending Request...' : 'Send Reset Link'} <ChevronRight className="size-5" />
+                <span className="text-sm font-bold uppercase tracking-widest">
+                  {isLoading ? 'Processing' : 'Send Reset Link'}
                 </span>
+                <ChevronRight className="size-5 transition-transform group-hover:translate-x-1" strokeWidth={3} />
               </button>
 
-              <div className="text-center">
+              <div className="pt-8 border-t-2 border-black">
                 <Link
                   href="/login"
-                  className="text-[10px] font-black uppercase tracking-widest text-zinc-400 hover:text-black transition-colors italic border-b border-transparent hover:border-black pb-1"
+                  className="inline-block text-xs font-bold uppercase tracking-widest text-black bg-yellow-400 px-6 py-3 border-2 border-black hover:bg-black hover:text-white transition-all text-center"
                 >
                   Return to Login
                 </Link>
@@ -113,25 +112,34 @@ export const ForgotPasswordForm: React.FC = () => {
           </form>
         </div>
       ) : (
-        <div className="text-center py-8">
-          <div className="flex flex-col items-center gap-8">
-            <div className="size-20 bg-zinc-50 border border-zinc-100 flex items-center justify-center">
-              <MailCheck className="size-10 text-black" />
+        <div className="flex flex-col items-start">
+          <div className="flex gap-3 mb-12">
+            <div className="size-8 rounded-full bg-red-600" />
+            <div className="size-0 border-l-[16px] border-l-transparent border-r-[16px] border-r-transparent border-b-[28px] border-b-yellow-400" />
+            <div className="size-8 bg-black" />
+          </div>
+
+          <div className="border-t-4 border-black pt-12 w-full">
+            <div className="flex flex-col items-start gap-8 mb-10">
+              <div className="size-20 border-2 border-black flex items-center justify-center bg-zinc-50">
+                <MailCheck className="size-10 text-black" strokeWidth={3} />
+              </div>
+              <div className="space-y-4">
+                <h1 className="text-3xl font-bold uppercase tracking-tighter text-black">
+                  Dispatched
+                </h1>
+                <p className="text-sm font-bold uppercase tracking-tight text-black max-w-sm">
+                  Check your inbox. A secure password reset link has been sent to your registered address.
+                </p>
+              </div>
             </div>
-            <div className="space-y-4">
-              <h1 className="text-2xl font-black italic uppercase tracking-tighter text-black">
-                Email Dispatched
-              </h1>
-              <p className="text-[10px] text-zinc-400 uppercase tracking-widest font-bold leading-relaxed max-w-[280px] mx-auto">
-                Check your inbox. A secure password reset link has been sent to your registered address.
-              </p>
-            </div>
-            <div className="w-full h-px bg-zinc-100 mt-4" />
+
             <Link
               href="/login"
-              className="text-[11px] font-black uppercase italic tracking-widest transition-all flex items-center gap-3 text-black hover:gap-5"
+              className="group flex items-center justify-between w-full h-16 px-6 bg-black text-white hover:bg-yellow-400 hover:text-black border-2 border-black transition-colors"
             >
-              Back to Login <ChevronRight className="size-4" />
+              <span className="text-sm font-bold uppercase tracking-tight">Back to Login</span>
+              <ChevronRight className="size-5 transition-transform group-hover:translate-x-1" strokeWidth={3} />
             </Link>
           </div>
         </div>

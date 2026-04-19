@@ -1,43 +1,94 @@
 'use client'
+
 import { Media } from '@/components/Media'
 import { Carousel, CarouselApi, CarouselContent, CarouselItem } from '@/components/ui/carousel'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 export const Gallery: React.FC<{ gallery: any[] }> = ({ gallery }) => {
-  const [current, setCurrent] = React.useState(0)
-  const [api, setApi] = React.useState<CarouselApi>()
+  const [current, setCurrent] = useState(0)
+  const [api, setApi] = useState<CarouselApi>()
+
+  useEffect(() => {
+    if (!api) return
+
+    api.on('select', () => {
+      setCurrent(api.selectedScrollSnap())
+    })
+  }, [api])
 
   const activeItem = gallery[current]
 
   if (!activeItem || !activeItem.image) return null
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="relative w-full aspect-square bg-white border border-zinc-200 overflow-hidden">
+    <div className="flex flex-col gap-8">
+      <div className="relative w-full aspect-square bg-white border-4 border-black overflow-hidden group">
         <Media
           resource={activeItem.image}
-          className="w-full h-full p-8 transition-transform duration-700"
+          className="w-full h-full p-12 transition-all duration-500 group-hover:scale-105"
           imgClassName="w-full h-full object-contain"
         />
+
+        <div className="absolute top-4 right-4 flex gap-1">
+          <div className="size-2 bg-primary" />
+          <div className="size-2 bg-secondary" />
+          <div className="size-2 bg-accent" />
+        </div>
       </div>
 
-      <Carousel setApi={setApi} className="w-full" opts={{ align: 'start', loop: false }}>
-        <CarouselContent className="-ml-2">
+      <Carousel
+        setApi={setApi}
+        className="w-full"
+        opts={{
+          align: 'start',
+          loop: false
+        }}
+      >
+        <CarouselContent className="-ml-4">
           {gallery.map((item, i) => {
             const isActive = i === current
             return (
-              <CarouselItem className="basis-1/4 sm:basis-1/5 pl-2" key={i} onClick={() => setCurrent(i)}>
+              <CarouselItem
+                className="basis-1/4 pl-4"
+                key={i}
+                onClick={() => {
+                  setCurrent(i)
+                  api?.scrollTo(i)
+                }}
+              >
                 <div
-                  className={`relative aspect-square cursor-pointer border-2 transition-all duration-200 p-2 ${isActive ? 'border-black bg-white' : 'border-zinc-100 bg-zinc-50'
+                  className={`relative aspect-square cursor-pointer border-2 transition-colors p-3 ${isActive
+                      ? 'border-black bg-zinc-100'
+                      : 'border-zinc-200 bg-white hover:border-black'
                     }`}
                 >
-                  <Media resource={item.image} className="w-full h-full object-contain opacity-80 hover:opacity-100 transition-opacity" />
+                  <Media
+                    resource={item.image}
+                    className="w-full h-full object-contain"
+                  />
+                  {isActive && (
+                    <div className="absolute bottom-0 left-0 w-full h-1 bg-primary" />
+                  )}
                 </div>
               </CarouselItem>
             )
           })}
         </CarouselContent>
       </Carousel>
+
+      <div className="flex justify-between items-center pt-4 border-t-2 border-zinc-100">
+        <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-zinc-300">
+          Viewing: 0{current + 1} / 0{gallery.length}
+        </span>
+        <div className="flex gap-1">
+          {gallery.map((_, i) => (
+            <div
+              key={i}
+              className={`h-1 transition-all ${i === current ? 'w-8 bg-black' : 'w-2 bg-zinc-200'}`}
+            />
+          ))}
+        </div>
+      </div>
     </div>
   )
 }

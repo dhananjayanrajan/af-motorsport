@@ -1,7 +1,8 @@
 'use client'
-import clsx from 'clsx'
+
+import { cn } from '@/utilities/cn'
 import Link from 'next/link'
-import { usePathname, useSearchParams } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 
 type Props = {
   href: string
@@ -10,31 +11,38 @@ type Props = {
 
 export function Item({ href, title }: Props) {
   const pathname = usePathname()
-  const searchParams = useSearchParams()
   const active = pathname === href
-  const DynamicTag = active ? 'p' : Link
+  const DynamicTag = active ? 'div' : Link
 
   return (
-    <li className="flex items-center">
+    <li className="relative">
       <DynamicTag
-        className={clsx(
-          'relative flex items-center h-9 px-6 text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-300 italic',
-          {
-            'bg-white text-black translate-y-[-2px] shadow-[0_5px_15px_rgba(255,255,255,0.1)]': active,
-            'bg-zinc-900/50 text-zinc-500 hover:bg-zinc-900 hover:text-[#00FF41]': !active,
-          },
-        )}
-        style={{
-          clipPath: 'polygon(10% 0%, 100% 0%, 90% 100%, 0% 100%)'
-        }}
         href={href}
-        prefetch={!active ? false : undefined}
-      >
-        {active && (
-          <span className="absolute left-2 w-1 h-3 bg-[#00FF41] shadow-[0_0_8px_#00FF41]" />
+        className={cn(
+          'flex flex-col justify-between h-32 p-6 border-y-4 border-r-4 border-black transition-all duration-300',
+          active
+            ? 'bg-primary text-black'
+            : 'bg-white text-black hover:bg-zinc-100 group'
         )}
-        <span className="relative z-10">{title.replace(' ', '_')}</span>
+      >
+        <div className="flex justify-between items-start">
+          <span className="text-[10px] font-bold uppercase tracking-widest leading-none">
+            {active ? 'Selected' : 'Catalog'}
+          </span>
+          <div className={cn(
+            "size-4 border-4 border-black transition-transform duration-500",
+            active ? "bg-black rotate-45" : "bg-transparent group-hover:rotate-90"
+          )} />
+        </div>
+
+        <span className="text-sm font-bold uppercase tracking-tighter leading-none break-words">
+          {title}
+        </span>
       </DynamicTag>
+
+      {active && (
+        <div className="absolute -top-1 left-0 w-full h-1 bg-white/30" />
+      )}
     </li>
   )
 }

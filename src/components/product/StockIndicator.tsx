@@ -1,5 +1,5 @@
 'use client'
-import { DESIGN_SYSTEM } from '@/lib/constants'
+
 import { Product, Variant } from '@/payload-types'
 import { useSearchParams } from 'next/navigation'
 import { useMemo } from 'react'
@@ -11,7 +11,7 @@ export const StockIndicator: React.FC<{ product: Product }> = ({ product }) => {
   const selectedVariant = useMemo(() => {
     if (product.enableVariants && variants.length) {
       const variantId = searchParams.get('variant')
-      return variants.find(v => String(typeof v === 'object' ? v.id : v) === variantId) as Variant | undefined
+      return variants.find((v) => String(typeof v === 'object' ? v.id : v) === variantId) as Variant | undefined
     }
     return undefined
   }, [product.enableVariants, searchParams, variants])
@@ -26,19 +26,21 @@ export const StockIndicator: React.FC<{ product: Product }> = ({ product }) => {
   const isLowStock = stock > 0 && stock < 10
 
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center gap-4 py-2 px-4 border-2 border-black bg-white">
       <div
-        className="size-2 shrink-0"
-        style={{
-          backgroundColor: stock > 0 ? (isLowStock ? '#f59e0b' : DESIGN_SYSTEM.COLORS.PRIMARY[500]) : '#ef4444'
-        }}
+        className={`size-3 shrink-0 border-2 border-black ${stock > 0
+            ? isLowStock
+              ? 'bg-accent'
+              : 'bg-primary'
+            : 'bg-error'
+          }`}
       />
-      <span className="text-[11px] font-black uppercase italic tracking-widest text-black">
+      <span className="text-xs font-bold uppercase tracking-widest text-black">
         {stock > 0
           ? isLowStock
-            ? `Limited Inventory: ${stock} Units`
-            : 'Inventory Status: Available'
-          : 'Inventory Status: Out of Stock'}
+            ? `Limited: ${stock} Units`
+            : 'Status: Available'
+          : 'Status: Depleted'}
       </span>
     </div>
   )

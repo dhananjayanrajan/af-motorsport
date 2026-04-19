@@ -1,10 +1,8 @@
 'use client'
 
-import { DESIGN_SYSTEM } from '@/lib/constants'
 import type { Product, Variant } from '@/payload-types'
 import { cn } from '@/utilities/cn'
 import { useCart } from '@payloadcms/plugin-ecommerce/client/react'
-import { ShoppingCart } from 'lucide-react'
 import { useSearchParams } from 'next/navigation'
 import React, { useCallback, useMemo } from 'react'
 import { toast } from 'sonner'
@@ -37,7 +35,7 @@ export function AddToCart({ product }: Props) {
         product: product.id,
         variant: selectedVariant?.id ?? undefined,
       }).then(() => {
-        toast.success('Item added to cart')
+        toast.success('REGISTRY UPDATED')
       })
     },
     [addItem, product, selectedVariant],
@@ -74,32 +72,29 @@ export function AddToCart({ product }: Props) {
       onClick={addToCart}
       type="submit"
       className={cn(
-        "relative group h-14 w-full md:w-72 overflow-hidden transition-all duration-300 skew-x-[-12deg] border border-transparent",
-        (disabled || isLoading) ? "opacity-50 grayscale cursor-not-allowed" : "cursor-pointer active:scale-[0.97]"
+        "group flex w-full h-24 bg-primary border-t-2 border-black-pure transition-all duration-300",
+        (disabled || isLoading) ? "opacity-50 grayscale cursor-not-allowed" : "hover:bg-black-pure active:scale-[0.99]"
       )}
     >
-      <div
-        className="absolute inset-0 transition-all duration-500 group-hover:brightness-110"
-        style={{
-          backgroundColor: (disabled || isLoading) ? DESIGN_SYSTEM.COLORS.ZINC[200] : DESIGN_SYSTEM.COLORS.PRIMARY[500]
-        }}
-      />
-
-      <div
-        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
-        style={{ boxShadow: `inset 0 0 25px ${DESIGN_SYSTEM.COLORS.PRIMARY.GLOW}` }}
-      />
-
-      <div className="relative z-10 flex items-center justify-center gap-4 text-black skew-x-[12deg]">
-        <ShoppingCart className="size-4" strokeWidth={2.5} />
-        <span
-          className="text-xs font-black uppercase tracking-tight italic"
-          style={{
-            textShadow: !(disabled || isLoading) ? `0 0 10px ${DESIGN_SYSTEM.COLORS.PRIMARY.GLOW}` : 'none'
-          }}
-        >
-          {disabled ? 'Out of Stock' : 'Add to Cart'}
+      <div className="flex-1 flex flex-col items-start justify-center px-8 text-left">
+        <span className={cn(
+          "text-[10px] font-mono font-black tracking-[0.3em] uppercase mb-1",
+          "text-black-pure group-hover:text-primary"
+        )}>
+          {disabled ? 'INVENTORY_NULL' : 'ACTION_REQUIRED'}
         </span>
+        <h4 className={cn(
+          "text-xl font-black uppercase tracking-tighter",
+          "text-black-pure group-hover:text-white-pure"
+        )}>
+          {disabled ? 'OUT OF STOCK' : 'ADD TO REGISTRY'}
+        </h4>
+      </div>
+      <div className="w-24 border-l-2 border-black-pure flex items-center justify-center">
+        <div className={cn(
+          "size-4 border-2 border-black-pure transition-all duration-500",
+          "group-hover:bg-primary group-hover:rotate-90 group-hover:border-white-pure"
+        )} />
       </div>
     </button>
   )

@@ -1,7 +1,6 @@
 'use client'
 
 import { Message } from '@/components/Message'
-import { DESIGN_SYSTEM } from '@/lib/constants'
 import { Address } from '@/payload-types'
 import { useCart, usePayments } from '@payloadcms/plugin-ecommerce/client/react'
 import { PaymentElement, useElements, useStripe } from '@stripe/react-stripe-js'
@@ -117,57 +116,65 @@ export const CheckoutForm: React.FC<Props> = ({
   )
 
   return (
-    <div className="w-full bg-white transition-all duration-300">
-      <div className="mb-10 space-y-2">
-        <div className="flex items-center gap-3">
-          <Lock className="size-4 text-black" />
-          <span className="text-[11px] font-black uppercase italic tracking-widest text-black">
-            Secure Payment
-          </span>
-        </div>
-        <p className="text-[10px] text-zinc-400 uppercase font-bold tracking-widest">
-          All transactions are encrypted and secure.
-        </p>
+    <div className="w-full bg-white px-8 md:px-12 py-12">
+      <div className="mb-12 flex flex-col gap-2">
+        <div className="h-4 w-32 bg-red-600" />
+        <div className="h-4 w-10 bg-yellow-400" />
+        <div className="h-4 w-20 bg-black" />
       </div>
+
+      <header className="mb-10 space-y-4">
+        <div className="flex items-center gap-4">
+          <Lock className="size-8 text-black" strokeWidth={3} />
+          <h1 className="text-3xl font-bold uppercase tracking-tighter text-black">
+            Secure Payment
+          </h1>
+        </div>
+        <p className="text-sm font-bold uppercase tracking-tight text-black max-w-sm">
+          All transactions are encrypted. Access to financial data is restricted to payment protocols.
+        </p>
+      </header>
 
       {error && (
         <Message
-          className="mb-8 border-l-4 border-red-600 bg-red-50 p-4 text-[10px] font-bold uppercase tracking-wider text-red-600"
+          className="mb-8 border-2 border-black bg-red-600 p-4 text-xs font-bold uppercase text-white"
           error={error}
         />
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-10">
-        <div className="p-4 border border-zinc-100 bg-zinc-50/50">
+      <form onSubmit={handleSubmit} className="space-y-12">
+        <div className="border-4 border-black p-6 bg-zinc-50">
           <PaymentElement />
         </div>
 
-        <div className="space-y-6">
+        <div className="space-y-6 pt-4">
           <button
             type="submit"
             disabled={!stripe || isLoading}
-            className="group relative flex items-center justify-center w-full h-16 bg-black text-white transition-all active:scale-[0.98] disabled:opacity-10 overflow-hidden"
+            className="group flex items-center justify-between w-full h-20 px-8 bg-black text-white hover:bg-zinc-100 hover:text-black border-2 border-black transition-colors disabled:opacity-50"
           >
-            <div
-              className="absolute inset-0 translate-x-[-101%] group-hover:translate-x-0 transition-transform duration-300 ease-out"
-              style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}
-            />
-            <span className="relative z-10 text-[12px] font-black uppercase italic tracking-widest flex items-center gap-4 group-hover:text-black transition-colors">
-              {isLoading ? 'Processing...' : 'Complete Purchase'} <ChevronRight className="size-5" />
+            <span className="text-base font-bold uppercase tracking-widest">
+              {isLoading ? 'Processing' : 'Complete Purchase'}
             </span>
+            <ChevronRight className="size-6 transition-transform group-hover:translate-x-2" strokeWidth={3} />
           </button>
 
-          <div className="flex items-center justify-center gap-4 pt-2">
-            <div className="flex items-center gap-2">
-              <ShieldCheck className="size-3 text-zinc-300" />
-              <span className="text-[9px] font-bold uppercase tracking-widest text-zinc-300 italic">
+          <div className="pt-10 border-t-2 border-black flex flex-wrap items-center justify-between gap-6">
+            <div className="flex items-center gap-3">
+              <ShieldCheck className="size-5 text-black" strokeWidth={3} />
+              <span className="text-xs font-bold uppercase tracking-widest text-black">
                 Verified Security
               </span>
             </div>
-            <div className="size-1 rounded-full bg-zinc-200" />
-            <span className="text-[9px] font-bold uppercase tracking-widest text-zinc-300 italic">
-              Powered by Stripe
-            </span>
+
+            <div className="flex items-center gap-2">
+              <div className="size-2 rounded-full bg-red-600" />
+              <div className="size-2 rounded-full bg-black" />
+              <div className="size-2 rounded-full bg-yellow-400" />
+              <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-zinc-400 ml-2">
+                Stripe Protocol
+              </span>
+            </div>
           </div>
         </div>
       </form>

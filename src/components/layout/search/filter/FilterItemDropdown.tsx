@@ -1,12 +1,9 @@
 'use client'
 
 import { cn } from '@/utilities/cn'
-import { ChevronDownIcon } from 'lucide-react'
 import { usePathname, useSearchParams } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
-
 import type { ListItem } from '.'
-
 import { FilterItem } from './FilterItem'
 
 export function FilterItemDropdown({ list }: { list: ListItem[] }) {
@@ -22,7 +19,6 @@ export function FilterItemDropdown({ list }: { list: ListItem[] }) {
         setOpenSelect(false)
       }
     }
-
     window.addEventListener('click', handleClickOutside)
     return () => window.removeEventListener('click', handleClickOutside)
   }, [])
@@ -39,37 +35,47 @@ export function FilterItemDropdown({ list }: { list: ListItem[] }) {
   }, [pathname, list, searchParams])
 
   return (
-    <div className="relative" ref={ref}>
+    <div className="relative w-full" ref={ref}>
       <button
         type="button"
         className={cn(
-          "flex w-full items-center justify-between border-2 px-5 h-12 text-[11px] font-black uppercase italic tracking-widest transition-all duration-200",
+          "flex w-full items-center justify-between border-4 px-6 h-16 transition-all duration-300",
           openSelect
-            ? "border-black bg-black text-white"
-            : "border-zinc-200 bg-white text-black hover:border-zinc-400"
+            ? "border-black bg-primary text-black"
+            : "border-black bg-white text-black hover:bg-zinc-50"
         )}
-        onClick={() => {
-          setOpenSelect(!openSelect)
-        }}
+        onClick={() => setOpenSelect(!openSelect)}
       >
-        <span>{active}</span>
-        <ChevronDownIcon className={cn("h-4 w-4 transition-transform duration-300", openSelect && "rotate-180")} />
+        <div className="flex flex-col items-start">
+          <span className="text-[10px] font-bold uppercase tracking-widest opacity-50 leading-none mb-1">
+            Filter Selection
+          </span>
+          <span className="text-sm font-bold uppercase tracking-tighter leading-none">
+            {active}
+          </span>
+        </div>
+
+        <div className="flex flex-col gap-1 items-center">
+          <div className={cn("w-4 h-1 bg-black transition-transform duration-300", openSelect && "translate-y-1 rotate-45")} />
+          <div className={cn("w-4 h-1 bg-black transition-transform duration-300", openSelect && "-translate-y-1 -rotate-45")} />
+        </div>
       </button>
 
       {openSelect && (
         <div
-          className="absolute z-50 w-full bg-white border-2 border-t-0 border-black shadow-2xl mt-0 animate-in fade-in slide-in-from-top-1 duration-200"
-          onClick={() => {
-            setOpenSelect(false)
-          }}
+          className="absolute z-50 w-full bg-white border-x-4 border-b-4 border-black mt-0 animate-in fade-in slide-in-from-top-2 duration-300"
+          onClick={() => setOpenSelect(false)}
         >
-          <ul className="py-2">
+          <ul className="flex flex-col divide-y-4 divide-black">
             {list.map((item: ListItem, i) => (
               <FilterItem item={item} key={i} />
             ))}
           </ul>
         </div>
       )}
+
+      {/* Structural accent line */}
+      <div className="absolute -left-1 top-0 h-full w-1 bg-black" />
     </div>
   )
 }

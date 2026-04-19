@@ -1,6 +1,5 @@
 import { Price } from '@/components/Price'
-import { DESIGN_SYSTEM } from '@/lib/constants'
-import clsx from 'clsx'
+import { cn } from '@/utilities/cn'
 import React from 'react'
 
 type Props = {
@@ -12,27 +11,25 @@ type Props = {
 export const Label: React.FC<Props> = ({ amount, position = 'bottom', title }) => {
   return (
     <div
-      className={clsx('absolute bottom-0 left-0 flex w-full px-4 pb-4 @container/label', {
-        '': position === 'center',
+      className={cn('absolute left-0 w-full p-0 flex flex-col', {
+        'bottom-0': position === 'bottom',
+        'top-1/2 -translate-y-1/2': position === 'center',
       })}
     >
-      <div className="flex items-end justify-between text-sm grow font-semibold ">
-        <h3 className={clsx(
-          "mr-4 font-mono line-clamp-2 border p-2 px-3 leading-none tracking-tight rounded-full backdrop-blur-md transition-all duration-300",
-          "bg-white/70 text-black dark:bg-black/70 dark:text-white",
-          `dark:border-zinc-800 dark:group-hover:border-[${DESIGN_SYSTEM.COLORS.PRIMARY}]/50`
-        )}>
-          {title}
-        </h3>
-
-        <Price
-          amount={amount}
-          className={clsx(
-            "flex-none rounded-full p-2 text-white transition-all duration-300",
-            `bg-[${DESIGN_SYSTEM.COLORS.PRIMARY}] shadow-[0_0_15px_${DESIGN_SYSTEM.COLORS.PRIMARY}66]`
-          )}
-          currencyCodeClassName="hidden @[275px]/label:inline"
-        />
+      <div className="flex flex-col bg-white-50 border-t-2 border-black-pure w-full">
+        <div className="flex h-12">
+          <div className="flex-1 flex items-center px-4 bg-black-pure">
+            <h3 className="text-[10px] font-mono font-black tracking-[0.3em] text-white-pure uppercase truncate">
+              {title}
+            </h3>
+          </div>
+          <div className="w-24 flex items-center justify-center bg-primary border-l-2 border-black-pure">
+            <Price
+              amount={amount}
+              className="text-xs font-black text-black-pure"
+            />
+          </div>
+        </div>
       </div>
     </div>
   )

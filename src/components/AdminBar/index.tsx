@@ -1,11 +1,10 @@
 'use client'
 
-import type { PayloadAdminBarProps } from '@payloadcms/admin-bar'
-
 import { User } from '@/payload-types'
 import { cn } from '@/utilities/cn'
+import type { PayloadAdminBarProps } from '@payloadcms/admin-bar'
 import { PayloadAdminBar } from '@payloadcms/admin-bar'
-import { Settings } from 'lucide-react'
+import { Zap } from 'lucide-react'
 import { useSelectedLayoutSegments } from 'next/navigation'
 import React, { useState } from 'react'
 
@@ -26,11 +25,11 @@ const collectionLabels = {
 
 const Title: React.FC = () => (
   <div className="flex items-center gap-3">
-    <div className="size-5 bg-black flex items-center justify-center">
-      <Settings className="h-3 w-3 text-white" />
+    <div className="size-6 bg-primary border-2 border-black flex items-center justify-center">
+      <Zap className="h-3.5 w-3.5 text-black fill-black" />
     </div>
-    <span className="text-[11px] font-black uppercase tracking-widest italic text-black">
-      CMS_EDITOR
+    <span className="text-[11px] font-black uppercase tracking-tighter text-black">
+      ADMIN PANEL
     </span>
   </div>
 )
@@ -53,35 +52,44 @@ export const AdminBar: React.FC<{
 
   return (
     <div
-      className={cn('py-2 bg-white border-b-2 border-black sticky top-0 z-[100] shadow-sm', {
-        block: show,
+      className={cn('sticky top-0 z-[999] w-full border-b-4 border-black bg-white h-14 flex items-center', {
+        flex: show,
         hidden: !show,
       })}
     >
-      <div className="container max-w-none px-8">
-        <PayloadAdminBar
-          {...adminBarProps}
-          className="py-1"
-          classNames={{
-            controls: 'text-[10px] font-black uppercase tracking-widest text-black italic',
-            logo: 'flex items-center mr-10',
-            user: 'text-[10px] font-bold text-zinc-400 uppercase tracking-tight italic',
-          }}
-          cmsURL={process.env.NEXT_PUBLIC_SERVER_URL}
-          collectionLabels={{
-            plural: collectionLabels[collection]?.plural || 'Pages',
-            singular: collectionLabels[collection]?.singular || 'Page',
-          }}
-          logo={<Title />}
-          // @ts-ignore
-          onAuthChange={onAuthChange}
-          style={{
-            backgroundColor: 'transparent',
-            padding: 0,
-            position: 'relative',
-            zIndex: 'unset',
-          }}
-        />
+      <div className="w-full px-8 flex items-center justify-between">
+        <div className="flex items-center flex-1">
+          <PayloadAdminBar
+            {...adminBarProps}
+            className="w-full"
+            classNames={{
+              controls: 'flex items-center gap-6 text-[11px] font-black uppercase tracking-tight text-black',
+              logo: 'mr-8',
+              user: 'text-[11px] font-black uppercase text-secondary',
+            }}
+            cmsURL={process.env.NEXT_PUBLIC_SERVER_URL}
+            collectionLabels={{
+              plural: collectionLabels[collection]?.plural || 'Pages',
+              singular: collectionLabels[collection]?.singular || 'Page',
+            }}
+            logo={<Title />}
+            // @ts-ignore
+            onAuthChange={onAuthChange}
+            style={{
+              backgroundColor: 'transparent',
+              padding: 0,
+              position: 'relative',
+              zIndex: 'unset',
+              color: 'black',
+            }}
+          />
+        </div>
+
+        <div className="flex items-center gap-2 border-l-4 border-black h-14 pl-8 ml-8">
+          <div className="size-4 bg-primary border-2 border-black" />
+          <div className="size-4 bg-secondary border-2 border-black" />
+          <div className="size-4 bg-accent border-2 border-black" />
+        </div>
       </div>
     </div>
   )

@@ -2,156 +2,94 @@
 
 import { Media } from '@/components/Media'
 import { Price } from '@/components/Price'
-import { DESIGN_SYSTEM } from '@/lib/constants'
-import type { Category, Media as MediaType, Product } from '@/payload-types'
+import type { Media as MediaType, Product } from '@/payload-types'
 import { cn } from '@/utilities/cn'
-import { motion } from 'framer-motion'
-import { ArrowUpRight, Box } from 'lucide-react'
+import { ArrowUpRight } from 'lucide-react'
 import Link from 'next/link'
-import React, { useState } from 'react'
-
-const getBottomClipPath = (index: number) => {
-  const variations = [
-    'polygon(0% 0%, 100% 0%, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0% 100%)',
-    'polygon(0% 0%, 100% 0%, 100% 100%, 20px 100%, 0% calc(100% - 20px))',
-  ]
-  return variations[index % variations.length]
-}
+import React from 'react'
 
 export const ProductGridItem: React.FC<{ product: Product; index?: number }> = ({
   product,
-  index = 0
+  index = 0,
 }) => {
-  const [isHovered, setIsHovered] = useState(false)
-
   const image = (product.gallery?.[0]?.image as MediaType) ?? undefined
-  const clip = getBottomClipPath(index)
-
-  const primaryCategory = product.categories?.[0] as Category
   const stockCount = product.inventory ?? 0
   const hasVariants = product.enableVariants && (product.variants?.totalDocs || 0) > 0
+
+  const colors = [
+    'bg-[#E31B23]',
+    'bg-[#003DA5]',
+    'bg-[#FFD100]',
+    'bg-[#1A1A1A]',
+    'bg-[#E31B23]',
+    'bg-[#003DA5]',
+  ]
+  const color = colors[index % colors.length]
+  const isDark = color === 'bg-[#1A1A1A]'
+  const textColor = isDark ? 'text-white' : 'text-black'
+  const accentColor = isDark ? 'bg-white' : 'bg-black'
 
   return (
     <Link
       href={`/products/${product.slug}`}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      className="relative block h-full group"
+      className={cn(
+        'group block w-full h-full outline-none focus-visible:ring-2 focus-visible:ring-black',
+        color
+      )}
     >
-      <div
-        className="relative p-[1px] transition-all duration-500 h-full"
-        style={{
-          clipPath: clip,
-          backgroundColor: isHovered ? DESIGN_SYSTEM.COLORS.PRIMARY[500] : DESIGN_SYSTEM.COLORS.ZINC[200],
-        }}
-      >
-        <div className="relative bg-white p-6 h-full flex flex-col" style={{ clipPath: clip }}>
+      <div className="relative h-full flex flex-col">
+        <div className="absolute top-0 left-0 w-12 h-12 bg-black/10 group-hover:bg-black/20 transition-colors" />
+        <div className="absolute bottom-0 right-0 w-20 h-20 bg-white/10 group-hover:bg-white/20 transition-colors" />
 
-          <div className="relative aspect-square overflow-hidden bg-zinc-50 border border-zinc-100 flex-shrink-0">
-            <motion.div
-              animate={{ opacity: isHovered ? 0.15 : 0 }}
-              className="absolute inset-0 z-20 pointer-events-none"
-              style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500], mixBlendMode: 'multiply' }}
-            />
-
-            {image && (
-              <Media
-                resource={image}
-                className="h-full w-full p-10 transition-all duration-700 grayscale group-hover:grayscale-0 group-hover:scale-105"
-                imgClassName="h-full w-full object-contain"
-              />
-            )}
-
-            <div className="absolute top-4 right-4 z-30">
-              <div
-                className={cn(
-                  "flex items-center gap-2 px-3 py-1 text-[9px] font-black italic border backdrop-blur-sm transition-colors",
-                  stockCount > 0
-                    ? "bg-white/90 border-zinc-200 text-black group-hover:border-black"
-                    : "bg-red-600 border-red-600 text-white"
-                )}
-              >
-                <Box size={10} style={{ color: isHovered && stockCount > 0 ? DESIGN_SYSTEM.COLORS.PRIMARY[500] : 'inherit' }} />
-                <span className="transition-colors group-hover:text-zinc-600">
-                  {stockCount > 0 ? `QTY: ${stockCount}` : 'SOLD OUT'}
-                </span>
-              </div>
+        <div className="flex-1 flex flex-col p-6 md:p-8">
+          <div className="flex items-start justify-between mb-8">
+            <div className="w-8 h-8 border-2 border-current/30 rounded-none flex items-center justify-center">
+              <div className="w-3 h-3 bg-current/50 rounded-none" />
+            </div>
+            <div className={cn('w-8 h-8 flex items-center justify-center text-xs font-bold', accentColor, textColor === 'text-white' ? 'bg-white text-black' : 'bg-black text-white')}>
+              {stockCount > 0 ? stockCount : '0'}
             </div>
           </div>
 
-          <div className="flex flex-col flex-grow mt-6">
-            <div className="flex items-center justify-between mb-2">
-              <span
-                className="text-[9px] font-black uppercase italic transition-colors duration-200 group-hover:text-black"
-                style={{
-                  color: DESIGN_SYSTEM.COLORS.ZINC[400],
-                  letterSpacing: DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_DEFAULT
-                }}
-              >
-                {primaryCategory?.name || 'GENERAL'}
-              </span>
-              <span
-                className="text-[9px] font-bold font-mono transition-colors duration-200 group-hover:text-primary-500"
-                style={{ color: DESIGN_SYSTEM.COLORS.ZINC[300] }}
-              >
-                #{product.id.toString().padStart(4, '0')}
+          {image && (
+            <div className="w-full h-48 relative mb-8">
+              <div className="absolute -top-3 -left-3 w-12 h-12 border-2 border-current/20" />
+              <div className="absolute -bottom-3 -right-3 w-12 h-12 border-2 border-current/20" />
+              <Media
+                resource={image}
+                className="w-full h-full"
+                imgClassName="object-contain w-full h-full grayscale group-hover:grayscale-0 transition-all duration-300"
+              />
+            </div>
+          )}
+
+          <div className="mt-auto">
+            <div className="flex items-center gap-2 mb-3">
+              <div className={cn('w-6 h-0.5', accentColor)} />
+              <span className={cn('text-[10px] font-mono tracking-wider', textColor)}>
+                #{String(product.id).slice(-4)}
               </span>
             </div>
 
-            <div className="flex flex-col gap-4">
-              <h3
-                className="text-3xl font-black italic uppercase leading-[0.9] tracking-tighter transition-colors duration-200 group-hover:text-zinc-700"
-                style={{ color: DESIGN_SYSTEM.COLORS.BLACK.PURE }}
-              >
-                {product.title}
-              </h3>
+            <h3 className={cn('text-4xl md:text-5xl font-bold uppercase leading-none tracking-tight mb-4', textColor)}>
+              {product.title}
+            </h3>
 
-              <div className="transition-transform duration-300 group-hover:translate-x-1">
-                <Price
-                  amount={product.priceInUSD || 0}
-                  className="inline-block text-[16px] font-black px-4 py-2 italic tracking-tighter transition-colors"
-                  style={{
-                    backgroundColor: isHovered ? DESIGN_SYSTEM.COLORS.PRIMARY[500] : DESIGN_SYSTEM.COLORS.BLACK.PURE,
-                    color: isHovered ? DESIGN_SYSTEM.COLORS.BLACK.PURE : DESIGN_SYSTEM.COLORS.WHITE.PURE
-                  }}
-                />
-              </div>
-            </div>
-
-            <div className="mt-auto pt-8 flex items-end justify-between border-t border-zinc-100">
-              <div className="space-y-1">
-                <span
-                  className="text-[7px] font-black uppercase block transition-colors group-hover:text-black"
-                  style={{
-                    color: DESIGN_SYSTEM.COLORS.ZINC[300],
-                    letterSpacing: DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_XL
-                  }}
-                >
-                  CONFIGURATION
-                </span>
-                <span
-                  className="text-[10px] font-black uppercase italic block transition-colors"
-                  style={{ color: isHovered ? DESIGN_SYSTEM.COLORS.PRIMARY[600] : DESIGN_SYSTEM.COLORS.BLACK.PURE }}
-                >
-                  {hasVariants
-                    ? `${product.variants?.totalDocs} OPTIONS AVAILABLE`
-                    : 'STANDARD BUILD'}
-                </span>
-              </div>
-
-              <div className={cn(
-                "size-12 flex items-center justify-center border transition-all duration-300",
-                isHovered ? "bg-black border-black" : "bg-transparent border-zinc-100"
-              )}>
-                <ArrowUpRight
-                  size={24}
-                  className="transition-colors"
-                  style={{ color: isHovered ? DESIGN_SYSTEM.COLORS.PRIMARY[500] : DESIGN_SYSTEM.COLORS.ZINC[200] }}
-                />
+            <div className="flex items-center justify-between pt-4">
+              <Price
+                amount={product.priceInUSD || 0}
+                className={cn('text-xl font-mono font-bold', textColor)}
+              />
+              <div className="flex items-center gap-2">
+                <div className={cn('w-8 h-8 flex items-center justify-center border-2', textColor, 'border-current')}>
+                  <ArrowUpRight size={14} className={textColor} />
+                </div>
               </div>
             </div>
           </div>
         </div>
+
+        <div className={cn('h-1 w-full', accentColor)} />
       </div>
     </Link>
   )

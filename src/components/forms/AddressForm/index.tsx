@@ -10,7 +10,6 @@ import {
 } from '@/components/Clipped/ClippedSelect'
 import { FormError } from '@/components/forms/FormError'
 import { FormItem } from '@/components/forms/FormItem'
-import { DESIGN_SYSTEM } from '@/lib/constants'
 import { Address, Config } from '@/payload-types'
 import {
   defaultCountries as supportedCountries,
@@ -79,15 +78,15 @@ export const AddressForm: React.FC<Props> = ({
     [initialData, skipSubmission, callback, addressID, updateAddress, createAddress],
   )
 
-  const labelClasses = "text-[11px] font-black uppercase italic text-black flex items-center gap-2 mb-2"
-  const inputClasses = "bg-white border-zinc-300 h-14 px-5 text-black placeholder:text-zinc-500 focus:border-black focus:ring-0 transition-all rounded-none w-full"
+  const labelClasses = "text-xs font-black uppercase tracking-widest text-black-pure flex items-center gap-2 mb-3"
+  const inputClasses = "bg-white-pure border-2 border-black-pure h-16 px-6 text-black-pure placeholder:text-black-pure/30 focus:bg-primary-500 transition-colors duration-300 rounded-none w-full font-black uppercase text-sm tracking-tight"
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="w-full space-y-12">
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-x-8 gap-y-10">
+    <form onSubmit={handleSubmit(onSubmit)} className="w-full space-y-16">
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-x-10 gap-y-12">
 
         <FormItem className="md:col-span-4 space-y-1">
-          <label className={labelClasses}>Title</label>
+          <label className={labelClasses}>TITLE</label>
           <ClippedSelect
             onValueChange={(value) => setValue('title', value, { shouldDirty: true, shouldValidate: true })}
             defaultValue={initialData?.title || ''}
@@ -96,125 +95,125 @@ export const AddressForm: React.FC<Props> = ({
               id="title"
               className={inputClasses}
             >
-              <ClippedSelectValue placeholder="Select Title" />
+              <ClippedSelectValue placeholder="SELECT" />
             </ClippedSelectTrigger>
-            <ClippedSelectContent>
+            <ClippedSelectContent className="bg-white-pure border-2 border-black-pure rounded-none">
               {titles.map((title) => (
-                <ClippedSelectItem key={title} value={title}>
+                <ClippedSelectItem key={title} value={title} className="font-black uppercase text-xs focus:bg-secondary-500">
                   {title}
                 </ClippedSelectItem>
               ))}
             </ClippedSelectContent>
           </ClippedSelect>
-          {errors.title && <FormError message={errors.title.message} className="text-[10px] font-bold text-red-600 mt-1 uppercase" />}
+          {errors.title && <FormError message={errors.title.message} className="text-xs font-black text-error mt-2 uppercase tracking-tighter" />}
         </FormItem>
 
         <FormItem className="md:col-span-4 space-y-1">
-          <label className={labelClasses}>First Name*</label>
+          <label className={labelClasses}>FIRST NAME</label>
           <ClippedInput
             id="firstName"
             autoComplete="given-name"
-            placeholder="e.g. John"
+            placeholder="REQUIRED"
             className={inputClasses}
-            {...register('firstName', { required: 'Required' })}
+            {...register('firstName', { required: 'MISSING DATA' })}
           />
-          {errors.firstName && <FormError message={errors.firstName.message} className="text-[10px] font-bold text-red-600 mt-1 uppercase" />}
+          {errors.firstName && <FormError message={errors.firstName.message} className="text-xs font-black text-error mt-2 uppercase tracking-tighter" />}
         </FormItem>
 
         <FormItem className="md:col-span-4 space-y-1">
-          <label className={labelClasses}>Last Name*</label>
+          <label className={labelClasses}>LAST NAME</label>
           <ClippedInput
             id="lastName"
             autoComplete="family-name"
-            placeholder="e.g. Doe"
+            placeholder="REQUIRED"
             className={inputClasses}
-            {...register('lastName', { required: 'Required' })}
+            {...register('lastName', { required: 'MISSING DATA' })}
           />
-          {errors.lastName && <FormError message={errors.lastName.message} className="text-[10px] font-bold text-red-600 mt-1 uppercase" />}
+          {errors.lastName && <FormError message={errors.lastName.message} className="text-xs font-black text-error mt-2 uppercase tracking-tighter" />}
         </FormItem>
 
         <FormItem className="md:col-span-6 space-y-1">
-          <label className={labelClasses}>Phone Number</label>
+          <label className={labelClasses}>PHONE NUMBER</label>
           <ClippedInput
             type="tel"
             id="phone"
             autoComplete="tel"
-            placeholder="+1 (555) 000-0000"
+            placeholder="OPTIONAL"
             className={inputClasses}
             {...register('phone')}
           />
         </FormItem>
 
         <FormItem className="md:col-span-6 space-y-1">
-          <label className={labelClasses}>Company</label>
+          <label className={labelClasses}>COMPANY</label>
           <ClippedInput
             id="company"
             autoComplete="organization"
-            placeholder="Company Name (Optional)"
+            placeholder="OPTIONAL"
             className={inputClasses}
             {...register('company')}
           />
         </FormItem>
 
         <FormItem className="md:col-span-8 space-y-1">
-          <label className={labelClasses}>Address Line 1*</label>
+          <label className={labelClasses}>ADDRESS LINE 1</label>
           <ClippedInput
             id="addressLine1"
             autoComplete="address-line1"
-            placeholder="123 Motorsport Way"
+            placeholder="PRIMARY LOCATION"
             className={inputClasses}
-            {...register('addressLine1', { required: 'Required' })}
+            {...register('addressLine1', { required: 'MISSING DATA' })}
           />
-          {errors.addressLine1 && <FormError message={errors.addressLine1.message} className="text-[10px] font-bold text-red-600 mt-1 uppercase" />}
+          {errors.addressLine1 && <FormError message={errors.addressLine1.message} className="text-xs font-black text-error mt-2 uppercase tracking-tighter" />}
         </FormItem>
 
         <FormItem className="md:col-span-4 space-y-1">
-          <label className={labelClasses}>Address Line 2</label>
+          <label className={labelClasses}>ADDRESS LINE 2</label>
           <ClippedInput
             id="addressLine2"
             autoComplete="address-line2"
-            placeholder="Suite, Floor, etc."
+            placeholder="UNIT / SUITE"
             className={inputClasses}
             {...register('addressLine2')}
           />
         </FormItem>
 
         <FormItem className="md:col-span-4 space-y-1">
-          <label className={labelClasses}>City*</label>
+          <label className={labelClasses}>CITY</label>
           <ClippedInput
             id="city"
             autoComplete="address-level2"
-            placeholder="City"
+            placeholder="REQUIRED"
             className={inputClasses}
-            {...register('city', { required: 'Required' })}
+            {...register('city', { required: 'MISSING DATA' })}
           />
-          {errors.city && <FormError message={errors.city.message} className="text-[10px] font-bold text-red-600 mt-1 uppercase" />}
+          {errors.city && <FormError message={errors.city.message} className="text-xs font-black text-error mt-2 uppercase tracking-tighter" />}
         </FormItem>
 
         <FormItem className="md:col-span-4 space-y-1">
-          <label className={labelClasses}>State / Province</label>
+          <label className={labelClasses}>STATE / PROVINCE</label>
           <ClippedInput
             id="state"
             autoComplete="address-level1"
-            placeholder="State"
+            placeholder="REGION"
             className={inputClasses}
             {...register('state')}
           />
         </FormItem>
 
         <FormItem className="md:col-span-4 space-y-1">
-          <label className={labelClasses}>Zip / Postal Code*</label>
+          <label className={labelClasses}>ZIP / POSTAL CODE</label>
           <ClippedInput
             id="postalCode"
-            placeholder="Postal Code"
+            placeholder="REQUIRED"
             className={inputClasses}
-            {...register('postalCode', { required: 'Required' })}
+            {...register('postalCode', { required: 'MISSING DATA' })}
           />
-          {errors.postalCode && <FormError message={errors.postalCode.message} className="text-[10px] font-bold text-red-600 mt-1 uppercase" />}
+          {errors.postalCode && <FormError message={errors.postalCode.message} className="text-xs font-black text-error mt-2 uppercase tracking-tighter" />}
         </FormItem>
 
         <FormItem className="md:col-span-12 space-y-1">
-          <label className={labelClasses}>Country*</label>
+          <label className={labelClasses}>COUNTRY</label>
           <ClippedSelect
             onValueChange={(value) => setValue('country', value, { shouldDirty: true, shouldValidate: true })}
             defaultValue={initialData?.country || ''}
@@ -223,40 +222,39 @@ export const AddressForm: React.FC<Props> = ({
               id="country"
               className={inputClasses}
             >
-              <ClippedSelectValue placeholder="Select Country" />
+              <ClippedSelectValue placeholder="SELECT NATION" />
             </ClippedSelectTrigger>
-            <ClippedSelectContent className="max-h-[300px]">
+            <ClippedSelectContent className="max-h-[400px] bg-white-pure border-2 border-black-pure rounded-none">
               {supportedCountries.map((country) => {
                 const value = typeof country === 'string' ? country : country.value
                 const label = typeof country === 'string' ? country : (typeof country.label === 'string' ? country.label : value)
                 return (
-                  <ClippedSelectItem key={value} value={value}>
+                  <ClippedSelectItem key={value} value={value} className="font-black uppercase text-xs focus:bg-tertiary-500">
                     {label}
                   </ClippedSelectItem>
                 )
               })}
             </ClippedSelectContent>
           </ClippedSelect>
-          {errors.country && <FormError message={errors.country.message} className="text-[10px] font-bold text-red-600 mt-1 uppercase" />}
+          {errors.country && <FormError message={errors.country.message} className="text-xs font-black text-error mt-2 uppercase tracking-tighter" />}
         </FormItem>
       </div>
 
-      <div className="pt-10 flex flex-col md:flex-row items-center justify-between gap-6 border-t border-zinc-200">
-        <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">
-          * Required Information
+      <div className="pt-12 flex flex-col md:flex-row items-center justify-between gap-8 border-t-4 border-black-pure">
+        <p className="text-[10px] font-black uppercase tracking-[0.4em] text-black-pure/40">
+          DATA VALIDATION REQUIRED
         </p>
 
         <button
           type="submit"
           disabled={isLoading || isSubmitting}
-          className="group relative h-16 w-full md:w-auto md:px-20 bg-black text-white transition-all active:scale-[0.98] disabled:opacity-50 overflow-hidden"
+          className="group relative h-20 w-full md:w-auto md:px-24 bg-black-pure text-white-pure disabled:opacity-50 overflow-hidden transition-all duration-300"
         >
           <div
-            className="absolute inset-0 translate-x-[-101%] group-hover:translate-x-0 transition-transform duration-300 ease-out"
-            style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}
+            className="absolute inset-0 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-in-out bg-primary-500"
           />
-          <span className="relative z-10 text-[12px] font-black uppercase italic flex items-center justify-center gap-3 group-hover:text-black transition-colors">
-            {isSubmitting ? 'Saving...' : 'Save Address'} <ChevronRight className="h-4 w-4" />
+          <span className="relative z-10 text-sm font-black uppercase tracking-widest flex items-center justify-center gap-4 group-hover:text-black-pure transition-colors duration-500">
+            {isSubmitting ? 'PROCESSING' : 'COMMIT ADDRESS'} <ChevronRight className="h-5 w-5" />
           </span>
         </button>
       </div>
