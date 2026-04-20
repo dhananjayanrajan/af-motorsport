@@ -1,29 +1,39 @@
-import { ForgotPasswordForm } from '@/components/forms/ForgotPasswordForm'
-import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
-import type { Metadata } from 'next'
+'use client'
 
-export default async function ForgotPasswordPage() {
+import { ForgotPasswordForm } from '@/components/forms/ForgotPasswordForm'
+import SectionFooter from '@/components/Section/Footer'
+import SectionHeader from '@/components/Section/Header'
+import { useRouter } from 'next/navigation'
+
+export default function ForgotPasswordPage() {
+  const router = useRouter()
+
   return (
-    <div className="min-h-screen bg-white flex flex-col items-center justify-center p-8">
-      <div className="w-full max-w-md">
-        <div className="mb-12 flex flex-col gap-2">
-          <div className="h-4 w-32 bg-red-600" />
-          <div className="h-4 w-10 bg-yellow-400" />
-          <div className="h-4 w-20 bg-black" />
-        </div>
-        <div className="border-t-4 border-black pt-12">
+    <main className="min-h-screen bg-white-pure flex flex-col">
+      <SectionHeader title="Recovery" subtitle="Access" variant={3} />
+      <div className="flex-1 flex flex-col md:flex-row items-stretch">
+        <div className="flex-1 p-8 md:p-16 border-r border-black-pure">
           <ForgotPasswordForm />
         </div>
+        <div className="w-full md:w-80 flex flex-col border-l border-black-pure">
+          <div className="h-12 border-b border-black-pure flex items-center px-8 bg-tertiary-500">
+            <span className="text-[10px] font-mono font-black text-white-pure uppercase">Protocol</span>
+          </div>
+          <div className="p-8 space-y-6">
+            <p className="text-[10px] font-mono font-black uppercase text-black-pure/40 leading-relaxed">
+              If the recovery email does not arrive, check the secondary folder or contact support.
+            </p>
+            <button
+              onClick={() => router.push('/login')}
+              className="w-full h-14 border border-black-pure flex items-center justify-center font-mono text-xs font-black uppercase tracking-widest hover:bg-black-pure hover:text-white-pure transition-all duration-300"
+            >
+              Sign In
+            </button>
+          </div>
+          <div className="flex-1 bg-black-pure/5" />
+        </div>
       </div>
-    </div>
+      <SectionFooter variant={3} />
+    </main>
   )
-}
-
-export const metadata: Metadata = {
-  description: 'Enter your email address to recover your password.',
-  openGraph: mergeOpenGraph({
-    title: 'Forgot Password',
-    url: '/forgot-password',
-  }),
-  title: 'Forgot Password',
 }

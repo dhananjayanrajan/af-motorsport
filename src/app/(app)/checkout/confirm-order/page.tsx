@@ -1,68 +1,39 @@
+'use client'
+
 import { ConfirmOrder } from '@/components/checkout/ConfirmOrder'
-import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
-import type { Metadata } from 'next'
+import SectionFooter from '@/components/Section/Footer'
+import SectionHeader from '@/components/Section/Header'
 
-type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>
-
-export default async function ConfirmOrderPage({
-  searchParams: searchParamsPromise,
-}: {
-  searchParams: SearchParams
-}) {
-  const searchParams = await searchParamsPromise
-
+export default function ConfirmOrderPage() {
   return (
-    <div className="min-h-screen bg-white flex flex-col items-center p-8">
-      <div className="w-full max-w-4xl">
-        <div className="mb-16 flex flex-col gap-2">
-          <div className="h-4 w-32 bg-red-600" />
-          <div className="h-4 w-10 bg-yellow-400" />
-          <div className="h-4 w-20 bg-black" />
-        </div>
+    <main className="min-h-screen bg-white-pure flex flex-col">
+      <SectionHeader title="Verification" subtitle="In progress" variant={3} />
 
-        <div className="border-t-4 border-black pt-12">
-          <header className="mb-12 flex flex-col items-start gap-6">
-            <div className="flex gap-2">
-              <div className="size-6 rounded-full bg-red-600" />
-              <div className="size-6 bg-black" />
-              <div className="size-0 border-l-[12px] border-l-transparent border-r-[12px] border-r-transparent border-b-[20px] border-b-yellow-400" />
+      <div className="flex-1 flex flex-col items-center justify-center p-8 md:p-20">
+        <div className="w-full max-w-3xl">
+          <div className="border border-black-pure bg-white-pure p-1">
+            <div className="border border-black-pure p-10 md:p-16">
+              <ConfirmOrder />
             </div>
+          </div>
 
-            <div className="space-y-2">
-              <h1 className="text-4xl font-bold uppercase tracking-tighter text-black leading-none">
-                Order Finalization
-              </h1>
-              <p className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-400">
-                Processing Secure Transaction
-              </p>
+          <div className="mt-12 flex items-center justify-between">
+            <div className="flex gap-4 items-center">
+              <div className="size-2 bg-black-pure" />
+              <span className="text-[10px] font-mono font-black uppercase tracking-widest text-black-pure opacity-40">
+                Secure check active
+              </span>
             </div>
-          </header>
-
-          <div className="bg-zinc-50 border-2 border-black p-8 md:p-12">
-            <ConfirmOrder />
+            <div className="flex gap-1">
+              <div className="h-4 w-1 bg-black-pure" />
+              <div className="h-4 w-1 bg-black-pure opacity-40" />
+              <div className="h-4 w-1 bg-black-pure opacity-10" />
+            </div>
           </div>
         </div>
-
-        <footer className="mt-20 pt-8 border-t-2 border-zinc-100 flex justify-between items-center">
-          <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-zinc-300">
-            Status: Final_Authorization
-          </p>
-          <div className="flex gap-1">
-            <div className="size-2 bg-black" />
-            <div className="size-2 bg-black opacity-20" />
-            <div className="size-2 bg-black opacity-10" />
-          </div>
-        </footer>
       </div>
-    </div>
-  )
-}
 
-export const metadata: Metadata = {
-  description: 'Confirm order.',
-  openGraph: mergeOpenGraph({
-    title: 'Confirming order',
-    url: '/checkout/confirm-order',
-  }),
-  title: 'Confirming order',
+      <SectionFooter variant={3} />
+    </main>
+  )
 }

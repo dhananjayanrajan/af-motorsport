@@ -11,30 +11,34 @@ const ClippedSelectValue = SelectPrimitive.Value
 
 const ClippedSelectTrigger = React.forwardRef<
     React.ElementRef<typeof SelectPrimitive.Trigger>,
-    React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger> & { error?: boolean; valid?: boolean; filled?: boolean }
->(({ className, children, error, valid, filled, ...props }, ref) => (
-    <div className="group relative w-full">
+    React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger> & { label: string; error?: boolean; filled?: boolean }
+>(({ className, children, label, error, filled, ...props }, ref) => (
+    <div className="relative w-full flex flex-col">
+        <div className={cn(
+            "h-6 px-4 inline-flex items-center self-start transition-colors duration-300",
+            error ? "bg-secondary text-white-pure" : "bg-primary text-black-pure"
+        )}>
+            <span className="text-[9px] font-mono font-black uppercase tracking-[0.3em]">
+                {label}
+            </span>
+        </div>
+
         <SelectPrimitive.Trigger
             ref={ref}
             className={cn(
-                "relative flex h-16 w-full items-center justify-between px-8 text-sm font-black font-mono uppercase tracking-widest outline-none transition-all duration-200 z-10",
-                "bg-white-pure border border-black-pure text-black-pure",
+                "group relative h-14 flex items-center justify-between px-6 text-[11px] font-mono font-black uppercase tracking-[0.25em] outline-none transition-all",
+                "bg-white-pure border-l-8 border-y border-r border-black-pure text-black-pure",
+                error ? "border-l-secondary" : "border-l-primary",
+                "hover:bg-black-pure hover:text-white-pure data-[state=open]:bg-black-pure data-[state=open]:text-white-pure",
                 !filled && "opacity-40",
-                error && "border-secondary text-secondary bg-secondary/5",
                 className,
             )}
             {...props}
         >
-            <span className="truncate relative z-10">{children}</span>
+            <span className="truncate">{children}</span>
             <SelectPrimitive.Icon asChild>
-                <ChevronDown className="relative z-10 h-5 w-5 transition-transform duration-200 group-data-[state=open]:rotate-180" />
+                <ChevronDown className="size-4 transition-transform duration-300 group-data-[state=open]:rotate-180" />
             </SelectPrimitive.Icon>
-
-            <div className={cn(
-                "absolute bottom-0 left-0 h-1 w-full transition-transform duration-300 translate-x-[-100%] group-data-[state=open]:translate-x-0 z-30",
-                error ? "bg-secondary translate-x-0" : "bg-primary"
-            )}
-            />
         </SelectPrimitive.Trigger>
     </div>
 ))
@@ -48,20 +52,13 @@ const ClippedSelectContent = React.forwardRef<
         <SelectPrimitive.Content
             ref={ref}
             className={cn(
-                'relative z-[100] min-w-[8rem] bg-white-pure border border-black-pure',
-                'data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
-                position === 'popper' && 'mt-2',
+                'relative z-[120] min-w-[8rem] bg-white-pure border-l-8 border-y border-r border-black-pure mt-[-1px] shadow-none animate-in fade-in duration-100',
                 className,
             )}
             position={position}
             {...props}
         >
-            <SelectPrimitive.Viewport
-                className={cn(
-                    'p-0',
-                    position === 'popper' && 'h-[var(--radix-select-content-available-height)] w-full min-w-[var(--radix-select-trigger-width)]',
-                )}
-            >
+            <SelectPrimitive.Viewport className="p-0">
                 {children}
             </SelectPrimitive.Viewport>
         </SelectPrimitive.Content>
@@ -76,14 +73,16 @@ const ClippedSelectItem = React.forwardRef<
     <SelectPrimitive.Item
         ref={ref}
         className={cn(
-            "relative flex w-full cursor-pointer select-none items-center py-5 px-8 text-xs font-black font-mono uppercase tracking-widest outline-none transition-colors focus:bg-primary focus:text-black-pure",
+            "relative flex w-full cursor-pointer select-none items-center py-4 px-10 text-[10px] font-mono font-black uppercase tracking-widest outline-none transition-colors",
+            "border-b border-black-pure last:border-0",
+            "focus:bg-primary focus:text-black-pure",
             className,
         )}
         {...props}
     >
-        <span className="absolute left-3 flex h-3.5 w-3.5 items-center justify-center">
+        <span className="absolute left-4 flex items-center justify-center">
             <SelectPrimitive.ItemIndicator>
-                <div className="size-2 bg-black-pure" />
+                <div className="size-1.5 bg-black-pure" />
             </SelectPrimitive.ItemIndicator>
         </span>
         <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>

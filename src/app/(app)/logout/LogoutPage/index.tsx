@@ -1,7 +1,9 @@
 'use client'
 
+import SectionFooter from '@/components/Section/Footer'
+import SectionHeader from '@/components/Section/Header'
 import { useAuth } from '@/providers/Auth'
-import { ChevronRight, LogOut, ShoppingBag } from 'lucide-react'
+import { ArrowRight, ChevronRight, LogOut } from 'lucide-react'
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
 
@@ -14,9 +16,9 @@ export const LogoutPage: React.FC = () => {
     const performLogout = async () => {
       try {
         await logout()
-        setSuccess('Session Closed')
+        setSuccess('Logged out')
       } catch (_) {
-        setError('No Session Found')
+        setError('No session')
       }
     }
 
@@ -24,67 +26,52 @@ export const LogoutPage: React.FC = () => {
   }, [logout])
 
   return (
-    <div className="min-h-screen bg-white flex flex-col items-center justify-center p-8">
-      <div className="w-full max-w-md">
-        <div className="mb-16 flex flex-col gap-2">
-          <div className="h-4 w-32 bg-red-600" />
-          <div className="h-4 w-10 bg-yellow-400" />
-          <div className="h-4 w-20 bg-black" />
-        </div>
+    <div className="min-h-screen bg-white-pure flex flex-col">
+      <SectionHeader title="Account" subtitle="Closed" variant={1} />
 
-        <div className="border-t-4 border-black pt-12">
-          <header className="flex items-start justify-between mb-16">
-            <div className="space-y-4">
-              <div className="size-16 border-4 border-black flex items-center justify-center bg-white">
-                <LogOut className="size-8 text-black" strokeWidth={3} />
-              </div>
-              <div className="space-y-1">
-                <h1 className="text-3xl font-bold uppercase tracking-tighter text-black leading-none">
-                  {error || success || 'Processing...'}
-                </h1>
-                <p className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-400">
-                  Authentication Terminated
-                </p>
-              </div>
+      <main className="flex-1 flex flex-col items-center justify-center p-8">
+        <div className="w-full max-w-md">
+          <header className="mb-12 space-y-6 text-center">
+            <div className="inline-flex size-20 border border-black-pure items-center justify-center bg-white-pure mx-auto">
+              <LogOut size={32} className="text-black-pure" strokeWidth={1.5} />
             </div>
-
-            <div className="flex gap-2">
-              <div className="size-6 rounded-full bg-red-600" />
-              <div className="size-6 bg-black" />
-              <div className="size-0 border-l-[12px] border-l-transparent border-r-[12px] border-r-transparent border-b-[20px] border-b-yellow-400" />
+            <div className="space-y-2">
+              <h1 className="text-3xl font-mono font-black uppercase tracking-tighter text-black-pure">
+                {error || success || 'Processing'}
+              </h1>
+              <p className="text-[10px] font-mono font-black uppercase tracking-[0.3em] text-black-pure opacity-40">
+                Access restricted
+              </p>
             </div>
           </header>
 
           <div className="grid grid-cols-1 gap-4">
             <Link
               href="/login"
-              className="group flex items-center justify-between w-full h-20 px-8 bg-black text-white hover:bg-zinc-100 hover:text-black border-2 border-black transition-colors"
+              className="group flex items-center justify-between w-full h-16 px-8 bg-black-pure text-white-pure hover:bg-primary hover:text-black-pure transition-all"
             >
-              <span className="text-base font-bold uppercase tracking-tight">Return to Login</span>
-              <ChevronRight className="size-6 transition-transform group-hover:translate-x-2" strokeWidth={3} />
+              <span className="text-xs font-mono font-black uppercase tracking-widest">Sign in</span>
+              <ChevronRight size={18} className="transition-transform group-hover:translate-x-2" />
             </Link>
 
             <Link
-              href="/search"
-              className="group flex items-center justify-between w-full h-20 px-8 border-2 border-black bg-white text-black hover:bg-yellow-400 transition-colors"
+              href="/shop"
+              className="group flex items-center justify-between w-full h-16 px-8 border border-black-pure bg-white-pure text-black-pure hover:bg-secondary hover:text-white-pure transition-all"
             >
-              <span className="text-base font-bold uppercase tracking-tight">View Catalog</span>
-              <ShoppingBag className="size-6" strokeWidth={3} />
+              <span className="text-xs font-mono font-black uppercase tracking-widest">Shop</span>
+              <ArrowRight size={18} />
             </Link>
           </div>
 
-          <div className="mt-20 pt-8 border-t-2 border-zinc-100 flex justify-between items-center">
-            <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-zinc-300">
-              System State: Neutral
-            </p>
-            <div className="flex gap-1">
-              {[...Array(4)].map((_, i) => (
-                <div key={i} className="size-1 bg-zinc-200" />
-              ))}
-            </div>
+          <div className="mt-16 flex justify-center gap-2">
+            {[...Array(5)].map((_, i) => (
+              <div key={i} className="size-1.5 bg-black-pure opacity-10" />
+            ))}
           </div>
         </div>
-      </div>
+      </main>
+
+      <SectionFooter variant={1} />
     </div>
   )
 }

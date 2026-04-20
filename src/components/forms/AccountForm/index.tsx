@@ -152,6 +152,7 @@ export const AccountForm: React.FC<Props> = ({
             <FormItem className="space-y-1">
               <label className={labelClasses}>{nameLabel}</label>
               <ClippedInput
+                label={nameLabel}
                 id="name"
                 placeholder={namePlaceholder}
                 className={inputClasses}
@@ -163,6 +164,7 @@ export const AccountForm: React.FC<Props> = ({
             <FormItem className="space-y-1">
               <label className={labelClasses}>{emailLabel}</label>
               <ClippedInput
+                label={nameLabel}
                 id="email"
                 type="email"
                 placeholder={emailPlaceholder}
@@ -177,6 +179,7 @@ export const AccountForm: React.FC<Props> = ({
             <FormItem className="space-y-1">
               <label className={labelClasses}>{newPasswordLabel}</label>
               <ClippedInput
+                label={nameLabel}
                 id="password"
                 type="password"
                 placeholder={passwordPlaceholder}
@@ -189,6 +192,7 @@ export const AccountForm: React.FC<Props> = ({
             <FormItem className="space-y-1">
               <label className={labelClasses}>{confirmPasswordLabel}</label>
               <ClippedInput
+                label={nameLabel}
                 id="passwordConfirm"
                 type="password"
                 placeholder={passwordPlaceholder}

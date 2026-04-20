@@ -1,87 +1,68 @@
+'use client'
+
 import { CreateAccountForm } from '@/components/forms/CreateAccountForm'
 import { RenderParams } from '@/components/RenderParams'
-import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
-import configPromise from '@payload-config'
-import { ChevronRight, LogOut, UserPlus } from 'lucide-react'
-import type { Metadata } from 'next'
-import { headers as getHeaders } from 'next/headers'
-import Link from 'next/link'
-import { getPayload } from 'payload'
+import SectionFooter from '@/components/Section/Footer'
+import SectionHeader from '@/components/Section/Header'
+import { useRouter } from 'next/navigation'
 
-export default async function CreateAccount() {
-  const headers = await getHeaders()
-  const payload = await getPayload({ config: configPromise })
-  const { user } = await payload.auth({ headers })
+export default function CreateAccount({ user }: { user: any }) {
+  const router = useRouter()
 
   if (user) {
     return (
-      <div className="min-h-screen bg-white flex flex-col items-center justify-center p-8">
-        <div className="w-full max-w-md flex flex-col">
-          <div className="flex items-end gap-3 mb-16">
-            <div className="size-10 rounded-full bg-red-600" />
-            <div className="size-10 bg-black" />
-            <div className="size-0 border-l-[20px] border-l-transparent border-r-[20px] border-r-transparent border-b-[34px] border-b-yellow-400" />
-          </div>
-
-          <div className="border-t-4 border-black pt-12">
-            <div className="flex items-start justify-between mb-12">
-              <div className="space-y-2">
-                <h1 className="text-3xl font-bold uppercase tracking-tighter text-black leading-none">
-                  Existing Profile
-                </h1>
-                <p className="text-sm font-bold uppercase tracking-widest text-zinc-400">
-                  Active Session Detected
-                </p>
-              </div>
-              <UserPlus className="text-black size-12" strokeWidth={3} />
+      <main className="min-h-screen bg-white-pure flex flex-col">
+        <SectionHeader title="Status" subtitle="Existing" variant={3} />
+        <div className="flex-1 flex flex-col md:flex-row items-stretch">
+          <div className="flex-1 p-8 md:p-16 border-r border-black-pure">
+            <div className="h-12 border-b border-black-pure flex items-center bg-primary px-8 mb-8">
+              <span className="text-[10px] font-mono font-black uppercase">Conflict Resolved</span>
             </div>
-
-            <div className="grid grid-cols-1 gap-4">
-              <Link
-                href="/account"
-                className="group flex items-center justify-between w-full h-20 px-8 bg-black text-white hover:bg-zinc-100 hover:text-black border-2 border-black transition-colors"
-              >
-                <span className="text-base font-bold uppercase tracking-tight">Return to Dashboard</span>
-                <ChevronRight className="size-6 transition-transform group-hover:translate-x-2" strokeWidth={3} />
-              </Link>
-
-              <Link
-                href="/logout"
-                className="flex items-center justify-center gap-4 w-full h-20 border-2 border-black text-black hover:bg-red-600 hover:text-white transition-colors"
-              >
-                <LogOut className="size-5" strokeWidth={3} />
-                <span className="text-base font-bold uppercase tracking-tight">Logout</span>
-              </Link>
-            </div>
+            <p className="text-[10px] font-mono font-black uppercase text-black-pure/40 mb-12">
+              A session is already active. End the session to register a new account.
+            </p>
+            <button
+              onClick={() => router.push('/logout')}
+              className="h-14 px-8 border border-black-pure flex items-center justify-between hover:bg-secondary hover:text-white-pure transition-all duration-300 group"
+            >
+              <span className="text-xs font-mono font-black uppercase tracking-widest">Logout</span>
+              <div className="size-2 bg-black-pure group-hover:bg-white-pure transition-colors" />
+            </button>
           </div>
+          <div className="w-full md:w-80 bg-black-pure/5 border-l border-black-pure" />
         </div>
-      </div>
+        <SectionFooter variant={3} />
+      </main>
     )
   }
 
   return (
-    <div className="min-h-screen bg-white flex flex-col items-center justify-center p-8">
-      <div className="w-full max-w-md">
-        <div className="mb-16 flex flex-col gap-2">
-          <div className="h-4 w-32 bg-red-600" />
-          <div className="h-4 w-10 bg-yellow-400" />
-          <div className="h-4 w-20 bg-black" />
-        </div>
-
-        <div className="border-t-4 border-black pt-12">
+    <main className="min-h-screen bg-white-pure flex flex-col">
+      <SectionHeader title="Register" subtitle="Profile" variant={3} />
+      <div className="flex-1 flex flex-col md:flex-row">
+        <div className="flex-1 p-8 md:p-16 border-r border-black-pure">
           <RenderParams />
           <CreateAccountForm />
         </div>
+        <div className="w-full md:w-80 flex flex-col border-l border-black-pure">
+          <div className="h-12 border-b border-black-pure flex items-center px-8 bg-black-pure">
+            <span className="text-[10px] font-mono font-black text-white-pure uppercase">Member</span>
+          </div>
+          <div className="p-8 space-y-6">
+            <p className="text-[10px] font-mono font-black uppercase text-black-pure/40 leading-relaxed">
+              Already possess credentials? Use the access link.
+            </p>
+            <button
+              onClick={() => router.push('/login')}
+              className="w-full h-14 border border-black-pure flex items-center justify-center font-mono text-xs font-black uppercase tracking-widest hover:bg-secondary hover:text-white-pure transition-all duration-300"
+            >
+              Login
+            </button>
+          </div>
+          <div className="flex-1 bg-black-pure/5" />
+        </div>
       </div>
-    </div>
+      <SectionFooter variant={3} />
+    </main>
   )
-}
-
-export const metadata: Metadata = {
-  description: 'Create an account to manage your orders.',
-  openGraph: mergeOpenGraph({
-    title: 'Create Account',
-    url: '/create-account',
-  }),
-  title: 'Create Account',
 }

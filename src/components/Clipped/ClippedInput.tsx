@@ -1,67 +1,56 @@
 'use client'
 
 import { cn } from '@/utilities/cn'
-import { motion } from 'framer-motion'
 import React, { useState } from 'react'
 
 interface ClippedInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  label: string
   containerClassName?: string
   error?: boolean
-  valid?: boolean
 }
 
 export const ClippedInput = React.forwardRef<HTMLInputElement, ClippedInputProps>(
-  ({ containerClassName, className, error, valid, value, defaultValue, onFocus, onBlur, ...props }, ref) => {
+  ({ label, containerClassName, className, error, value, defaultValue, onFocus, onBlur, ...props }, ref) => {
     const [isFocused, setIsFocused] = useState(false)
 
-    const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
-      setIsFocused(true)
-      onFocus?.(e)
-    }
-
-    const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-      setIsFocused(false)
-      onBlur?.(e)
-    }
-
     return (
-      <div className={cn('group relative w-full', containerClassName)}>
-        <div
-          className={cn(
-            "relative h-16 w-full transition-all duration-200 border border-black-pure",
-            error ? "bg-secondary/10" : "bg-white-pure"
-          )}
-        >
-          <motion.div
-            initial={false}
-            animate={{
-              width: isFocused ? '100%' : '0%',
-            }}
-            transition={{ duration: 0.3, ease: [0.25, 1, 0.5, 1] }}
-            className="absolute inset-y-0 left-0 z-0 bg-primary opacity-20"
-          />
+      <div className={cn('relative w-full flex flex-col', containerClassName)}>
+        <div className={cn(
+          "h-6 px-4 inline-flex items-center self-start transition-colors duration-300",
+          error ? "bg-secondary text-white-pure" : isFocused ? "bg-primary text-black-pure" : "bg-black-pure text-white-pure"
+        )}>
+          <span className="text-[9px] font-mono font-black uppercase tracking-[0.3em]">
+            {label}
+          </span>
+        </div>
 
+        <div className={cn(
+          "relative h-14 flex items-stretch border-l-8 transition-all duration-300",
+          error ? "border-secondary bg-secondary/5" : isFocused ? "border-primary bg-primary/5" : "border-black-pure bg-white-pure"
+        )}>
           <input
             ref={ref}
             value={value}
             defaultValue={defaultValue}
-            onFocus={handleFocus}
-            onBlur={handleBlur}
+            onFocus={(e) => { setIsFocused(true); onFocus?.(e); }}
+            onBlur={(e) => { setIsFocused(false); onBlur?.(e); }}
             className={cn(
-              "relative z-10 w-full h-full bg-transparent px-8 text-sm uppercase tracking-widest font-black outline-none font-mono",
+              "flex-1 bg-transparent px-6 text-[11px] font-mono font-black uppercase tracking-[0.25em] outline-none border-y border-r border-black-pure",
               "text-black-pure placeholder:text-black-pure/20",
-              error && "text-secondary placeholder:text-secondary/40",
               className
             )}
             {...props}
           />
 
-          <div
-            className={cn(
-              "absolute bottom-0 left-0 h-1 w-full transition-transform duration-300 translate-x-[-100%] group-focus-within:translate-x-0 z-30",
-              error ? "bg-secondary translate-x-0" : "bg-primary"
-            )}
-          />
+          {isFocused && (
+            <div className="w-2 bg-black-pure border-y border-r border-black-pure animate-pulse" />
+          )}
+
+          {error && (
+            <div className="px-4 flex items-center justify-center bg-secondary text-white-pure border-y border-r border-black-pure">
+              <span className="text-[11px] font-mono font-black">!</span>
+            </div>
+          )}
         </div>
       </div>
     )

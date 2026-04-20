@@ -1,61 +1,47 @@
+'use client'
+
 import { CheckoutPage } from '@/components/checkout/CheckoutPage'
-import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
-import type { Metadata } from 'next'
+import SectionFooter from '@/components/Section/Footer'
+import SectionHeader from '@/components/Section/Header'
 import { Fragment } from 'react'
 
 export default function Checkout() {
   return (
-    <div className="min-h-screen bg-white-pure flex flex-col">
+    <main className="min-h-screen bg-white-pure flex flex-col">
+      <SectionHeader title="Checkout" subtitle="Finalize" variant={3} />
+
       {!process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY && (
-        <div className="w-full border-b border-black-pure bg-primary p-10">
-          <p className="text-base font-mono font-black uppercase tracking-widest text-black-pure leading-relaxed">
+        <div className="w-full border-b border-black-pure bg-primary h-12 flex items-center px-8">
+          <p className="text-[10px] font-mono font-black uppercase tracking-widest text-black-pure">
             <Fragment>
-              {'To enable checkout, you must '}
+              {'Setup required // '}
               <a
                 href="https://dashboard.stripe.com/test/apikeys"
                 rel="noopener noreferrer"
                 target="_blank"
-                className="underline underline-offset-4 hover:text-secondary transition-colors"
+                className="underline underline-offset-4 hover:text-white-pure"
               >
-                obtain your keys
+                Keys
               </a>
-              {' then set them as environment variables. See the '}
+              {' // '}
               <a
                 href="https://github.com/payloadcms/payload/blob/main/templates/ecommerce/README.md#stripe"
                 rel="noopener noreferrer"
                 target="_blank"
-                className="underline underline-offset-4 hover:text-secondary transition-colors"
+                className="underline underline-offset-4 hover:text-white-pure"
               >
-                documentation
+                Manual
               </a>
-              {' for more details.'}
             </Fragment>
           </p>
         </div>
       )}
 
-      <div className="w-full border-b border-black-pure p-10 md:p-20 flex flex-col gap-8">
-        <div className="flex gap-4">
-          <div className="size-4 bg-secondary" />
-          <div className="size-4 bg-primary" />
-        </div>
-        <h1 className="text-4xl md:text-6xl font-mono font-black uppercase tracking-tighter text-black-pure leading-none">
-          Checkout
-        </h1>
-      </div>
-
-      <div className="w-full">
+      <div className="flex-1">
         <CheckoutPage />
       </div>
-    </div>
-  )
-}
 
-export const metadata: Metadata = {
-  description: 'Checkout.',
-  openGraph: mergeOpenGraph({
-    title: 'Checkout',
-    url: '/checkout',
-  }),
-  title: 'Checkout',
+      <SectionFooter variant={3} />
+    </main>
+  )
 }

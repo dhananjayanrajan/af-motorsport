@@ -14,57 +14,33 @@ export const ConfirmOrder: React.FC = () => {
 
   useEffect(() => {
     if (!cart?.items?.length) return
-    const paymentIntentID = searchParams.get('payment_intent')
+    const id = searchParams.get('payment_intent')
     const email = searchParams.get('email')
 
-    if (paymentIntentID && !isConfirming.current) {
+    if (id && !isConfirming.current) {
       isConfirming.current = true
-      confirmOrder('stripe', { additionalData: { paymentIntentID } }).then((result) => {
-        if (result && typeof result === 'object' && 'orderID' in result) {
-          router.push(`/shop/order/${result.orderID}?email=${email}`)
+      confirmOrder('stripe', { additionalData: { paymentIntentID: id } }).then((res) => {
+        if (res && typeof res === 'object' && 'orderID' in res) {
+          router.push(`/shop/order/${res.orderID}?email=${email}`)
         }
       })
-    } else if (!paymentIntentID) {
-      router.push('/')
     }
   }, [cart, searchParams, router, confirmOrder])
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-white-pure px-6">
-      <div className="w-full max-w-xl py-20 border-t border-black-pure">
-        <div className="flex flex-col items-center gap-12">
-          <div className="relative flex items-center justify-center size-24">
+    <div className="flex-1 flex flex-col items-center justify-center p-20 bg-white-pure">
+      <div className="max-w-md w-full border border-black-pure">
+        <div className="h-12 bg-black-pure flex items-center px-6">
+          <span className="text-[10px] font-mono font-black text-white-pure uppercase tracking-[0.3em]">Processing</span>
+        </div>
+        <div className="p-12 flex flex-col items-center gap-10">
+          <div className="relative size-16 flex items-center justify-center">
             <LoadingSpinner className="size-full opacity-10" />
-            <div className="absolute size-4 bg-secondary rotate-45 animate-pulse" />
+            <div className="absolute size-4 bg-primary rotate-45 animate-spin" />
           </div>
-
-          <div className="flex flex-col items-center text-center gap-6">
-            <h1 className="text-4xl font-mono font-black uppercase tracking-tighter text-black-pure">
-              Processing
-            </h1>
-
-            <div className="flex items-center gap-4">
-              <div className="h-px w-8 bg-black-pure opacity-20" />
-              <p className="text-sm font-mono font-black uppercase tracking-widest text-black-pure">
-                Finalizing order details
-              </p>
-              <div className="h-px w-8 bg-black-pure opacity-20" />
-            </div>
-          </div>
-
-          <div className="w-full pt-12 mt-4 border-t border-black-pure flex justify-between items-center">
-            <div className="flex items-center gap-3">
-              <div className="size-2 bg-primary" />
-              <span className="text-[10px] font-mono font-black uppercase tracking-widest text-black-pure opacity-40">
-                Secure Status Active
-              </span>
-            </div>
-
-            <div className="flex gap-2">
-              <div className="size-1.5 bg-black-pure opacity-10" />
-              <div className="size-1.5 bg-black-pure opacity-20" />
-              <div className="size-1.5 bg-black-pure opacity-40" />
-            </div>
+          <div className="space-y-2 text-center">
+            <span className="block text-xs font-mono font-black uppercase tracking-widest">Confirming details</span>
+            <span className="block text-[10px] font-mono font-black uppercase opacity-20">Please wait...</span>
           </div>
         </div>
       </div>
