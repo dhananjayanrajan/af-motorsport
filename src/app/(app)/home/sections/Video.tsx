@@ -1,6 +1,7 @@
-"use client"
+'use client'
 
-import SectionCTA from '@/components/Section/CTA'
+import { ArrowRight, Play } from 'lucide-react'
+import Link from 'next/link'
 import React, { useEffect, useRef, useState } from 'react'
 
 interface VideoSectionProps {
@@ -30,61 +31,91 @@ const VideoSection: React.FC<VideoSectionProps> = ({ videoUrls = [] }) => {
     }
 
     if (!isMounted) {
-        return <section className="relative w-full min-h-screen bg-black-pure border-b-2 border-black-pure flex flex-col overflow-hidden rounded-none" />
+        return <section className="w-full min-h-screen bg-black-pure" />
     }
 
     const hasVideos = videoUrls.length > 0
     const currentSource = hasVideos ? videoUrls[currentIndex] : null
 
     return (
-        <section className="relative w-full min-h-screen bg-white-pure overflow-hidden flex flex-col border-b-2 border-black-pure z-10 rounded-none">
-            <div className="flex-1 relative overflow-hidden bg-black-pure rounded-none">
-                {currentSource ? (
-                    <video
-                        ref={videoRef}
-                        key={currentSource}
-                        autoPlay
-                        muted
-                        playsInline
-                        onEnded={handleVideoEnd}
-                        className="absolute inset-0 w-full h-full object-cover rounded-none grayscale transition-all duration-500 ease-out hover:grayscale-0 hover:brightness-110"
-                    >
-                        <source src={currentSource} type="video/mp4" />
-                    </video>
-                ) : (
-                    <div className="absolute inset-0 flex items-center justify-center bg-black-pure rounded-none">
-                        <span className="font-sans text-xs font-black text-white-pure uppercase tracking-widest">No videos available</span>
-                    </div>
-                )}
+        <section className="relative w-full min-h-screen bg-white-pure flex flex-col border-b border-black-pure">
+            <div className="flex-1 relative flex items-stretch overflow-hidden">
 
-                <div className="absolute inset-0 border-[24px] md:border-[48px] border-white-pure pointer-events-none z-10 rounded-none" />
+                <div className="hidden md:flex w-20 border-r border-black-pure flex-col items-center py-10 gap-10 bg-secondary shrink-0">
+                    <span className="[writing-mode:vertical-lr] rotate-180 font-mono text-xs font-black tracking-widest uppercase text-black-pure">
+                        SYSTEM CONTROL
+                    </span>
+                    <div className="w-px h-full bg-black-pure" />
+                </div>
 
-                <div className="absolute top-12 left-12 md:top-24 md:left-24 z-20 flex flex-col gap-2 rounded-none">
-                    <div className="flex items-center gap-3 bg-black-pure p-2 px-4 border-l-2 border-primary-500 rounded-none transition-all duration-200 ease-in-out hover:border-l-8 focus-within:border-l-8">
-                        <div className="w-2 h-2 bg-primary-500 rounded-none" />
-                        <span className="font-sans text-[10px] md:text-xs font-black text-white-pure uppercase tracking-widest rounded-none">
-                            FEATURED_{String(currentIndex + 1).padStart(2, '0')}
+                <div className="flex-1 relative group bg-black-pure">
+                    {currentSource ? (
+                        <video
+                            ref={videoRef}
+                            key={currentSource}
+                            autoPlay
+                            muted
+                            playsInline
+                            onEnded={handleVideoEnd}
+                            className="absolute inset-0 w-full h-full object-cover grayscale brightness-75 group-hover:grayscale-0 group-hover:brightness-100 transition-all duration-500 ease-in-out"
+                        >
+                            <source src={currentSource} type="video/mp4" />
+                        </video>
+                    ) : (
+                        <div className="absolute inset-0 flex items-center justify-center bg-zinc-900">
+                            <span className="font-mono text-xs font-black text-white-pure tracking-widest">MISSING CONTENT</span>
+                        </div>
+                    )}
+
+                    <div className="absolute top-0 left-0 bg-primary px-8 py-5 border-r border-black-pure border-b border-black-pure flex items-center gap-4 z-20">
+                        <div className="w-3 h-3 bg-black-pure" />
+                        <span className="font-mono text-xs font-black text-black-pure tracking-widest">
+                            VIEW {String(currentIndex + 1).padStart(2, '0')}
                         </span>
+                    </div>
+
+                    <div className="absolute bottom-0 right-0 flex items-stretch z-20 bg-white-pure">
+                        <button
+                            onClick={() => setCurrentIndex((prev) => (prev + 1) % videoUrls.length)}
+                            className="px-12 py-8 bg-tertiary-500 text-white-pure border-l border-t border-black-pure hover:bg-secondary hover:text-black-pure focus:bg-primary focus:text-black-pure transition-colors duration-300 outline-none"
+                        >
+                            <div className="flex flex-col items-start gap-1">
+                                <span className="font-mono text-xs font-black uppercase tracking-widest">NEXT</span>
+                            </div>
+                        </button>
                     </div>
                 </div>
 
-                <button
-                    onClick={() => setCurrentIndex((prev) => (prev + 1) % videoUrls.length)}
-                    className="absolute bottom-12 right-12 md:bottom-24 md:right-24 z-20 bg-white-pure border-2 border-black-pure px-8 py-4 transition-all duration-200 ease-in-out hover:bg-primary-500 hover:border-black-pure hover:scale-105 focus:bg-primary-500 focus:border-black-pure focus:scale-105 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 cursor-pointer rounded-none"
-                    aria-label="Next video"
-                >
-                    <span className="font-sans text-sm font-black text-black-pure uppercase tracking-widest transition-all duration-200 ease-in-out hover:text-black-pure focus:text-black-pure">NEXT</span>
-                </button>
+                <div className="hidden lg:flex w-64 border-l border-black-pure bg-white-pure p-8 flex-col justify-end gap-6">
+                    <div className="w-full h-24 bg-primary border border-black-pure" />
+                    <div className="space-y-4">
+                        <div className="w-16 h-2 bg-secondary border border-black-pure" />
+                        <p className="font-mono text-xs leading-relaxed font-black uppercase tracking-tight text-black-pure">
+                            Functional video playback integrated into a rigid primary grid.
+                        </p>
+                    </div>
+                </div>
             </div>
 
-            <div className="h-28 md:h-40 bg-white-pure border-t-2 border-black-pure w-full z-20 shrink-0 rounded-none">
-                <SectionCTA
-                    variant={1}
-                    label="ACCESS MEDIA HUB"
-                    path="/media"
-                    buttonBgColor="bg-primary-500"
-                    buttonTextColor="text-black-pure"
-                />
+            <div className="h-28 border-t border-black-pure flex items-stretch w-full bg-white-pure overflow-hidden">
+                <div className="w-20 border-r border-black-pure bg-black-pure flex items-center justify-center shrink-0">
+                    <Play className="text-primary h-6 w-6 fill-current" />
+                </div>
+
+                <Link
+                    href="/media"
+                    className="flex-1 px-10 flex items-center justify-between bg-white-pure hover:bg-primary hover:text-black-pure focus:bg-secondary transition-all duration-300 group outline-none"
+                >
+                    <div className="flex flex-col">
+                        <span className="font-mono text-xs font-black uppercase tracking-widest">CATALOGUE</span>
+                        <span className="font-race text-2xl tracking-tighter uppercase">ACCESS MEDIA HUB</span>
+                    </div>
+                    <ArrowRight className="h-8 w-8 group-hover:translate-x-4 transition-transform duration-300" />
+                </Link>
+
+                <div className="hidden sm:flex px-12 border-l border-black-pure items-center font-mono text-xs font-black tracking-widest bg-white-pure text-black-pure">
+                    FORM FOLLOWS FUNCTION
+                </div>
             </div>
         </section>
     )

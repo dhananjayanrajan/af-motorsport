@@ -77,7 +77,7 @@ const SectionFooter: React.FC<SectionFooterProps> = ({
             <footer className="h-auto min-h-24 grid grid-cols-12 bg-black-pure overflow-x-auto">
                 <div className="col-span-4 lg:col-span-3 bg-secondary p-4 flex flex-col justify-between border-r-2 border-white/10">
                     <span className="font-mono text-[10px] font-black text-black-pure uppercase tracking-widest">{totalSeriesLabel}</span>
-                    <span className="font-black text-black-pure italic tracking-widest text-2xl leading-none">Count: {totalCount}</span>
+                    <span className="font-black text-black-pure italic tracking-widest text-2xl leading-none">C-{totalCount}</span>
                 </div>
                 <div className="col-span-8 lg:col-span-6 flex items-center px-4 sm:px-8 overflow-x-auto">
                     <div className="flex items-center gap-6 whitespace-nowrap">

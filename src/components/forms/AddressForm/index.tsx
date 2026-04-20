@@ -76,11 +76,11 @@ export const AddressForm: React.FC<Props> = ({
     [initialData, skipSubmission, callback, addressID, updateAddress, createAddress],
   )
 
-  const inputClasses = "bg-white-pure border-2 border-black-pure h-16 px-6 text-black-pure placeholder:text-black-pure/30 focus:bg-white-pure transition-colors duration-300 rounded-none w-full font-black uppercase text-sm tracking-tight"
+  const inputClasses = "bg-white-pure border-2 border-black-pure h-14 px-5 text-black-pure placeholder:text-black-pure/30 focus:bg-white-pure transition-colors duration-300 rounded-none w-full font-black uppercase text-[11px] tracking-tight"
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="w-full space-y-16">
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-x-10 gap-y-12">
+    <form onSubmit={handleSubmit(onSubmit)} className="w-full space-y-14">
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-x-8 gap-y-10">
 
         <FormItem className="md:col-span-4 space-y-1">
           <ClippedSelect
@@ -96,13 +96,13 @@ export const AddressForm: React.FC<Props> = ({
             </ClippedSelectTrigger>
             <ClippedSelectContent className="bg-white-pure border-2 border-black-pure rounded-none">
               {titles.map((title) => (
-                <ClippedSelectItem key={title} value={title} className="font-black uppercase text-xs focus:bg-black-pure focus:text-white-pure">
+                <ClippedSelectItem key={title} value={title} className="font-black uppercase text-[10px] focus:bg-black-pure focus:text-white-pure">
                   {title}
                 </ClippedSelectItem>
               ))}
             </ClippedSelectContent>
           </ClippedSelect>
-          {errors.title && <FormError message={errors.title.message} className="text-xs font-black text-black-pure mt-2 uppercase tracking-tighter" />}
+          {errors.title && <FormError message={errors.title.message} className="text-[10px] font-black text-black-pure mt-2 uppercase tracking-tighter" />}
         </FormItem>
 
         <FormItem className="md:col-span-4 space-y-1">
@@ -114,7 +114,7 @@ export const AddressForm: React.FC<Props> = ({
             className={inputClasses}
             {...register('firstName', { required: 'REQUIRED' })}
           />
-          {errors.firstName && <FormError message={errors.firstName.message} className="text-xs font-black text-black-pure mt-2 uppercase tracking-tighter" />}
+          {errors.firstName && <FormError message={errors.firstName.message} className="text-[10px] font-black text-black-pure mt-2 uppercase tracking-tighter" />}
         </FormItem>
 
         <FormItem className="md:col-span-4 space-y-1">
@@ -126,7 +126,7 @@ export const AddressForm: React.FC<Props> = ({
             className={inputClasses}
             {...register('lastName', { required: 'REQUIRED' })}
           />
-          {errors.lastName && <FormError message={errors.lastName.message} className="text-xs font-black text-black-pure mt-2 uppercase tracking-tighter" />}
+          {errors.lastName && <FormError message={errors.lastName.message} className="text-[10px] font-black text-black-pure mt-2 uppercase tracking-tighter" />}
         </FormItem>
 
         <FormItem className="md:col-span-6 space-y-1">
@@ -161,7 +161,7 @@ export const AddressForm: React.FC<Props> = ({
             className={inputClasses}
             {...register('addressLine1', { required: 'REQUIRED' })}
           />
-          {errors.addressLine1 && <FormError message={errors.addressLine1.message} className="text-xs font-black text-black-pure mt-2 uppercase tracking-tighter" />}
+          {errors.addressLine1 && <FormError message={errors.addressLine1.message} className="text-[10px] font-black text-black-pure mt-2 uppercase tracking-tighter" />}
         </FormItem>
 
         <FormItem className="md:col-span-4 space-y-1">
@@ -184,7 +184,7 @@ export const AddressForm: React.FC<Props> = ({
             className={inputClasses}
             {...register('city', { required: 'REQUIRED' })}
           />
-          {errors.city && <FormError message={errors.city.message} className="text-xs font-black text-black-pure mt-2 uppercase tracking-tighter" />}
+          {errors.city && <FormError message={errors.city.message} className="text-[10px] font-black text-black-pure mt-2 uppercase tracking-tighter" />}
         </FormItem>
 
         <FormItem className="md:col-span-4 space-y-1">
@@ -206,7 +206,7 @@ export const AddressForm: React.FC<Props> = ({
             className={inputClasses}
             {...register('postalCode', { required: 'REQUIRED' })}
           />
-          {errors.postalCode && <FormError message={errors.postalCode.message} className="text-xs font-black text-black-pure mt-2 uppercase tracking-tighter" />}
+          {errors.postalCode && <FormError message={errors.postalCode.message} className="text-[10px] font-black text-black-pure mt-2 uppercase tracking-tighter" />}
         </FormItem>
 
         <FormItem className="md:col-span-12 space-y-1">
@@ -226,32 +226,32 @@ export const AddressForm: React.FC<Props> = ({
                 const value = typeof country === 'string' ? country : country.value
                 const label = typeof country === 'string' ? country : (typeof country.label === 'string' ? country.label : value)
                 return (
-                  <ClippedSelectItem key={value} value={value} className="font-black uppercase text-xs focus:bg-black-pure focus:text-white-pure">
+                  <ClippedSelectItem key={value} value={value} className="font-black uppercase text-[10px] focus:bg-black-pure focus:text-white-pure">
                     {label}
                   </ClippedSelectItem>
                 )
               })}
             </ClippedSelectContent>
           </ClippedSelect>
-          {errors.country && <FormError message={errors.country.message} className="text-xs font-black text-black-pure mt-2 uppercase tracking-tighter" />}
+          {errors.country && <FormError message={errors.country.message} className="text-[10px] font-black text-black-pure mt-2 uppercase tracking-tighter" />}
         </FormItem>
       </div>
 
-      <div className="pt-12 flex flex-col md:flex-row items-center justify-between gap-8 border-t border-black-pure">
-        <p className="text-[10px] font-black uppercase tracking-[0.4em] text-black-pure/40">
+      <div className="pt-10 flex flex-col md:flex-row items-center justify-between gap-6 border-t border-black-pure">
+        <p className="text-[8px] font-black uppercase tracking-[0.4em] text-black-pure/40">
           CONFIRM DETAILS
         </p>
 
         <button
           type="submit"
           disabled={isLoading || isSubmitting}
-          className="group relative h-20 w-full md:w-auto md:px-24 bg-black-pure text-white-pure disabled:opacity-50 overflow-hidden transition-all duration-300"
+          className="group relative h-16 w-full md:w-auto md:px-20 bg-black-pure text-white-pure disabled:opacity-50 overflow-hidden transition-all duration-300"
         >
           <div
             className="absolute inset-0 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-in-out bg-white-pure"
           />
-          <span className="relative z-10 text-sm font-black uppercase tracking-widest flex items-center justify-center gap-4 group-hover:text-black-pure transition-colors duration-500">
-            {isSubmitting ? 'SAVING' : 'SAVE ADDRESS'} <ChevronRight className="h-5 w-5" />
+          <span className="relative z-10 text-[11px] font-black uppercase tracking-widest flex items-center justify-center gap-3 group-hover:text-black-pure transition-colors duration-500">
+            {isSubmitting ? 'SAVING' : 'SAVE ADDRESS'} <ChevronRight className="h-4 w-4" />
           </span>
         </button>
       </div>

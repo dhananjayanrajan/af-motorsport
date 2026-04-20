@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import Hyperspeed from '@/components/Hyperspeed'
 import Link from 'next/link'
@@ -36,32 +36,34 @@ const HyperspeedSection: React.FC<HyperspeedSectionProps> = ({ navigation }) => 
     return (
         <section
             ref={sectionRef}
-            className="relative w-full min-h-screen md:h-screen bg-black-pure border-b-2 border-black-pure flex flex-col md:flex-row overflow-hidden rounded-none"
+            className="relative w-full h-screen bg-black-pure flex flex-col md:flex-row overflow-hidden border-b border-black-pure"
         >
-            <div className="w-full md:w-5/12 h-full border-r-0 md:border-r-2 border-black-pure bg-white-pure z-20 flex flex-col rounded-none">
-                {routes.map((route, index) => (
+            <div className="w-full md:w-1/2 h-full flex flex-col bg-white-pure z-20 border-r border-black-pure">
+                {routes.map((route) => (
                     <Link
                         key={route.id}
                         href={`${route.path}/${route.slug}`}
-                        className={`group flex-1 flex items-center border-b-2 border-black-pure last:border-b-0 rounded-none bg-white-pure hover:bg-primary-500 focus:bg-primary-500 transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 cursor-pointer`}
+                        className="flex-1 group flex items-center border-b border-black-pure last:border-b-0 hover:bg-primary-500 focus:bg-secondary-500 transition-colors outline-none"
                     >
-                        <div className="w-full flex items-center gap-6 px-6 md:px-8 lg:px-12 rounded-none">
-                            <span className="font-sans text-base md:text-lg font-black text-black-pure group-hover:text-black-pure group-focus:text-black-pure transition-all duration-200 ease-in-out rounded-none">
-                                {route.id}
-                            </span>
-                            <div className="flex-1 flex items-center justify-between py-6 md:py-8 rounded-none">
-                                <h2 className="font-race text-xl md:text-2xl lg:text-3xl font-black uppercase tracking-wide text-black-pure group-hover:text-black-pure group-focus:text-black-pure transition-all duration-200 ease-in-out rounded-none">
+                        <div className="w-full flex items-center px-6 md:px-10 h-full">
+                            <div className="flex items-center justify-center h-full aspect-square border-r border-black-pure mr-6 md:mr-10">
+                                <span className="font-mono text-xs font-black text-black-pure">
+                                    {route.id}
+                                </span>
+                            </div>
+                            <div className="flex-1 flex items-center justify-between">
+                                <h2 className="font-race text-xl md:text-2xl font-black uppercase tracking-tighter text-black-pure">
                                     {route.label}
                                 </h2>
-                                <div className="w-6 h-6 border-2 border-black-pure bg-white-pure group-hover:bg-black-pure group-hover:border-black-pure group-focus:bg-black-pure group-focus:border-black-pure transition-all duration-200 ease-in-out rounded-none" />
+                                <div className="w-4 h-4 bg-white-pure border border-black-pure group-hover:bg-black-pure transition-colors" />
                             </div>
                         </div>
                     </Link>
                 ))}
             </div>
 
-            <div className="w-full md:w-7/12 min-h-[600px] md:h-full flex-1 relative bg-black-pure overflow-hidden rounded-none">
-                <div className="absolute inset-0 z-0 rounded-none">
+            <div className="w-full md:w-1/2 h-full relative bg-black-pure overflow-hidden">
+                <div className="absolute inset-0 z-0">
                     {isVisible && (
                         <Hyperspeed
                             effectOptions={{
@@ -87,47 +89,47 @@ const HyperspeedSection: React.FC<HyperspeedSectionProps> = ({ navigation }) => 
                     )}
                 </div>
 
-                <div className="absolute inset-0 flex pointer-events-none rounded-none">
-                    <div className="w-1/2 h-full border-r border-primary-500 rounded-none" />
-                    <div className="absolute top-1/2 left-0 w-full h-px bg-primary-500 rounded-none" />
+                <div className="absolute inset-0 pointer-events-none opacity-20">
+                    <div className="grid grid-cols-4 h-full w-full">
+                        <div className="border-r border-primary-500 h-full" />
+                        <div className="border-r border-primary-500 h-full" />
+                        <div className="border-r border-primary-500 h-full" />
+                    </div>
+                    <div className="grid grid-rows-4 h-full w-full absolute inset-0">
+                        <div className="border-b border-primary-500 w-full" />
+                        <div className="border-b border-primary-500 w-full" />
+                        <div className="border-b border-primary-500 w-full" />
+                    </div>
                 </div>
 
-                <div className="relative z-10 h-full w-full flex flex-col justify-end p-6 md:p-12 lg:p-16 rounded-none">
-                    <div className="w-full max-w-xl border-l-[6px] border-primary-500 bg-black-pure p-6 md:p-8 lg:p-10 rounded-none transition-all duration-200 ease-in-out hover:border-l-[12px] focus-within:border-l-[12px]">
-                        <div className="flex justify-between items-center mb-6 rounded-none">
-                            <span className="font-sans text-xs md:text-sm font-black text-primary-500 uppercase tracking-[0.4em] rounded-none">
-                                Competition Hub
-                            </span>
-                            <span className="text-primary-500 font-sans text-[10px] md:text-xs rounded-none">Season Active</span>
-                        </div>
+                <div className="relative z-10 h-full w-full flex flex-col justify-end">
+                    <div className="grid grid-cols-2 bg-white-pure border-t border-black-pure">
+                        {routes.map((route) => (
+                            <div
+                                key={`stat-${route.id}`}
+                                className="p-5 border-r border-b border-black-pure last:border-r-0 flex flex-col gap-2 bg-white-pure hover:bg-tertiary-500 hover:text-white-pure transition-colors group"
+                            >
+                                <div className="flex items-center gap-2">
+                                    <div className="w-3 h-3 bg-primary-500 border border-black-pure" />
+                                    <span className="font-mono text-[9px] font-black uppercase tracking-widest text-black-pure group-hover:text-white-pure">
+                                        ACTIVE {route.label}
+                                    </span>
+                                </div>
 
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 rounded-none">
-                            {routes.map((route) => (
-                                <div key={`info-${route.id}`} className="flex flex-col border-b-2 border-neutral-800 pb-4 rounded-none transition-all duration-200 ease-in-out hover:border-primary-500 focus-within:border-primary-500">
-                                    <div className="flex items-center gap-3 mb-3 rounded-none">
-                                        <div className="w-2 h-6 bg-primary-500 rounded-none" />
-                                        <span className="font-sans text-xs font-black text-primary-500 uppercase tracking-widest rounded-none">
-                                            {route.label}
-                                        </span>
+                                <div className="flex justify-between items-end">
+                                    <div className="flex flex-col">
+                                        <span className="text-[8px] font-mono opacity-60 uppercase font-black">ACCESS</span>
+                                        <span className="text-[11px] font-mono font-black uppercase">UNRESTRICTED</span>
                                     </div>
-                                    <div className="grid grid-cols-2 gap-3 rounded-none">
-                                        <div className="flex flex-col rounded-none">
-                                            <span className="text-[9px] font-sans text-neutral-500 uppercase font-black tracking-[0.2em] rounded-none">Category</span>
-                                            <span className="text-xs font-sans text-white-pure font-black tracking-wide rounded-none">Championship</span>
-                                        </div>
-                                        <div className="flex flex-col rounded-none">
-                                            <span className="text-[9px] font-sans text-neutral-500 uppercase font-black tracking-[0.2em] rounded-none">Access</span>
-                                            <span className="text-xs font-sans text-secondary-500 font-black tracking-wide rounded-none">Unlocked</span>
-                                        </div>
+                                    <div className="bg-black-pure text-white-pure px-2 py-0.5 group-hover:bg-white-pure group-hover:text-black-pure transition-colors">
+                                        <span className="font-mono text-[9px] font-black">{route.id}</span>
                                     </div>
                                 </div>
-                            ))}
-                        </div>
+                            </div>
+                        ))}
                     </div>
                 </div>
             </div>
-
-            <div className="absolute inset-0 border-[16px] md:border-[40px] border-black-pure pointer-events-none z-30 rounded-none" />
         </section>
     )
 }
