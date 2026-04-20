@@ -1,10 +1,9 @@
-import { Celebration, Driver, Interview, Leader, Member, Organization } from '@/payload-types'
-import CelebrationsSection from './sections/Celebration'
-import DriverWall from './sections/DriverWall'
+import { Celebration, Driver, Interview, Leader, Member } from '@/payload-types'
+import CelebrationsGallery from './sections/Celebration'
+import DriversDirectory from './sections/Drivers'
 import InterviewsSection from './sections/Interviews'
-import LeaderStrip from './sections/LeaderStrip'
-import MembersGrid from './sections/MembersGrid'
-import OrganizationsSection from './sections/Organizations'
+import LeadersDirectory from './sections/Leaders'
+import MembersDirectory from './sections/Members'
 
 export const dynamic = 'force-dynamic'
 
@@ -47,20 +46,15 @@ async function fetchInterviews(): Promise<Interview[]> {
     return safeFetch('interviews?depth=2&limit=50&sort=-details.recorded_date')
 }
 
-async function fetchOrganizations(): Promise<Organization[]> {
-    return safeFetch('organizations?depth=2&limit=100')
-}
-
 export default async function TeamPage({ searchParams }: TeamPageProps) {
     const params = await searchParams
 
-    const [drivers, leaders, allMembers, celebrations, interviews, organizations] = await Promise.all([
+    const [drivers, leaders, allMembers, celebrations, interviews] = await Promise.all([
         fetchDrivers(),
         fetchLeaders(),
         fetchMembers(),
         fetchCelebrations(),
-        fetchInterviews(),
-        fetchOrganizations()
+        fetchInterviews()
     ])
 
     const filteredMembers = params.tag
@@ -69,12 +63,11 @@ export default async function TeamPage({ searchParams }: TeamPageProps) {
 
     return (
         <main className="min-h-screen bg-white">
-            <section><DriverWall drivers={drivers} /></section>
-            <section><LeaderStrip leaders={leaders} /></section>
-            <section><MembersGrid members={filteredMembers} /></section>
-            <section><CelebrationsSection data={celebrations} /></section>
+            <section><DriversDirectory drivers={drivers} /></section>
+            <section><LeadersDirectory leaders={leaders} /></section>
+            <section><MembersDirectory members={filteredMembers} /></section>
+            <section><CelebrationsGallery celebrations={celebrations} /></section>
             <section><InterviewsSection data={interviews} /></section>
-            <section><OrganizationsSection organizations={organizations} /></section>
         </main>
     )
 }

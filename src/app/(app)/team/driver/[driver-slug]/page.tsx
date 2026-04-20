@@ -6,7 +6,6 @@ import CelebrationsSection from './sections/Celebration';
 import GallerySection from './sections/Gallery';
 import InfoSection from './sections/Info';
 import MembersSection from './sections/Members';
-import QuoteSection from './sections/Quote';
 import SkillsSection from './sections/Skills';
 import StatSection from './sections/Stats';
 import VideoSection from './sections/Video';
@@ -53,7 +52,6 @@ export default async function DriverPage({ params }: PageProps) {
     return (
         <main className="min-h-screen">
             <section><VideoSection driver={driver} /></section>
-            <section><QuoteSection driver={driver} /></section>
             <section><StatSection driver={driver} /></section>
             <section><AutographSection driver={driver} /></section>
             <section><InfoSection driver={driver} /></section>

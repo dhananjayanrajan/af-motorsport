@@ -1,8 +1,7 @@
 'use client'
 
-import { DESIGN_SYSTEM } from '@/lib/constants'
 import { Individual, Interview, Media } from '@/payload-types'
-import { Clock, FileText, Globe, Play, User, X } from 'lucide-react'
+import { ArrowRight, Clock, FileText, Globe, Play, User, X } from 'lucide-react'
 import { AnimatePresence, motion } from 'motion/react'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
@@ -11,29 +10,29 @@ export default function InterviewsSection({ data }: { data: Interview[] }) {
     const [activeInterview, setActiveInterview] = useState<Interview | null>(null)
 
     return (
-        <section
-            className="w-full py-20"
-            style={{ backgroundColor: DESIGN_SYSTEM.COLORS.BACKGROUND }}
-        >
-            <div className="w-full px-6 md:px-12">
-                <div className="mb-12 border-l-2 pl-6" style={{ borderColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}>
-                    <h2
-                        className="text-3xl font-black uppercase italic tracking-tighter"
-                        style={{ color: DESIGN_SYSTEM.COLORS.BLACK }}
-                    >
-                        Interviews
-                    </h2>
-                    <p className="text-sm font-bold uppercase text-zinc-500 mt-1">
-                        Media Archive / {data.length} Entries
-                    </p>
+        <section className="w-full py-16 md:py-20 bg-white-pure border-t border-b border-black-pure">
+            <div className="w-full px-6 md:px-10 lg:px-20">
+                <div className="mb-12 md:mb-16">
+                    <div className="flex items-center gap-3 mb-2">
+                        <div className="w-2 h-2 bg-primary-500 rotate-45" />
+                        <span className="text-[8px] md:text-[9px] font-black uppercase tracking-[0.3em] text-black-pure/40">Media Archive</span>
+                    </div>
+                    <div className="flex items-end justify-between">
+                        <h2 className="text-3xl md:text-4xl lg:text-5xl font-race font-black uppercase italic tracking-tighter text-black-pure">
+                            Interviews
+                        </h2>
+                        <div className="hidden md:block w-32 h-px bg-black-pure/20" />
+                    </div>
+                    <div className="w-12 h-px bg-primary-500 mt-2" />
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                    {data.map((interview) => (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-6">
+                    {data.map((interview, idx) => (
                         <InterviewCard
                             key={interview.id}
                             interview={interview}
                             onClick={() => setActiveInterview(interview)}
+                            index={idx}
                         />
                     ))}
                 </div>
@@ -51,64 +50,60 @@ export default function InterviewsSection({ data }: { data: Interview[] }) {
     )
 }
 
-function InterviewCard({ interview, onClick }: { interview: Interview; onClick: () => void }) {
+function InterviewCard({ interview, onClick, index }: { interview: Interview; onClick: () => void; index: number }) {
     const thumbnail = (interview.assets?.thumbnail as Media)?.url || `https://picsum.photos/seed/${interview.id}/600/800`
     const interviewee = interview.details.interviewee as Individual
 
     return (
-        <motion.div
-            layoutId={`card-${interview.id}`}
+        <motion.button
             onClick={onClick}
-            className="group cursor-pointer border"
-            style={{
-                backgroundColor: DESIGN_SYSTEM.COLORS.SURFACE,
-                borderColor: DESIGN_SYSTEM.COLORS.ZINC[200]
-            }}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.4, delay: index * 0.05 }}
+            whileHover={{ y: -4 }}
+            whileTap={{ scale: 0.98 }}
+            className="group relative flex flex-col bg-white-pure border border-black-pure/20 hover:border-primary-500 transition-all duration-300 text-left focus:outline-none focus:ring-2 focus:ring-primary-500"
         >
-            <div className="relative aspect-[4/5] overflow-hidden bg-zinc-100">
+            <div className="absolute top-2 left-2 z-10 flex items-center gap-1">
+                <div className="size-1.5 bg-primary-500 rotate-45" />
+                <span className="text-[6px] font-black uppercase tracking-wider text-black-pure/40">
+                    {(index + 1).toString().padStart(2, '0')}
+                </span>
+            </div>
+
+            <div className="relative aspect-[4/5] overflow-hidden bg-black-pure/5">
                 <Image
                     src={thumbnail}
                     alt={interview.name}
                     fill
-                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    className="object-cover transition-all duration-700 group-hover:scale-105 group-hover:grayscale-0 grayscale"
                 />
-                <div className="absolute inset-0 bg-black/10 group-hover:bg-black/0 transition-colors" />
-                <div
-                    className="absolute bottom-0 left-0 right-0 p-4 translate-y-2 group-hover:translate-y-0 transition-transform"
-                    style={{ background: 'linear-gradient(to top, rgba(17,17,17,0.8), transparent)' }}
-                >
-                    <div className="flex items-center gap-2">
-                        <div className="size-2 rounded-full" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
-                        <span className="text-[10px] font-black text-white uppercase tracking-widest">
-                            {interview.details.format}
-                        </span>
-                    </div>
+                <div className="absolute inset-0 bg-black-pure/0 group-hover:bg-black-pure/20 transition-colors duration-500" />
+                <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black-pure/70 to-transparent translate-y-1 group-hover:translate-y-0 transition-transform duration-300">
+                    <span className="text-[7px] md:text-[8px] font-black text-white-pure uppercase tracking-wider">
+                        {interview.details.format || 'INTERVIEW'}
+                    </span>
                 </div>
             </div>
 
-            <div className="p-5">
-                <div className="flex flex-col gap-1">
-                    <span
-                        className="text-[9px] font-black uppercase"
-                        style={{ color: DESIGN_SYSTEM.COLORS.ZINC[500] }}
-                    >
-                        {interview.basics?.identifiers?.code || 'MEDIA'}
-                    </span>
-                    <h4
-                        className="text-lg font-black uppercase italic leading-none"
-                        style={{ color: DESIGN_SYSTEM.COLORS.BLACK }}
-                    >
-                        {interviewee.first_name} {interviewee.last_name}
+            <div className="p-4">
+                <div className="flex flex-col gap-0.5">
+                    <h4 className="text-sm md:text-base font-race font-black uppercase italic leading-tight text-black-pure group-hover:text-primary-500 transition-colors">
+                        {interviewee?.first_name} {interviewee?.last_name}
                     </h4>
-                    <p
-                        className="text-[10px] font-bold uppercase mt-2 line-clamp-1"
-                        style={{ color: DESIGN_SYSTEM.COLORS.ZINC[600] }}
-                    >
+                    <p className="text-[8px] md:text-[9px] font-bold uppercase text-black-pure/40 line-clamp-1">
                         {interview.basics?.tagline || 'Exclusive Interview'}
                     </p>
                 </div>
             </div>
-        </motion.div>
+
+            <div className="absolute bottom-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div className="w-6 h-6 border border-black-pure/30 flex items-center justify-center rotate-45 group-hover:rotate-0 transition-transform">
+                    <ArrowRight size={10} className="-rotate-45 group-hover:rotate-0 transition-transform" />
+                </div>
+            </div>
+        </motion.button>
     )
 }
 
@@ -127,112 +122,128 @@ function InterviewModal({ interview, onClose }: { interview: Interview; onClose:
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[1000] flex items-start justify-center p-4 md:p-8 pt-24 md:pt-32"
-            style={{ backgroundColor: 'rgba(248, 249, 250, 0.98)' }}
+            className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-black-pure/90 backdrop-blur-sm"
+            onClick={onClose}
         >
             <motion.div
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                className="w-full max-w-6xl bg-white border shadow-2xl overflow-hidden relative"
-                style={{ borderColor: DESIGN_SYSTEM.COLORS.ZINC[200] }}
+                initial={{ scale: 0.95, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.95, opacity: 0 }}
+                transition={{ type: "spring", damping: 25, stiffness: 300 }}
+                className="relative w-full max-w-5xl bg-white-pure border-2 border-black-pure overflow-hidden"
+                onClick={(e) => e.stopPropagation()}
             >
                 <button
                     onClick={onClose}
-                    className="absolute top-0 right-0 z-50 flex items-center justify-center size-16 transition-colors hover:bg-zinc-100 border-l border-b"
-                    style={{ borderColor: DESIGN_SYSTEM.COLORS.ZINC[200], color: DESIGN_SYSTEM.COLORS.BLACK }}
+                    className="absolute top-4 right-4 z-50 size-10 bg-black-pure hover:bg-primary-500 transition-colors duration-300 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-primary-500"
                 >
-                    <X size={32} strokeWidth={2.5} />
+                    <X size={18} className="text-white-pure" />
                 </button>
 
-                <div className="grid grid-cols-1 lg:grid-cols-12">
-                    <div className="lg:col-span-7 bg-zinc-100 border-b lg:border-b-0 lg:border-r" style={{ borderColor: DESIGN_SYSTEM.COLORS.ZINC[200] }}>
-                        <div className="relative aspect-video w-full bg-black">
-                            {videoUrl ? (
-                                <video src={videoUrl} controls autoPlay className="w-full h-full object-contain" />
-                            ) : (
-                                <div className="relative w-full h-full flex items-center justify-center">
-                                    <Image src={coverUrl} alt={interview.name} fill className="object-cover opacity-40 grayscale" />
-                                    <div className="relative z-10 flex flex-col items-center gap-4">
-                                        <Play size={64} className="text-white opacity-50" />
-                                        <span className="text-[10px] font-black text-white uppercase tracking-[0.4em]">Media Preview Only</span>
+                <div className="grid grid-cols-1 md:grid-cols-2">
+                    <div className="relative aspect-[4/3] md:aspect-auto md:h-full min-h-[400px] bg-black-pure">
+                        {videoUrl ? (
+                            <video src={videoUrl} controls autoPlay className="w-full h-full object-cover" />
+                        ) : (
+                            <>
+                                <Image src={coverUrl} alt={interview.name} fill className="object-cover opacity-30 grayscale" />
+                                <div className="absolute inset-0 flex flex-col items-center justify-center gap-4">
+                                    <div className="size-16 border-2 border-white-pure/30 flex items-center justify-center rotate-45">
+                                        <Play size={24} className="text-white-pure/50 -rotate-45" />
                                     </div>
+                                    <span className="text-[10px] font-black text-white-pure/40 uppercase tracking-[0.3em]">Preview Only</span>
                                 </div>
-                            )}
-                        </div>
-
-                        <div className="p-6">
-                            <h3 className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-4">Interview Tags</h3>
-                            <div className="flex flex-wrap gap-2">
-                                {interview.details.tags?.list?.map((tag) => (
-                                    <span
-                                        key={tag.id}
-                                        className="px-3 py-1 text-[9px] font-black uppercase border"
-                                        style={{ borderColor: DESIGN_SYSTEM.COLORS.ZINC[200], color: DESIGN_SYSTEM.COLORS.ZINC[600] }}
-                                    >
-                                        {tag.name}
-                                    </span>
-                                ))}
-                            </div>
-                        </div>
+                            </>
+                        )}
+                        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-black-pure to-transparent" />
                     </div>
 
-                    <div className="lg:col-span-5 p-8 md:p-12 flex flex-col justify-between">
-                        <div className="space-y-8">
-                            <div>
-                                <div className="flex items-center gap-3 mb-4">
-                                    <div className="h-4 w-1" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
-                                    <span className="text-[10px] font-black uppercase tracking-[0.3em]" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}>
-                                        {interview.alias || 'Direct Transmission'}
-                                    </span>
+                    <div className="p-6 md:p-8 flex flex-col h-full">
+                        <div className="mb-6">
+                            <div className="flex items-center gap-3 mb-4">
+                                <div className="w-8 h-px bg-primary-500" />
+                                <span className="text-[10px] md:text-[11px] font-black uppercase tracking-[0.3em] text-primary-600">
+                                    {interview.alias || 'EXCLUSIVE INTERVIEW'}
+                                </span>
+                            </div>
+                            <h2 className="text-3xl md:text-4xl font-race font-black uppercase italic leading-[1.1] tracking-tighter text-black-pure">
+                                {interviewee?.first_name}<br />{interviewee?.last_name}
+                            </h2>
+                            <div className="w-10 h-px bg-primary-500 mt-4" />
+                        </div>
+
+                        <p className="text-[11px] md:text-xs font-bold leading-relaxed text-black-pure/60 uppercase mb-6">
+                            {interview.basics?.description}
+                        </p>
+
+                        <div className="grid grid-cols-2 gap-px bg-black-pure/10 border border-black-pure/10 mb-6">
+                            <div className="p-3 md:p-4 bg-white-pure">
+                                <div className="flex items-center gap-2 mb-1.5">
+                                    <User size={12} className="text-primary-500" />
+                                    <span className="text-[8px] md:text-[9px] font-black text-black-pure/40 uppercase">Subject</span>
                                 </div>
-                                <h2 className="text-4xl md:text-5xl font-black uppercase italic leading-[0.9] tracking-tighter mb-4" style={{ color: DESIGN_SYSTEM.COLORS.BLACK }}>
-                                    {interviewee.first_name}<br />{interviewee.last_name}
-                                </h2>
-                                <p className="text-sm font-bold leading-relaxed text-zinc-600 uppercase">
-                                    {interview.basics?.description}
-                                </p>
+                                <span className="text-[11px] md:text-xs font-race font-black uppercase text-black-pure">
+                                    {interviewee?.first_name} {interviewee?.last_name}
+                                </span>
                             </div>
-
-                            <div className="grid grid-cols-2 gap-px bg-zinc-200 border border-zinc-200">
-                                <DataField icon={<User size={14} />} label="Subject" value={`${interviewee.first_name} ${interviewee.last_name}`} />
-                                <DataField icon={<Clock size={14} />} label="Duration" value={`${interview.details.duration} Minutes`} />
-                                <DataField icon={<Globe size={14} />} label="Language" value={interview.details.language} />
-                                <DataField icon={<FileText size={14} />} label="Format" value={interview.details.format} />
+                            <div className="p-3 md:p-4 bg-white-pure">
+                                <div className="flex items-center gap-2 mb-1.5">
+                                    <Clock size={12} className="text-primary-500" />
+                                    <span className="text-[8px] md:text-[9px] font-black text-black-pure/40 uppercase">Duration</span>
+                                </div>
+                                <span className="text-[11px] md:text-xs font-race font-black uppercase text-black-pure">
+                                    {interview.details.duration} Minutes
+                                </span>
                             </div>
-
-                            <div className="p-6 border-l-2" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.ZINC[50], borderColor: DESIGN_SYSTEM.COLORS.ZINC[200] }}>
-                                <span className="text-[9px] font-black text-zinc-400 uppercase block mb-2">Executive Summary</span>
-                                <p className="text-xs font-bold text-zinc-700 leading-normal uppercase italic">
-                                    {interview.basics?.summary}
-                                </p>
+                            <div className="p-3 md:p-4 bg-white-pure">
+                                <div className="flex items-center gap-2 mb-1.5">
+                                    <Globe size={12} className="text-primary-500" />
+                                    <span className="text-[8px] md:text-[9px] font-black text-black-pure/40 uppercase">Language</span>
+                                </div>
+                                <span className="text-[11px] md:text-xs font-race font-black uppercase text-black-pure">
+                                    {interview.details.language || 'ENGLISH'}
+                                </span>
+                            </div>
+                            <div className="p-3 md:p-4 bg-white-pure">
+                                <div className="flex items-center gap-2 mb-1.5">
+                                    <FileText size={12} className="text-primary-500" />
+                                    <span className="text-[8px] md:text-[9px] font-black text-black-pure/40 uppercase">Format</span>
+                                </div>
+                                <span className="text-[11px] md:text-xs font-race font-black uppercase text-black-pure">
+                                    {interview.details.format || 'VIDEO'}
+                                </span>
                             </div>
                         </div>
 
-                        <div className="mt-12 flex items-center justify-between border-t pt-6" style={{ borderColor: DESIGN_SYSTEM.COLORS.ZINC[100] }}>
-                            <span className="text-[9px] font-black text-zinc-400 uppercase tabular-nums">
-                                Published: {interview.details.published_date || interview.createdAt.split('T')[0]}
+                        {interview.basics?.summary && (
+                            <div className="p-4 md:p-5 border-l-4 border-primary-500 bg-black-pure/5 mb-6">
+                                <span className="text-[9px] md:text-[10px] font-black text-black-pure/50 uppercase tracking-wider block mb-2">Executive Summary</span>
+                                <p className="text-[11px] md:text-xs font-bold text-black-pure/80 leading-relaxed uppercase italic">
+                                    {interview.basics.summary}
+                                </p>
+                            </div>
+                        )}
+
+                        <div className="mt-auto pt-4 border-t border-black-pure/10 flex items-center justify-between">
+                            <span className="text-[8px] md:text-[9px] font-black text-black-pure/40 uppercase">
+                                Published: {interview.details.published_date || interview.createdAt?.split('T')[0]}
                             </span>
-                            <span className="text-[9px] font-black text-zinc-400 uppercase">
-                                Access: {interview.details.access}
-                            </span>
+                            <div className="flex gap-1">
+                                <div className="w-4 h-px bg-primary-500" />
+                                <div className="w-6 h-px bg-secondary-500" />
+                                <div className="w-8 h-px bg-tertiary-500" />
+                            </div>
                         </div>
                     </div>
                 </div>
+
+                <div className="absolute bottom-0 left-0 w-full h-1 flex">
+                    <div className="w-1/4 h-full bg-primary-500" />
+                    <div className="w-1/4 h-full bg-secondary-500" />
+                    <div className="w-1/4 h-full bg-tertiary-500" />
+                    <div className="w-1/4 h-full bg-black-pure" />
+                </div>
             </motion.div>
         </motion.div>
-    )
-}
-
-function DataField({ icon, label, value }: { icon: React.ReactNode; label: string; value: string | number | null | undefined }) {
-    return (
-        <div className="p-4 bg-white flex flex-col gap-1">
-            <div className="flex items-center gap-2 text-[9px] font-black text-zinc-400 uppercase tracking-tighter">
-                <span style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}>{icon}</span>
-                {label}
-            </div>
-            <span className="text-[11px] font-black uppercase truncate" style={{ color: DESIGN_SYSTEM.COLORS.BLACK }}>
-                {value || '---'}
-            </span>
-        </div>
     )
 }

@@ -1,162 +1,150 @@
-'use client';
+'use client'
 
-import { DESIGN_SYSTEM } from '@/lib/constants';
-import { Country, Driver, Media } from '@/payload-types';
-import { cn } from '@/utilities/cn';
-import { motion, useScroll, useSpring, useTransform } from 'framer-motion';
-import { ArrowUpRight, Zap } from 'lucide-react';
-import Link from 'next/link';
-import { useRef, useState } from 'react';
+import { Country, Driver, Media } from '@/payload-types'
+import { motion, useScroll, useSpring, useTransform } from 'framer-motion'
+import { ArrowRight, Zap } from 'lucide-react'
+import Link from 'next/link'
+import { useEffect, useRef, useState } from 'react'
 
 export default function DriversWall({ drivers }: { drivers: Driver[] }) {
-    const targetRef = useRef<HTMLDivElement>(null);
+    const targetRef = useRef<HTMLDivElement>(null)
+    const [mounted, setMounted] = useState(false)
+
+    useEffect(() => {
+        setMounted(true)
+    }, [])
+
     const { scrollYProgress } = useScroll({
         target: targetRef,
-    });
+        offset: ["start start", "end end"]
+    })
 
-    const x = useTransform(scrollYProgress, [0, 1], ["0%", "-82%"]);
-    const springX = useSpring(x, { stiffness: 80, damping: 25, restDelta: 0.001 });
+    const x = useTransform(scrollYProgress, [0, 1], ['0%', '-70%'])
+    const springX = useSpring(x, { stiffness: 80, damping: 25, restDelta: 0.001 })
+
+    if (!mounted) {
+        return (
+            <section className="relative h-[400vh] bg-white-pure">
+                <div className="sticky top-0 h-screen flex items-center overflow-hidden">
+                    <div className="flex items-stretch h-[70vh] z-10">
+                        {drivers.map((driver, index) => (
+                            <div key={driver.id} className="flex-shrink-0 w-[380px] border-r border-black-pure flex flex-col bg-white-pure">
+                                <div className="h-2/3 border-b border-black-pure bg-gray-100 animate-pulse" />
+                                <div className="flex-1 p-6 animate-pulse">
+                                    <div className="h-4 bg-gray-200 mb-2 w-24" />
+                                    <div className="h-8 bg-gray-200 mb-4 w-32" />
+                                    <div className="h-12 bg-gray-200 mt-6" />
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+        )
+    }
 
     return (
-        <section
-            id="drivers-section"
-            ref={targetRef}
-            className="relative h-[400vh] bg-white"
-        >
+        <section ref={targetRef} className="relative h-[400vh] bg-white-pure">
             <div className="sticky top-0 h-screen flex items-center overflow-hidden">
-                {/* Background Grid Accent */}
-                <div className="absolute inset-0 pointer-events-none opacity-[0.03]">
-                    <div className="absolute inset-0" style={{ backgroundImage: `radial-gradient(${DESIGN_SYSTEM.COLORS.ZINC[400]} 1px, transparent 1px)`, backgroundSize: '32px 32px' }} />
-                </div>
-
-                {/* Driver Sequence */}
-                <motion.div style={{ x: springX }} className="flex gap-24 px-[10vw] z-10">
+                <motion.div style={{ x: springX }} className="flex items-stretch h-[70vh] z-10">
                     {drivers.map((driver, index) => (
                         <DriverCard key={driver.id} driver={driver} index={index} />
                     ))}
                 </motion.div>
 
-                {/* Minimalist Scroll Guide */}
-                <div className="absolute bottom-16 left-16 flex items-center gap-6 group">
-                    <span
-                        className={cn("text-[10px] font-black uppercase tracking-widest transition-colors", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_XL)}
-                        style={{ color: DESIGN_SYSTEM.COLORS.ZINC[300] }}
-                    >
-                        Active_Duty_Roster
-                    </span>
-                    <div className="flex gap-2">
-                        {Array.from({ length: 12 }).map((_, i) => (
-                            <div key={i} className="h-1 w-4" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.ZINC[100] }} />
-                        ))}
+                <div className="absolute bottom-0 left-0 w-full h-20 border-t border-black-pure bg-white-pure flex items-center px-12 justify-between">
+                    <div className="flex items-center gap-8">
+                        <span className="text-[10px] font-mono font-black uppercase tracking-[0.3em] text-black-pure">
+                            Personnel Directory
+                        </span>
+                        <div className="flex gap-1">
+                            {drivers.map((_, i) => (
+                                <div key={i} className="h-1 w-8 bg-black-pure/10" />
+                            ))}
+                        </div>
+                    </div>
+                    <div className="flex items-center gap-4">
+                        <span className="text-[10px] font-mono font-black text-black-pure/40">SCROLL TO EXPLORE</span>
+                        <ArrowRight className="h-4 w-4 text-primary-500" />
                     </div>
                 </div>
             </div>
         </section>
-    );
+    )
 }
 
 function DriverCard({ driver, index }: { driver: Driver; index: number }) {
-    const [hovered, setHovered] = useState(false);
-
-    const avatarUrl = (driver.assets?.avatar as Media)?.url || `https://picsum.photos/seed/${driver.id}/800/1000?grayscale`;
-    const nationality = (driver.basics?.nationality as Country)?.name || 'UNSPECIFIED';
+    const avatarUrl = (driver.assets?.avatar as Media)?.url || `https://picsum.photos/seed/${driver.id}/800/1000`
+    const nationality = (driver.basics?.nationality as Country)?.name || 'GLOBAL'
+    const firstName = driver.first_name || ''
+    const lastName = driver.last_name || 'DRIVER'
+    const racingNumber = driver.basics?.racing_number || String(index + 1)
+    const competitionName = driver.basics?.competition_name || 'Pro Circuit'
+    const callsign = driver.basics?.callsign || 'Active'
 
     return (
-        <motion.div
-            onMouseEnter={() => setHovered(true)}
-            onMouseLeave={() => setHovered(false)}
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="group relative flex-shrink-0 w-[320px] md:w-[460px] cursor-pointer"
-        >
-            <Link href={`/team/driver/${driver.slug}`} className="block relative z-10">
+        <div className="group relative flex-shrink-0 w-[380px] border-r border-black-pure flex flex-col bg-white-pure transition-colors duration-500 hover:bg-black-pure">
+            <Link href={`/team/driver/${driver.slug}`} className="flex-1 flex flex-col h-full">
+                <div className="relative h-2/3 border-b border-black-pure overflow-hidden">
+                    <div className="absolute top-6 left-6 z-20 flex flex-col">
+                        <span className="text-[10px] font-mono font-black bg-primary-500 text-black-pure px-2 py-1 self-start mb-1 whitespace-nowrap">
+                            RANK 0{index + 1}
+                        </span>
+                        <span className="text-[10px] font-mono font-black bg-black-pure text-white-pure px-2 py-1 self-start group-hover:bg-white-pure group-hover:text-black-pure whitespace-nowrap">
+                            {nationality}
+                        </span>
+                    </div>
 
-                {/* Visual Block with Depth Layering */}
-                <div
-                    className="relative aspect-[4/5] overflow-hidden p-3 border-2 transition-all duration-700"
-                    style={{
-                        borderColor: DESIGN_SYSTEM.COLORS.ZINC[100],
-                        backgroundColor: DESIGN_SYSTEM.COLORS.WHITE[100],
-                        boxShadow: hovered ? DESIGN_SYSTEM.COLORS.PRIMARY.GLOW : 'none'
-                    }}
-                >
-                    {/* Background Structure Overlay */}
-                    <div className="absolute inset-3 border" style={{ borderColor: DESIGN_SYSTEM.COLORS.ZINC[100] }} />
-                    <div className="absolute top-3 left-3 w-8 h-8 border-t border-l" style={{ borderColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
-
-                    {/* Image Layer with Zoom/Scale on Hover */}
                     <img
                         src={avatarUrl}
-                        alt={driver.last_name}
-                        className="relative z-10 w-full h-full object-cover grayscale transition-all duration-1000 ease-in-out group-hover:grayscale-0 group-hover:scale-105"
+                        alt={lastName}
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                     />
 
-                    {/* Numeric Badge - Tactical Tabular Font */}
-                    <div className="absolute top-3 right-3 z-30 overflow-hidden">
-                        <div
-                            className="bg-black py-4 px-10 border-l-4 transition-colors group-hover:bg-zinc-900"
-                            style={{ borderColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}
-                        >
-                            <span className="text-4xl md:text-7xl font-black italic tabular-nums text-white group-hover:text-primary-500 transition-colors">
-                                {driver.basics?.racing_number || index + 1}
+                    <div className="absolute bottom-0 right-0 bg-white-pure border-l border-t border-black-pure px-5 py-3 group-hover:bg-secondary-500 group-hover:text-black-pure transition-colors">
+                        <span className="text-4xl font-black italic">
+                            {racingNumber}
+                        </span>
+                    </div>
+                </div>
+
+                <div className="flex-1 p-6 flex flex-col justify-between">
+                    <div className="overflow-hidden">
+                        {firstName && (
+                            <h3 className="text-[10px] font-mono font-black text-black-pure/40 group-hover:text-primary-500 transition-colors uppercase tracking-widest mb-1 truncate">
+                                {firstName}
+                            </h3>
+                        )}
+                        <h2 className="text-3xl font-black uppercase text-black-pure group-hover:text-white-pure transition-colors leading-tight break-words">
+                            {lastName}
+                        </h2>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4 mt-6 pt-6 border-t border-black-pure group-hover:border-white-pure/20">
+                        <div className="flex flex-col min-w-0">
+                            <span className="text-[9px] font-mono font-black text-black-pure/30 group-hover:text-white-pure/40 uppercase tracking-tighter">
+                                Series
+                            </span>
+                            <span className="text-xs font-black text-black-pure group-hover:text-white-pure uppercase truncate">
+                                {competitionName}
+                            </span>
+                        </div>
+                        <div className="flex flex-col min-w-0">
+                            <div className="flex items-center gap-2">
+                                <Zap className="h-3 w-3 text-tertiary-500 flex-shrink-0" />
+                                <span className="text-[9px] font-mono font-black text-black-pure/30 group-hover:text-white-pure/40 uppercase tracking-tighter">
+                                    Status
+                                </span>
+                            </div>
+                            <span className="text-xs font-black text-black-pure group-hover:text-white-pure uppercase truncate">
+                                {callsign}
                             </span>
                         </div>
                     </div>
                 </div>
 
-                {/* Typography Block - Precision Aligned */}
-                <div className="mt-12 space-y-6">
-                    <div className="flex items-center gap-6">
-                        <span className="text-[10px] font-black uppercase tracking-[0.4em]" style={{ color: DESIGN_SYSTEM.COLORS.ZINC[400] }}>
-                            Origin
-                        </span>
-                        <div className="h-px w-10" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.ZINC[100] }} />
-                        <span className="text-xs font-black uppercase italic" style={{ color: DESIGN_SYSTEM.COLORS.ZINC[950] }}>
-                            {nationality}
-                        </span>
-                    </div>
-
-                    <div className="space-y-1">
-                        <h3 className="text-sm font-black uppercase text-zinc-500 group-hover:text-black transition-colors">
-                            {driver.first_name}
-                        </h3>
-                        <h2
-                            className="text-4xl md:text-5xl font-black uppercase italic tracking-tighter leading-[0.85] transition-colors group-hover:text-primary-600"
-                            style={{ color: DESIGN_SYSTEM.COLORS.ZINC[950] }}
-                        >
-                            {driver.last_name}
-                        </h2>
-                    </div>
-
-                    {/* Tactical Stats Matrix */}
-                    <div className="grid grid-cols-2 gap-x-12 gap-y-6 pt-10 border-t" style={{ borderColor: DESIGN_SYSTEM.COLORS.ZINC[100] }}>
-                        <DataPoint label="Competition" value={driver.basics?.competition_name || 'Global'} color={DESIGN_SYSTEM.COLORS.ZINC[700]} />
-                        <DataPoint label="Callsign" value={driver.basics?.callsign || 'UNIT'} icon={Zap} color={DESIGN_SYSTEM.COLORS.ZINC[700]} />
-                    </div>
-
-                    {/* Action Hub - Slips In on Hover */}
-                    <div className="absolute -bottom-8 -right-8 p-3 bg-zinc-950 translate-x-4 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-500 ease-out">
-                        <ArrowUpRight size={24} className="text-white" />
-                    </div>
-                </div>
+                <div className="h-1 bg-black-pure group-hover:bg-primary-500 transition-colors" />
             </Link>
-        </motion.div>
-    );
-}
-
-function DataPoint({ label, value, icon: Icon, color }: { label: string; value: string; icon?: React.ElementType; color?: string }) {
-    return (
-        <div className="flex flex-col gap-2 group/point">
-            <div className="flex items-center gap-3">
-                <span className="text-[9px] font-black text-zinc-400 uppercase tracking-widest">{label}</span>
-            </div>
-            <span
-                className="text-lg font-black uppercase italic tracking-tight transition-all duration-300 group-hover/point:text-primary-500 group-hover/point:translate-x-1"
-                style={{ color: color || DESIGN_SYSTEM.COLORS.ZINC[950] }}
-            >
-                {value}
-            </span>
         </div>
-    );
+    )
 }
