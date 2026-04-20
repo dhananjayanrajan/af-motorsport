@@ -1,11 +1,11 @@
-import type { Field } from 'payload'
-import { dictionary } from '../sources/dictionary'
+import { groupFactory } from '@/fields/factories/blueprint'
 import { dateFieldFactory } from '@/fields/factories/fields/dateField'
 import { pointFieldFactory } from '@/fields/factories/fields/pointField'
-import { groupFactory } from '@/fields/factories/blueprint'
-import { textFieldFactory } from '@/fields/factories/fields/textField'
 import { selectFieldFactory } from '@/fields/factories/fields/selectField'
 import { textareaFieldFactory } from '@/fields/factories/fields/textareaField'
+import { textFieldFactory } from '@/fields/factories/fields/textField'
+import type { Field } from 'payload'
+import { dictionary } from '../sources/dictionary'
 
 export const detailsFields: Field[] = [
   dateFieldFactory({
@@ -37,10 +37,39 @@ export const detailsFields: Field[] = [
     },
     dictionary.host,
     [
-      textFieldFactory({ name: 'name', dictionary: undefined, width: 2, minLength: 1, maxLength: 100 }),
-      selectFieldFactory({ name: 'type', options: [], dictionary: undefined, width: 2 }),
-      textareaFieldFactory({ name: 'criteria', dictionary: undefined, width: 3, minLength: 1, maxLength: 500, rows: 2 }),
-      textareaFieldFactory({ name: 'statement', dictionary: undefined, width: 3, minLength: 1, maxLength: 500, rows: 2 }),
+      textFieldFactory({
+        name: 'name',
+        dictionary: dictionary.tabs.details.expectations.name,
+        width: 2,
+        minLength: 1,
+        maxLength: 100,
+      }),
+      selectFieldFactory({
+        name: 'type',
+        dictionary: dictionary.tabs.details.expectations.type,
+        options: [
+          { label: 'Primary', value: 'primary' },
+          { label: 'Secondary', value: 'secondary' },
+          { label: 'Optional', value: 'optional' },
+        ],
+        width: 2,
+      }),
+      textareaFieldFactory({
+        name: 'criteria',
+        dictionary: dictionary.tabs.details.expectations.criteria,
+        width: 3,
+        minLength: 1,
+        maxLength: 500,
+        rows: 2,
+      }),
+      textareaFieldFactory({
+        name: 'statement',
+        dictionary: dictionary.tabs.details.expectations.statement,
+        width: 3,
+        minLength: 1,
+        maxLength: 500,
+        rows: 2,
+      }),
     ],
     true
   ),

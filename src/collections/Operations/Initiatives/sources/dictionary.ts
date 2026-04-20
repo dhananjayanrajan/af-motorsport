@@ -36,6 +36,25 @@ export const dictionary = {
       locations: {
         label: { en: 'Locations', es: 'Ubicaciones', pt: 'Localizações' },
       },
+      expectations: {
+        type: {
+          label: { en: 'Type', es: 'Tipo', pt: 'Tipo' },
+          options: {
+            primary: { en: 'Primary', es: 'Primario', pt: 'Primário' },
+            secondary: { en: 'Secondary', es: 'Secundario', pt: 'Secundário' },
+            optional: { en: 'Optional', es: 'Opcional', pt: 'Opcional' },
+          },
+        },
+        name: {
+          label: { en: 'Name', es: 'Nombre', pt: 'Nome' },
+        },
+        criteria: {
+          label: { en: 'Criteria', es: 'Criterios', pt: 'Critérios' },
+        },
+        statement: {
+          label: { en: 'Statement', es: 'Declaración', pt: 'Declaração' },
+        },
+      },
     },
     assets: {
       thumbnail: {

@@ -11,7 +11,7 @@ import { getPayload } from 'payload'
 
 export async function generateStaticParams() {
   try {
-    const payload = await getPayload({ config: configPromise })
+    const payload = await getPayload({ config: configPromise, disableDBConnect: true })
     const pages = await payload.find({
       collection: 'pages',
       draft: false,

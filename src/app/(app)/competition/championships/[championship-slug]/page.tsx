@@ -1,10 +1,8 @@
 import { notFound } from 'next/navigation'
-import LightboxGallery from '../../sections/Gallery'
 import ChampionshipDocuments from './sections/Documents'
 import ChampionshipHeader from './sections/Header'
 import ChampionshipHistory from './sections/History'
 import Podium from './sections/Podium'
-import Regulations from './sections/Regulations'
 import ChampionshipTimeline from './sections/Timeline'
 
 export const dynamic = 'force-dynamic'
@@ -47,11 +45,9 @@ export default async function ChampionshipPage({ params }: ChampionshipPageProps
         <main className="min-h-screen bg-white">
             <ChampionshipHeader championship={championship} />
             <Podium championship={championship} />
+            <ChampionshipTimeline championship={championship} />
             <ChampionshipHistory championship={championship} />
             <ChampionshipDocuments championship={championship} />
-            <ChampionshipTimeline championship={championship} />
-            <Regulations regulations={regulationsData.docs || []} />
-            <LightboxGallery items={championship.assets?.gallery || []} title="Gallery" label="Media Assets" />
         </main>
     )
 }

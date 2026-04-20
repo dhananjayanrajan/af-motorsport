@@ -4424,7 +4424,7 @@ export interface Initiative {
             /**
              * Select one or more options.
              */
-            type?: string | null;
+            type?: ('primary' | 'secondary' | 'optional') | null;
             /**
              * Enter text value.
              */

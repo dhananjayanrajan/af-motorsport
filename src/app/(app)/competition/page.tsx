@@ -1,4 +1,4 @@
-import { Circuit, Race, Season } from '@/payload-types'
+import { Race, Season } from '@/payload-types'
 import ChampionshipDirectory from './sections/Championships'
 import CircuitDirectory from './sections/Map'
 import SeasonDirectory from './sections/Seasons'
@@ -56,13 +56,6 @@ export default async function CompetitionPage({ searchParams }: CompetitionPageP
 
     const activeCircuits = filteredRaces
         .map((r: Race) => r.details.circuit)
-        .filter((circuit: Circuit | number | null | undefined) => {
-            if (!circuit) return false
-            return true
-        })
-        .filter((v: Circuit, i: number, a: Circuit[]) =>
-            v && a.findIndex((t) => t?.id === v.id) === i
-        )
 
     return (
         <main className="min-h-screen bg-white">
