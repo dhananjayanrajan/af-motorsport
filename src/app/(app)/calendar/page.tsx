@@ -39,9 +39,9 @@ export default async function CalendarPage() {
 
     return (
         <main className="min-h-screen">
+            <ChampionshipCalendar championships={data.championships} />
             <RaceCalendar races={data.races} />
             <CircuitCalendar circuits={data.circuits} />
-            <ChampionshipCalendar championships={data.championships} />
         </main>
     )
 }

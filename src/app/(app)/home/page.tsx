@@ -23,13 +23,15 @@ async function getHomeData() {
     slides,
     sessions,
     events,
-    seasons
+    seasons,
+    series
   ] = await Promise.all([
     safeFetch(`${url}/api/races?sort=-createdAt&limit=10`),
     safeFetch(`${url}/api/slides?limit=10`),
     safeFetch(`${url}/api/sessions?sort=-createdAt&limit=10`),
     safeFetch(`${url}/api/events?sort=-createdAt&limit=10`),
     safeFetch(`${url}/api/seasons?sort=-createdAt&limit=10`),
+    safeFetch(`${url}/api/series?limit=10`),
   ])
 
   const extractVideoUrls = (items: any[]) => {
@@ -51,15 +53,24 @@ async function getHomeData() {
 
   const allVideoUrls = extractVideoUrls([...races.docs, ...sessions.docs, ...events.docs])
 
+  const firstSeries = series.docs?.[0]
+  const firstSeason = seasons.docs?.[0]
+  const firstEvent = events.docs?.[0]
+  const firstSession = sessions.docs?.[0]
+
   return {
     races: races.docs || [],
     slides: slides.docs || [],
     videoUrls: allVideoUrls,
     navigation: {
-      series: 'global',
-      seasons: seasons.docs[0]?.slug || '2026',
-      events: events.docs[0]?.slug || 'grand-prix',
-      sessions: sessions.docs[0]?.slug || 'qualifying'
+      series: firstSeries?.slug || 'global',
+      seasons: firstSeason?.slug || '2026',
+      events: firstEvent?.slug || 'grand-prix',
+      sessions: firstSession?.slug || 'qualifying',
+      seriesName: firstSeries?.name || 'FORMULA 1',
+      seasonsName: firstSeason?.name || 'WORLD CHAMPIONSHIP',
+      eventsName: firstEvent?.name || 'MONACO GRAND PRIX',
+      sessionsName: firstSession?.name || 'QUALIFYING SESSION'
     }
   }
 }

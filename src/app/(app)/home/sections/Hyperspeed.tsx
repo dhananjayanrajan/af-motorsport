@@ -10,6 +10,10 @@ interface HyperspeedSectionProps {
         seasons: string
         events: string
         sessions: string
+        seriesName?: string
+        seasonsName?: string
+        eventsName?: string
+        sessionsName?: string
     }
 }
 
@@ -27,10 +31,10 @@ const HyperspeedSection: React.FC<HyperspeedSectionProps> = ({ navigation }) => 
     }, [])
 
     const routes = [
-        { id: '01', label: 'SERIES', slug: navigation.series, path: '/competition/series' },
-        { id: '02', label: 'SEASONS', slug: navigation.seasons, path: '/competition/seasons' },
-        { id: '03', label: 'EVENTS', slug: navigation.events, path: '/competition/events' },
-        { id: '04', label: 'SESSIONS', slug: navigation.sessions, path: '/competition/sessions' }
+        { id: '01', label: 'SERIES', slug: navigation.series, name: navigation.seriesName, path: '/competition/series' },
+        { id: '02', label: 'SEASONS', slug: navigation.seasons, name: navigation.seasonsName, path: '/competition/seasons' },
+        { id: '03', label: 'EVENTS', slug: navigation.events, name: navigation.eventsName, path: '/competition/events' },
+        { id: '04', label: 'SESSIONS', slug: navigation.sessions, name: navigation.sessionsName, path: '/competition/sessions' }
     ]
 
     return (
@@ -118,8 +122,8 @@ const HyperspeedSection: React.FC<HyperspeedSectionProps> = ({ navigation }) => 
 
                                 <div className="flex justify-between items-end">
                                     <div className="flex flex-col">
-                                        <span className="text-[8px] font-mono opacity-60 uppercase font-black">ACCESS</span>
-                                        <span className="text-[11px] font-mono font-black uppercase">UNRESTRICTED</span>
+                                        <span className="text-[8px] font-mono opacity-60 uppercase font-black">{route.label}</span>
+                                        <span className="text-[11px] font-mono font-black uppercase">{route.name || route.slug?.toUpperCase() || 'LOADING'}</span>
                                     </div>
                                     <div className="bg-black-pure text-white-pure px-2 py-0.5 group-hover:bg-white-pure group-hover:text-black-pure transition-colors">
                                         <span className="font-mono text-[9px] font-black">{route.id}</span>

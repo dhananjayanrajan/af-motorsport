@@ -37,13 +37,13 @@ const SectionCarousel: React.FC<SectionCarouselProps> = ({
     autoplayDelay = 4000,
     basePath = '',
     slidesPerView = 1,
-    distanceLabel = "",
-    statusLabel = "",
-    viewDetailsLabel = "",
-    lengthLabel = "",
-    turnsLabel = "",
-    exploreLabel = "",
-    noItemsLabel = ""
+    distanceLabel = "DIST",
+    statusLabel = "STAT",
+    viewDetailsLabel = "DETAILS",
+    lengthLabel = "LEN",
+    turnsLabel = "TURNS",
+    exploreLabel = "EXPLORE",
+    noItemsLabel = "NO DATA AVAILABLE"
 }) => {
     const [progress, setProgress] = useState(0)
 
@@ -59,112 +59,74 @@ const SectionCarousel: React.FC<SectionCarouselProps> = ({
     const [emblaRef, emblaApi] = useEmblaCarousel(
         {
             loop: true,
-            dragFree: false,
             align: 'start',
             skipSnaps: false,
-            duration: 30,
-            slidesToScroll: 1
+            duration: 25,
+            slidesToScroll: 1,
+            breakpoints: {
+                '(min-width: 768px)': { slidesToScroll: 1 },
+            }
         },
         [autoplay]
     )
 
-    const scrollPrev = useCallback(() => {
-        if (emblaApi) {
-            emblaApi.scrollPrev()
-        }
-    }, [emblaApi])
-
-    const scrollNext = useCallback(() => {
-        if (emblaApi) {
-            emblaApi.scrollNext()
-        }
-    }, [emblaApi])
+    const scrollPrev = useCallback(() => emblaApi && emblaApi.scrollPrev(), [emblaApi])
+    const scrollNext = useCallback(() => emblaApi && emblaApi.scrollNext(), [emblaApi])
 
     useEffect(() => {
         if (!emblaApi) return
-
         const onSelect = () => {
-            if (!emblaApi) return
-            const snapIndex = emblaApi.selectedScrollSnap()
-            const totalSlides = Math.ceil(items.length / slidesPerView)
-            const progressValue = ((snapIndex + 1) / totalSlides) * 100
+            const progressValue = ((emblaApi.selectedScrollSnap() + 1) / emblaApi.scrollSnapList().length) * 100
             setProgress(progressValue)
         }
-
         emblaApi.on('select', onSelect)
         emblaApi.on('reInit', onSelect)
         onSelect()
-
         return () => {
             emblaApi.off('select', onSelect)
             emblaApi.off('reInit', onSelect)
         }
-    }, [emblaApi, items.length, slidesPerView])
-
-    useEffect(() => {
-        const handleKeyDown = (e: KeyboardEvent) => {
-            if (!emblaApi) return
-            if (e.key === 'ArrowLeft') {
-                e.preventDefault()
-                scrollPrev()
-            } else if (e.key === 'ArrowRight') {
-                e.preventDefault()
-                scrollNext()
-            }
-        }
-        document.addEventListener('keydown', handleKeyDown)
-        return () => document.removeEventListener('keydown', handleKeyDown)
-    }, [emblaApi, scrollPrev, scrollNext])
-
-    useEffect(() => {
-        if (emblaApi) {
-            setTimeout(() => {
-                emblaApi.reInit()
-            }, 0)
-        }
-    }, [items, emblaApi, slidesPerView])
+    }, [emblaApi])
 
     const RaceCard = ({ race }: { race: Race }) => (
         <Link
             href={`${basePath}/competition/races/${race.slug}`}
-            className="group/race relative bg-white-pure flex flex-col h-full transition-colors duration-500"
+            className="group relative bg-white-pure flex flex-col h-full border-r border-black-pure overflow-hidden"
         >
-            <div className="p-4 md:p-6 border-b-2 border-black-pure flex justify-between items-start bg-white-100 group-hover/race:bg-primary-500 transition-colors">
-                <h3 className="text-base md:text-lg font-black text-black-pure uppercase tracking-tighter leading-none group-hover/race:text-black-pure line-clamp-1">
-                    {race.name}
-                </h3>
-                <div className="px-2 py-0.5 border-2 border-black-pure font-mono text-[10px] font-black uppercase bg-white-pure group-hover/race:bg-black-pure group-hover/race:text-white-pure shrink-0 ml-2 transition-colors">
-                    {race.basics?.identifiers?.code || ''}
-                </div>
-            </div>
-            <div className="relative h-40 md:h-48 w-full bg-white-200 overflow-hidden border-b-2 border-black-pure">
+            <div className="relative aspect-[4/3] w-full bg-zinc-100 overflow-hidden border-b border-black-pure">
                 <Image
-                    src={(race.assets?.cover as Media)?.url || `https://picsum.photos/seed/${race.id}/400/300`}
+                    src={(race.assets?.cover as Media)?.url || `https://picsum.photos/seed/${race.id}/600/450`}
                     alt={race.name}
                     fill
-                    sizes="(max-width: 768px) 100vw, 33vw"
-                    className="object-cover grayscale group-hover/race:grayscale-0 transition-all duration-700 group-hover/race:scale-110"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    className="object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105"
                 />
+                <div className="absolute top-4 left-4 z-10">
+                    <span className="font-mono text-[10px] font-black bg-black-pure text-white-pure px-2 py-1 uppercase tracking-tighter">
+                        {race.basics?.identifiers?.code || 'RC'}
+                    </span>
+                </div>
             </div>
-            <div className="p-4 md:p-6 flex-1 flex flex-col justify-between gap-4 bg-white-pure group-hover/race:bg-black-pure transition-colors">
-                <div className="grid grid-cols-2 gap-4">
-                    <div className="flex flex-col">
-                        <span className="font-mono text-[10px] text-black-pure/40 uppercase font-black group-hover/race:text-white-pure/40">{distanceLabel}</span>
-                        <span className="text-lg md:text-xl font-black text-black-pure group-hover/race:text-white-pure">
-                            {race.details.distance_km || '---'}<span className="text-xs ml-1">KM</span>
-                        </span>
-                    </div>
-                    <div className="flex flex-col">
-                        <span className="font-mono text-[10px] text-black-pure/40 uppercase font-black group-hover/race:text-white-pure/40">{statusLabel}</span>
-                        <span className="text-lg md:text-xl font-black text-black-pure group-hover/race:text-white-pure uppercase text-sm">
-                            {race.details.status || '---'}
-                        </span>
+            <div className="p-5 flex-1 flex flex-col justify-between bg-white-pure group-hover:bg-primary-500 transition-colors">
+                <div className="space-y-4">
+                    <h3 className="text-xl font-race font-black text-black-pure uppercase tracking-tighter leading-[0.9] group-hover:text-black-pure">
+                        {race.name}
+                    </h3>
+                    <div className="grid grid-cols-2 gap-px bg-black-pure/10">
+                        <div className="bg-transparent py-2">
+                            <p className="font-mono text-[8px] font-black text-black-pure/40 uppercase">{distanceLabel}</p>
+                            <p className="font-race font-black text-sm text-black-pure">{race.details.distance_km || '---'} KM</p>
+                        </div>
+                        <div className="bg-transparent py-2 pl-4 border-l border-black-pure/10">
+                            <p className="font-mono text-[8px] font-black text-black-pure/40 uppercase">{statusLabel}</p>
+                            <p className="font-race font-black text-sm text-black-pure uppercase">{race.details.status || '---'}</p>
+                        </div>
                     </div>
                 </div>
-                <div className="flex items-center justify-between pt-4 border-t-2 border-black-pure/10 group-hover/race:border-white-pure/20">
-                    <span className="font-mono text-[10px] font-black text-primary-500 group-hover/race:text-primary-400 uppercase">{viewDetailsLabel}</span>
-                    <div className="size-8 md:size-10 border-2 border-black-pure flex items-center justify-center group-hover/race:bg-white-pure group-hover/race:text-black-pure transition-colors">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                <div className="flex items-center justify-between pt-4 border-t border-black-pure/10 mt-4">
+                    <span className="font-mono text-[10px] font-black uppercase text-black-pure tracking-widest">{viewDetailsLabel}</span>
+                    <div className="size-8 border border-black-pure flex items-center justify-center group-hover:bg-black-pure group-hover:text-white-pure transition-colors">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
                             <path d="M7 17L17 7M17 7H7M17 7V17" stroke="currentColor" strokeWidth="4" />
                         </svg>
                     </div>
@@ -176,44 +138,42 @@ const SectionCarousel: React.FC<SectionCarouselProps> = ({
     const CircuitCard = ({ circuit }: { circuit: Circuit }) => (
         <Link
             href={`${basePath}/competition/circuits/${circuit.slug}`}
-            className="group/circuit relative bg-white-pure flex flex-col h-full transition-colors duration-500"
+            className="group relative bg-white-pure flex flex-col h-full border-r border-black-pure overflow-hidden"
         >
-            <div className="p-4 md:p-6 border-b-2 border-black-pure flex justify-between items-start bg-white-100 group-hover/circuit:bg-secondary-500 transition-colors">
-                <h3 className="text-base md:text-lg font-black text-black-pure uppercase tracking-tighter leading-none group-hover/circuit:text-black-pure line-clamp-1">
-                    {circuit.name}
-                </h3>
-                <div className="px-2 py-0.5 border-2 border-black-pure font-mono text-[10px] font-black uppercase bg-white-pure group-hover/circuit:bg-black-pure group-hover/circuit:text-white-pure shrink-0 ml-2 transition-colors">
-                    G{circuit.details?.fia_grade || ''}
-                </div>
-            </div>
-            <div className="relative h-40 md:h-48 w-full bg-white-200 overflow-hidden border-b-2 border-black-pure">
+            <div className="relative aspect-[4/3] w-full bg-zinc-100 overflow-hidden border-b border-black-pure">
                 <Image
-                    src={(circuit.assets?.cover as Media)?.url || `https://picsum.photos/seed/${circuit.id}/400/300`}
+                    src={(circuit.assets?.cover as Media)?.url || `https://picsum.photos/seed/${circuit.id}/600/450`}
                     alt={circuit.name}
                     fill
-                    sizes="(max-width: 768px) 100vw, 33vw"
-                    className="object-cover grayscale group-hover/circuit:grayscale-0 transition-all duration-700 group-hover/circuit:scale-110"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    className="object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105"
                 />
+                <div className="absolute top-4 left-4 z-10">
+                    <span className="font-mono text-[10px] font-black bg-secondary-500 text-black-pure px-2 py-1 uppercase tracking-tighter">
+                        G{circuit.details?.fia_grade || '1'}
+                    </span>
+                </div>
             </div>
-            <div className="p-4 md:p-6 flex-1 flex flex-col justify-between gap-4 bg-white-pure group-hover/circuit:bg-black-pure transition-colors">
-                <div className="grid grid-cols-2 gap-4">
-                    <div className="flex flex-col">
-                        <span className="font-mono text-[10px] text-black-pure/40 uppercase font-black group-hover/circuit:text-white-pure/40">{lengthLabel}</span>
-                        <span className="text-lg md:text-xl font-black text-black-pure group-hover/circuit:text-white-pure">
-                            {circuit.details?.length_km || '0.0'}<span className="text-xs ml-1">KM</span>
-                        </span>
-                    </div>
-                    <div className="flex flex-col">
-                        <span className="font-mono text-[10px] text-black-pure/40 uppercase font-black group-hover/circuit:text-white-pure/40">{turnsLabel}</span>
-                        <span className="text-lg md:text-xl font-black text-black-pure group-hover/circuit:text-white-pure">
-                            {circuit.details?.turns || '--'}
-                        </span>
+            <div className="p-5 flex-1 flex flex-col justify-between bg-white-pure group-hover:bg-secondary-500 transition-colors">
+                <div className="space-y-4">
+                    <h3 className="text-xl font-race font-black text-black-pure uppercase tracking-tighter leading-[0.9] group-hover:text-black-pure">
+                        {circuit.name}
+                    </h3>
+                    <div className="grid grid-cols-2 gap-px bg-black-pure/10">
+                        <div className="bg-transparent py-2">
+                            <p className="font-mono text-[8px] font-black text-black-pure/40 uppercase">{lengthLabel}</p>
+                            <p className="font-race font-black text-sm text-black-pure">{circuit.details?.length_km || '0.0'} KM</p>
+                        </div>
+                        <div className="bg-transparent py-2 pl-4 border-l border-black-pure/10">
+                            <p className="font-mono text-[8px] font-black text-black-pure/40 uppercase">{turnsLabel}</p>
+                            <p className="font-race font-black text-sm text-black-pure">{circuit.details?.turns || '--'}</p>
+                        </div>
                     </div>
                 </div>
-                <div className="flex items-center justify-between pt-4 border-t-2 border-black-pure/10 group-hover/circuit:border-white-pure/20">
-                    <span className="font-mono text-[10px] font-black text-secondary-500 group-hover/circuit:text-secondary-400 uppercase">{exploreLabel}</span>
-                    <div className="size-8 md:size-10 border-2 border-black-pure flex items-center justify-center group-hover/circuit:bg-white-pure group-hover/circuit:text-black-pure transition-colors">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                <div className="flex items-center justify-between pt-4 border-t border-black-pure/10 mt-4">
+                    <span className="font-mono text-[10px] font-black uppercase text-black-pure tracking-widest">{exploreLabel}</span>
+                    <div className="size-8 border border-black-pure flex items-center justify-center group-hover:bg-black-pure group-hover:text-white-pure transition-colors">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
                             <path d="M7 17L17 7M17 7H7M17 7V17" stroke="currentColor" strokeWidth="4" />
                         </svg>
                     </div>
@@ -222,177 +182,67 @@ const SectionCarousel: React.FC<SectionCarouselProps> = ({
         </Link>
     )
 
-    const CompactCard = ({ item }: { item: CarouselItem }) => (
-        <div className="group/compact relative bg-black-pure flex flex-col h-full">
-            <div className="relative flex-1 overflow-hidden">
+    const renderSlideContent = (item: CarouselItem) => {
+        if (item.type === 'race' && item.data) return <RaceCard race={item.data as Race} />
+        if (item.type === 'circuit' && item.data) return <CircuitCard circuit={item.data as Circuit} />
+        return (
+            <div className="relative aspect-[4/3] md:h-full w-full border-r border-black-pure overflow-hidden">
                 <Image
-                    src={item.media?.url || `https://picsum.photos/seed/${item.id}/400/400`}
+                    src={item.media?.url || `https://picsum.photos/seed/${item.id}/800/600`}
                     alt={item.media?.alt || ''}
                     fill
-                    sizes="(max-width: 768px) 100vw, 33vw"
-                    className="object-cover group-hover/compact:scale-105 transition-transform duration-500"
+                    className="object-cover"
                 />
             </div>
-            <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black-pure to-transparent">
-                <span className="font-mono text-xs font-black text-white-pure uppercase">
-                    {item.data && 'name' in item.data ? item.data.name : ''}
-                </span>
-            </div>
-        </div>
-    )
-
-    const DefaultCard = ({ item }: { item: CarouselItem }) => (
-        <div className="relative w-full h-full bg-white-200 overflow-hidden">
-            <Image
-                src={item.media?.url || `https://picsum.photos/seed/${item.id}/800/600`}
-                alt={item.media?.alt || ''}
-                fill
-                sizes="(max-width: 768px) 100vw, 33vw"
-                className="object-cover"
-                priority={item.id === items[0]?.id}
-            />
-        </div>
-    )
-
-    const renderSlideContent = (item: CarouselItem) => {
-        if (item.type === 'race' && item.data) {
-            return <RaceCard race={item.data as Race} />
-        }
-        if (item.type === 'circuit' && item.data) {
-            return <CircuitCard circuit={item.data as Circuit} />
-        }
-        if (cardVariant === 'compact') {
-            return <CompactCard item={item} />
-        }
-        return <DefaultCard item={item} />
+        )
     }
 
     if (items.length === 0) {
         return (
-            <div className="relative w-full h-full min-h-[400px] bg-white-200 flex items-center justify-center">
-                <span className="font-mono text-sm text-black-pure/40 uppercase">{noItemsLabel}</span>
-            </div>
-        )
-    }
-
-    const slideGroups: CarouselItem[][] = []
-    for (let i = 0; i < items.length; i += slidesPerView) {
-        slideGroups.push(items.slice(i, i + slidesPerView))
-    }
-
-    if (variant === 2) {
-        return (
-            <div className="relative w-full h-full min-h-[500px] bg-black-pure group overflow-hidden">
-                <div className="overflow-hidden h-full" ref={emblaRef}>
-                    <div className="flex h-full">
-                        {slideGroups.map((group, groupIndex) => (
-                            <div key={groupIndex} className="flex-[0_0_100%] min-w-0 h-full">
-                                <div className={`grid ${slidesPerView === 1 ? 'grid-cols-1' : slidesPerView === 2 ? 'grid-cols-2' : 'grid-cols-3'} h-full divide-x-2 divide-black-pure`}>
-                                    {group.map((item) => (
-                                        <div key={item.id} className="h-full">
-                                            {renderSlideContent(item)}
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-                <div className="absolute bottom-0 left-0 right-0 h-1 bg-white-pure/20">
-                    <div
-                        className="h-full bg-primary-500 transition-all duration-300 ease-linear"
-                        style={{ width: `${progress}%` }}
-                    />
-                </div>
-                <button
-                    onClick={scrollPrev}
-                    className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white-pure text-black-pure font-black hover:bg-primary-500 transition-colors opacity-0 group-hover:opacity-100 z-10"
-                    aria-label="Previous slide"
-                >
-                    ←
-                </button>
-                <button
-                    onClick={scrollNext}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white-pure text-black-pure font-black hover:bg-primary-500 transition-colors opacity-0 group-hover:opacity-100 z-10"
-                    aria-label="Next slide"
-                >
-                    →
-                </button>
-            </div>
-        )
-    }
-
-    if (variant === 3) {
-        return (
-            <div className="relative w-full h-full min-h-[400px] p-2 bg-white-pure group">
-                <div className="overflow-hidden h-full" ref={emblaRef}>
-                    <div className="flex h-full">
-                        {slideGroups.map((group, groupIndex) => (
-                            <div key={groupIndex} className="flex-[0_0_100%] min-w-0 h-full">
-                                <div className={`grid ${slidesPerView === 1 ? 'grid-cols-1' : slidesPerView === 2 ? 'grid-cols-2' : 'grid-cols-3'} h-full gap-2`}>
-                                    {group.map((item) => (
-                                        <div key={item.id} className="h-full">
-                                            {renderSlideContent(item)}
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-                <button
-                    onClick={scrollPrev}
-                    className="absolute top-4 right-16 w-8 h-8 bg-black-pure text-white-pure flex items-center justify-center text-xs hover:bg-primary-500 transition-colors z-10"
-                    aria-label="Previous slide"
-                >
-                    ↑
-                </button>
-                <button
-                    onClick={scrollNext}
-                    className="absolute top-4 right-4 w-8 h-8 bg-black-pure text-white-pure flex items-center justify-center text-xs hover:bg-primary-500 transition-colors z-10"
-                    aria-label="Next slide"
-                >
-                    ↓
-                </button>
+            <div className="w-full h-96 flex items-center justify-center bg-zinc-50 border border-black-pure border-dashed">
+                <span className="font-mono text-[10px] font-black text-black-pure/20 uppercase tracking-[0.4em]">{noItemsLabel}</span>
             </div>
         )
     }
 
     return (
-        <div className="relative w-full h-full min-h-[400px] bg-white-200 overflow-hidden group">
-            <div className="overflow-hidden h-full" ref={emblaRef}>
-                <div className="flex h-full">
-                    {slideGroups.map((group, groupIndex) => (
-                        <div key={groupIndex} className="flex-[0_0_100%] min-w-0 h-full">
-                            <div className={`grid ${slidesPerView === 1 ? 'grid-cols-1' : slidesPerView === 2 ? 'grid-cols-2' : 'grid-cols-3'} h-full divide-x-2 divide-black-pure`}>
-                                {group.map((item) => (
-                                    <div key={item.id} className="h-full">
-                                        {renderSlideContent(item)}
-                                    </div>
-                                ))}
-                            </div>
+        <div className="relative w-full h-full bg-white-pure group overflow-hidden">
+            <div className="overflow-hidden" ref={emblaRef}>
+                <div className="flex">
+                    {items.map((item) => (
+                        <div
+                            key={item.id}
+                            className={`min-w-0 flex-shrink-0 flex-grow-0 
+                basis-full md:basis-1/2 lg:basis-1/3 xl:basis-1/${slidesPerView}
+              `}
+                        >
+                            {renderSlideContent(item)}
                         </div>
                     ))}
                 </div>
             </div>
-            <div className="absolute top-4 right-4 flex gap-1 z-10">
-                <div className="w-4 h-4 bg-secondary-500" />
-                <div className="w-4 h-4 bg-primary-500" />
+
+            <div className="absolute bottom-0 left-0 right-0 h-1 bg-black-pure/5 z-20">
+                <div
+                    className="h-full bg-primary-500 transition-all duration-300 ease-out"
+                    style={{ width: `${progress}%` }}
+                />
             </div>
-            <button
-                onClick={scrollPrev}
-                className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-black-pure text-white-pure flex items-center justify-center hover:bg-secondary-500 transition-colors opacity-0 group-hover:opacity-100 z-10"
-                aria-label="Previous slide"
-            >
-                ←
-            </button>
-            <button
-                onClick={scrollNext}
-                className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-black-pure text-white-pure flex items-center justify-center hover:bg-primary-500 transition-colors opacity-0 group-hover:opacity-100 z-10"
-                aria-label="Next slide"
-            >
-                →
-            </button>
+
+            <div className="absolute top-1/2 -translate-y-1/2 left-0 right-0 flex justify-between px-4 pointer-events-none z-30 opacity-0 group-hover:opacity-100 transition-opacity">
+                <button
+                    onClick={scrollPrev}
+                    className="size-12 bg-black-pure text-white-pure flex items-center justify-center hover:bg-primary-500 hover:text-black-pure transition-all pointer-events-auto shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] active:translate-y-0.5"
+                >
+                    <span className="text-xl">←</span>
+                </button>
+                <button
+                    onClick={scrollNext}
+                    className="size-12 bg-black-pure text-white-pure flex items-center justify-center hover:bg-primary-500 hover:text-black-pure transition-all pointer-events-auto shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] active:translate-y-0.5"
+                >
+                    <span className="text-xl">→</span>
+                </button>
+            </div>
         </div>
     )
 }
