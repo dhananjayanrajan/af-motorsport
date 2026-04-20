@@ -2,7 +2,7 @@
 
 import { Championship } from '@/payload-types'
 import { useRouter } from 'next/navigation'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 interface SectionFooterProps {
     variant?: 1 | 2 | 3 | 4 | 5
@@ -36,6 +36,15 @@ const SectionFooter: React.FC<SectionFooterProps> = ({
     activeYearLabel = ""
 }) => {
     const router = useRouter()
+    const [barHeights, setBarHeights] = useState<number[]>([])
+    const [mounted, setMounted] = useState(false)
+
+    useEffect(() => {
+        setMounted(true)
+        const heights = Array.from({ length: 12 }, () => Math.floor(Math.random() * 70) + 30)
+        setBarHeights(heights)
+    }, [])
+
     const quickLinks = championships.slice(0, 3)
     const totalCount = championships.length
 
@@ -63,8 +72,11 @@ const SectionFooter: React.FC<SectionFooterProps> = ({
                         </div>
                     </div>
                     <div className="hidden md:flex gap-1 h-full py-6">
-                        {[...Array(12)].map((_, i) => (
-                            <div key={i} className="w-1 bg-black-pure/10" style={{ height: `${Math.random() * 100}%` }} />
+                        {mounted && barHeights.map((height, i) => (
+                            <div key={i} className="w-1 bg-black-pure/10" style={{ height: `${height}%` }} />
+                        ))}
+                        {!mounted && [...Array(12)].map((_, i) => (
+                            <div key={i} className="w-1 bg-black-pure/10" style={{ height: '50%' }} />
                         ))}
                     </div>
                 </div>

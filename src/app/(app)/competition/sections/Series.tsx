@@ -6,7 +6,7 @@ import Autoplay from 'embla-carousel-autoplay'
 import useEmblaCarousel from 'embla-carousel-react'
 import Image from 'next/image'
 import Link from 'next/link'
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 interface SeriesDirectoryProps {
     series: Series[]
@@ -16,6 +16,7 @@ const SeriesDirectory: React.FC<SeriesDirectoryProps> = ({ series = [] }) => {
     const [activeIndex, setActiveIndex] = useState(0)
     const [progress, setProgress] = useState<number[]>([])
     const [isPaused, setIsPaused] = useState(false)
+    const autoplayRef = useRef<any>(null)
 
     const activeItem = series[activeIndex]
 
@@ -27,6 +28,7 @@ const SeriesDirectory: React.FC<SeriesDirectoryProps> = ({ series = [] }) => {
     }), [])
 
     const autoplay = useMemo(() => Autoplay(autoplayOptions), [autoplayOptions])
+    autoplayRef.current = autoplay
 
     const [emblaRef, emblaApi] = useEmblaCarousel(
         {
@@ -57,8 +59,16 @@ const SeriesDirectory: React.FC<SeriesDirectoryProps> = ({ series = [] }) => {
             setProgress(newProgress)
         }
 
-        const onPointerDown = () => autoplay.stop()
-        const onPointerUp = () => autoplay.play()
+        const onPointerDown = () => {
+            if (autoplayRef.current && autoplayRef.current.stop) {
+                autoplayRef.current.stop()
+            }
+        }
+        const onPointerUp = () => {
+            if (autoplayRef.current && autoplayRef.current.play) {
+                autoplayRef.current.play()
+            }
+        }
 
         emblaApi.on('select', onSelect)
         emblaApi.on('pointerDown', onPointerDown)
@@ -69,8 +79,11 @@ const SeriesDirectory: React.FC<SeriesDirectoryProps> = ({ series = [] }) => {
             emblaApi.off('select', onSelect)
             emblaApi.off('pointerDown', onPointerDown)
             emblaApi.off('pointerUp', onPointerUp)
+            if (autoplayRef.current && autoplayRef.current.destroy) {
+                autoplayRef.current.destroy()
+            }
         }
-    }, [emblaApi, series.length, autoplay])
+    }, [emblaApi, series.length])
 
     useEffect(() => {
         if (!emblaApi) return
@@ -112,15 +125,19 @@ const SeriesDirectory: React.FC<SeriesDirectoryProps> = ({ series = [] }) => {
 
     const extendedSeries = [...series, ...series, ...series, ...series, ...series]
 
-    const handleMouseEnter = () => {
+    const handleMouseEnter = useCallback(() => {
         setIsPaused(true)
-        autoplay.stop()
-    }
+        if (autoplayRef.current && autoplayRef.current.stop) {
+            autoplayRef.current.stop()
+        }
+    }, [])
 
-    const handleMouseLeave = () => {
+    const handleMouseLeave = useCallback(() => {
         setIsPaused(false)
-        autoplay.play()
-    }
+        if (autoplayRef.current && autoplayRef.current.play) {
+            autoplayRef.current.play()
+        }
+    }, [])
 
     const totalSeries = series.length
     const activeSeries = series.filter(s => s.details?.status === 'Active').length
@@ -168,12 +185,12 @@ const SeriesDirectory: React.FC<SeriesDirectoryProps> = ({ series = [] }) => {
 
                             <div className="space-y-2.5 min-w-0">
                                 <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black text-black-pure uppercase tracking-tighter leading-[0.75] transition-all duration-700 ease-in-out break-words">
-                                    {activeItem?.basics?.identifiers?.abbreviation || activeItem?.name.slice(0, 3)}
+                                    {activeItem?.basics?.identifiers?.abbreviation || activeItem?.name?.slice(0, 3) || 'SRC'}
                                 </h1>
                                 <div className="flex flex-col lg:flex-row lg:items-end justify-between border-t-4 border-black-pure pt-2.5 md:pt-4 gap-2.5 md:gap-4">
                                     <div className="max-w-xl min-w-0">
                                         <h2 className="text-xs sm:text-sm md:text-lg lg:text-xl font-black uppercase text-black-pure leading-none mb-1 md:mb-2 break-words">
-                                            {activeItem?.name}
+                                            {activeItem?.name || 'Racing Series'}
                                         </h2>
                                         <p className="font-mono text-[9px] md:text-[10px] font-bold text-black-pure uppercase leading-snug line-clamp-3 md:line-clamp-none break-words">
                                             {activeItem?.basics?.tagline || activeItem?.basics?.description || "Browse the full specifications and requirements for this racing category."}
@@ -190,7 +207,7 @@ const SeriesDirectory: React.FC<SeriesDirectoryProps> = ({ series = [] }) => {
                         <div className="w-[35%] hidden lg:flex bg-white-pure flex-col">
                             <div className="flex-1 relative group overflow-hidden bg-black-pure">
                                 <Image
-                                    src={(activeItem?.assets?.cover as Media)?.url || `https://picsum.photos/seed/${activeItem?.id}/1200/800`}
+                                    src={(activeItem?.assets?.cover as Media)?.url || `https://picsum.photos/seed/${activeItem?.id || 'default'}/1200/800`}
                                     alt={activeItem?.name || "Racing Series"}
                                     fill
                                     sizes="33vw"
@@ -250,7 +267,7 @@ const SeriesDirectory: React.FC<SeriesDirectoryProps> = ({ series = [] }) => {
                                                     <div className="flex flex-col min-w-0">
                                                         <span className="font-mono text-[6px] md:text-[8px] font-black text-black-pure/40 uppercase mb-0.5">Category</span>
                                                         <h3 className="text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl font-black uppercase tracking-tighter text-black-pure leading-none text-left break-words">
-                                                            {item.basics?.identifiers?.abbreviation || item.name.split(' ')[0]}
+                                                            {item.basics?.identifiers?.abbreviation || (item.name?.split(' ')[0]) || 'SRC'}
                                                         </h3>
                                                     </div>
                                                     <div className="relative h-0.5 md:h-1 w-full bg-black-pure/20 overflow-hidden">

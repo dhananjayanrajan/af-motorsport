@@ -1,5 +1,6 @@
 import { Circuit, Race, Season } from '@/payload-types'
 import ChampionshipDirectory from './sections/Championships'
+import CircuitDirectory from './sections/Map'
 import SeasonDirectory from './sections/Seasons'
 import SeriesDirectory from './sections/Series'
 
@@ -68,6 +69,7 @@ export default async function CompetitionPage({ searchParams }: CompetitionPageP
             <ChampionshipDirectory championships={allChampionships} />
             <SeriesDirectory series={series} />
             <SeasonDirectory seasons={seasons} />
+            <CircuitDirectory circuits={activeCircuits} />
         </main>
     )
 }
