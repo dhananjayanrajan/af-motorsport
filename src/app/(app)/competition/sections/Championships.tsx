@@ -69,19 +69,19 @@ const ChampionshipDirectory: React.FC<ChampionshipDirectoryProps> = ({ champions
             <div className="flex-1 grid grid-cols-12 w-full">
                 <div className="col-span-12 lg:col-span-6 xl:col-span-4 flex flex-col border-b-2 lg:border-b-0 lg:border-r-2 border-black-pure bg-white-100 z-20">
                     <div className="flex-1 flex flex-col overflow-y-auto lg:overflow-visible">
-                        <div className="bg-black-pure p-6 md:p-8 grid grid-cols-2 gap-px shrink-0">
-                            <div className="flex flex-col border-r border-white/10 pr-4">
-                                <span className="text-primary-500 font-mono text-[10px] font-black tracking-widest uppercase mb-2">TOTAL</span>
-                                <span className="text-white-pure text-4xl md:text-5xl font-black leading-none italic">{championships.length}</span>
+                        <div className="bg-black-pure p-4 md:p-5 grid grid-cols-2 gap-px shrink-0">
+                            <div className="flex flex-col border-r border-white/10 pr-3">
+                                <span className="text-primary-500 font-mono text-[7px] font-black tracking-widest uppercase mb-1">TOTAL</span>
+                                <span className="text-white-pure text-2xl md:text-3xl font-black leading-none italic">{championships.length}</span>
                             </div>
-                            <div className="flex flex-col pl-6">
-                                <span className="text-secondary-500 font-mono text-[10px] font-black tracking-widest uppercase mb-2">SEASON</span>
-                                <span className="text-white-pure text-4xl md:text-5xl font-black leading-none italic">{new Date().getFullYear().toString()}</span>
+                            <div className="flex flex-col pl-4">
+                                <span className="text-secondary-500 font-mono text-[7px] font-black tracking-widest uppercase mb-1">SEASON</span>
+                                <span className="text-white-pure text-2xl md:text-3xl font-black leading-none italic">{new Date().getFullYear().toString()}</span>
                             </div>
                         </div>
 
-                        <div className="p-8 md:p-12 flex-1 flex flex-col justify-between gap-12">
-                            <div className="space-y-8">
+                        <div className="p-5 md:p-8 flex-1 flex flex-col justify-between gap-6">
+                            <div className="space-y-5">
                                 <SectionTitle
                                     variant={1}
                                     label="CHAMPIONSHIP"
@@ -113,7 +113,7 @@ const ChampionshipDirectory: React.FC<ChampionshipDirectoryProps> = ({ champions
                     </div>
                 </div>
 
-                <div className="col-span-12 lg:col-span-6 xl:col-span-8 flex flex-col bg-white-50 min-h-[600px] lg:min-h-0">
+                <div className="col-span-12 lg:col-span-6 xl:col-span-8 flex flex-col bg-white-50 min-h-[450px] lg:min-h-0">
                     <div className="shrink-0 border-b-2 border-black-pure">
                         <SectionScroller
                             items={marqueeNames.length > 0 ? marqueeNames : ["CHAMPIONSHIP STANDINGS", "OFFICIAL RANKINGS"]}
@@ -125,7 +125,7 @@ const ChampionshipDirectory: React.FC<ChampionshipDirectoryProps> = ({ champions
                     </div>
 
                     <div className="flex-1 overflow-y-auto custom-scrollbar bg-black-pure/5">
-                        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 auto-rows-[320px] lg:auto-rows-fr h-full">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 auto-rows-[240px] lg:auto-rows-fr h-full">
                             {championships.map((championship) => {
                                 const coverMedia = championship.assets?.cover
                                 const coverUrl = coverMedia && typeof coverMedia !== 'number' ? coverMedia.url : null

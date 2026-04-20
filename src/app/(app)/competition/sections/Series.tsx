@@ -122,24 +122,36 @@ const SeriesDirectory: React.FC<SeriesDirectoryProps> = ({ series = [] }) => {
         autoplay.play()
     }
 
+    const totalSeries = series.length
+    const activeSeries = series.filter(s => s.details?.status === 'Active').length
+    const upcomingSeries = series.filter(s => s.details?.status === 'Upcoming').length
+    const defunctSeries = series.filter(s => s.details?.status === 'Defunct').length
+
+    const quickStats = [
+        { label: 'TOTAL', value: totalSeries, color: 'bg-primary-500' },
+        { label: 'ACTIVE', value: activeSeries, color: 'bg-secondary-500' },
+        { label: 'UPCOMING', value: upcomingSeries, color: 'bg-tertiary-500' },
+        { label: 'DEFUNCT', value: defunctSeries, color: 'bg-black-pure' },
+    ]
+
     return (
         <section className="relative w-full min-h-screen bg-white-pure flex flex-col border-b-2 border-black-pure overflow-hidden">
             <div className="flex-1 flex flex-col md:flex-row divide-y-2 md:divide-y-0 md:divide-x-2 divide-black-pure relative w-full overflow-hidden">
 
-                <div className="w-full md:w-[18%] lg:w-[15%] bg-black-pure p-6 md:p-8 flex flex-row md:flex-col justify-between items-center md:items-stretch border-b-2 md:border-b-0 shrink-0">
-                    <div className="flex items-center gap-6 md:flex-col md:items-start md:gap-0 md:space-y-12">
-                        <div className="size-16 md:size-24 bg-primary-500 flex items-center justify-center transition-transform hover:rotate-12 duration-700 shrink-0">
-                            <span className="text-black-pure font-black text-2xl md:text-4xl tracking-tighter">S</span>
+                <div className="w-full md:w-[18%] lg:w-[15%] bg-black-pure p-4 md:p-5 flex flex-row md:flex-col justify-between items-center md:items-stretch border-b-2 md:border-b-0 shrink-0">
+                    <div className="flex items-center gap-4 md:flex-col md:items-start md:gap-0 md:space-y-8">
+                        <div className="size-10 md:size-16 bg-primary-500 flex items-center justify-center transition-transform hover:rotate-12 duration-700 shrink-0">
+                            <span className="text-black-pure font-black text-lg md:text-2xl tracking-tighter">S</span>
                         </div>
                         <div className="md:[writing-mode:vertical-lr] md:rotate-180">
-                            <h2 className="text-white-pure font-black text-3xl md:text-6xl lg:text-8xl uppercase tracking-tighter leading-none">
+                            <h2 className="text-white-pure font-black text-xl md:text-4xl lg:text-6xl uppercase tracking-tighter leading-none">
                                 SERIES
                             </h2>
                         </div>
                     </div>
-                    <div className="space-y-2 md:space-y-6 text-right md:text-left">
-                        <div className="h-1 md:h-2 w-16 md:w-full bg-secondary-500 ml-auto md:ml-0" />
-                        <div className="font-mono text-[8px] md:text-[10px] font-black text-white-pure uppercase leading-tight tracking-[0.2em]">
+                    <div className="space-y-1 md:space-y-3 text-right md:text-left">
+                        <div className="h-0.5 md:h-0.5 w-10 md:w-full bg-secondary-500 ml-auto md:ml-0" />
+                        <div className="font-mono text-[6px] md:text-[8px] font-black text-white-pure uppercase leading-tight tracking-[0.2em]">
                             <span className="hidden md:block">GLOBAL REGISTRY<br />ESTABLISHED 2026<br /></span>
                             INDEX: {activeItem?.basics?.identifiers?.code || '001'}
                         </div>
@@ -148,28 +160,28 @@ const SeriesDirectory: React.FC<SeriesDirectoryProps> = ({ series = [] }) => {
 
                 <div className="flex-1 flex flex-col bg-white-pure relative overflow-hidden min-w-0">
                     <div className="h-[55%] md:h-[60%] flex border-b-2 border-black-pure relative overflow-hidden">
-                        <div className="flex-1 p-6 md:p-8 lg:p-12 flex flex-col justify-between relative z-10 min-w-0">
-                            <div className="flex flex-col gap-2">
-                                <div className="w-24 md:w-32 h-5 md:h-6 bg-primary-500" />
-                                <div className="w-16 md:w-20 h-5 md:h-6 bg-secondary-500" />
+                        <div className="flex-1 p-4 md:p-6 lg:p-8 flex flex-col justify-between relative z-10 min-w-0">
+                            <div className="flex flex-col gap-1">
+                                <div className="w-16 md:w-20 h-3 md:h-4 bg-primary-500" />
+                                <div className="w-10 md:w-12 h-3 md:h-4 bg-secondary-500" />
                             </div>
 
-                            <div className="space-y-4 min-w-0">
-                                <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black text-black-pure uppercase tracking-tighter leading-[0.75] transition-all duration-700 ease-in-out break-words">
+                            <div className="space-y-2.5 min-w-0">
+                                <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black text-black-pure uppercase tracking-tighter leading-[0.75] transition-all duration-700 ease-in-out break-words">
                                     {activeItem?.basics?.identifiers?.abbreviation || activeItem?.name.slice(0, 3)}
                                 </h1>
-                                <div className="flex flex-col lg:flex-row lg:items-end justify-between border-t-4 border-black-pure pt-4 md:pt-6 gap-4 md:gap-6">
+                                <div className="flex flex-col lg:flex-row lg:items-end justify-between border-t-4 border-black-pure pt-2.5 md:pt-4 gap-2.5 md:gap-4">
                                     <div className="max-w-xl min-w-0">
-                                        <h2 className="text-base sm:text-lg md:text-2xl lg:text-3xl font-black uppercase text-black-pure leading-none mb-2 md:mb-4 break-words">
+                                        <h2 className="text-xs sm:text-sm md:text-lg lg:text-xl font-black uppercase text-black-pure leading-none mb-1 md:mb-2 break-words">
                                             {activeItem?.name}
                                         </h2>
-                                        <p className="font-mono text-xs md:text-sm font-bold text-black-pure uppercase leading-snug line-clamp-3 md:line-clamp-none break-words">
+                                        <p className="font-mono text-[9px] md:text-[10px] font-bold text-black-pure uppercase leading-snug line-clamp-3 md:line-clamp-none break-words">
                                             {activeItem?.basics?.tagline || activeItem?.basics?.description || "Browse the full specifications and requirements for this racing category."}
                                         </p>
                                     </div>
-                                    <div className="flex flex-row lg:flex-col items-center lg:items-end justify-between lg:justify-start gap-4 shrink-0">
-                                        <span className="font-mono text-xs font-black text-primary-500 uppercase tracking-widest">Status</span>
-                                        <span className="text-lg sm:text-xl md:text-2xl font-black text-black-pure uppercase">{activeItem?.details?.status || 'Active'}</span>
+                                    <div className="flex flex-row lg:flex-col items-center lg:items-end justify-between lg:justify-start gap-2.5 shrink-0">
+                                        <span className="font-mono text-[9px] font-black text-primary-500 uppercase tracking-widest">Status</span>
+                                        <span className="text-sm sm:text-base md:text-lg font-black text-black-pure uppercase">{activeItem?.details?.status || 'Active'}</span>
                                     </div>
                                 </div>
                             </div>
@@ -188,20 +200,20 @@ const SeriesDirectory: React.FC<SeriesDirectoryProps> = ({ series = [] }) => {
                             </div>
                             <Link
                                 href={`/competition/series/${activeItem?.slug}`}
-                                className="h-32 lg:h-48 bg-black-pure flex flex-row lg:flex-col items-center justify-center gap-4 lg:gap-0 group hover:bg-secondary-500 transition-colors duration-500"
+                                className="h-24 lg:h-32 bg-black-pure flex flex-row lg:flex-col items-center justify-center gap-2.5 lg:gap-0 group hover:bg-secondary-500 transition-colors duration-500"
                             >
-                                <span className="text-white-pure font-black text-4xl lg:text-5xl group-hover:text-black-pure transition-transform group-hover:-translate-y-1">→</span>
-                                <span className="text-white-pure font-mono text-xs lg:text-[10px] font-black group-hover:text-black-pure uppercase tracking-widest">View Series</span>
+                                <span className="text-white-pure font-black text-2xl lg:text-3xl group-hover:text-black-pure transition-transform group-hover:-translate-y-1">→</span>
+                                <span className="text-white-pure font-mono text-[8px] lg:text-[7px] font-black group-hover:text-black-pure uppercase tracking-widest">View Series</span>
                             </Link>
                         </div>
                     </div>
 
                     <Link
                         href={`/competition/series/${activeItem?.slug}`}
-                        className="lg:hidden w-full h-20 bg-primary-500 flex items-center justify-center gap-4 hover:bg-secondary-500 transition-colors duration-500 shrink-0"
+                        className="lg:hidden w-full h-14 bg-primary-500 flex items-center justify-center gap-2.5 hover:bg-secondary-500 transition-colors duration-500 shrink-0"
                     >
-                        <span className="text-black-pure font-black text-2xl">→</span>
-                        <span className="text-black-pure font-mono text-sm font-black uppercase tracking-widest truncate px-4">View Series Details</span>
+                        <span className="text-black-pure font-black text-lg">→</span>
+                        <span className="text-black-pure font-mono text-[10px] font-black uppercase tracking-widest truncate px-3">View Series Details</span>
                     </Link>
 
                     <div
@@ -224,24 +236,24 @@ const SeriesDirectory: React.FC<SeriesDirectoryProps> = ({ series = [] }) => {
                                                     emblaApi?.scrollTo(idx)
                                                 }}
                                                 className={`
-                                                    w-full h-full flex flex-col justify-between p-4 md:p-6 lg:p-8 transition-all duration-500 ease-in-out
+                                                    w-full h-full flex flex-col justify-between p-3 md:p-4 lg:p-5 transition-all duration-500 ease-in-out
                                                     ${activeIndex === originalIndex ? 'bg-secondary-500' : 'bg-white-pure hover:bg-primary-500'}
                                                 `}
                                             >
                                                 <div className="flex justify-between w-full items-start">
-                                                    <span className="font-mono text-base md:text-xl font-black text-black-pure">
+                                                    <span className="font-mono text-xs md:text-base font-black text-black-pure">
                                                         {(originalIndex + 1).toString().padStart(2, '0')}
                                                     </span>
-                                                    <div className={`size-6 md:size-8 border-4 border-black-pure transition-all duration-500 shrink-0 ${activeIndex === originalIndex ? 'bg-black-pure scale-110' : 'bg-transparent'}`} />
+                                                    <div className={`size-4 md:size-5 border-2 border-black-pure transition-all duration-500 shrink-0 ${activeIndex === originalIndex ? 'bg-black-pure scale-110' : 'bg-transparent'}`} />
                                                 </div>
-                                                <div className="space-y-4 md:space-y-6 w-full min-w-0">
+                                                <div className="space-y-2.5 md:space-y-4 w-full min-w-0">
                                                     <div className="flex flex-col min-w-0">
-                                                        <span className="font-mono text-[8px] md:text-[10px] font-black text-black-pure/40 uppercase mb-1">Category</span>
-                                                        <h3 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-black uppercase tracking-tighter text-black-pure leading-none text-left break-words">
+                                                        <span className="font-mono text-[6px] md:text-[8px] font-black text-black-pure/40 uppercase mb-0.5">Category</span>
+                                                        <h3 className="text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl font-black uppercase tracking-tighter text-black-pure leading-none text-left break-words">
                                                             {item.basics?.identifiers?.abbreviation || item.name.split(' ')[0]}
                                                         </h3>
                                                     </div>
-                                                    <div className="relative h-1.5 md:h-2 w-full bg-black-pure/20 overflow-hidden">
+                                                    <div className="relative h-0.5 md:h-1 w-full bg-black-pure/20 overflow-hidden">
                                                         <div
                                                             className="absolute inset-0 bg-black-pure transition-all duration-300 ease-linear"
                                                             style={{ width: `${progress[originalIndex] || 0}%` }}
@@ -257,10 +269,19 @@ const SeriesDirectory: React.FC<SeriesDirectoryProps> = ({ series = [] }) => {
                     </div>
                 </div>
 
-                <div className="hidden xl:flex w-[80px] bg-white-pure flex-col divide-y-2 divide-black-pure overflow-hidden shrink-0">
-                    {Array.from({ length: 15 }).map((_, i) => (
-                        <div key={i} className={`flex-1 flex items-center justify-center font-mono text-xs font-black transition-colors duration-500 ${i % 3 === 0 ? 'bg-primary-500 text-black-pure' : i % 3 === 1 ? 'bg-black-pure text-white-pure' : 'bg-white-pure text-black-pure'}`}>
-                            {String.fromCharCode(65 + (i % 26))}
+                <div className="hidden xl:flex w-[50px] bg-white-pure flex-col divide-y-2 divide-black-pure overflow-hidden shrink-0">
+                    {quickStats.map((stat, i) => (
+                        <div
+                            key={stat.label}
+                            className={`flex-1 flex flex-col items-center justify-center p-2 transition-all duration-500 group hover:scale-105 ${i % 2 === 0 ? 'bg-white-pure' : 'bg-black-pure/5'}`}
+                        >
+                            <div className={`w-3 h-3 ${stat.color} mb-1.5`} />
+                            <span className="font-mono text-[7px] font-black text-black-pure/60 uppercase text-center leading-tight">
+                                {stat.label}
+                            </span>
+                            <span className="font-black text-sm text-black-pure">
+                                {stat.value}
+                            </span>
                         </div>
                     ))}
                 </div>

@@ -1,5 +1,4 @@
 import { notFound } from 'next/navigation';
-import LightboxGallery from '../../sections/Gallery';
 import SeriesHero from './sections/Hero';
 import SeasonsList from './sections/List';
 import Regulations from './sections/Regulations';
@@ -59,12 +58,6 @@ export default async function SeriesPage({ params }: PageProps) {
             {regulationsDocs.length > 0 && (
                 <Regulations regulations={regulationsDocs} />
             )}
-
-            <LightboxGallery
-                items={seasonsData.docs || []}
-                title="Gallery"
-                label="Media Assets"
-            />
         </main>
     );
 }

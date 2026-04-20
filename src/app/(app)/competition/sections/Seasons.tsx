@@ -121,11 +121,24 @@ const SeasonDirectory: React.FC<SeasonDirectoryProps> = ({ seasons = [] }) => {
         autoplay.play()
     }
 
+    const totalRaces = seasons.reduce((sum, season) => sum + (season.details?.races || 0), 0)
+    const totalEntries = seasons.reduce((sum, season) => sum + (season.details?.entries || 0), 0)
+    const activeSeasons = seasons.filter(s => {
+        const year = parseInt(s.name)
+        return !isNaN(year) && year >= new Date().getFullYear() - 1
+    }).length
+
+    const quickStats = [
+        { label: 'TOTAL RACES', value: totalRaces, color: 'bg-primary-500' },
+        { label: 'TOTAL ENTRIES', value: totalEntries, color: 'bg-secondary-500' },
+        { label: 'ACTIVE', value: activeSeasons, color: 'bg-tertiary-500' },
+    ]
+
     return (
         <section className="relative w-full min-h-screen bg-white-pure flex flex-col border-b-2 border-black-pure overflow-hidden">
             <div className="flex-1 flex flex-col lg:flex-row divide-y-2 lg:divide-y-0 lg:divide-x-2 divide-black-pure relative">
 
-                <div className="w-full lg:w-[40%] bg-white-pure p-8 md:p-12 lg:p-16 flex flex-col justify-between relative overflow-hidden">
+                <div className="w-full lg:w-[40%] bg-white-pure p-5 md:p-8 lg:p-12 flex flex-col justify-between relative overflow-hidden">
                     <div className="absolute top-0 left-0 w-full h-full grayscale opacity-10 pointer-events-none">
                         <Image
                             src={(activeSeason?.assets?.cover as Media)?.url || `https://picsum.photos/seed/${activeSeason?.id}/1200/800`}
@@ -135,47 +148,47 @@ const SeasonDirectory: React.FC<SeasonDirectoryProps> = ({ seasons = [] }) => {
                         />
                     </div>
 
-                    <div className="space-y-8 lg:space-y-12 relative z-10">
-                        <div className="flex items-center gap-4">
-                            <div className="size-12 md:size-16 bg-black-pure flex items-center justify-center text-white-pure">
-                                <span className="font-black text-xl md:text-2xl">{(activeIndex + 1).toString().padStart(2, '0')}</span>
+                    <div className="space-y-5 lg:space-y-8 relative z-10">
+                        <div className="flex items-center gap-2.5">
+                            <div className="size-8 md:size-10 bg-black-pure flex items-center justify-center text-white-pure">
+                                <span className="font-black text-base md:text-lg">{(activeIndex + 1).toString().padStart(2, '0')}</span>
                             </div>
-                            <span className="font-mono text-[10px] md:text-xs font-black text-black-pure uppercase tracking-[0.4em]">
+                            <span className="font-mono text-[8px] md:text-[9px] font-black text-black-pure uppercase tracking-[0.4em]">
                                 Season {activeSeason?.name || ''}
                             </span>
                         </div>
 
-                        <div className="space-y-4">
-                            <h1 className="text-4xl md:text-6xl lg:text-8xl font-black text-black-pure uppercase tracking-tighter leading-[0.8] transition-all duration-700">
+                        <div className="space-y-2.5">
+                            <h1 className="text-2xl md:text-4xl lg:text-6xl font-black text-black-pure uppercase tracking-tighter leading-[0.8] transition-all duration-700">
                                 {activeSeason?.basics?.identifiers?.abbreviation || activeSeason?.name || ''}
                             </h1>
-                            <p className="text-black-pure text-base md:text-lg font-bold uppercase leading-none border-l-8 border-black-pure pl-4">
+                            <p className="text-black-pure text-[11px] md:text-xs font-bold uppercase leading-none border-l-8 border-black-pure pl-3">
                                 {activeSeason?.basics?.tagline || ''}
                             </p>
                         </div>
                     </div>
 
-                    <div className="mt-12 lg:mt-0 space-y-8 relative z-10">
+                    <div className="mt-8 lg:mt-0 space-y-5 relative z-10">
                         <div className="max-w-md">
-                            <p className="text-black-pure text-xs md:text-sm font-bold uppercase leading-snug">
+                            <p className="text-black-pure text-[10px] md:text-[11px] font-bold uppercase leading-snug">
                                 {activeSeason?.basics?.description || ''}
                             </p>
                         </div>
 
                         <div className="grid grid-cols-2 gap-px bg-black-pure">
-                            <div className="bg-white-pure p-4 flex flex-col">
-                                <span className="font-mono text-[10px] text-black-pure/40 uppercase font-black">Entries</span>
-                                <span className="text-2xl font-black text-black-pure">{activeSeason?.details?.entries || 0}</span>
+                            <div className="bg-white-pure p-2.5 flex flex-col">
+                                <span className="font-mono text-[8px] text-black-pure/40 uppercase font-black">Entries</span>
+                                <span className="text-lg font-black text-black-pure">{activeSeason?.details?.entries || 0}</span>
                             </div>
-                            <div className="bg-white-pure p-4 flex flex-col">
-                                <span className="font-mono text-[10px] text-black-pure/40 uppercase font-black">Races</span>
-                                <span className="text-2xl font-black text-black-pure">{activeSeason?.details?.races || 0}</span>
+                            <div className="bg-white-pure p-2.5 flex flex-col">
+                                <span className="font-mono text-[8px] text-black-pure/40 uppercase font-black">Races</span>
+                                <span className="text-lg font-black text-black-pure">{activeSeason?.details?.races || 0}</span>
                             </div>
                         </div>
 
                         <Link
                             href={`/competition/seasons/${activeSeason?.slug}`}
-                            className="inline-block w-full md:w-auto bg-black-pure text-white-pure px-12 py-6 font-black uppercase text-xs tracking-[0.3em] text-center hover:bg-secondary-500 hover:text-black-pure transition-colors duration-500"
+                            className="inline-block w-full md:w-auto bg-black-pure text-white-pure px-8 py-4 font-black uppercase text-[9px] tracking-[0.3em] text-center hover:bg-secondary-500 hover:text-black-pure transition-colors duration-500"
                         >
                             View Season
                         </Link>
@@ -189,7 +202,7 @@ const SeasonDirectory: React.FC<SeasonDirectoryProps> = ({ seasons = [] }) => {
                                 key={season.id}
                                 onClick={() => setActiveIndex(idx)}
                                 className={`
-                                    relative aspect-square md:aspect-auto xl:aspect-square flex flex-col items-center justify-center p-8 transition-all duration-500 group overflow-hidden
+                                    relative aspect-square md:aspect-auto xl:aspect-square flex flex-col items-center justify-center p-5 transition-all duration-500 group overflow-hidden
                                     ${activeIndex === idx ? 'bg-secondary-500' : 'bg-white-pure hover:bg-primary-500'}
                                 `}
                             >
@@ -202,17 +215,17 @@ const SeasonDirectory: React.FC<SeasonDirectoryProps> = ({ seasons = [] }) => {
                                     />
                                 </div>
 
-                                <div className="relative z-10 flex flex-col items-center gap-4">
-                                    <span className="font-mono text-sm font-black text-black-pure mb-2">
+                                <div className="relative z-10 flex flex-col items-center gap-2">
+                                    <span className="font-mono text-[10px] font-black text-black-pure mb-0.5">
                                         {(idx + 1).toString().padStart(2, '0')}
                                     </span>
-                                    <h3 className="text-4xl md:text-5xl font-black text-black-pure uppercase tracking-tighter leading-none text-center px-4 transition-transform group-hover:scale-110">
+                                    <h3 className="text-2xl md:text-3xl font-black text-black-pure uppercase tracking-tighter leading-none text-center px-2 transition-transform group-hover:scale-110">
                                         {season.basics?.identifiers?.abbreviation || season.name}
                                     </h3>
-                                    <div className={`h-2 bg-black-pure transition-all duration-700 ${activeIndex === idx ? 'w-16 md:w-24' : 'w-0'}`} />
+                                    <div className={`h-1 bg-black-pure transition-all duration-700 ${activeIndex === idx ? 'w-10 md:w-14' : 'w-0'}`} />
                                 </div>
 
-                                <div className={`absolute bottom-4 right-4 size-4 border-2 border-black-pure ${activeIndex === idx ? 'bg-black-pure animate-pulse' : 'bg-transparent'}`} />
+                                <div className={`absolute bottom-2.5 right-2.5 size-2.5 border-2 border-black-pure ${activeIndex === idx ? 'bg-black-pure animate-pulse' : 'bg-transparent'}`} />
                             </button>
                         ))}
                     </div>
@@ -237,7 +250,7 @@ const SeasonDirectory: React.FC<SeasonDirectoryProps> = ({ seasons = [] }) => {
                                                     emblaApi?.scrollTo(idx)
                                                 }}
                                                 className={`
-                                                    w-full h-full flex flex-col items-center justify-center p-6 transition-all duration-500 ease-in-out
+                                                    w-full h-full flex flex-col items-center justify-center p-4 transition-all duration-500 ease-in-out
                                                     ${activeIndex === originalIndex ? 'bg-secondary-500' : 'bg-white-pure hover:bg-primary-500'}
                                                 `}
                                             >
@@ -250,14 +263,14 @@ const SeasonDirectory: React.FC<SeasonDirectoryProps> = ({ seasons = [] }) => {
                                                     />
                                                 </div>
 
-                                                <div className="relative z-10 flex flex-col items-center gap-4 w-full">
-                                                    <span className="font-mono text-xl font-black text-black-pure">
+                                                <div className="relative z-10 flex flex-col items-center gap-2.5 w-full">
+                                                    <span className="font-mono text-base font-black text-black-pure">
                                                         {(originalIndex + 1).toString().padStart(2, '0')}
                                                     </span>
-                                                    <h3 className="text-5xl font-black text-black-pure uppercase tracking-tighter leading-none text-center">
+                                                    <h3 className="text-3xl font-black text-black-pure uppercase tracking-tighter leading-none text-center">
                                                         {season.basics?.identifiers?.abbreviation || season.name}
                                                     </h3>
-                                                    <div className="relative h-2 w-full max-w-[200px] bg-black-pure/20 overflow-hidden mt-4">
+                                                    <div className="relative h-1 w-full max-w-[160px] bg-black-pure/20 overflow-hidden mt-2.5">
                                                         <div
                                                             className="absolute inset-0 bg-black-pure transition-all duration-300 ease-linear"
                                                             style={{ width: `${progress[originalIndex] || 0}%` }}
@@ -265,7 +278,7 @@ const SeasonDirectory: React.FC<SeasonDirectoryProps> = ({ seasons = [] }) => {
                                                     </div>
                                                 </div>
 
-                                                <div className={`absolute bottom-4 right-4 size-4 border-2 border-black-pure ${activeIndex === originalIndex ? 'bg-black-pure animate-pulse' : 'bg-transparent'}`} />
+                                                <div className={`absolute bottom-2.5 right-2.5 size-2.5 border-2 border-black-pure ${activeIndex === originalIndex ? 'bg-black-pure animate-pulse' : 'bg-transparent'}`} />
                                             </button>
                                         </div>
                                     )
@@ -274,18 +287,18 @@ const SeasonDirectory: React.FC<SeasonDirectoryProps> = ({ seasons = [] }) => {
                         </div>
                     </div>
 
-                    <div className="h-32 bg-white-pure flex divide-x-2 divide-black-pure">
-                        <div className="flex-1 p-6 md:p-8 flex items-center justify-between">
+                    <div className="h-24 bg-white-pure flex divide-x-2 divide-black-pure">
+                        <div className="flex-1 p-4 md:p-5 flex items-center justify-between">
                             <div className="flex flex-col">
-                                <span className="font-mono text-[10px] font-black text-black-pure/40 uppercase">Total Seasons</span>
-                                <span className="text-lg md:text-xl font-black text-black-pure uppercase tracking-tighter">
+                                <span className="font-mono text-[8px] font-black text-black-pure/40 uppercase">Total Seasons</span>
+                                <span className="text-sm md:text-base font-black text-black-pure uppercase tracking-tighter">
                                     {seasons.length} Available
                                 </span>
                             </div>
-                            <div className="hidden md:flex gap-2">
-                                <div className="size-3 bg-primary-500" />
-                                <div className="size-3 bg-secondary-500" />
-                                <div className="size-3 bg-black-pure" />
+                            <div className="hidden md:flex gap-1">
+                                <div className="size-2 bg-primary-500" />
+                                <div className="size-2 bg-secondary-500" />
+                                <div className="size-2 bg-black-pure" />
                             </div>
                         </div>
                     </div>
