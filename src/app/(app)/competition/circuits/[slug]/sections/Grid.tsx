@@ -1,142 +1,139 @@
-'use client';
+'use client'
 
-import { DESIGN_SYSTEM } from '@/lib/constants';
-import { Circuit, Driver } from '@/payload-types';
-import { motion } from 'motion/react';
+import SectionFooter from '@/components/Section/Footer'
+import SectionHeader from '@/components/Section/Header'
+import { Circuit, Driver } from '@/payload-types'
+import { motion, useInView } from 'framer-motion'
+import { Activity, BarChart3, ChevronRight, Info, Shield } from 'lucide-react'
+import { useRef } from 'react'
 
 interface StatGridProps {
     circuit: Circuit;
 }
 
 export default function CircuitStatGrid({ circuit }: StatGridProps) {
-    const recordDriver = circuit.metrics?.record_lap_driver as Driver;
+    const containerRef = useRef<HTMLElement>(null)
+    const isInView = useInView(containerRef, { margin: "-10%", once: true })
+    const recordDriver = circuit.metrics?.record_lap_driver as Driver
+
+    const handleScrollToDetail = (id: string) => {
+        const element = document.getElementById(id)
+        if (element) element.scrollIntoView({ behavior: 'smooth' })
+    }
 
     const technicalData = [
-        { label: 'Infrastructure', value: circuit.details?.type || 'Permanent' },
-        { label: 'FIA Grade', value: circuit.details?.fia_grade ? `Grade ${circuit.details.fia_grade}` : 'Unrated' },
-        { label: 'DRS Zones', value: circuit.details?.drs_zones || 'None' },
-        { label: 'Direction', value: circuit.details?.direction || 'N/A' },
-    ];
+        { value: circuit.details?.type || null, icon: Shield },
+        { value: circuit.details?.fia_grade || null, icon: Info },
+        { value: circuit.details?.drs_zones || null, icon: Activity },
+        { value: circuit.details?.direction || null, icon: BarChart3 },
+    ].filter(item => item.value !== null)
 
     const performanceData = [
-        { label: 'Lap Record', value: circuit.metrics?.record_lap_time || '0:00.000', highlight: true },
-        { label: 'Holder', value: recordDriver?.first_name ? `${recordDriver.first_name} ${recordDriver.last_name}` : 'Archive Empty' },
         {
-            label: 'Year', value: circuit.metrics?.record_lap_year && !isNaN(Date.parse(circuit.metrics.record_lap_year))
-                ? new Date(circuit.metrics.record_lap_year).getFullYear()
-                : 'N/A'
+            value: circuit.metrics?.record_lap_time || '0:00.000',
+            highlight: true,
+            action: 'record-archive'
         },
-        { label: 'Capacity', value: circuit.details?.capacity ? circuit.details.capacity.toLocaleString() : 'Classified' },
-    ];
+        {
+            value: recordDriver?.last_name ? `${recordDriver.first_name} ${recordDriver.last_name}` : null,
+            action: 'driver-profile'
+        },
+        {
+            value: circuit.metrics?.record_lap_year && !isNaN(Date.parse(circuit.metrics.record_lap_year))
+                ? new Date(circuit.metrics.record_lap_year).getFullYear().toString()
+                : null,
+            action: 'history-timeline'
+        },
+        {
+            value: circuit.details?.capacity ? circuit.details.capacity.toLocaleString() : null,
+            action: 'physical-specs'
+        },
+    ].filter(item => item.value !== null)
 
     return (
         <section
-            className="grid grid-cols-1 lg:grid-cols-2 gap-px border-y overflow-hidden"
-            style={{
-                backgroundColor: DESIGN_SYSTEM.COLORS.WHITE[200],
-                borderColor: DESIGN_SYSTEM.COLORS.WHITE[200]
-            }}
+            ref={containerRef}
+            className="w-full bg-white-pure flex flex-col border-b border-black-pure"
         >
-            <div
-                className="p-12 md:p-20 flex flex-col gap-16 relative"
-                style={{ backgroundColor: DESIGN_SYSTEM.COLORS.BLACK.PURE }}
-            >
-                <div
-                    className="absolute top-0 right-0 w-32 h-32 opacity-5 pointer-events-none"
-                    style={{
-                        backgroundImage: `radial-gradient(${DESIGN_SYSTEM.COLORS.WHITE.PURE} 1px, transparent 1px)`,
-                        backgroundSize: '16px 16px'
-                    }}
-                />
+            <SectionHeader
+                variant={3}
+                title={circuit.name}
+                subtitle={circuit.basics?.identifiers?.code || ''}
+                officialLabel=""
+                championships={[]}
+            />
 
-                <div className="flex items-center gap-6">
-                    <motion.div
-                        initial={{ height: 0 }}
-                        whileInView={{ height: 24 }}
-                        className="w-1"
-                        style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}
-                    />
-                    <span
-                        className="text-[10px] font-black uppercase tracking-[0.4em]"
-                        style={{ color: DESIGN_SYSTEM.COLORS.WHITE[400] }}
-                    >
-                        Technical_Specification
-                    </span>
+            <div className="grid grid-cols-1 lg:grid-cols-2">
+                <div className="bg-black-pure flex flex-col">
+                    <div className="p-10 lg:p-20 border-b border-white-pure/10 flex items-center gap-6">
+                        <div className="w-1 h-8 bg-primary-500" />
+                        <span className="text-[11px] font-black uppercase tracking-[0.4em] text-white-pure/40">
+                            {circuit.basics?.identifiers?.code}
+                        </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 flex-1">
+                        {technicalData.map((stat, i) => (
+                            <button
+                                key={i}
+                                onClick={() => handleScrollToDetail('physical-specifications')}
+                                className="p-10 lg:p-12 border-r border-b border-white-pure/10 text-left hover:bg-white-pure/5 transition-all group focus:outline-none focus:ring-4 focus:ring-inset focus:ring-primary-500"
+                            >
+                                <div className="flex justify-between items-start mb-12">
+                                    <span className="text-[10px] font-black uppercase tracking-widest text-white-pure/30 group-hover:text-primary-500 transition-colors">
+                                        {circuit.details?.type}
+                                    </span>
+                                    <stat.icon size={16} className="text-white-pure/10 group-hover:text-white-pure transition-colors" />
+                                </div>
+                                <span className="text-2xl lg:text-3xl font-black italic uppercase text-white-pure tracking-tighter leading-none block">
+                                    {stat.value}
+                                </span>
+                            </button>
+                        ))}
+                    </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-y-12 gap-x-8 sm:gap-x-12 relative z-10">
-                    {technicalData.map((stat, i) => (
-                        <motion.div
-                            key={i}
-                            initial={{ opacity: 0, x: -10 }}
-                            whileInView={{ opacity: 1, x: 0 }}
-                            transition={{ delay: i * 0.1 }}
-                            className="flex flex-col gap-3 group"
-                        >
-                            <span
-                                className="text-[9px] font-black uppercase tracking-[0.2em] transition-colors group-hover:text-white"
-                                style={{ color: DESIGN_SYSTEM.COLORS.WHITE[800] }}
+                <div className="bg-white-pure flex flex-col border-l border-black-pure">
+                    <div className="p-10 lg:p-20 border-b border-black-pure/10 flex items-center gap-6">
+                        <div className="w-1 h-8 bg-black-pure" />
+                        <span className="text-[11px] font-black uppercase tracking-[0.4em] text-black-pure/40">
+                            {circuit.name}
+                        </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 flex-1">
+                        {performanceData.map((stat, i) => (
+                            <motion.button
+                                key={i}
+                                initial={{ opacity: 0 }}
+                                animate={isInView ? { opacity: 1 } : {}}
+                                transition={{ delay: i * 0.1 }}
+                                onClick={() => handleScrollToDetail(stat.action)}
+                                className="p-10 lg:p-12 border-r border-b border-black-pure/10 text-left hover:bg-black-pure/5 transition-all group focus:outline-none focus:ring-4 focus:ring-inset focus:ring-secondary-500"
                             >
-                                {stat.label}
-                            </span>
-                            <span className="text-2xl sm:text-3xl font-black italic uppercase text-white tracking-tighter">
-                                {stat.value}
-                            </span>
-                        </motion.div>
-                    ))}
+                                <div className="flex justify-between items-start mb-12">
+                                    <span className="text-[10px] font-black uppercase tracking-widest text-black-pure/30 group-hover:text-secondary-500 transition-colors">
+                                        {circuit.basics?.identifiers?.code}
+                                    </span>
+                                    <ChevronRight size={16} className="text-black-pure/10 group-hover:text-black-pure transition-colors" />
+                                </div>
+                                <span
+                                    className={`text-2xl lg:text-3xl font-black italic uppercase tracking-tighter leading-none block ${stat.highlight ? 'text-primary-500' : 'text-black-pure'}`}
+                                >
+                                    {stat.value}
+                                </span>
+                            </motion.button>
+                        ))}
+                    </div>
                 </div>
             </div>
 
-            <div
-                className="p-12 md:p-20 flex flex-col gap-16 relative"
-                style={{ backgroundColor: DESIGN_SYSTEM.COLORS.WHITE.PURE }}
-            >
-                <div className="flex items-center gap-6">
-                    <motion.div
-                        initial={{ height: 0 }}
-                        whileInView={{ height: 24 }}
-                        className="w-1"
-                        style={{ backgroundColor: DESIGN_SYSTEM.COLORS.BLACK.PURE }}
-                    />
-                    <span
-                        className="text-[10px] font-black uppercase tracking-[0.4em]"
-                        style={{ color: DESIGN_SYSTEM.COLORS.BLACK[500] }}
-                    >
-                        Performance_Registry
-                    </span>
-                </div>
-
-                <div className="grid grid-cols-2 gap-y-12 gap-x-8 sm:gap-x-12">
-                    {performanceData.map((stat, i) => (
-                        <motion.div
-                            key={i}
-                            initial={{ opacity: 0, x: 10 }}
-                            whileInView={{ opacity: 1, x: 0 }}
-                            transition={{ delay: i * 0.1 }}
-                            className="flex flex-col gap-3 group"
-                        >
-                            <span
-                                className="text-[9px] font-black uppercase tracking-[0.2em] transition-colors group-hover:text-black"
-                                style={{ color: DESIGN_SYSTEM.COLORS.WHITE[900] }}
-                            >
-                                {stat.label}
-                            </span>
-                            <span
-                                className="text-2xl sm:text-3xl font-black italic uppercase tracking-tighter"
-                                style={{ color: stat.highlight ? DESIGN_SYSTEM.COLORS.PRIMARY[500] : DESIGN_SYSTEM.COLORS.BLACK.PURE }}
-                            >
-                                {stat.value}
-                            </span>
-                        </motion.div>
-                    ))}
-                </div>
-
-                <div className="absolute bottom-8 right-8 pointer-events-none">
-                    <span className="text-[60px] font-black italic opacity-[0.03] select-none leading-none">
-                        {circuit.basics?.identifiers?.code || 'DATA'}
-                    </span>
-                </div>
-            </div>
+            <SectionFooter
+                variant={1}
+                navigateLabel={circuit.name}
+                entryPointsLabel={circuit.basics?.identifiers?.code || ''}
+                championships={[]}
+            />
         </section>
-    );
+    )
 }

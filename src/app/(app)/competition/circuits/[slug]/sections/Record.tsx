@@ -1,161 +1,161 @@
-'use client';
+'use client'
 
-import { DESIGN_SYSTEM } from '@/lib/constants';
-import { Circuit, Driver, Media } from '@/payload-types';
-import { Calendar, Timer, Trophy } from 'lucide-react';
-import { motion } from 'motion/react';
+import SectionDescription from '@/components/Section/Description'
+import SectionFooter from '@/components/Section/Footer'
+import SectionHeader from '@/components/Section/Header'
+import SectionMainTitle from '@/components/Section/Title'
+import { Circuit, Driver, Media } from '@/payload-types'
+import { motion, useInView } from 'framer-motion'
+import { Activity, ArrowRight, Calendar, Map, Timer } from 'lucide-react'
+import { useRef } from 'react'
 
 interface LapRecordArchiveProps {
     circuit: Circuit;
 }
 
 export default function LapRecordArchive({ circuit }: LapRecordArchiveProps) {
-    const record = circuit.metrics;
-    const driver = record?.record_lap_driver as Driver;
+    const containerRef = useRef<HTMLElement>(null)
+    const isInView = useInView(containerRef, { margin: "-10%", once: true })
+
+    const record = circuit.metrics
+    const driver = record?.record_lap_driver as Driver
+    const driverName = driver?.last_name ? `${driver.first_name} ${driver.last_name}` : 'Registry Member'
+    const recordTime = record?.record_lap_time || '0:00.000'
 
     const driverImage = (driver?.assets?.avatar as Media)?.url
-        || (circuit.assets?.cover as Media)?.url
-        || `https://picsum.photos/seed/${circuit.id}/1920/1080?grayscale`;
+        || `https://picsum.photos/seed/${driver?.id || 'record'}/1920/1080?grayscale`
 
-    if (!record?.record_lap_time) return null;
-
-    const recordYear = record.record_lap_year && !isNaN(Date.parse(record.record_lap_year))
+    const recordYear = record?.record_lap_year && !isNaN(Date.parse(record.record_lap_year))
         ? new Date(record.record_lap_year).getFullYear()
-        : 'N/A';
+        : '2026'
+
+    const handleInternalNavigation = (id: string) => {
+        const element = document.getElementById(id)
+        if (element) element.scrollIntoView({ behavior: 'smooth' })
+    }
+
+    if (!record?.record_lap_time) return null
 
     return (
         <section
-            className="w-full py-12 px-6 md:px-20 border-t relative overflow-hidden"
-            style={{ backgroundColor: DESIGN_SYSTEM.COLORS.WHITE.PURE, borderColor: DESIGN_SYSTEM.COLORS.WHITE[200] }}
+            ref={containerRef}
+            className="w-full bg-white-pure flex flex-col border-b border-black-pure"
         >
-            <div
-                className="absolute inset-0 pointer-events-none opacity-[0.03]"
-                style={{
-                    backgroundImage: `linear-gradient(${DESIGN_SYSTEM.COLORS.BLACK.PURE} 1.5px, transparent 1.5px), linear-gradient(90deg, ${DESIGN_SYSTEM.COLORS.BLACK.PURE} 1.5px, transparent 1.5px)`,
-                    backgroundSize: '60px 60px'
-                }}
+            <SectionHeader
+                variant={1}
+                title="Performance Data"
+                subtitle="Absolute Benchmark"
+                officialLabel="Verified Session"
+                championships={[]}
             />
 
-            <div className="absolute top-0 left-1/4 w-px h-full opacity-10" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.BLACK.PURE }} />
-            <div className="absolute top-0 right-1/4 w-px h-full opacity-10" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.BLACK.PURE }} />
-
-            <div className="max-w-7xl mx-auto relative z-10">
-                <div className="flex flex-col mb-16 items-center md:items-start">
-                    <div className="flex items-center gap-4 mb-4">
-                        <div className="w-12 h-px" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
-                        <span
-                            className="text-[10px] font-black uppercase"
-                            style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500], letterSpacing: DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_XL }}
-                        >
-                            Metric Validation // 05
-                        </span>
-                    </div>
-                    <h2
-                        className="text-5xl md:text-6xl font-black uppercase tracking-tighter italic leading-none"
-                        style={{ color: DESIGN_SYSTEM.COLORS.BLACK.PURE }}
-                    >
-                        Absolute Lap Record
-                    </h2>
-                </div>
-
-                <motion.div
-                    initial={{ opacity: 0, y: 40 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    className="relative w-full group"
-                    style={{
-                        clipPath: 'polygon(0 0, 97% 0, 100% 15%, 100% 100%, 3% 100%, 0 85%)'
-                    }}
-                >
-                    <div
-                        className="relative w-full overflow-hidden p-[1px]"
-                        style={{
-                            backgroundColor: DESIGN_SYSTEM.COLORS.BLACK.PURE,
-                        }}
-                    >
-                        <div
-                            className="absolute inset-0 opacity-0 group-hover:opacity-50 transition-all duration-1000 scale-110 group-hover:scale-100 blur-sm group-hover:blur-none grayscale"
-                            style={{
-                                backgroundImage: `url(${driverImage})`,
-                                backgroundSize: 'cover',
-                                backgroundPosition: 'center 20%'
-                            }}
+            <div className="flex flex-col lg:flex-row border-b border-black-pure">
+                <div className="w-full lg:w-1/2 p-10 lg:p-20 border-r border-black-pure flex flex-col justify-between">
+                    <SectionMainTitle
+                        variant={1}
+                        label="Circuit Record"
+                        lineOne="Registry"
+                        lineTwo="Benchmark"
+                        highlight="Timing"
+                    />
+                    <div className="mt-12 flex flex-col gap-6">
+                        <div className="h-2 w-24 bg-primary-500" />
+                        <SectionDescription
+                            variant={1}
+                            text="Verified session data representing the absolute performance limit for this specific layout as recorded in the official archives."
                         />
-
-                        <div className="absolute inset-0 bg-gradient-to-r from-black via-black/90 to-transparent z-10" />
-
-                        <div className="absolute top-0 left-0 w-full h-full pointer-events-none z-15 opacity-20"
-                            style={{
-                                background: `repeating-linear-gradient(0deg, transparent, transparent 2px, ${DESIGN_SYSTEM.COLORS.BLACK.PURE} 4px)`
-                            }}
-                        />
-
-                        <div className="relative z-20 p-12 md:p-20 flex flex-col lg:flex-row items-center justify-between gap-16">
-                            <div className="flex flex-col gap-4 text-center lg:text-left">
-                                <div className="flex items-center justify-center lg:justify-start gap-4 mb-2">
-                                    <div className="p-2 rounded-full border border-primary-500/30" style={{ borderColor: `${DESIGN_SYSTEM.COLORS.PRIMARY[500]}4D` }}>
-                                        <Trophy size={18} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
-                                    </div>
-                                    <span
-                                        className="text-[11px] font-black uppercase tracking-[0.5em]"
-                                        style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}
-                                    >
-                                        Championship Verified
-                                    </span>
-                                </div>
-                                <h3
-                                    className="text-5xl md:text-7xl font-black uppercase italic tracking-tighter leading-none"
-                                    style={{ color: DESIGN_SYSTEM.COLORS.WHITE.PURE }}
-                                >
-                                    {driver?.first_name ? `${driver.first_name} ${driver.last_name}` : 'Archive Entry Absent'}
-                                </h3>
-                                <div className="flex items-center justify-center lg:justify-start gap-3">
-                                    <div className="w-6 h-px" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.WHITE[300] }} />
-                                    <p
-                                        className="text-xs font-black uppercase tracking-widest opacity-40 italic"
-                                        style={{ color: DESIGN_SYSTEM.COLORS.WHITE[100] }}
-                                    >
-                                        {circuit.name} Site Protocol
-                                    </p>
-                                </div>
-                            </div>
-
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-24 w-full lg:w-auto border-t lg:border-t-0 lg:border-l pt-12 lg:pt-0 lg:pl-24" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>
-                                <div className="flex flex-col items-center lg:items-start gap-4">
-                                    <div className="flex items-center gap-3 opacity-30" style={{ color: DESIGN_SYSTEM.COLORS.WHITE[50] }}>
-                                        <Timer size={16} />
-                                        <span className="text-[10px] font-black uppercase tracking-[0.3em]">Telemetry Time</span>
-                                    </div>
-                                    <span
-                                        className="text-6xl md:text-7xl font-mono font-black italic leading-none"
-                                        style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500], textShadow: `0 0 30px ${DESIGN_SYSTEM.COLORS.PRIMARY[500]}66` }}
-                                    >
-                                        {record.record_lap_time}
-                                    </span>
-                                </div>
-
-                                <div className="flex flex-col items-center lg:items-start gap-4">
-                                    <div className="flex items-center gap-3 opacity-30" style={{ color: DESIGN_SYSTEM.COLORS.WHITE[50] }}>
-                                        <Calendar size={16} />
-                                        <span className="text-[10px] font-black uppercase tracking-[0.3em]">Temporal Stamp</span>
-                                    </div>
-                                    <span
-                                        className="text-6xl md:text-7xl font-mono font-black italic leading-none"
-                                        style={{ color: DESIGN_SYSTEM.COLORS.WHITE.PURE }}
-                                    >
-                                        {recordYear}
-                                    </span>
-                                </div>
-                            </div>
+                        <div className="flex gap-4 mt-4">
+                            <button
+                                onClick={() => handleInternalNavigation('circuit-map')}
+                                className="flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-black-pure hover:text-primary-500 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 p-1"
+                            >
+                                <Map size={14} /> Compare Layout
+                            </button>
                         </div>
                     </div>
-                </motion.div>
+                </div>
 
-                <div className="mt-16 flex justify-between items-center opacity-20 px-4">
-                    <span className="text-[9px] font-mono uppercase tracking-widest" style={{ color: DESIGN_SYSTEM.COLORS.BLACK.PURE }}>System Status: Operational</span>
-                    <span className="text-[9px] font-mono uppercase tracking-widest" style={{ color: DESIGN_SYSTEM.COLORS.BLACK.PURE }}>{circuit.basics?.identifiers?.code} // ARC-05</span>
+                <div className="w-full lg:w-1/2 relative min-h-[400px] bg-black-pure overflow-hidden group">
+                    <img
+                        src={driverImage}
+                        alt={driverName}
+                        className="w-full h-full object-cover grayscale opacity-40 contrast-125 transition-transform duration-700 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-primary-500/10 mix-blend-multiply" />
+                    <div className="absolute bottom-10 left-10">
+                        <span className="text-[11px] font-black uppercase tracking-[0.4em] text-white-pure/60 mb-2 block">Active Member</span>
+                        <span className="text-4xl font-black italic uppercase text-white-pure tracking-tighter leading-none">{driverName}</span>
+                    </div>
                 </div>
             </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3">
+                <motion.button
+                    initial={{ opacity: 0 }}
+                    animate={isInView ? { opacity: 1 } : {}}
+                    onClick={() => handleInternalNavigation('telemetry-logs')}
+                    className="p-12 lg:p-16 border-r border-black-pure flex flex-col gap-12 text-left hover:bg-primary-500 group transition-all duration-500 focus:outline-none focus:ring-4 focus:ring-inset focus:ring-primary-500"
+                >
+                    <div className="flex justify-between items-center">
+                        <span className="text-[11px] font-black uppercase tracking-[0.4em] text-black-pure group-hover:text-white-pure">Timing Value</span>
+                        <Timer size={18} className="text-primary-500 group-hover:text-white-pure" />
+                    </div>
+                    <span className="text-6xl md:text-7xl font-black italic uppercase text-black-pure group-hover:text-white-pure tracking-tighter leading-none">
+                        {recordTime}
+                    </span>
+                    <div className="flex items-center gap-3">
+                        <div className="w-8 h-1 bg-primary-500 group-hover:bg-white-pure transition-all group-hover:w-12" />
+                        <span className="text-[10px] font-black uppercase tracking-widest text-black-pure/40 group-hover:text-white-pure/60">Seconds Metric</span>
+                    </div>
+                </motion.button>
+
+                <motion.button
+                    initial={{ opacity: 0 }}
+                    animate={isInView ? { opacity: 1 } : {}}
+                    transition={{ delay: 0.1 }}
+                    onClick={() => handleInternalNavigation('historical-timeline')}
+                    className="p-12 lg:p-16 border-r border-black-pure flex flex-col gap-12 text-left hover:bg-secondary-500 group transition-all duration-500 focus:outline-none focus:ring-4 focus:ring-inset focus:ring-secondary-500"
+                >
+                    <div className="flex justify-between items-center">
+                        <span className="text-[11px] font-black uppercase tracking-[0.4em] text-black-pure group-hover:text-white-pure">Archive Period</span>
+                        <Calendar size={18} className="text-secondary-500 group-hover:text-white-pure" />
+                    </div>
+                    <span className="text-6xl md:text-7xl font-black italic uppercase text-black-pure group-hover:text-white-pure tracking-tighter leading-none">
+                        {recordYear}
+                    </span>
+                    <div className="flex items-center gap-3">
+                        <div className="w-8 h-1 bg-secondary-500 group-hover:bg-white-pure transition-all group-hover:w-12" />
+                        <span className="text-[10px] font-black uppercase tracking-widest text-black-pure/40 group-hover:text-white-pure/60">Calendar Data</span>
+                    </div>
+                </motion.button>
+
+                <motion.button
+                    initial={{ opacity: 0 }}
+                    animate={isInView ? { opacity: 1 } : {}}
+                    transition={{ delay: 0.2 }}
+                    onClick={() => window.open(`https://www.google.com/search?q=${driverName}+lap+record+${circuit.name}`, '_blank')}
+                    className="p-12 lg:p-16 flex flex-col gap-12 text-left hover:bg-tertiary-500 group transition-all duration-500 focus:outline-none focus:ring-4 focus:ring-inset focus:ring-tertiary-500"
+                >
+                    <div className="flex justify-between items-center">
+                        <span className="text-[11px] font-black uppercase tracking-[0.4em] text-black-pure group-hover:text-white-pure">Session Proof</span>
+                        <Activity size={18} className="text-tertiary-500 group-hover:text-white-pure" />
+                    </div>
+                    <div className="flex flex-col gap-4">
+                        <span className="text-3xl font-black italic uppercase text-black-pure group-hover:text-white-pure tracking-tighter leading-none">View External Source</span>
+                        <ArrowRight size={24} className="text-black-pure/20 group-hover:text-white-pure group-hover:translate-x-2 transition-all" />
+                    </div>
+                    <div className="mt-auto">
+                        <span className="text-[10px] font-black uppercase tracking-widest text-black-pure/40 group-hover:text-white-pure/60 italic">Telemetry Validated</span>
+                    </div>
+                </motion.button>
+            </div>
+
+            <SectionFooter
+                variant={2}
+                navigateLabel="Archive Access"
+                entryPointsLabel="Performance Logs"
+                championships={[]}
+            />
         </section>
-    );
+    )
 }

@@ -1,9 +1,10 @@
-'use client';
+'use client'
 
-import { DESIGN_SYSTEM } from '@/lib/constants';
-import { Circuit, Country, Media } from '@/payload-types';
-import { motion, useInView, useScroll, useTransform } from 'motion/react';
-import { useRef, useState } from 'react';
+import { DESIGN_SYSTEM } from '@/lib/constants'
+import { Circuit, Country } from '@/payload-types'
+import { motion, useInView, useScroll, useTransform } from 'framer-motion'
+import { ChevronDown, Globe, Map, Navigation } from 'lucide-react'
+import { useRef, useState } from 'react'
 
 interface CircuitHeroProps {
     circuit: Circuit;
@@ -21,211 +22,143 @@ export default function CircuitHero({ circuit }: CircuitHeroProps) {
         offset: ['start start', 'end start']
     });
 
-    const y = useTransform(scrollYProgress, [0, 1], [0, 300]);
-    const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
-    const mapRotate = useTransform(scrollYProgress, [0, 1], [30, 50]);
+    const y = useTransform(scrollYProgress, [0, 1], [0, 200]);
+    const opacity = useTransform(scrollYProgress, [0, 0.4], [1, 0]);
+    const mapRotate = useTransform(scrollYProgress, [0, 1], [20, 40]);
 
-    const coverImage = circuit.assets?.cover as Media;
     const countryName = typeof circuit.details?.country === 'object'
         ? (circuit.details.country as Country)?.name
-        : '';
+        : 'Global';
 
     const coords = circuit.details?.location || [0, 0];
     const turnsCount = circuit.details?.turns || 0;
-    const circuitCode = circuit.basics?.identifiers?.code || '';
-    const fiaGrade = circuit.details?.fia_grade || '';
+    const circuitCode = circuit.basics?.identifiers?.code || 'CIRCUIT';
+
+    const scrollToDetails = () => {
+        const element = document.getElementById('circuit-specifications');
+        if (element) {
+            element.scrollIntoView({ behavior: 'smooth' });
+        }
+    };
 
     return (
-        <section ref={containerRef} className="relative w-full h-screen bg-black overflow-hidden flex items-end">
+        <section ref={containerRef} className="relative w-full h-screen bg-black-pure overflow-hidden flex flex-col">
             {isInView && (
                 <>
                     <motion.div style={{ y, opacity }} className="absolute inset-0 z-0">
-                        {coverImage?.url && (
-                            <div className="relative w-full h-full">
-                                <img
-                                    src={coverImage.url}
-                                    alt={circuit.name}
-                                    className="w-full h-full object-cover grayscale opacity-10 contrast-[1.3]"
-                                />
-                                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-transparent" />
-                            </div>
-                        )}
+                        <div className="relative w-full h-full">
+                            <img
+                                src={`https://picsum.photos/seed/${circuit.id}/1920/1080?grayscale`}
+                                alt={circuit.name}
+                                className="w-full h-full object-cover opacity-20 contrast-150"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-b from-black-pure/20 via-black-pure/60 to-black-pure" />
+                        </div>
                     </motion.div>
 
                     <motion.div
-                        onMouseEnter={() => setIsHovering(true)}
-                        onMouseLeave={() => setIsHovering(false)}
                         style={{
-                            opacity: isHovering ? 0.8 : 0.4,
-                            rotateX: 60,
+                            opacity: isHovering ? 1 : 0.5,
+                            rotateX: 50,
                             rotateZ: mapRotate,
-                            scale: 1.2,
-                            translateY: '-10%',
+                            scale: 1.15,
                             perspective: '1500px',
-                            transition: 'all 1s cubic-bezier(0.16, 1, 0.3, 1)'
                         }}
-                        className="absolute inset-0 z-5 flex items-center justify-center pointer-events-auto cursor-none"
+                        className="absolute inset-0 z-5 flex items-center justify-center pointer-events-none transition-opacity duration-700"
                     >
-                        <svg viewBox="0 0 1000 700" className="w-[90%] h-[90%] overflow-visible">
-                            <defs>
-                                <filter id="ultra-glow" x="-20%" y="-20%" width="140%" height="140%">
-                                    <feGaussianBlur stdDeviation="5" result="blur5" />
-                                    <feGaussianBlur stdDeviation="15" result="blur15" />
-                                    <feMerge>
-                                        <feMergeNode in="blur15" />
-                                        <feMergeNode in="blur5" />
-                                        <feMergeNode in="SourceGraphic" />
-                                    </feMerge>
-                                </filter>
-                            </defs>
-
+                        <svg viewBox="0 0 1000 700" className="w-[80%] h-[80%] overflow-visible">
                             <motion.path
                                 d={TRACK_LAYOUT}
                                 fill="none"
                                 stroke={DESIGN_SYSTEM.COLORS.PRIMARY[500]}
-                                strokeWidth="3"
+                                strokeWidth="6"
                                 strokeLinecap="square"
-                                filter="url(#ultra-glow)"
                                 initial={{ pathLength: 0 }}
                                 animate={{ pathLength: 1 }}
-                                transition={{ duration: 3, ease: "easeInOut" }}
+                                transition={{ duration: 2, ease: "easeInOut" }}
                             />
-
-                            <motion.path
-                                d={TRACK_LAYOUT}
-                                fill="none"
-                                stroke="white"
-                                strokeWidth="1"
-                                strokeDasharray="4 24"
-                                className="opacity-20"
-                                initial={{ strokeDashoffset: 0 }}
-                                animate={{ strokeDashoffset: -1000 }}
-                                transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-                            />
-
                             <motion.circle
-                                r="4"
-                                fill="white"
-                                filter="url(#ultra-glow)"
+                                r="8"
+                                fill={DESIGN_SYSTEM.COLORS.WHITE.PURE}
                                 animate={{ offsetDistance: ["0%", "100%"] }}
-                                transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+                                transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
                                 style={{ offsetPath: `path('${TRACK_LAYOUT}')` }}
                             />
-
-                            {turnsCount > 0 && Array.from({ length: turnsCount }).map((_, i) => (
-                                <motion.g
-                                    key={i}
-                                    style={{
-                                        offsetPath: `path('${TRACK_LAYOUT}')`,
-                                        offsetDistance: `${(i / turnsCount) * 100}%`
-                                    }}
-                                >
-                                    <circle r="2" fill={DESIGN_SYSTEM.COLORS.PRIMARY[500]} />
-                                </motion.g>
-                            ))}
                         </svg>
                     </motion.div>
 
-                    <div className="relative z-20 w-full h-full flex flex-col justify-between p-12 md:p-20 pointer-events-none">
-                        <div className="flex justify-between items-start w-full">
-                            <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="flex flex-col gap-1">
-                                {circuitCode && (
-                                    <span className="text-[10px] font-black uppercase tracking-[0.5em]" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}>
-                                        {circuitCode}
-                                    </span>
-                                )}
-                                <div className="flex items-center gap-4 text-[9px] font-medium uppercase text-zinc-500 tracking-widest">
-                                    {countryName && <span>{countryName}</span>}
-                                    <div className="w-1 h-1 bg-zinc-800 rounded-full" />
-                                    <span>{coords[0]}° N / {coords[1]}° E</span>
-                                </div>
-                            </motion.div>
-
-                            <motion.div animate={{ opacity: isHovering ? 1 : 0.3 }} className="flex flex-col items-end text-right gap-4">
-                                {circuit.details?.elevation_change !== undefined && (
-                                    <div className="flex flex-col">
-                                        <span className="text-[8px] font-black uppercase tracking-[0.3em] text-zinc-600">Elevation Change</span>
-                                        <span className="text-sm font-bold text-white uppercase tracking-tighter">{circuit.details.elevation_change}m</span>
-                                    </div>
-                                )}
-                                {circuit.details?.capacity && (
-                                    <div className="flex flex-col">
-                                        <span className="text-[8px] font-black uppercase tracking-[0.3em] text-zinc-600">Capacity</span>
-                                        <span className="text-sm font-bold text-white uppercase tracking-tighter">{circuit.details.capacity.toLocaleString()}</span>
-                                    </div>
-                                )}
-                            </motion.div>
-                        </div>
-
-                        <div className="grid grid-cols-12 gap-10 items-end">
-                            <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1 }} className="col-span-12 md:col-span-8">
-                                <div className="flex flex-col gap-6">
-                                    <h1 className="text-5xl md:text-7xl font-black uppercase tracking-tighter text-white leading-[0.8] italic">
+                    <div className="relative z-20 w-full h-full flex flex-col px-10 md:px-20 py-16">
+                        <div className="flex flex-col md:flex-row justify-between items-start gap-12">
+                            <div className="flex flex-col gap-4">
+                                <button
+                                    onClick={() => window.open(`https://www.google.com/maps?q=${coords[0]},${coords[1]}`, '_blank')}
+                                    className="flex items-center gap-3 text-primary-500 hover:text-white-pure transition-colors group focus:outline-none focus:ring-2 focus:ring-primary-500"
+                                >
+                                    <Globe size={18} />
+                                    <span className="text-xs font-black uppercase tracking-[0.4em]">{countryName} Territory</span>
+                                </button>
+                                <div className="flex flex-col gap-2">
+                                    <span className="text-4xl md:text-6xl font-black uppercase tracking-tighter italic text-white-pure leading-none">
                                         {circuit.name}
-                                    </h1>
-                                    <div className="flex items-center gap-8">
-                                        <div className="flex flex-col">
-                                            <div className="flex gap-1 mt-2">
-                                                {[0, 1, 2].map((i) => (
-                                                    <div key={i} className="h-1 bg-white/10 w-12 overflow-hidden">
-                                                        <motion.div
-                                                            initial={{ width: 0 }}
-                                                            animate={{ width: "100%" }}
-                                                            transition={{ delay: 1 + (i * 0.2) }}
-                                                            className="h-full"
-                                                            style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}
-                                                        />
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        </div>
-                                        {circuit.basics?.tagline && (
-                                            <p className="text-xs text-zinc-500 max-w-xs font-medium uppercase tracking-widest italic border-l border-white/10 pl-6">
-                                                {circuit.basics.tagline}
-                                            </p>
-                                        )}
-                                    </div>
+                                    </span>
+                                    <span className="text-xs font-black uppercase tracking-[0.5em] text-white-pure/40">
+                                        Location {coords[0]} North {coords[1]} East
+                                    </span>
                                 </div>
-                            </motion.div>
-
-                            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="col-span-12 md:col-span-4 flex md:justify-end gap-12 pb-2">
-                                {[
-                                    { label: 'Length', val: circuit.details?.length_km ? `${circuit.details.length_km}km` : null },
-                                    { label: 'Turns', val: turnsCount || null },
-                                    { label: 'Grade', val: fiaGrade || null }
-                                ].filter(s => s.val !== null).map((stat, i) => (
-                                    <div key={i} className="flex flex-col gap-1 border-r border-white/5 last:border-0 pr-12 last:pr-0">
-                                        <span className="text-[8px] font-black uppercase tracking-[0.4em] text-zinc-700 italic">{stat.label}</span>
-                                        <span className="text-2xl font-black uppercase italic text-white tracking-tighter">{stat.val}</span>
-                                    </div>
-                                ))}
-                            </motion.div>
-                        </div>
-                    </div>
-
-                    <div className="absolute bottom-0 left-0 w-full p-8 flex justify-between items-center border-t border-white/5 bg-gradient-to-r from-black via-transparent to-black">
-                        <div className="flex items-center gap-4">
-                            <div className="flex gap-1">
-                                {[0, 1, 2].map(i => <motion.div key={i} animate={{ opacity: [0.2, 1, 0.2] }} transition={{ repeat: Infinity, duration: 1.5, delay: i * 0.2 }} className="w-1 h-1 bg-primary rounded-full" />)}
                             </div>
-                            <span className="text-[8px] font-black uppercase tracking-[0.5em] text-zinc-500">
-                                {circuitCode} // {circuit.details?.type || ''}
-                            </span>
+
+                            <div className="flex gap-16">
+                                <div className="flex flex-col gap-2">
+                                    <span className="text-[10px] font-black uppercase tracking-widest text-secondary-500">Track Code</span>
+                                    <span className="text-2xl font-black text-white-pure uppercase italic tracking-tighter">{circuitCode}</span>
+                                </div>
+                                <div className="flex flex-col gap-2">
+                                    <span className="text-[10px] font-black uppercase tracking-widest text-tertiary-500">Turn Total</span>
+                                    <span className="text-2xl font-black text-white-pure uppercase italic tracking-tighter">{turnsCount}</span>
+                                </div>
+                            </div>
                         </div>
-                        <div className="flex items-center gap-10">
-                            {circuit.details?.direction && (
-                                <span className="text-[8px] font-black uppercase tracking-[0.5em] text-zinc-500">
-                                    Vector: {circuit.details.direction}
+
+                        <div className="mt-auto flex flex-col md:flex-row items-end justify-between gap-12">
+                            <div className="max-w-xl flex flex-col gap-8">
+                                <div className="h-1.5 w-40 bg-primary-500" />
+                                <p className="text-sm md:text-base font-black uppercase tracking-widest text-white-pure/60 leading-relaxed italic">
+                                    {circuit.basics?.tagline || 'A high performance racing environment verified for championship competition.'}
+                                </p>
+                                <div className="flex gap-4">
+                                    <button
+                                        onMouseEnter={() => setIsHovering(true)}
+                                        onMouseLeave={() => setIsHovering(false)}
+                                        className="px-8 py-4 bg-white-pure text-black-pure font-black uppercase text-xs tracking-widest hover:bg-primary-500 hover:text-white-pure transition-all active:scale-95 flex items-center gap-3"
+                                    >
+                                        <Map size={16} />
+                                        Interactive Map
+                                    </button>
+                                    <button
+                                        className="px-8 py-4 border-2 border-white-pure/20 text-white-pure font-black uppercase text-xs tracking-widest hover:border-primary-500 hover:text-primary-500 transition-all flex items-center gap-3"
+                                    >
+                                        <Navigation size={16} />
+                                        Entry Points
+                                    </button>
+                                </div>
+                            </div>
+
+                            <button
+                                onClick={scrollToDetails}
+                                className="flex flex-col items-center gap-4 group focus:outline-none"
+                            >
+                                <span className="text-[10px] font-black uppercase tracking-[0.6em] text-white-pure/30 group-hover:text-primary-500 transition-colors">
+                                    Technical Specs
                                 </span>
-                            )}
-                            <div className="w-px h-8 bg-white/10" />
-                            <span className="text-[8px] font-black uppercase tracking-[0.5em] text-white/40">
-                                {circuit.updatedAt}
-                            </span>
+                                <div className="p-4 rounded-full border border-white-pure/10 group-hover:border-primary-500 transition-colors">
+                                    <ChevronDown className="text-white-pure/30 group-hover:text-primary-500 group-hover:translate-y-1 transition-all" />
+                                </div>
+                            </button>
                         </div>
                     </div>
                 </>
             )}
+            <div id="circuit-specifications" className="absolute bottom-0 h-px w-full" />
         </section>
     );
 }

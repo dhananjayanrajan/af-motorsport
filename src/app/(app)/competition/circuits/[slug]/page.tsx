@@ -1,8 +1,8 @@
 import { notFound } from 'next/navigation';
+import SlugHistory from '../../sections/Slug/History';
 import CircuitDocuments from './sections/Documents';
 import CircuitStatGrid from './sections/Grid';
 import CircuitHero from './sections/Hero';
-import TopographicHistory from './sections/History';
 import LapRecordArchive from './sections/Record';
 import PhysicalSpecs from './sections/Specs';
 import CircuitStatement from './sections/Statement';
@@ -47,11 +47,20 @@ export default async function CircuitPage({ params }: PageProps) {
         <main className="min-h-screen bg-white">
             <CircuitHero circuit={circuit} />
             <PhysicalSpecs circuit={circuit} />
-            <TopographicHistory circuit={circuit} />
-            <CircuitDocuments circuit={circuit} />
             <LapRecordArchive circuit={circuit} />
             <CircuitStatement circuit={circuit} />
             <CircuitStatGrid circuit={circuit} />
+            <SlugHistory
+                name={circuit.name}
+                id={circuit.id}
+                coverImage={circuit.coverImage}
+                tagline={circuit.tagline}
+                establishedYear={circuit.establishedYear}
+                category={circuit.category}
+                protocol={circuit.protocol}
+                historyContent={historyData.docs}
+            />
+            <CircuitDocuments circuit={circuit} />
         </main>
     );
 }
