@@ -117,7 +117,7 @@ export default function Podium({ championship }: PodiumProps) {
                                         <img
                                             src={getPortrait(spot.driver)}
                                             alt={spot.driver.last_name}
-                                            className="w-full h-full object-cover grayscale contrast-125 group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 origin-bottom"
+                                            className="w-full h-full object-cover contrast-125 group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 origin-bottom"
                                         />
                                         <div className="absolute inset-0 bg-black-pure/10 mix-blend-multiply" />
 

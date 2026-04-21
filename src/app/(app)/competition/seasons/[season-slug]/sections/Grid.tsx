@@ -132,7 +132,7 @@ export default function EntryGrid({ entries }: EntryGridProps) {
                                     </td>
                                     <td className="py-6 px-6">
                                         <div className="flex items-center gap-6">
-                                            <div className="w-12 h-12 bg-zinc-100 overflow-hidden grayscale group-hover:grayscale-0 transition-all duration-500 flex-shrink-0">
+                                            <div className="w-12 h-12 bg-zinc-100 overflow-hidden group-hover:grayscale-0 transition-all duration-500 flex-shrink-0">
                                                 <img src={thumbnail} alt="" className="w-full h-full object-cover" />
                                             </div>
                                             <div className="flex flex-col min-w-0">

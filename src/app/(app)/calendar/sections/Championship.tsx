@@ -139,7 +139,7 @@ const ChampionshipCalendar: React.FC<ChampionshipCalendarProps> = ({ championshi
                                                         <div className="size-3 border border-black-pure group-hover:bg-black-pure transition-colors" />
                                                     </div>
                                                     <h3 className="text-xs md:text-sm font-race font-black text-black-pure uppercase tracking-tighter leading-tight mb-3 truncate">{event.name}</h3>
-                                                    <div className="relative aspect-video w-full overflow-hidden border border-black-pure mb-3 grayscale group-hover:grayscale-0 transition-all duration-500">
+                                                    <div className="relative aspect-video w-full overflow-hidden border border-black-pure mb-3 group-hover:grayscale-0 transition-all duration-500">
                                                         <Image src={(event.assets?.thumbnail as Media)?.url || `https://picsum.photos/seed/${event.id}/300/200`} alt={event.name} fill className="object-cover" sizes="240px" />
                                                     </div>
                                                     <div className="flex items-center justify-between">

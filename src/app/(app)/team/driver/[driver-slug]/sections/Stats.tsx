@@ -148,7 +148,7 @@ function StatSlide({ stat, index, driver }: { stat: StatItem; index: number; dri
             style={{ backgroundColor: DESIGN_SYSTEM.COLORS.WHITE.PURE, borderBottomColor: `${DESIGN_SYSTEM.COLORS.BLACK.PURE}33` }}
         >
             <div className="absolute inset-0 z-0">
-                <img src={coverUrl} className="w-full h-full object-cover grayscale opacity-15 contrast-125" alt="" />
+                <img src={coverUrl} className="w-full h-full object-cover opacity-15 contrast-125" alt="" />
                 <div className="absolute inset-0" style={{ backgroundColor: `${DESIGN_SYSTEM.COLORS.WHITE.PURE}B3` }} />
                 <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center pointer-events-none">
                     <span className="text-[30vw] font-black select-none leading-none" style={{ color: `${DESIGN_SYSTEM.COLORS.BLACK.PURE}0D` }}>

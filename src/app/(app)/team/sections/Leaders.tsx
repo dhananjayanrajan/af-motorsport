@@ -93,7 +93,7 @@ const LeadersDirectory: React.FC<LeadersDirectoryProps> = ({ leaders = [] }) => 
                             alt={activeItem?.last_name || 'Leader'}
                             fill
                             priority
-                            className="object-cover transition-all duration-700 grayscale group-hover:grayscale-0 scale-100 group-hover:scale-105"
+                            className="object-cover transition-all duration-700 group-hover:grayscale-0 scale-100 group-hover:scale-105"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black-pure/60 to-transparent" />
                     </div>

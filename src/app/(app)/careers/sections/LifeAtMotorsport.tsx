@@ -52,7 +52,7 @@ export default function LifeAtMotorsport({ celebrations, interviews, meetups }: 
                                         <img
                                             src={img.url || ''}
                                             alt={img.alt || 'Motorsport Culture'}
-                                            className="w-full h-full object-cover grayscale opacity-40 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700"
+                                            className="w-full h-full object-cover opacity-40 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700"
                                         />
                                         <div className="absolute top-4 left-4 bg-black/80 px-2 py-1 border border-zinc-900">
                                             <span className="text-[7px] font-black text-white uppercase tracking-tighter italic">RAW_DATA_CAPTURE_{idx}</span>
@@ -86,7 +86,7 @@ export default function LifeAtMotorsport({ celebrations, interviews, meetups }: 
                                                 "{interview.basics?.summary || 'THE_ENGINEERING_PRECISION_HERE_IS_UNMATCHED_IN_THE_INDUSTRY.'}"
                                             </p>
                                             <div className="flex items-center gap-3 pt-4 border-t border-zinc-900">
-                                                <div className="size-8 bg-zinc-900 border border-zinc-800 grayscale overflow-hidden">
+                                                <div className="size-8 bg-zinc-900 border border-zinc-800 overflow-hidden">
                                                     {typeof person.assets?.avatar === 'object' && person.assets?.avatar?.url && (
                                                         <img src={person.assets.avatar.url} className="w-full h-full object-cover" />
                                                     )}

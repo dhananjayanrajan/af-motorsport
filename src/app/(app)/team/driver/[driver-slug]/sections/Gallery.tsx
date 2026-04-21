@@ -73,7 +73,7 @@ export default function GallerySection({ driver }: { driver: Driver }) {
                                         src={data.thumbnail}
                                         alt={data.name}
                                         fill
-                                        className="object-cover grayscale transition-all duration-500 opacity-60 group-hover:opacity-100 group-hover:grayscale-0 group-hover:scale-105"
+                                        className="object-cover transition-all duration-500 opacity-60 group-hover:opacity-100 group-hover:grayscale-0 group-hover:scale-105"
                                     />
                                     <div className="absolute top-4 left-4 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-10">
                                         <Hash size={10} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />

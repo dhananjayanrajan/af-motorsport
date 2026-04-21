@@ -8,7 +8,7 @@ import { Fragment } from 'react'
 export default function Checkout() {
   return (
     <main className="min-h-screen bg-white-pure flex flex-col">
-      <SectionHeader title="Checkout" subtitle="Finalize" variant={3} />
+      <SectionHeader title="Checkout" subtitle="Finalize" variant={1} />
 
       {!process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY && (
         <div className="w-full border-b border-black-pure bg-primary h-12 flex items-center px-8">
@@ -41,7 +41,7 @@ export default function Checkout() {
         <CheckoutPage />
       </div>
 
-      <SectionFooter variant={3} />
+      <SectionFooter variant={5} />
     </main>
   )
 }

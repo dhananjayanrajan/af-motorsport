@@ -139,7 +139,7 @@ const SeasonDirectory: React.FC<SeasonDirectoryProps> = ({ seasons = [] }) => {
             <div className="flex-1 flex flex-col lg:flex-row divide-y-2 lg:divide-y-0 lg:divide-x-2 divide-black-pure relative">
 
                 <div className="w-full lg:w-[40%] bg-white-pure p-5 md:p-8 lg:p-12 flex flex-col justify-between relative overflow-hidden">
-                    <div className="absolute top-0 left-0 w-full h-full grayscale opacity-10 pointer-events-none">
+                    <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
                         <Image
                             src={(activeSeason?.assets?.cover as Media)?.url || `https://picsum.photos/seed/${activeSeason?.id}/1200/800`}
                             alt=""

@@ -63,7 +63,7 @@ const CarsDirectory: React.FC<CarsDirectoryProps> = ({ cars = [] }) => {
                                 src={(activeCar?.assets?.cover as Media)?.url || `https://picsum.photos/seed/${activeCar?.id}/1200/800`}
                                 alt={activeCar?.name}
                                 fill
-                                className="object-contain grayscale hover:grayscale-0 transition-all duration-700"
+                                className="object-contain hover:grayscale-0 transition-all duration-700"
                                 priority
                             />
                         </div>

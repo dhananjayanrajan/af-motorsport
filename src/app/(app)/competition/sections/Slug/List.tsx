@@ -77,7 +77,7 @@ const SlugList: React.FC<SlugListProps> = ({
                                     <img
                                         src={item.image}
                                         alt={item.name}
-                                        className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
+                                        className="w-full h-full object-cover group-hover:grayscale-0 transition-all duration-700"
                                     />
                                 )}
                                 <div className="absolute top-0 right-0 bg-black-pure px-3 py-1">

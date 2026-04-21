@@ -90,7 +90,7 @@ export default function AwardSection({ leader }: AwardSectionProps) {
                             >
                                 <img
                                     src={selectedAward.assets?.candid?.url || selectedAward.assets?.thumbnail?.url || `https://picsum.photos/seed/${selectedAward.id}/1200/1600`}
-                                    className="w-full h-full object-cover grayscale contrast-125"
+                                    className="w-full h-full object-cover contrast-125"
                                     alt={selectedAward.name}
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
@@ -203,7 +203,7 @@ function AwardEsportsCard({ award, onOpen }: { award: any; onOpen: () => void })
                 <img
                     src={imageUrl}
                     alt={award.name}
-                    className="w-full h-full object-cover grayscale contrast-125 transition-all duration-700 group-hover:scale-110 group-hover:grayscale-0 group-hover:contrast-100"
+                    className="w-full h-full object-cover contrast-125 transition-all duration-700 group-hover:scale-110 group-hover:grayscale-0 group-hover:contrast-100"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
 

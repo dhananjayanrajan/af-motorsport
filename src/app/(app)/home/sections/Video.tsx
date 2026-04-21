@@ -57,7 +57,7 @@ const VideoSection: React.FC<VideoSectionProps> = ({ videoUrls = [] }) => {
                             muted
                             playsInline
                             onEnded={handleVideoEnd}
-                            className="absolute inset-0 w-full h-full object-cover grayscale brightness-75 group-hover:grayscale-0 group-hover:brightness-100 transition-all duration-500 ease-in-out"
+                            className="absolute inset-0 w-full h-full object-cover brightness-75 group-hover:grayscale-0 group-hover:brightness-100 transition-all duration-500 ease-in-out"
                         >
                             <source src={currentSource} type="video/mp4" />
                         </video>

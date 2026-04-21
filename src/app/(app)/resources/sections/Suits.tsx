@@ -76,7 +76,7 @@ export default function SuitsSection({ suits, drivers }: SuitsSectionProps) {
                                     <img
                                         src={thumbnail || placeholderImage}
                                         alt={suit.name}
-                                        className="w-full h-full object-cover opacity-60 group-hover:opacity-100 group-hover:scale-105 transition-all duration-1000 grayscale hover:grayscale-0"
+                                        className="w-full h-full object-cover opacity-60 group-hover:opacity-100 group-hover:scale-105 transition-all duration-1000 hover:grayscale-0"
                                         onError={(e) => {
                                             e.currentTarget.src = placeholderImage;
                                         }}

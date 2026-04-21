@@ -65,7 +65,7 @@ const AssemblyBackground: React.FC<AssemblyBackgroundProps> = ({
     return (
         <GridBase
             zIndex={zIndex}
-            opacity={0.08}
+            opacity={1}
             columnCount={12}
             rowHeight={24}
             onDraw={drawAssemblyPattern}

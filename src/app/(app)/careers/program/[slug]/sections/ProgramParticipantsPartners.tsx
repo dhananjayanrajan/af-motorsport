@@ -47,7 +47,7 @@ export default function ProgramParticipantsPartners({ program }: ProgramParticip
                                     className="bg-black p-6 group hover:bg-zinc-950 transition-colors"
                                 >
                                     <div className="flex items-center gap-4">
-                                        <div className="size-12 bg-zinc-900 border border-zinc-800 grayscale group-hover:grayscale-0 transition-all overflow-hidden">
+                                        <div className="size-12 bg-zinc-900 border border-zinc-800 group-hover:grayscale-0 transition-all overflow-hidden">
                                             {typeof driver.assets?.avatar === 'object' && driver.assets?.avatar?.url ? (
                                                 <img src={driver.assets.avatar.url} alt={driver.first_name || 'Driver'} className="w-full h-full object-cover" />
                                             ) : (
@@ -91,7 +91,7 @@ export default function ProgramParticipantsPartners({ program }: ProgramParticip
                                     className="bg-zinc-950 border border-zinc-900 p-6 flex flex-col md:flex-row md:items-center justify-between gap-8 group"
                                 >
                                     <div className="flex items-center gap-6">
-                                        <div className="size-10 flex items-center justify-center bg-black border border-zinc-900 p-2 grayscale group-hover:grayscale-0 transition-all">
+                                        <div className="size-10 flex items-center justify-center bg-black border border-zinc-900 p-2 group-hover:grayscale-0 transition-all">
                                             {typeof org.assets?.logo === 'object' && org.assets?.logo?.url ? (
                                                 <img src={org.assets.logo.url} alt={org.name} className="max-w-full max-h-full object-contain" />
                                             ) : (

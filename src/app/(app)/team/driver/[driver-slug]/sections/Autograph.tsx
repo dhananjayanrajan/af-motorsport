@@ -72,7 +72,7 @@ export default function AutographSection({ driver }: AutographSectionProps) {
                             <img
                                 src={cardImageUrl}
                                 alt={fullName}
-                                className="w-full h-full object-cover grayscale brightness-75 group-hover:scale-110 transition-transform duration-1000"
+                                className="w-full h-full object-cover brightness-75 group-hover:scale-110 transition-transform duration-1000"
                             />
                         </div>
 

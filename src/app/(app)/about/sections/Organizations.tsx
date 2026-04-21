@@ -144,7 +144,7 @@ export default function OrganizationsSection({ organizations }: OrganizationsSec
                                                         <img
                                                             src={logoUrl}
                                                             alt={org.name}
-                                                            className="max-h-full max-w-full object-contain grayscale group-hover/card:grayscale-0 transition-all duration-700 group-hover/card:scale-105"
+                                                            className="max-h-full max-w-full object-contain group-hover/card:grayscale-0 transition-all duration-700 group-hover/card:scale-105"
                                                         />
                                                     </div>
                                                 </div>
@@ -263,7 +263,7 @@ export default function OrganizationsSection({ organizations }: OrganizationsSec
                                     <img
                                         src={(selectedOrg.assets?.logo as Media)?.url ?? `https://picsum.photos/seed/org-modal-${selectedOrg.id}/600/400`}
                                         alt={selectedOrg.name}
-                                        className="max-w-full max-h-full object-contain grayscale transition-all duration-700 group-hover/logo:grayscale-0 group-hover/logo:scale-110"
+                                        className="max-w-full max-h-full object-contain transition-all duration-700 group-hover/logo:grayscale-0 group-hover/logo:scale-110"
                                     />
                                 </div>
 

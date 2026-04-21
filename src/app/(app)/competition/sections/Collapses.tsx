@@ -64,7 +64,7 @@ export default function Incidents({ incidents }: IncidentsProps) {
                                 <img
                                     src={incidentImage || placeholderImage}
                                     alt={incident.name}
-                                    className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
+                                    className="w-full h-full object-cover group-hover:grayscale-0 transition-all duration-700"
                                     onError={(e) => {
                                         e.currentTarget.src = placeholderImage;
                                     }}

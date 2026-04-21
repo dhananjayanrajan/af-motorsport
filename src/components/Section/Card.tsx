@@ -26,26 +26,29 @@ const SectionCard: React.FC<SectionCardProps> = ({
     const imageUrl = typeof image === 'string'
         ? image
         : (image && typeof image === 'object' && 'url' in image)
-            ? image.url
+            ? (image as Media).url
             : ''
+
+    const headingBase = "font-black uppercase tracking-normal leading-none text-left transition-colors duration-100"
+    const monoBase = "font-mono font-black uppercase tracking-normal text-[10px]"
 
     if (variant === 2) {
         return (
             <button
                 onClick={onClick}
-                className={`group relative w-full h-full border-b-2 border-r-2 border-black-pure overflow-hidden bg-white-pure transition-colors duration-300 ${active ? 'bg-primary' : 'hover:bg-black-pure'}`}
+                className={`group relative w-full h-full border-b-4 border-r-4 border-black-pure overflow-hidden bg-white-pure transition-colors duration-100 outline-none ${active ? 'bg-primary-500' : 'hover:bg-black-pure'}`}
             >
-                <div className="absolute top-0 left-0 w-full h-1/2 relative overflow-hidden">
-                    {imageUrl && <Image src={imageUrl} alt={title} fill className="object-cover grayscale group-hover:grayscale-0 transition-all duration-500" />}
+                <div className="relative h-48 w-full overflow-hidden border-b-4 border-black-pure">
+                    {imageUrl && <Image src={imageUrl} alt={title} fill className="object-cover" />}
                 </div>
                 <div className="p-6 flex flex-col items-start">
-                    <span className={`font-mono text-[9px] font-black uppercase tracking-widest mb-2 ${active ? 'text-black-pure' : 'text-primary'}`}>
-                        {label || ''}
+                    <span className={`${monoBase} mb-2 ${active ? 'text-black-pure' : 'text-secondary-500'}`}>
+                        {label || 'DATA_POINT'}
                     </span>
-                    <h4 className={`text-xl font-black uppercase tracking-tighter text-left leading-none ${active ? 'text-black-pure' : 'group-hover:text-white-pure text-black-pure'}`}>
+                    <h4 className={`text-xl md:text-2xl ${headingBase} ${active ? 'text-black-pure' : 'group-hover:text-white-pure text-black-pure'}`}>
                         {title}
                     </h4>
-                    {subtitle && <span className="mt-2 text-xs font-mono opacity-50 text-left">{subtitle}</span>}
+                    {subtitle && <span className="mt-3 font-mono text-[10px] font-black text-black-pure/40 uppercase">{subtitle}</span>}
                 </div>
             </button>
         )
@@ -55,13 +58,13 @@ const SectionCard: React.FC<SectionCardProps> = ({
         return (
             <button
                 onClick={onClick}
-                className="group relative w-full h-full border-b-2 border-r-2 border-black-pure bg-black-pure overflow-hidden"
+                className="group relative w-full h-full border-b-4 border-r-4 border-black-pure bg-black-pure overflow-hidden outline-none"
             >
-                {imageUrl && <Image src={imageUrl} alt={title} fill className="object-cover opacity-40 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700" />}
-                <div className="absolute inset-0 p-8 flex flex-col justify-end bg-gradient-to-t from-black-pure via-transparent to-transparent">
-                    <div className="translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-                        <h4 className="text-2xl font-black text-white-pure uppercase italic">{title}</h4>
-                        <div className="w-0 group-hover:w-full h-1 bg-primary transition-all duration-500 mt-2" />
+                {imageUrl && <Image src={imageUrl} alt={title} fill className="object-cover transition-transform duration-500 group-hover:scale-110" />}
+                <div className="absolute inset-0 p-8 flex flex-col justify-end bg-black-pure/40 group-hover:bg-primary-500/80 transition-colors duration-100">
+                    <div className="relative z-10">
+                        <h4 className={`text-2xl md:text-3xl ${headingBase} text-white-pure group-hover:text-black-pure`}>{title}</h4>
+                        <div className="w-12 h-2 bg-secondary-500 mt-4 group-hover:bg-black-pure transition-colors" />
                     </div>
                 </div>
             </button>
@@ -72,20 +75,20 @@ const SectionCard: React.FC<SectionCardProps> = ({
         return (
             <button
                 onClick={onClick}
-                className="group relative w-full h-full border-b-2 border-r-2 border-black-pure bg-white-200 flex flex-col"
+                className="group relative w-full h-full border-b-4 border-r-4 border-black-pure bg-white-pure flex flex-col outline-none"
             >
                 <div className="flex-1 p-8 flex flex-col justify-between relative z-10">
-                    <span className="text-6xl font-black text-black-pure/5 absolute top-4 right-4">{label?.slice(0, 2)}</span>
-                    <h4 className="text-3xl font-black uppercase tracking-tighter text-black-pure text-left leading-none group-hover:text-primary transition-colors">
-                        {title.split(' ').map((word, i) => <span key={i} className="block">{word}</span>)}
+                    <span className="text-4xl font-black text-black-pure/10 absolute top-4 right-4">{label?.slice(0, 3)}</span>
+                    <h4 className={`text-2xl md:text-3xl ${headingBase} text-black-pure group-hover:text-primary-500`}>
+                        {title}
                     </h4>
-                    <div className="flex items-center gap-2">
-                        <div className="w-8 h-1 bg-black-pure group-hover:w-12 transition-all" />
-                        <span className="font-mono text-[10px] font-black uppercase">{subtitle}</span>
+                    <div className="flex items-center gap-4">
+                        <div className="w-10 h-2 bg-black-pure group-hover:bg-secondary-500 transition-colors" />
+                        <span className={monoBase}>{subtitle || 'INDEX_REFERENCE'}</span>
                     </div>
                 </div>
-                <div className="h-24 w-full relative grayscale group-hover:grayscale-0 transition-all border-t-2 border-black-pure">
-                    {imageUrl && <Image src={imageUrl} alt={title} fill className="object-cover" />}
+                <div className="h-32 w-full relative border-t-4 border-black-pure overflow-hidden">
+                    {imageUrl && <Image src={imageUrl} alt={title} fill className="object-cover transition-transform duration-500 group-hover:scale-105" />}
                 </div>
             </button>
         )
@@ -95,15 +98,15 @@ const SectionCard: React.FC<SectionCardProps> = ({
         return (
             <button
                 onClick={onClick}
-                className="group relative w-full h-full border-b-2 border-r-2 border-black-pure flex items-stretch bg-white-50 hover:bg-white-pure transition-colors"
+                className="group relative w-full h-full border-b-4 border-r-4 border-black-pure flex items-stretch bg-white-pure hover:bg-secondary-500 transition-colors duration-100 outline-none"
             >
-                <div className="w-2 bg-secondary group-hover:bg-primary transition-colors" />
+                <div className="w-4 bg-primary-500 border-r-4 border-black-pure group-hover:bg-black-pure transition-colors" />
                 <div className="flex-1 p-6 flex flex-col justify-center">
-                    <h4 className="text-xl font-black uppercase tracking-widest text-black-pure text-left">{title}</h4>
-                    <p className="text-[10px] font-mono uppercase opacity-40 text-left mt-1">{subtitle}</p>
+                    <h4 className={`text-xl ${headingBase} text-black-pure`}>{title}</h4>
+                    <p className={`${monoBase} text-black-pure/40 mt-2`}>{subtitle || 'SUB_HEADING'}</p>
                 </div>
-                <div className="w-32 relative border-l border-black-pure/10">
-                    {imageUrl && <Image src={imageUrl} alt={title} fill className="object-cover grayscale group-hover:grayscale-0" />}
+                <div className="w-32 relative border-l-4 border-black-pure overflow-hidden bg-primary-500">
+                    {imageUrl && <Image src={imageUrl} alt={title} fill className="object-cover" />}
                 </div>
             </button>
         )
@@ -112,18 +115,18 @@ const SectionCard: React.FC<SectionCardProps> = ({
     return (
         <button
             onClick={onClick}
-            className="relative w-full h-full border-b-2 border-r-2 border-black-pure group overflow-hidden bg-white-100 outline-none lg:[&:nth-child(3n)]:border-r-0"
+            className="relative w-full h-full border-b-4 border-r-4 border-black-pure group overflow-hidden bg-primary-500 outline-none lg:[&:nth-child(3n)]:border-r-0"
         >
-            {imageUrl && <Image src={imageUrl} alt={title} fill className="object-cover transition-transform duration-700 group-hover:scale-105" />}
-            <div className="absolute inset-0 bg-gradient-to-t from-black-pure/80 via-transparent to-transparent opacity-60 group-hover:opacity-100 transition-opacity duration-300" />
+            {imageUrl && <Image src={imageUrl} alt={title} fill className="object-cover" />}
+            <div className="absolute inset-0 bg-black-pure/40 group-hover:bg-secondary-500/60 transition-colors duration-100" />
             <div className="absolute inset-0 p-8 flex flex-col justify-between z-10">
-                <div className="flex items-center gap-3">
-                    <div className="w-8 h-2 bg-primary" />
-                    <span className="font-mono text-[10px] font-black text-white-pure uppercase tracking-[0.2em]">
-                        {label || ""}
+                <div className="flex items-center gap-4">
+                    <div className="w-12 h-3 bg-primary-500 border-2 border-black-pure" />
+                    <span className={`${monoBase} text-white-pure`}>
+                        {label || "SECTION_ID"}
                     </span>
                 </div>
-                <h4 className="text-xl md:text-2xl font-black uppercase tracking-tighter leading-none text-white-pure text-left group-hover:translate-x-2 transition-all duration-300">
+                <h4 className={`text-2xl md:text-3xl ${headingBase} text-white-pure group-hover:translate-x-4 transition-transform duration-100`}>
                     {title}
                 </h4>
             </div>

@@ -75,7 +75,7 @@ export default function ChampionshipTimeline({ championship }: ChampionshipTimel
                     <div className="relative h-full min-h-[120px] lg:min-h-0 bg-white-200 overflow-hidden">
                         <img
                             src={coverImage}
-                            className="w-full h-full object-cover grayscale contrast-125 border-l border-black-pure"
+                            className="w-full h-full object-cover contrast-125 border-l border-black-pure"
                             alt="Registry Context"
                         />
                         <div className="absolute inset-0 bg-primary-500/10 mix-blend-multiply" />

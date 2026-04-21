@@ -184,7 +184,7 @@ function CelebrationSlab({ item, isMobile, onExpand }: { item: Celebration, inde
                     src={imageUrl}
                     alt={item.name}
                     fill
-                    className="object-cover grayscale hover:grayscale-0 transition-all duration-700 scale-110 hover:scale-100"
+                    className="object-cover hover:grayscale-0 transition-all duration-700 scale-110 hover:scale-100"
                 />
                 <div
                     className="absolute bottom-0 right-0 px-4 py-2 text-[10px] font-black uppercase tracking-[0.2em]"
@@ -250,7 +250,7 @@ function CelebrationModal({ item, onClose, onNavigate }: { item: Celebration, on
                         src={imageUrl}
                         alt={item.name}
                         fill
-                        className="object-cover grayscale contrast-125 transition-all duration-700 hover:grayscale-0 hover:contrast-100"
+                        className="object-cover contrast-125 transition-all duration-700 hover:grayscale-0 hover:contrast-100"
                         priority
                     />
                 </div>

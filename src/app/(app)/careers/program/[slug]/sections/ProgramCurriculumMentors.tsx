@@ -95,7 +95,7 @@ export default function ProgramCurriculumMentors({ program }: ProgramCurriculumM
                                     transition={{ delay: idx * 0.1 }}
                                     className="bg-zinc-950 border border-zinc-900 overflow-hidden group"
                                 >
-                                    <div className="aspect-[3/4] relative grayscale group-hover:grayscale-0 transition-all duration-700">
+                                    <div className="aspect-[3/4] relative group-hover:grayscale-0 transition-all duration-700">
                                         {typeof mentor.assets?.avatar === 'object' && mentor.assets?.avatar?.url ? (
                                             <img
                                                 src={mentor.assets.avatar.url}

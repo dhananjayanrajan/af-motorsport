@@ -32,7 +32,7 @@ export default function EntryStackedGrid({ entries }: EntryStackedGridProps) {
                             className="break-inside-avoid mb-px relative group overflow-hidden"
                             style={{ backgroundColor: DESIGN_SYSTEM.COLORS.SURFACE }}
                         >
-                            <div className="relative aspect-[16/10] overflow-hidden grayscale group-hover:grayscale-0 transition-all duration-500">
+                            <div className="relative aspect-[16/10] overflow-hidden group-hover:grayscale-0 transition-all duration-500">
                                 <img
                                     src={thumbnail}
                                     alt={entry.name}

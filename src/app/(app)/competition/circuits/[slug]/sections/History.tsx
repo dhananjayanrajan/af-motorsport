@@ -70,7 +70,7 @@ export default function TopographicHistory({ circuit }: TopographicHistoryProps)
                                 <img
                                     src={gallery[imgIndex].url || ''}
                                     alt="Site Evidence"
-                                    className="w-full h-full object-cover grayscale transition-all duration-1000 hover:grayscale-0"
+                                    className="w-full h-full object-cover transition-all duration-1000 hover:grayscale-0"
                                 />
                                 <div className="absolute bottom-4 left-4 z-10">
                                     <span className="text-[9px] font-black uppercase bg-black text-white px-3 py-1 tracking-widest">
@@ -147,7 +147,7 @@ export default function TopographicHistory({ circuit }: TopographicHistoryProps)
                                 <img
                                     src={cardImageUrl}
                                     alt={circuit.name}
-                                    className="w-full h-full object-cover grayscale brightness-50 contrast-125 transition-all duration-1000"
+                                    className="w-full h-full object-cover brightness-50 contrast-125 transition-all duration-1000"
                                 />
                             </motion.div>
 

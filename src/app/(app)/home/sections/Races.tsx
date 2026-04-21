@@ -42,7 +42,7 @@ const LatestRaces: React.FC<LatestRacesProps> = ({ races = [] }) => {
             <SectionHeader
                 title="RACING"
                 subtitle="CALENDAR"
-                variant={1}
+                variant={3}
                 championships={raceAsChampionship}
             />
 
@@ -51,7 +51,7 @@ const LatestRaces: React.FC<LatestRacesProps> = ({ races = [] }) => {
                 velocity={30}
                 backgroundColor="bg-secondary-500"
                 textColor="text-black-pure font-black"
-                variant={5}
+                variant={2}
             />
 
             <div className="flex-1 flex flex-col lg:flex-row w-full border-b border-black-pure">
@@ -119,7 +119,7 @@ const LatestRaces: React.FC<LatestRacesProps> = ({ races = [] }) => {
                                 alt={races[0]?.name || 'Current'}
                                 fill
                                 priority
-                                className="object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
+                                className="object-cover group-hover:grayscale-0 transition-all duration-700"
                             />
                             <div className="absolute inset-0 bg-primary-500 opacity-10 mix-blend-multiply group-hover:opacity-0 transition-opacity" />
                             <div className="absolute bottom-0 left-0 right-0 bg-white-pure p-5 border-t border-black-pure translate-y-full group-hover:translate-y-0 transition-transform duration-500">
@@ -181,7 +181,7 @@ const LatestRaces: React.FC<LatestRacesProps> = ({ races = [] }) => {
                 </aside>
             </div>
 
-            <SectionFooter variant={1} championships={raceAsChampionship} />
+            <SectionFooter variant={5} championships={raceAsChampionship} />
 
             <SectionModal
                 isOpen={!!selectedRace}

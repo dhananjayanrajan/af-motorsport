@@ -67,7 +67,7 @@ const RaceCalendar: React.FC<RaceCalendarProps> = ({ races = [] }) => {
                                     src={upcoming.find((r) => r.id.toString() === hoveredRace)?.assets?.cover ? (upcoming.find((r) => r.id.toString() === hoveredRace)?.assets?.cover as Media).url! : `https://picsum.photos/seed/${hoveredRace}/600/400`}
                                     alt="Preview"
                                     fill
-                                    className="object-cover grayscale brightness-50 group-hover/preview:grayscale-0 group-hover/preview:brightness-100 transition-all duration-500 scale-105 group-hover/preview:scale-100"
+                                    className="object-cover brightness-50 group-hover/preview:grayscale-0 group-hover/preview:brightness-100 transition-all duration-500 scale-105 group-hover/preview:scale-100"
                                 />
                                 <div className="absolute inset-0 bg-primary-500/10 mix-blend-overlay" />
                             </>

@@ -212,7 +212,7 @@ const DriversDirectory: React.FC<DriversDirectoryProps> = ({ drivers = [] }) => 
                                     alt={activeItem?.last_name || "Driver Profile"}
                                     fill
                                     sizes="40vw"
-                                    className="object-cover transition-all duration-1000 group-hover:scale-110 grayscale group-hover:grayscale-0"
+                                    className="object-cover transition-all duration-1000 group-hover:scale-110 group-hover:grayscale-0"
                                 />
                                 <div className="absolute inset-0 bg-secondary-500/10 mix-blend-multiply transition-opacity group-hover:opacity-0" />
                             </div>

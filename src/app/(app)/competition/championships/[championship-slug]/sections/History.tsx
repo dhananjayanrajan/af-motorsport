@@ -147,7 +147,7 @@ export default function ChampionshipHistory({ championship }: ChampionshipHistor
                                 <img
                                     src={cardImageUrl}
                                     alt={championship.name}
-                                    className="w-full h-full object-cover grayscale brightness-75 transition-all duration-1000"
+                                    className="w-full h-full object-cover brightness-75 transition-all duration-1000"
                                 />
                             </motion.div>
 

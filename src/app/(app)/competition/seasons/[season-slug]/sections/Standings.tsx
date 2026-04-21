@@ -152,7 +152,7 @@ export default function PointsStandings({ races, entries }: PointsStandingsProps
                                     </div>
 
                                     <div className="w-12 h-12 shrink-0 border border-zinc-200 p-0.5 bg-white overflow-hidden">
-                                        <img src={standing.thumbnail} alt="" className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all" />
+                                        <img src={standing.thumbnail} alt="" className="w-full h-full object-cover group-hover:grayscale-0 transition-all" />
                                     </div>
 
                                     <div className="w-64 shrink-0">

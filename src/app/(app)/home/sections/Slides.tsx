@@ -58,7 +58,7 @@ const HeroSlides: React.FC<HeroSectionProps> = ({ slides = [] }) => {
                                     alt={slide.name}
                                     fill
                                     priority
-                                    className="object-cover grayscale brightness-50 hover:grayscale-0 hover:brightness-100 transition-all duration-700 ease-in-out"
+                                    className="object-cover brightness-50 hover:grayscale-0 hover:brightness-100 transition-all duration-700 ease-in-out"
                                 />
                                 <div className="absolute inset-0 bg-tertiary-500 opacity-20 mix-blend-multiply pointer-events-none" />
                             </div>

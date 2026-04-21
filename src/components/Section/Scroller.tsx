@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
 interface SectionScrollerProps {
     items: string[]
@@ -15,11 +15,26 @@ const SectionScroller: React.FC<SectionScrollerProps> = ({
     items,
     delimiter = <span className="text-black-pure px-4">/</span>,
     velocity = 40,
-    backgroundColor = "bg-secondary",
+    backgroundColor = "bg-secondary-500",
     textColor = "text-black-pure",
     variant = 1
 }) => {
+    const [isScrollingDown, setIsScrollingDown] = useState(true)
+    const lastScrollY = useRef(0)
+
     useEffect(() => {
+        const handleScroll = () => {
+            const currentScrollY = window.scrollY
+            if (currentScrollY > lastScrollY.current) {
+                setIsScrollingDown(true)
+            } else {
+                setIsScrollingDown(false)
+            }
+            lastScrollY.current = currentScrollY
+        }
+
+        window.addEventListener("scroll", handleScroll, { passive: true })
+
         const styleId = 'section-scroller-keyframes'
         if (!document.getElementById(styleId)) {
             const style = document.createElement('style')
@@ -27,10 +42,10 @@ const SectionScroller: React.FC<SectionScrollerProps> = ({
             style.innerHTML = `
                 @keyframes marquee_forward {
                     0% { transform: translateX(0); }
-                    100% { transform: translateX(-25%); }
+                    100% { transform: translateX(-50%); }
                 }
                 @keyframes marquee_reverse {
-                    0% { transform: translateX(-25%); }
+                    0% { transform: translateX(-50%); }
                     100% { transform: translateX(0); }
                 }
                 .animate-marquee-forward {
@@ -42,13 +57,16 @@ const SectionScroller: React.FC<SectionScrollerProps> = ({
             `
             document.head.appendChild(style)
         }
+        return () => window.removeEventListener("scroll", handleScroll)
     }, [])
+
+    const animationClass = isScrollingDown ? "animate-marquee-forward" : "animate-marquee-backward"
 
     const renderGroup = (groupIndex: number, currentTextColor: string) => (
         <div key={groupIndex} className="flex items-center">
             {items.map((item, i) => (
                 <React.Fragment key={i}>
-                    <span className={`text-sm font-black ${currentTextColor} tracking-[0.4em] font-mono uppercase px-8 whitespace-nowrap`}>
+                    <span className={`text-base font-black ${currentTextColor} tracking-normal font-mono uppercase px-8 whitespace-nowrap`}>
                         {item}
                     </span>
                     {delimiter}
@@ -57,50 +75,22 @@ const SectionScroller: React.FC<SectionScrollerProps> = ({
         </div>
     )
 
-    if (variant === 2) {
-        return (
-            <div className="w-full bg-black-pure border-y-2 border-black-pure overflow-hidden shrink-0 h-14 flex items-center">
-                <div className="flex whitespace-nowrap animate-marquee-backward" style={{ animationDuration: `${velocity * 1.2}s` }}>
-                    {[...Array(4)].map((_, i) => renderGroup(i, "text-white-pure"))}
-                </div>
-            </div>
-        )
+    const getVariantStyles = () => {
+        switch (variant) {
+            case 2: return { bg: "bg-black-pure", text: "text-white-pure", h: "h-14" }
+            case 3: return { bg: "bg-primary-500", text: "text-black-pure", h: "h-20" }
+            case 4: return { bg: "bg-white-pure", text: "text-black-pure", h: "h-16" }
+            case 5: return { bg: "bg-secondary-500", text: "text-black-pure", h: "h-24" }
+            default: return { bg: backgroundColor, text: textColor, h: "h-16" }
+        }
     }
 
-    if (variant === 3) {
-        return (
-            <div className="w-full bg-primary border-y-2 border-black-pure overflow-hidden shrink-0 h-20 flex items-center">
-                <div className="flex whitespace-nowrap animate-marquee-forward rotate-1 scale-110" style={{ animationDuration: `${velocity * 0.8}s` }}>
-                    {[...Array(4)].map((_, i) => renderGroup(i, "text-black-pure"))}
-                </div>
-            </div>
-        )
-    }
-
-    if (variant === 4) {
-        return (
-            <div className="w-full bg-white-50 border-y-2 border-black-pure overflow-hidden shrink-0 h-16 flex items-center">
-                <div className="flex whitespace-nowrap animate-marquee-forward" style={{ animationDuration: `${velocity}s` }}>
-                    {[...Array(4)].map((_, i) => renderGroup(i, "text-black-pure"))}
-                </div>
-            </div>
-        )
-    }
-
-    if (variant === 5) {
-        return (
-            <div className="w-full bg-tertiary-500 border-y-4 border-black-pure overflow-hidden shrink-0 h-24 flex items-center italic">
-                <div className="flex whitespace-nowrap animate-marquee-forward scale-y-150" style={{ animationDuration: `${velocity * 1.5}s` }}>
-                    {[...Array(4)].map((_, i) => renderGroup(i, "text-black-pure"))}
-                </div>
-            </div>
-        )
-    }
+    const styles = getVariantStyles()
 
     return (
-        <div className={`w-full ${backgroundColor} border-y-2 border-black-pure overflow-hidden shrink-0 h-16 flex items-center`}>
-            <div className={`flex whitespace-nowrap animate-marquee-forward`} style={{ animationDuration: `${velocity}s` }}>
-                {[...Array(4)].map((_, i) => renderGroup(i, textColor))}
+        <div className={`w-full ${styles.bg} border-y-4 border-black-pure overflow-hidden shrink-0 ${styles.h} flex items-center`}>
+            <div className={`flex whitespace-nowrap ${animationClass}`} style={{ animationDuration: `${velocity}s` }}>
+                {[...Array(4)].map((_, i) => renderGroup(i, styles.text))}
             </div>
         </div>
     )

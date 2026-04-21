@@ -147,7 +147,7 @@ export default function IdentitySection({ identity }: IdentitySectionProps) {
                                         <div className="lg:col-span-3 aspect-square lg:aspect-auto relative overflow-hidden bg-zinc-100">
                                             <img
                                                 src={avatar}
-                                                className="w-full h-full object-cover grayscale transition-all duration-700 group-hover/leader:grayscale-0 group-hover/leader:scale-105"
+                                                className="w-full h-full object-cover transition-all duration-700 group-hover/leader:grayscale-0 group-hover/leader:scale-105"
                                                 alt={l.first_name}
                                             />
                                             <div className="absolute top-4 left-4">

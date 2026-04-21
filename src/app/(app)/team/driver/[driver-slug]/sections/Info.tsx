@@ -81,7 +81,7 @@ export default function InfoSection({ driver }: InfoSectionProps) {
                                         <img
                                             src={finalImage}
                                             alt={driver.last_name}
-                                            className="w-full h-full object-cover grayscale transition-all duration-700 group-hover:grayscale-0 group-hover:scale-110"
+                                            className="w-full h-full object-cover transition-all duration-700 group-hover:grayscale-0 group-hover:scale-110"
                                         />
                                         <div
                                             className="absolute bottom-4 left-4 px-3 py-1 border transition-colors group-hover:bg-primary-500"

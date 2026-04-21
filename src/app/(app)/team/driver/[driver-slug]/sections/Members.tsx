@@ -155,7 +155,7 @@ export default function MembersSection({ cars }: MembersSectionProps) {
                                     src={getImageUrl(selectedMember.assets?.avatar, `member-detail-${selectedMember.id}`)}
                                     alt={selectedMember.last_name}
                                     fill
-                                    className="object-cover grayscale contrast-125 transition-all duration-700 hover:grayscale-0"
+                                    className="object-cover contrast-125 transition-all duration-700 hover:grayscale-0"
                                 />
                                 <div className="absolute top-8 left-8">
                                     <span

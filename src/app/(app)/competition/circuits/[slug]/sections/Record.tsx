@@ -79,7 +79,7 @@ export default function LapRecordArchive({ circuit }: LapRecordArchiveProps) {
                     <img
                         src={driverImage}
                         alt={driverName}
-                        className="w-full h-full object-cover grayscale opacity-40 contrast-125 transition-transform duration-700 group-hover:scale-105"
+                        className="w-full h-full object-cover opacity-40 contrast-125 transition-transform duration-700 group-hover:scale-105"
                     />
                     <div className="absolute inset-0 bg-primary-500/10 mix-blend-multiply" />
                     <div className="absolute bottom-10 left-10">

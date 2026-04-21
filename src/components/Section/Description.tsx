@@ -8,16 +8,16 @@ interface SectionDescriptionProps {
 }
 
 const SectionDescription: React.FC<SectionDescriptionProps> = ({ text, variant = 1 }) => {
+    const pStyle = "text-sm md:text-base font-mono uppercase font-black tracking-normal leading-normal max-w-xl"
+
     if (variant === 2) {
         return (
-            <div className="flex flex-col border-l-4 border-primary pl-5 py-3 max-w-full">
-                <div className="w-8 h-0.5 bg-black-pure mb-4" />
-                <p className="text-[11px] md:text-xs font-mono uppercase leading-relaxed text-black-pure font-black tracking-[0.15em] max-w-lg">
-                    {text}
-                </p>
-                <div className="flex gap-1.5 mt-5">
-                    <div className="w-5 h-5 bg-tertiary-500" />
-                    <div className="w-5 h-5 bg-black-pure" />
+            <div className="flex w-full border-4 border-black-pure bg-secondary-500">
+                <div className="w-12 md:w-16 bg-black-pure shrink-0" />
+                <div className="p-8">
+                    <p className={`${pStyle} text-black-pure`}>
+                        {text || 'The requested information is currently being processed for this specific entry.'}
+                    </p>
                 </div>
             </div>
         )
@@ -25,28 +25,25 @@ const SectionDescription: React.FC<SectionDescriptionProps> = ({ text, variant =
 
     if (variant === 3) {
         return (
-            <div className="flex flex-col items-start text-left max-w-full">
-                <div className="flex gap-0.5 mb-5">
-                    {[...Array(4)].map((_, i) => (
-                        <div key={i} className="w-2.5 h-2.5 bg-primary" />
-                    ))}
+            <div className="flex flex-col w-full border-4 border-black-pure bg-white-pure">
+                <div className="p-8 border-b-4 border-black-pure">
+                    <p className={`${pStyle} text-black-pure`}>
+                        {text || 'Full descriptive documentation for this sequence is listed below.'}
+                    </p>
                 </div>
-                <p className="text-[11px] md:text-xs font-mono uppercase leading-tight text-black-pure font-black tracking-tight max-w-md">
-                    {text}
-                </p>
-                <div className="mt-5 w-full h-px bg-black-pure/20" />
+                <div className="flex h-12">
+                    <div className="flex-1 bg-primary-500 border-r-4 border-black-pure" />
+                    <div className="flex-1 bg-secondary-500 border-r-4 border-black-pure" />
+                    <div className="flex-1 bg-black-pure" />
+                </div>
             </div>
         )
     }
 
     return (
-        <div className="flex flex-col max-w-full">
-            <div className="flex items-center gap-4 mb-4">
-                <div className="w-12 h-12 bg-primary hover:bg-primary-400 transition-colors duration-300 shrink-0" />
-                <div className="w-12 h-12 bg-tertiary-500 hover:bg-tertiary-400 transition-colors duration-300 shrink-0" />
-            </div>
-            <p className="text-[11px] md:text-xs font-mono uppercase leading-relaxed text-black-pure font-black tracking-[0.15em] max-w-lg">
-                {text}
+        <div className="p-8 md:p-12 border-4 border-black-pure bg-white-pure">
+            <p className={`${pStyle} text-black-pure`}>
+                {text || 'Standard detailed overview regarding the selected technical parameters.'}
             </p>
         </div>
     )

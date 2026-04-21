@@ -9,7 +9,7 @@ interface WeaveBackgroundProps {
 
 const WeaveBackground: React.FC<WeaveBackgroundProps> = ({
     zIndex = "z-0",
-    opacity = "opacity-[0.05]",
+    opacity = "opacity-[0.15]",
 }) => {
     return (
         <div className={`absolute inset-0 ${zIndex} ${opacity} pointer-events-none overflow-hidden`}>

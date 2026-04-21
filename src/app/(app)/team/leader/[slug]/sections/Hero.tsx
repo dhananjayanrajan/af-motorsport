@@ -24,7 +24,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ leader }) => {
                     alt={leader.last_name || 'Leader Cover'}
                     fill
                     priority
-                    className="object-cover grayscale contrast-125 opacity-40 md:opacity-100"
+                    className="object-cover contrast-125 opacity-40 md:opacity-100"
                 />
                 <div
                     className="absolute inset-0 z-10"
@@ -90,7 +90,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ leader }) => {
                                 borderColor: DESIGN_SYSTEM.COLORS.ZINC[100]
                             }}
                         >
-                            <div className="relative w-full h-full overflow-hidden grayscale contrast-125 hover:grayscale-0 hover:contrast-100 transition-all duration-700">
+                            <div className="relative w-full h-full overflow-hidden contrast-125 hover:grayscale-0 hover:contrast-100 transition-all duration-700">
                                 <Image
                                     src={avatarUrl}
                                     alt={leader.first_name || 'Leader Avatar'}

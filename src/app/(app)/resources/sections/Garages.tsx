@@ -35,7 +35,7 @@ const GarageDirectory: React.FC<GarageDirectoryProps> = ({ garages = [] }) => {
                     <div className="flex-1 grid grid-cols-1 md:grid-cols-4 divide-y-2 md:divide-y-0 md:divide-x-2 divide-black-pure border-b-2 border-black-pure">
 
                         <div className="md:col-span-3 relative bg-white-pure overflow-hidden flex items-center justify-center p-0 min-h-[400px] md:min-h-[500px]">
-                            <div className="absolute inset-0 grayscale contrast-125 brightness-75 transition-all duration-1000">
+                            <div className="absolute inset-0 contrast-125 brightness-75 transition-all duration-1000">
                                 <Image
                                     src={(activeGarage?.assets?.cover as Media)?.url || `https://picsum.photos/seed/${activeGarage?.id}/1600/1000`}
                                     alt={activeGarage?.name}

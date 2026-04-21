@@ -112,7 +112,7 @@ export default function IndividualsSection({ individuals }: IndividualsSectionPr
                                                 <img
                                                     src={avatarUrl}
                                                     alt={person.first_name}
-                                                    className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700"
+                                                    className="w-full h-full object-cover group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700"
                                                 />
                                             </div>
                                             <div className="flex flex-col items-end gap-3">

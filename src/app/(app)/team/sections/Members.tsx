@@ -89,7 +89,7 @@ function MemberCard({ member, index }: { member: Member; index: number }) {
                             alt={member.last_name}
                             fill
                             sizes="(min-width: 1536px) 20vw, (min-width: 1280px) 25vw, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                            className="object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
+                            className="object-cover group-hover:grayscale-0 transition-all duration-700"
                         />
                     </motion.div>
 

@@ -85,7 +85,7 @@ const SlugOverview: React.FC<SlugOverviewProps> = ({
                             src={coverImage || `https://picsum.photos/seed/overview/1200/1000`}
                             alt=""
                             fill
-                            className="object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 group-hover:scale-110"
+                            className="object-cover group-hover:grayscale-0 transition-all duration-1000 group-hover:scale-110"
                         />
                         <div className="absolute top-4 md:top-10 right-4 md:right-10 flex flex-col gap-1 md:gap-2">
                             <div className="bg-black-pure text-white-pure px-2 md:px-4 py-0.5 md:py-1 font-mono text-[8px] md:text-[10px] font-black uppercase italic">

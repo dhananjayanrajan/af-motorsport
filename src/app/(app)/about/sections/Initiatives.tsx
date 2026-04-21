@@ -113,7 +113,7 @@ export default function InitiativesSection({ initiatives }: InitiativesSectionPr
                                                 <img
                                                     src={coverImage}
                                                     alt={initiative.name}
-                                                    className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 group-hover:scale-110"
+                                                    className="w-full h-full object-cover group-hover:grayscale-0 transition-all duration-1000 group-hover:scale-110"
                                                 />
                                                 <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-500" />
 

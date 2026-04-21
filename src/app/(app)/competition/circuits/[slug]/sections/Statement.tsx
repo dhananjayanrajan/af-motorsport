@@ -115,7 +115,7 @@ export default function CircuitStatement({ circuit }: CircuitStatementProps) {
                         <img
                             src={mapUrl}
                             alt={circuit.name}
-                            className="relative z-10 w-full h-full object-contain grayscale contrast-125 transition-all duration-700 group-hover:contrast-150 group-hover:scale-105"
+                            className="relative z-10 w-full h-full object-contain contrast-125 transition-all duration-700 group-hover:contrast-150 group-hover:scale-105"
                         />
 
                         <div className="absolute top-0 right-0 p-6 border-r-4 border-primary-500 bg-white-pure shadow-xl">
