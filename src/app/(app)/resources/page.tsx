@@ -1,5 +1,6 @@
 import CarsDirectory from './sections/Cars'
 import GarageDirectory from './sections/Garages'
+import HelmetsSection from './sections/Helmets'
 
 export const dynamic = 'force-dynamic'
 
@@ -43,7 +44,7 @@ export default async function ResourcesPage() {
         <main className="min-h-screen bg-white">
             <CarsDirectory cars={cars} />
             <GarageDirectory garages={garages} />
-            {/* <HelmetsSection helmets={helmets} drivers={drivers} /> */}
+            <HelmetsSection helmets={helmets} title='HELMETS' subtitle='DIRECTORY' />
             {/* <SuitsSection suits={suits} drivers={drivers} /> */}
         </main>
     )

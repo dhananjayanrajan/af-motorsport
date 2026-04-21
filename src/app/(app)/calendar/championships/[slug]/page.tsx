@@ -13,40 +13,34 @@ async function safeFetch(url: string) {
     }
 }
 
-async function getRaceData(slug: string) {
+async function getChampionshipData(slug: string) {
     const url = process.env.NEXT_PUBLIC_PAYLOAD_URL
 
     if (!url) {
         console.error('NEXT_PUBLIC_PAYLOAD_URL is not defined')
         return {
-            race: null,
+            championship: null,
             videoUrls: []
         }
     }
 
-    const raceResult = await safeFetch(`${url}/api/races?where[slug][equals]=${slug}&limit=1`)
-    const race = raceResult?.docs?.[0] || null
+    const championshipResult = await safeFetch(`${url}/api/championships?where[slug][equals]=${slug}&limit=1`)
+    const championship = championshipResult?.docs?.[0] || null
 
-    const extractVideoUrls = (race: any) => {
+    const extractVideoUrls = (championship: any) => {
         const urls: string[] = []
-        if (race?.assets?.video) {
-            const video = race.assets.video
+        if (championship?.assets?.video) {
+            const video = championship.assets.video
             const videoUrl = typeof video === 'object' ? video?.url : video
             if (typeof videoUrl === 'string' && videoUrl) urls.push(videoUrl)
-        }
-        if (race?.assets?.highlights && Array.isArray(race.assets.highlights)) {
-            race.assets.highlights.forEach((highlight: any) => {
-                const highlightUrl = typeof highlight === 'object' ? highlight?.url : highlight
-                if (typeof highlightUrl === 'string' && highlightUrl) urls.push(highlightUrl)
-            })
         }
         return urls
     }
 
-    const allVideoUrls = race ? extractVideoUrls(race) : []
+    const allVideoUrls = championship ? extractVideoUrls(championship) : []
 
     return {
-        race,
+        championship,
         videoUrls: allVideoUrls
     }
 }
@@ -57,11 +51,11 @@ interface PageProps {
 
 export default async function Page({ params }: PageProps) {
     const { slug } = await params
-    const data = await getRaceData(slug)
+    const data = await getChampionshipData(slug)
 
     return (
         <main className="min-h-screen bg-black-pure">
-            <VideoSection videoUrls={data.videoUrls} race={data.race} />
+            <VideoSection videoUrls={data.videoUrls} championship={data.championship} />
         </main>
     )
 }

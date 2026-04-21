@@ -1,288 +1,225 @@
-'use client';
+"use client"
 
-import { DESIGN_SYSTEM } from '@/lib/constants';
-import { Driver, Helmet, Media } from '@/payload-types';
-import { Environment, PerspectiveCamera, SpotLight, useGLTF } from '@react-three/drei';
-import { Canvas, useFrame } from '@react-three/fiber';
-import useEmblaCarousel from 'embla-carousel-react';
-import { AnimatePresence, motion } from 'framer-motion';
-import { ChevronRight, Sparkles } from 'lucide-react';
-import Link from 'next/link';
-import { Suspense, useEffect, useRef, useState } from 'react';
-import * as THREE from 'three';
+import { Helmet } from '@/payload-types'
+import Image from 'next/image'
+import { useRouter } from 'next/navigation'
+import React, { useState } from 'react'
 
-interface HelmetsSectionProps {
-    helmets: Helmet[];
-    drivers: Driver[];
+interface HelmetSectionProps {
+    helmets: Helmet[]
+    title: string
+    subtitle: string
+    catalogLabel?: string
+    designerLabel?: string
+    yearLabel?: string
+    styleLabel?: string
+    materialLabel?: string
+    viewDetailsLabel?: string
+    noHelmetsLabel?: string
 }
 
-function HelmetModel({ isActive }: { isActive: boolean }) {
-    const group = useRef<THREE.Group>(null);
-    const [hasError, setHasError] = useState(false);
+const HelmetSection: React.FC<HelmetSectionProps> = ({
+    helmets,
+    title,
+    subtitle,
+    catalogLabel = "",
+    designerLabel = "",
+    yearLabel = "",
+    styleLabel = "",
+    materialLabel = "",
+    viewDetailsLabel = "",
+    noHelmetsLabel = ""
+}) => {
+    const router = useRouter()
+    const [activeIndex, setActiveIndex] = useState<number>(0)
 
-    const { scene } = useGLTF('/helmet.gltf', undefined, undefined, (error) => {
-        console.warn('GLTF not found, using fallback model');
-        setHasError(true);
-    });
-
-    useFrame((state) => {
-        if (!group.current) return;
-
-        if (isActive) {
-            group.current.rotation.y += 0.005;
-            group.current.position.y = Math.sin(state.clock.elapsedTime * 0.5) * 0.1;
-        }
-    });
-
-    if (hasError) {
+    if (!helmets || helmets.length === 0) {
         return (
-            <mesh ref={group} position={[0, 0, 0]}>
-                <sphereGeometry args={[1.2, 64, 64]} />
-                <meshStandardMaterial
-                    color={DESIGN_SYSTEM.COLORS.PRIMARY[500]}
-                    roughness={0.3}
-                    metalness={0.7}
-                    emissive={DESIGN_SYSTEM.COLORS.PRIMARY[500]}
-                    emissiveIntensity={0.1}
-                />
-            </mesh>
-        );
+            <section className="w-full py-24 px-8 bg-white-pure">
+                <div className="flex items-center gap-8">
+                    <div className="w-16 h-16 bg-primary" />
+                    <div className="w-16 h-16 bg-secondary" />
+                    <div className="w-16 h-16 bg-tertiary" />
+                    <p className="text-2xl font-black text-black-pure uppercase tracking-normal">{noHelmetsLabel}</p>
+                </div>
+            </section>
+        )
     }
 
-    return <primitive ref={group} object={scene.clone()} scale={2.5} position={[0, -0.5, 0]} />;
-}
-
-export default function HelmetsSection({ helmets, drivers }: HelmetsSectionProps) {
-    const [emblaRef, emblaApi] = useEmblaCarousel({
-        loop: true,
-        align: 'center',
-        dragFree: true
-    });
-
-    const [selectedIndex, setSelectedIndex] = useState(0);
-    const [isPaused, setIsPaused] = useState(false);
-
-    const currentHelmet = helmets[selectedIndex % helmets.length];
-    const currentDriver = drivers[selectedIndex % drivers.length];
-
-    useEffect(() => {
-        if (!emblaApi) return;
-
-        const onSelect = () => {
-            setSelectedIndex(emblaApi.selectedScrollSnap());
-        };
-
-        emblaApi.on('select', onSelect);
-        onSelect();
-
-        return () => {
-            emblaApi.off('select', onSelect);
-        };
-    }, [emblaApi]);
-
-    useEffect(() => {
-        if (isPaused || !emblaApi) return;
-
-        const timer = setInterval(() => {
-            emblaApi.scrollNext();
-        }, 8000);
-
-        return () => clearInterval(timer);
-    }, [isPaused, emblaApi]);
+    const activeHelmet = helmets[activeIndex]
+    const activeHelmetImage = activeHelmet?.assets?.thumbnail
+    const activeHelmetImageUrl = activeHelmetImage && typeof activeHelmetImage !== 'number' ? activeHelmetImage.url : null
+    const activeHelmetAlt = activeHelmetImage && typeof activeHelmetImage !== 'number' ? activeHelmetImage.alt : activeHelmet.name
 
     return (
-        <section
-            className="relative w-full h-screen overflow-hidden"
-            style={{ backgroundColor: DESIGN_SYSTEM.COLORS.BLACK[950] }}
-            onMouseEnter={() => setIsPaused(true)}
-            onMouseLeave={() => setIsPaused(false)}
-        >
-            {/* 3D Canvas Background */}
-            <div className="absolute inset-0 z-0">
-                <Canvas shadows dpr={[1, 2]}>
-                    <PerspectiveCamera makeDefault position={[0, 0.5, 5]} fov={45} />
-
-                    <SpotLight
-                        position={[2, 3, 2]}
-                        angle={0.5}
-                        penumbra={0.5}
-                        intensity={2}
-                        castShadow
-                        color={DESIGN_SYSTEM.COLORS.PRIMARY[500]}
-                    />
-                    <SpotLight
-                        position={[-2, 2, 3]}
-                        angle={0.4}
-                        penumbra={0.4}
-                        intensity={1.5}
-                        color="#ffffff"
-                    />
-                    <SpotLight
-                        position={[0, 5, 0]}
-                        angle={0.8}
-                        penumbra={0.8}
-                        intensity={1}
-                        color={DESIGN_SYSTEM.COLORS.SECONDARY[500]}
-                    />
-
-                    <Environment preset="studio" />
-
-                    <Suspense fallback={null}>
-                        <AnimatePresence mode="wait">
-                            <HelmetModel key={selectedIndex} isActive={!isPaused} />
-                        </AnimatePresence>
-                    </Suspense>
-                </Canvas>
+        <section className="w-full bg-white-pure">
+            <div className="px-8 pt-12 pb-8">
+                <div className="flex items-baseline gap-8">
+                    <div className="flex gap-4">
+                        <div className="w-4 h-16 bg-primary" />
+                        <div className="w-4 h-16 bg-secondary" />
+                    </div>
+                    <div>
+                        <h2 className="text-5xl md:text-6xl font-black text-black-pure uppercase tracking-normal leading-tight">
+                            {title}
+                        </h2>
+                        <p className="text-xl font-mono text-black-pure uppercase tracking-widest mt-2">
+                            {subtitle}
+                        </p>
+                    </div>
+                </div>
             </div>
 
-            {/* Gradient Overlay */}
-            <div
-                className="absolute inset-0 z-10 pointer-events-none"
-                style={{
-                    background: `radial-gradient(circle at center, transparent 0%, ${DESIGN_SYSTEM.COLORS.BLACK[950]}CC 100%)`
-                }}
-            />
+            <div className="grid grid-cols-12 gap-8 px-8">
+                <div className="col-span-12 lg:col-span-7 bg-white-100 flex items-center justify-center p-8 min-h-[500px] relative">
+                    <div className="absolute top-8 left-8 flex gap-2">
+                        <div className="w-12 h-12 bg-tertiary" />
+                        <div className="w-12 h-12 bg-black-pure" />
+                    </div>
 
-            {/* Header */}
-            <header className="absolute top-0 left-0 right-0 z-30 p-8 md:p-12 flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                    <div className="w-12 h-[2px]" style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
-                    <span className="text-[10px] font-black uppercase tracking-[0.4em]" style={{ color: DESIGN_SYSTEM.COLORS.ZINC[400] }}>
-                        Protective Aesthetics
-                    </span>
-                </div>
-                <div className="flex items-center gap-2">
-                    <Sparkles size={14} style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500] }} />
-                    <span className="text-[10px] font-black uppercase tracking-widest" style={{ color: DESIGN_SYSTEM.COLORS.WHITE.PURE }}>
-                        {selectedIndex + 1} / {helmets.length}
-                    </span>
-                </div>
-            </header>
+                    <div className="relative w-full max-w-xl aspect-square">
+                        {activeHelmetImageUrl ? (
+                            <Image
+                                src={activeHelmetImageUrl}
+                                alt={activeHelmetAlt || ''}
+                                fill
+                                className="object-contain"
+                                priority
+                            />
+                        ) : (
+                            <div className="w-full h-full flex items-center justify-center">
+                                <div className="w-48 h-48 bg-white-pure" />
+                                <div className="w-32 h-32 bg-primary ml-4" />
+                                <div className="w-16 h-16 bg-secondary ml-4" />
+                            </div>
+                        )}
+                    </div>
 
-            {/* Main Content */}
-            <div className="relative z-20 h-full flex flex-col justify-end pb-24">
-                {/* Embla Carousel - Thumbnail Strip */}
-                <div className="w-full overflow-hidden py-8" ref={emblaRef}>
-                    <div className="flex">
-                        {helmets.map((helmet, index) => {
-                            const avatar = (helmet.assets?.avatar as Media)?.url || (helmet.assets?.thumbnail as Media)?.url;
-                            const placeholderImage = `https://picsum.photos/seed/helmet-${helmet.id}/200/200`;
-                            const isActive = index === selectedIndex;
-
-                            return (
-                                <div
-                                    key={helmet.id}
-                                    className="flex-[0_0_120px] md:flex-[0_0_160px] mx-3 cursor-pointer transition-all duration-500"
-                                    style={{
-                                        opacity: isActive ? 1 : 0.4,
-                                        transform: isActive ? 'scale(1.1)' : 'scale(0.9)',
-                                        filter: isActive ? 'blur(0px)' : 'blur(1px)'
-                                    }}
-                                    onClick={() => emblaApi?.scrollTo(index)}
-                                >
-                                    <div
-                                        className="aspect-square overflow-hidden border-2 transition-all"
-                                        style={{
-                                            borderColor: isActive ? DESIGN_SYSTEM.COLORS.PRIMARY[500] : DESIGN_SYSTEM.COLORS.ZINC[700],
-                                            clipPath: "polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px)"
-                                        }}
-                                    >
-                                        <img
-                                            src={avatar || placeholderImage}
-                                            alt={helmet.name}
-                                            className="w-full h-full object-cover"
-                                            onError={(e) => {
-                                                e.currentTarget.src = placeholderImage;
-                                            }}
-                                        />
-                                    </div>
-                                    {isActive && (
-                                        <motion.div
-                                            layoutId="activeThumb"
-                                            className="h-1 mt-2"
-                                            style={{ backgroundColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}
-                                        />
-                                    )}
-                                </div>
-                            );
-                        })}
+                    <div className="absolute bottom-8 right-8">
+                        <span className="font-mono text-8xl font-black text-black-pure opacity-20">
+                            {String(activeIndex + 1).padStart(2, '0')}
+                        </span>
                     </div>
                 </div>
 
-                {/* Info Panel */}
-                <motion.div
-                    className="max-w-[1400px] mx-auto px-6 md:px-10 w-full"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.3 }}
-                >
-                    <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8">
-                        <div className="space-y-4">
-                            <div className="flex items-center gap-4">
-                                <span className="text-[9px] font-black uppercase tracking-widest px-3 py-1 border" style={{ color: DESIGN_SYSTEM.COLORS.PRIMARY[500], borderColor: DESIGN_SYSTEM.COLORS.PRIMARY[500] }}>
-                                    {currentHelmet?.details?.year || '2026'}
-                                </span>
-                                <span className="text-[9px] font-black uppercase tracking-widest" style={{ color: DESIGN_SYSTEM.COLORS.ZINC[400] }}>
-                                    {currentHelmet?.details?.usage || 'PRO TRACK'}
+                <div className="col-span-12 lg:col-span-5 flex flex-col justify-between">
+                    <div className="space-y-8">
+                        <div className="flex items-start gap-6">
+                            <div className="w-2 h-24 bg-black-pure" />
+                            <div>
+                                <span className="font-mono text-sm font-black text-black-pure uppercase tracking-widest">{catalogLabel}</span>
+                                <h3 className="text-4xl font-black text-black-pure uppercase tracking-normal mt-2 leading-tight">
+                                    {activeHelmet.name}
+                                </h3>
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-8 pl-8">
+                            <div>
+                                <div className="w-8 h-1 bg-primary mb-4" />
+                                <span className="font-mono text-xs font-black text-black-pure uppercase tracking-widest block">{designerLabel}</span>
+                                <span className="text-2xl font-black text-black-pure uppercase tracking-normal block mt-2">
+                                    {activeHelmet.details?.designer || '—'}
                                 </span>
                             </div>
-                            <h2 className="text-5xl md:text-7xl font-black uppercase italic tracking-tighter" style={{ color: DESIGN_SYSTEM.COLORS.WHITE.PURE }}>
-                                {currentHelmet?.name}
-                            </h2>
-                            <p className="text-sm font-bold uppercase max-w-2xl" style={{ color: DESIGN_SYSTEM.COLORS.ZINC[400] }}>
-                                {currentHelmet?.details?.material || 'CARBON COMPOSITE'} / {currentHelmet?.details?.style || 'AERODYNAMIC'}
-                            </p>
-                        </div>
-
-                        <div className="flex items-center gap-6">
-                            <Link
-                                href={`/team/driver/${currentDriver?.slug || '#'}`}
-                                className="group flex items-center gap-4"
-                            >
-                                <div>
-                                    <span className="text-[8px] font-black uppercase tracking-widest block" style={{ color: DESIGN_SYSTEM.COLORS.ZINC[500] }}>
-                                        DRIVER
-                                    </span>
-                                    <span className="text-sm font-black uppercase group-hover:text-primary-400 transition-colors" style={{ color: DESIGN_SYSTEM.COLORS.WHITE.PURE }}>
-                                        {currentDriver?.first_name} {currentDriver?.last_name}
-                                    </span>
-                                </div>
-                                <div
-                                    className="w-10 h-10 flex items-center justify-center transition-all group-hover:bg-primary-500"
-                                    style={{
-                                        backgroundColor: DESIGN_SYSTEM.COLORS.ZINC[800],
-                                        clipPath: "polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px)"
-                                    }}
-                                >
-                                    <ChevronRight size={16} className="group-hover:text-black transition-colors" style={{ color: DESIGN_SYSTEM.COLORS.WHITE.PURE }} />
-                                </div>
-                            </Link>
+                            <div>
+                                <div className="w-8 h-1 bg-secondary mb-4" />
+                                <span className="font-mono text-xs font-black text-black-pure uppercase tracking-widest block">{yearLabel}</span>
+                                <span className="text-2xl font-black text-black-pure uppercase tracking-normal block mt-2">
+                                    {activeHelmet.details?.year || '—'}
+                                </span>
+                            </div>
+                            <div>
+                                <div className="w-8 h-1 bg-tertiary mb-4" />
+                                <span className="font-mono text-xs font-black text-black-pure uppercase tracking-widest block">{styleLabel}</span>
+                                <span className="text-xl font-black text-black-pure uppercase tracking-normal block mt-2">
+                                    {activeHelmet.details?.style || '—'}
+                                </span>
+                            </div>
+                            <div>
+                                <div className="w-8 h-1 bg-black-pure mb-4" />
+                                <span className="font-mono text-xs font-black text-black-pure uppercase tracking-widest block">{materialLabel}</span>
+                                <span className="text-xl font-black text-black-pure uppercase tracking-normal block mt-2">
+                                    {activeHelmet.details?.material || '—'}
+                                </span>
+                            </div>
                         </div>
                     </div>
-                </motion.div>
+
+                    <button
+                        onClick={() => router.push(`/collection/helmets/${activeHelmet.slug}`)}
+                        className="mt-12 py-6 px-8 bg-primary font-mono text-base font-black text-black-pure uppercase tracking-widest hover:bg-black-pure hover:text-white-pure transition-colors duration-200 focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-black-pure active:bg-secondary active:text-black-pure flex items-center justify-between group"
+                    >
+                        <span>{viewDetailsLabel}</span>
+                        <div className="w-8 h-8 bg-black-pure group-hover:bg-white-pure transition-colors duration-200" />
+                    </button>
+                </div>
             </div>
 
-            {/* Navigation Arrows */}
-            <button
-                onClick={() => emblaApi?.scrollPrev()}
-                className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 z-30 w-12 h-12 flex items-center justify-center transition-all hover:bg-white/10"
-                style={{
-                    border: `1px solid ${DESIGN_SYSTEM.COLORS.ZINC[700]}`,
-                    clipPath: "polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px)"
-                }}
-            >
-                <ChevronRight size={24} className="rotate-180" style={{ color: DESIGN_SYSTEM.COLORS.WHITE.PURE }} />
-            </button>
-            <button
-                onClick={() => emblaApi?.scrollNext()}
-                className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 z-30 w-12 h-12 flex items-center justify-center transition-all hover:bg-white/10"
-                style={{
-                    border: `1px solid ${DESIGN_SYSTEM.COLORS.ZINC[700]}`,
-                    clipPath: "polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px)"
-                }}
-            >
-                <ChevronRight size={24} style={{ color: DESIGN_SYSTEM.COLORS.WHITE.PURE }} />
-            </button>
+            <div className="px-8 py-12 mt-8">
+                <div className="flex items-center gap-8 mb-8">
+                    <div className="flex gap-2">
+                        <div className="w-3 h-3 bg-primary" />
+                        <div className="w-3 h-3 bg-secondary" />
+                        <div className="w-3 h-3 bg-tertiary" />
+                        <div className="w-3 h-3 bg-black-pure" />
+                    </div>
+                    <span className="font-mono text-sm font-black text-black-pure uppercase tracking-widest">
+                        {helmets.length} {catalogLabel}
+                    </span>
+                    <div className="flex-1 h-px bg-black-pure" />
+                </div>
+
+                <div className="flex flex-wrap gap-8 items-end">
+                    {helmets.map((helmet, index) => {
+                        const thumbImage = helmet.assets?.thumbnail
+                        const thumbUrl = thumbImage && typeof thumbImage !== 'number' ? thumbImage.url : null
+                        const thumbAlt = thumbImage && typeof thumbImage !== 'number' ? thumbImage.alt : helmet.name
+
+                        return (
+                            <button
+                                key={helmet.id}
+                                onClick={() => setActiveIndex(index)}
+                                className={`group transition-all duration-200 focus:outline focus:outline-2 focus:outline-offset-4 focus:outline-black-pure ${activeIndex === index ? 'scale-105' : 'hover:scale-105'
+                                    }`}
+                            >
+                                <div
+                                    className={`w-32 h-32 flex items-center justify-center transition-colors duration-200 ${activeIndex === index ? 'bg-primary' : 'bg-white-100 hover:bg-secondary'
+                                        }`}
+                                >
+                                    {thumbUrl ? (
+                                        <Image
+                                            src={thumbUrl}
+                                            alt={thumbAlt || ''}
+                                            width={128}
+                                            height={128}
+                                            className="object-contain w-24 h-24"
+                                        />
+                                    ) : (
+                                        <div className="flex gap-1">
+                                            <div className="w-6 h-12 bg-black-pure" />
+                                            <div className="w-6 h-8 bg-black-pure" />
+                                            <div className="w-6 h-10 bg-black-pure" />
+                                        </div>
+                                    )}
+                                </div>
+                                <div className="mt-3 flex items-center gap-2">
+                                    <div className={`w-2 h-2 transition-colors duration-200 ${activeIndex === index ? 'bg-primary' : 'bg-black-pure'
+                                        }`} />
+                                    <span className={`font-mono text-xs font-black uppercase tracking-widest transition-colors duration-200 ${activeIndex === index ? 'text-primary' : 'text-black-pure'
+                                        }`}>
+                                        {helmet.basics?.tagline?.slice(0, 6) || helmet.name.slice(0, 6)}
+                                    </span>
+                                </div>
+                            </button>
+                        )
+                    })}
+                </div>
+            </div>
+
+            <div className="h-1 w-full bg-black-pure" />
         </section>
-    );
+    )
 }
+
+export default HelmetSection
