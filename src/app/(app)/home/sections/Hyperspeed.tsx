@@ -14,7 +14,7 @@ interface HyperspeedSectionProps {
         seasonsName?: string
         eventsName?: string
         sessionsName?: string
-    }
+    } | null | undefined
 }
 
 const HyperspeedSection: React.FC<HyperspeedSectionProps> = ({ navigation }) => {
@@ -31,40 +31,68 @@ const HyperspeedSection: React.FC<HyperspeedSectionProps> = ({ navigation }) => 
     }, [])
 
     const routes = [
-        { id: '01', label: 'SERIES', slug: navigation.series, name: navigation.seriesName, path: '/competition/series' },
-        { id: '02', label: 'SEASONS', slug: navigation.seasons, name: navigation.seasonsName, path: '/competition/seasons' },
-        { id: '03', label: 'EVENTS', slug: navigation.events, name: navigation.eventsName, path: '/competition/events' },
-        { id: '04', label: 'SESSIONS', slug: navigation.sessions, name: navigation.sessionsName, path: '/competition/sessions' }
+        {
+            id: '01',
+            label: 'Series',
+            slug: navigation?.series || 'active',
+            name: navigation?.seriesName || 'Competition Series',
+            path: '/competition/series'
+        },
+        {
+            id: '02',
+            label: 'Seasons',
+            slug: navigation?.seasons || 'active',
+            name: navigation?.seasonsName || 'Championship Seasons',
+            path: '/competition/seasons'
+        },
+        {
+            id: '03',
+            label: 'Events',
+            slug: navigation?.events || 'active',
+            name: navigation?.eventsName || 'Global Events',
+            path: '/competition/events'
+        },
+        {
+            id: '04',
+            label: 'Sessions',
+            slug: navigation?.sessions || 'active',
+            name: navigation?.sessionsName || 'Live Sessions',
+            path: '/competition/sessions'
+        }
     ]
 
     return (
         <section
             ref={sectionRef}
-            className="relative w-full h-screen bg-black-pure flex flex-col md:flex-row overflow-hidden border-b border-black-pure"
+            className="relative w-full h-screen bg-black-pure flex flex-col md:flex-row overflow-hidden border-b border-black-pure outline-none"
         >
-            <div className="w-full md:w-1/2 h-full flex flex-col bg-white-pure z-20 border-r border-black-pure">
+            <nav className="w-full md:w-1/2 h-full flex flex-col bg-white-pure z-20 border-r border-black-pure">
                 {routes.map((route) => (
                     <Link
                         key={route.id}
                         href={`${route.path}/${route.slug}`}
-                        className="flex-1 group flex items-center border-b border-black-pure last:border-b-0 hover:bg-primary-500 focus:bg-secondary-500 transition-colors outline-none"
+                        className="flex-1 group flex items-center border-b border-black-pure last:border-b-0 hover:bg-primary-500 focus:bg-secondary-500 active:bg-black-pure transition-colors duration-100 outline-none"
                     >
                         <div className="w-full flex items-center px-6 md:px-10 h-full">
-                            <div className="flex items-center justify-center h-full aspect-square border-r border-black-pure mr-6 md:mr-10">
-                                <span className="font-mono text-xs font-black text-black-pure">
+                            <div className="flex items-center justify-center h-full border-r border-black-pure pr-6 md:pr-10 mr-6 md:mr-10">
+                                <span className="text-base md:text-lg font-black text-black-pure group-active:text-white-pure">
                                     {route.id}
                                 </span>
                             </div>
-                            <div className="flex-1 flex items-center justify-between">
-                                <h2 className="font-race text-xl md:text-2xl font-black uppercase tracking-tighter text-black-pure">
+                            <div className="flex-1 flex items-center justify-between min-w-0">
+                                <h2 className="text-lg md:text-xl font-black uppercase tracking-normal text-black-pure group-active:text-white-pure truncate">
                                     {route.label}
                                 </h2>
-                                <div className="w-4 h-4 bg-white-pure border border-black-pure group-hover:bg-black-pure transition-colors" />
+                                <div className="w-6 h-6 bg-white-pure border border-black-pure group-hover:bg-black-pure group-active:bg-primary-500 flex items-center justify-center transition-colors flex-shrink-0">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" className="text-current group-hover:text-white-pure">
+                                        <path d="M7 17L17 7M17 7H7M17 7V17" stroke="currentColor" strokeWidth="4" />
+                                    </svg>
+                                </div>
                             </div>
                         </div>
                     </Link>
                 ))}
-            </div>
+            </nav>
 
             <div className="w-full md:w-1/2 h-full relative bg-black-pure overflow-hidden">
                 <div className="absolute inset-0 z-0">
@@ -93,43 +121,33 @@ const HyperspeedSection: React.FC<HyperspeedSectionProps> = ({ navigation }) => 
                     )}
                 </div>
 
-                <div className="absolute inset-0 pointer-events-none opacity-20">
-                    <div className="grid grid-cols-4 h-full w-full">
-                        <div className="border-r border-primary-500 h-full" />
-                        <div className="border-r border-primary-500 h-full" />
-                        <div className="border-r border-primary-500 h-full" />
-                    </div>
-                    <div className="grid grid-rows-4 h-full w-full absolute inset-0">
-                        <div className="border-b border-primary-500 w-full" />
-                        <div className="border-b border-primary-500 w-full" />
-                        <div className="border-b border-primary-500 w-full" />
-                    </div>
-                </div>
-
                 <div className="relative z-10 h-full w-full flex flex-col justify-end">
                     <div className="grid grid-cols-2 bg-white-pure border-t border-black-pure">
                         {routes.map((route) => (
-                            <div
+                            <Link
                                 key={`stat-${route.id}`}
-                                className="p-5 border-r border-b border-black-pure last:border-r-0 flex flex-col gap-2 bg-white-pure hover:bg-tertiary-500 hover:text-white-pure transition-colors group"
+                                href={`${route.path}/${route.slug}`}
+                                className="p-5 border-r border-b border-black-pure last:border-r-0 flex flex-col gap-3 bg-white-pure hover:bg-black-pure group transition-colors duration-100 outline-none focus:bg-secondary-500 active:bg-primary-500"
                             >
                                 <div className="flex items-center gap-2">
-                                    <div className="w-3 h-3 bg-primary-500 border border-black-pure" />
-                                    <span className="font-mono text-[9px] font-black uppercase tracking-widest text-black-pure group-hover:text-white-pure">
-                                        ACTIVE {route.label}
+                                    <div className="w-3 h-3 bg-primary-500 border border-black-pure group-active:bg-white-pure" />
+                                    <span className="text-[10px] font-black uppercase tracking-normal text-black-pure group-hover:text-white-pure">
+                                        View {route.label}
                                     </span>
                                 </div>
 
-                                <div className="flex justify-between items-end">
-                                    <div className="flex flex-col">
-                                        <span className="text-[8px] font-mono opacity-60 uppercase font-black">{route.label}</span>
-                                        <span className="text-[11px] font-mono font-black uppercase">{route.name || route.slug?.toUpperCase() || 'LOADING'}</span>
+                                <div className="flex justify-between items-end gap-3">
+                                    <div className="flex flex-col min-w-0">
+                                        <span className="text-[9px] font-black uppercase opacity-40 leading-none mb-1 text-black-pure group-hover:text-white-pure group-hover:opacity-60">Entry Name</span>
+                                        <span className="text-sm font-black uppercase leading-tight truncate text-black-pure group-hover:text-white-pure">
+                                            {route.name}
+                                        </span>
                                     </div>
-                                    <div className="bg-black-pure text-white-pure px-2 py-0.5 group-hover:bg-white-pure group-hover:text-black-pure transition-colors">
-                                        <span className="font-mono text-[9px] font-black">{route.id}</span>
+                                    <div className="bg-black-pure text-white-pure px-2 py-0.5 flex-shrink-0 border border-black-pure group-hover:bg-white-pure group-hover:text-black-pure">
+                                        <span className="text-[10px] font-black">{route.id}</span>
                                     </div>
                                 </div>
-                            </div>
+                            </Link>
                         ))}
                     </div>
                 </div>

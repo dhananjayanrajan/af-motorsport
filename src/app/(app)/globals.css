@@ -108,19 +108,19 @@
   --primary-glow: rgba(0, 255, 65, 0.15);
   --primary-muted: rgba(0, 255, 65, 0.08);
 
-  --secondary-50: #FFFFF0;
-  --secondary-100: #FFFEE0;
-  --secondary-200: #FFFBB3;
-  --secondary-300: #FFF780;
-  --secondary-400: #FFF34D;
-  --secondary-500: #FFEE00;
-  --secondary-600: #E6D700;
-  --secondary-700: #CCBF00;
-  --secondary-800: #B3A800;
-  --secondary-900: #999000;
-  --secondary-950: #7A7300;
-  --secondary-glow: rgba(255, 238, 0, 0.15);
-  --secondary-muted: rgba(255, 238, 0, 0.08);
+  --secondary-50: #332B00;
+  --secondary-100: #4D4100;
+  --secondary-200: #665700;
+  --secondary-300: #806D00;
+  --secondary-400: #998300;
+  --secondary-500: #B39900;
+  --secondary-600: #CCAF00;
+  --secondary-700: #E6C500;
+  --secondary-800: #FFDB00;
+  --secondary-900: #FFE333;
+  --secondary-950: #FFEB66;
+  --secondary-glow: rgba(255, 219, 0, 0.15);
+  --secondary-muted: rgba(255, 219, 0, 0.08);
 
   --tertiary-50: #FAF5FF;
   --tertiary-100: #F3E8FF;
@@ -200,8 +200,8 @@
   --popover-foreground: #171717;
   --primary: #00FF41;
   --primary-foreground: #000000;
-  --secondary: #FFEE00;
-  --secondary-foreground: #000000;
+  --secondary: #B39900;
+  --secondary-foreground: #FFFFFF;
   --muted: #F2F2F2;
   --muted-foreground: #737373;
   --accent: #E5E5E5;
@@ -213,7 +213,7 @@
   --ring: #00FF41;
   --success: #00FF41;
   --error: #ef4444;
-  --warning: #FFEE00;
+  --warning: #B39900;
   --radius: 0.625rem;
   --sidebar: #F8F9FA;
   --sidebar-foreground: #171717;

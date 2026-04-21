@@ -36,9 +36,9 @@ const SectionCard: React.FC<SectionCardProps> = ({
         return (
             <button
                 onClick={onClick}
-                className={`group relative w-full h-full border-b-4 border-r-4 border-black-pure overflow-hidden bg-white-pure transition-colors duration-100 outline-none ${active ? 'bg-primary-500' : 'hover:bg-black-pure'}`}
+                className={`group relative w-full h-full border-b-2 border-r-2 border-black-pure overflow-hidden bg-white-pure transition-colors duration-100 outline-none ${active ? 'bg-primary-500' : 'hover:bg-black-pure'}`}
             >
-                <div className="relative h-48 w-full overflow-hidden border-b-4 border-black-pure">
+                <div className="relative h-48 w-full overflow-hidden border-b-2 border-black-pure">
                     {imageUrl && <Image src={imageUrl} alt={title} fill className="object-cover" />}
                 </div>
                 <div className="p-6 flex flex-col items-start">
@@ -58,7 +58,7 @@ const SectionCard: React.FC<SectionCardProps> = ({
         return (
             <button
                 onClick={onClick}
-                className="group relative w-full h-full border-b-4 border-r-4 border-black-pure bg-black-pure overflow-hidden outline-none"
+                className="group relative w-full h-full border-b-2 border-r-2 border-black-pure bg-black-pure overflow-hidden outline-none"
             >
                 {imageUrl && <Image src={imageUrl} alt={title} fill className="object-cover transition-transform duration-500 group-hover:scale-110" />}
                 <div className="absolute inset-0 p-8 flex flex-col justify-end bg-black-pure/40 group-hover:bg-primary-500/80 transition-colors duration-100">
@@ -75,7 +75,7 @@ const SectionCard: React.FC<SectionCardProps> = ({
         return (
             <button
                 onClick={onClick}
-                className="group relative w-full h-full border-b-4 border-r-4 border-black-pure bg-white-pure flex flex-col outline-none"
+                className="group relative w-full h-full border-b-2 border-r-2 border-black-pure bg-white-pure flex flex-col outline-none"
             >
                 <div className="flex-1 p-8 flex flex-col justify-between relative z-10">
                     <span className="text-4xl font-black text-black-pure/10 absolute top-4 right-4">{label?.slice(0, 3)}</span>
@@ -87,7 +87,7 @@ const SectionCard: React.FC<SectionCardProps> = ({
                         <span className={monoBase}>{subtitle || 'INDEX_REFERENCE'}</span>
                     </div>
                 </div>
-                <div className="h-32 w-full relative border-t-4 border-black-pure overflow-hidden">
+                <div className="h-32 w-full relative border-t-2 border-black-pure overflow-hidden">
                     {imageUrl && <Image src={imageUrl} alt={title} fill className="object-cover transition-transform duration-500 group-hover:scale-105" />}
                 </div>
             </button>
@@ -98,14 +98,14 @@ const SectionCard: React.FC<SectionCardProps> = ({
         return (
             <button
                 onClick={onClick}
-                className="group relative w-full h-full border-b-4 border-r-4 border-black-pure flex items-stretch bg-white-pure hover:bg-secondary-500 transition-colors duration-100 outline-none"
+                className="group relative w-full h-full border-b-2 border-r-2 border-black-pure flex items-stretch bg-white-pure hover:bg-secondary-500 transition-colors duration-100 outline-none"
             >
-                <div className="w-4 bg-primary-500 border-r-4 border-black-pure group-hover:bg-black-pure transition-colors" />
+                <div className="w-4 bg-primary-500 border-r-2 border-black-pure group-hover:bg-black-pure transition-colors" />
                 <div className="flex-1 p-6 flex flex-col justify-center">
                     <h4 className={`text-xl ${headingBase} text-black-pure`}>{title}</h4>
                     <p className={`${monoBase} text-black-pure/40 mt-2`}>{subtitle || 'SUB_HEADING'}</p>
                 </div>
-                <div className="w-32 relative border-l-4 border-black-pure overflow-hidden bg-primary-500">
+                <div className="w-32 relative border-l-2 border-black-pure overflow-hidden bg-primary-500">
                     {imageUrl && <Image src={imageUrl} alt={title} fill className="object-cover" />}
                 </div>
             </button>
@@ -115,7 +115,7 @@ const SectionCard: React.FC<SectionCardProps> = ({
     return (
         <button
             onClick={onClick}
-            className="relative w-full h-full border-b-4 border-r-4 border-black-pure group overflow-hidden bg-primary-500 outline-none lg:[&:nth-child(3n)]:border-r-0"
+            className="relative w-full h-full border-b-2 border-r-2 border-black-pure group overflow-hidden bg-primary-500 outline-none lg:[&:nth-child(3n)]:border-r-0"
         >
             {imageUrl && <Image src={imageUrl} alt={title} fill className="object-cover" />}
             <div className="absolute inset-0 bg-black-pure/40 group-hover:bg-secondary-500/60 transition-colors duration-100" />

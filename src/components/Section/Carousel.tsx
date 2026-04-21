@@ -80,9 +80,9 @@ const SectionCarousel: React.FC<SectionCarouselProps> = ({
     const RaceCard = ({ race }: { race: Race }) => (
         <Link
             href={`${basePath}/competition/races/${race.slug}`}
-            className="group relative bg-white-pure flex flex-col h-full border-r-4 border-black-pure overflow-hidden outline-none"
+            className="group relative bg-white-pure flex flex-col h-full border-r-2 border-black-pure overflow-hidden outline-none"
         >
-            <div className="relative aspect-video w-full bg-primary-500 overflow-hidden border-b-4 border-black-pure">
+            <div className="relative aspect-video w-full bg-primary-500 overflow-hidden border-b-2 border-black-pure">
                 <Image
                     src={(race.assets?.cover as Media)?.url || `https://picsum.photos/seed/${race.id}/800/450`}
                     alt={race.name}
@@ -111,7 +111,7 @@ const SectionCarousel: React.FC<SectionCarouselProps> = ({
                 </div>
                 <div className="flex items-center justify-between pt-6 mt-6">
                     <span className="font-mono text-xs font-black uppercase text-black-pure">{viewDetailsLabel}</span>
-                    <div className="w-10 h-10 border-4 border-black-pure flex items-center justify-center group-hover:bg-black-pure group-hover:text-white-pure transition-colors">
+                    <div className="w-10 h-10 border-2 border-black-pure flex items-center justify-center group-hover:bg-black-pure group-hover:text-white-pure transition-colors">
                         <span className="text-xl font-black">→</span>
                     </div>
                 </div>
@@ -122,16 +122,16 @@ const SectionCarousel: React.FC<SectionCarouselProps> = ({
     const CircuitCard = ({ circuit }: { circuit: Circuit }) => (
         <Link
             href={`${basePath}/competition/circuits/${circuit.slug}`}
-            className="group relative bg-white-pure flex flex-col h-full border-r-4 border-black-pure overflow-hidden outline-none"
+            className="group relative bg-white-pure flex flex-col h-full border-r-2 border-black-pure overflow-hidden outline-none"
         >
-            <div className="relative aspect-video w-full bg-secondary-500 overflow-hidden border-b-4 border-black-pure">
+            <div className="relative aspect-video w-full bg-secondary-500 overflow-hidden border-b-2 border-black-pure">
                 <Image
                     src={(circuit.assets?.cover as Media)?.url || `https://picsum.photos/seed/${circuit.id}/800/450`}
                     alt={circuit.name}
                     fill
                     className="object-cover transition-transform duration-500 group-hover:scale-110"
                 />
-                <div className="absolute top-0 left-0 bg-secondary-500 text-black-pure px-4 py-2 font-mono text-xs font-black border-r-4 border-b-4 border-black-pure">
+                <div className="absolute top-0 left-0 bg-secondary-500 text-black-pure px-4 py-2 font-mono text-xs font-black border-r-2 border-b-2 border-black-pure">
                     G{circuit.details?.fia_grade || '1'}
                 </div>
             </div>
@@ -153,7 +153,7 @@ const SectionCarousel: React.FC<SectionCarouselProps> = ({
                 </div>
                 <div className="flex items-center justify-between pt-6 mt-6">
                     <span className="font-mono text-xs font-black uppercase text-black-pure">{exploreLabel}</span>
-                    <div className="w-10 h-10 border-4 border-black-pure flex items-center justify-center group-hover:bg-black-pure group-hover:text-white-pure transition-colors">
+                    <div className="w-10 h-10 border-2 border-black-pure flex items-center justify-center group-hover:bg-black-pure group-hover:text-white-pure transition-colors">
                         <span className="text-xl font-black">→</span>
                     </div>
                 </div>
@@ -163,7 +163,7 @@ const SectionCarousel: React.FC<SectionCarouselProps> = ({
 
     if (items.length === 0) {
         return (
-            <div className="w-full h-96 flex items-center justify-center bg-white-pure border-4 border-black-pure">
+            <div className="w-full h-96 flex items-center justify-center bg-white-pure border-2 border-black-pure">
                 <span className="font-mono text-base font-black text-black-pure uppercase">{noItemsLabel}</span>
             </div>
         )
@@ -180,7 +180,7 @@ const SectionCarousel: React.FC<SectionCarouselProps> = ({
                         >
                             {item.type === 'race' && item.data ? <RaceCard race={item.data as Race} /> :
                                 item.type === 'circuit' && item.data ? <CircuitCard circuit={item.data as Circuit} /> : (
-                                    <div className="relative aspect-video w-full border-r-4 border-black-pure overflow-hidden">
+                                    <div className="relative aspect-video w-full border-r-2 border-black-pure overflow-hidden">
                                         <Image
                                             src={item.media?.url || `https://picsum.photos/seed/${item.id}/800/600`}
                                             alt=""

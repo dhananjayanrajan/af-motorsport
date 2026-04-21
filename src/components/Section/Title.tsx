@@ -15,8 +15,8 @@ const SectionMainTitle: React.FC<SectionMainTitleProps> = ({ label, lineOne, lin
 
     if (variant === 2) {
         return (
-            <div className="flex flex-col w-full bg-primary-500 border-4 border-black-pure">
-                <div className="flex items-center justify-between p-6 border-b-4 border-black-pure bg-white-pure">
+            <div className="flex flex-col w-full bg-primary-500 border-2 border-black-pure">
+                <div className="flex items-center justify-between p-6 border-b-2 border-black-pure bg-white-pure">
                     <p className="text-sm md:text-base font-mono font-black text-black-pure">{label || 'CATALOG REFERENCE'}</p>
                     <div className="flex gap-2">
                         <div className="w-4 h-4 bg-black-pure" />
@@ -36,8 +36,8 @@ const SectionMainTitle: React.FC<SectionMainTitleProps> = ({ label, lineOne, lin
 
     if (variant === 3) {
         return (
-            <div className="flex flex-col w-full border-4 border-black-pure">
-                <div className="flex border-b-4 border-black-pure">
+            <div className="flex flex-col w-full border-2 border-black-pure">
+                <div className="flex border-b-2 border-black-pure">
                     <div className="flex-1 p-8 bg-secondary-500">
                         <h2 className={`${textBase} text-2xl md:text-4xl text-black-pure`}>
                             {lineOne || 'HEADING ALPHA'}
@@ -57,10 +57,10 @@ const SectionMainTitle: React.FC<SectionMainTitleProps> = ({ label, lineOne, lin
     }
 
     return (
-        <div className="flex flex-col w-full border-4 border-black-pure bg-white-pure">
-            <div className="flex items-stretch border-b-4 border-black-pure h-16 md:h-20">
-                <div className="w-16 md:w-20 bg-primary-500 border-r-4 border-black-pure" />
-                <div className="w-16 md:w-20 bg-secondary-500 border-r-4 border-black-pure" />
+        <div className="flex flex-col w-full border-2 border-black-pure bg-white-pure">
+            <div className="flex items-stretch border-b-2 border-black-pure h-16 md:h-20">
+                <div className="w-16 md:w-20 bg-primary-500 border-r-2 border-black-pure" />
+                <div className="w-16 md:w-20 bg-secondary-500 border-r-2 border-black-pure" />
                 <div className="flex-1 flex items-center px-6">
                     <p className="text-sm md:text-base font-mono font-black text-black-pure">{label || 'SECTION LABEL'}</p>
                 </div>

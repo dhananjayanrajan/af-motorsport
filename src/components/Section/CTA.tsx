@@ -29,7 +29,7 @@ const SectionCTA: React.FC<SectionCTAProps> = ({
 }) => {
     if (variant === 2) {
         return (
-            <div className="mt-auto flex flex-col w-full border-t-4 border-black-pure">
+            <div className="mt-auto flex flex-col w-full border-t-2 border-black-pure">
                 <button
                     onClick={onClick}
                     className="flex items-stretch group outline-none h-32"
@@ -37,8 +37,8 @@ const SectionCTA: React.FC<SectionCTAProps> = ({
                     <div className={`flex-1 ${buttonBgColor} ${buttonTextColor} flex items-center px-8 md:px-12 transition-colors duration-100 group-hover:bg-primary-500 group-hover:text-black-pure`}>
                         <span className="font-black text-xl md:text-2xl uppercase tracking-normal truncate">{label}</span>
                     </div>
-                    <div className="w-32 bg-secondary-500 flex items-center justify-center group-hover:bg-black-pure group-hover:text-white-pure border-l-4 border-black-pure transition-colors duration-100 shrink-0">
-                        <div className="w-8 h-8 border-t-4 border-r-4 border-black-pure group-hover:border-white-pure rotate-45 -ml-2" />
+                    <div className="w-32 bg-secondary-500 flex items-center justify-center group-hover:bg-black-pure group-hover:text-white-pure border-l-2 border-black-pure transition-colors duration-100 shrink-0">
+                        <div className="w-8 h-8 border-t-2 border-r-2 border-black-pure group-hover:border-white-pure rotate-45 -ml-2" />
                     </div>
                 </button>
             </div>
@@ -47,11 +47,11 @@ const SectionCTA: React.FC<SectionCTAProps> = ({
 
     if (variant === 3) {
         return (
-            <div className="mt-auto p-8 border-t-4 border-black-pure bg-black-pure">
+            <div className="mt-auto p-8 border-t-2 border-black-pure bg-black-pure">
                 <p className="text-primary-500 font-mono text-xs mb-6 tracking-normal uppercase font-black">{proceedLabel || 'LOCATION'} // {path}</p>
                 <button
                     onClick={onClick}
-                    className="w-full border-4 border-white-pure py-6 px-8 text-white-pure font-black font-mono tracking-normal uppercase hover:bg-white-pure hover:text-black-pure focus:bg-primary-500 focus:text-black-pure focus:border-black-pure transition-colors duration-100 text-base outline-none"
+                    className="w-full border-2 border-white-pure py-6 px-8 text-white-pure font-black font-mono tracking-normal uppercase hover:bg-white-pure hover:text-black-pure focus:bg-primary-500 focus:text-black-pure focus:border-black-pure transition-colors duration-100 text-base outline-none"
                 >
                     {label}
                 </button>
@@ -60,9 +60,9 @@ const SectionCTA: React.FC<SectionCTAProps> = ({
     }
 
     return (
-        <div className="mt-auto flex flex-col bg-white-pure border-t-4 border-black-pure">
+        <div className="mt-auto flex flex-col bg-white-pure border-t-2 border-black-pure">
             {description && (
-                <div className="p-8 border-b-4 border-black-pure">
+                <div className="p-8 border-b-2 border-black-pure">
                     <p className="text-xs font-mono font-black uppercase tracking-normal text-secondary-500 mb-4">{infoLabel || 'DATA_POINT'}</p>
                     <p className="text-sm font-mono font-black uppercase tracking-normal leading-tight text-black-pure border-l-8 border-primary-500 pl-6">
                         {description}

@@ -16,14 +16,14 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({ title, subtitle, variant 
 
     if (variant === 2) {
         return (
-            <header className="w-full bg-black-pure border-b-4 border-black-pure flex flex-col md:flex-row items-stretch">
-                <div className="p-8 border-b-4 md:border-b-0 md:border-r-4 border-white-pure/20 bg-primary-500 flex-1">
+            <header className="w-full bg-black-pure border-b-2 border-black-pure flex flex-col md:flex-row items-stretch">
+                <div className="p-8 border-b-2 md:border-b-0 md:border-r-2 border-white-pure/20 bg-primary-500 flex-1">
                     <h1 className={`${heading} text-black-pure`}>{title || 'DIRECTORY'}</h1>
                 </div>
                 <div className="p-8 flex-1 bg-white-pure">
                     <h2 className={`${heading} text-black-pure opacity-40`}>{subtitle || 'SUB-DIRECTORY'}</h2>
                 </div>
-                <div className="w-24 bg-secondary-500 flex items-center justify-center border-l-4 border-black-pure font-black text-2xl text-black-pure">
+                <div className="w-24 bg-secondary-500 flex items-center justify-center border-l-2 border-black-pure font-black text-2xl text-black-pure">
                     {total}
                 </div>
             </header>
@@ -32,8 +32,8 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({ title, subtitle, variant 
 
     if (variant === 3) {
         return (
-            <header className="w-full border-b-4 border-black-pure bg-white-pure grid grid-cols-1 md:grid-cols-4">
-                <div className="col-span-1 md:col-span-3 p-8 border-b-4 md:border-b-0 md:border-r-4 border-black-pure">
+            <header className="w-full border-b-2 border-black-pure bg-white-pure grid grid-cols-1 md:grid-cols-4">
+                <div className="col-span-1 md:col-span-3 p-8 border-b-2 md:border-b-0 md:border-r-2 border-black-pure">
                     <h1 className={`${heading} text-black-pure`}>{title || 'PRIMARY VIEW'}</h1>
                 </div>
                 <div className="p-8 bg-primary-500 flex items-center justify-between">
@@ -45,8 +45,8 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({ title, subtitle, variant 
     }
 
     return (
-        <header className="w-full bg-white-pure border-b-4 border-black-pure flex items-stretch">
-            <div className="w-16 md:w-24 bg-primary-500 border-r-4 border-black-pure flex items-center justify-center font-black text-black-pure">
+        <header className="w-full bg-white-pure border-b-2 border-black-pure flex items-stretch">
+            <div className="w-16 md:w-24 bg-primary-500 border-r-2 border-black-pure flex items-center justify-center font-black text-black-pure">
                 {total}
             </div>
             <div className="p-8 flex-1">
