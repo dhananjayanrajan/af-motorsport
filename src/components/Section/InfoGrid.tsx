@@ -1,29 +1,22 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import SectionScroller from './Scroller'
 
-/**
- * Universal Data Item: Represents a single unit of information 
- * extracted from any of the 20+ collection detail fields.
- */
 export interface InfoBlock {
     id: string
-    label: string        // e.g., "AERODYNAMICS" or "BIOMETRICS"
-    title: string        // e.g., "Downforce Level" or "Heart Rate Avg"
-    description?: string // Contextual brief
-    metadata?: {         // High-density technical key-values
-        key: string      // e.g., "Metric"
-        value: string    // e.g., "2400kg"
-    }[]
+    label: string
+    title: string
+    description?: string
+    metadata?: { key: string; value: string }[]
     variant?: 'default' | 'highlight' | 'status'
 }
 
 interface InfoGridProps {
-    id: string           // Section ID for navigation
-    title: string        // Section Heading
-    blocks: InfoBlock[]  // The mapped data from the collection
-    columns?: 2 | 3 | 4  // Responsive grid density
+    id: string
+    title: string
+    blocks: InfoBlock[]
+    columns?: 2 | 3 | 4
 }
 
 const InfoGrid: React.FC<InfoGridProps> = ({
@@ -37,63 +30,87 @@ const InfoGrid: React.FC<InfoGridProps> = ({
         3: 'lg:grid-cols-3',
         4: 'lg:grid-cols-4'
     }
+    const [visibleBlocks, setVisibleBlocks] = useState<Set<number>>(new Set())
+    const blockRefs = useRef<(HTMLDivElement | null)[]>([])
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        const index = Number(entry.target.getAttribute('data-index'))
+                        setVisibleBlocks(prev => new Set(prev).add(index))
+                    }
+                })
+            },
+            { threshold: 0.1, rootMargin: '100px' }
+        )
+
+        blockRefs.current.forEach((ref, idx) => {
+            if (ref) {
+                ref.setAttribute('data-index', String(idx))
+                observer.observe(ref)
+            }
+        })
+
+        return () => observer.disconnect()
+    }, [])
 
     return (
-        <section className="relative w-full bg-white-pure flex flex-col border-b border-black-pure">
-            {/* STICKY HEADER: Standardized across all universal components */}
-            <div className="flex h-16 border-b border-black-pure items-center px-6 justify-between bg-white-pure z-40 sticky top-0">
-                <div className="flex items-center gap-4">
-                    <span className="text-[11px] font-bold tracking-tight text-black-pure">{id}</span>
-                    <div className="h-4 w-[1px] bg-neutral-200" />
-                    <h2 className="text-[11px] text-neutral-500 uppercase tracking-wide">{title}</h2>
+        <section className="relative w-full bg-white-pure flex flex-col">
+            <div className="flex h-16 border-b border-black-pure items-center px-4 md:px-6 justify-between bg-white-pure z-40 sticky top-0">
+                <div className="flex items-center gap-3 md:gap-4">
+                    <span className="text-[10px] md:text-xs font-bold tracking-tight text-neutral-400 font-mono">{id}</span>
+                    <div className="h-3 w-px bg-neutral-200" />
+                    <h2 className="text-[10px] md:text-xs text-secondary-500 uppercase tracking-wide font-black">{title}</h2>
+                </div>
+                <div className="text-[8px] md:text-[10px] font-mono text-neutral-400">
+                    {blocks.length} RECORDS
                 </div>
             </div>
 
-            {/* THE GRID: Modular border-collapse simulation using divide-x/y */}
             <div className={`grid grid-cols-1 md:grid-cols-2 ${gridCols[columns]} divide-x divide-y divide-black-pure border-l border-black-pure`}>
                 {blocks.map((block, index) => (
                     <div
                         key={block.id}
-                        className={`p-10 lg:p-14 flex flex-col min-h-[400px] transition-all duration-300 group ${block.variant === 'highlight' ? 'bg-neutral-50' : 'bg-white-pure hover:bg-neutral-50'
+                        ref={el => { blockRefs.current[index] = el }}
+                        className={`p-6 md:p-8 lg:p-10 xl:p-14 flex flex-col min-h-[350px] md:min-h-[400px] transition-all duration-700 transform ${visibleBlocks.has(index) ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
+                            } ${block.variant === 'highlight' ? 'bg-secondary-500/10' : 'bg-white-pure hover:bg-neutral-50'
                             }`}
                     >
-                        {/* IDENTIFIER: Meta-tagging for the specific data point */}
-                        <div className="mb-12 flex items-center justify-between">
+                        <div className="mb-8 md:mb-12 flex items-center justify-between">
                             <div className="flex flex-col gap-1">
-                                <span className="text-[9px] font-bold text-primary-500 uppercase tracking-[0.2em]">
+                                <span className="text-[8px] md:text-[10px] font-black text-primary-500 uppercase tracking-[0.15em]">
                                     {block.label}
                                 </span>
-                                <span className="text-[10px] font-mono font-bold text-neutral-300 italic">
-                                    DP_{String(index + 1).padStart(2, '0')}
+                                <span className="text-[8px] md:text-[10px] font-mono font-black text-neutral-300">
+                                    {(index + 1).toString().padStart(2, '0')}
                                 </span>
                             </div>
-                            {/* Visual Status Indicator */}
                             {block.variant === 'status' && (
-                                <div className="w-2 h-2 rounded-full bg-primary-500 animate-pulse" />
+                                <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse shadow-lg shadow-green-500/50" />
                             )}
                         </div>
 
-                        {/* CONTENT: Typography follows the 'Race' font for headings */}
                         <div className="flex-1 flex flex-col justify-start">
-                            <h3 className="font-race text-3xl lg:text-5xl text-black-pure uppercase leading-[0.8] tracking-tighter mb-8 group-hover:text-primary-500 transition-colors">
+                            <h3 className="font-race text-2xl md:text-3xl lg:text-4xl xl:text-5xl text-black-pure uppercase leading-[0.85] tracking-tighter mb-4 md:mb-6 lg:mb-8 group-hover:text-primary-500 transition-colors duration-300">
                                 {block.title}
                             </h3>
                             {block.description && (
-                                <p className="text-[13px] font-medium text-neutral-500 uppercase leading-relaxed max-w-sm">
+                                <p className="text-xs md:text-sm font-medium text-neutral-500 uppercase leading-relaxed max-w-sm">
                                     {block.description}
                                 </p>
                             )}
                         </div>
 
-                        {/* METADATA: Flat table-style rows for raw data values */}
                         {block.metadata && block.metadata.length > 0 && (
-                            <div className="mt-12 space-y-2">
+                            <div className="mt-8 md:mt-10 lg:mt-12 space-y-2">
                                 {block.metadata.map((meta, mIdx) => (
-                                    <div key={mIdx} className="flex justify-between items-end border-b border-neutral-100 pb-2 group-hover:border-black-pure transition-colors">
-                                        <span className="text-[8px] font-bold text-neutral-400 uppercase tracking-widest">
+                                    <div key={mIdx} className="flex justify-between items-end border-b border-neutral-100 pb-2 group-hover:border-primary-500 transition-colors duration-300">
+                                        <span className="text-[7px] md:text-[8px] font-black text-neutral-400 uppercase tracking-wider">
                                             {meta.key}
                                         </span>
-                                        <span className="text-[14px] font-bold text-black-pure uppercase tracking-tighter">
+                                        <span className="text-xs md:text-sm font-black text-black-pure uppercase tracking-tighter">
                                             {meta.value}
                                         </span>
                                     </div>
@@ -104,13 +121,7 @@ const InfoGrid: React.FC<InfoGridProps> = ({
                 ))}
             </div>
 
-            {/* FOOTER: Section-specific scroller data */}
-            <div className="z-40 bg-white-pure border-t border-black-pure">
-                <SectionScroller
-                    items={[title, id, "SPECIFICATION_GRID_V1", `TOTAL_NODES_${blocks.length}`]}
-                    variant={3}
-                />
-            </div>
+            <SectionScroller items={[title, id, "ANALYSIS", "METRICS", "INSIGHTS"]} variant={4} velocity={35} />
         </section>
     )
 }

@@ -23,39 +23,42 @@ interface PodiumProps {
 }
 
 const Podium: React.FC<PodiumProps> = ({ id, title, entries }) => {
-    const [hoveredIdx, setHoveredIdx] = useState<number | null>(null)
+    const [hoveredId, setHoveredId] = useState<string | null>(null)
 
     const getRankData = (rank: string) => {
         switch (rank) {
             case 'P01':
                 return {
-                    label: 'Champion',
-                    height: 'h-[500px] lg:h-[700px]',
+                    label: 'CHAMPION',
+                    height: 'h-[450px] md:h-[550px] lg:h-[650px] xl:h-[700px]',
                     order: 'order-1 lg:order-2',
-                    accent: 'bg-primary-500',
-                    text: 'text-primary-500',
-                    clip: 'polygon(0 10%, 100% 0, 100% 100%, 0 100%)'
+                    bgGradient: 'from-yellow-500/20 to-primary-500/20',
+                    medalColor: 'text-yellow-500',
+                    borderColor: 'border-yellow-500',
+                    shadow: 'shadow-yellow-500/30'
                 }
             case 'P02':
                 return {
-                    label: 'Runner Up',
-                    height: 'h-[450px] lg:h-[600px]',
+                    label: 'RUNNER UP',
+                    height: 'h-[400px] md:h-[500px] lg:h-[580px] xl:h-[620px]',
                     order: 'order-2 lg:order-1',
-                    accent: 'bg-neutral-400',
-                    text: 'text-neutral-500',
-                    clip: 'polygon(0 0, 100% 10%, 100% 100%, 0 100%)'
+                    bgGradient: 'from-gray-400/20 to-neutral-500/20',
+                    medalColor: 'text-gray-400',
+                    borderColor: 'border-gray-400',
+                    shadow: 'shadow-gray-400/30'
                 }
             case 'P03':
                 return {
-                    label: 'Third Place',
-                    height: 'h-[400px] lg:h-[500px]',
+                    label: 'THIRD PLACE',
+                    height: 'h-[350px] md:h-[450px] lg:h-[520px] xl:h-[550px]',
                     order: 'order-3',
-                    accent: 'bg-neutral-200',
-                    text: 'text-neutral-400',
-                    clip: 'polygon(0 10%, 100% 0, 100% 100%, 0 100%)'
+                    bgGradient: 'from-amber-600/20 to-orange-500/20',
+                    medalColor: 'text-amber-600',
+                    borderColor: 'border-amber-600',
+                    shadow: 'shadow-amber-600/30'
                 }
             default:
-                return { label: '', height: 'h-[400px]', order: '', accent: '', text: '', clip: '' }
+                return { label: '', height: 'h-[400px]', order: '', bgGradient: '', medalColor: '', borderColor: '', shadow: '' }
         }
     }
 
@@ -64,74 +67,93 @@ const Podium: React.FC<PodiumProps> = ({ id, title, entries }) => {
         return order[a.rank] - order[b.rank]
     })
 
+    const getImageSrc = (entry: PodiumEntry) => {
+        if (typeof entry.image === 'object' && entry.image?.url) {
+            return entry.image.url
+        }
+        if (typeof entry.image === 'string' && entry.image) {
+            return entry.image
+        }
+        return `https://picsum.photos/seed/${entry.id}/800/1200`
+    }
+
     return (
-        <section className="relative w-full bg-white-pure flex flex-col border-b border-black-pure overflow-hidden">
-            <div className="flex h-16 border-b border-black-pure items-center px-6 justify-between bg-white-pure z-40 sticky top-0">
-                <div className="flex items-center gap-4">
-                    <span className="text-[11px] font-bold tracking-tight text-black-pure">{id}</span>
-                    <div className="h-4 w-[1px] bg-neutral-200" />
-                    <h2 className="text-[11px] text-neutral-500 uppercase tracking-wide">{title}</h2>
+        <section className="relative w-full bg-gradient-to-br from-white-pure via-neutral-50 to-white-pure flex flex-col overflow-hidden">
+            <div className="flex h-16 border-b border-black-pure items-center px-4 md:px-6 justify-between bg-white-pure z-40 sticky top-0">
+                <div className="flex items-center gap-3 md:gap-4">
+                    <span className="text-[10px] md:text-xs font-bold tracking-tight text-neutral-400 font-mono">{id}</span>
+                    <div className="h-3 w-px bg-neutral-200" />
+                    <h2 className="text-[10px] md:text-xs text-primary-500 uppercase tracking-wide font-black">{title}</h2>
                 </div>
             </div>
 
-            <div className="flex flex-col lg:flex-row items-end justify-center w-full max-w-[1400px] mx-auto px-6 py-20 gap-4 lg:gap-0">
-                {sortedEntries.map((entry, index) => {
+            <div className="flex flex-col lg:flex-row items-end justify-center w-full max-w-7xl mx-auto px-4 md:px-6 py-12 md:py-16 lg:py-20 gap-3 md:gap-4 lg:gap-0">
+                {sortedEntries.map((entry) => {
                     const style = getRankData(entry.rank)
-                    const isHovered = hoveredIdx === index
-                    const src = typeof entry.image === 'object' ? entry.image?.url : entry.image || `https://picsum.photos/seed/${entry.id}/800/1200`
+                    const isHovered = hoveredId === entry.id
+                    const imageSrc = getImageSrc(entry)
 
                     return (
                         <div
                             key={entry.id}
                             className={`relative flex flex-col w-full lg:w-1/3 ${style.order} group`}
-                            onMouseEnter={() => setHoveredIdx(index)}
-                            onMouseLeave={() => setHoveredIdx(null)}
+                            onMouseEnter={() => setHoveredId(entry.id)}
+                            onMouseLeave={() => setHoveredId(null)}
                         >
                             <div
-                                className={`relative w-full ${style.height} overflow-hidden bg-neutral-100 border-x border-t border-black-pure transition-colors duration-500 ${isHovered ? 'bg-neutral-200' : ''}`}
-                                style={{ clipPath: style.clip }}
+                                className={`relative w-full ${style.height} overflow-hidden bg-gradient-to-t ${style.bgGradient} border-x border-t border-black-pure transition-all duration-500 ${isHovered ? `shadow-2xl ${style.shadow}` : ''}`}
                             >
-                                <Image
-                                    src={src as string}
-                                    alt={entry.lastName}
-                                    fill
-                                    className="object-cover contrast-110 grayscale group-hover:grayscale-0 transition-all duration-700 origin-bottom"
-                                />
-                                <div className="absolute inset-0 bg-black-pure/5 mix-blend-multiply" />
+                                {imageSrc && (
+                                    <Image
+                                        src={imageSrc}
+                                        alt={entry.lastName}
+                                        fill
+                                        className="object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 scale-105 group-hover:scale-110"
+                                    />
+                                )}
+                                <div className="absolute inset-0 bg-black-pure/30 group-hover:bg-black-pure/10 transition-colors duration-500" />
 
-                                <div className="absolute bottom-10 left-10">
-                                    <span className={`font-race text-7xl lg:text-9xl leading-none italic ${style.text} drop-shadow-md`}>
+                                <div className="absolute bottom-4 md:bottom-6 lg:bottom-8 left-4 md:left-6 lg:left-8 flex flex-col gap-1">
+                                    <div className={`text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black ${style.medalColor} drop-shadow-lg`}>
                                         {entry.rank}
-                                    </span>
+                                    </div>
+                                    <div className="flex gap-1">
+                                        {[...Array(3)].map((_, i) => (
+                                            <div key={i} className={`w-1 h-4 ${i === 0 ? 'bg-yellow-500' : i === 1 ? 'bg-gray-400' : 'bg-amber-600'}`} />
+                                        ))}
+                                    </div>
+                                </div>
+
+                                <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                                    <div className="bg-black-pure/80 backdrop-blur-sm text-white-pure px-2 py-1 rounded text-[8px] font-black">
+                                        #{entry.points || '00'}
+                                    </div>
                                 </div>
                             </div>
 
-                            <div className="relative z-10 p-8 bg-white-pure border-2 border-black-pure group-hover:bg-black-pure transition-colors duration-300">
-                                <div
-                                    className={`absolute top-0 left-0 h-1 transition-all duration-500 ${style.accent}`}
-                                    style={{ width: isHovered ? '100%' : '15%' }}
-                                />
+                            <div className="relative z-10 p-4 md:p-6 lg:p-8 bg-white-pure border-2 border-black-pure group-hover:bg-black-pure transition-all duration-500">
+                                <div className={`absolute top-0 left-0 h-1 transition-all duration-500 bg-primary-500`} style={{ width: isHovered ? '100%' : '20%' }} />
 
-                                <div className="space-y-4">
+                                <div className="space-y-3 md:space-y-4">
                                     <div>
-                                        <span className="text-[9px] font-bold text-neutral-400 uppercase tracking-widest block mb-1">
+                                        <span className="text-[8px] md:text-[9px] font-black text-neutral-400 uppercase tracking-wider block mb-1">
                                             {style.label}
                                         </span>
-                                        <h3 className={`font-race text-2xl lg:text-3xl uppercase italic leading-none transition-colors ${isHovered ? 'text-white-pure' : 'text-black-pure'}`}>
-                                            {entry.firstName} <span className={isHovered ? style.text : ''}>{entry.lastName}</span>
+                                        <h3 className={`font-race text-xl md:text-2xl lg:text-3xl uppercase italic leading-none transition-all duration-300 ${isHovered ? 'text-white-pure' : 'text-black-pure'}`}>
+                                            {entry.firstName} <span className={isHovered ? 'text-primary-500' : ''}>{entry.lastName}</span>
                                         </h3>
                                     </div>
 
-                                    <div className={`flex items-center gap-8 pt-4 border-t ${isHovered ? 'border-neutral-800' : 'border-neutral-100'}`}>
+                                    <div className={`flex items-center gap-4 md:gap-6 pt-3 md:pt-4 border-t transition-colors duration-300 ${isHovered ? 'border-neutral-800' : 'border-neutral-100'}`}>
                                         <div className="flex flex-col">
-                                            <span className="text-[8px] font-bold text-neutral-400 uppercase">Team</span>
-                                            <span className={`text-[11px] font-bold uppercase italic ${isHovered ? 'text-neutral-200' : 'text-black-pure'}`}>
-                                                {entry.team || 'Independent'}
+                                            <span className="text-[7px] md:text-[8px] font-black text-neutral-400 uppercase tracking-wider">TEAM</span>
+                                            <span className={`text-[9px] md:text-[10px] font-black uppercase italic transition-colors duration-300 ${isHovered ? 'text-neutral-300' : 'text-black-pure'}`}>
+                                                {entry.team || 'INDEPENDENT'}
                                             </span>
                                         </div>
                                         <div className="flex flex-col">
-                                            <span className="text-[8px] font-bold text-neutral-400 uppercase">Score</span>
-                                            <span className={`text-[11px] font-bold italic ${isHovered ? style.text : 'text-black-pure'}`}>
+                                            <span className="text-[7px] md:text-[8px] font-black text-neutral-400 uppercase tracking-wider">POINTS</span>
+                                            <span className={`text-base md:text-lg lg:text-xl font-black italic transition-colors duration-300 ${isHovered ? 'text-primary-500' : 'text-black-pure'}`}>
                                                 {entry.points || '00'}
                                             </span>
                                         </div>
@@ -143,12 +165,7 @@ const Podium: React.FC<PodiumProps> = ({ id, title, entries }) => {
                 })}
             </div>
 
-            <div className="z-40 bg-white-pure border-t border-black-pure">
-                <SectionScroller
-                    items={[title, id, "CLASSIFICATION_FINALIZED"]}
-                    variant={3}
-                />
-            </div>
+            <SectionScroller items={[title, "STANDINGS", "LEADERBOARD", "RANKINGS"]} variant={1} velocity={28} />
         </section>
     )
 }

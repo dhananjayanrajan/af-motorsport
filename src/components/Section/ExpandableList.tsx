@@ -1,5 +1,6 @@
 'use client'
 
+import { ChevronDown } from 'lucide-react'
 import React, { useState } from 'react'
 import SectionScroller from './Scroller'
 
@@ -26,12 +27,15 @@ const ExpandableList: React.FC<ExpandableListProps> = ({ id, title, panels }) =>
     }
 
     return (
-        <section className="relative w-full bg-white-pure flex flex-col border-b border-black-pure">
-            <div className="flex h-16 border-b border-black-pure items-center px-6 justify-between bg-white-pure z-40 sticky top-0">
-                <div className="flex items-center gap-4">
-                    <span className="text-[11px] font-bold tracking-tight text-black-pure">{id}</span>
-                    <div className="h-4 w-[1px] bg-neutral-200" />
-                    <h2 className="text-[11px] text-neutral-500 uppercase tracking-wide">{title}</h2>
+        <section className="relative w-full bg-white-pure flex flex-col">
+            <div className="flex h-16 border-b border-black-pure items-center px-4 md:px-6 justify-between bg-white-pure z-40 sticky top-0">
+                <div className="flex items-center gap-3 md:gap-4">
+                    <span className="text-[10px] md:text-xs font-bold tracking-tight text-neutral-400 font-mono">{id}</span>
+                    <div className="h-3 w-px bg-neutral-200" />
+                    <h2 className="text-[10px] md:text-xs text-tertiary-500 uppercase tracking-wide font-black">{title}</h2>
+                </div>
+                <div className="text-[8px] md:text-[10px] font-mono text-neutral-400">
+                    {panels.length} SECTIONS
                 </div>
             </div>
 
@@ -40,50 +44,45 @@ const ExpandableList: React.FC<ExpandableListProps> = ({ id, title, panels }) =>
                     const isExpanded = expandedId === panel.id
 
                     return (
-                        <div
-                            key={panel.id}
-                            className="relative border-b border-black-pure last:border-b-0"
-                        >
-                            <div
-                                className={`sticky top-16 z-30 flex flex-col md:flex-row items-stretch min-h-[120px] bg-white-pure transition-colors duration-500 ${isExpanded ? 'bg-neutral-50' : 'hover:bg-neutral-50'}`}
-                            >
-                                <div className="w-16 md:w-24 border-r border-black-pure flex items-center justify-center">
-                                    <span className="font-mono text-[10px] font-bold text-neutral-300 -rotate-90 whitespace-nowrap">
-                                        REF_{String(index + 1).padStart(3, '0')}
+                        <div key={panel.id} className="relative border-b border-black-pure last:border-b-0">
+                            <div className={`sticky top-16 z-30 flex flex-col md:flex-row items-stretch min-h-[100px] md:min-h-[120px] bg-white-pure transition-all duration-500 ${isExpanded ? 'bg-secondary-500/5' : 'hover:bg-neutral-50'}`}>
+                                <div className="w-16 md:w-20 lg:w-24 border-r border-black-pure flex items-center justify-center bg-white-pure">
+                                    <span className="font-mono text-[9px] md:text-[10px] font-black text-neutral-400 -rotate-90 whitespace-nowrap">
+                                        {(index + 1).toString().padStart(3, '0')}
                                     </span>
                                 </div>
 
                                 <button
                                     onClick={() => togglePanel(panel.id)}
-                                    className="flex-1 px-8 py-10 flex flex-col md:flex-row md:items-center justify-between text-left group"
+                                    className="flex-1 px-4 md:px-6 lg:px-8 py-6 md:py-8 lg:py-10 flex flex-col md:flex-row md:items-center justify-between text-left group"
                                 >
-                                    <div className="flex flex-col gap-2">
-                                        <span className="text-[9px] font-bold text-primary-500 uppercase tracking-widest">
+                                    <div className="flex flex-col gap-1 md:gap-2 flex-1">
+                                        <span className="text-[8px] md:text-[9px] font-black text-primary-500 uppercase tracking-wider">
                                             {panel.label}
                                         </span>
-                                        <h3 className="font-race text-3xl md:text-4xl text-black-pure uppercase leading-none">
+                                        <h3 className="font-race text-xl md:text-2xl lg:text-3xl xl:text-4xl text-black-pure uppercase leading-[1.1] group-hover:text-primary-500 transition-colors duration-300">
                                             {panel.title}
                                         </h3>
-                                        <p className="text-[11px] text-neutral-500 font-medium uppercase max-w-xl">
+                                        <p className="text-[10px] md:text-xs text-neutral-500 font-medium uppercase max-w-xl mt-1">
                                             {panel.summary}
                                         </p>
                                     </div>
 
-                                    <div className="mt-6 md:mt-0 flex items-center gap-4">
-                                        <div className="h-8 w-[1px] bg-neutral-200 hidden md:block" />
-                                        <div className={`text-[10px] font-bold uppercase transition-all duration-300 ${isExpanded ? 'text-primary-500 pr-4' : 'text-black-pure'}`}>
-                                            {isExpanded ? 'Collapse' : 'Expand Details'}
+                                    <div className="mt-4 md:mt-0 flex items-center gap-3 md:gap-4">
+                                        <div className={`text-[9px] md:text-[10px] font-black uppercase transition-all duration-300 ${isExpanded ? 'text-primary-500' : 'text-neutral-400'}`}>
+                                            {isExpanded ? 'COLLAPSE' : 'EXPAND'}
+                                        </div>
+                                        <div className={`w-8 h-8 md:w-10 md:h-10 rounded-full border-2 border-black-pure flex items-center justify-center transition-all duration-500 ${isExpanded ? 'rotate-180 bg-primary-500 border-primary-500' : 'group-hover:bg-black-pure group-hover:text-white-pure'}`}>
+                                            <ChevronDown className="w-4 h-4 md:w-5 md:h-5" />
                                         </div>
                                     </div>
                                 </button>
                             </div>
 
-                            <div
-                                className={`overflow-hidden transition-all duration-700 ease-in-out bg-white-pure ${isExpanded ? 'max-h-[2000px] opacity-100 border-t border-black-pure' : 'max-h-0 opacity-0'}`}
-                            >
-                                <div className="flex flex-col lg:flex-row divide-y lg:divide-y-0 lg:divide-x divide-black-pure">
-                                    <div className="flex-1 p-10 lg:p-20">
-                                        <div className="prose prose-neutral max-w-4xl text-[14px] uppercase font-medium leading-relaxed tracking-tight text-neutral-600">
+                            <div className={`overflow-hidden transition-all duration-500 ease-in-out ${isExpanded ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'}`}>
+                                <div className="flex flex-col lg:flex-row divide-y lg:divide-y-0 lg:divide-x divide-black-pure border-t border-black-pure">
+                                    <div className="flex-1 p-6 md:p-8 lg:p-10 xl:p-12">
+                                        <div className="text-xs md:text-sm font-medium uppercase leading-relaxed tracking-wide text-neutral-600 space-y-4">
                                             {typeof panel.content === 'string' ? (
                                                 <p>{panel.content}</p>
                                             ) : (
@@ -92,16 +91,16 @@ const ExpandableList: React.FC<ExpandableListProps> = ({ id, title, panels }) =>
                                         </div>
                                     </div>
 
-                                    {panel.metadata && (
-                                        <div className="w-full lg:w-96 p-10 lg:p-12 bg-neutral-50 flex flex-col gap-8">
-                                            <span className="text-[10px] font-bold text-black-pure uppercase tracking-widest border-b border-black-pure pb-2">
-                                                Technical Params
+                                    {panel.metadata && panel.metadata.length > 0 && (
+                                        <div className="w-full lg:w-80 xl:w-96 p-6 md:p-8 lg:p-10 bg-gradient-to-br from-neutral-50 to-white-pure flex flex-col gap-6 md:gap-8">
+                                            <span className="text-[9px] md:text-[10px] font-black text-black-pure uppercase tracking-wider border-b-2 border-primary-500 pb-2">
+                                                SPECIFICATIONS
                                             </span>
-                                            <div className="space-y-6">
+                                            <div className="space-y-4 md:space-y-5">
                                                 {panel.metadata.map((meta, mIdx) => (
-                                                    <div key={mIdx}>
-                                                        <p className="text-[9px] font-bold text-neutral-400 uppercase mb-1">{meta.label}</p>
-                                                        <p className="text-[12px] font-bold text-black-pure uppercase">{meta.value}</p>
+                                                    <div key={mIdx} className="group/metadata">
+                                                        <p className="text-[8px] md:text-[9px] font-black text-neutral-400 uppercase mb-1 tracking-wider">{meta.label}</p>
+                                                        <p className="text-[10px] md:text-xs font-black text-black-pure uppercase group-hover/metadata:text-primary-500 transition-colors duration-300">{meta.value}</p>
                                                     </div>
                                                 ))}
                                             </div>
@@ -114,12 +113,7 @@ const ExpandableList: React.FC<ExpandableListProps> = ({ id, title, panels }) =>
                 })}
             </div>
 
-            <div className="z-40 bg-white-pure border-t border-black-pure">
-                <SectionScroller
-                    items={[title, id, "INDEX_STACK_ACTIVE"]}
-                    variant={3}
-                />
-            </div>
+            <SectionScroller items={[title, id, "DETAILS", "SPECS", "INFO"]} variant={4} velocity={30} />
         </section>
     )
 }
