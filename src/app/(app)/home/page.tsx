@@ -1,133 +1,121 @@
-// app/page.tsx
-import VideoSection from '@/components/Section/Slug/Video'
-import TopDrivers from './sections/Drivers'
-import HyperspeedSection from './sections/Hyperspeed'
-import LatestRaces from './sections/Races'
-import HeroSlides from './sections/Slides'
-
-export const dynamic = 'force-dynamic'
-
-async function safeFetch(url: string) {
-  try {
-    const res = await fetch(url, { next: { revalidate: 0 } })
-    if (!res.ok) return { docs: [], totalDocs: 0 }
-    return await res.json()
-  } catch (e) {
-    console.error('Fetch error:', e)
-    return { docs: [], totalDocs: 0 }
-  }
-}
+import CardCarousel from '@/components/Section/CardCarousel'
+import ImageCarousel from '@/components/Section/ImageCarousel'
+import Podium from '@/components/Section/Podium'
+import VideoCarousel from '@/components/Section/VideoCarousel'
+import { Media } from '@/payload-types'
+import configPromise from '@payload-config'
+import { getPayload } from 'payload'
 
 async function getHomeData() {
-  const url = process.env.NEXT_PUBLIC_PAYLOAD_URL
+  const payload = await getPayload({ config: configPromise })
 
-  if (!url) {
-    console.error('NEXT_PUBLIC_PAYLOAD_URL is not defined')
-    return {
-      races: [],
-      drivers: [],
-      slides: [],
-      videoUrls: [],
-      navigation: {
-        series: 'global',
-        seasons: '2026',
-        events: 'grand-prix',
-        sessions: 'qualifying',
-        seriesName: 'FORMULA 1',
-        seasonsName: 'WORLD CHAMPIONSHIP',
-        eventsName: 'MONACO GRAND PRIX',
-        sessionsName: 'QUALIFYING SESSION'
-      }
-    }
-  }
+  const { docs: videos } = await payload.find({
+    collection: 'media',
+    where: {
+      mimeType: {
+        contains: 'video',
+      },
+    },
+    limit: 5,
+    sort: '-createdAt',
+  })
 
-  const [
-    races,
-    slides,
-    sessions,
-    events,
-    seasons,
-    series,
-    drivers,
-  ] = await Promise.all([
-    safeFetch(`${url}/api/races?sort=-createdAt&limit=10`),
-    safeFetch(`${url}/api/slides?limit=10`),
-    safeFetch(`${url}/api/sessions?sort=-createdAt&limit=10`),
-    safeFetch(`${url}/api/events?sort=-createdAt&limit=10`),
-    safeFetch(`${url}/api/seasons?sort=-createdAt&limit=10`),
-    safeFetch(`${url}/api/series?limit=10`),
-    safeFetch(`${url}/api/drivers?sort=-createdAt&limit=10`),
-  ])
+  const { docs: slides } = await payload.find({
+    collection: 'media',
+    where: {
+      mimeType: {
+        contains: 'image',
+      },
+    },
+    limit: 10,
+    sort: '-createdAt',
+  })
 
-  const extractVideoUrls = (items: any[]) => {
-    const urls: string[] = []
-    items.forEach(item => {
-      if (item?.assets?.video) {
-        const video = item.assets.video
-        const videoUrl = typeof video === 'object' ? video?.url : video
-        if (typeof videoUrl === 'string' && videoUrl) urls.push(videoUrl)
-      }
-      if (item?.assets?.videos && Array.isArray(item.assets.videos)) {
-        item.assets.videos.forEach((vid: any) => {
-          const videoUrl = typeof vid === 'object' ? vid?.url : vid
-          if (typeof videoUrl === 'string' && videoUrl) urls.push(videoUrl)
-        })
-      }
-      if (item?.assets?.highlights && Array.isArray(item.assets.highlights)) {
-        item.assets.highlights.forEach((highlight: any) => {
-          const highlightUrl = typeof highlight === 'object' ? highlight?.url : highlight
-          if (typeof highlightUrl === 'string' && highlightUrl) urls.push(highlightUrl)
-        })
-      }
-      if (item?.assets?.trailer) {
-        const trailer = item.assets.trailer
-        const trailerUrl = typeof trailer === 'object' ? trailer?.url : trailer
-        if (typeof trailerUrl === 'string' && trailerUrl) urls.push(trailerUrl)
-      }
-    })
-    return urls
-  }
+  const { docs: series } = await payload.find({
+    collection: 'series',
+    limit: 6,
+    sort: '-createdAt',
+  })
 
-  const allVideoUrls = extractVideoUrls([
-    ...(races?.docs || []),
-    ...(sessions?.docs || []),
-    ...(events?.docs || []),
-    ...(seasons?.docs || [])
-  ])
+  const { docs: races } = await payload.find({
+    collection: 'races',
+    where: {
+      'details.status': {
+        equals: 'completed',
+      },
+    },
+    limit: 3,
+    sort: '-details.start_date',
+  })
 
-  const firstSeries = series?.docs?.[0]
-  const firstSeason = seasons?.docs?.[0]
-  const firstEvent = events?.docs?.[0]
-  const firstSession = sessions?.docs?.[0]
+  const { docs: drivers } = await payload.find({
+    collection: 'drivers',
+    limit: 3,
+    sort: '-createdAt',
+  })
 
-  return {
-    races: races?.docs || [],
-    drivers: drivers?.docs || [],
-    slides: slides?.docs || [],
-    videoUrls: allVideoUrls,
-    navigation: {
-      series: firstSeries?.slug || 'global',
-      seasons: firstSeason?.slug || '2026',
-      events: firstEvent?.slug || 'grand-prix',
-      sessions: firstSession?.slug || 'qualifying',
-      seriesName: firstSeries?.name || 'FORMULA 1',
-      seasonsName: firstSeason?.name || 'WORLD CHAMPIONSHIP',
-      eventsName: firstEvent?.name || 'MONACO GRAND PRIX',
-      sessionsName: firstSession?.name || 'QUALIFYING SESSION'
-    }
-  }
+  return { videos, slides, series, races, drivers }
 }
 
-export default async function Page() {
-  const data = await getHomeData()
+export default async function HomePage() {
+  const { videos, slides, series, races, drivers } = await getHomeData()
+
+  const videoSlides = videos.map(video => ({
+    id: video.id.toString(),
+    title: video.filename || 'Video',
+    meta: video.mimeType?.split('/')[1]?.toUpperCase() || 'MEDIA',
+    video: video,
+    poster: video.thumbnailURL ? { url: video.thumbnailURL } as Media : video,
+  }))
+
+  const imageSlides = slides.map(slide => ({
+    id: slide.id.toString(),
+    title: slide.filename || 'Image',
+    meta: slide.mimeType?.split('/')[1]?.toUpperCase() || 'IMAGE',
+    image: slide,
+  }))
+
+  const seriesCards = series.map(s => ({
+    id: s.id.toString(),
+    title: s.name,
+    category: s.details?.status || 'Series',
+    label: s.basics?.identifiers?.code || 'SERIES',
+    href: `/competition/series/${s.slug}`,
+    image: s.assets?.thumbnail && typeof s.assets.thumbnail === 'object' ? s.assets.thumbnail : null,
+  }))
+
+  const podiumEntries = races.map((race, index) => {
+    const rank = index === 0 ? 'P01' : index === 1 ? 'P02' : 'P03'
+    return {
+      id: race.id.toString(),
+      firstName: race.name.split(' ')[0] || race.name,
+      lastName: race.name.split(' ').slice(1).join(' ') || 'Race',
+      rank: rank as 'P01' | 'P02' | 'P03',
+      points: race.details?.laps?.toString() || '00',
+      team: race.details?.circuit && typeof race.details.circuit === 'object' ? race.details.circuit.name : 'Circuit',
+    }
+  })
+
+  const driverPodium = drivers.map((driver, index) => {
+    const rank = index === 0 ? 'P01' : index === 1 ? 'P02' : 'P03'
+    return {
+      id: driver.id.toString(),
+      firstName: driver.first_name,
+      lastName: driver.last_name,
+      rank: rank as 'P01' | 'P02' | 'P03',
+      points: driver.basics?.racing_number?.toString() || '00',
+      team: driver.basics?.nationality && typeof driver.basics.nationality === 'object' ? driver.basics.nationality.name : 'Driver',
+      image: driver.assets?.avatar && typeof driver.assets.avatar === 'object' ? driver.assets.avatar : null,
+    }
+  })
 
   return (
-    <main className="min-h-screen bg-black-pure">
-      <VideoSection videoUrls={data.videoUrls} item={null} collection="home" />
-      <HeroSlides slides={data.slides} />
-      <HyperspeedSection navigation={data.navigation} />
-      <LatestRaces races={data.races} />
-      <TopDrivers drivers={data.drivers} />
+    <main className="w-full">
+      <VideoCarousel slides={videoSlides} sectionTitle="LIVE_MEDIA_FEED" />
+      <ImageCarousel slides={imageSlides} sectionTitle="STATIC_ASSETS" />
+      <CardCarousel cards={seriesCards} sectionTitle="COMPETITION_SERIES" />
+      <Podium id="RACE_RESULTS" title="LATEST_RACES" entries={podiumEntries} />
+      <Podium id="DRIVER_RANKINGS" title="TOP_DRIVERS" entries={driverPodium} />
     </main>
   )
 }
