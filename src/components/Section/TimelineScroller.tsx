@@ -2,7 +2,9 @@
 
 import useEmblaCarousel from 'embla-carousel-react'
 import React, { useCallback, useEffect, useState } from 'react'
-import SectionScroller from './Scroller'
+import SectionCTA from './CTA'
+import SectionFooter from './Footer'
+import SectionHeader from './Header'
 
 export interface TimelineEvent {
     id: string
@@ -43,11 +45,11 @@ const TimelineScroller: React.FC<TimelineScrollerProps> = ({ id, title, events }
         }
     }, [emblaApi])
 
-    const getStatusColor = (status?: string) => {
+    const getStatusStyles = (status?: string) => {
         switch (status) {
-            case 'active': return 'bg-green-500 shadow-lg shadow-green-500/50'
-            case 'completed': return 'bg-primary-500'
-            default: return 'bg-neutral-300'
+            case 'active': return 'bg-primary-500 border-black-pure shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]'
+            case 'completed': return 'bg-black-pure border-black-pure'
+            default: return 'bg-white-pure border-black-pure'
         }
     }
 
@@ -55,61 +57,74 @@ const TimelineScroller: React.FC<TimelineScrollerProps> = ({ id, title, events }
         switch (status) {
             case 'active': return '●'
             case 'completed': return '✓'
-            default: return '○'
+            default: return ''
         }
     }
 
+    if (!events || events.length === 0) return null
+
     return (
-        <section className="relative w-full bg-white-pure flex flex-col overflow-hidden">
-            <div className="flex h-16 border-b border-black-pure items-center px-4 md:px-6 justify-between bg-white-pure z-30 sticky top-0">
-                <div className="flex items-center gap-3 md:gap-4">
-                    <span className="text-[10px] md:text-xs font-bold tracking-tight text-neutral-400 font-mono">{id}</span>
-                    <div className="h-3 w-px bg-neutral-200" />
-                    <h2 className="text-[10px] md:text-xs text-secondary-500 uppercase tracking-wide font-black">{title}</h2>
-                </div>
-                <div className="flex h-full">
-                    <button onClick={scrollPrev} className="h-full px-4 md:px-6 border-l border-black-pure hover:bg-primary-500 hover:text-black-pure transition-all duration-300">
-                        <span className="text-[9px] md:text-[10px] font-black uppercase">◀ PREV</span>
-                    </button>
-                    <button onClick={scrollNext} className="h-full px-4 md:px-6 border-l border-black-pure hover:bg-primary-500 hover:text-black-pure transition-all duration-300">
-                        <span className="text-[9px] md:text-[10px] font-black uppercase">NEXT ▶</span>
-                    </button>
-                </div>
+        <section className="relative w-full bg-white-pure flex flex-col overflow-hidden border-b-2 border-black-pure">
+            <SectionHeader
+                title={title}
+                subtitle={id}
+                variant={3}
+            />
+
+            <div className="flex bg-black-pure h-12 border-b-2 border-black-pure">
+                <button
+                    onClick={scrollPrev}
+                    className="flex-1 border-r border-white-pure/20 text-white-pure font-mono text-[10px] font-black hover:bg-primary-500 hover:text-black-pure transition-colors"
+                >
+                    PREV_PHASE
+                </button>
+                <button
+                    onClick={scrollNext}
+                    className="flex-1 text-white-pure font-mono text-[10px] font-black hover:bg-primary-500 hover:text-black-pure transition-colors"
+                >
+                    NEXT_PHASE
+                </button>
             </div>
 
-            <div className="flex-1 flex flex-col justify-center py-12 md:py-16 lg:py-20 overflow-hidden cursor-grab active:cursor-grabbing" ref={emblaRef}>
-                <div className="flex h-full relative">
-                    <div className="absolute top-8 md:top-10 left-0 w-full h-0.5 bg-neutral-200 z-0" />
-                    <div className="absolute top-8 md:top-10 left-0 w-full h-0.5 bg-primary-500 transition-all duration-500 z-0" style={{ width: `${progress}%` }} />
+            <div className="overflow-hidden cursor-grab active:cursor-grabbing py-16 md:py-24" ref={emblaRef}>
+                <div className="flex relative">
+                    <div className="absolute top-12 left-0 w-full h-1 bg-neutral-100 z-0" />
+                    <div
+                        className="absolute top-12 left-0 h-1 bg-black-pure transition-all duration-700 z-0"
+                        style={{ width: `${progress}%` }}
+                    />
 
                     {events.map((event, index) => (
-                        <div key={index} className="flex-[0_0_85%] sm:flex-[0_0_50%] md:flex-[0_0_40%] lg:flex-[0_0_30%] xl:flex-[0_0_25%] min-w-0 px-4 md:px-6 lg:px-8 relative z-10 group">
+                        <div
+                            key={event.id}
+                            className="flex-[0_0_80%] sm:flex-[0_0_45%] lg:flex-[0_0_30%] min-w-0 px-6 md:px-10 relative z-10 group"
+                        >
                             <div className="flex flex-col">
-                                <div className="mb-8 md:mb-10 flex items-center gap-3">
-                                    <div className={`w-5 h-5 md:w-6 md:h-6 rounded-full flex items-center justify-center transition-all duration-500 group-hover:scale-125 ${getStatusColor(event.status)}`}>
-                                        <span className="text-[10px] md:text-xs font-black text-white-pure">{getStatusIcon(event.status)}</span>
+                                <div className="mb-12 flex items-center justify-between">
+                                    <div className={`w-8 h-8 border-2 flex items-center justify-center transition-all duration-500 group-hover:rotate-90 ${getStatusStyles(event.status)}`}>
+                                        <span className={`text-xs font-black ${event.status === 'completed' ? 'text-white-pure' : 'text-black-pure'}`}>
+                                            {getStatusIcon(event.status)}
+                                        </span>
                                     </div>
-                                    <div className="h-px flex-1 bg-neutral-200 group-hover:bg-primary-500 transition-colors duration-500" />
-                                    <span className="text-[10px] md:text-xs font-black text-black-pure font-mono">
+                                    <span className="font-mono text-xs font-black text-black-pure bg-primary-500 px-3 py-1 border-2 border-black-pure shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
                                         {event.date}
                                     </span>
                                 </div>
 
-                                <div className="space-y-3 md:space-y-4">
-                                    <h3 className="font-race text-xl md:text-2xl lg:text-3xl text-black-pure uppercase leading-[1.1] group-hover:text-primary-500 transition-colors duration-300">
-                                        {event.title}
-                                    </h3>
+                                <div className="p-6 border-2 border-black-pure bg-white-pure group-hover:bg-neutral-50 transition-colors duration-300">
                                     {event.meta && (
-                                        <span className="inline-block px-2 py-0.5 border border-secondary-500 text-[8px] md:text-[9px] font-black uppercase text-secondary-500">
-                                            {event.meta}
+                                        <span className="text-[9px] font-black text-primary-500 uppercase tracking-widest block mb-2">
+                                            // {event.meta}
                                         </span>
                                     )}
+                                    <h3 className="font-bold text-xl md:text-2xl text-black-pure uppercase leading-none mb-4">
+                                        {event.title}
+                                    </h3>
                                     {event.description && (
-                                        <p className="text-[10px] md:text-xs text-neutral-500 uppercase leading-relaxed max-w-xs">
+                                        <p className="font-mono text-[10px] text-neutral-500 uppercase leading-tight">
                                             {event.description}
                                         </p>
                                     )}
-                                    <div className="w-8 h-0.5 bg-black-pure group-hover:w-16 transition-all duration-500" />
                                 </div>
                             </div>
                         </div>
@@ -117,11 +132,22 @@ const TimelineScroller: React.FC<TimelineScrollerProps> = ({ id, title, events }
                 </div>
             </div>
 
-            <div className="h-1 w-full bg-neutral-100">
-                <div className="h-full bg-primary-500 transition-all duration-300" style={{ width: `${progress}%` }} />
+            <div className="h-2 w-full bg-neutral-100 border-t-2 border-black-pure">
+                <div
+                    className="h-full bg-primary-500 transition-all duration-300"
+                    style={{ width: `${progress}%` }}
+                />
             </div>
 
-            <SectionScroller items={[title, "HISTORY", "MILESTONES", "JOURNEY"]} variant={5} velocity={26} />
+            <SectionCTA
+                label="Full Roadmap"
+                path={`/timeline/${id}`}
+                variant={1}
+                infoLabel="LOG_ACCESS"
+                directoryLabel="HISTORY_PATH"
+            />
+
+            <SectionFooter variant={3} />
         </section>
     )
 }

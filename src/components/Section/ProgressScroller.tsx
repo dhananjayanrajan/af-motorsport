@@ -2,7 +2,9 @@
 
 import useEmblaCarousel from 'embla-carousel-react'
 import React, { useCallback, useEffect, useState } from 'react'
-import SectionScroller from './Scroller'
+import SectionCTA from './CTA'
+import SectionFooter from './Footer'
+import SectionHeader from './Header'
 
 export interface ProgressStep {
     id: string
@@ -43,78 +45,101 @@ const ProgressScroller: React.FC<ProgressScrollerProps> = ({ id, title, steps })
         }
     }, [emblaApi])
 
+    if (!steps || steps.length === 0) return null
+
     return (
-        <section className="relative w-full bg-white-pure flex flex-col overflow-hidden">
-            <div className="flex h-16 border-b border-black-pure items-center px-4 md:px-6 justify-between bg-white-pure z-30 sticky top-0">
-                <div className="flex items-center gap-3 md:gap-4">
-                    <span className="text-[10px] md:text-xs font-bold tracking-tight text-neutral-400 font-mono">{id}</span>
-                    <div className="h-3 w-px bg-neutral-200" />
-                    <h2 className="text-[10px] md:text-xs text-secondary-500 uppercase tracking-wide font-black">{title}</h2>
-                </div>
-                <div className="flex h-full">
-                    <button onClick={scrollPrev} className="h-full px-4 md:px-6 border-l border-black-pure hover:bg-primary-500 hover:text-black-pure transition-all duration-300">
-                        <span className="text-[9px] md:text-[10px] font-black uppercase">◀</span>
-                    </button>
-                    <button onClick={scrollNext} className="h-full px-4 md:px-6 border-l border-black-pure hover:bg-primary-500 hover:text-black-pure transition-all duration-300">
-                        <span className="text-[9px] md:text-[10px] font-black uppercase">▶</span>
-                    </button>
-                </div>
+        <section className="relative w-full bg-white-pure flex flex-col overflow-hidden border-b-2 border-black-pure">
+            <SectionHeader
+                title={title}
+                subtitle={id}
+                variant={1}
+            />
+
+            <div className="flex h-12 bg-black-pure border-b-2 border-black-pure">
+                <button
+                    onClick={scrollPrev}
+                    className="flex-1 border-r border-white-pure/20 text-white-pure font-mono text-[10px] font-black hover:bg-primary-500 hover:text-black-pure transition-colors"
+                >
+                    PREV_STEP
+                </button>
+                <button
+                    onClick={scrollNext}
+                    className="flex-1 text-white-pure font-mono text-[10px] font-black hover:bg-primary-500 hover:text-black-pure transition-colors"
+                >
+                    NEXT_STEP
+                </button>
             </div>
 
-            <div className="flex-1 flex flex-col justify-center py-12 md:py-16 lg:py-20 overflow-hidden cursor-grab active:cursor-grabbing" ref={emblaRef}>
-                <div className="flex h-full">
+            <div className="overflow-hidden cursor-grab active:cursor-grabbing" ref={emblaRef}>
+                <div className="flex">
                     {steps.map((step, index) => (
-                        <div key={index} className="flex-[0_0_90%] sm:flex-[0_0_50%] lg:flex-[0_0_33.33%] xl:flex-[0_0_25%] min-w-0 p-6 md:p-8 lg:p-10 xl:p-12 flex flex-col justify-between group transition-all duration-500 hover:bg-gradient-to-br hover:from-white-pure hover:to-secondary-500/5">
-                            <div>
-                                <div className="flex justify-between items-start mb-8 md:mb-10 lg:mb-12">
-                                    <span className="text-[9px] md:text-[10px] font-black text-neutral-400 font-mono tracking-wider">
-                                        {(step.index).toString().padStart(2, '0')}
-                                    </span>
-                                    {step.percentage !== undefined && (
-                                        <div className="flex flex-col items-end">
-                                            <span className="text-[9px] md:text-[10px] font-black text-primary-500 font-mono">
-                                                {step.percentage}%
-                                            </span>
-                                            <div className="w-12 md:w-16 h-0.5 bg-neutral-100 mt-1 rounded-full overflow-hidden">
-                                                <div
-                                                    className="h-full bg-primary-500 transition-all duration-1000 rounded-full"
-                                                    style={{ width: `${step.percentage}%` }}
-                                                />
+                        <div
+                            key={step.id}
+                            className="flex-[0_0_85%] sm:flex-[0_0_45%] lg:flex-[0_0_30%] min-w-0 border-r-2 border-black-pure bg-white-pure group"
+                        >
+                            <div className="flex flex-col h-full min-h-[450px]">
+                                <div className="p-8 md:p-10 flex-1">
+                                    <div className="flex justify-between items-start mb-12">
+                                        <span className="font-mono text-xs font-black text-black-pure bg-primary-500 px-3 py-1 border-2 border-black-pure shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                                            {(step.index).toString().padStart(2, '0')}
+                                        </span>
+                                        {step.percentage !== undefined && (
+                                            <div className="flex flex-col items-end">
+                                                <span className="text-[10px] font-black text-black-pure font-mono mb-1">
+                                                    {step.percentage}%_COMPLETE
+                                                </span>
+                                                <div className="w-20 h-2 bg-neutral-100 border border-black-pure overflow-hidden">
+                                                    <div
+                                                        className="h-full bg-black-pure transition-all duration-1000"
+                                                        style={{ width: `${step.percentage}%` }}
+                                                    />
+                                                </div>
                                             </div>
-                                        </div>
-                                    )}
+                                        )}
+                                    </div>
+
+                                    <div className="space-y-4">
+                                        <h3 className="font-bold text-2xl md:text-3xl lg:text-4xl text-black-pure uppercase leading-[0.95] tracking-tighter group-hover:text-primary-500 transition-colors duration-300">
+                                            {step.heading}
+                                        </h3>
+                                        {step.subheading && (
+                                            <p className="font-mono text-[10px] font-black text-black-pure uppercase bg-secondary-500 inline-block px-2">
+                                                {step.subheading}
+                                            </p>
+                                        )}
+                                    </div>
                                 </div>
 
-                                <div className="space-y-3 md:space-y-4">
-                                    <h3 className="font-race text-2xl md:text-3xl lg:text-4xl text-black-pure uppercase leading-[1.1] group-hover:text-primary-500 transition-colors duration-300">
-                                        {step.heading}
-                                    </h3>
-                                    {step.subheading && (
-                                        <p className="text-[10px] md:text-xs font-black text-black-pure uppercase tracking-tighter">
-                                            {step.subheading}
+                                <div className="p-8 border-t-2 border-black-pure bg-neutral-50 group-hover:bg-black-pure transition-colors duration-300">
+                                    {step.body && (
+                                        <p className="text-[11px] text-neutral-500 group-hover:text-white-pure uppercase leading-tight font-black font-mono line-clamp-3">
+                                            {step.body}
                                         </p>
                                     )}
+                                    <div className="mt-6 h-1.5 w-12 bg-primary-500" />
                                 </div>
-                            </div>
-
-                            <div className="mt-8 md:mt-10 lg:mt-12">
-                                {step.body && (
-                                    <p className="text-[10px] md:text-xs text-neutral-500 uppercase leading-relaxed font-medium">
-                                        {step.body}
-                                    </p>
-                                )}
-                                <div className="mt-4 md:mt-5 h-0.5 w-8 bg-black-pure group-hover:w-16 transition-all duration-500" />
                             </div>
                         </div>
                     ))}
                 </div>
             </div>
 
-            <div className="h-1 w-full bg-neutral-100">
-                <div className="h-full bg-primary-500 transition-all duration-300" style={{ width: `${progress}%` }} />
+            <div className="h-2 w-full bg-neutral-100 border-t-2 border-black-pure">
+                <div
+                    className="h-full bg-black-pure transition-all duration-300"
+                    style={{ width: `${progress}%` }}
+                />
             </div>
 
-            <SectionScroller items={[title, "PROGRESS", "TRACKING", "MILESTONES"]} variant={1} velocity={28} />
+            <SectionCTA
+                label="View Full Implementation"
+                path={`/track/${id}`}
+                variant={1}
+                infoLabel="LIFECYCLE_STATUS"
+                directoryLabel="PROCESS_PATH"
+            />
+
+            <SectionFooter variant={1} />
         </section>
     )
 }

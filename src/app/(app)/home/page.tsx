@@ -9,7 +9,7 @@ import { getPayload } from 'payload'
 async function getHomeData() {
   const payload = await getPayload({ config: configPromise })
 
-  const { docs: videos } = await payload.find({
+  const { docs: videoDocs } = await payload.find({
     collection: 'media',
     where: {
       mimeType: {
@@ -20,7 +20,7 @@ async function getHomeData() {
     sort: '-createdAt',
   })
 
-  const { docs: slides } = await payload.find({
+  const { docs: imageDocs } = await payload.find({
     collection: 'media',
     where: {
       mimeType: {
@@ -54,26 +54,47 @@ async function getHomeData() {
     sort: '-createdAt',
   })
 
-  return { videos, slides, series, races, drivers }
+  return {
+    videos: videoDocs,
+    slides: imageDocs,
+    series,
+    races,
+    drivers
+  }
 }
 
 export default async function HomePage() {
   const { videos, slides, series, races, drivers } = await getHomeData()
 
-  const videoSlides = videos.map(video => ({
-    id: video.id.toString(),
-    title: video.filename || 'Video',
-    meta: video.mimeType?.split('/')[1]?.toUpperCase() || 'MEDIA',
-    video: video,
-    poster: video.thumbnailURL ? { url: video.thumbnailURL } as Media : video,
-  }))
+  const videoSlides = videos.length > 0
+    ? videos.map(video => ({
+      id: video.id.toString(),
+      title: video.filename || 'Video',
+      meta: video.mimeType?.split('/')[1]?.toUpperCase() || 'MEDIA',
+      video: video,
+      poster: video.thumbnailURL ? { url: video.thumbnailURL } as Media : video,
+    }))
+    : [{
+      id: 'v-placeholder',
+      title: 'NO_VIDEO_FOUND',
+      meta: 'PLACEHOLDER',
+      video: {} as Media,
+      poster: {} as Media
+    }]
 
-  const imageSlides = slides.map(slide => ({
-    id: slide.id.toString(),
-    title: slide.filename || 'Image',
-    meta: slide.mimeType?.split('/')[1]?.toUpperCase() || 'IMAGE',
-    image: slide,
-  }))
+  const imageSlides = slides.length > 0
+    ? slides.map(slide => ({
+      id: slide.id.toString(),
+      title: slide.filename || 'Image',
+      meta: slide.mimeType?.split('/')[1]?.toUpperCase() || 'IMAGE',
+      image: slide,
+    }))
+    : [{
+      id: 'i-placeholder',
+      title: 'NO_IMAGE_FOUND',
+      meta: 'PLACEHOLDER',
+      image: '/api/media/file/placeholder.jpg',
+    }]
 
   const seriesCards = series.map(s => ({
     id: s.id.toString(),

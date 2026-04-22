@@ -2,11 +2,12 @@
 
 import { Media } from '@/payload-types'
 import useEmblaCarousel from 'embla-carousel-react'
-import { ChevronRight } from 'lucide-react'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import React, { useCallback, useEffect, useState } from 'react'
-import SectionScroller from './Scroller'
+import SectionFooter from './Footer'
+import SectionHeader from './Header'
 
 export interface CarouselGridItem {
     id: string
@@ -30,7 +31,7 @@ const DirectoryCarouselGrid: React.FC<DirectoryCarouselGridProps> = ({ id, title
         align: 'start',
         containScroll: 'trimSnaps',
         dragFree: true,
-        loop: true
+        loop: false
     })
 
     const scrollPrev = useCallback(() => emblaApi && emblaApi.scrollPrev(), [emblaApi])
@@ -38,88 +39,124 @@ const DirectoryCarouselGrid: React.FC<DirectoryCarouselGridProps> = ({ id, title
 
     useEffect(() => {
         if (!emblaApi) return
-        const onSelect = () => {
-            const progressValue = ((emblaApi.selectedScrollSnap() + 1) / emblaApi.scrollSnapList().length) * 100
+        const onScroll = () => {
+            const progressValue = Math.max(0, Math.min(1, emblaApi.scrollProgress())) * 100
             setProgress(progressValue)
         }
-        emblaApi.on('select', onSelect)
-        onSelect()
+        emblaApi.on('scroll', onScroll)
+        onScroll()
         return () => {
-            emblaApi.off('select', onSelect)
+            emblaApi.off('scroll', onScroll)
         }
     }, [emblaApi])
 
+    if (!items || items.length === 0) return null
+
     return (
-        <section className="relative w-full bg-white-pure flex flex-col overflow-hidden">
-            <div className="flex h-16 border-b border-black-pure items-center px-4 md:px-6 justify-between bg-white-pure z-30 sticky top-0">
-                <div className="flex items-center gap-3 md:gap-4">
-                    <span className="text-[10px] md:text-xs font-bold tracking-tight text-neutral-400 font-mono">{id}</span>
-                    <div className="h-3 w-px bg-neutral-200" />
-                    <h2 className="text-[10px] md:text-xs text-tertiary-500 uppercase tracking-wide font-black">{title}</h2>
+        <section className="relative w-full bg-white-pure flex flex-col border-b-2 border-black-pure overflow-hidden">
+            <SectionHeader
+                title={title}
+                subtitle={id}
+                variant={3}
+            />
+
+            <div className="flex h-12 bg-black-pure border-b-2 border-black-pure items-center justify-between">
+                <div className="flex items-center px-6 gap-4">
+                    <span className="font-mono text-[10px] font-black text-primary-500 uppercase tracking-widest">
+                        SLIDE_ARRAY_ACTIVE // {items.length.toString().padStart(3, '0')}_RECORDS
+                    </span>
+                    <div className="h-4 w-px bg-white-pure/20" />
+                    <div className="flex gap-1">
+                        {[...Array(3)].map((_, i) => (
+                            <div key={i} className="w-1 h-1 bg-white-pure rotate-45" />
+                        ))}
+                    </div>
                 </div>
-                <div className="flex h-full">
-                    <button onClick={scrollPrev} className="h-full px-4 md:px-6 border-l border-black-pure hover:bg-primary-500 hover:text-black-pure transition-all duration-300">
-                        <span className="text-[9px] md:text-[10px] font-black uppercase">◀</span>
+
+                <div className="flex h-full border-l-2 border-white-pure/10">
+                    <button
+                        onClick={scrollPrev}
+                        className="h-full px-6 hover:bg-primary-500 text-white-pure hover:text-black-pure transition-colors border-r-2 border-white-pure/10"
+                    >
+                        <ChevronLeft className="w-4 h-4" />
                     </button>
-                    <button onClick={scrollNext} className="h-full px-4 md:px-6 border-l border-black-pure hover:bg-primary-500 hover:text-black-pure transition-all duration-300">
-                        <span className="text-[9px] md:text-[10px] font-black uppercase">▶</span>
+                    <button
+                        onClick={scrollNext}
+                        className="h-full px-6 hover:bg-primary-500 text-white-pure hover:text-black-pure transition-colors"
+                    >
+                        <ChevronRight className="w-4 h-4" />
                     </button>
                 </div>
             </div>
 
-            <div className="flex-1 overflow-hidden cursor-grab active:cursor-grabbing" ref={emblaRef}>
-                <div className="flex h-full">
+            <div className="flex-1 overflow-hidden cursor-grab active:cursor-grabbing border-b-2 border-black-pure" ref={emblaRef}>
+                <div className="flex">
                     {items.map((item, index) => {
-                        const src = typeof item.image === 'object' ? item.image?.url : item.image || `https://picsum.photos/seed/${item.id}/800/800`
+                        const mediaUrl = typeof item.image === 'object' ? item.image?.url : item.image
+                        const src = mediaUrl || `https://picsum.photos/seed/${item.id}/800/1000`
                         const Wrapper = item.href ? Link : 'div'
 
                         return (
                             <Wrapper
-                                key={index}
+                                key={item.id}
                                 href={item.href as string}
-                                className="flex-[0_0_85%] sm:flex-[0_0_50%] md:flex-[0_0_45%] lg:flex-[0_0_35%] xl:flex-[0_0_28%] min-w-0 h-full flex flex-col group bg-white-pure hover:bg-secondary-500/5 transition-all duration-500"
+                                className="flex-[0_0_85%] sm:flex-[0_0_50%] lg:flex-[0_0_33.33%] xl:flex-[0_0_25%] min-w-0 border-r-2 border-black-pure group bg-white-pure hover:bg-neutral-50 transition-colors duration-300"
                             >
-                                <div className="relative aspect-[4/5] w-full overflow-hidden border-b border-black-pure">
+                                <div className="relative aspect-[4/5] w-full overflow-hidden border-b-2 border-black-pure">
                                     <Image
-                                        src={src as string}
+                                        src={src}
                                         alt={item.title}
                                         fill
-                                        className="object-cover grayscale transition-all duration-700 group-hover:scale-110 group-hover:grayscale-0"
+                                        className="object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105"
                                     />
+
                                     {item.label && (
-                                        <div className="absolute top-4 md:top-6 left-4 md:left-6">
-                                            <span className="bg-primary-500 text-black-pure px-2 py-1 md:px-3 md:py-1.5 text-[8px] md:text-[9px] font-black uppercase tracking-wider border border-black-pure shadow-lg">
-                                                {item.label}
-                                            </span>
+                                        <div className="absolute top-0 left-0 p-4">
+                                            <div className="bg-primary-500 border-2 border-black-pure px-3 py-1 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                                                <span className="font-mono text-[10px] font-black text-black-pure uppercase tracking-tighter">
+                                                    {item.label}
+                                                </span>
+                                            </div>
                                         </div>
                                     )}
+
+                                    <div className="absolute top-0 right-0 p-4">
+                                        <span className="font-mono text-[10px] font-black text-white-pure mix-blend-difference opacity-40">
+                                            INDEX_{(index + 1).toString().padStart(3, '0')}
+                                        </span>
+                                    </div>
+
                                     {item.href && (
-                                        <div className="absolute bottom-4 right-4 md:bottom-6 md:right-6 opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-x-4 group-hover:translate-x-0">
-                                            <div className="bg-black-pure text-white-pure w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-full border border-white-pure/20">
-                                                <ChevronRight className="w-4 h-4 md:w-5 md:h-5" />
+                                        <div className="absolute bottom-4 right-4 translate-y-12 group-hover:translate-y-0 transition-transform duration-300">
+                                            <div className="bg-black-pure text-primary-500 w-12 h-12 flex items-center justify-center border-2 border-primary-500 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                                                <ChevronRight className="w-6 h-6" strokeWidth={3} />
                                             </div>
                                         </div>
                                     )}
                                 </div>
 
-                                <div className="p-4 md:p-6 lg:p-8 flex flex-col flex-1">
-                                    <div className="mb-4 md:mb-6">
-                                        <h3 className="font-race text-xl md:text-2xl lg:text-3xl text-black-pure uppercase leading-[1.1] group-hover:text-primary-500 transition-colors duration-300">
+                                <div className="p-8 flex flex-col flex-1">
+                                    <div className="mb-8">
+                                        <h3 className="font-bold text-2xl md:text-3xl text-black-pure uppercase leading-none tracking-tighter italic group-hover:text-primary-500 transition-colors">
                                             {item.title}
                                         </h3>
                                         {item.subtitle && (
-                                            <p className="text-[9px] md:text-[10px] font-black text-neutral-400 uppercase mt-1 md:mt-2 tracking-tight">
-                                                {item.subtitle}
+                                            <p className="font-mono text-[10px] font-black text-neutral-400 uppercase mt-2 tracking-widest pl-1">
+                                                // {item.subtitle}
                                             </p>
                                         )}
                                     </div>
 
                                     {item.details && (
-                                        <div className="mt-auto space-y-2 md:space-y-3">
+                                        <div className="mt-auto pt-8 border-t-2 border-black-pure/10 space-y-2">
                                             {item.details.map((detail, dIdx) => (
-                                                <div key={dIdx} className="flex justify-between items-center border-b border-neutral-100 pb-1 md:pb-2 group-hover:border-primary-500/30 transition-colors duration-300">
-                                                    <span className="text-[8px] md:text-[9px] text-neutral-400 font-black uppercase tracking-wider">{detail.label}</span>
-                                                    <span className="text-[9px] md:text-[10px] text-black-pure font-black uppercase tracking-tighter group-hover:text-primary-500 transition-colors duration-300">{detail.value}</span>
+                                                <div key={dIdx} className="flex justify-between items-end border-b border-black-pure/5 pb-1">
+                                                    <span className="font-mono text-[8px] text-neutral-300 font-black uppercase tracking-widest">
+                                                        {detail.label}
+                                                    </span>
+                                                    <span className="text-[10px] text-black-pure font-black uppercase italic tracking-tighter">
+                                                        {detail.value}
+                                                    </span>
                                                 </div>
                                             ))}
                                         </div>
@@ -131,11 +168,14 @@ const DirectoryCarouselGrid: React.FC<DirectoryCarouselGridProps> = ({ id, title
                 </div>
             </div>
 
-            <div className="h-1 w-full bg-neutral-100">
-                <div className="h-full bg-primary-500 transition-all duration-300" style={{ width: `${progress}%` }} />
+            <div className="h-2 w-full bg-black-pure/5 relative">
+                <div
+                    className="h-full bg-primary-500 transition-all duration-150 ease-out"
+                    style={{ width: `${progress}%` }}
+                />
             </div>
 
-            <SectionScroller items={[title, "CAROUSEL", "BROWSE", "DISCOVER"]} variant={1} velocity={30} />
+            <SectionFooter variant={2} />
         </section>
     )
 }

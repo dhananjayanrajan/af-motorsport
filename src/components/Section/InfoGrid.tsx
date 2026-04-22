@@ -1,7 +1,9 @@
 'use client'
 
 import React, { useEffect, useRef, useState } from 'react'
-import SectionScroller from './Scroller'
+import SectionCTA from './CTA'
+import SectionFooter from './Footer'
+import SectionHeader from './Header'
 
 export interface InfoBlock {
     id: string
@@ -54,63 +56,69 @@ const InfoGrid: React.FC<InfoGridProps> = ({
         })
 
         return () => observer.disconnect()
-    }, [])
+    }, [blocks])
+
+    if (!blocks || blocks.length === 0) return null
 
     return (
-        <section className="relative w-full bg-white-pure flex flex-col">
-            <div className="flex h-16 border-b border-black-pure items-center px-4 md:px-6 justify-between bg-white-pure z-40 sticky top-0">
-                <div className="flex items-center gap-3 md:gap-4">
-                    <span className="text-[10px] md:text-xs font-bold tracking-tight text-neutral-400 font-mono">{id}</span>
-                    <div className="h-3 w-px bg-neutral-200" />
-                    <h2 className="text-[10px] md:text-xs text-secondary-500 uppercase tracking-wide font-black">{title}</h2>
-                </div>
-                <div className="text-[8px] md:text-[10px] font-mono text-neutral-400">
-                    {blocks.length} RECORDS
-                </div>
+        <section className="relative w-full bg-white-pure flex flex-col border-b-2 border-black-pure">
+            <SectionHeader
+                title={title}
+                subtitle={id}
+                variant={2}
+            />
+
+            <div className="flex h-12 bg-black-pure border-b-2 border-black-pure px-6 items-center">
+                <span className="font-mono text-[10px] font-black text-white-pure uppercase tracking-widest">
+                    SYSTEM_REGISTRY // {blocks.length.toString().padStart(3, '0')}_RECORDS_FOUND
+                </span>
             </div>
 
-            <div className={`grid grid-cols-1 md:grid-cols-2 ${gridCols[columns]} divide-x divide-y divide-black-pure border-l border-black-pure`}>
+            <div className={`grid grid-cols-1 md:grid-cols-2 ${gridCols[columns]} divide-x-2 divide-y-2 divide-black-pure border-b-2 border-black-pure`}>
                 {blocks.map((block, index) => (
                     <div
                         key={block.id}
                         ref={el => { blockRefs.current[index] = el }}
-                        className={`p-6 md:p-8 lg:p-10 xl:p-14 flex flex-col min-h-[350px] md:min-h-[400px] transition-all duration-700 transform ${visibleBlocks.has(index) ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
-                            } ${block.variant === 'highlight' ? 'bg-secondary-500/10' : 'bg-white-pure hover:bg-neutral-50'
-                            }`}
+                        className={`p-8 md:p-12 lg:p-16 flex flex-col min-h-[400px] md:min-h-[450px] transition-all duration-700 ease-out transform ${visibleBlocks.has(index) ? 'translate-y-0 opacity-100' : 'translate-y-12 opacity-0'
+                            } ${block.variant === 'highlight' ? 'bg-primary-500' : 'bg-white-pure hover:bg-neutral-50'}`}
                     >
-                        <div className="mb-8 md:mb-12 flex items-center justify-between">
+                        <div className="mb-12 flex items-center justify-between">
                             <div className="flex flex-col gap-1">
-                                <span className="text-[8px] md:text-[10px] font-black text-primary-500 uppercase tracking-[0.15em]">
+                                <span className={`text-[10px] font-black uppercase tracking-widest ${block.variant === 'highlight' ? 'text-black-pure' : 'text-primary-500'
+                                    }`}>
                                     {block.label}
                                 </span>
-                                <span className="text-[8px] md:text-[10px] font-mono font-black text-neutral-300">
-                                    {(index + 1).toString().padStart(2, '0')}
+                                <span className="font-mono text-[10px] font-black text-black-pure/30">
+                                    DATA_NODE_{(index + 1).toString().padStart(2, '0')}
                                 </span>
                             </div>
                             {block.variant === 'status' && (
-                                <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse shadow-lg shadow-green-500/50" />
+                                <div className="flex items-center gap-2 px-3 py-1 bg-black-pure border-2 border-black-pure shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)]">
+                                    <div className="w-2 h-2 bg-green-500 animate-pulse" />
+                                    <span className="font-mono text-[8px] font-black text-white-pure uppercase">LIVE_METRIC</span>
+                                </div>
                             )}
                         </div>
 
-                        <div className="flex-1 flex flex-col justify-start">
-                            <h3 className="font-race text-2xl md:text-3xl lg:text-4xl xl:text-5xl text-black-pure uppercase leading-[0.85] tracking-tighter mb-4 md:mb-6 lg:mb-8 group-hover:text-primary-500 transition-colors duration-300">
+                        <div className="flex-1">
+                            <h3 className="font-bold text-3xl md:text-4xl lg:text-5xl text-black-pure uppercase leading-[0.9] tracking-tighter mb-6 italic">
                                 {block.title}
                             </h3>
                             {block.description && (
-                                <p className="text-xs md:text-sm font-medium text-neutral-500 uppercase leading-relaxed max-w-sm">
+                                <p className="font-mono text-[11px] font-black text-neutral-500 uppercase leading-tight max-w-sm">
                                     {block.description}
                                 </p>
                             )}
                         </div>
 
                         {block.metadata && block.metadata.length > 0 && (
-                            <div className="mt-8 md:mt-10 lg:mt-12 space-y-2">
+                            <div className="mt-12 grid gap-2">
                                 {block.metadata.map((meta, mIdx) => (
-                                    <div key={mIdx} className="flex justify-between items-end border-b border-neutral-100 pb-2 group-hover:border-primary-500 transition-colors duration-300">
-                                        <span className="text-[7px] md:text-[8px] font-black text-neutral-400 uppercase tracking-wider">
+                                    <div key={mIdx} className="flex justify-between items-center border-b-2 border-black-pure/10 pb-2">
+                                        <span className="font-mono text-[9px] font-black text-black-pure/40 uppercase">
                                             {meta.key}
                                         </span>
-                                        <span className="text-xs md:text-sm font-black text-black-pure uppercase tracking-tighter">
+                                        <span className="text-xs font-black text-black-pure uppercase italic">
                                             {meta.value}
                                         </span>
                                     </div>
@@ -121,7 +129,15 @@ const InfoGrid: React.FC<InfoGridProps> = ({
                 ))}
             </div>
 
-            <SectionScroller items={[title, id, "ANALYSIS", "METRICS", "INSIGHTS"]} variant={4} velocity={35} />
+            <SectionCTA
+                label="Full Archive"
+                path={`/registry/${id}`}
+                variant={1}
+                infoLabel="ACCESS_DATABASE"
+                directoryLabel="INFO_GRID_V1"
+            />
+
+            <SectionFooter variant={3} />
         </section>
     )
 }

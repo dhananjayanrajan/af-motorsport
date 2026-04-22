@@ -1,7 +1,8 @@
 'use client'
 
 import React, { useEffect, useRef, useState } from 'react'
-import SectionScroller from './Scroller'
+import SectionCTA from './CTA'
+import SectionHeader from './Header'
 
 export interface StatItem {
     label: string
@@ -83,53 +84,62 @@ const StatsGrid: React.FC<StatsGridProps> = ({ id, title, items, columns = 4 }) 
         return () => observer.disconnect()
     }, [items])
 
-    return (
-        <section className="relative w-full bg-white-pure flex flex-col">
-            <div className="flex h-16 border-b border-black-pure items-center px-4 md:px-6 justify-between bg-white-pure z-30 sticky top-0">
-                <div className="flex items-center gap-3 md:gap-4">
-                    <span className="text-[10px] md:text-xs font-bold tracking-tight text-neutral-400 font-mono">{id}</span>
-                    <div className="h-3 w-px bg-neutral-200" />
-                    <h2 className="text-[10px] md:text-xs text-primary-500 uppercase tracking-wide font-black">{title}</h2>
-                </div>
-            </div>
+    if (!items || items.length === 0) return null
 
-            <div className={`grid grid-cols-1 sm:grid-cols-2 ${gridCols[columns]} divide-x divide-y divide-black-pure border-l border-black-pure`}>
+    return (
+        <section className="relative w-full bg-white-pure flex flex-col border-b-2 border-black-pure">
+            <SectionHeader
+                title={title}
+                subtitle={id}
+                variant={3}
+            />
+
+            <div className={`grid grid-cols-1 sm:grid-cols-2 ${gridCols[columns]} divide-x-2 divide-y-2 divide-black-pure border-b-2 border-black-pure`}>
                 {items.map((item, index) => (
                     <div
                         key={index}
                         ref={el => { refs.current[index] = el }}
-                        className="p-6 md:p-8 lg:p-10 xl:p-14 flex flex-col justify-between bg-white-pure hover:bg-secondary-500/5 transition-all duration-500 group"
+                        className="p-8 md:p-12 lg:p-16 flex flex-col justify-between bg-white-pure hover:bg-neutral-50 transition-colors duration-300 group relative overflow-hidden"
                     >
-                        <div className="mb-6 md:mb-8 lg:mb-10">
-                            <span className="text-[9px] md:text-[10px] font-black text-neutral-400 uppercase tracking-wider block mb-1 group-hover:text-primary-500 transition-colors duration-300">
+                        <div className="relative z-10">
+                            <span className="text-[10px] font-black text-neutral-400 uppercase tracking-widest block mb-2 group-hover:text-primary-500 transition-colors">
                                 {item.label}
                             </span>
-                            <div className="h-0.5 w-6 md:w-8 bg-neutral-200 group-hover:w-12 md:group-hover:w-16 group-hover:bg-primary-500 transition-all duration-500" />
+                            <div className="h-1.5 w-8 bg-black-pure group-hover:w-24 group-hover:bg-primary-500 transition-all duration-500" />
                         </div>
 
-                        <div>
-                            <div className="flex items-baseline gap-1 flex-wrap">
-                                <span className="font-race text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl text-black-pure uppercase leading-none">
+                        <div className="mt-12 relative z-10">
+                            <div className="flex items-baseline gap-2 flex-wrap">
+                                <span className="font-bold text-5xl md:text-6xl lg:text-7xl text-black-pure uppercase leading-none tracking-tighter">
                                     {countedValues[index] || 0}
                                 </span>
                                 {item.unit && (
-                                    <span className="text-xs md:text-sm font-black text-secondary-500 uppercase ml-1">
+                                    <span className="text-sm md:text-base font-black text-primary-500 uppercase italic">
                                         {item.unit}
                                     </span>
                                 )}
                             </div>
 
                             {item.description && (
-                                <p className="mt-3 md:mt-4 text-[10px] md:text-xs text-neutral-500 leading-relaxed max-w-xs">
+                                <p className="mt-6 text-[11px] font-mono font-black text-neutral-500 uppercase leading-tight max-w-[240px]">
                                     {item.description}
                                 </p>
                             )}
+                        </div>
+
+                        <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-100 transition-opacity">
+                            <div className="w-12 h-12 border-t-2 border-r-2 border-black-pure" />
                         </div>
                     </div>
                 ))}
             </div>
 
-            <SectionScroller items={[title, id, "DATA", "METRICS", "PERFORMANCE"]} variant={1} velocity={28} />
+            <SectionCTA
+                label="Explore Comprehensive Data"
+                path={`/analytics/${id}`}
+                variant={3}
+                proceedLabel="ANALYTICS_NODE"
+            />
         </section>
     )
 }

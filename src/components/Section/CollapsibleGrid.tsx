@@ -2,7 +2,8 @@
 
 import { Minus, Plus } from 'lucide-react'
 import React, { useState } from 'react'
-import SectionScroller from './Scroller'
+import SectionFooter from './Footer'
+import SectionHeader from './Header'
 
 export interface CollapsibleItem {
     id: string
@@ -28,60 +29,81 @@ const CollapsibleGrid: React.FC<CollapsibleGridProps> = ({ id, title, items, col
 
     const gridCols = columns === 1 ? 'grid-cols-1' : 'grid-cols-1 lg:grid-cols-2'
 
+    if (!items || items.length === 0) return null
+
     return (
-        <section className="relative w-full bg-white-pure flex flex-col">
-            <div className="flex h-16 border-b border-black-pure items-center px-4 md:px-6 justify-between bg-white-pure z-30 sticky top-0">
-                <div className="flex items-center gap-3 md:gap-4">
-                    <span className="text-[10px] md:text-xs font-bold tracking-tight text-neutral-400 font-mono">{id}</span>
-                    <div className="h-3 w-px bg-neutral-200" />
-                    <h2 className="text-[10px] md:text-xs text-primary-500 uppercase tracking-wide font-black">{title}</h2>
-                </div>
-                <div className="text-[8px] md:text-[10px] font-mono text-neutral-400">
-                    {items.length} ITEMS
+        <section className="relative w-full bg-white-pure flex flex-col border-b-2 border-black-pure">
+            <SectionHeader
+                title={title}
+                subtitle={id}
+                variant={3}
+            />
+
+            <div className="flex h-12 bg-black-pure border-b-2 border-black-pure px-6 items-center justify-between">
+                <span className="font-mono text-[10px] font-black text-white-pure uppercase tracking-widest">
+                    CONTENT_ARRAY // {items.length.toString().padStart(2, '0')}_NODES_REGISTERED
+                </span>
+                <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 bg-primary-500 animate-pulse" />
+                    <span className="font-mono text-[9px] font-black text-primary-500 uppercase italic">SYSTEM_READY</span>
                 </div>
             </div>
 
-            <div className={`grid ${gridCols} divide-x divide-y divide-black-pure border-l border-black-pure`}>
+            <div className={`grid ${gridCols} divide-x-2 divide-y-2 divide-black-pure border-b-2 border-black-pure`}>
                 {items.map((item, index) => {
                     const isOpen = openIndex === index
                     return (
                         <div
-                            key={index}
-                            className={`flex flex-col transition-all duration-500 ${isOpen ? 'bg-secondary-500/5' : 'bg-white-pure hover:bg-neutral-50'}`}
+                            key={item.id}
+                            className={`flex flex-col transition-all duration-300 ${isOpen ? 'bg-primary-500' : 'bg-white-pure hover:bg-neutral-50'}`}
                         >
                             <button
                                 onClick={() => toggle(index)}
-                                className="w-full p-4 md:p-6 lg:p-8 flex items-center justify-between group text-left"
+                                className="w-full p-8 md:p-12 lg:p-16 flex items-start justify-between group text-left"
                             >
-                                <div className="flex flex-col gap-1 flex-1">
-                                    {item.label && (
-                                        <span className="text-[8px] md:text-[9px] font-black text-tertiary-500 uppercase tracking-wider">
-                                            {item.label}
+                                <div className="flex flex-col gap-2 flex-1">
+                                    <div className="flex items-center gap-3">
+                                        <span className={`font-mono text-xs font-black transition-colors ${isOpen ? 'text-black-pure' : 'text-primary-500'}`}>
+                                            {(index + 1).toString().padStart(2, '0')}
                                         </span>
-                                    )}
-                                    <h3 className="font-race text-xl md:text-2xl lg:text-3xl text-black-pure uppercase leading-[1.1] group-hover:text-primary-500 transition-colors duration-300">
+                                        {item.label && (
+                                            <span className={`font-mono text-[10px] font-black uppercase tracking-widest px-2 py-0.5 border-2 border-black-pure shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] ${isOpen ? 'bg-black-pure text-white-pure' : 'bg-white-pure text-black-pure'}`}>
+                                                {item.label}
+                                            </span>
+                                        )}
+                                    </div>
+
+                                    <h3 className="font-bold text-3xl md:text-4xl uppercase leading-[0.9] tracking-tighter italic text-black-pure mt-4">
                                         {item.title}
                                     </h3>
+
                                     {item.subtitle && (
-                                        <p className="text-[9px] md:text-[10px] text-neutral-400 font-black uppercase mt-1">
-                                            {item.subtitle}
+                                        <p className={`font-mono text-[10px] font-black uppercase tracking-[0.2em] mt-2 ${isOpen ? 'text-black-pure/70' : 'text-neutral-400'}`}>
+                                            // {item.subtitle}
                                         </p>
                                     )}
                                 </div>
-                                <div className={`w-8 h-8 md:w-10 md:h-10 rounded-full border-2 border-black-pure flex items-center justify-center transition-all duration-500 ml-4 shrink-0 ${isOpen ? 'bg-primary-500 border-primary-500' : 'group-hover:bg-black-pure group-hover:text-white-pure'}`}>
+
+                                <div className={`w-14 h-14 border-2 border-black-pure flex items-center justify-center transition-all duration-500 ml-6 shrink-0 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] ${isOpen ? 'bg-black-pure text-white-pure rotate-180 shadow-none translate-x-1 translate-y-1' : 'bg-white-pure text-black-pure group-hover:bg-black-pure group-hover:text-white-pure'}`}>
                                     {isOpen ? (
-                                        <Minus className="w-4 h-4 md:w-5 md:h-5" />
+                                        <Minus className="w-6 h-6" />
                                     ) : (
-                                        <Plus className="w-4 h-4 md:w-5 md:h-5" />
+                                        <Plus className="w-6 h-6" />
                                     )}
                                 </div>
                             </button>
 
-                            <div className={`overflow-hidden transition-all duration-500 ease-in-out ${isOpen ? 'max-h-[800px] opacity-100' : 'max-h-0 opacity-0'}`}>
-                                <div className="px-4 md:px-6 lg:px-8 pb-6 md:pb-8 lg:pb-10">
-                                    <div className="h-px w-full bg-gradient-to-r from-transparent via-black-pure to-transparent mb-6 md:mb-8" />
-                                    <div className="text-xs md:text-sm text-neutral-600 leading-relaxed font-medium uppercase tracking-wide">
-                                        {item.content}
+                            <div className={`overflow-hidden transition-all duration-500 ease-in-out ${isOpen ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'}`}>
+                                <div className="px-8 md:px-12 lg:px-16 pb-12 md:pb-16 lg:pb-20">
+                                    <div className="border-t-2 border-black-pure/20 pt-8">
+                                        <div className="font-mono text-xs md:text-sm font-black uppercase leading-relaxed tracking-tight text-black-pure max-w-2xl">
+                                            {item.content}
+                                        </div>
+                                        <div className="mt-8 flex gap-1.5">
+                                            {[...Array(4)].map((_, i) => (
+                                                <div key={i} className="w-6 h-1 bg-black-pure/10" />
+                                            ))}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -90,7 +112,7 @@ const CollapsibleGrid: React.FC<CollapsibleGridProps> = ({ id, title, items, col
                 })}
             </div>
 
-            <SectionScroller items={[title, id, "FEATURES", "CONTENT", "DETAILS"]} variant={5} velocity={28} />
+            <SectionFooter variant={2} />
         </section>
     )
 }

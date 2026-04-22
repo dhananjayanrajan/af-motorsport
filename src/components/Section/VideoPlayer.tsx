@@ -1,8 +1,8 @@
 'use client'
 
 import { Media } from '@/payload-types'
-import React, { useRef, useState } from 'react'
-import SectionScroller from './Scroller'
+import Image from 'next/image'
+import React, { KeyboardEvent, useEffect, useRef, useState } from 'react'
 
 interface VideoPlayerProps {
     id: string
@@ -11,15 +11,40 @@ interface VideoPlayerProps {
     video: Media | string | null
     poster: Media | string | null
     tags: string[]
+    playLabel?: string
+    liveLabel?: string
+    pausedLabel?: string
 }
 
-const VideoPlayer: React.FC<VideoPlayerProps> = ({ id, title, meta, video, poster, tags }) => {
+const VideoPlayer: React.FC<VideoPlayerProps> = ({
+    id,
+    title,
+    meta,
+    video,
+    poster,
+    tags,
+    playLabel = 'PLAY',
+    liveLabel = 'LIVE',
+    pausedLabel = 'PAUSED',
+}) => {
     const videoRef = useRef<HTMLVideoElement>(null)
     const [isPlaying, setIsPlaying] = useState(false)
     const [progress, setProgress] = useState(0)
 
     const videoSrc = typeof video === 'string' ? video : video?.url || ''
     const posterSrc = typeof poster === 'string' ? poster : poster?.url || `https://picsum.photos/seed/${id}/1920/1080`
+    const placeholderImage = `https://picsum.photos/seed/${id}-video/1920/1080`
+
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === ' ' || e.key === 'Space' || e.key === 'Enter') {
+                e.preventDefault()
+                togglePlay()
+            }
+        }
+        window.addEventListener('keydown', handleKeyDown as any)
+        return () => window.removeEventListener('keydown', handleKeyDown as any)
+    }, [isPlaying])
 
     const togglePlay = () => {
         if (videoRef.current) {
@@ -33,7 +58,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ id, title, meta, video, poste
     }
 
     const handleTimeUpdate = () => {
-        if (videoRef.current) {
+        if (videoRef.current && videoRef.current.duration) {
             const percent = (videoRef.current.currentTime / videoRef.current.duration) * 100
             setProgress(percent)
         }
@@ -45,6 +70,10 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ id, title, meta, video, poste
         if (videoRef.current) {
             videoRef.current.currentTime = 0
         }
+    }
+
+    const handleVideoError = (e: React.SyntheticEvent<HTMLVideoElement>) => {
+        console.warn('Video failed to load')
     }
 
     return (
@@ -66,13 +95,24 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ id, title, meta, video, poste
                 <div className="flex items-center gap-3">
                     <div className={`w-2 h-2 rounded-full ${isPlaying ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`} />
                     <span className="text-[8px] md:text-[10px] text-neutral-500 font-mono uppercase">
-                        {isPlaying ? 'LIVE' : 'PAUSED'}
+                        {isPlaying ? liveLabel : pausedLabel}
                     </span>
                 </div>
             </div>
 
-            <div className="flex-1 relative bg-neutral-900 overflow-hidden cursor-pointer min-h-[500px]" onClick={togglePlay}>
-                {videoSrc && (
+            <div
+                className="flex-1 relative bg-neutral-900 overflow-hidden cursor-pointer min-h-[500px]"
+                onClick={togglePlay}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault()
+                        togglePlay()
+                    }
+                }}
+            >
+                {videoSrc ? (
                     <video
                         ref={videoRef}
                         src={videoSrc}
@@ -80,8 +120,21 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ id, title, meta, video, poste
                         className="w-full h-full object-cover"
                         onTimeUpdate={handleTimeUpdate}
                         onEnded={handleEnded}
+                        onError={handleVideoError}
                         playsInline
                     />
+                ) : (
+                    <div className="relative w-full h-full">
+                        <Image
+                            src={placeholderImage}
+                            alt={title}
+                            fill
+                            className="object-cover"
+                        />
+                        <div className="absolute inset-0 bg-black-pure/40 flex items-center justify-center">
+                            <span className="text-white-pure text-base md:text-lg font-mono">Video unavailable</span>
+                        </div>
+                    </div>
                 )}
 
                 <div className="absolute inset-0 bg-gradient-to-t from-black-pure via-black-pure/20 to-transparent pointer-events-none" />
@@ -91,7 +144,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ id, title, meta, video, poste
                         <p className="text-primary-500 text-xs md:text-sm font-bold mb-3 md:mb-4 tracking-wider">
                             {meta}
                         </p>
-                        <h1 className="font-race text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl text-white-pure uppercase leading-[0.9] drop-shadow-2xl">
+                        <h1 className="font-race text-3xl sm:text-4xl md:text-5xl lg:text-5xl xl:text-5xl text-white-pure uppercase leading-[0.9] drop-shadow-2xl">
                             {title}
                         </h1>
                     </div>
@@ -99,17 +152,28 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ id, title, meta, video, poste
 
                 {!isPlaying && (
                     <div className="absolute inset-0 flex items-center justify-center z-40 bg-black-pure/60 backdrop-blur-sm transition-all duration-500 group">
-                        <div className="bg-primary-500 text-black-pure px-6 md:px-10 py-3 md:py-5 border-2 border-black-pure text-xs md:text-sm font-black uppercase tracking-wider hover:scale-110 transition-transform duration-300 cursor-pointer flex items-center gap-3">
+                        <button
+                            onClick={togglePlay}
+                            className="bg-primary-500 text-black-pure px-6 md:px-10 py-3 md:py-5 border-2 border-black-pure text-xs md:text-sm font-black uppercase tracking-wider hover:scale-110 focus:scale-110 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus:ring-offset-black-pure transition-transform duration-300 cursor-pointer flex items-center gap-3"
+                            aria-label={playLabel}
+                        >
                             <svg className="w-4 h-4 md:w-5 md:h-5" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M8 5v14l11-7z" />
                             </svg>
-                            PLAY NOW
-                        </div>
+                            {playLabel}
+                        </button>
                     </div>
                 )}
 
                 <div className="absolute bottom-0 left-0 w-full h-1 bg-neutral-800">
-                    <div className="h-full bg-primary-500 transition-all duration-300" style={{ width: `${progress}%` }} />
+                    <div
+                        className="h-full bg-primary-500 transition-all duration-300"
+                        style={{ width: `${progress}%` }}
+                        role="progressbar"
+                        aria-valuenow={progress}
+                        aria-valuemin={0}
+                        aria-valuemax={100}
+                    />
                 </div>
 
                 <div className="absolute top-4 right-4 md:top-6 md:right-6 flex gap-2 z-30">
@@ -120,8 +184,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ id, title, meta, video, poste
                     </div>
                 </div>
             </div>
-
-            <SectionScroller items={[title, id, meta, "WATCH", "EXPERIENCE"]} variant={2} velocity={20} />
         </section>
     )
 }

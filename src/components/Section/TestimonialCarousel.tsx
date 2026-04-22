@@ -4,7 +4,8 @@ import Autoplay from 'embla-carousel-autoplay'
 import useEmblaCarousel from 'embla-carousel-react'
 import { Quote } from 'lucide-react'
 import React, { useCallback, useEffect, useState } from 'react'
-import SectionScroller from './Scroller'
+import SectionFooter from './Footer'
+import SectionHeader from './Header'
 
 export interface TestimonialSlide {
     id: string
@@ -45,63 +46,60 @@ const TestimonialCarousel: React.FC<TestimonialCarouselProps> = ({ slides, secti
         }
     }, [emblaApi])
 
+    if (!slides || slides.length === 0) return null
+
     return (
-        <section className="relative w-full min-h-screen bg-gradient-to-br from-neutral-100 via-white-pure to-neutral-100 flex flex-col overflow-hidden">
-            <div className="flex h-20 border-b-4 border-black-pure divide-x-4 divide-black-pure bg-white-pure z-30">
-                <div className="w-20 flex items-center justify-center bg-primary-500 group">
-                    <Quote className="w-5 h-5 md:w-6 md:h-6 text-black-pure group-hover:scale-125 transition-transform duration-500" />
+        <section className="relative w-full bg-white-pure flex flex-col overflow-hidden border-b-2 border-black-pure">
+            <SectionHeader
+                title={sectionTitle}
+                subtitle="COMMUNITY_FEEDBACK"
+                variant={2}
+            />
+
+            <div className="flex h-12 bg-black-pure border-b-2 border-black-pure divide-x-2 divide-white-pure/20">
+                <div className="w-12 md:w-16 flex items-center justify-center bg-primary-500">
+                    <Quote className="w-4 h-4 text-black-pure" />
                 </div>
-                <div className="flex-1 flex items-center px-4 md:px-8">
-                    <h2 className="font-mono text-[10px] md:text-xs font-black tracking-wider uppercase text-neutral-400">
-                        {sectionTitle}
-                    </h2>
-                </div>
-                <div className="flex bg-white-pure">
-                    <button onClick={scrollPrev} className="w-16 md:w-20 flex items-center justify-center hover:bg-primary-500 border-l-4 border-black-pure transition-all duration-300 group">
-                        <span className="font-mono text-[10px] md:text-xs font-black group-hover:scale-110 transition-transform">◀</span>
-                    </button>
-                    <button onClick={scrollNext} className="w-16 md:w-20 flex items-center justify-center hover:bg-primary-500 border-l-4 border-black-pure transition-all duration-300 group">
-                        <span className="font-mono text-[10px] md:text-xs font-black group-hover:scale-110 transition-transform">▶</span>
-                    </button>
-                </div>
+                <div className="flex-1" />
+                <button onClick={scrollPrev} className="w-16 md:w-24 text-white-pure font-mono text-[10px] font-black hover:bg-white-pure hover:text-black-pure transition-colors">
+                    PREV
+                </button>
+                <button onClick={scrollNext} className="w-16 md:w-24 text-white-pure font-mono text-[10px] font-black hover:bg-white-pure hover:text-black-pure transition-colors">
+                    NEXT
+                </button>
             </div>
 
-            <div className="flex-1 overflow-hidden" ref={emblaRef}>
-                <div className="flex h-full">
+            <div className="overflow-hidden" ref={emblaRef}>
+                <div className="flex">
                     {slides.map((slide, index) => (
-                        <div key={index} className="flex-[0_0_100%] md:flex-[0_0_50%] lg:flex-[0_0_33.33%] xl:flex-[0_0_25%] min-w-0 h-full relative border-r-4 border-black-pure bg-white-pure group">
-                            <div className="h-full p-6 md:p-8 lg:p-10 xl:p-12 flex flex-col justify-between relative overflow-hidden">
-                                <div className="absolute -top-16 -right-16 w-32 h-32 bg-gradient-to-br from-primary-500/10 to-transparent rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
-
-                                <div className="z-10">
-                                    <div className="flex gap-1 mb-6 md:mb-8">
-                                        {[...Array(5)].map((_, i) => (
-                                            <div key={i} className="w-2 h-2 md:w-2.5 md:h-2.5 bg-primary-500 border border-black-pure rotate-45" />
+                        <div key={slide.id} className="flex-[0_0_100%] md:flex-[0_0_50%] xl:flex-[0_0_33.33%] min-w-0 relative border-r-2 border-black-pure bg-white-pure group">
+                            <div className="flex flex-col h-full min-h-[400px]">
+                                <div className="p-8 md:p-10 flex-1 flex flex-col">
+                                    <div className="flex gap-1 mb-8">
+                                        {[...Array(3)].map((_, i) => (
+                                            <div key={i} className="w-2 h-2 bg-black-pure" />
                                         ))}
                                     </div>
-                                    <p className="font-mono text-base md:text-lg lg:text-xl font-black uppercase leading-tight text-black-pure italic">
+                                    <p className="font-mono text-lg md:text-xl font-black uppercase leading-tight text-black-pure italic mb-8">
                                         "{slide.quote}"
                                     </p>
+
+                                    <div className="mt-auto flex flex-wrap gap-2">
+                                        {slide.tags?.map((tag, tIdx) => (
+                                            <span key={tIdx} className="px-2 py-1 bg-neutral-100 font-mono text-[8px] text-black-pure font-black uppercase border border-black-pure">
+                                                {tag}
+                                            </span>
+                                        ))}
+                                    </div>
                                 </div>
 
-                                <div className="z-10 mt-8 md:mt-10 lg:mt-12">
-                                    <div className="h-0.5 w-10 md:w-12 bg-primary-500 mb-4 md:mb-5" />
-                                    <h4 className="font-race text-xl md:text-2xl lg:text-3xl text-black-pure uppercase leading-[1.1] mb-1">
+                                <div className="p-8 bg-black-pure group-hover:bg-primary-500 transition-colors duration-300">
+                                    <h4 className="font-bold text-xl md:text-2xl text-white-pure group-hover:text-black-pure uppercase leading-none mb-1">
                                         {slide.author}
                                     </h4>
-                                    <p className="font-mono text-[9px] md:text-[10px] font-black text-primary-500 uppercase tracking-tighter">
+                                    <p className="font-mono text-[10px] font-black text-primary-500 group-hover:text-black-pure uppercase tracking-tighter">
                                         {slide.role} // {slide.organization}
                                     </p>
-
-                                    {slide.tags && slide.tags.length > 0 && (
-                                        <div className="mt-4 md:mt-5 flex flex-wrap gap-1.5 md:gap-2">
-                                            {slide.tags.map((tag, tIdx) => (
-                                                <span key={tIdx} className="px-1.5 py-0.5 md:px-2 md:py-1 border border-neutral-200 font-mono text-[7px] md:text-[8px] text-neutral-500 font-black uppercase">
-                                                    {tag}
-                                                </span>
-                                            ))}
-                                        </div>
-                                    )}
                                 </div>
                             </div>
                         </div>
@@ -109,11 +107,14 @@ const TestimonialCarousel: React.FC<TestimonialCarouselProps> = ({ slides, secti
                 </div>
             </div>
 
-            <div className="h-1 w-full bg-neutral-200">
-                <div className="h-full bg-primary-500 transition-all duration-300" style={{ width: `${progress}%` }} />
+            <div className="h-2 w-full bg-neutral-100 border-t-2 border-black-pure">
+                <div
+                    className="h-full bg-primary-500 transition-all duration-300"
+                    style={{ width: `${progress}%` }}
+                />
             </div>
 
-            <SectionScroller items={["VOICES", sectionTitle, "STORIES", "FEEDBACK"]} variant={2} velocity={24} />
+            <SectionFooter variant={1} />
         </section>
     )
 }

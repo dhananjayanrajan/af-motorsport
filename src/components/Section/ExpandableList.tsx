@@ -2,7 +2,8 @@
 
 import { ChevronDown } from 'lucide-react'
 import React, { useState } from 'react'
-import SectionScroller from './Scroller'
+import SectionFooter from './Footer'
+import SectionHeader from './Header'
 
 export interface ExpandablePanel {
     id: string
@@ -26,17 +27,23 @@ const ExpandableList: React.FC<ExpandableListProps> = ({ id, title, panels }) =>
         setExpandedId(expandedId === panelId ? null : panelId)
     }
 
+    if (!panels || panels.length === 0) return null
+
     return (
-        <section className="relative w-full bg-white-pure flex flex-col">
-            <div className="flex h-16 border-b border-black-pure items-center px-4 md:px-6 justify-between bg-white-pure z-40 sticky top-0">
-                <div className="flex items-center gap-3 md:gap-4">
-                    <span className="text-[10px] md:text-xs font-bold tracking-tight text-neutral-400 font-mono">{id}</span>
-                    <div className="h-3 w-px bg-neutral-200" />
-                    <h2 className="text-[10px] md:text-xs text-tertiary-500 uppercase tracking-wide font-black">{title}</h2>
-                </div>
-                <div className="text-[8px] md:text-[10px] font-mono text-neutral-400">
-                    {panels.length} SECTIONS
-                </div>
+        <section className="relative w-full bg-white-pure flex flex-col border-b-2 border-black-pure">
+            <SectionHeader
+                title={title}
+                subtitle={id}
+                variant={1}
+            />
+
+            <div className="flex h-12 bg-black-pure border-b-2 border-black-pure px-6 items-center justify-between">
+                <span className="font-mono text-[10px] font-black text-white-pure uppercase tracking-widest">
+                    TECHNICAL_DIRECTIVES // {panels.length.toString().padStart(2, '0')}_NODES_ACTIVE
+                </span>
+                <span className="font-mono text-[10px] font-black text-primary-500 uppercase italic">
+                    SYSTEM_ID: {id.toUpperCase()}
+                </span>
             </div>
 
             <div className="flex flex-col">
@@ -44,63 +51,71 @@ const ExpandableList: React.FC<ExpandableListProps> = ({ id, title, panels }) =>
                     const isExpanded = expandedId === panel.id
 
                     return (
-                        <div key={panel.id} className="relative border-b border-black-pure last:border-b-0">
-                            <div className={`sticky top-16 z-30 flex flex-col md:flex-row items-stretch min-h-[100px] md:min-h-[120px] bg-white-pure transition-all duration-500 ${isExpanded ? 'bg-secondary-500/5' : 'hover:bg-neutral-50'}`}>
-                                <div className="w-16 md:w-20 lg:w-24 border-r border-black-pure flex items-center justify-center bg-white-pure">
-                                    <span className="font-mono text-[9px] md:text-[10px] font-black text-neutral-400 -rotate-90 whitespace-nowrap">
+                        <div key={panel.id} className="relative border-b-2 border-black-pure last:border-b-0">
+                            <div className={`flex flex-col md:flex-row items-stretch min-h-[120px] transition-all duration-300 ${isExpanded ? 'bg-primary-500' : 'bg-white-pure hover:bg-neutral-50'}`}>
+                                <div className={`w-16 md:w-24 border-r-2 border-black-pure flex items-center justify-center transition-colors ${isExpanded ? 'bg-black-pure' : 'bg-white-pure'}`}>
+                                    <span className={`font-mono text-xs font-black -rotate-90 whitespace-nowrap ${isExpanded ? 'text-primary-500' : 'text-black-pure'}`}>
                                         {(index + 1).toString().padStart(3, '0')}
                                     </span>
                                 </div>
 
                                 <button
                                     onClick={() => togglePanel(panel.id)}
-                                    className="flex-1 px-4 md:px-6 lg:px-8 py-6 md:py-8 lg:py-10 flex flex-col md:flex-row md:items-center justify-between text-left group"
+                                    className="flex-1 px-8 py-8 flex flex-col md:flex-row md:items-center justify-between text-left group"
                                 >
-                                    <div className="flex flex-col gap-1 md:gap-2 flex-1">
-                                        <span className="text-[8px] md:text-[9px] font-black text-primary-500 uppercase tracking-wider">
+                                    <div className="flex flex-col gap-2 flex-1">
+                                        <span className={`font-mono text-[10px] font-black uppercase tracking-[0.2em] ${isExpanded ? 'text-black-pure' : 'text-primary-500'}`}>
                                             {panel.label}
                                         </span>
-                                        <h3 className="font-race text-xl md:text-2xl lg:text-3xl xl:text-4xl text-black-pure uppercase leading-[1.1] group-hover:text-primary-500 transition-colors duration-300">
+                                        <h3 className={`font-bold text-2xl md:text-3xl xl:text-4xl uppercase leading-none tracking-tighter italic ${isExpanded ? 'text-black-pure' : 'text-black-pure'}`}>
                                             {panel.title}
                                         </h3>
-                                        <p className="text-[10px] md:text-xs text-neutral-500 font-medium uppercase max-w-xl mt-1">
+                                        <p className={`font-mono text-[10px] font-black uppercase leading-tight max-w-xl ${isExpanded ? 'text-black-pure/70' : 'text-neutral-400'}`}>
                                             {panel.summary}
                                         </p>
                                     </div>
 
-                                    <div className="mt-4 md:mt-0 flex items-center gap-3 md:gap-4">
-                                        <div className={`text-[9px] md:text-[10px] font-black uppercase transition-all duration-300 ${isExpanded ? 'text-primary-500' : 'text-neutral-400'}`}>
-                                            {isExpanded ? 'COLLAPSE' : 'EXPAND'}
+                                    <div className="mt-6 md:mt-0 flex items-center gap-6">
+                                        <div className={`font-mono text-[10px] font-black uppercase tracking-widest ${isExpanded ? 'text-black-pure underline' : 'text-black-pure/40'}`}>
+                                            {isExpanded ? 'CLOSE_STREAM' : 'OPEN_STREAM'}
                                         </div>
-                                        <div className={`w-8 h-8 md:w-10 md:h-10 rounded-full border-2 border-black-pure flex items-center justify-center transition-all duration-500 ${isExpanded ? 'rotate-180 bg-primary-500 border-primary-500' : 'group-hover:bg-black-pure group-hover:text-white-pure'}`}>
-                                            <ChevronDown className="w-4 h-4 md:w-5 md:h-5" />
+                                        <div className={`w-12 h-12 border-2 border-black-pure flex items-center justify-center transition-all duration-500 ${isExpanded ? 'rotate-180 bg-black-pure text-white-pure shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]' : 'bg-white-pure text-black-pure group-hover:bg-black-pure group-hover:text-white-pure'}`}>
+                                            <ChevronDown className="w-6 h-6" />
                                         </div>
                                     </div>
                                 </button>
                             </div>
 
                             <div className={`overflow-hidden transition-all duration-500 ease-in-out ${isExpanded ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'}`}>
-                                <div className="flex flex-col lg:flex-row divide-y lg:divide-y-0 lg:divide-x divide-black-pure border-t border-black-pure">
-                                    <div className="flex-1 p-6 md:p-8 lg:p-10 xl:p-12">
-                                        <div className="text-xs md:text-sm font-medium uppercase leading-relaxed tracking-wide text-neutral-600 space-y-4">
+                                <div className="flex flex-col lg:flex-row divide-y-2 lg:divide-y-0 lg:divide-x-2 divide-black-pure border-t-2 border-black-pure">
+                                    <div className="flex-1 p-8 md:p-12 lg:p-16 bg-white-pure">
+                                        <div className="font-mono text-xs md:text-sm font-black uppercase leading-relaxed text-black-pure space-y-6">
                                             {typeof panel.content === 'string' ? (
-                                                <p>{panel.content}</p>
+                                                <p className="max-w-3xl">{panel.content}</p>
                                             ) : (
                                                 panel.content
                                             )}
                                         </div>
+                                        <div className="mt-12 flex gap-1">
+                                            {[...Array(6)].map((_, i) => (
+                                                <div key={i} className="w-2 h-2 bg-primary-500 border border-black-pure" />
+                                            ))}
+                                        </div>
                                     </div>
 
                                     {panel.metadata && panel.metadata.length > 0 && (
-                                        <div className="w-full lg:w-80 xl:w-96 p-6 md:p-8 lg:p-10 bg-gradient-to-br from-neutral-50 to-white-pure flex flex-col gap-6 md:gap-8">
-                                            <span className="text-[9px] md:text-[10px] font-black text-black-pure uppercase tracking-wider border-b-2 border-primary-500 pb-2">
-                                                SPECIFICATIONS
-                                            </span>
-                                            <div className="space-y-4 md:space-y-5">
+                                        <div className="w-full lg:w-96 p-8 md:p-12 bg-neutral-50 flex flex-col gap-10">
+                                            <div className="flex items-center gap-2">
+                                                <div className="w-4 h-4 bg-black-pure rotate-45" />
+                                                <span className="font-mono text-[10px] font-black text-black-pure uppercase tracking-widest">
+                                                    SPEC_ARRAY_V1
+                                                </span>
+                                            </div>
+                                            <div className="space-y-6">
                                                 {panel.metadata.map((meta, mIdx) => (
-                                                    <div key={mIdx} className="group/metadata">
-                                                        <p className="text-[8px] md:text-[9px] font-black text-neutral-400 uppercase mb-1 tracking-wider">{meta.label}</p>
-                                                        <p className="text-[10px] md:text-xs font-black text-black-pure uppercase group-hover/metadata:text-primary-500 transition-colors duration-300">{meta.value}</p>
+                                                    <div key={mIdx} className="flex flex-col gap-1 border-b-2 border-black-pure/10 pb-4">
+                                                        <p className="font-mono text-[9px] font-black text-black-pure/40 uppercase tracking-widest">{meta.label}</p>
+                                                        <p className="text-sm font-black text-black-pure uppercase italic">{meta.value}</p>
                                                     </div>
                                                 ))}
                                             </div>
@@ -113,7 +128,7 @@ const ExpandableList: React.FC<ExpandableListProps> = ({ id, title, panels }) =>
                 })}
             </div>
 
-            <SectionScroller items={[title, id, "DETAILS", "SPECS", "INFO"]} variant={4} velocity={30} />
+            <SectionFooter variant={2} />
         </section>
     )
 }
