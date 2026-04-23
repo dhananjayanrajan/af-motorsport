@@ -10,7 +10,7 @@ interface SectionScrollerProps {
 
 const SectionScroller: React.FC<SectionScrollerProps> = ({
     items,
-    delimiter = <span className="text-current px-4 sm:px-6 opacity-30">•</span>,
+    delimiter = <span className="text-current px-4 sm:px-6 opacity-30 font-black">//</span>,
     velocity = 30,
     variant = 1
 }) => {
@@ -63,11 +63,11 @@ const SectionScroller: React.FC<SectionScrollerProps> = ({
 
     const getVariantStyles = () => {
         switch (variant) {
-            case 2: return { bg: "bg-foreground", text: "text-primary", h: "h-12 md:h-14" }
-            case 3: return { bg: "bg-secondary", text: "text-secondary-foreground", h: "h-14 md:h-16 lg:h-20" }
-            case 4: return { bg: "bg-background", text: "text-tertiary-500", h: "h-12 md:h-14 lg:h-16" }
-            case 5: return { bg: "bg-tertiary-500", text: "text-tertiary-foreground", h: "h-16 md:h-20 lg:h-24" }
-            default: return { bg: "bg-primary", text: "text-primary-foreground", h: "h-12 md:h-16" }
+            case 2: return { bg: "bg-black-pure", text: "text-primary-500", h: "h-12 md:h-14", border: "border-white-pure/20" }
+            case 3: return { bg: "bg-secondary-500", text: "text-black-pure", h: "h-14 md:h-16 lg:h-20", border: "border-black-pure" }
+            case 4: return { bg: "bg-white-pure", text: "text-tertiary-500", h: "h-12 md:h-14 lg:h-16", border: "border-black-pure" }
+            case 5: return { bg: "bg-tertiary-500", text: "text-black-pure", h: "h-16 md:h-20 lg:h-24", border: "border-black-pure" }
+            default: return { bg: "bg-primary-500", text: "text-black-pure", h: "h-12 md:h-16", border: "border-black-pure" }
         }
     }
 
@@ -77,9 +77,12 @@ const SectionScroller: React.FC<SectionScrollerProps> = ({
         <div key={groupIndex} className="flex items-center">
             {items.map((item, i) => (
                 <React.Fragment key={i}>
-                    <span className={`text-xs sm:text-sm md:text-base font-bold tracking-wide font-mono uppercase px-4 sm:px-6 md:px-8 whitespace-nowrap ${styles.text} hover:scale-110 focus:scale-110 active:scale-95 transition-transform duration-300 cursor-default outline-none`}>
-                        {item}
-                    </span>
+                    <div className="flex items-center gap-2 sm:gap-3 group/item">
+                        <span className="text-[8px] sm:text-[10px] font-black font-mono opacity-40">{String(i + 1).padStart(2, '0')}</span>
+                        <span className={`text-xs sm:text-sm md:text-base font-black tracking-wider font-mono uppercase px-2 sm:px-3 md:px-4 whitespace-nowrap ${styles.text} group-hover/item:scale-110 transition-transform duration-300 cursor-default`}>
+                            {item}
+                        </span>
+                    </div>
                     {delimiter}
                 </React.Fragment>
             ))}
@@ -87,7 +90,7 @@ const SectionScroller: React.FC<SectionScrollerProps> = ({
     )
 
     return (
-        <div className={`w-full ${styles.bg} overflow-hidden shrink-0 ${styles.h} flex items-center relative group`}>
+        <div className={`w-full ${styles.bg} border-y-2 ${styles.border} overflow-hidden shrink-0 ${styles.h} flex items-center relative group`}>
             <div className={`absolute left-0 top-0 bottom-0 w-12 sm:w-16 bg-gradient-to-r ${styles.bg} to-transparent z-10 pointer-events-none`} />
             <div className={`absolute right-0 top-0 bottom-0 w-12 sm:w-16 bg-gradient-to-l ${styles.bg} to-transparent z-10 pointer-events-none`} />
             <div className={`flex whitespace-nowrap ${animationClass} group-hover:scroller-pause`} style={{ animationDuration: `${velocity}s` }}>

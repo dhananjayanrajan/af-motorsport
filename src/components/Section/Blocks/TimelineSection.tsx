@@ -1,10 +1,10 @@
 "use client"
-import React, { useCallback, useEffect, useState } from 'react'
 import useEmblaCarousel from 'embla-carousel-react'
-import SectionHeader from '../Components/SectionHeader'
-import SectionFooter from '../Components/SectionFooter'
-import SectionButton from '../Components/SectionButton'
+import React, { useEffect, useState } from 'react'
 import BlueprintsBackground from '../Backgrounds/BlueprintsBackground'
+import SectionButton from '../Components/SectionButton'
+import SectionFooter from '../Components/SectionFooter'
+import SectionHeader from '../Components/SectionHeader'
 
 export interface TimelineEvent {
   id: string
