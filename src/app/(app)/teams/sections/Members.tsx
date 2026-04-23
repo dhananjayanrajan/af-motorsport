@@ -1,8 +1,8 @@
 "use client"
 
+import SectionFooter from '@/components/Section/Components/SectionFooter'
+import SectionHeader from '@/components/Section/Components/SectionHeader'
 import SectionDescription from '@/components/Section/Description'
-import SectionFooter from '@/components/Section/Footer'
-import SectionHeader from '@/components/Section/Header'
 import SectionTitle from '@/components/Section/Title'
 import { Country, Media, Member } from '@/payload-types'
 import { motion } from 'framer-motion'

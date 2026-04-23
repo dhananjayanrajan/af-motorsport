@@ -1,7 +1,7 @@
 'use client'
 
-import SectionFooter from '@/components/Section/Footer'
-import SectionHeader from '@/components/Section/Header'
+import SectionFooter from '@/components/Section/Components/SectionFooter'
+import SectionHeader from '@/components/Section/Components/SectionHeader'
 import { Circuit, Driver } from '@/payload-types'
 import { motion, useInView } from 'framer-motion'
 import { Activity, BarChart3, ChevronRight, Info, Shield } from 'lucide-react'

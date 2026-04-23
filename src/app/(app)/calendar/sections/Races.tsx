@@ -1,8 +1,8 @@
 'use client'
 
+import SectionFooter from '@/components/Section/Components/SectionFooter'
+import SectionHeader from '@/components/Section/Components/SectionHeader'
 import SectionDescription from '@/components/Section/Description'
-import SectionFooter from '@/components/Section/Footer'
-import SectionHeader from '@/components/Section/Header'
 import SectionScroller from '@/components/Section/Scroller'
 import { Circuit, Media, Race } from '@/payload-types'
 import Image from 'next/image'

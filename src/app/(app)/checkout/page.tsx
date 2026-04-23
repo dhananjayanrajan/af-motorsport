@@ -1,8 +1,8 @@
 'use client'
 
 import { CheckoutPage } from '@/components/checkout/CheckoutPage'
-import SectionFooter from '@/components/Section/Footer'
-import SectionHeader from '@/components/Section/Header'
+import SectionFooter from '@/components/Section/Components/SectionFooter'
+import SectionHeader from '@/components/Section/Components/SectionHeader'
 import { Fragment } from 'react'
 
 export default function Checkout() {
@@ -41,7 +41,7 @@ export default function Checkout() {
         <CheckoutPage />
       </div>
 
-      <SectionFooter variant={5} />
+      <SectionFooter variant={3} />
     </main>
   )
 }

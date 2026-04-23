@@ -1,8 +1,8 @@
 'use client'
 
 import { ForgotPasswordForm } from '@/components/forms/ForgotPasswordForm'
-import SectionFooter from '@/components/Section/Footer'
-import SectionHeader from '@/components/Section/Header'
+import SectionFooter from '@/components/Section/Components/SectionFooter'
+import SectionHeader from '@/components/Section/Components/SectionHeader'
 import { useRouter } from 'next/navigation'
 
 export default function ForgotPasswordPage() {

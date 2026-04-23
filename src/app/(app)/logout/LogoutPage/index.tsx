@@ -1,7 +1,7 @@
 'use client'
 
-import SectionFooter from '@/components/Section/Footer'
-import SectionHeader from '@/components/Section/Header'
+import SectionFooter from '@/components/Section/Components/SectionFooter'
+import SectionHeader from '@/components/Section/Components/SectionHeader'
 import { useAuth } from '@/providers/Auth'
 import { ArrowRight, ChevronRight, LogOut } from 'lucide-react'
 import Link from 'next/link'

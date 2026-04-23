@@ -2,8 +2,8 @@
 
 import { LoginForm } from '@/components/forms/LoginForm'
 import { RenderParams } from '@/components/RenderParams'
-import SectionFooter from '@/components/Section/Footer'
-import SectionHeader from '@/components/Section/Header'
+import SectionFooter from '@/components/Section/Components/SectionFooter'
+import SectionHeader from '@/components/Section/Components/SectionHeader'
 import { useRouter } from 'next/navigation'
 
 export default function Login({ user }: { user: any }) {

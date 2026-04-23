@@ -1,9 +1,9 @@
 'use client'
 
+import SectionFooter from '@/components/Section/Components/SectionFooter'
+import SectionHeader from '@/components/Section/Components/SectionHeader'
 import SectionCTA from '@/components/Section/CTA'
 import SectionDescription from '@/components/Section/Description'
-import SectionFooter from '@/components/Section/Footer'
-import SectionHeader from '@/components/Section/Header'
 import SectionMainTitle from '@/components/Section/Title'
 import {
     Map,
