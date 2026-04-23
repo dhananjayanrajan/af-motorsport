@@ -1,5 +1,7 @@
 "use client"
 import useEmblaCarousel from 'embla-carousel-react'
+import Image from 'next/image'
+import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
 import BlueprintsBackground from '../Backgrounds/BlueprintsBackground'
 import SectionButton from '../Components/SectionButton'
@@ -13,6 +15,10 @@ export interface TimelineEvent {
   description?: string
   status?: 'completed' | 'active' | 'upcoming'
   icon?: React.ReactNode
+  image?: string
+  slug?: string
+  code?: string
+  format?: string
 }
 
 interface TimelineLabels {
@@ -56,6 +62,7 @@ const TimelineSection: React.FC<TimelineSectionProps> = ({
   footerVariant = 1,
   background = <BlueprintsBackground opacity={0.25} />
 }) => {
+  const [hoveredEvent, setHoveredEvent] = useState<string | null>(null)
   const [progress, setProgress] = useState(0)
   const [emblaRef, emblaApi] = useEmblaCarousel({ align: 'start', containScroll: 'trimSnaps', loop: false })
 
@@ -140,55 +147,99 @@ const TimelineSection: React.FC<TimelineSectionProps> = ({
       {background}
       <SectionHeader title={title} subtitle={subtitle} variant={headerVariant} metadata={String(events.length).padStart(2, '0')} />
 
-      <div className="mt-0 border-b border-black-pure">
+      <div className="relative w-full border-b border-black-pure">
+        <div className="absolute inset-0 pointer-events-none opacity-5 bg-[linear-gradient(45deg,transparent_25%,rgba(0,0,0,0.1)_50%,transparent_75%)] bg-[length:200%_200%]" />
+
         <div className="overflow-hidden cursor-grab active:cursor-grabbing" ref={emblaRef}>
           <div className="flex">
             {events.map((event, idx) => {
               const meta = getStatusMeta(event.status)
+              const isHovered = hoveredEvent === event.id
+
               return (
-                <div key={event.id} className="flex-[0_0_100%] md:flex-[0_0_50%] lg:flex-[0_0_33.333%] min-w-0 border-r border-black-pure group">
-                  <div className="relative p-12 h-full flex flex-col bg-white-pure transition-colors duration-300 hover:bg-slate-50">
-                    <div className="flex justify-between items-start mb-12">
-                      <div className="flex flex-col">
-                        <span className="text-[10px] font-mono font-black text-black-pure/20 uppercase tracking-[0.4em] mb-1">
-                          {labels.eventIndexLabel}_0{idx + 1}
-                        </span>
-                        <span className={`text-[10px] font-mono font-black uppercase tracking-widest ${meta.color}`}>
-                          {meta.label}
-                        </span>
+                <div
+                  key={event.id}
+                  className="flex-[0_0_100%] md:flex-[0_0_50%] lg:flex-[0_0_33.333%] min-w-0 border-r border-black-pure group"
+                  onMouseEnter={() => setHoveredEvent(event.id)}
+                  onMouseLeave={() => setHoveredEvent(null)}
+                >
+                  <Link href={event.slug ? `/competition/championships/${event.slug}` : '#'} className="block h-full">
+                    <div className="relative p-8 md:p-12 h-full flex flex-col bg-white-pure transition-all duration-500 hover:bg-black-pure">
+                      <div className="flex justify-between items-start mb-8">
+                        <div className="flex flex-col">
+                          <span className="text-[10px] font-mono font-black text-black-pure/20 uppercase tracking-[0.4em] mb-1 group-hover:text-white-pure/20 transition-colors duration-500">
+                            {labels.eventIndexLabel}_0{idx + 1}
+                          </span>
+                          <span className={`text-[10px] font-mono font-black uppercase tracking-widest transition-colors duration-500 ${meta.color} group-hover:text-primary-500`}>
+                            {meta.label}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          {event.code && (
+                            <div className="px-2 py-1 bg-black-pure text-white-pure group-hover:bg-white-pure group-hover:text-black-pure transition-colors duration-500">
+                              <span className="text-[8px] font-mono font-black uppercase tracking-wider">{event.code}</span>
+                            </div>
+                          )}
+                          <span className="text-xs font-mono font-black text-black-pure uppercase tabular-nums group-hover:text-white-pure transition-colors duration-500">
+                            {event.date}
+                          </span>
+                        </div>
                       </div>
-                      <span className="text-xs font-mono font-black text-black-pure uppercase tabular-nums">
-                        {event.date}
-                      </span>
+
+                      {event.image && (
+                        <div className="relative aspect-video w-full overflow-hidden border border-black-pure mb-6 transition-all duration-500 group-hover:border-primary-500">
+                          <Image
+                            src={event.image}
+                            alt={event.title}
+                            fill
+                            className="object-cover transition-all duration-700 group-hover:scale-110"
+                            sizes="(max-width: 768px) 100vw, 33vw"
+                          />
+                          <div className="absolute inset-0 bg-black-pure/0 group-hover:bg-black-pure/20 transition-colors duration-500" />
+                        </div>
+                      )}
+
+                      <h3 className={`text-2xl md:text-3xl font-mono font-black uppercase tracking-tighter leading-none mb-4 transition-all duration-500 ${isHovered ? 'text-primary-500' : 'text-black-pure group-hover:text-white-pure'}`}>
+                        {event.title}
+                      </h3>
+
+                      {event.description && (
+                        <p className="text-[11px] font-mono font-black text-black-pure/50 uppercase leading-relaxed mb-8 flex-grow transition-colors duration-500 group-hover:text-white-pure/50">
+                          {event.description}
+                        </p>
+                      )}
+
+                      {event.format && (
+                        <div className="mb-6">
+                          <span className="text-[8px] font-mono font-black text-black-pure/40 uppercase tracking-wider group-hover:text-white-pure/40 transition-colors duration-500">
+                            {event.format}
+                          </span>
+                        </div>
+                      )}
+
+                      <div className="w-full h-px bg-black-pure/10 relative overflow-hidden">
+                        <div className={`absolute top-0 left-0 h-full transition-all duration-700 ${isHovered ? 'w-full' : 'w-0 group-hover:w-full'} ${meta.bar}`} />
+                      </div>
+
+                      <div className="absolute bottom-6 right-6 w-8 h-8 border-2 border-black-pure flex items-center justify-center transition-all duration-500 group-hover:border-primary-500 group-hover:bg-primary-500 group-hover:scale-110">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" className="text-black-pure transition-all duration-500 group-hover:text-black-pure group-hover:rotate-45">
+                          <path d="M7 17L17 7M17 7H7M17 7V17" stroke="currentColor" strokeWidth="3" strokeLinecap="square" />
+                        </svg>
+                      </div>
                     </div>
-
-                    <h3 className="text-3xl font-mono font-black uppercase tracking-tighter text-black-pure leading-none mb-6 italic">
-                      {event.title}
-                    </h3>
-
-                    {event.description && (
-                      <p className="text-[11px] font-mono font-black text-black-pure/50 uppercase leading-relaxed mb-12 flex-grow">
-                        {event.description}
-                      </p>
-                    )}
-
-                    <div className="w-full h-px bg-black-pure/10 relative overflow-hidden">
-                      <div className={`absolute top-0 left-0 h-full transition-all duration-700 group-hover:w-full w-0 ${meta.bar}`} />
-                    </div>
-                  </div>
+                  </Link>
                 </div>
               )
             })}
           </div>
         </div>
 
-        <div className="h-16 flex items-center bg-slate-50 px-8">
+        <div className="h-16 flex items-center bg-slate-50 px-8 border-t border-black-pure">
           <div className="w-full bg-black-pure/5 h-1 relative overflow-hidden flex gap-1">
             {[...Array(50)].map((_, i) => (
               <div
                 key={i}
-                className={`h-full flex-grow transition-all duration-300 ${(i / 50) * 100 < progress ? 'bg-primary-500' : 'bg-transparent'
-                  }`}
+                className={`h-full flex-grow transition-all duration-300 ${(i / 50) * 100 < progress ? 'bg-primary-500' : 'bg-transparent'}`}
               />
             ))}
           </div>

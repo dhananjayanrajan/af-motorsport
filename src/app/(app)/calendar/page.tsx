@@ -99,26 +99,24 @@ export default async function CalendarPage() {
 
     return (
         <main className="w-full">
-            {championshipEvents.length > 0 && (
-                <TimelineSection
-                    id="calendar-championships"
-                    title="Upcoming Championships"
-                    subtitle="Season schedules and series"
-                    events={championshipEvents}
-                    labels={{
-                        statusPrefix: 'STAT',
-                        eventIndexLabel: 'EVENT',
-                        deploymentStatus: {
-                            completed: 'DONE',
-                            active: 'ACTIVE',
-                            upcoming: 'UPCOMING',
-                        },
-                    }}
-                    orientation="horizontal"
-                    headerVariant={1}
-                    footerVariant={1}
-                />
-            )}
+            <TimelineSection
+                id="calendar-championships"
+                title="Upcoming Championships"
+                subtitle="Season schedules and series"
+                events={championshipEvents}
+                labels={{
+                    statusPrefix: 'STAT',
+                    eventIndexLabel: 'EVENT',
+                    deploymentStatus: {
+                        completed: 'DONE',
+                        active: 'ACTIVE',
+                        upcoming: 'UPCOMING',
+                    },
+                }}
+                orientation="horizontal"
+                headerVariant={1}
+                footerVariant={1}
+            />
             {raceItems.length > 0 && (
                 <GridSection
                     id="calendar-races"

@@ -51,59 +51,58 @@ const HeroSection: React.FC<HeroSectionProps> = ({
       <div className="absolute inset-0 z-0 pointer-events-none">
         {backgroundImage ? (
           <div className="relative w-full h-full">
-            <img src={backgroundImage} alt="" className="w-full h-full object-cover grayscale" />
-            <div className="absolute inset-0 bg-gradient-to-r from-black-pure via-black-pure/40 to-transparent" />
-            <div className="absolute inset-0 bg-gradient-to-t from-black-pure via-transparent to-black-pure/20" />
+            <img src={backgroundImage} alt="" className="w-full h-full object-cover grayscale opacity-50" />
+            <div className="absolute inset-0 bg-black-pure/40" />
           </div>
         ) : (
           background
         )}
       </div>
 
-      <div className="absolute inset-0 z-10 pointer-events-none overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-px bg-white-pure/10" />
-        <div className="absolute bottom-0 left-0 w-full h-px bg-white-pure/10" />
-        <div className="absolute left-24 top-0 h-full w-px bg-white-pure/5" />
-        <div className="absolute right-24 top-0 h-full w-px bg-white-pure/5" />
+      <div className="absolute inset-0 z-10 pointer-events-none">
+        <div className="absolute top-0 left-0 w-full h-px bg-white-pure/20" />
+        <div className="absolute bottom-0 left-0 w-full h-px bg-white-pure/20" />
+        <div className="absolute left-12 md:left-24 top-0 h-full w-px bg-white-pure/10" />
+        <div className="absolute right-12 md:right-24 top-0 h-full w-px bg-white-pure/10" />
       </div>
 
-      <div className="relative z-20 flex-grow flex flex-col px-8 md:px-24 py-40">
+      <div className="relative z-20 flex-grow flex flex-col px-8 md:px-24 py-32 md:py-48 justify-center">
         <div className={`w-full flex flex-col ${alignClass[alignment]}`}>
           {badge && (
-            <div className="mb-12 flex items-center gap-6">
-              <div className="flex gap-1">
-                {[...Array(4)].map((_, i) => (
-                  <div key={i} className="w-1 h-3 bg-primary-500 skew-x-[-20deg]" />
+            <div className="mb-10 flex items-center gap-4 border border-primary-500 px-4 py-2 bg-black-pure shadow-[4px_4px_0px_0px_#00FF41]">
+              <div className="flex gap-0.5">
+                {[...Array(3)].map((_, i) => (
+                  <div key={i} className="w-1.5 h-3 bg-primary-500" />
                 ))}
               </div>
-              <span className="text-xs font-mono font-black text-primary-500 uppercase tracking-[0.5em]">
+              <span className="text-[10px] font-mono font-black text-primary-500 uppercase tracking-[0.4em]">
                 {badge}
               </span>
             </div>
           )}
 
-          <h1 className="text-7xl md:text-[12rem] font-mono font-black text-white-pure uppercase tracking-tighter leading-[0.75] mb-6 italic">
+          <h1 className="text-6xl md:text-[11rem] font-mono font-black text-white-pure uppercase tracking-tighter leading-[0.8] mb-8 italic">
             {title}
           </h1>
 
-          <div className="flex flex-col md:flex-row items-baseline gap-8 mb-12">
-            <span className="text-2xl md:text-5xl font-mono font-black text-primary-500 uppercase tracking-tight">
+          <div className="flex flex-col md:flex-row items-center gap-6 mb-12 w-full max-w-7xl">
+            <span className="text-xl md:text-5xl font-mono font-black text-primary-500 uppercase tracking-tight bg-white-pure text-black-pure px-4 py-1">
               {subtitle}
             </span>
-            <div className="h-px flex-grow bg-white-pure/10 hidden md:block min-w-[100px]" />
+            <div className="h-0.5 flex-grow bg-white-pure/20 hidden md:block" />
           </div>
 
           {description && (
-            <div className="relative p-8 border-l-2 border-primary-500 bg-white-pure/[0.02] backdrop-blur-sm max-w-xl mb-16">
-              <p className="text-sm font-mono font-black text-white-pure/60 uppercase leading-relaxed">
+            <div className="relative p-8 border border-white-pure/20 bg-black-pure max-w-2xl mb-16 shadow-[8px_8px_0px_0px_rgba(255,255,255,0.1)]">
+              <div className="absolute -top-2 -left-2 w-4 h-4 bg-primary-500" />
+              <p className="text-[11px] font-mono font-black text-white-pure uppercase leading-relaxed tracking-wide">
                 {description}
               </p>
-              <div className="absolute top-0 right-0 w-4 h-4 border-t border-r border-white-pure/20" />
             </div>
           )}
 
           {actions.length > 0 && (
-            <div className={`flex flex-wrap gap-8 ${getFlexJustify(alignment)}`}>
+            <div className={`flex flex-wrap gap-6 ${getFlexJustify(alignment)}`}>
               {actions.map((action, idx) => (
                 <SectionButton
                   key={idx}
@@ -118,50 +117,49 @@ const HeroSection: React.FC<HeroSectionProps> = ({
         </div>
       </div>
 
-      <div className="relative z-30 w-full grid grid-cols-1 md:grid-cols-4 border-t border-white-pure/10 h-32 bg-black-pure">
-        <div className="flex items-center px-12 border-r border-white-pure/10 group hover:bg-primary-500 transition-colors duration-300">
+      <div className="relative z-30 w-full grid grid-cols-1 md:grid-cols-4 border-t border-white-pure bg-black-pure">
+        <div className="flex items-center px-12 h-24 md:h-32 border-r border-white-pure group hover:bg-primary-500 transition-colors">
           <div className="flex flex-col">
-            <span className="text-[9px] font-mono font-black text-white-pure/30 group-hover:text-black-pure/40 uppercase tracking-widest mb-1">
-              LOC_COORD
+            <span className="text-[8px] font-mono font-black text-white-pure/40 group-hover:text-black-pure uppercase tracking-widest mb-1">
+              SYS_ID
             </span>
-            <span className="text-sm font-mono font-black text-white-pure group-hover:text-black-pure uppercase">
+            <span className="text-sm font-mono font-black text-white-pure group-hover:text-black-pure uppercase tabular-nums">
               {id.toUpperCase()}
             </span>
           </div>
         </div>
 
-        <div className="hidden md:flex flex-col justify-center px-12 border-r border-white-pure/10">
-          <span className="text-[9px] font-mono font-black text-white-pure/30 uppercase tracking-widest mb-2">
-            STATUS_OK
+        <div className="hidden md:flex flex-col justify-center px-12 border-r border-white-pure bg-neutral-900">
+          <span className="text-[8px] font-mono font-black text-white-pure/40 uppercase tracking-widest mb-3">
+            BUFFER_STATUS
           </span>
-          <div className="flex gap-1">
-            {[...Array(12)].map((_, i) => (
-              <div key={i} className={`h-4 w-1 ${i < 8 ? 'bg-primary-500' : 'bg-white-pure/10'}`} />
+          <div className="flex gap-1 h-3">
+            {[...Array(16)].map((_, i) => (
+              <div key={i} className={`flex-grow ${i < 10 ? 'bg-primary-500' : 'bg-white-pure/5 border border-white-pure/10'}`} />
             ))}
           </div>
         </div>
 
-        <div className="hidden md:flex items-center px-12 border-r border-white-pure/10">
+        <div className="hidden md:flex items-center px-12 border-r border-white-pure">
           <div className="flex flex-col w-full">
-            <span className="text-[9px] font-mono font-black text-white-pure/30 uppercase tracking-widest mb-1">
-              LOG_META
+            <span className="text-[8px] font-mono font-black text-white-pure/40 uppercase tracking-widest mb-1">
+              ENCODED_META
             </span>
-            <span className="text-xs font-mono font-black text-white-pure uppercase truncate italic">
+            <span className="text-[10px] font-mono font-black text-white-pure uppercase truncate">
               {meta}
             </span>
           </div>
         </div>
 
-        <div className="flex items-center justify-between px-12 bg-primary-500 group cursor-pointer overflow-hidden relative">
-          <span className="text-xs font-mono font-black text-black-pure uppercase tracking-[0.3em] relative z-10">
-            SCROLL_TO_EXPAND
+        <button className="flex items-center justify-between px-12 h-24 md:h-32 bg-primary-500 group hover:bg-white-pure transition-colors">
+          <span className="text-[10px] font-mono font-black text-black-pure uppercase tracking-[0.3em]">
+            INITIALIZE_SCROLL
           </span>
-          <div className="w-8 h-8 border-2 border-black-pure flex items-center justify-center relative z-10 group-hover:rotate-90 transition-transform duration-500">
-            <div className="w-1 h-4 bg-black-pure" />
-            <div className="w-4 h-1 bg-black-pure absolute" />
+          <div className="w-10 h-10 border border-black-pure flex items-center justify-center group-hover:bg-black-pure transition-colors">
+            <div className="w-0.5 h-4 bg-black-pure group-hover:bg-primary-500 transition-colors" />
+            <div className="w-4 h-0.5 bg-black-pure absolute group-hover:bg-primary-500 transition-colors" />
           </div>
-          <div className="absolute inset-0 bg-white-pure translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
-        </div>
+        </button>
       </div>
     </section>
   )

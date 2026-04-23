@@ -88,53 +88,50 @@ const MasonrySection: React.FC<MasonrySectionProps> = ({
         metadata={String(items.length).padStart(2, '0')}
       />
 
-      <div className="flex flex-wrap w-full border-b border-black-pure">
+      <div className="flex flex-wrap w-full border-b border-black-pure bg-black-pure gap-0">
         {columnItems.map((col, colIdx) => (
           <div key={colIdx} className={`${colWidth[columns]} flex flex-col border-r border-black-pure last:border-r-0`}>
-            {col.map((item, itemIdx) => (
+            {col.map((item) => (
               <div
                 key={item.id}
-                className={`group relative w-full ${heightClass(item.height)} border-b border-black-pure last:border-b-0 overflow-hidden bg-black-pure`}
+                className={`group relative w-full ${heightClass(item.height)} border-b border-black-pure last:border-b-0 overflow-hidden bg-neutral-100 transition-colors hover:bg-primary`}
               >
                 <img
                   src={item.image}
                   alt={item.title}
-                  className="w-full h-full object-cover opacity-60 transition-all duration-700 ease-[0.16,1,0.3,1] group-hover:scale-110 group-hover:opacity-100 grayscale group-hover:grayscale-0"
+                  className="w-full h-full object-cover grayscale transition-all duration-300 group-hover:scale-105 group-hover:grayscale-0"
                 />
 
-                <div className="absolute inset-0 bg-gradient-to-t from-black-pure via-transparent to-transparent opacity-80 group-hover:opacity-40 transition-opacity duration-500" />
-
-                <div className="absolute top-0 left-0 p-6 flex flex-col pointer-events-none">
-                  <span className="text-[9px] font-mono font-black text-white-pure/40 uppercase tracking-[0.3em] mb-1">
+                <div className="absolute top-4 left-4 bg-black-pure px-2 py-1 border border-black-pure shadow-[2px_2px_0px_0px_#00FF41]">
+                  <span className="text-[8px] font-mono font-black text-white-pure uppercase tracking-widest">
                     {labels.idPrefix}{item.id}
                   </span>
-                  <div className="w-8 h-[1px] bg-primary-500" />
                 </div>
 
-                <div className="absolute inset-0 p-8 flex flex-col justify-end items-start pointer-events-none">
-                  <div className="translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                <div className="absolute inset-x-0 bottom-0 p-6 bg-white-pure border-t border-black-pure translate-y-[calc(100%-60px)] group-hover:translate-y-0 transition-transform duration-200">
+                  <div className="mb-4">
                     {item.category && (
-                      <span className="text-[10px] font-mono font-black text-primary-500 uppercase tracking-widest mb-2 block">
+                      <span className="text-[9px] font-mono font-black text-neutral-500 uppercase tracking-widest mb-1 block">
                         {labels.categoryPrefix}{item.category}
                       </span>
                     )}
-                    <h3 className="text-2xl md:text-3xl font-mono font-black text-white-pure uppercase leading-none tracking-tighter mb-4">
+                    <h3 className="text-lg font-mono font-black text-black-pure uppercase leading-none tracking-tighter">
                       {item.title}
                     </h3>
+                  </div>
 
-                    <div className="overflow-hidden max-h-0 group-hover:max-h-24 transition-all duration-500">
-                      {item.description && (
-                        <p className="text-[11px] font-mono font-black text-white-pure/60 uppercase leading-tight mb-4">
-                          {item.description}
-                        </p>
-                      )}
-                    </div>
+                  <div className="pt-4 border-t border-black-pure">
+                    {item.description && (
+                      <p className="text-[9px] font-mono font-bold text-black-pure uppercase leading-tight">
+                        {item.description}
+                      </p>
+                    )}
                   </div>
                 </div>
 
-                <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <div className="w-10 h-10 border border-primary-500 flex items-center justify-center bg-black-pure">
-                    <div className="w-1.5 h-1.5 bg-primary-500" />
+                <div className="absolute top-4 right-4">
+                  <div className="w-8 h-8 bg-white-pure border border-black-pure flex items-center justify-center shadow-[4px_4px_0px_0px_#000000] group-hover:shadow-none group-hover:translate-x-1 group-hover:translate-y-1 transition-all">
+                    <div className="w-1.5 h-1.5 bg-primary" />
                   </div>
                 </div>
               </div>
@@ -144,17 +141,17 @@ const MasonrySection: React.FC<MasonrySectionProps> = ({
       </div>
 
       {ctaLabel && ctaPath && (
-        <div className="h-32 flex items-center justify-center bg-white-pure">
+        <div className="h-32 flex items-center justify-center bg-neutral-100">
           <Link
             href={ctaPath}
-            className="flex items-center gap-12 px-16 py-6 bg-black-pure text-white-pure hover:bg-primary-500 hover:text-black-pure transition-colors duration-150 relative group"
+            className="flex items-center gap-8 px-12 py-4 bg-white-pure border border-black-pure text-black-pure shadow-[8px_8px_0px_0px_#000000] transition-all hover:shadow-none hover:translate-x-2 hover:translate-y-2 hover:bg-primary active:bg-black-pure active:text-primary"
           >
-            <span className="text-xs font-mono font-black uppercase tracking-[0.4em] relative z-10">
+            <span className="text-[10px] font-mono font-black uppercase tracking-[0.3em]">
               {ctaLabel}
             </span>
-            <div className="flex gap-1 relative z-10">
+            <div className="flex gap-[2px]">
               {[...Array(3)].map((_, i) => (
-                <div key={i} className="w-1 h-4 bg-primary-500 group-hover:bg-black-pure" />
+                <div key={i} className="w-1.5 h-3 bg-black-pure" />
               ))}
             </div>
           </Link>

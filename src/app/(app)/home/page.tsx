@@ -1,4 +1,3 @@
-// app/(frontend)/page.tsx (Home)
 import FeatureSection from '@/components/Section/Blocks/FeatureSection'
 import ListSection from '@/components/Section/Blocks/ListSection'
 import VideoSection from '@/components/Section/Blocks/VideoSection'
@@ -6,6 +5,7 @@ import { Media } from '@/payload-types'
 import configPromise from '@payload-config'
 import { unstable_cache } from 'next/cache'
 import { getPayload } from 'payload'
+import HyperspeedSection from './sections/Hyperspeed'
 
 function getMediaUrl(media: number | Media | null | undefined): string | undefined {
   if (!media) return undefined
@@ -13,126 +13,128 @@ function getMediaUrl(media: number | Media | null | undefined): string | undefin
   return undefined
 }
 
+async function fetchData() {
+  const payload = await getPayload({ config: configPromise })
+
+  const [events, sessions, onboardings, slidesDocs, seriesList, races, drivers] = await Promise.all([
+    payload.find({
+      collection: 'events',
+      limit: 5,
+      sort: '-details.start_date',
+      select: {
+        id: true,
+        name: true,
+        slug: true,
+        basics: { description: true, tagline: true, identifiers: { code: true } },
+        assets: { thumbnail: true, cover: true, poster: true },
+        details: { start_date: true, type: true },
+      },
+    }),
+    payload.find({
+      collection: 'sessions',
+      limit: 5,
+      sort: '-createdAt',
+      select: {
+        id: true,
+        name: true,
+        slug: true,
+        basics: { description: true, identifiers: { code: true } },
+        assets: { thumbnail: true, cover: true },
+      },
+    }),
+    payload.find({
+      collection: 'onboardings',
+      limit: 5,
+      sort: '-createdAt',
+      select: {
+        id: true,
+        name: true,
+        slug: true,
+        basics: { description: true },
+        assets: { thumbnail: true, cover: true },
+      },
+    }),
+    payload.find({
+      collection: 'slides',
+      limit: 10,
+      sort: '-createdAt',
+      select: {
+        id: true,
+        name: true,
+        slug: true,
+        basics: { description: true },
+        assets: { background: true, thumbnail: true },
+        details: { type: true },
+      },
+    }),
+    payload.find({
+      collection: 'series',
+      limit: 6,
+      sort: '-createdAt',
+      select: {
+        id: true,
+        name: true,
+        slug: true,
+        createdAt: true,
+        basics: { description: true, tagline: true, identifiers: { code: true } },
+        assets: { thumbnail: true, cover: true },
+      },
+    }),
+    payload.find({
+      collection: 'races',
+      where: { 'details.status': { equals: 'completed' } },
+      limit: 3,
+      sort: '-details.start_date',
+      select: {
+        id: true,
+        name: true,
+        slug: true,
+        basics: { description: true },
+        assets: { thumbnail: true, cover: true },
+        details: { distance_km: true, status: true },
+      },
+    }),
+    payload.find({
+      collection: 'drivers',
+      limit: 3,
+      sort: '-createdAt',
+      select: {
+        id: true,
+        first_name: true,
+        last_name: true,
+        slug: true,
+        basics: {
+          racing_number: true,
+          callsign: true,
+          catchphrase: true,
+          tagline: true,
+          description: true,
+          nationality: true,
+        },
+        assets: { avatar: true },
+      },
+    }),
+  ])
+
+  return {
+    events: events.docs,
+    sessions: sessions.docs,
+    onboardings: onboardings.docs,
+    slidesDocs: slidesDocs.docs,
+    seriesList: seriesList.docs,
+    races: races.docs,
+    drivers: drivers.docs,
+  }
+}
+
 const getHomeData = unstable_cache(
-  async () => {
-    const payload = await getPayload({ config: configPromise })
-
-    const [events, sessions, onboardings, slidesDocs, seriesList, races, drivers] = await Promise.all([
-      payload.find({
-        collection: 'events',
-        limit: 5,
-        sort: '-details.start_date',
-        select: {
-          id: true,
-          name: true,
-          slug: true,
-          basics: { description: true, tagline: true, identifiers: { code: true } },
-          assets: { thumbnail: true, cover: true, poster: true },
-          details: { start_date: true, type: true },
-        },
-      }),
-      payload.find({
-        collection: 'sessions',
-        limit: 5,
-        sort: '-createdAt',
-        select: {
-          id: true,
-          name: true,
-          slug: true,
-          basics: { description: true, identifiers: { code: true } },
-          assets: { thumbnail: true, cover: true },
-        },
-      }),
-      payload.find({
-        collection: 'onboardings',
-        limit: 5,
-        sort: '-createdAt',
-        select: {
-          id: true,
-          name: true,
-          slug: true,
-          basics: { description: true },
-          assets: { thumbnail: true, cover: true },
-        },
-      }),
-      payload.find({
-        collection: 'slides',
-        limit: 10,
-        sort: '-createdAt',
-        select: {
-          id: true,
-          name: true,
-          slug: true,
-          basics: { description: true },
-          assets: { background: true, thumbnail: true },
-          details: { type: true },
-        },
-      }),
-      payload.find({
-        collection: 'series',
-        limit: 6,
-        sort: '-createdAt',
-        select: {
-          id: true,
-          name: true,
-          slug: true,
-          createdAt: true,
-          basics: { description: true, tagline: true, identifiers: { code: true } },
-          assets: { thumbnail: true, cover: true },
-        },
-      }),
-      payload.find({
-        collection: 'races',
-        where: { 'details.status': { equals: 'completed' } },
-        limit: 3,
-        sort: '-details.start_date',
-        select: {
-          id: true,
-          name: true,
-          slug: true,
-          basics: { description: true },
-          assets: { thumbnail: true, cover: true },
-          details: { distance_km: true, status: true },
-        },
-      }),
-      payload.find({
-        collection: 'drivers',
-        limit: 3,
-        sort: '-createdAt',
-        select: {
-          id: true,
-          first_name: true,
-          last_name: true,
-          slug: true,
-          basics: {
-            racing_number: true,
-            callsign: true,
-            catchphrase: true,
-            tagline: true,
-            description: true,
-            nationality: true,
-          },
-          assets: { avatar: true },
-        },
-      }),
-    ])
-
-    return {
-      events: events.docs,
-      sessions: sessions.docs,
-      onboardings: onboardings.docs,
-      slidesDocs: slidesDocs.docs,
-      seriesList: seriesList.docs,
-      races: races.docs,
-      drivers: drivers.docs,
-    }
-  },
+  fetchData,
   ['home-page-data'],
   { revalidate: 60, tags: ['home'] }
 )
 
 export default async function HomePage() {
-  const { events, sessions, onboardings, slidesDocs, seriesList, races, drivers } = await getHomeData()
+  const { events, sessions, onboardings, seriesList, races, drivers } = await getHomeData()
 
   const videoItems = [...events, ...sessions, ...onboardings].slice(0, 8)
 
@@ -226,6 +228,37 @@ export default async function HomePage() {
     }
   })
 
+  const hyperspeedRoutes = [
+    {
+      id: '01',
+      label: 'Series',
+      slug: seriesList[0]?.slug || 'active',
+      name: seriesList[0]?.name || 'Competition Series',
+      path: '/competition/series'
+    },
+    {
+      id: '02',
+      label: 'Seasons',
+      slug: 'active',
+      name: 'Championship Seasons',
+      path: '/competition/seasons'
+    },
+    {
+      id: '03',
+      label: 'Events',
+      slug: 'active',
+      name: 'Global Events',
+      path: '/competition/events'
+    },
+    {
+      id: '04',
+      label: 'Sessions',
+      slug: 'active',
+      name: 'Live Sessions',
+      path: '/competition/sessions'
+    }
+  ]
+
   return (
     <main className="w-full">
       {videoSlides.length > 0 && (
@@ -242,6 +275,14 @@ export default async function HomePage() {
           }}
         />
       )}
+      <HyperspeedSection
+        id="home-navigation"
+        title="Quick Navigation"
+        subtitle="Explore competition"
+        routes={hyperspeedRoutes}
+        headerVariant={1}
+        footerVariant={1}
+      />
       {listEntries.length > 0 && (
         <ListSection
           id="home-competition"

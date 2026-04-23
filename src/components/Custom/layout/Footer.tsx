@@ -41,7 +41,7 @@ export const CustomFooter = ({ footer, socials, organizations = [], questions, a
 
       <footer className="relative w-full bg-white-pure flex flex-col">
         <div className="flex flex-col lg:flex-row border-b-2 border-black-pure divide-y-2 lg:divide-y-0 lg:divide-x-2 divide-black-pure">
-          <div className="w-full lg:w-20 bg-primary-500 p-6 flex lg:flex-col items-center justify-between shrink-0">
+          <div className="w-full lg:w-20 bg-primary-500 py-16 px-6 flex lg:flex-col items-center justify-between shrink-0">
             <span className="text-xs font-black text-black-pure lg:-rotate-90 lg:whitespace-nowrap tracking-widest uppercase">
               DIRECTORY
             </span>

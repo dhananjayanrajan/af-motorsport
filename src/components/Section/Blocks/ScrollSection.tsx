@@ -75,20 +75,20 @@ const ScrollSection: React.FC<ScrollSectionProps> = ({
   }, [items])
 
   const ProgressBar = ({ percentage }: { percentage: number }) => (
-    <div className="w-full mt-8">
-      <div className="flex justify-between items-end mb-2">
-        <span className="text-[9px] font-mono font-black text-black-pure/30 uppercase tracking-widest">
+    <div className="w-full mt-10">
+      <div className="flex justify-between items-end mb-3">
+        <span className="text-[8px] font-mono font-black text-black-pure/30 uppercase tracking-widest">
           {labels.progressLabel}
         </span>
-        <span className="text-sm font-mono font-black text-primary-500 tabular-nums">
+        <span className="text-[10px] font-mono font-black text-black-pure tabular-nums">
           {percentage}%
         </span>
       </div>
-      <div className="h-1 bg-black-pure/5 overflow-hidden flex gap-1">
+      <div className="h-3 border border-black-pure p-0.5 flex gap-0.5 bg-white-pure">
         {[...Array(20)].map((_, i) => (
           <div
             key={i}
-            className={`h-full flex-grow transition-all duration-1000 delay-300 ${(i / 20) * 100 < percentage ? 'bg-primary-500' : 'bg-black-pure/5'
+            className={`h-full flex-grow transition-colors duration-200 ${(i / 20) * 100 < percentage ? 'bg-primary-500' : 'bg-black-pure/5 border-r border-black-pure last:border-r-0'
               }`}
           />
         ))}
@@ -97,36 +97,34 @@ const ScrollSection: React.FC<ScrollSectionProps> = ({
   )
 
   const ItemContent = ({ item, idx }: { item: ScrollItem; idx: number }) => (
-    <div className="relative flex flex-col md:flex-row gap-12 items-stretch p-8 md:p-16 bg-white-pure border border-black-pure group overflow-hidden">
-      <div className="absolute top-0 left-0 w-1 h-full bg-black-pure/5 group-hover:bg-primary-500 transition-colors duration-500" />
-
-      <div className="flex flex-col shrink-0">
-        <span className="text-[10px] font-mono font-black text-black-pure/20 uppercase tracking-[0.4em] mb-2">
+    <div className="relative flex flex-col md:flex-row gap-0 items-stretch bg-white-pure border border-black-pure group overflow-hidden shadow-[8px_8px_0px_0px_#000000] hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all">
+      <div className="flex flex-col shrink-0 p-8 border-r border-black-pure bg-white-pure group-hover:bg-primary-500 transition-colors">
+        <span className="text-[8px] font-mono font-black text-black-pure/20 group-hover:text-black-pure uppercase tracking-widest mb-4">
           {labels.indexPrefix}
         </span>
-        <span className="text-6xl font-mono font-black text-black-pure leading-none tracking-tighter italic">
+        <span className="text-5xl font-mono font-black text-black-pure leading-none tracking-tighter tabular-nums italic">
           {String(idx + 1).padStart(2, '0')}
         </span>
       </div>
 
-      <div className="flex-grow flex flex-col justify-center">
-        <h3 className="text-3xl md:text-5xl font-mono font-black uppercase tracking-tighter text-black-pure leading-none mb-6 group-hover:text-primary-500 transition-colors duration-300">
+      <div className="flex-grow flex flex-col justify-center p-8 md:p-12">
+        <h3 className="text-2xl md:text-4xl font-mono font-black uppercase tracking-tight text-black-pure leading-none mb-6">
           {item.title}
         </h3>
-        <p className="text-sm font-mono font-black text-black-pure/50 uppercase leading-relaxed max-w-2xl">
+        <p className="text-[10px] font-mono font-bold text-black-pure/50 uppercase leading-relaxed max-w-xl">
           {item.description}
         </p>
         {item.percentage && <ProgressBar percentage={item.percentage} />}
       </div>
 
       {item.image && (
-        <div className="w-full md:w-80 aspect-video md:aspect-square overflow-hidden border border-black-pure relative shrink-0">
+        <div className="w-full md:w-72 aspect-video md:aspect-square overflow-hidden border-l border-black-pure relative shrink-0">
           <img
             src={item.image}
             alt={item.title}
-            className="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700 ease-[0.16,1,0.3,1]"
+            className="w-full h-full object-cover grayscale transition-all duration-300 group-hover:grayscale-0 group-hover:scale-105"
           />
-          <div className="absolute inset-0 border-[12px] border-black-pure/5 pointer-events-none" />
+          <div className="absolute inset-0 border-[16px] border-black-pure opacity-5 pointer-events-none" />
         </div>
       )}
     </div>
@@ -143,15 +141,15 @@ const ScrollSection: React.FC<ScrollSectionProps> = ({
         metadata={String(items.length).padStart(2, '0')}
       />
 
-      <div className={`mt-0 w-full ${variant === 'sticky' ? 'space-y-0' : 'space-y-px bg-black-pure border-b border-black-pure'}`}>
+      <div className={`relative z-10 w-full ${variant === 'sticky' ? 'space-y-0' : 'space-y-12 py-12 px-8 md:px-24'}`}>
         {items.map((item, idx) => (
           <div
             key={item.id}
             ref={el => { itemRefs.current[idx] = el }}
             className={`
               ${variant === 'sticky' ? 'sticky top-0 min-h-screen flex items-center justify-center px-8 md:px-24 bg-white-pure border-b border-black-pure' : 'relative w-full'}
-              transition-all duration-700 ease-[0.16,1,0.3,1]
-              ${variant === 'reveal' && (visibleIndices.has(idx) ? 'translate-y-0 opacity-100' : 'translate-y-24 opacity-0')}
+              transition-all duration-500
+              ${variant === 'reveal' && (visibleIndices.has(idx) ? 'translate-y-0 opacity-100' : 'translate-y-12 opacity-0')}
             `}
           >
             <ItemContent item={item} idx={idx} />

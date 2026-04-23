@@ -43,40 +43,40 @@ const GridSection: React.FC<GridSectionProps> = ({
   }
 
   return (
-    <section id={id} className="w-full bg-white-pure border-t border-black-pure">
+    <section id={id} className="w-full bg-white-pure border-t border-black-pure overflow-hidden">
       <div className="flex flex-col md:flex-row border-b border-black-pure">
-        <div className="p-8 md:p-16 flex-grow border-b md:border-b-0 md:border-r border-black-pure">
-          <div className="flex items-center gap-8 mb-8">
-            <Hash className="w-4 h-4 text-primary-500" />
-            <span className="text-sm font-mono font-black text-black-pure uppercase tracking-[0.3em]">
+        <div className="p-6 md:p-10 flex-grow border-b md:border-b-0 md:border-r border-black-pure bg-white-pure">
+          <div className="flex items-center gap-4 mb-4">
+            <Hash className="w-3 h-3 text-primary" />
+            <span className="text-[10px] font-mono font-black text-black-pure uppercase tracking-[0.2em]">
               {subtitle}
             </span>
           </div>
-          <h2 className="text-3xl md:text-5xl font-mono font-black text-black-pure uppercase italic tracking-tighter leading-none">
+          <h2 className="text-2xl md:text-4xl font-mono font-black text-black-pure uppercase tracking-tighter leading-none">
             {title}
           </h2>
         </div>
 
-        <div className="p-8 md:p-16 flex items-center justify-between md:justify-end gap-16 bg-slate-50 min-w-[240px]">
+        <div className="p-6 md:p-10 flex items-center justify-between md:justify-end gap-12 bg-neutral-100 min-w-[200px]">
           <div className="flex flex-col items-end">
-            <span className="text-sm font-mono font-black text-black-pure/20 uppercase tracking-widest">
+            <span className="text-[9px] font-mono font-black text-neutral-500 uppercase mb-1">
               {labels.unitsCount}
             </span>
-            <span className="text-2xl font-mono font-black text-black-pure tabular-nums">
+            <span className="text-xl font-mono font-black text-black-pure tabular-nums">
               {String(items.length).padStart(2, '0')}
             </span>
           </div>
-          <div className="w-12 h-12 border border-black-pure flex items-center justify-center">
-            <Square className="w-4 h-4 text-primary-500" />
+          <div className="w-10 h-10 border border-black-pure bg-white-pure flex items-center justify-center">
+            <Square className="w-4 h-4 text-primary" />
           </div>
         </div>
       </div>
 
-      <div className={`grid ${gridCols[columns]} w-full`}>
+      <div className={`grid ${gridCols[columns]} w-full bg-black-pure gap-[1px]`}>
         {items.map((item, idx) => (
           <div
             key={item.id}
-            className="group relative flex flex-col bg-white-pure border-r border-b border-black-pure last:border-r-0 overflow-hidden"
+            className="group relative flex flex-col bg-white-pure transition-all duration-200 hover:bg-neutral-50"
           >
             <Link
               href={item.href || '#'}
@@ -84,49 +84,51 @@ const GridSection: React.FC<GridSectionProps> = ({
               aria-label={item.title}
             />
 
-            <div className="relative aspect-square overflow-hidden bg-slate-100 border-b border-black-pure">
+            <div className="relative aspect-square overflow-hidden bg-neutral-200 border-b border-black-pure">
               {item.image && (
                 <img
                   src={item.image}
                   alt={item.title || labels.fallbackAlt}
-                  className="w-full h-full object-cover grayscale transition-all duration-700 ease-out group-hover:grayscale-0 group-hover:scale-105"
+                  className="w-full h-full object-cover grayscale transition-all duration-300 group-hover:grayscale-0 group-hover:scale-105"
                 />
               )}
-              <div className="absolute top-0 left-0 p-8">
-                <div className="px-4 py-2 bg-black-pure text-white-pure border border-white-pure/20 group-hover:bg-primary-500 group-hover:text-black-pure transition-colors">
-                  <span className="text-sm font-mono font-black italic">
+              <div className="absolute top-0 left-0">
+                <div className="px-3 py-1 bg-black-pure text-white-pure border-r border-b border-black-pure group-hover:bg-primary group-hover:text-black-pure transition-colors">
+                  <span className="text-[10px] font-mono font-black tabular-nums">
                     {String(idx + 1).padStart(2, '0')}
                   </span>
                 </div>
               </div>
             </div>
 
-            <div className="p-8 md:p-12 flex flex-col flex-grow transition-colors duration-500 group-hover:bg-slate-50">
-              <div className="flex items-center gap-8 mb-8">
-                <div className="h-[1px] w-8 bg-black-pure/10 group-hover:bg-primary-500 group-hover:w-16 transition-all duration-500" />
-                <span className="text-sm font-mono font-black text-black-pure/20 uppercase tracking-widest">
+            <div className="p-6 md:p-8 flex flex-col flex-grow">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="h-[2px] w-4 bg-primary group-hover:w-8 transition-all duration-300" />
+                <span className="text-[8px] font-mono font-black text-neutral-400 uppercase tracking-widest">
                   {labels.sectionIndex}
                 </span>
               </div>
 
-              <h3 className="text-xl md:text-2xl font-mono font-black text-black-pure uppercase italic tracking-tighter leading-tight mb-8 group-hover:text-primary-500 transition-colors">
+              <h3 className="text-lg md:text-xl font-mono font-black text-black-pure uppercase tracking-tight leading-tight mb-4 group-hover:text-primary transition-colors">
                 {item.title}
               </h3>
 
               {item.subtitle && (
-                <p className="text-sm font-mono font-black text-black-pure/40 uppercase leading-relaxed mb-16 max-w-xs">
+                <p className="text-[10px] font-mono font-bold text-black-pure uppercase leading-relaxed mb-8 opacity-60">
                   {item.subtitle}
                 </p>
               )}
 
-              <div className="mt-auto flex items-center justify-between">
-                <div className="flex items-center gap-8 text-black-pure group-hover:text-primary-500 transition-colors">
-                  <span className="text-sm font-mono font-black uppercase tracking-widest">
+              <div className="mt-auto pt-6 border-t border-black-pure flex items-center justify-between">
+                <div className="flex items-center gap-4 text-black-pure">
+                  <span className="text-[9px] font-mono font-black uppercase tracking-[0.2em] group-hover:translate-x-1 transition-transform">
                     {labels.viewProject}
                   </span>
-                  <ArrowRight className="w-5 h-5 transition-transform duration-500 group-hover:translate-x-4" />
+                  <ArrowRight className="w-3 h-3 group-hover:translate-x-2 transition-transform text-primary" />
                 </div>
-                <Plus className="w-5 h-5 text-black-pure/10 group-hover:text-primary-500 group-hover:rotate-90 transition-all duration-500" />
+                <div className="w-6 h-6 flex items-center justify-center border border-black-pure bg-white-pure group-hover:bg-primary group-hover:rotate-90 transition-all duration-300 shadow-[2px_2px_0px_0px_#000000] group-hover:shadow-none group-hover:translate-x-[2px] group-hover:translate-y-[2px]">
+                  <Plus className="w-3 h-3 text-black-pure" />
+                </div>
               </div>
             </div>
           </div>

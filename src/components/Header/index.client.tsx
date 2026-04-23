@@ -46,12 +46,6 @@ const NavItem = ({ item, index }: { item: any; index: number }) => {
       )}
     >
       <span className={cn(
-        "text-[10px] font-mono font-black mb-1 transition-colors duration-100",
-        isActive ? "text-black-pure/40" : "text-black-pure/20 group-hover:text-primary-500"
-      )}>
-        SEQ_0{index + 1}
-      </span>
-      <span className={cn(
         "text-sm font-mono font-black uppercase tracking-normal relative z-10 transition-transform duration-100",
         isActive ? "text-black-pure" : "group-hover:translate-x-1"
       )}>
@@ -70,7 +64,7 @@ export function HeaderClient({ header, socials }: { header: Header; socials: Soc
   const socialAccounts = useMemo(() => socials?.accounts?.filter((a: any) => a.visible !== false) || [], [socials?.accounts])
 
   return (
-    <header className="sticky top-0 left-0 w-full z-[110] bg-white-pure border-b border-black-pure h-16 flex items-stretch">
+    <header className="sticky top-0 left-0 w-full z-[110] bg-white-pure border-b border-black-pure h-12 flex items-stretch">
       <div className="w-16 md:w-24 flex items-center justify-center border-r border-black-pure bg-black-pure shrink-0 group transition-colors duration-100 hover:bg-primary-500">
         <Link href="/" className="flex items-center justify-center w-full h-full outline-none">
           <LogoIcon className="h-6 w-auto text-white-pure group-hover:text-black-pure transition-transform duration-100 group-hover:scale-110" />

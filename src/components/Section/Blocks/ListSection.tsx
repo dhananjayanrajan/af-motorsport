@@ -88,15 +88,17 @@ const ListSection: React.FC<ListSectionProps> = ({
         metadata={String(entries.length).padStart(2, '0')}
       />
 
-      <div className="w-full flex flex-col border-b border-black-pure">
+      <div className="w-full flex flex-col gap-4 p-4 md:p-8 border-b border-black-pure bg-neutral-100">
         {entries.map((entry, idx) => (
           <div
             key={entry.id}
             ref={el => { itemRefs.current[idx] = el }}
-            className={`group relative flex flex-col md:flex-row items-stretch border-t border-black-pure first:border-t-0 bg-white-pure transition-all duration-700 ease-out ${visibleIndices.has(idx) ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
-              } ${focusedIndex === idx ? 'ring-2 ring-primary-500 ring-inset z-10' : ''}`}
+            className={`group relative flex flex-col md:flex-row items-stretch border border-black-pure bg-white-pure transition-all duration-150 shadow-[4px_4px_0px_0px_#000000] hover:shadow-none hover:translate-x-[4px] hover:translate-y-[4px] active:scale-[0.99] ${visibleIndices.has(idx) ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
+              }`}
           >
-            <DotGridBackground opacity={0.5} />
+            <div className="absolute inset-0 z-0 hidden group-hover:block pointer-events-none">
+              <DotGridBackground primaryColor="#000000" secondaryColor="#00FF41" />
+            </div>
 
             {entry.href && (
               <Link
@@ -108,78 +110,79 @@ const ListSection: React.FC<ListSectionProps> = ({
               />
             )}
 
-            <div className="w-20 md:w-28 border-r border-black-pure flex flex-col items-center justify-center bg-white-pure transition-all duration-300 shrink-0 group-hover:bg-black-pure group-focus-within:bg-black-pure">
-              <span className="text-[10px] font-mono font-black text-black-pure uppercase mb-1 transition-colors duration-300 group-hover:text-white-pure group-focus-within:text-white-pure">
+            <div className="w-16 md:w-20 border-r border-black-pure flex flex-col items-center justify-center bg-white-pure shrink-0 group-hover:bg-black-pure transition-colors duration-200">
+              <span className="text-[7px] font-mono font-black text-black-pure uppercase mb-1 group-hover:text-neutral-500">
                 {labels.indexPrefix}
               </span>
-              <span className="text-xl md:text-2xl font-mono font-black text-black-pure tabular-nums transition-all duration-300 group-hover:text-primary-500 group-hover:scale-110 group-focus-within:text-primary-500 group-focus-within:scale-110">
+              <span className="text-base font-mono font-black text-black-pure group-hover:text-primary tabular-nums">
                 {String(idx + 1).padStart(2, '0')}
               </span>
             </div>
 
-            <div className="flex-grow p-6 md:p-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-              <div className="flex flex-col items-start gap-3">
+            <div className="flex-grow p-4 md:p-6 flex flex-col lg:flex-row lg:items-center justify-between gap-6 relative z-10">
+              <div className="flex flex-col items-start gap-2">
                 {entry.tag && (
-                  <span className="px-3 py-1 bg-black-pure text-white-pure text-[9px] font-mono font-black uppercase tracking-[0.2em] transition-all duration-300 group-hover:bg-primary-500 group-hover:text-black-pure group-focus-within:bg-primary-500 group-focus-within:text-black-pure">
+                  <span className="text-[8px] font-mono font-black text-black-pure bg-primary px-2 py-0.5 uppercase tracking-widest group-hover:bg-black-pure group-hover:text-primary transition-colors">
                     {entry.tag}
                   </span>
                 )}
                 <div className="flex flex-col">
-                  <h3 className="text-2xl font-mono font-black text-black-pure uppercase leading-none tracking-tighter transition-all duration-300 group-hover:translate-x-2 group-hover:text-primary-500 group-focus-within:translate-x-2 group-focus-within:text-primary-500">
+                  <h3 className="text-base md:text-lg font-mono font-black text-black-pure uppercase tracking-tight leading-none group-hover:translate-x-1 transition-transform">
                     {entry.title}
                   </h3>
                   {entry.subtitle && (
-                    <p className="mt-2 text-sm font-mono font-black text-black-pure uppercase tracking-widest transition-colors duration-300 group-hover:text-black-pure group-focus-within:text-black-pure">
+                    <p className="mt-2 text-[9px] font-mono font-bold text-black-pure uppercase tracking-wide max-w-sm">
                       {entry.subtitle}
                     </p>
                   )}
                 </div>
               </div>
 
-              <div className="flex flex-wrap items-center gap-8 md:gap-12">
+              <div className="flex flex-wrap items-center gap-6 lg:gap-10">
                 {showTimestamp && entry.timestamp && (
-                  <div className="flex flex-col items-start md:items-end min-w-[90px]">
-                    <span className="text-xs font-mono font-black text-black-pure uppercase mb-1 tracking-widest">
+                  <div className="flex flex-col lg:items-end min-w-[80px]">
+                    <span className="text-[7px] font-mono font-black text-black-pure uppercase mb-1">
                       {labels.timePrefix}
                     </span>
-                    <span className="text-sm font-mono font-black text-black-pure uppercase tabular-nums transition-colors duration-300 group-hover:text-primary-500 group-focus-within:text-primary-500">
+                    <span className="text-[10px] font-mono font-black text-black-pure tabular-nums">
                       {entry.timestamp}
                     </span>
                   </div>
                 )}
 
                 {showStatus && entry.status && (
-                  <div className="flex flex-col items-start md:items-end min-w-[90px]">
-                    <span className="text-xs font-mono font-black text-black-pure uppercase mb-1 tracking-widest">
+                  <div className="flex flex-col lg:items-end min-w-[80px]">
+                    <span className="text-[7px] font-mono font-black text-black-pure uppercase mb-1">
                       {labels.statusPrefix}
                     </span>
-                    <div className="flex items-center gap-2">
-                      <div className="w-1.5 h-1.5 bg-primary-500 rounded-full animate-pulse" />
-                      <span className="text-sm font-mono font-black text-black-pure uppercase italic transition-colors duration-300 group-hover:text-primary-500 group-focus-within:text-primary-500">
+                    <div className="flex items-center gap-2 border border-black-pure px-2 py-1 bg-white-pure group-hover:bg-neutral-100 transition-colors">
+                      <div className="w-1.5 h-1.5 bg-primary" />
+                      <span className="text-[9px] font-mono font-black text-black-pure uppercase italic">
                         {entry.status}
                       </span>
                     </div>
                   </div>
                 )}
 
-                <div className="w-10 h-10 flex items-center justify-center border-2 border-black-pure bg-white-pure transition-all duration-300 group-hover:bg-primary-500 group-hover:border-primary-500 group-hover:scale-110 group-focus-within:bg-primary-500 group-focus-within:border-primary-500 group-focus-within:scale-110 active:scale-95">
-                  <svg className="w-4 h-4 text-black-pure transition-all duration-300 group-hover:text-black-pure group-hover:rotate-45 group-focus-within:text-black-pure group-focus-within:rotate-45" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="w-8 h-8 flex items-center justify-center border border-black-pure bg-white-pure group-hover:bg-primary transition-all duration-200">
+                  <svg className="w-3.5 h-3.5 text-black-pure" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="square" strokeLinejoin="miter" strokeWidth={3} d="M14 5l7 7m0 0l-7 7m7-7H3" />
                   </svg>
                 </div>
               </div>
             </div>
 
-            <div className="absolute bottom-0 left-0 h-0.5 bg-primary-500 w-0 transition-all duration-500 ease-out group-hover:w-full group-focus-within:w-full" />
+            <div className="absolute top-0 right-0 w-1 h-1 bg-black-pure opacity-0 group-hover:opacity-100 transition-opacity" />
+            <div className="absolute bottom-0 left-0 w-1 h-1 bg-black-pure opacity-0 group-hover:opacity-100 transition-opacity" />
           </div>
         ))}
       </div>
 
       {ctaLabel && ctaPath && (
-        <div className="p-12 md:p-16 flex justify-center bg-white-pure border-t border-black-pure">
+        <div className="p-8 md:p-12 flex justify-center bg-white-pure border-b border-black-pure">
           <Link
             href={ctaPath}
-            className="px-12 py-5 bg-black-pure text-white-pure font-mono font-black text-sm uppercase tracking-[0.3em] transition-all duration-300 border-2 border-black-pure shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:bg-primary-500 hover:text-black-pure hover:shadow-none hover:translate-x-1 hover:translate-y-1 focus:bg-primary-500 focus:text-black-pure focus:outline-none focus:ring-2 focus:ring-primary-500 focus:shadow-none focus:translate-x-1 focus:translate-y-1 active:scale-95"
+            className="px-8 py-3 bg-white-pure text-black-pure font-mono font-black text-[10px] uppercase tracking-[0.3em] border border-black-pure shadow-[4px_4px_0px_0px_#000000] transition-all hover:shadow-none hover:translate-x-[4px] hover:translate-y-[4px] hover:bg-primary active:bg-black-pure active:text-primary"
           >
             {ctaLabel}
           </Link>

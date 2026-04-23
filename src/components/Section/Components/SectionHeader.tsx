@@ -1,5 +1,6 @@
 "use client"
 import React from 'react'
+import WeaveBackground from '../Backgrounds/WeaveBackground'
 
 interface SectionHeaderProps {
     title: string
@@ -66,6 +67,9 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({
     if (variant === 3) {
         return (
             <header className="w-full border-2 border-black-pure bg-white-pure grid grid-cols-1 md:grid-cols-4 overflow-hidden group">
+
+                <WeaveBackground opacity={0.2} />
+
                 <div className="col-span-1 md:col-span-3 p-6 sm:p-8 border-b md:border-b-0 md:border-r-2 border-black-pure relative overflow-hidden">
                     <div className="absolute top-0 left-0 w-full h-1 bg-primary-500 scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
                     <div className="flex items-start gap-4">

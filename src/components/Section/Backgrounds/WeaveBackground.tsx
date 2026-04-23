@@ -12,7 +12,7 @@ const WeaveBackground: React.FC<WeaveBackgroundProps> = ({
   zIndex = 'z-0',
   opacity = 0.08,
   primaryColor = '#000000',
-  accentColor = '#C0392B'
+  accentColor = '#00FF41'
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
 

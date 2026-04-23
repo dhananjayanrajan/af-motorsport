@@ -47,7 +47,6 @@ const FeatureSection: React.FC<FeatureSectionProps> = ({
   headerVariant = 1,
   footerVariant = 1
 }) => {
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
   const [visibleIndices, setVisibleIndices] = useState<Set<number>>(new Set())
   const itemRefs = useRef<(HTMLDivElement | null)[]>([])
 
@@ -93,82 +92,82 @@ const FeatureSection: React.FC<FeatureSectionProps> = ({
         metadata={String(features.length).padStart(2, '0')}
       />
 
-      <div className="w-full px-6 md:px-12 py-12 md:py-20">
-        <div className={`grid ${gridCols[columns]} gap-6`}>
+      <div className="w-full px-4 md:px-8 py-10 md:py-16 bg-neutral-100">
+        <div className={`grid ${gridCols[columns]} gap-4 md:gap-6`}>
           {features.map((feature, idx) => (
             <div
               key={feature.id}
               ref={el => { itemRefs.current[idx] = el }}
-              onMouseEnter={() => setHoveredIndex(idx)}
-              onMouseLeave={() => setHoveredIndex(null)}
-              className={`group transition-all duration-700 ease-out ${visibleIndices.has(idx) ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
+              className={`group relative flex flex-col bg-white-pure border border-black-pure transition-all duration-200 shadow-[4px_4px_0px_0px_#000000] hover:shadow-none hover:translate-x-[4px] hover:translate-y-[4px] active:scale-[0.98] ${visibleIndices.has(idx) ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
                 }`}
             >
-              <div className="relative h-full flex flex-col bg-white-pure border border-black-pure">
-                <div className="relative aspect-[4/3] overflow-hidden bg-black-pure border-b border-black-pure">
-                  <img
-                    src={getImageUrl(feature.image, idx)}
-                    alt={feature.title}
-                    className="w-full h-full object-cover transition-all duration-500 group-hover:scale-105 grayscale group-hover:grayscale-0"
-                  />
-                  <div className="absolute inset-0 bg-black-pure/0 group-hover:bg-black-pure/20 transition-all duration-300" />
-                  <div className="absolute top-3 left-3 bg-black-pure px-2 py-1 border border-primary-500">
-                    <span className="text-xs font-mono font-black text-primary-500">
-                      {String(idx + 1).padStart(2, '0')}
-                    </span>
-                  </div>
-                  <div className="absolute bottom-3 right-3 bg-white-pure px-2 py-1 border border-black-pure group-hover:bg-primary-500 transition-colors duration-300">
-                    <span className="text-[8px] font-mono font-black text-black-pure uppercase tracking-wider group-hover:text-black-pure">
-                      {labels.specIndex}
-                    </span>
-                  </div>
+              <div className="relative aspect-video overflow-hidden border-b border-black-pure bg-black-pure">
+                <img
+                  src={getImageUrl(feature.image, idx)}
+                  alt={feature.title}
+                  className="w-full h-full object-cover grayscale transition-all duration-300 group-hover:grayscale-0 group-hover:scale-105"
+                />
+
+                <div className="absolute top-0 left-0 bg-primary px-2 py-0.5 border-b border-r border-black-pure">
+                  <span className="text-[10px] font-mono font-black text-black-pure tabular-nums">
+                    {String(idx + 1).padStart(2, '0')}
+                  </span>
                 </div>
 
-                <div className="p-5 flex flex-col flex-grow">
+                <div className="absolute bottom-0 right-0 bg-white-pure px-2 py-0.5 border-t border-l border-black-pure">
+                  <span className="text-[7px] font-mono font-black text-black-pure uppercase tracking-widest">
+                    {labels.specIndex}
+                  </span>
+                </div>
+              </div>
+
+              <div className="p-5 flex flex-col flex-grow">
+                <div className="flex items-start justify-between mb-4">
                   {feature.icon && (
-                    <div className="mb-4">
-                      <div className="inline-flex w-10 h-10 bg-black-pure border border-black-pure items-center justify-center">
-                        <div className="text-primary-500 group-hover:scale-110 transition-transform duration-300">
-                          {feature.icon}
-                        </div>
+                    <div className="w-8 h-8 bg-black-pure flex items-center justify-center border border-black-pure group-hover:bg-primary transition-colors">
+                      <div className="text-primary group-hover:text-black-pure scale-75">
+                        {feature.icon}
                       </div>
                     </div>
                   )}
-
-                  <h3 className="text-xl font-mono font-black uppercase tracking-tighter leading-tight mb-2">
-                    {feature.title}
-                  </h3>
-
-                  <div className="w-12 h-0.5 bg-primary-500 mb-4 group-hover:w-20 transition-all duration-300" />
-
-                  <p className="text-xs font-mono font-bold text-black-pure/70 leading-relaxed mb-6 line-clamp-3">
-                    {feature.description}
-                  </p>
-
-                  {feature.stats && feature.stats.length > 0 && (
-                    <div className="grid grid-cols-2 gap-2 mb-6">
-                      {feature.stats.map((stat, statIdx) => (
-                        <div key={statIdx} className="bg-black-pure p-2">
-                          <p className="text-[8px] font-mono font-black text-primary-500 uppercase tracking-wider mb-0.5">
-                            {stat.label}
-                          </p>
-                          <p className="text-xs font-mono font-black text-white-pure uppercase truncate">
-                            {stat.value}
-                          </p>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
-                  <div className="mt-auto pt-4 border-t border-black-pure">
-                    <Link
-                      href={ctaPath ? `${ctaPath}/${feature.id}` : `/${feature.id}`}
-                      className="group/link inline-flex items-center justify-between w-full py-2.5 px-3 bg-black-pure text-white-pure font-mono font-black text-[10px] uppercase tracking-wider transition-all duration-300 hover:bg-primary-500 hover:text-black-pure active:scale-95"
-                    >
-                      <span>{labels.ctaLabel}</span>
-                      <ArrowRight className="w-3.5 h-3.5 transition-all duration-300 group-hover/link:translate-x-1" />
-                    </Link>
+                  <div className="flex gap-1">
+                    <div className="w-1 h-1 bg-black-pure" />
+                    <div className="w-1 h-1 bg-black-pure group-hover:bg-primary transition-colors" />
+                    <div className="w-1 h-1 bg-black-pure" />
                   </div>
+                </div>
+
+                <h3 className="text-base font-mono font-black uppercase tracking-tight leading-none mb-3 group-hover:translate-x-1 transition-transform">
+                  {feature.title}
+                </h3>
+
+                <p className="text-[10px] font-mono font-bold text-black-pure uppercase tracking-wide leading-relaxed mb-6 line-clamp-3">
+                  {feature.description}
+                </p>
+
+                {feature.stats && feature.stats.length > 0 && (
+                  <div className="grid grid-cols-2 gap-[1px] bg-black-pure border border-black-pure mb-6">
+                    {feature.stats.map((stat, statIdx) => (
+                      <div key={statIdx} className="bg-white-pure p-2 group-hover:bg-neutral-50 transition-colors">
+                        <p className="text-[7px] font-mono font-black text-neutral-500 uppercase mb-1">
+                          {stat.label}
+                        </p>
+                        <p className="text-[10px] font-mono font-black text-black-pure uppercase truncate tabular-nums">
+                          {stat.value}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                <div className="mt-auto">
+                  <Link
+                    href={ctaPath ? `${ctaPath}/${feature.id}` : `/${feature.id}`}
+                    className="flex items-center justify-between w-full py-2 px-3 border border-black-pure bg-white-pure text-black-pure font-mono font-black text-[9px] uppercase tracking-widest transition-all hover:bg-black-pure hover:text-primary"
+                  >
+                    <span>{labels.ctaLabel}</span>
+                    <ArrowRight className="w-3 h-3 transition-transform group-hover:translate-x-1" />
+                  </Link>
                 </div>
               </div>
             </div>
@@ -177,10 +176,10 @@ const FeatureSection: React.FC<FeatureSectionProps> = ({
       </div>
 
       {ctaPath && labels.ctaLabel && (
-        <div className="px-6 md:px-12 pb-12 md:pb-20 flex justify-center">
+        <div className="p-12 flex justify-center bg-white-pure border-t border-black-pure">
           <Link
             href={ctaPath}
-            className="inline-flex items-center gap-3 px-12 py-4 bg-black-pure text-white-pure font-mono font-black text-sm uppercase tracking-wider transition-all duration-300 border border-black-pure hover:bg-primary-500 hover:text-black-pure focus:bg-primary-500 focus:text-black-pure focus:outline-none focus:ring-1 focus:ring-primary-500 active:scale-95"
+            className="flex items-center gap-3 px-10 py-4 bg-white-pure text-black-pure font-mono font-black text-xs uppercase tracking-[0.3em] border border-black-pure shadow-[6px_6px_0px_0px_#000000] transition-all hover:shadow-none hover:translate-x-[6px] hover:translate-y-[6px] hover:bg-primary active:bg-black-pure active:text-primary"
           >
             <span>{labels.ctaLabel}</span>
             <ArrowRight className="w-4 h-4" />
