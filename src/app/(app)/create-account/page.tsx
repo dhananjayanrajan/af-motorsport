@@ -5,8 +5,9 @@ import { RenderParams } from '@/components/RenderParams'
 import SectionFooter from '@/components/Section/Components/SectionFooter'
 import SectionHeader from '@/components/Section/Components/SectionHeader'
 import { useRouter } from 'next/navigation'
+import { Suspense } from 'react'
 
-export default function CreateAccount({ user }: { user: any }) {
+function CreateAccountContent({ user }: { user: any }) {
   const router = useRouter()
 
   if (user) {
@@ -64,5 +65,13 @@ export default function CreateAccount({ user }: { user: any }) {
       </div>
       <SectionFooter variant={3} />
     </main>
+  )
+}
+
+export default function CreateAccount({ user }: { user: any }) {
+  return (
+    <Suspense fallback={null}>
+      <CreateAccountContent user={user} />
+    </Suspense>
   )
 }

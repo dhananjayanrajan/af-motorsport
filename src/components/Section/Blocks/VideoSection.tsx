@@ -1,10 +1,11 @@
 "use client"
-import { Activity, AlertTriangle, Monitor, Pause, Play, VideoOff } from 'lucide-react'
+import { Activity, AlertTriangle, List, Monitor, Pause, Play, VideoOff } from 'lucide-react'
 import React, { useRef, useState } from 'react'
 import BlueprintsBackground from '../Backgrounds/BlueprintsBackground'
 import SectionButton from '../Components/SectionButton'
 import SectionFooter from '../Components/SectionFooter'
 import SectionHeader from '../Components/SectionHeader'
+import SectionSidebar from '../Components/SectionSidebar'
 
 export interface VideoItem {
   id: string
@@ -55,6 +56,7 @@ const VideoSection: React.FC<VideoSectionProps> = ({
 }) => {
   const [activeVideo, setActiveVideo] = useState<VideoItem>(videos[0])
   const [isPlaying, setIsPlaying] = useState(autoplay)
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const videoRef = useRef<HTMLVideoElement>(null)
 
   const hasVideoSource = activeVideo?.url && activeVideo.url.trim() !== ''
@@ -71,6 +73,35 @@ const VideoSection: React.FC<VideoSectionProps> = ({
     setIsPlaying(false)
     if (videoRef.current) videoRef.current.currentTime = 0
   }
+
+  const handleVideoSelect = (video: VideoItem) => {
+    setActiveVideo(video)
+    setIsPlaying(false)
+    setIsSidebarOpen(false)
+  }
+
+  const playlistStats = [
+    {
+      label: "TOTAL TRACKS",
+      val: String(videos.length).padStart(2, '0'),
+      color: "bg-primary-500"
+    },
+    {
+      label: "CURRENT TRACK",
+      val: activeVideo?.title || "N/A",
+      color: "bg-secondary-500"
+    },
+    {
+      label: "CHANNEL",
+      val: labels.channelPrefix,
+      color: "bg-primary-500"
+    },
+    {
+      label: "STATUS",
+      val: hasVideoSource ? "ACTIVE" : "OFFLINE",
+      color: "bg-secondary-500"
+    }
+  ]
 
   return (
     <section id={id} className="relative w-full bg-white-pure border-t border-black-pure overflow-hidden">
@@ -179,13 +210,18 @@ const VideoSection: React.FC<VideoSectionProps> = ({
         {showPlaylist && (
           <div className="w-full lg:w-96 flex flex-col bg-white-pure lg:border-l border-black-pure max-h-[800px] overflow-hidden">
             <div className="p-6 bg-slate-50 border-b border-black-pure flex items-center justify-between">
-              <span className="text-[10px] font-mono font-black text-black-pure uppercase tracking-widest">
-                {labels.channelPrefix} ({String(videos.length).padStart(2, '0')})
-              </span>
-              <div className="flex gap-1">
-                <div className="w-1 h-3 bg-black-pure" />
-                <div className="w-1 h-3 bg-black-pure/20" />
+              <div className="flex items-center gap-3">
+                <span className="text-[10px] font-mono font-black text-black-pure uppercase tracking-widest">
+                  {labels.channelPrefix} ({String(videos.length).padStart(2, '0')})
+                </span>
               </div>
+              <SectionButton
+                label="OPEN PLAYLIST"
+                variant="outline"
+                size="sm"
+                icon={<List className="w-3 h-3" />}
+                onClick={() => setIsSidebarOpen(true)}
+              />
             </div>
 
             <div className="flex-grow overflow-y-auto">
@@ -229,6 +265,25 @@ const VideoSection: React.FC<VideoSectionProps> = ({
       )}
 
       <SectionFooter variant={footerVariant} />
+
+      <SectionSidebar
+        isOpen={isSidebarOpen}
+        onClose={() => setIsSidebarOpen(false)}
+        title="VIDEO PLAYLIST"
+        description={`${videos.length} tracks available on channel ${labels.channelPrefix}`}
+        imageUrl={videos[0]?.poster || ""}
+        idCode={labels.channelPrefix}
+        stats={playlistStats}
+        buttonLabel="BROWSE ALL VIDEOS"
+        onAction={() => {
+          if (videos[0]) {
+            setActiveVideo(videos[0])
+            setIsPlaying(false)
+            setIsSidebarOpen(false)
+          }
+        }}
+        infoLabel={labels.channelPrefix}
+      />
     </section>
   )
 }

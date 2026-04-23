@@ -5,15 +5,15 @@ import { RenderParams } from '@/components/RenderParams'
 import SectionFooter from '@/components/Section/Components/SectionFooter'
 import SectionHeader from '@/components/Section/Components/SectionHeader'
 import { useRouter } from 'next/navigation'
+import { Suspense } from 'react'
 
-export default function Login({ user }: { user: any }) {
+function LoginContent({ user }: { user: any }) {
   const router = useRouter()
 
   if (user) {
     return (
       <main className="min-h-screen bg-white-pure flex flex-col">
         <SectionHeader title="Account" subtitle="Session" variant={3} />
-
         <div className="flex-1 flex flex-col md:flex-row items-stretch">
           <div className="flex-1 flex flex-col border-r border-black-pure">
             <div className="h-12 border-b border-black-pure flex items-center px-8 bg-black-pure">
@@ -54,7 +54,6 @@ export default function Login({ user }: { user: any }) {
             </div>
           </div>
         </div>
-
         <SectionFooter variant={3} />
       </main>
     )
@@ -63,13 +62,11 @@ export default function Login({ user }: { user: any }) {
   return (
     <main className="min-h-screen bg-white-pure flex flex-col">
       <SectionHeader title="Identity" subtitle="Entry" variant={3} />
-
       <section className="flex-1 flex flex-col md:flex-row items-stretch">
         <div className="flex-1 p-8 md:p-16 border-r border-black-pure">
           <RenderParams />
           <LoginForm />
         </div>
-
         <div className="w-full md:w-80 flex flex-col">
           <div className="h-12 border-b border-black-pure flex items-center px-8 bg-black-pure">
             <span className="text-[10px] font-mono font-black text-white-pure uppercase tracking-widest">New Member</span>
@@ -88,8 +85,15 @@ export default function Login({ user }: { user: any }) {
           <div className="flex-1 border-t border-black-pure bg-black-pure/5" />
         </div>
       </section>
-
       <SectionFooter variant={3} />
     </main>
+  )
+}
+
+export default function Login({ user }: { user: any }) {
+  return (
+    <Suspense fallback={null}>
+      <LoginContent user={user} />
+    </Suspense>
   )
 }

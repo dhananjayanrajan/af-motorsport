@@ -11,7 +11,7 @@ import { getPayload } from 'payload'
 
 export async function generateStaticParams() {
   try {
-    const payload = await getPayload({ config: configPromise, disableDBConnect: true })
+    const payload = await getPayload({ config: configPromise })
     const pages = await payload.find({
       collection: 'pages',
       draft: false,
@@ -29,7 +29,6 @@ export async function generateStaticParams() {
       .filter((doc) => doc.slug !== 'home')
       .map(({ slug }) => ({ slug }))
   } catch (error) {
-    console.error('Error generating static params:', error)
     return []
   }
 }
