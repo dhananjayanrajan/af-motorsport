@@ -1,18 +1,18 @@
 "use client"
-import React, { useRef, useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 
 interface ShapesBackgroundProps {
   zIndex?: string
   opacity?: number
   primaryColor?: string
-  secondaryColor?: string
+  accentColor?: string
 }
 
 const ShapesBackground: React.FC<ShapesBackgroundProps> = ({
   zIndex = 'z-0',
-  opacity = 0.5,
-  primaryColor = '#C0392B',
-  secondaryColor = '#E67E22'
+  opacity = 0.08,
+  primaryColor = '#000000',
+  accentColor = '#C0392B'
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
@@ -23,45 +23,78 @@ const ShapesBackground: React.FC<ShapesBackgroundProps> = ({
     if (!ctx) return
 
     let animationFrame: number
-    let time = 0
+    let scanLine = 0
 
     const resize = () => {
       const parent = canvas.parentElement
       if (!parent) return
-      canvas.width = parent.clientWidth
-      canvas.height = parent.clientHeight
+      const dpr = window.devicePixelRatio || 1
+      canvas.width = parent.clientWidth * dpr
+      canvas.height = parent.clientHeight * dpr
+      canvas.style.width = `${parent.clientWidth}px`
+      canvas.style.height = `${parent.clientHeight}px`
+      ctx.scale(dpr, dpr)
+    }
+
+    const drawPrimitive = (x: number, y: number, type: number, size: number) => {
+      ctx.beginPath()
+      if (type === 0) {
+        // Technical Crosshair
+        ctx.moveTo(x - size, y); ctx.lineTo(x + size, y)
+        ctx.moveTo(x, y - size); ctx.lineTo(x, y + size)
+      } else if (type === 1) {
+        // Right Angle Bracket
+        ctx.moveTo(x + size, y - size); ctx.lineTo(x - size, y - size); ctx.lineTo(x - size, y + size)
+      } else {
+        // Parallel Dash Segments
+        ctx.moveTo(x - size, y - 4); ctx.lineTo(x + size, y - 4)
+        ctx.moveTo(x - size, y + 4); ctx.lineTo(x + size, y + 4)
+      }
+      ctx.stroke()
     }
 
     const draw = () => {
-      if (!ctx || !canvas) return
-      const w = canvas.width
-      const h = canvas.height
+      const w = canvas.width / (window.devicePixelRatio || 1)
+      const h = canvas.height / (window.devicePixelRatio || 1)
       ctx.clearRect(0, 0, w, h)
 
-      const spacing = 72
-      const cols = Math.ceil(w / spacing) + 1
-      const rows = Math.ceil(h / spacing) + 1
+      const spacing = 64 // 8px * 8
+      const activeZone = 160 // 8px * 20
 
-      for (let i = 0; i < rows; i++) {
-        for (let j = 0; j < cols; j++) {
-          const x = j * spacing
-          const y = i * spacing + Math.sin(time * 0.8 + i * 0.4) * 10
-          const color = (i + j) % 2 === 0 ? primaryColor : secondaryColor
-          const alpha = (0.18 + Math.sin(time * 0.7 + i * 0.5 + j * 0.6) * 0.12) * opacity
+      scanLine += 2.5
+      if (scanLine > h + activeZone) scanLine = -activeZone
 
-          ctx.save()
-          ctx.translate(x, y)
-          ctx.rotate(time * 0.1 + i * 0.2)
-          ctx.beginPath()
-          ctx.arc(0, 0, 16, 0, Math.PI * 2)
-          ctx.fillStyle = color
-          ctx.globalAlpha = alpha
-          ctx.fill()
-          ctx.restore()
+      for (let x = spacing; x < w; x += spacing) {
+        for (let y = spacing; y < h; y += spacing) {
+          const dist = Math.abs(y - scanLine)
+          const isActive = dist < activeZone
+          const primitiveType = (Math.floor(x / spacing) + Math.floor(y / spacing)) % 3
+
+          if (isActive) {
+            const factor = 1 - dist / activeZone
+            ctx.strokeStyle = accentColor
+            ctx.globalAlpha = factor * opacity * 2.5
+            ctx.lineWidth = 1
+
+            // Apply slight jitter/offset to active primitives
+            const jitter = Math.sin(scanLine * 0.05 + x) * 4
+            drawPrimitive(x, y + jitter, primitiveType, 12)
+
+            // Add technical ID label to active clusters
+            if (factor > 0.8 && x % (spacing * 4) === 0) {
+              ctx.font = '8px monospace'
+              ctx.fillStyle = accentColor
+              ctx.fillText(`TRK_${Math.floor(x)}`, x + 16, y)
+            }
+          } else {
+            ctx.strokeStyle = primaryColor
+            ctx.globalAlpha = opacity * 0.4
+            ctx.lineWidth = 0.5
+            drawPrimitive(x, y, primitiveType, 8)
+          }
         }
       }
 
-      time += 0.02
       animationFrame = requestAnimationFrame(draw)
     }
 
@@ -73,9 +106,14 @@ const ShapesBackground: React.FC<ShapesBackgroundProps> = ({
       window.removeEventListener('resize', resize)
       cancelAnimationFrame(animationFrame)
     }
-  }, [opacity, primaryColor, secondaryColor])
+  }, [opacity, primaryColor, accentColor])
 
-  return <canvas ref={canvasRef} className={`absolute inset-0 ${zIndex} pointer-events-none`} />
+  return (
+    <canvas
+      ref={canvasRef}
+      className={`absolute inset-0 ${zIndex} pointer-events-none`}
+    />
+  )
 }
 
 export default ShapesBackground

@@ -1,6 +1,6 @@
 // app/(frontend)/page.tsx (Home)
 import FeatureSection from '@/components/Section/Blocks/FeatureSection'
-import GridSection from '@/components/Section/Blocks/GridSection'
+import ListSection from '@/components/Section/Blocks/ListSection'
 import VideoSection from '@/components/Section/Blocks/VideoSection'
 import { Media } from '@/payload-types'
 import configPromise from '@payload-config'
@@ -76,6 +76,7 @@ const getHomeData = unstable_cache(
           id: true,
           name: true,
           slug: true,
+          createdAt: true,
           basics: { description: true, tagline: true, identifiers: { code: true } },
           assets: { thumbnail: true, cover: true },
         },
@@ -167,18 +168,23 @@ export default async function HomePage() {
     }
   })
 
-  const gridItems = seriesList.map((series) => {
-    let imageUrl: string | undefined = undefined
-    if (series.assets) {
-      if (series.assets.thumbnail) imageUrl = getMediaUrl(series.assets.thumbnail)
-      if (!imageUrl && series.assets.cover) imageUrl = getMediaUrl(series.assets.cover)
+  const listEntries = seriesList.map((series) => {
+    let timestamp = ''
+    if (series.createdAt) {
+      try {
+        timestamp = new Date(series.createdAt).toISOString().split('T')[0]
+      } catch {
+        timestamp = ''
+      }
     }
     return {
       id: String(series.id),
       title: series.name,
       subtitle: series.basics?.identifiers?.code || series.basics?.tagline || '',
-      image: imageUrl,
+      tag: series.basics?.identifiers?.code || 'SERIES',
       href: `/competition/series/${series.slug}`,
+      timestamp: timestamp,
+      status: 'ACTIVE',
     }
   })
 
@@ -236,19 +242,23 @@ export default async function HomePage() {
           }}
         />
       )}
-      {gridItems.length > 0 && (
-        <GridSection
+      {listEntries.length > 0 && (
+        <ListSection
           id="home-competition"
           title="Competition"
           subtitle="Active racing series"
-          items={gridItems}
+          entries={listEntries}
           labels={{
-            unitsCount: 'SERIES',
-            viewProject: 'VIEW',
-            sectionIndex: 'COMP',
-            fallbackAlt: 'Series',
+            statusPrefix: 'STATUS',
+            timePrefix: 'RELEASED',
+            indexPrefix: 'NO',
           }}
-          columns={4}
+          showStatus={true}
+          showTimestamp={true}
+          ctaLabel="VIEW ALL SERIES"
+          ctaPath="/competition/series"
+          headerVariant={1}
+          footerVariant={1}
         />
       )}
       {raceFeatures.length > 0 && (

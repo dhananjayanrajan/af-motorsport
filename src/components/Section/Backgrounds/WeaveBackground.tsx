@@ -1,18 +1,18 @@
 "use client"
-import React, { useRef, useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 
 interface WeaveBackgroundProps {
   zIndex?: string
   opacity?: number
   primaryColor?: string
-  secondaryColor?: string
+  accentColor?: string
 }
 
 const WeaveBackground: React.FC<WeaveBackgroundProps> = ({
   zIndex = 'z-0',
-  opacity = 0.45,
-  primaryColor = 'var(--primary)',
-  secondaryColor = 'var(--secondary)'
+  opacity = 0.08,
+  primaryColor = '#000000',
+  accentColor = '#C0392B'
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
@@ -23,48 +23,72 @@ const WeaveBackground: React.FC<WeaveBackgroundProps> = ({
     if (!ctx) return
 
     let animationFrame: number
-    let phase = 0
+    let lightShift = 0
 
     const resize = () => {
       const parent = canvas.parentElement
       if (!parent) return
-      canvas.width = parent.clientWidth
-      canvas.height = parent.clientHeight
+      const dpr = window.devicePixelRatio || 1
+      canvas.width = parent.clientWidth * dpr
+      canvas.height = parent.clientHeight * dpr
+      canvas.style.width = `${parent.clientWidth}px`
+      canvas.style.height = `${parent.clientHeight}px`
+      ctx.scale(dpr, dpr)
+    }
+
+    const drawFiber = (x: number, y: number, size: number, angle: number, intensity: number) => {
+      ctx.save()
+      ctx.translate(x, y)
+      ctx.rotate(angle)
+
+      const isAccent = intensity > 0.9
+      ctx.strokeStyle = isAccent ? accentColor : primaryColor
+      ctx.globalAlpha = intensity * opacity * 2
+      ctx.lineWidth = isAccent ? 1 : 0.5
+
+      // Composite strand lines
+      ctx.beginPath()
+      ctx.moveTo(-size, -size / 2); ctx.lineTo(size, -size / 2)
+      ctx.moveTo(-size, 0); ctx.lineTo(size, 0)
+      ctx.moveTo(-size, size / 2); ctx.lineTo(size, size / 2)
+      ctx.stroke()
+
+      ctx.restore()
     }
 
     const draw = () => {
-      if (!ctx || !canvas) return
-      const w = canvas.width
-      const h = canvas.height
+      const w = canvas.width / (window.devicePixelRatio || 1)
+      const h = canvas.height / (window.devicePixelRatio || 1)
       ctx.clearRect(0, 0, w, h)
 
-      const spacing = 48
-      const cols = Math.ceil(w / spacing) + 1
-      const rows = Math.ceil(h / spacing) + 1
+      const step = 16 // 8px * 2
+      lightShift += 0.015
 
-      for (let i = 0; i < rows; i++) {
-        for (let j = 0; j < cols; j++) {
-          const x = j * spacing + (phase % spacing) * 0.5
-          const y = i * spacing + (phase * 0.3) % spacing
-          const color = (i + j) % 2 === 0 ? primaryColor : secondaryColor
-          const alpha = (0.18 + Math.sin(i * 0.5 + j * 0.5 + phase * 0.1) * 0.1) * opacity
+      for (let x = 0; x < w + step; x += step) {
+        for (let y = 0; y < h + step; y += step) {
+          const isVertical = (Math.floor(x / step) + Math.floor(y / step)) % 2 === 0
 
-          ctx.beginPath()
-          ctx.moveTo(x - 14, y - 14)
-          ctx.lineTo(x + 14, y + 14)
-          ctx.lineWidth = 2
-          ctx.strokeStyle = color
-          ctx.globalAlpha = alpha
-          ctx.stroke()
+          // Simulation of light moving across a curved carbon surface
+          const noise = Math.sin(x * 0.01 + y * 0.01 + lightShift)
+          const intensity = 0.3 + (noise * 0.5 + 0.5) * 0.7
 
-          ctx.beginPath()
-          ctx.moveTo(x + 14, y - 14)
-          ctx.lineTo(x - 14, y + 14)
-          ctx.stroke()
+          drawFiber(
+            x,
+            y,
+            step / 2,
+            isVertical ? 0 : Math.PI / 2,
+            intensity
+          )
         }
       }
 
-      phase += 0.5
+      // Technical perimeter marks
+      ctx.globalAlpha = opacity * 0.5
+      ctx.fillStyle = primaryColor
+      ctx.font = '8px monospace'
+      ctx.fillText("COMPOSITE_LATTICE_V3", 16, 16)
+      ctx.fillRect(16, 20, 48, 1)
+
       animationFrame = requestAnimationFrame(draw)
     }
 
@@ -76,9 +100,14 @@ const WeaveBackground: React.FC<WeaveBackgroundProps> = ({
       window.removeEventListener('resize', resize)
       cancelAnimationFrame(animationFrame)
     }
-  }, [opacity, primaryColor, secondaryColor])
+  }, [opacity, primaryColor, accentColor])
 
-  return <canvas ref={canvasRef} className={`absolute inset-0 ${zIndex} pointer-events-none`} />
+  return (
+    <canvas
+      ref={canvasRef}
+      className={`absolute inset-0 ${zIndex} pointer-events-none`}
+    />
+  )
 }
 
 export default WeaveBackground

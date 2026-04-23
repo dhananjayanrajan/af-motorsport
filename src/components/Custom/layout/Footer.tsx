@@ -48,7 +48,7 @@ export const CustomFooter = ({ footer, socials, organizations = [], questions, a
             <div className="size-3 bg-black-pure rotate-45" />
           </div>
 
-          <div className="flex-1 grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5 divide-y-2 sm:divide-y-0 sm:divide-x-2 divide-black-pure">
+          <div className="flex-1 grid grid-cols-1 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-6 xl:grid-cols-6 divide-y-2 sm:divide-y-0 sm:divide-x-2 divide-black-pure">
             {columns?.filter(col => col.visible).map((column, idx) => (
               <div key={idx} className="p-8 flex flex-col gap-6 hover:bg-primary-50 transition-colors">
                 <span className="text-xs font-black text-black-pure tracking-widest border-l-4 border-secondary-500 pl-4 uppercase">

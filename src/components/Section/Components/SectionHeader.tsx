@@ -23,6 +23,7 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({
     if (variant === 2) {
         return (
             <header className="w-full border-2 border-black-pure flex flex-col md:flex-row items-stretch overflow-hidden transition-all duration-300 group">
+
                 <div className="p-6 sm:p-8 border-b md:border-b-0 md:border-r-2 border-black-pure bg-primary-500 flex-1 relative overflow-hidden">
                     <div className="absolute -top-8 -right-8 size-20 bg-black-pure rotate-45 group-hover:translate-x-4 group-hover:translate-y-4 transition-transform duration-500" />
                     <div className="relative z-10">

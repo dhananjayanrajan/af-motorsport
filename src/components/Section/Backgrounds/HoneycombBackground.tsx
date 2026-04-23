@@ -1,18 +1,18 @@
 "use client"
-import React, { useRef, useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 
 interface HoneycombBackgroundProps {
   zIndex?: string
   opacity?: number
   primaryColor?: string
-  secondaryColor?: string
+  accentColor?: string
 }
 
 const HoneycombBackground: React.FC<HoneycombBackgroundProps> = ({
   zIndex = 'z-0',
-  opacity = 0.5,
-  primaryColor = 'var(--primary)',
-  secondaryColor = 'var(--secondary)'
+  opacity = 0.08,
+  primaryColor = '#000000',
+  accentColor = '#C0392B'
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
@@ -23,56 +23,76 @@ const HoneycombBackground: React.FC<HoneycombBackgroundProps> = ({
     if (!ctx) return
 
     let animationFrame: number
-    let pulse = 0
+    let traceOffset = 0
 
     const resize = () => {
       const parent = canvas.parentElement
       if (!parent) return
-      canvas.width = parent.clientWidth
-      canvas.height = parent.clientHeight
+      const dpr = window.devicePixelRatio || 1
+      canvas.width = parent.clientWidth * dpr
+      canvas.height = parent.clientHeight * dpr
+      canvas.style.width = `${parent.clientWidth}px`
+      canvas.style.height = `${parent.clientHeight}px`
+      ctx.scale(dpr, dpr)
     }
 
-    const drawHexagon = (x: number, y: number, size: number, color: string, alpha: number) => {
-      if (!ctx) return
+    const drawHexagon = (x: number, y: number, size: number, weight: number) => {
       ctx.beginPath()
       for (let i = 0; i < 6; i++) {
-        const angle = i * Math.PI * 2 / 6
-        const xOff = Math.cos(angle) * size
-        const yOff = Math.sin(angle) * size
-        if (i === 0) ctx.moveTo(x + xOff, y + yOff)
-        else ctx.lineTo(x + xOff, y + yOff)
+        const angle = (i * Math.PI) / 3
+        const px = x + size * Math.cos(angle)
+        const py = y + size * Math.sin(angle)
+        if (i === 0) ctx.moveTo(px, py)
+        else ctx.lineTo(px, py)
       }
       ctx.closePath()
-      ctx.fillStyle = color
-      ctx.globalAlpha = alpha
-      ctx.fill()
+      ctx.lineWidth = weight
+      ctx.stroke()
     }
 
     const draw = () => {
-      if (!ctx || !canvas) return
-      const w = canvas.width
-      const h = canvas.height
+      const w = canvas.width / (window.devicePixelRatio || 1)
+      const h = canvas.height / (window.devicePixelRatio || 1)
       ctx.clearRect(0, 0, w, h)
 
-      const size = 30
+      const size = 48 // Multiples of 8
       const hexWidth = size * Math.sqrt(3)
       const hexHeight = size * 1.5
+
+      traceOffset += 0.8
+      if (traceOffset > hexWidth * 4) traceOffset = 0
+
       const cols = Math.ceil(w / hexWidth) + 1
       const rows = Math.ceil(h / hexHeight) + 1
 
       for (let i = 0; i < rows; i++) {
         for (let j = 0; j < cols; j++) {
-          const x = j * hexWidth + (i % 2) * (hexWidth / 2)
+          const x = j * hexWidth + (i % 2 === 0 ? 0 : hexWidth / 2)
           const y = i * hexHeight
-          const color = (i + j) % 2 === 0 ? primaryColor : secondaryColor
-          const wave = Math.sin(pulse * 1.5 + i * 0.3 + j * 0.4) * 0.5 + 0.5
-          const alpha = (0.15 + wave * 0.15) * opacity
 
-          drawHexagon(x, y, size, color, alpha)
+          // Primary Structure (0.5px subtle line)
+          ctx.strokeStyle = primaryColor
+          ctx.globalAlpha = opacity * 0.4
+          drawHexagon(x, y, size, 0.5)
+
+          // Active Trace Effect (Spatial Trigger)
+          const distToTrace = Math.abs((x + y) - traceOffset * 2)
+          if (distToTrace < 128) {
+            const intensity = 1 - distToTrace / 128
+            ctx.strokeStyle = accentColor
+            ctx.globalAlpha = intensity * opacity * 2
+            drawHexagon(x, y, size, 1)
+
+            // Corner Nodes
+            ctx.fillStyle = accentColor
+            for (let k = 0; k < 6; k++) {
+              const angle = (k * Math.PI) / 3
+              ctx.fillRect(x + size * Math.cos(angle) - 1, y + size * Math.sin(angle) - 1, 2, 2)
+            }
+          }
         }
       }
 
-      pulse += 0.015
       animationFrame = requestAnimationFrame(draw)
     }
 
@@ -84,9 +104,14 @@ const HoneycombBackground: React.FC<HoneycombBackgroundProps> = ({
       window.removeEventListener('resize', resize)
       cancelAnimationFrame(animationFrame)
     }
-  }, [opacity, primaryColor, secondaryColor])
+  }, [opacity, primaryColor, accentColor])
 
-  return <canvas ref={canvasRef} className={`absolute inset-0 ${zIndex} pointer-events-none`} />
+  return (
+    <canvas
+      ref={canvasRef}
+      className={`absolute inset-0 ${zIndex} pointer-events-none`}
+    />
+  )
 }
 
 export default HoneycombBackground

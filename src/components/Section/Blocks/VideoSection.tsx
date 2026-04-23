@@ -1,11 +1,10 @@
 "use client"
-import { Activity, AlertTriangle, List, Monitor, Pause, Play, VideoOff } from 'lucide-react'
-import React, { useRef, useState } from 'react'
+import { Activity, AlertTriangle, List, Monitor, Pause, Play, VideoOff, X } from 'lucide-react'
+import React, { useEffect, useRef, useState } from 'react'
 import BlueprintsBackground from '../Backgrounds/BlueprintsBackground'
 import SectionButton from '../Components/SectionButton'
 import SectionFooter from '../Components/SectionFooter'
 import SectionHeader from '../Components/SectionHeader'
-import SectionSidebar from '../Components/SectionSidebar'
 
 export interface VideoItem {
   id: string
@@ -56,8 +55,17 @@ const VideoSection: React.FC<VideoSectionProps> = ({
 }) => {
   const [activeVideo, setActiveVideo] = useState<VideoItem>(videos[0])
   const [isPlaying, setIsPlaying] = useState(autoplay)
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+  const [isPlaylistOpen, setIsPlaylistOpen] = useState(false)
   const videoRef = useRef<HTMLVideoElement>(null)
+
+  useEffect(() => {
+    if (isPlaylistOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = 'unset'
+    }
+    return () => { document.body.style.overflow = 'unset' }
+  }, [isPlaylistOpen])
 
   const hasVideoSource = activeVideo?.url && activeVideo.url.trim() !== ''
 
@@ -70,38 +78,17 @@ const VideoSection: React.FC<VideoSectionProps> = ({
   }
 
   const handleVideoEnd = () => {
-    setIsPlaying(false)
-    if (videoRef.current) videoRef.current.currentTime = 0
+    if (videoRef.current) {
+      videoRef.current.currentTime = 0
+      videoRef.current.play()
+    }
   }
 
   const handleVideoSelect = (video: VideoItem) => {
     setActiveVideo(video)
-    setIsPlaying(false)
-    setIsSidebarOpen(false)
+    setIsPlaying(true)
+    setIsPlaylistOpen(false)
   }
-
-  const playlistStats = [
-    {
-      label: "TOTAL TRACKS",
-      val: String(videos.length).padStart(2, '0'),
-      color: "bg-primary-500"
-    },
-    {
-      label: "CURRENT TRACK",
-      val: activeVideo?.title || "N/A",
-      color: "bg-secondary-500"
-    },
-    {
-      label: "CHANNEL",
-      val: labels.channelPrefix,
-      color: "bg-primary-500"
-    },
-    {
-      label: "STATUS",
-      val: hasVideoSource ? "ACTIVE" : "OFFLINE",
-      color: "bg-secondary-500"
-    }
-  ]
 
   return (
     <section id={id} className="relative w-full bg-white-pure border-t border-black-pure overflow-hidden">
@@ -114,35 +101,45 @@ const VideoSection: React.FC<VideoSectionProps> = ({
         metadata={String(videos.length).padStart(2, '0')}
       />
 
-      <div className="w-full flex flex-col lg:flex-row border-b border-black-pure bg-black-pure">
-        <div className="flex-grow relative flex flex-col bg-black-pure">
+      <div className="w-full relative bg-black-pure">
+        <div className="relative flex flex-col bg-black-pure min-h-[calc(100vh-200px)]">
           <div className="absolute top-4 left-6 z-20 flex items-center gap-3">
             <div className={`w-2 h-2 rounded-full animate-pulse ${hasVideoSource ? 'bg-primary-500' : 'bg-red-500'}`} />
             <span className="text-[10px] font-mono font-black text-white-pure uppercase tracking-[0.2em]">
-              {labels.liveFeed} // {activeVideo?.id}
+              {activeVideo?.id}
             </span>
           </div>
 
-          <div className="relative aspect-video w-full overflow-hidden flex items-center justify-center bg-zinc-900">
+          {showPlaylist && (
+            <button
+              onClick={() => setIsPlaylistOpen(true)}
+              className="absolute top-4 right-6 z-20 w-10 h-10 border border-white-pure/20 bg-black-pure/80 backdrop-blur-sm flex items-center justify-center hover:bg-primary-500 hover:border-primary-500 focus:bg-primary-500 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 active:scale-95 transition-all duration-300 group"
+            >
+              <List className="w-4 h-4 text-white-pure group-hover:text-black-pure group-focus:text-black-pure group-active:text-black-pure" />
+            </button>
+          )}
+
+          <div className="relative w-full overflow-hidden flex items-center justify-center bg-zinc-900" style={{ height: 'calc(100vh - 200px)' }}>
             {hasVideoSource ? (
               <>
                 <video
                   ref={videoRef}
                   src={activeVideo.url}
                   poster={activeVideo.poster}
-                  className="w-full h-full object-cover grayscale opacity-80"
+                  className="w-full h-full object-contain"
                   onEnded={handleVideoEnd}
                   autoPlay={autoplay}
                   controls={false}
                   playsInline
+                  loop={false}
                 />
                 {!isPlaying && (
                   <button
                     onClick={togglePlay}
-                    className="absolute inset-0 flex items-center justify-center group z-10"
+                    className="absolute inset-0 flex items-center justify-center group z-10 focus:outline-none focus:ring-4 focus:ring-primary-500 active:scale-95"
                   >
-                    <div className="w-20 h-20 border border-white-pure/20 flex items-center justify-center bg-black-pure/40 backdrop-blur-sm group-hover:bg-primary-500 transition-all duration-300">
-                      <Play className="w-8 h-8 text-white-pure fill-current" />
+                    <div className="w-20 h-20 border border-white-pure/20 flex items-center justify-center bg-black-pure/40 backdrop-blur-sm group-hover:bg-primary-500 group-focus:bg-primary-500 group-active:bg-primary-500 transition-all duration-300">
+                      <Play className="w-8 h-8 text-white-pure fill-current group-hover:text-black-pure group-focus:text-black-pure group-active:text-black-pure" />
                     </div>
                   </button>
                 )}
@@ -160,7 +157,7 @@ const VideoSection: React.FC<VideoSectionProps> = ({
                       {labels.statusLost || labels.liveFeed}
                     </p>
                     <p className="text-[8px] font-mono font-black text-white-pure/20 uppercase tracking-widest">
-                      {labels.errorCode || activeVideo?.id}
+                      {activeVideo?.id}
                     </p>
                   </div>
                 </div>
@@ -172,12 +169,12 @@ const VideoSection: React.FC<VideoSectionProps> = ({
             <button
               onClick={togglePlay}
               disabled={!hasVideoSource}
-              className={`w-16 h-16 border border-white-pure/20 flex items-center justify-center transition-all ${hasVideoSource ? 'hover:bg-primary-500 group cursor-pointer' : 'opacity-20 cursor-not-allowed'}`}
+              className={`w-16 h-16 border border-white-pure/20 flex items-center justify-center transition-all focus:outline-none focus:ring-4 focus:ring-primary-500 active:scale-95 ${hasVideoSource ? 'hover:bg-primary-500 focus:bg-primary-500 group cursor-pointer' : 'opacity-20 cursor-not-allowed'}`}
             >
               {isPlaying ? (
-                <Pause className="w-6 h-6 text-white-pure group-hover:text-black-pure" />
+                <Pause className="w-6 h-6 text-white-pure group-hover:text-black-pure group-focus:text-black-pure" />
               ) : (
-                <Play className="w-6 h-6 text-white-pure group-hover:text-black-pure ml-1" />
+                <Play className="w-6 h-6 text-white-pure group-hover:text-black-pure group-focus:text-black-pure ml-1" />
               )}
             </button>
 
@@ -201,61 +198,11 @@ const VideoSection: React.FC<VideoSectionProps> = ({
             <div className="hidden md:flex flex-col items-end shrink-0 opacity-40">
               <Activity className="w-8 h-8 text-white-pure mb-2" />
               <span className="text-[9px] font-mono font-black text-white-pure uppercase tracking-[0.3em]">
-                {labels.metaTransmission}_{activeVideo?.duration}
+                {activeVideo?.duration}
               </span>
             </div>
           </div>
         </div>
-
-        {showPlaylist && (
-          <div className="w-full lg:w-96 flex flex-col bg-white-pure lg:border-l border-black-pure max-h-[800px] overflow-hidden">
-            <div className="p-6 bg-slate-50 border-b border-black-pure flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <span className="text-[10px] font-mono font-black text-black-pure uppercase tracking-widest">
-                  {labels.channelPrefix} ({String(videos.length).padStart(2, '0')})
-                </span>
-              </div>
-              <SectionButton
-                label="OPEN PLAYLIST"
-                variant="outline"
-                size="sm"
-                icon={<List className="w-3 h-3" />}
-                onClick={() => setIsSidebarOpen(true)}
-              />
-            </div>
-
-            <div className="flex-grow overflow-y-auto">
-              {videos.map((video, idx) => {
-                const isActive = activeVideo?.id === video.id
-                return (
-                  <button
-                    key={video.id}
-                    onClick={() => { setActiveVideo(video); setIsPlaying(false); }}
-                    className={`w-full flex items-stretch border-b border-black-pure last:border-b-0 transition-all duration-150 group ${isActive ? 'bg-primary-500' : 'bg-white-pure hover:bg-slate-50'}`}
-                  >
-                    <div className={`w-16 flex items-center justify-center border-r border-black-pure shrink-0 transition-colors ${isActive ? 'bg-black-pure text-primary-500' : 'text-black-pure/20'}`}>
-                      <span className="text-xs font-mono font-black italic">
-                        {String(idx + 1).padStart(2, '0')}
-                      </span>
-                    </div>
-
-                    <div className="p-6 flex-grow flex flex-col text-left">
-                      <h4 className={`text-sm font-mono font-black uppercase tracking-tight leading-tight mb-2 ${isActive ? 'text-black-pure' : 'text-black-pure group-hover:text-primary-500'}`}>
-                        {video.title}
-                      </h4>
-                      <div className="flex items-center gap-4">
-                        <span className={`text-[9px] font-mono font-black uppercase tracking-widest ${isActive ? 'text-black-pure/60' : 'text-black-pure/30'}`}>
-                          {video.duration}
-                        </span>
-                        {isActive && <div className="h-px flex-grow bg-black-pure/40" />}
-                      </div>
-                    </div>
-                  </button>
-                )
-              })}
-            </div>
-          </div>
-        )}
       </div>
 
       {ctaLabel && ctaPath && (
@@ -266,24 +213,88 @@ const VideoSection: React.FC<VideoSectionProps> = ({
 
       <SectionFooter variant={footerVariant} />
 
-      <SectionSidebar
-        isOpen={isSidebarOpen}
-        onClose={() => setIsSidebarOpen(false)}
-        title="VIDEO PLAYLIST"
-        description={`${videos.length} tracks available on channel ${labels.channelPrefix}`}
-        imageUrl={videos[0]?.poster || ""}
-        idCode={labels.channelPrefix}
-        stats={playlistStats}
-        buttonLabel="BROWSE ALL VIDEOS"
-        onAction={() => {
-          if (videos[0]) {
-            setActiveVideo(videos[0])
-            setIsPlaying(false)
-            setIsSidebarOpen(false)
-          }
-        }}
-        infoLabel={labels.channelPrefix}
+      <div
+        className={`fixed inset-0 z-[110] bg-black-pure backdrop-blur-sm transition-opacity duration-300 ${isPlaylistOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
+          }`}
+        onClick={() => setIsPlaylistOpen(false)}
       />
+
+      <aside
+        className={`fixed top-0 right-0 z-[120] h-full w-full sm:w-[400px] md:w-[480px] bg-white-pure shadow-2xl border-l-2 border-black-pure transition-transform duration-500 ease-out transform ${isPlaylistOpen ? 'translate-x-0' : 'translate-x-full'
+          } flex flex-col`}
+      >
+        <div className="p-6 border-b-2 border-black-pure bg-slate-50 flex items-center justify-between shrink-0">
+          <div className="flex items-center gap-3">
+            <div className="w-1 h-6 bg-primary-500" />
+            <span className="text-[10px] font-mono font-black text-black-pure uppercase tracking-widest">
+              {labels.channelPrefix} ({String(videos.length).padStart(2, '0')})
+            </span>
+          </div>
+          <button
+            onClick={() => setIsPlaylistOpen(false)}
+            className="w-10 h-10 border-2 border-black-pure bg-white-pure flex items-center justify-center hover:bg-primary-500 focus:bg-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 active:scale-95 transition-all duration-300 group"
+          >
+            <X className="w-4 h-4 text-black-pure group-hover:text-black-pure group-focus:text-black-pure group-active:text-black-pure group-hover:rotate-90 group-focus:rotate-90 group-active:rotate-90 transition-transform duration-300" />
+          </button>
+        </div>
+
+        <div className="flex-1 overflow-y-auto">
+          {videos.map((video, idx) => {
+            const isActive = activeVideo?.id === video.id
+            return (
+              <button
+                key={video.id}
+                onClick={() => handleVideoSelect(video)}
+                className={`w-full flex items-stretch border-b border-black-pure last:border-b-0 transition-all duration-150 group focus:outline-none focus:ring-2 focus:ring-primary-500 ${isActive ? 'bg-primary-500' : 'bg-white-pure hover:bg-slate-50 focus:bg-slate-50 active:bg-slate-100'
+                  }`}
+              >
+                <div
+                  className={`w-20 flex items-center justify-center border-r border-black-pure shrink-0 transition-colors ${isActive ? 'bg-black-pure text-primary-500' : 'text-black-pure'
+                    }`}
+                >
+                  <span className="text-base font-mono font-black italic">
+                    {String(idx + 1).padStart(2, '0')}
+                  </span>
+                </div>
+
+                <div className="p-6 flex-grow flex flex-col text-left">
+                  <h4
+                    className={`text-sm font-mono font-black uppercase tracking-tight leading-tight mb-2 ${isActive ? 'text-black-pure' : 'text-black-pure'
+                      }`}
+                  >
+                    {video.title}
+                  </h4>
+                  <div className="flex items-center gap-4">
+                    <span
+                      className={`text-[9px] font-mono font-black uppercase tracking-widest ${isActive ? 'text-black-pure' : 'text-black-pure'
+                        }`}
+                    >
+                      {video.duration}
+                    </span>
+                    {isActive && <div className="h-px flex-grow bg-black-pure" />}
+                  </div>
+                </div>
+              </button>
+            )
+          })}
+        </div>
+
+        <div className="p-6 bg-white-pure border-t-2 border-black-pure shrink-0">
+          <SectionButton
+            label="CLOSE"
+            variant="primary"
+            size="lg"
+            fullWidth
+            onClick={() => setIsPlaylistOpen(false)}
+          />
+        </div>
+
+        <div className="h-1 w-full flex shrink-0">
+          <div className="flex-1 bg-primary-500" />
+          <div className="flex-1 bg-secondary-500" />
+          <div className="flex-1 bg-black-pure" />
+        </div>
+      </aside>
     </section>
   )
 }

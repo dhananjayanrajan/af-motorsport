@@ -1,6 +1,7 @@
 "use client"
+import { ArrowRight } from 'lucide-react'
 import Link from 'next/link'
-import React from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import SectionFooter from '../Components/SectionFooter'
 import SectionHeader from '../Components/SectionHeader'
 
@@ -46,6 +47,10 @@ const FeatureSection: React.FC<FeatureSectionProps> = ({
   headerVariant = 1,
   footerVariant = 1
 }) => {
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
+  const [visibleIndices, setVisibleIndices] = useState<Set<number>>(new Set())
+  const itemRefs = useRef<(HTMLDivElement | null)[]>([])
+
   const gridCols = {
     2: 'grid-cols-1 md:grid-cols-2',
     3: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3',
@@ -57,6 +62,28 @@ const FeatureSection: React.FC<FeatureSectionProps> = ({
     return `https://picsum.photos/id/${(index + 40) * 3}/800/600`
   }
 
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (obsEntries) => {
+        obsEntries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const index = Number(entry.target.getAttribute('data-index'))
+            setVisibleIndices(prev => new Set(prev).add(index))
+            observer.unobserve(entry.target)
+          }
+        })
+      },
+      { threshold: 0.1 }
+    )
+    itemRefs.current.forEach((ref, idx) => {
+      if (ref) {
+        ref.setAttribute('data-index', String(idx))
+        observer.observe(ref)
+      }
+    })
+    return () => observer.disconnect()
+  }, [features])
+
   return (
     <section id={id} className="relative w-full bg-white-pure border-t border-black-pure overflow-hidden">
       <SectionHeader
@@ -66,82 +93,97 @@ const FeatureSection: React.FC<FeatureSectionProps> = ({
         metadata={String(features.length).padStart(2, '0')}
       />
 
-      <div className={`grid ${gridCols[columns]} w-full border-b border-black-pure`}>
-        {features.map((feature, idx) => (
-          <div
-            key={feature.id}
-            className="group relative flex flex-col bg-white-pure border-r border-b border-black-pure last:border-r-0 md:[&:nth-child(2n)]:border-r-0 lg:[&:nth-child(2n)]:border-r-1 lg:[&:nth-child(3n)]:border-r-0 overflow-hidden"
-          >
-            <div className="p-8 flex flex-col h-full">
-              <div className="flex justify-between items-start mb-8">
-                <div className="flex flex-col">
-                  <span className="text-[10px] font-mono font-black text-black-pure/20 uppercase mb-1 tracking-widest">
-                    {labels.specIndex}
-                  </span>
-                  <span className="text-2xl font-mono font-black text-black-pure italic">
-                    {String(idx + 1).padStart(2, '0')}
-                  </span>
-                </div>
-
-                {feature.icon && (
-                  <div className="w-12 h-12 flex items-center justify-center border border-black-pure bg-white-pure group-hover:bg-primary-500 transition-colors duration-300">
-                    <div className="scale-110 group-hover:rotate-12 transition-transform duration-300">
-                      {feature.icon}
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {feature.image && (
-                <div className="relative w-full aspect-video overflow-hidden border border-black-pure mb-8 bg-black-pure">
+      <div className="w-full px-6 md:px-12 py-12 md:py-20">
+        <div className={`grid ${gridCols[columns]} gap-6`}>
+          {features.map((feature, idx) => (
+            <div
+              key={feature.id}
+              ref={el => { itemRefs.current[idx] = el }}
+              onMouseEnter={() => setHoveredIndex(idx)}
+              onMouseLeave={() => setHoveredIndex(null)}
+              className={`group transition-all duration-700 ease-out ${visibleIndices.has(idx) ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
+                }`}
+            >
+              <div className="relative h-full flex flex-col bg-white-pure border border-black-pure">
+                <div className="relative aspect-[4/3] overflow-hidden bg-black-pure border-b border-black-pure">
                   <img
                     src={getImageUrl(feature.image, idx)}
                     alt={feature.title}
-                    className="w-full h-full object-cover opacity-80 transition-all duration-700 group-hover:scale-105 group-hover:opacity-100"
+                    className="w-full h-full object-cover transition-all duration-500 group-hover:scale-105 grayscale group-hover:grayscale-0"
                   />
-                  <div className="absolute inset-0 border-[8px] border-black-pure/10 pointer-events-none" />
+                  <div className="absolute inset-0 bg-black-pure/0 group-hover:bg-black-pure/20 transition-all duration-300" />
+                  <div className="absolute top-3 left-3 bg-black-pure px-2 py-1 border border-primary-500">
+                    <span className="text-xs font-mono font-black text-primary-500">
+                      {String(idx + 1).padStart(2, '0')}
+                    </span>
+                  </div>
+                  <div className="absolute bottom-3 right-3 bg-white-pure px-2 py-1 border border-black-pure group-hover:bg-primary-500 transition-colors duration-300">
+                    <span className="text-[8px] font-mono font-black text-black-pure uppercase tracking-wider group-hover:text-black-pure">
+                      {labels.specIndex}
+                    </span>
+                  </div>
                 </div>
-              )}
 
-              <h3 className="text-2xl font-mono font-black uppercase tracking-tighter text-black-pure leading-none mb-4 group-hover:text-primary-500 transition-colors">
-                {feature.title}
-              </h3>
-
-              <p className="text-[11px] font-mono font-black uppercase text-black-pure/50 leading-relaxed mb-8 flex-grow">
-                {feature.description}
-              </p>
-
-              {feature.stats && feature.stats.length > 0 && (
-                <div className="mt-auto grid grid-cols-2 gap-px bg-black-pure border border-black-pure">
-                  {feature.stats.map((stat, statIdx) => (
-                    <div key={statIdx} className="bg-white-pure p-4 group-hover:bg-slate-50 transition-colors">
-                      <p className="text-[9px] font-mono font-black text-black-pure/30 uppercase tracking-[0.2em] mb-1">
-                        {stat.label}
-                      </p>
-                      <p className="text-sm font-mono font-black text-black-pure uppercase tabular-nums">
-                        {stat.value}
-                      </p>
+                <div className="p-5 flex flex-col flex-grow">
+                  {feature.icon && (
+                    <div className="mb-4">
+                      <div className="inline-flex w-10 h-10 bg-black-pure border border-black-pure items-center justify-center">
+                        <div className="text-primary-500 group-hover:scale-110 transition-transform duration-300">
+                          {feature.icon}
+                        </div>
+                      </div>
                     </div>
-                  ))}
-                </div>
-              )}
-            </div>
+                  )}
 
-            <div className="absolute bottom-0 left-0 h-1 w-0 bg-primary-500 group-hover:w-full transition-all duration-500 ease-out" />
-          </div>
-        ))}
+                  <h3 className="text-xl font-mono font-black uppercase tracking-tighter leading-tight mb-2">
+                    {feature.title}
+                  </h3>
+
+                  <div className="w-12 h-0.5 bg-primary-500 mb-4 group-hover:w-20 transition-all duration-300" />
+
+                  <p className="text-xs font-mono font-bold text-black-pure/70 leading-relaxed mb-6 line-clamp-3">
+                    {feature.description}
+                  </p>
+
+                  {feature.stats && feature.stats.length > 0 && (
+                    <div className="grid grid-cols-2 gap-2 mb-6">
+                      {feature.stats.map((stat, statIdx) => (
+                        <div key={statIdx} className="bg-black-pure p-2">
+                          <p className="text-[8px] font-mono font-black text-primary-500 uppercase tracking-wider mb-0.5">
+                            {stat.label}
+                          </p>
+                          <p className="text-xs font-mono font-black text-white-pure uppercase truncate">
+                            {stat.value}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  <div className="mt-auto pt-4 border-t border-black-pure">
+                    <Link
+                      href={ctaPath ? `${ctaPath}/${feature.id}` : `/${feature.id}`}
+                      className="group/link inline-flex items-center justify-between w-full py-2.5 px-3 bg-black-pure text-white-pure font-mono font-black text-[10px] uppercase tracking-wider transition-all duration-300 hover:bg-primary-500 hover:text-black-pure active:scale-95"
+                    >
+                      <span>{labels.ctaLabel}</span>
+                      <ArrowRight className="w-3.5 h-3.5 transition-all duration-300 group-hover/link:translate-x-1" />
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
 
       {ctaPath && labels.ctaLabel && (
-        <div className="flex items-center justify-center p-16 bg-white-pure">
+        <div className="px-6 md:px-12 pb-12 md:pb-20 flex justify-center">
           <Link
             href={ctaPath}
-            className="group flex items-center gap-8 px-12 py-6 border border-black-pure bg-black-pure text-white-pure hover:bg-primary-500 hover:text-black-pure transition-all duration-300"
+            className="inline-flex items-center gap-3 px-12 py-4 bg-black-pure text-white-pure font-mono font-black text-sm uppercase tracking-wider transition-all duration-300 border border-black-pure hover:bg-primary-500 hover:text-black-pure focus:bg-primary-500 focus:text-black-pure focus:outline-none focus:ring-1 focus:ring-primary-500 active:scale-95"
           >
-            <span className="text-xs font-mono font-black uppercase tracking-[0.4em]">
-              {labels.ctaLabel}
-            </span>
-            <div className="w-12 h-px bg-white-pure/20 group-hover:bg-black-pure group-hover:w-16 transition-all duration-300" />
+            <span>{labels.ctaLabel}</span>
+            <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
       )}

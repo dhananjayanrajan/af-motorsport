@@ -3,9 +3,9 @@
 import { CheckoutPage } from '@/components/checkout/CheckoutPage'
 import SectionFooter from '@/components/Section/Components/SectionFooter'
 import SectionHeader from '@/components/Section/Components/SectionHeader'
-import { Fragment } from 'react'
+import { Fragment, Suspense } from 'react'
 
-export default function Checkout() {
+function CheckoutContent() {
   return (
     <main className="min-h-screen bg-white-pure flex flex-col">
       <SectionHeader title="Checkout" subtitle="Finalize" variant={1} />
@@ -43,5 +43,13 @@ export default function Checkout() {
 
       <SectionFooter variant={3} />
     </main>
+  )
+}
+
+export default function Checkout() {
+  return (
+    <Suspense fallback={null}>
+      <CheckoutContent />
+    </Suspense>
   )
 }

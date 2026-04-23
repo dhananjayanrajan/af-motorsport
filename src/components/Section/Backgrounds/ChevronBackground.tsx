@@ -1,18 +1,16 @@
 "use client"
-import React, { useRef, useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 
 interface ChevronBackgroundProps {
   zIndex?: string
   opacity?: number
   primaryColor?: string
-  secondaryColor?: string
 }
 
 const ChevronBackground: React.FC<ChevronBackgroundProps> = ({
   zIndex = 'z-0',
-  opacity = 0.5,
-  primaryColor = 'var(--primary)',
-  secondaryColor = 'var(--secondary)'
+  opacity = 0.08,
+  primaryColor = '#00FF41'
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
@@ -22,50 +20,56 @@ const ChevronBackground: React.FC<ChevronBackgroundProps> = ({
     const ctx = canvas.getContext('2d')
     if (!ctx) return
 
-    let animationFrame: number
     let offset = 0
+    let animationFrame: number
 
     const resize = () => {
       const parent = canvas.parentElement
       if (!parent) return
-      canvas.width = parent.clientWidth
-      canvas.height = parent.clientHeight
-    }
-
-    const drawChevron = (x: number, y: number, size: number, color: string, alpha: number) => {
-      if (!ctx) return
-      ctx.beginPath()
-      ctx.moveTo(x - size, y - size * 0.6)
-      ctx.lineTo(x, y)
-      ctx.lineTo(x + size, y - size * 0.6)
-      ctx.lineWidth = 2
-      ctx.strokeStyle = color
-      ctx.globalAlpha = alpha
-      ctx.stroke()
+      const dpr = window.devicePixelRatio || 1
+      canvas.width = parent.clientWidth * dpr
+      canvas.height = parent.clientHeight * dpr
+      ctx.scale(dpr, dpr)
     }
 
     const draw = () => {
-      if (!ctx || !canvas) return
-      const w = canvas.width
-      const h = canvas.height
+      const w = canvas.width / (window.devicePixelRatio || 1)
+      const h = canvas.height / (window.devicePixelRatio || 1)
       ctx.clearRect(0, 0, w, h)
 
-      const spacing = 72
-      const cols = Math.ceil(w / spacing) + 2
-      const rows = Math.ceil(h / spacing) + 2
+      const rowHeight = 32 // 8px * 4
+      const chevronWidth = 48 // 8px * 6
+      const spacing = 128 // 8px * 16
 
-      for (let i = 0; i < rows; i++) {
-        for (let j = 0; j < cols; j++) {
-          const x = j * spacing + (offset % spacing)
-          const y = i * spacing
-          const color = (i + j) % 2 === 0 ? primaryColor : secondaryColor
-          const alpha = (0.2 + Math.sin(i * 0.5 + j * 0.4 + offset * 0.05) * 0.12) * opacity
+      offset += 2
+      if (offset > spacing) offset = 0
 
-          drawChevron(x, y, 18, color, alpha)
+      ctx.strokeStyle = primaryColor
+      ctx.lineWidth = 1
+
+      for (let y = 0; y < h + rowHeight; y += rowHeight) {
+        const isAlternate = (y / rowHeight) % 2 === 0
+        const rowOffset = isAlternate ? offset : -offset
+
+        ctx.globalAlpha = isAlternate ? opacity : opacity * 0.5
+
+        for (let x = -spacing; x < w + spacing; x += spacing) {
+          const currentX = x + rowOffset
+
+          ctx.beginPath()
+          ctx.moveTo(currentX, y)
+          ctx.lineTo(currentX + (chevronWidth / 2), y + (rowHeight / 2))
+          ctx.lineTo(currentX, y + rowHeight)
+
+          // Technical Ticks on the chevron
+          ctx.moveTo(currentX + 8, y + 4)
+          ctx.lineTo(currentX + (chevronWidth / 2) + 8, y + (rowHeight / 2))
+          ctx.lineTo(currentX + 8, y + rowHeight - 4)
+
+          ctx.stroke()
         }
       }
 
-      offset += 0.9
       animationFrame = requestAnimationFrame(draw)
     }
 
@@ -77,7 +81,7 @@ const ChevronBackground: React.FC<ChevronBackgroundProps> = ({
       window.removeEventListener('resize', resize)
       cancelAnimationFrame(animationFrame)
     }
-  }, [opacity, primaryColor, secondaryColor])
+  }, [opacity, primaryColor])
 
   return <canvas ref={canvasRef} className={`absolute inset-0 ${zIndex} pointer-events-none`} />
 }

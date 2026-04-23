@@ -3,8 +3,9 @@
 import { ConfirmOrder } from '@/components/checkout/ConfirmOrder'
 import SectionFooter from '@/components/Section/Components/SectionFooter'
 import SectionHeader from '@/components/Section/Components/SectionHeader'
+import { Suspense } from 'react'
 
-export default function ConfirmOrderPage() {
+function ConfirmOrderContent() {
   return (
     <main className="min-h-screen bg-white-pure flex flex-col">
       <SectionHeader title="Verification" subtitle="In progress" variant={3} />
@@ -35,5 +36,13 @@ export default function ConfirmOrderPage() {
 
       <SectionFooter variant={3} />
     </main>
+  )
+}
+
+export default function ConfirmOrderPage() {
+  return (
+    <Suspense fallback={null}>
+      <ConfirmOrderContent />
+    </Suspense>
   )
 }
