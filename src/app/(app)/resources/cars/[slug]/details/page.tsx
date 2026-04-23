@@ -1,135 +1,162 @@
-import DirectoryList from '@/components/Section/DirectoryList'
-import DocumentGrid from '@/components/Section/DocumentGrid'
-import ExpandableList from '@/components/Section/ExpandableList'
-import HeroMedia from '@/components/Section/HeroMedia'
-import StatsGrid from '@/components/Section/StatsGrid'
-import { Car, Media, Organization } from '@/payload-types'
+// app/(frontend)/resources/cars/[slug]/details/page.tsx
+import GridSection from '@/components/Section/Blocks/GridSection'
+import HeroSection from '@/components/Section/Blocks/HeroSection'
+import ListSection from '@/components/Section/Blocks/ListSection'
+import { Media, Organization } from '@/payload-types'
 import configPromise from '@payload-config'
+import { unstable_cache } from 'next/cache'
 import { notFound } from 'next/navigation'
 import { getPayload } from 'payload'
 
-interface PageProps {
-    params: Promise<{
-        slug: string
-    }>
+function getMediaUrl(media: number | Media | null | undefined): string | undefined {
+    if (!media) return undefined
+    if (typeof media === 'object' && 'url' in media && media.url) return media.url
+    return undefined
 }
 
-async function getCar(slug: string): Promise<Car | null> {
-    const payload = await getPayload({ config: configPromise })
-    const { docs } = await payload.find({
-        collection: 'cars',
-        where: {
-            slug: {
-                equals: slug,
-            },
-        },
-        depth: 2,
-    })
-    return docs[0] || null
-}
+const getCarDetailsData = unstable_cache(
+    async (slug: string) => {
+        const payload = await getPayload({ config: configPromise })
+        const result = await payload.find({
+            collection: 'cars',
+            where: { slug: { equals: slug } },
+            limit: 1,
+        })
+        return result.docs[0] || null
+    },
+    ['car-details'],
+    { revalidate: 3600, tags: ['car-details'] }
+)
 
-export default async function CarDetailsPage({ params }: PageProps) {
+export default async function CarDetailsPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params
-    const car = await getCar(slug)
+    const car = await getCarDetailsData(slug)
 
-    if (!car) {
-        return notFound()
+    if (!car) notFound()
+
+    const heroBackgroundImage = car.assets?.cover
+        ? getMediaUrl(car.assets.cover)
+        : car.seo?.image
+            ? getMediaUrl(car.seo.image)
+            : undefined
+
+    const manufacturerEntries: any[] = []
+    if (car.details?.manufacturers) {
+        car.details.manufacturers.forEach((manufacturerRef) => {
+            const manufacturer = manufacturerRef as Organization
+            if (manufacturer && typeof manufacturer === 'object' && 'name' in manufacturer) {
+                manufacturerEntries.push({
+                    id: String(manufacturer.id),
+                    title: manufacturer.name,
+                    subtitle: manufacturer.basics?.type || manufacturer.basics?.industry || undefined,
+                    href: `/organizations/${manufacturer.slug}`,
+                })
+            }
+        })
     }
 
-    const coverImage = car.assets?.cover && typeof car.assets.cover === 'object'
-        ? car.assets.cover as Media
-        : null
-
-    const manufacturerItems = car.details?.manufacturers?.filter((m): m is Organization =>
-        typeof m === 'object' && m !== null && 'name' in m
-    ).map(man => ({
-        id: man.id.toString(),
-        title: man.name,
-        subtitle: man.basics?.tagline || man.basics?.type || undefined,
-        tag: 'MANUFACTURER',
-        href: `/teams/${man.slug}`,
-        timestamp: man.details?.founded?.split('-')[0] || 'TBD',
-        status: man.basics?.industry?.split(' ')[0] || 'Automotive'
-    })) || []
-
-    const classificationPanels = car.details?.classifications?.list?.map(classif => ({
-        id: classif.id || `${car.id}-class-${classif.name}`,
-        title: classif.name || 'Classification',
-        label: classif.criteria?.toUpperCase() || 'STANDARD',
-        summary: classif.definition || 'Vehicle classification',
-        content: classif.description || 'No additional details',
-        metadata: [
-            { label: 'CRITERIA', value: classif.criteria || 'TBD' },
-            { label: 'STANDARD', value: classif.definition || 'Industry standard' },
-        ]
-    })) || []
-
-    const specStats = car.details?.specifications?.list?.map(spec => ({
-        label: spec.parameter?.toUpperCase() || 'Specification',
-        value: spec.value || 'TBD',
-        unit: '',
-        description: spec.description || 'Technical parameter'
-    })) || []
-
-    if (specStats.length === 0) {
-        specStats.push(
-            { label: 'POWER', value: 'TBD', unit: 'HP', description: 'Engine output' },
-            { label: 'WEIGHT', value: 'TBD', unit: 'KG', description: 'Vehicle mass' },
-            { label: 'TOP SPEED', value: 'TBD', unit: 'KM/H', description: 'Maximum velocity' },
-        )
+    const classificationEntries: any[] = []
+    if (car.details?.classifications?.list) {
+        car.details.classifications.list.forEach((classification) => {
+            if (classification.name) {
+                classificationEntries.push({
+                    id: classification.id || String(Math.random()),
+                    title: classification.name,
+                    subtitle: classification.description || classification.criteria || classification.definition || undefined,
+                })
+            }
+        })
     }
 
-    const documents = car.assets?.documents?.filter((doc): doc is Media =>
-        typeof doc === 'object' && doc !== null && 'url' in doc
-    ).map(doc => ({
-        id: doc.id,
-        title: doc.filename || 'Document',
-        file: doc,
-        category: 'Car Document',
-        version: '1.0'
-    })) || []
+    const specItems: any[] = []
+    if (car.details?.specifications?.list) {
+        car.details.specifications.list.forEach((spec) => {
+            if (spec.parameter) {
+                specItems.push({
+                    id: spec.id || String(Math.random()),
+                    title: spec.parameter,
+                    subtitle: spec.value || spec.description || undefined,
+                })
+            }
+        })
+    }
+
+    const documentItems: any[] = []
+    if (car.assets?.documents) {
+        car.assets.documents.forEach((doc, idx) => {
+            const media = typeof doc === 'object' ? doc : null
+            const url = media ? getMediaUrl(media) : undefined
+            if (url && media) {
+                documentItems.push({
+                    id: String(media.id),
+                    title: media.alt || media.filename || `Document ${idx + 1}`,
+                    subtitle: media.mimeType || undefined,
+                    image: url,
+                    href: url,
+                })
+            }
+        })
+    }
 
     return (
         <main className="w-full">
-            <HeroMedia
-                id={car.basics?.identifiers?.chassis || car.basics?.identifiers?.model || `CAR-${car.id}`}
+            <HeroSection
+                id="car-details-cover"
                 title={car.name}
-                meta={car.basics?.tagline || 'Technical Specifications'}
-                image={coverImage}
-                tags={[
-                    car.details?.status || 'Car',
-                    'Technical Details'
-                ]}
+                subtitle={car.basics?.tagline || 'Car Specifications'}
+                description={car.basics?.description || undefined}
+                backgroundImage={heroBackgroundImage}
+                alignment="center"
+                badge={car.basics?.identifiers?.chassis || car.details?.status || undefined}
             />
-
-            {manufacturerItems.length > 0 && (
-                <DirectoryList
-                    id="CAR_MANUFACTURERS"
+            {manufacturerEntries.length > 0 && (
+                <ListSection
+                    id="car-manufacturers"
                     title="Manufacturers"
-                    items={manufacturerItems}
+                    subtitle="Builders and constructors"
+                    entries={manufacturerEntries}
+                    variant="detailed"
+                    showStatus={false}
+                    showTimestamp={false}
+                    headerVariant={1}
+                    footerVariant={1}
                 />
             )}
-
-            {classificationPanels.length > 0 && (
-                <ExpandableList
-                    id="CAR_CLASSIFICATIONS"
+            {classificationEntries.length > 0 && (
+                <ListSection
+                    id="car-classifications"
                     title="Classifications"
-                    panels={classificationPanels}
+                    subtitle="Vehicle categories"
+                    entries={classificationEntries}
+                    variant="detailed"
+                    showStatus={false}
+                    showTimestamp={false}
+                    headerVariant={2}
+                    footerVariant={1}
                 />
             )}
-
-            <StatsGrid
-                id="CAR_SPECS_STATS"
-                title="Technical Specifications"
-                items={specStats}
-                columns={3}
-            />
-
-            {documents.length > 0 && (
-                <DocumentGrid
-                    id="CAR_DOCS"
-                    title="Vehicle Documents"
-                    documents={documents}
+            {specItems.length > 0 && (
+                <GridSection
+                    id="car-specifications"
+                    title="Specifications"
+                    subtitle="Technical details"
+                    items={specItems}
+                    columns={3}
+                    cardVariant={1}
+                    headerVariant={3}
+                    footerVariant={2}
+                />
+            )}
+            {documentItems.length > 0 && (
+                <GridSection
+                    id="car-documents"
+                    title="Documents"
+                    subtitle="Technical documentation"
+                    items={documentItems}
+                    columns={3}
+                    cardVariant={1}
+                    headerVariant={1}
+                    footerVariant={1}
                 />
             )}
         </main>

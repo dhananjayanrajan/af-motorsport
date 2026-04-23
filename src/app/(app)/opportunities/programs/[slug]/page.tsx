@@ -1,153 +1,196 @@
-import DirectoryGrid from '@/components/Section/DirectoryGrid'
-import GalleryGrid from '@/components/Section/GalleryGrid'
-import HeroMedia from '@/components/Section/HeroMedia'
-import InfoGrid from '@/components/Section/InfoGrid'
-import { Media, Organization, Program } from '@/payload-types'
+// app/(frontend)/opportunities/programs/[slug]/page.tsx
+import CarouselSection from '@/components/Section/Blocks/CarouselSection'
+import HeroSection from '@/components/Section/Blocks/HeroSection'
+import MasonrySection from '@/components/Section/Blocks/MasonrySection'
+import StudySection from '@/components/Section/Blocks/StudySection'
+import { Media, Organization } from '@/payload-types'
 import configPromise from '@payload-config'
-import Link from 'next/link'
+import { unstable_cache } from 'next/cache'
 import { notFound } from 'next/navigation'
 import { getPayload } from 'payload'
 
-interface PageProps {
-    params: Promise<{
-        slug: string
-    }>
+function getMediaUrl(media: number | Media | null | undefined): string | undefined {
+    if (!media) return undefined
+    if (typeof media === 'object' && 'url' in media && media.url) return media.url
+    return undefined
 }
 
-async function getProgram(slug: string): Promise<Program | null> {
-    const payload = await getPayload({ config: configPromise })
-    const { docs } = await payload.find({
-        collection: 'programs',
-        where: {
-            slug: {
-                equals: slug,
+const getProgramData = unstable_cache(
+    async (slug: string) => {
+        const payload = await getPayload({ config: configPromise })
+        const result = await payload.find({
+            collection: 'programs',
+            where: { slug: { equals: slug } },
+            limit: 1,
+        })
+        return result.docs[0] || null
+    },
+    ['program-detail'],
+    { revalidate: 3600, tags: ['program'] }
+)
+
+const getOrganizations = unstable_cache(
+    async () => {
+        const payload = await getPayload({ config: configPromise })
+        const result = await payload.find({
+            collection: 'organizations',
+            limit: 20,
+            select: {
+                id: true,
+                name: true,
+                slug: true,
+                basics: true,
+                assets: true,
             },
-        },
-        depth: 2,
-    })
-    return docs[0] || null
-}
+        })
+        return result.docs as Organization[]
+    },
+    ['organizations-program'],
+    { revalidate: 3600 }
+)
 
-export default async function ProgramPage({ params }: PageProps) {
+export default async function ProgramPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params
-    const program = await getProgram(slug)
+    const program = await getProgramData(slug)
 
-    if (!program) {
-        return notFound()
-    }
+    if (!program) notFound()
 
-    const heroImage = program.assets?.cover && typeof program.assets.cover === 'object'
-        ? program.assets.cover as Media
-        : null
+    const organizations = await getOrganizations()
 
-    const infoBlocks = [
-        {
-            id: 'overview',
-            label: 'PROGRAM',
-            title: program.name,
-            description: program.basics?.description || program.details?.objective || undefined,
-            metadata: [
-                { key: 'TYPE', value: program.details?.type?.toUpperCase() || 'DEVELOPMENT' },
-                { key: 'STATUS', value: program.details?.status?.toUpperCase() || 'ACTIVE' },
-                { key: 'DURATION', value: program.details?.duration?.toUpperCase() || 'TBD' },
-            ]
-        },
-        {
-            id: 'timeline',
-            label: 'SCHEDULE',
-            title: program.details?.start_date ? 'ENROLLMENT OPEN' : 'DATES TBD',
-            description: 'Program timeframe',
-            metadata: [
-                { key: 'START DATE', value: program.details?.start_date?.split('T')[0] || 'TBD' },
-                { key: 'END DATE', value: program.details?.end_date?.split('T')[0] || 'TBD' },
-            ]
-        },
+    const heroActions = [
+        { label: 'View Details', href: `/opportunities/programs/${program.slug}/details`, variant: 'primary' as const },
     ]
 
-    const partnerItems = program.details?.partners?.filter((p): p is Organization =>
-        typeof p === 'object' && p !== null && 'name' in p
-    ).map(partner => ({
-        id: partner.id.toString(),
-        title: partner.name,
-        subtitle: partner.basics?.tagline || partner.basics?.type || undefined,
-        label: 'PARTNER',
-        image: partner.assets?.logo && typeof partner.assets.logo === 'object' ? partner.assets.logo as Media : null,
-        href: `/teams/${partner.slug}`,
-        metadata: [
-            { label: 'TYPE', value: partner.basics?.type || 'Organization' },
-        ]
-    })) || []
+    const heroBackgroundImage = program.assets?.cover
+        ? getMediaUrl(program.assets.cover)
+        : program.seo?.image
+            ? getMediaUrl(program.seo.image)
+            : undefined
 
-    const sponsorItems = program.details?.sponsors?.filter((s): s is Organization =>
-        typeof s === 'object' && s !== null && 'name' in s
-    ).map(sponsor => ({
-        id: sponsor.id.toString(),
-        title: sponsor.name,
-        subtitle: sponsor.basics?.tagline || undefined,
-        label: 'SPONSOR',
-        image: sponsor.assets?.logo && typeof sponsor.assets.logo === 'object' ? sponsor.assets.logo as Media : null,
-        href: `/teams/${sponsor.slug}`,
-        metadata: [
-            { label: 'INDUSTRY', value: sponsor.basics?.industry || 'TBD' },
-        ]
-    })) || []
+    const studyImage = program.assets?.cover
+        ? getMediaUrl(program.assets.cover)
+        : program.assets?.thumbnail
+            ? getMediaUrl(program.assets.thumbnail)
+            : undefined
 
-    const allPartnerItems = [...partnerItems, ...sponsorItems]
+    const study = {
+        id: String(program.id),
+        title: program.name,
+        description: program.basics?.description || program.details?.objective || '',
+        image: studyImage || `https://picsum.photos/seed/${program.slug}/800/600`,
+        metrics: [
+            { label: 'Status', value: program.details?.status || 'N/A' },
+            { label: 'Type', value: program.details?.type || 'N/A' },
+            { label: 'Duration', value: program.details?.duration || 'N/A' },
+            { label: 'Start', value: program.details?.start_date ? new Date(program.details.start_date).toLocaleDateString() : 'TBD' },
+        ],
+    }
 
-    const galleryItems = program.assets?.gallery?.filter((item): item is Media =>
-        typeof item === 'object' && item !== null && 'url' in item
-    ).map(item => ({
-        id: item.id.toString(),
-        image: item,
-        title: item.filename || 'Gallery Image',
-        category: program.details?.type?.toUpperCase() || 'PROGRAM'
-    })) || []
+    const organizationSlides: any[] = []
+
+    if (program.details?.partners) {
+        program.details.partners.forEach((partnerRef) => {
+            const partner = partnerRef as Organization
+            if (partner && typeof partner === 'object' && 'name' in partner) {
+                const imageUrl = partner.assets?.logo
+                    ? getMediaUrl(partner.assets.logo)
+                    : partner.assets?.alt_logo
+                        ? getMediaUrl(partner.assets.alt_logo)
+                        : `https://picsum.photos/seed/${partner.slug}/400/300`
+
+                organizationSlides.push({
+                    id: String(partner.id),
+                    title: partner.name,
+                    description: partner.basics?.tagline || 'Partner',
+                    image: imageUrl,
+                    ctaLabel: 'View',
+                    ctaHref: `/organizations/${partner.slug}`,
+                })
+            }
+        })
+    }
+
+    if (program.details?.sponsors) {
+        program.details.sponsors.forEach((sponsorRef) => {
+            const sponsor = sponsorRef as Organization
+            if (sponsor && typeof sponsor === 'object' && 'name' in sponsor) {
+                const imageUrl = sponsor.assets?.logo
+                    ? getMediaUrl(sponsor.assets.logo)
+                    : sponsor.assets?.alt_logo
+                        ? getMediaUrl(sponsor.assets.alt_logo)
+                        : `https://picsum.photos/seed/${sponsor.slug}/400/300`
+
+                organizationSlides.push({
+                    id: String(sponsor.id),
+                    title: sponsor.name,
+                    description: sponsor.basics?.tagline || 'Sponsor',
+                    image: imageUrl,
+                    ctaLabel: 'View',
+                    ctaHref: `/organizations/${sponsor.slug}`,
+                })
+            }
+        })
+    }
+
+    const galleryItems: any[] = []
+    if (program.assets?.gallery) {
+        program.assets.gallery.forEach((item, idx) => {
+            const media = typeof item === 'object' ? item : null
+            const url = media ? getMediaUrl(media) : undefined
+            if (url && media) {
+                galleryItems.push({
+                    id: String(media.id),
+                    title: media.alt || program.name,
+                    image: url,
+                    height: idx % 3 === 0 ? 'tall' as const : idx % 2 === 0 ? 'medium' as const : 'short' as const,
+                })
+            }
+        })
+    }
 
     return (
         <main className="w-full">
-            <HeroMedia
-                id={program.basics?.identifiers?.code || `PRG-${program.id}`}
+            <HeroSection
+                id="program-hero"
                 title={program.name}
-                meta={program.basics?.tagline || program.details?.objective || 'Development Program'}
-                image={heroImage}
-                tags={[
-                    program.details?.type || 'Program',
-                    program.details?.status || 'Active'
-                ]}
+                subtitle={program.basics?.tagline || ''}
+                description={program.basics?.description || undefined}
+                backgroundImage={heroBackgroundImage}
+                actions={heroActions}
+                alignment="center"
+                badge={program.basics?.identifiers?.code || program.details?.type || undefined}
             />
-
-            <InfoGrid
-                id="PRG_SPECS"
-                title="Program Specifications"
-                blocks={infoBlocks}
-                columns={2}
+            <StudySection
+                id="program-details"
+                title="Program Overview"
+                subtitle="Key information"
+                studies={[study]}
+                variant="featured"
+                headerVariant={1}
+                footerVariant={1}
             />
-
-            {allPartnerItems.length > 0 && (
-                <DirectoryGrid
-                    id="PRG_PARTNERS"
+            {organizationSlides.length > 0 && (
+                <CarouselSection
+                    id="program-partners-sponsors"
                     title="Partners & Sponsors"
-                    items={allPartnerItems}
-                    variant="square"
+                    subtitle="Organizations supporting this program"
+                    slides={organizationSlides}
+                    variant="card"
+                    headerVariant={2}
+                    footerVariant={1}
                 />
             )}
-
             {galleryItems.length > 0 && (
-                <GalleryGrid
-                    id="PRG_GALLERY"
-                    title="Program Gallery"
+                <MasonrySection
+                    id="program-gallery"
+                    title="Gallery"
+                    subtitle="Program imagery"
                     items={galleryItems}
+                    columns={3}
+                    headerVariant={3}
+                    footerVariant={2}
                 />
             )}
-
-            <section className="w-full py-20 flex justify-center border-b border-black-pure">
-                <Link
-                    href={`/opportunities/programs/${slug}/details`}
-                    className="px-12 py-6 bg-black-pure text-white-pure font-mono text-sm font-bold uppercase tracking-widest hover:bg-primary-500 hover:text-black-pure transition-colors border-2 border-black-pure"
-                >
-                    View Full Details →
-                </Link>
-            </section>
         </main>
     )
 }

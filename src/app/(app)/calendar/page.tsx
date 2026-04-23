@@ -1,106 +1,135 @@
-import DirectoryCarouselGrid from '@/components/Section/CarouselGrid'
-import TimelineScroller from '@/components/Section/TimelineScroller'
-import { Media } from '@/payload-types'
+// app/(frontend)/calendar/page.tsx
+import GridSection from '@/components/Section/Blocks/GridSection'
+import TimelineSection from '@/components/Section/Blocks/TimelineSection'
+import { Championship, Media, Race } from '@/payload-types'
 import configPromise from '@payload-config'
+import { unstable_cache } from 'next/cache'
 import { getPayload } from 'payload'
 
-async function getCalendarData() {
-    const payload = await getPayload({ config: configPromise })
-
-    const { docs: championships } = await payload.find({
-        collection: 'championships',
-        where: {
-            'details.start_date': {
-                exists: true,
-            },
-        },
-        limit: 10,
-        sort: '-details.start_date',
-    })
-
-    const { docs: races } = await payload.find({
-        collection: 'races',
-        where: {
-            'details.status': {
-                equals: 'scheduled',
-            },
-        },
-        limit: 12,
-        sort: '-details.start_date',
-    })
-
-    return { championships, races }
+function getMediaUrl(media: number | Media | null | undefined): string | undefined {
+    if (!media) return undefined
+    if (typeof media === 'object' && 'url' in media && media.url) return media.url
+    return undefined
 }
+
+const getCalendarData = unstable_cache(
+    async () => {
+        const payload = await getPayload({ config: configPromise })
+
+        const now = new Date().toISOString()
+
+        const [championships, races] = await Promise.all([
+            payload.find({
+                collection: 'championships',
+                where: {
+                    'details.start_date': { greater_than_equal: now },
+                },
+                limit: 10,
+                sort: 'details.start_date',
+                select: {
+                    id: true,
+                    name: true,
+                    slug: true,
+                    basics: true,
+                    details: true,
+                    assets: true,
+                    updatedAt: true,
+                    createdAt: true,
+                },
+            }),
+            payload.find({
+                collection: 'races',
+                where: {
+                    'details.status': { equals: 'scheduled' },
+                },
+                limit: 12,
+                sort: 'details.start_date',
+                select: {
+                    id: true,
+                    name: true,
+                    slug: true,
+                    basics: true,
+                    details: true,
+                    assets: true,
+                    updatedAt: true,
+                    createdAt: true,
+                },
+            }),
+        ])
+
+        return {
+            championships: championships.docs as Championship[],
+            races: races.docs as Race[],
+        }
+    },
+    ['calendar-page-data'],
+    { revalidate: 3600, tags: ['calendar'] }
+)
 
 export default async function CalendarPage() {
     const { championships, races } = await getCalendarData()
 
-    const championshipEvents = championships.map(champ => {
-        let status: 'completed' | 'upcoming' | 'active' | undefined = 'upcoming'
+    const championshipEvents: any[] = championships.map((championship: Championship) => ({
+        id: String(championship.id),
+        date: championship.details?.start_date
+            ? new Date(championship.details.start_date).toLocaleDateString()
+            : 'TBD',
+        title: championship.name,
+        description: championship.basics?.tagline || championship.basics?.description || undefined,
+        status: 'upcoming' as const,
+    }))
 
-        if (champ.details?.start_date && champ.details?.end_date) {
-            const now = new Date()
-            const start = new Date(champ.details.start_date)
-            const end = new Date(champ.details.end_date)
-
-            if (now >= start && now <= end) {
-                status = 'active'
-            } else if (now > end) {
-                status = 'completed'
-            }
-        }
-
-        return {
-            id: champ.id.toString(),
-            date: champ.details?.start_date || 'TBD',
-            title: champ.name,
-            description: champ.basics?.tagline || champ.basics?.description || undefined,
-            status: status,
-            meta: champ.basics?.identifiers?.code || 'CHAMPIONSHIP'
-        }
-    })
-
-    const raceItems = races.map(race => {
-        const thumbnail = race.assets?.thumbnail && typeof race.assets.thumbnail === 'object'
-            ? race.assets.thumbnail as Media
-            : null
-
-        const circuitName = race.details?.circuit && typeof race.details.circuit === 'object'
-            ? race.details.circuit.name
-            : 'Circuit TBD'
-
-        const seriesName = race.details?.series && typeof race.details.series === 'object'
-            ? race.details.series.name
-            : undefined
+    const raceItems: any[] = races.map((race: Race) => {
+        const imageUrl = race.assets?.thumbnail
+            ? getMediaUrl(race.assets.thumbnail)
+            : race.assets?.poster
+                ? getMediaUrl(race.assets.poster)
+                : race.assets?.cover
+                    ? getMediaUrl(race.assets.cover)
+                    : `https://picsum.photos/seed/${race.slug}/400/300`
 
         return {
-            id: race.id.toString(),
+            id: String(race.id),
             title: race.name,
-            subtitle: circuitName,
-            label: race.details?.type?.toUpperCase() || 'RACE',
-            image: thumbnail,
+            subtitle: race.basics?.tagline || race.basics?.identifiers?.code || undefined,
+            image: imageUrl,
             href: `/calendar/races/${race.slug}`,
-            details: [
-                { label: 'STATUS', value: race.details?.status?.toUpperCase() || 'SCHEDULED' },
-                { label: 'SERIES', value: seriesName || 'TBD' },
-                { label: 'DATE', value: race.details?.start_date?.split('T')[0] || 'TBD' },
-            ]
+            label: race.details?.type || undefined,
+            metadata: {
+                Date: race.details?.start_date ? new Date(race.details.start_date).toLocaleDateString() : 'TBD',
+                Status: race.details?.status || 'Scheduled',
+                Laps: race.details?.laps ? String(race.details.laps) : 'N/A',
+                Distance: race.details?.distance_km ? `${race.details.distance_km} km` : 'N/A',
+            },
         }
     })
 
     return (
         <main className="w-full">
-            <TimelineScroller
-                id="CAL_CHAMPS"
-                title="Upcoming Championships"
-                events={championshipEvents}
-            />
-
-            <DirectoryCarouselGrid
-                id="CAL_RACES"
-                title="Upcoming Races"
-                items={raceItems}
-            />
+            {championshipEvents.length > 0 && (
+                <TimelineSection
+                    id="calendar-championships"
+                    title="Upcoming Championships"
+                    subtitle="Season schedules and series"
+                    events={championshipEvents}
+                    orientation="horizontal"
+                    headerVariant={1}
+                    footerVariant={1}
+                />
+            )}
+            {raceItems.length > 0 && (
+                <GridSection
+                    id="calendar-races"
+                    title="Upcoming Races"
+                    subtitle="Scheduled events"
+                    items={raceItems}
+                    columns={3}
+                    cardVariant={1}
+                    showMetadata={true}
+                    headerVariant={2}
+                    footerVariant={1}
+                />
+            )}
         </main>
     )
 }

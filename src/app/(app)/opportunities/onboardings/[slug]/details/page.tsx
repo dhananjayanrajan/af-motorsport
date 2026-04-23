@@ -1,130 +1,164 @@
-import DocumentGrid from '@/components/Section/DocumentGrid'
-import ExpandableList from '@/components/Section/ExpandableList'
-import HeroMedia from '@/components/Section/HeroMedia'
-import { Media, Onboarding } from '@/payload-types'
+// app/(frontend)/opportunities/onboardings/[slug]/details/page.tsx
+import GridSection from '@/components/Section/Blocks/GridSection'
+import HeroSection from '@/components/Section/Blocks/HeroSection'
+import ListSection from '@/components/Section/Blocks/ListSection'
+import { Media } from '@/payload-types'
 import configPromise from '@payload-config'
+import { unstable_cache } from 'next/cache'
 import { notFound } from 'next/navigation'
 import { getPayload } from 'payload'
 
-interface PageProps {
-    params: Promise<{
-        slug: string
-    }>
+function getMediaUrl(media: number | Media | null | undefined): string | undefined {
+    if (!media) return undefined
+    if (typeof media === 'object' && 'url' in media && media.url) return media.url
+    return undefined
 }
 
-async function getOnboarding(slug: string): Promise<Onboarding | null> {
-    const payload = await getPayload({ config: configPromise })
-    const { docs } = await payload.find({
-        collection: 'onboardings',
-        where: {
-            slug: {
-                equals: slug,
-            },
-        },
-        depth: 2,
-    })
-    return docs[0] || null
-}
+const getOnboardingDetailsData = unstable_cache(
+    async (slug: string) => {
+        const payload = await getPayload({ config: configPromise })
+        const result = await payload.find({
+            collection: 'onboardings',
+            where: { slug: { equals: slug } },
+            limit: 1,
+        })
+        return result.docs[0] || null
+    },
+    ['onboarding-details'],
+    { revalidate: 3600, tags: ['onboarding-details'] }
+)
 
-export default async function OnboardingDetailsPage({ params }: PageProps) {
+export default async function OnboardingDetailsPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params
-    const onboarding = await getOnboarding(slug)
+    const onboarding = await getOnboardingDetailsData(slug)
 
-    if (!onboarding) {
-        return notFound()
+    if (!onboarding) notFound()
+
+    const heroBackgroundImage = onboarding.assets?.cover
+        ? getMediaUrl(onboarding.assets.cover)
+        : onboarding.seo?.image
+            ? getMediaUrl(onboarding.seo.image)
+            : undefined
+
+    const taskEntries: any[] = []
+    if (onboarding.traits?.checklist?.list) {
+        onboarding.traits.checklist.list.forEach((task) => {
+            if (task.task) {
+                taskEntries.push({
+                    id: task.id || String(Math.random()),
+                    title: task.task,
+                    subtitle: task.due_date ? `Due: ${new Date(task.due_date).toLocaleDateString()}` : undefined,
+                    status: task.completed ? 'Completed' : task.required ? 'Required' : 'Optional',
+                })
+            }
+        })
     }
 
-    const coverImage = onboarding.assets?.cover && typeof onboarding.assets.cover === 'object'
-        ? onboarding.assets.cover as Media
-        : null
+    const moduleEntries: any[] = []
+    if (onboarding.traits?.modules?.list) {
+        onboarding.traits.modules.list.forEach((mod) => {
+            if (mod.name) {
+                moduleEntries.push({
+                    id: mod.id || String(Math.random()),
+                    title: mod.name,
+                    subtitle: mod.content || undefined,
+                    status: mod.duration || mod.type || undefined,
+                })
+            }
+        })
+    }
 
-    const taskPanels = onboarding.traits?.checklist?.list?.map(task => ({
-        id: task.id || `${onboarding.id}-task-${task.task}`,
-        title: task.task || 'Task',
-        label: task.required ? 'REQUIRED' : 'OPTIONAL',
-        summary: task.due_date ? `Due: ${task.due_date}` : 'No deadline',
-        content: task.completed ? 'Completed ✓' : 'Pending completion',
-        metadata: [
-            { label: 'STATUS', value: task.completed ? 'COMPLETED' : 'PENDING' },
-            { label: 'DUE DATE', value: task.due_date?.split('T')[0] || 'TBD' },
-        ]
-    })) || []
+    const quizEntries: any[] = []
+    if (onboarding.traits?.quizzes?.list) {
+        onboarding.traits.quizzes.list.forEach((quiz) => {
+            if (quiz.question) {
+                quizEntries.push({
+                    id: quiz.id || String(Math.random()),
+                    title: quiz.question,
+                    subtitle: quiz.answer ? `Answer: ${quiz.answer}` : undefined,
+                    status: quiz.explanation || undefined,
+                })
+            }
+        })
+    }
 
-    const modulePanels = onboarding.traits?.modules?.list?.map(module => ({
-        id: module.id || `${onboarding.id}-mod-${module.name}`,
-        title: module.name || 'Module',
-        label: module.type?.toUpperCase() || 'MODULE',
-        summary: module.duration || 'Self-paced',
-        content: module.content || 'No content available',
-        metadata: [
-            { label: 'DURATION', value: module.duration || 'TBD' },
-            { label: 'TYPE', value: module.type?.toUpperCase() || 'STANDARD' },
-        ]
-    })) || []
-
-    const quizPanels = onboarding.traits?.quizzes?.list?.map(quiz => ({
-        id: quiz.id || `${onboarding.id}-quiz-${quiz.question}`,
-        title: quiz.question?.substring(0, 50) || 'Question',
-        label: 'ASSESSMENT',
-        summary: 'Knowledge check',
-        content: `Answer: ${quiz.answer || 'Not provided'}\n\nExplanation: ${quiz.explanation || 'No explanation'}`,
-        metadata: [
-            { label: 'STATUS', value: 'PENDING' },
-        ]
-    })) || []
-
-    const documents = onboarding.assets?.documents?.filter((doc): doc is Media =>
-        typeof doc === 'object' && doc !== null && 'url' in doc
-    ).map(doc => ({
-        id: doc.id,
-        title: doc.filename || 'Document',
-        file: doc,
-        category: 'Onboarding Document',
-        version: '1.0'
-    })) || []
+    const documentItems: any[] = []
+    if (onboarding.assets?.documents) {
+        onboarding.assets.documents.forEach((doc, idx) => {
+            const media = typeof doc === 'object' ? doc : null
+            const url = media ? getMediaUrl(media) : undefined
+            if (url && media) {
+                documentItems.push({
+                    id: String(media.id),
+                    title: media.alt || media.filename || `Document ${idx + 1}`,
+                    subtitle: media.mimeType || undefined,
+                    image: url,
+                    href: url,
+                })
+            }
+        })
+    }
 
     return (
         <main className="w-full">
-            <HeroMedia
-                id={onboarding.basics?.identifiers?.code || `ONB-${onboarding.id}`}
+            <HeroSection
+                id="onboarding-details-cover"
                 title={onboarding.name}
-                meta={onboarding.basics?.description || 'Onboarding Process'}
-                image={coverImage}
-                tags={[
-                    onboarding.details.type || 'Onboarding',
-                    onboarding.details.status || 'Draft'
-                ]}
+                subtitle="Onboarding Details"
+                description={onboarding.basics?.description || undefined}
+                backgroundImage={heroBackgroundImage}
+                alignment="center"
+                badge={onboarding.details?.type || onboarding.basics?.identifiers?.code || undefined}
             />
-
-            {taskPanels.length > 0 && (
-                <ExpandableList
-                    id="ONB_TASKS"
-                    title="Checklist Tasks"
-                    panels={taskPanels}
+            {taskEntries.length > 0 && (
+                <ListSection
+                    id="onboarding-tasks"
+                    title="Tasks"
+                    subtitle="Onboarding checklist"
+                    entries={taskEntries}
+                    variant="detailed"
+                    showStatus={true}
+                    showTimestamp={false}
+                    headerVariant={1}
+                    footerVariant={1}
                 />
             )}
-
-            {modulePanels.length > 0 && (
-                <ExpandableList
-                    id="ONB_MODULES"
-                    title="Training Modules"
-                    panels={modulePanels}
+            {moduleEntries.length > 0 && (
+                <ListSection
+                    id="onboarding-modules"
+                    title="Modules"
+                    subtitle="Training content"
+                    entries={moduleEntries}
+                    variant="detailed"
+                    showStatus={true}
+                    showTimestamp={false}
+                    headerVariant={2}
+                    footerVariant={1}
                 />
             )}
-
-            {quizPanels.length > 0 && (
-                <ExpandableList
-                    id="ONB_QUIZZES"
-                    title="Knowledge Assessments"
-                    panels={quizPanels}
+            {quizEntries.length > 0 && (
+                <ListSection
+                    id="onboarding-quizzes"
+                    title="Quizzes"
+                    subtitle="Knowledge checks"
+                    entries={quizEntries}
+                    variant="detailed"
+                    showStatus={true}
+                    showTimestamp={false}
+                    headerVariant={3}
+                    footerVariant={2}
                 />
             )}
-
-            {documents.length > 0 && (
-                <DocumentGrid
-                    id="ONB_DOCS"
-                    title="Supporting Documents"
-                    documents={documents}
+            {documentItems.length > 0 && (
+                <GridSection
+                    id="onboarding-documents"
+                    title="Documents"
+                    subtitle="Onboarding resources"
+                    items={documentItems}
+                    columns={3}
+                    cardVariant={1}
+                    headerVariant={1}
+                    footerVariant={1}
                 />
             )}
         </main>

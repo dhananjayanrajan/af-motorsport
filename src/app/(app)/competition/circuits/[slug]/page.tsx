@@ -1,171 +1,187 @@
-import GalleryGrid from '@/components/Section/GalleryGrid'
-import InfoGrid from '@/components/Section/InfoGrid'
-import ProgressScroller from '@/components/Section/ProgressScroller'
-import PullQuote from '@/components/Section/PullQuote'
-import VideoPlayer from '@/components/Section/VideoPlayer'
-import { Circuit, Country, Media } from '@/payload-types'
+// app/(frontend)/competition/circuits/[slug]/page.tsx
+import MasonrySection from '@/components/Section/Blocks/MasonrySection'
+import QuoteSection from '@/components/Section/Blocks/QuoteSection'
+import ScrollSection from '@/components/Section/Blocks/ScrollSection'
+import StudySection from '@/components/Section/Blocks/StudySection'
+import VideoSection from '@/components/Section/Blocks/VideoSection'
+import { Media } from '@/payload-types'
 import configPromise from '@payload-config'
-import Link from 'next/link'
+import { unstable_cache } from 'next/cache'
 import { notFound } from 'next/navigation'
 import { getPayload } from 'payload'
 
-interface PageProps {
-    params: Promise<{
-        slug: string
-    }>
+function getMediaUrl(media: number | Media | null | undefined): string | undefined {
+    if (!media) return undefined
+    if (typeof media === 'object' && 'url' in media && media.url) return media.url
+    return undefined
 }
 
-async function getCircuit(slug: string): Promise<Circuit | null> {
-    const payload = await getPayload({ config: configPromise })
-    const { docs } = await payload.find({
-        collection: 'circuits',
-        where: {
-            slug: {
-                equals: slug,
-            },
-        },
-        depth: 2,
-    })
-    return docs[0] || null
-}
+const getCircuitData = unstable_cache(
+    async (slug: string) => {
+        const payload = await getPayload({ config: configPromise })
+        const result = await payload.find({
+            collection: 'circuits',
+            where: { slug: { equals: slug } },
+            limit: 1,
+        })
+        return result.docs[0] || null
+    },
+    ['circuit-detail'],
+    { revalidate: 3600, tags: ['circuit'] }
+)
 
-export default async function CircuitPage({ params }: PageProps) {
+export default async function CircuitPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params
-    const circuit = await getCircuit(slug)
+    const circuit = await getCircuitData(slug)
 
-    if (!circuit) {
-        return notFound()
+    if (!circuit) notFound()
+
+    const videoItems: any[] = []
+    if (circuit.assets?.video) {
+        const videoUrl = getMediaUrl(circuit.assets.video)
+        if (videoUrl) {
+            videoItems.push({
+                id: String(circuit.id),
+                title: circuit.name,
+                description: circuit.basics?.tagline || undefined,
+                url: videoUrl,
+                poster: circuit.assets?.thumbnail ? getMediaUrl(circuit.assets.thumbnail) : circuit.assets?.cover ? getMediaUrl(circuit.assets.cover) : undefined,
+            })
+        }
     }
 
-    const videoAsset = circuit.assets?.video && typeof circuit.assets.video === 'object'
-        ? (circuit.assets.video as Media)
+    const studyImage = circuit.assets?.cover
+        ? getMediaUrl(circuit.assets.cover)
+        : circuit.assets?.thumbnail
+            ? getMediaUrl(circuit.assets.thumbnail)
+            : circuit.assets?.circuit_map
+                ? getMediaUrl(circuit.assets.circuit_map)
+                : undefined
+
+    const study = {
+        id: String(circuit.id),
+        title: circuit.name,
+        description: circuit.basics?.description || circuit.basics?.tagline || '',
+        image: studyImage || `https://picsum.photos/seed/${circuit.slug}/800/600`,
+        metrics: [
+            { label: 'Type', value: circuit.details?.type || 'N/A' },
+            { label: 'Length', value: circuit.details?.length_km ? `${circuit.details.length_km} km` : 'N/A' },
+            { label: 'Turns', value: circuit.details?.turns ? String(circuit.details.turns) : 'N/A' },
+            { label: 'Direction', value: circuit.details?.direction || 'N/A' },
+        ],
+    }
+
+    const quoteItem = circuit.basics?.tagline
+        ? {
+            id: String(circuit.id),
+            text: circuit.basics.tagline,
+            author: circuit.name,
+        }
         : null
 
-    const posterAsset = circuit.assets?.thumbnail && typeof circuit.assets.thumbnail === 'object'
-        ? (circuit.assets.thumbnail as Media)
-        : null
-
-    const countryName = circuit.details?.country && typeof circuit.details.country === 'object'
-        ? (circuit.details.country as Country).name
-        : 'TBD'
-
-    const infoBlocks = [
-        {
-            id: 'specs',
-            label: 'TECHNICAL SPECS',
-            title: circuit.details?.type?.toUpperCase() || 'PERMANENT',
-            description: circuit.basics?.description || undefined,
-            metadata: [
-                { key: 'LENGTH', value: circuit.details?.length_km ? `${circuit.details.length_km} KM` : 'TBD' },
-                { key: 'TURNS', value: circuit.details?.turns?.toString() || 'TBD' },
-                { key: 'DIRECTION', value: circuit.details?.direction?.toUpperCase() || 'CLOCKWISE' },
-                { key: 'FIA GRADE', value: circuit.details?.fia_grade || 'TBD' },
-            ]
-        },
-        {
-            id: 'location',
-            label: 'LOCATION',
-            title: countryName,
-            description: circuit.details?.address || undefined,
-            metadata: [
-                { key: 'CAPACITY', value: circuit.details?.capacity?.toLocaleString() || 'TBD' },
-                { key: 'OPENED', value: circuit.details?.opened || 'TBD' },
-                { key: 'ELEVATION', value: circuit.details?.elevation_change ? `${circuit.details.elevation_change}M` : 'TBD' },
-            ]
-        },
-    ]
-
-    const historySteps = []
-
-    if (circuit.details?.opened) {
-        historySteps.push({
-            id: 'opened',
-            index: '01',
-            heading: 'Inauguration',
-            subheading: circuit.details.opened,
-            body: circuit.basics?.description || 'Circuit established',
-            percentage: 100
+    const scrollItems: any[] = []
+    if (circuit.details?.history) {
+        scrollItems.push({
+            id: 'history',
+            title: 'Circuit History',
+            description: circuit.basics?.description || 'A historic racing venue.',
+            percentage: 100,
+        })
+    }
+    if (circuit.details?.notes) {
+        scrollItems.push({
+            id: 'notes',
+            title: 'Circuit Notes',
+            description: circuit.details.notes,
+            percentage: 75,
         })
     }
 
-    if (circuit.metrics?.record_lap_time) {
-        const driverName = circuit.metrics.record_lap_driver && typeof circuit.metrics.record_lap_driver === 'object'
-            ? `${(circuit.metrics.record_lap_driver as { first_name: string; last_name: string }).first_name} ${(circuit.metrics.record_lap_driver as { first_name: string; last_name: string }).last_name}`
-            : 'TBD'
-
-        historySteps.push({
-            id: 'record',
-            index: '02',
-            heading: 'Lap Record',
-            subheading: circuit.metrics.record_lap_time,
-            body: driverName,
-            percentage: 100
+    const galleryItems: any[] = []
+    if (circuit.assets?.gallery) {
+        circuit.assets.gallery.forEach((item, idx) => {
+            const media = typeof item === 'object' ? item : null
+            const url = media ? getMediaUrl(media) : undefined
+            if (url && media) {
+                galleryItems.push({
+                    id: String(media.id),
+                    title: media.alt || circuit.name,
+                    image: url,
+                    height: idx % 3 === 0 ? 'tall' as const : idx % 2 === 0 ? 'medium' as const : 'short' as const,
+                })
+            }
         })
     }
-
-    const galleryItems = circuit.assets?.gallery?.filter((item): item is Media =>
-        typeof item === 'object' && item !== null && 'url' in item
-    ).map(item => ({
-        id: item.id.toString(),
-        image: item,
-        title: item.filename || 'Gallery Image',
-        category: circuit.basics?.identifiers?.code || 'CIRCUIT'
-    })) || []
+    if (galleryItems.length === 0 && circuit.assets?.cover) {
+        const url = getMediaUrl(circuit.assets.cover)
+        if (url) {
+            galleryItems.push({
+                id: String(circuit.id),
+                title: circuit.name,
+                image: url,
+                height: 'medium' as const,
+            })
+        }
+    }
 
     return (
         <main className="w-full">
-            <VideoPlayer
-                id={circuit.basics?.identifiers?.code || `CCT-${circuit.id}`}
-                title={circuit.name}
-                meta={circuit.basics?.tagline || 'Racing Circuit'}
-                video={videoAsset}
-                poster={posterAsset}
-                tags={[
-                    circuit.details?.type || 'Circuit',
-                    circuit.details?.direction || 'Clockwise'
-                ]}
-            />
-
-            <InfoGrid
-                id="CCT_SPECS"
-                title="Circuit Specifications"
-                blocks={infoBlocks}
-                columns={2}
-            />
-
-            <PullQuote
-                id="CCT_QUOTE"
-                title="Circuit Statement"
-                quote={circuit.basics?.tagline || circuit.basics?.description || 'Legendary racing venue'}
-                attribution={circuit.name}
-                role={circuit.details?.type?.toUpperCase() || 'RACING CIRCUIT'}
-                variant="center"
-            />
-
-            {historySteps.length > 0 && (
-                <ProgressScroller
-                    id="CCT_HISTORY"
-                    title="Circuit History"
-                    steps={historySteps}
+            {videoItems.length > 0 && (
+                <VideoSection
+                    id="circuit-video"
+                    title="Circuit Video"
+                    subtitle={circuit.name}
+                    videos={videoItems}
+                    autoplay={false}
+                    showPlaylist={false}
+                    headerVariant={1}
+                    footerVariant={1}
                 />
             )}
-
+            <StudySection
+                id="circuit-details"
+                title="Circuit Overview"
+                subtitle="Key information"
+                studies={[study]}
+                variant="featured"
+                headerVariant={1}
+                footerVariant={1}
+                ctaLabel="View Full Details"
+                ctaPath={`/competition/circuits/${circuit.slug}/details`}
+            />
+            {quoteItem && (
+                <QuoteSection
+                    id="circuit-statement"
+                    title="Circuit Statement"
+                    subtitle="What defines this track"
+                    quotes={[quoteItem]}
+                    variant="grid"
+                    headerVariant={2}
+                    footerVariant={1}
+                />
+            )}
+            {scrollItems.length > 0 && (
+                <ScrollSection
+                    id="circuit-history"
+                    title="History & Notes"
+                    subtitle="Circuit background"
+                    items={scrollItems}
+                    variant="reveal"
+                    headerVariant={1}
+                    footerVariant={1}
+                />
+            )}
             {galleryItems.length > 0 && (
-                <GalleryGrid
-                    id="CCT_GALLERY"
-                    title="Circuit Gallery"
+                <MasonrySection
+                    id="circuit-gallery"
+                    title="Gallery"
+                    subtitle="Circuit imagery"
                     items={galleryItems}
+                    columns={3}
+                    headerVariant={3}
+                    footerVariant={2}
                 />
             )}
-
-            <section className="w-full py-20 flex justify-center border-b border-black-pure">
-                <Link
-                    href={`/competition/circuits/${slug}/details`}
-                    className="px-12 py-6 bg-black-pure text-white-pure font-mono text-sm font-bold uppercase tracking-widest hover:bg-primary-500 hover:text-black-pure transition-colors border-2 border-black-pure"
-                >
-                    View Technical Details →
-                </Link>
-            </section>
         </main>
     )
 }

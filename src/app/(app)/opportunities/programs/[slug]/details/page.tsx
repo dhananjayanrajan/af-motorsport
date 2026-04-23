@@ -1,158 +1,198 @@
-import DirectoryGrid from '@/components/Section/DirectoryGrid'
-import DocumentGrid from '@/components/Section/DocumentGrid'
-import ExpandableList from '@/components/Section/ExpandableList'
-import HeroMedia from '@/components/Section/HeroMedia'
-import { Driver, Leader, Media, Program } from '@/payload-types'
+// app/(frontend)/opportunities/programs/[slug]/details/page.tsx
+import GridSection from '@/components/Section/Blocks/GridSection'
+import HeroSection from '@/components/Section/Blocks/HeroSection'
+import ListSection from '@/components/Section/Blocks/ListSection'
+import { Driver, Media } from '@/payload-types'
 import configPromise from '@payload-config'
+import { unstable_cache } from 'next/cache'
 import { notFound } from 'next/navigation'
 import { getPayload } from 'payload'
 
-interface PageProps {
-    params: Promise<{
-        slug: string
-    }>
+function getMediaUrl(media: number | Media | null | undefined): string | undefined {
+    if (!media) return undefined
+    if (typeof media === 'object' && 'url' in media && media.url) return media.url
+    return undefined
 }
 
-async function getProgram(slug: string): Promise<Program | null> {
-    const payload = await getPayload({ config: configPromise })
-    const { docs } = await payload.find({
-        collection: 'programs',
-        where: {
-            slug: {
-                equals: slug,
-            },
-        },
-        depth: 2,
-    })
-    return docs[0] || null
-}
+const getProgramDetailsData = unstable_cache(
+    async (slug: string) => {
+        const payload = await getPayload({ config: configPromise })
+        const result = await payload.find({
+            collection: 'programs',
+            where: { slug: { equals: slug } },
+            limit: 1,
+        })
+        return result.docs[0] || null
+    },
+    ['program-details'],
+    { revalidate: 3600, tags: ['program-details'] }
+)
 
-export default async function ProgramDetailsPage({ params }: PageProps) {
+export default async function ProgramDetailsPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params
-    const program = await getProgram(slug)
+    const program = await getProgramDetailsData(slug)
 
-    if (!program) {
-        return notFound()
+    if (!program) notFound()
+
+    const heroBackgroundImage = program.assets?.cover
+        ? getMediaUrl(program.assets.cover)
+        : program.seo?.image
+            ? getMediaUrl(program.seo.image)
+            : undefined
+
+    const eligibilityEntries: any[] = []
+    if (program.traits?.eligibility?.list) {
+        program.traits.eligibility.list.forEach((item) => {
+            if (item.criteria) {
+                eligibilityEntries.push({
+                    id: item.id || String(Math.random()),
+                    title: item.criteria,
+                    subtitle: item.value || item.description || undefined,
+                })
+            }
+        })
     }
 
-    const coverImage = program.assets?.cover && typeof program.assets.cover === 'object'
-        ? program.assets.cover as Media
-        : null
+    const curriculumEntries: any[] = []
+    if (program.traits?.curriculum?.list) {
+        program.traits.curriculum.list.forEach((item) => {
+            if (item.module_name) {
+                curriculumEntries.push({
+                    id: item.id || String(Math.random()),
+                    title: item.module_name,
+                    subtitle: item.deliverable || undefined,
+                    status: item.duration || undefined,
+                })
+            }
+        })
+    }
 
-    const eligibilityPanels = program.traits?.eligibility?.list?.map(elig => ({
-        id: elig.id || `${program.id}-elig-${elig.criteria}`,
-        title: elig.criteria || 'Eligibility Criteria',
-        label: 'REQUIREMENT',
-        summary: elig.description || 'Must meet criteria',
-        content: elig.value || 'Standard eligibility applies',
-        metadata: [
-            { label: 'TYPE', value: elig.criteria?.toUpperCase() || 'STANDARD' },
-            { label: 'STATUS', value: 'REQUIRED' },
-        ]
-    })) || []
+    const mentorItems: any[] = []
+    if (program.details?.mentors) {
+        program.details.mentors.forEach((mentorRef) => {
+            const mentor = mentorRef as any
+            if (mentor && typeof mentor === 'object' && 'first_name' in mentor) {
+                const imageUrl = mentor.assets?.avatar
+                    ? getMediaUrl(mentor.assets.avatar)
+                    : `https://picsum.photos/seed/${mentor.id}/400/300`
 
-    const curriculumPanels = program.traits?.curriculum?.list?.map(cur => ({
-        id: cur.id || `${program.id}-cur-${cur.module_name}`,
-        title: cur.module_name || 'Module',
-        label: 'CURRICULUM',
-        summary: cur.duration || 'Course module',
-        content: cur.deliverable || 'No additional details',
-        metadata: [
-            { label: 'DURATION', value: cur.duration || 'TBD' },
-            { label: 'DELIVERABLE', value: cur.deliverable || 'Certificate' },
-        ]
-    })) || []
+                mentorItems.push({
+                    id: String(mentor.id),
+                    title: `${mentor.first_name} ${mentor.last_name}`,
+                    subtitle: mentor.basics?.title || 'Mentor',
+                    image: imageUrl,
+                })
+            }
+        })
+    }
 
-    const mentorItems = program.details?.mentors?.filter((m): m is Leader =>
-        typeof m === 'object' && m !== null && 'first_name' in m
-    ).map(mentor => ({
-        id: mentor.id.toString(),
-        title: `${mentor.first_name} ${mentor.last_name}`,
-        subtitle: mentor.basics?.title || mentor.basics?.nickname || undefined,
-        label: 'MENTOR',
-        image: mentor.assets?.avatar && typeof mentor.assets.avatar === 'object' ? mentor.assets.avatar as Media : null,
-        href: `/teams/${mentor.slug}`,
-        metadata: [
-            { label: 'ROLE', value: mentor.basics?.title || 'Mentor' },
-        ]
-    })) || []
+    const participantItems: any[] = []
+    if (program.details?.participants) {
+        program.details.participants.forEach((participantRef) => {
+            const participant = participantRef as Driver
+            if (participant && typeof participant === 'object' && 'first_name' in participant) {
+                const imageUrl = participant.assets?.avatar
+                    ? getMediaUrl(participant.assets.avatar)
+                    : `https://picsum.photos/seed/${participant.id}/400/300`
 
-    const participantItems = program.details?.participants?.filter((p): p is Driver =>
-        typeof p === 'object' && p !== null && 'first_name' in p
-    ).map(participant => ({
-        id: participant.id.toString(),
-        title: `${participant.first_name} ${participant.last_name}`,
-        subtitle: participant.basics?.nickname || participant.basics?.competition_name || undefined,
-        label: `#${participant.basics?.racing_number || '00'}`,
-        image: participant.assets?.avatar && typeof participant.assets.avatar === 'object' ? participant.assets.avatar as Media : null,
-        href: `/teams/${participant.slug}/drivers/${participant.slug}`,
-        metadata: [
-            { label: 'NATIONALITY', value: participant.basics?.nationality && typeof participant.basics.nationality === 'object' ? (participant.basics.nationality as { name: string }).name : 'TBD' },
-        ]
-    })) || []
+                participantItems.push({
+                    id: String(participant.id),
+                    title: `${participant.first_name} ${participant.last_name}`,
+                    subtitle: participant.basics?.racing_number ? `#${participant.basics.racing_number}` : undefined,
+                    image: imageUrl,
+                })
+            }
+        })
+    }
 
-    const documents = program.assets?.documents?.filter((doc): doc is Media =>
-        typeof doc === 'object' && doc !== null && 'url' in doc
-    ).map(doc => ({
-        id: doc.id,
-        title: doc.filename || 'Document',
-        file: doc,
-        category: 'Program Document',
-        version: '1.0'
-    })) || []
+    const documentItems: any[] = []
+    if (program.assets?.documents) {
+        program.assets.documents.forEach((doc, idx) => {
+            const media = typeof doc === 'object' ? doc : null
+            const url = media ? getMediaUrl(media) : undefined
+            if (url && media) {
+                documentItems.push({
+                    id: String(media.id),
+                    title: media.alt || media.filename || `Document ${idx + 1}`,
+                    subtitle: media.mimeType || undefined,
+                    image: url,
+                    href: url,
+                })
+            }
+        })
+    }
 
     return (
         <main className="w-full">
-            <HeroMedia
-                id={program.basics?.identifiers?.code || `PRG-${program.id}`}
+            <HeroSection
+                id="program-details-cover"
                 title={program.name}
-                meta={program.basics?.tagline || 'Technical Specifications'}
-                image={coverImage}
-                tags={[
-                    program.details?.type || 'Program',
-                    'Details'
-                ]}
+                subtitle="Program Details"
+                description={program.details?.objective || undefined}
+                backgroundImage={heroBackgroundImage}
+                alignment="center"
+                badge={program.details?.status || undefined}
             />
-
-            {eligibilityPanels.length > 0 && (
-                <ExpandableList
-                    id="PRG_ELIGIBILITY"
-                    title="Eligibility Requirements"
-                    panels={eligibilityPanels}
+            {eligibilityEntries.length > 0 && (
+                <ListSection
+                    id="program-eligibility"
+                    title="Eligibility"
+                    subtitle="Requirements to participate"
+                    entries={eligibilityEntries}
+                    variant="detailed"
+                    showStatus={false}
+                    showTimestamp={false}
+                    headerVariant={1}
+                    footerVariant={1}
                 />
             )}
-
-            {curriculumPanels.length > 0 && (
-                <ExpandableList
-                    id="PRG_CURRICULUM"
-                    title="Program Curriculum"
-                    panels={curriculumPanels}
+            {curriculumEntries.length > 0 && (
+                <ListSection
+                    id="program-curriculum"
+                    title="Curriculum"
+                    subtitle="Program modules and deliverables"
+                    entries={curriculumEntries}
+                    variant="detailed"
+                    showStatus={true}
+                    showTimestamp={false}
+                    headerVariant={2}
+                    footerVariant={1}
                 />
             )}
-
             {mentorItems.length > 0 && (
-                <DirectoryGrid
-                    id="PRG_MENTORS"
-                    title="Program Mentors"
+                <GridSection
+                    id="program-mentors"
+                    title="Mentors"
+                    subtitle="Program guides and instructors"
                     items={mentorItems}
-                    variant="square"
+                    columns={4}
+                    cardVariant={1}
+                    headerVariant={3}
+                    footerVariant={2}
                 />
             )}
-
             {participantItems.length > 0 && (
-                <DirectoryGrid
-                    id="PRG_PARTICIPANTS"
-                    title="Program Participants"
+                <GridSection
+                    id="program-participants"
+                    title="Participants"
+                    subtitle="Current program members"
                     items={participantItems}
-                    variant="portrait"
+                    columns={4}
+                    cardVariant={1}
+                    headerVariant={1}
+                    footerVariant={1}
                 />
             )}
-
-            {documents.length > 0 && (
-                <DocumentGrid
-                    id="PRG_DOCS"
-                    title="Program Documents"
-                    documents={documents}
+            {documentItems.length > 0 && (
+                <GridSection
+                    id="program-documents"
+                    title="Documents"
+                    subtitle="Program resources"
+                    items={documentItems}
+                    columns={3}
+                    cardVariant={1}
+                    headerVariant={1}
+                    footerVariant={1}
                 />
             )}
         </main>

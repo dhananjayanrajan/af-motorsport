@@ -1,159 +1,166 @@
-import DirectoryCarouselGrid from '@/components/Section/CarouselGrid'
-import DocumentGrid from '@/components/Section/DocumentGrid'
-import HeroMedia from '@/components/Section/HeroMedia'
-import InfoGrid from '@/components/Section/InfoGrid'
-import TimelineScroller from '@/components/Section/TimelineScroller'
-import { Media, Timeline } from '@/payload-types'
+// app/(frontend)/calendar/timelines/[slug]/page.tsx
+import GridSection from '@/components/Section/Blocks/GridSection'
+import HeroSection from '@/components/Section/Blocks/HeroSection'
+import StudySection from '@/components/Section/Blocks/StudySection'
+import TimelineSection from '@/components/Section/Blocks/TimelineSection'
+import { Media } from '@/payload-types'
 import configPromise from '@payload-config'
-import Link from 'next/link'
+import { unstable_cache } from 'next/cache'
 import { notFound } from 'next/navigation'
 import { getPayload } from 'payload'
 
-interface PageProps {
-    params: Promise<{
-        slug: string
-    }>
+function getMediaUrl(media: number | Media | null | undefined): string | undefined {
+    if (!media) return undefined
+    if (typeof media === 'object' && 'url' in media && media.url) return media.url
+    return undefined
 }
 
-async function getTimeline(slug: string): Promise<Timeline | null> {
-    const payload = await getPayload({ config: configPromise })
-    const { docs } = await payload.find({
-        collection: 'timelines',
-        where: {
-            slug: {
-                equals: slug,
-            },
-        },
-    })
-    return docs[0] || null
-}
+const getTimelineData = unstable_cache(
+    async (slug: string) => {
+        const payload = await getPayload({ config: configPromise })
+        const result = await payload.find({
+            collection: 'timelines',
+            where: { slug: { equals: slug } },
+            limit: 1,
+        })
+        return result.docs[0] || null
+    },
+    ['timeline-detail'],
+    { revalidate: 3600, tags: ['timeline'] }
+)
 
-export default async function TimelinePage({ params }: PageProps) {
+export default async function TimelinePage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params
-    const timeline = await getTimeline(slug)
+    const timeline = await getTimelineData(slug)
 
-    if (!timeline) {
-        return notFound()
+    if (!timeline) notFound()
+
+    const heroBackgroundImage = timeline.assets?.cover
+        ? getMediaUrl(timeline.assets.cover)
+        : timeline.seo?.image
+            ? getMediaUrl(timeline.seo.image)
+            : undefined
+
+    const studyImage = timeline.assets?.cover
+        ? getMediaUrl(timeline.assets.cover)
+        : timeline.assets?.thumbnail
+            ? getMediaUrl(timeline.assets.thumbnail)
+            : undefined
+
+    const study = {
+        id: String(timeline.id),
+        title: timeline.name,
+        description: timeline.basics?.description || '',
+        image: studyImage || `https://picsum.photos/seed/${timeline.slug}/800/600`,
+        metrics: [
+            { label: 'Status', value: timeline.details?.status || 'N/A' },
+            { label: 'Scope', value: timeline.details?.scope || 'N/A' },
+            { label: 'Start', value: timeline.details?.start_date ? new Date(timeline.details.start_date).toLocaleDateString() : 'N/A' },
+            { label: 'End', value: timeline.details?.end_date ? new Date(timeline.details.end_date).toLocaleDateString() : 'N/A' },
+        ],
     }
 
-    const coverImage = timeline.assets?.cover && typeof timeline.assets.cover === 'object'
-        ? (timeline.assets.cover as Media)
-        : null
+    const milestoneEvents: any[] = []
+    if (timeline.traits?.milestones?.list) {
+        timeline.traits.milestones.list.forEach((milestone, idx) => {
+            if (milestone.name) {
+                milestoneEvents.push({
+                    id: milestone.id || `milestone-${idx}`,
+                    date: milestone.date ? new Date(milestone.date).toLocaleDateString() : 'TBD',
+                    title: milestone.name,
+                    description: milestone.description || undefined,
+                    status: idx === 0 ? 'completed' as const : idx === 1 ? 'active' as const : 'upcoming' as const,
+                })
+            }
+        })
+    }
 
-    const infoBlocks = [
-        {
-            id: 'scope',
-            label: 'SCOPE',
-            title: timeline.details?.scope?.toUpperCase() || 'PROJECT',
-            description: timeline.basics?.description || undefined,
-            metadata: [
-                { key: 'STATUS', value: timeline.details?.status?.toUpperCase() || 'DRAFT' },
-                { key: 'ORIENTATION', value: timeline.details?.orientation?.toUpperCase() || 'HORIZONTAL' },
-                { key: 'COLOR SCHEME', value: timeline.details?.color_scheme?.toUpperCase() || 'LIGHT' },
-            ]
-        },
-        {
-            id: 'timeframe',
-            label: 'TIMEFRAME',
-            title: timeline.details?.start_date ? 'ACTIVE' : 'PENDING',
-            description: 'Chronological window',
-            metadata: [
-                { key: 'START DATE', value: timeline.details?.start_date || 'TBD' },
-                { key: 'END DATE', value: timeline.details?.end_date || 'TBD' },
-            ]
-        },
-    ]
+    const eventItems: any[] = []
+    if (timeline.traits?.events?.list) {
+        timeline.traits.events.list.forEach((event) => {
+            if (event.name) {
+                eventItems.push({
+                    id: event.id || String(Math.random()),
+                    title: event.name,
+                    subtitle: event.date ? new Date(event.date).toLocaleDateString() : undefined,
+                    image: `https://picsum.photos/seed/${event.name}/400/300`,
+                })
+            }
+        })
+    }
 
-    const milestoneEvents = timeline.traits?.milestones?.list?.map(milestone => {
-        let status: 'completed' | 'upcoming' | 'active' | undefined = undefined
-
-        if (milestone.date && timeline.details?.end_date) {
-            status = new Date(milestone.date) <= new Date(timeline.details.end_date) ? 'completed' : 'upcoming'
-        }
-
-        return {
-            id: milestone.id || `${timeline.id}-${milestone.name}`,
-            date: milestone.date || 'TBD',
-            title: milestone.name || 'Milestone',
-            description: milestone.description || undefined,
-            status: status,
-            meta: 'MILESTONE'
-        }
-    }) || []
-
-    const eventItems = timeline.traits?.events?.list?.map(event => ({
-        id: event.id || `${timeline.id}-event-${event.name}`,
-        title: event.name || 'Event',
-        subtitle: event.description || undefined,
-        label: 'TIMELINE EVENT',
-        details: [
-            { label: 'DATE', value: event.date || 'TBD' },
-            { label: 'LOCATION', value: event.location ? `${event.location[1]}, ${event.location[0]}` : 'TBD' },
-        ]
-    })) || []
-
-    const documents = timeline.assets?.documents?.filter((doc): doc is Media =>
-        typeof doc === 'object' && doc !== null && 'url' in doc
-    ).map(doc => ({
-        id: doc.id,
-        title: doc.filename || 'Document',
-        file: doc,
-        category: 'Timeline Document',
-        version: '1.0'
-    })) || []
+    const documentItems: any[] = []
+    if (timeline.assets?.documents) {
+        timeline.assets.documents.forEach((doc, idx) => {
+            const media = typeof doc === 'object' ? doc : null
+            const url = media ? getMediaUrl(media) : undefined
+            if (url && media) {
+                documentItems.push({
+                    id: String(media.id),
+                    title: media.alt || media.filename || `Document ${idx + 1}`,
+                    subtitle: media.mimeType || undefined,
+                    image: url,
+                    href: url,
+                })
+            }
+        })
+    }
 
     return (
         <main className="w-full">
-            <HeroMedia
-                id={`TML-${timeline.id}`}
+            <HeroSection
+                id="timeline-cover"
                 title={timeline.name}
-                meta={timeline.basics?.description || 'Historical Timeline'}
-                image={coverImage}
-                tags={[
-                    timeline.details?.scope || 'Timeline',
-                    timeline.details?.status || 'Draft'
-                ]}
+                subtitle={timeline.details?.scope || ''}
+                description={timeline.basics?.description || undefined}
+                backgroundImage={heroBackgroundImage}
+                alignment="center"
+                badge={timeline.details?.status || undefined}
             />
-
-            <InfoGrid
-                id="TML_SPECS"
-                title="Timeline Specifications"
-                blocks={infoBlocks}
-                columns={2}
+            <StudySection
+                id="timeline-details"
+                title="Overview"
+                subtitle="Timeline information"
+                studies={[study]}
+                variant="featured"
+                headerVariant={1}
+                footerVariant={1}
             />
-
             {milestoneEvents.length > 0 && (
-                <TimelineScroller
-                    id="TML_MILESTONES"
-                    title="Key Milestones"
+                <TimelineSection
+                    id="timeline-milestones"
+                    title="Milestones"
+                    subtitle="Key achievements along the way"
                     events={milestoneEvents}
+                    orientation={timeline.details?.orientation === 'vertical' ? 'vertical' : 'horizontal'}
+                    headerVariant={2}
+                    footerVariant={1}
                 />
             )}
-
             {eventItems.length > 0 && (
-                <DirectoryCarouselGrid
-                    id="TML_EVENTS"
-                    title="Timeline Events"
+                <GridSection
+                    id="timeline-events"
+                    title="Events"
+                    subtitle="Notable moments"
                     items={eventItems}
+                    columns={3}
+                    cardVariant={1}
+                    headerVariant={3}
+                    footerVariant={2}
                 />
             )}
-
-            {documents.length > 0 && (
-                <DocumentGrid
-                    id="TML_DOCS"
-                    title="Supporting Documents"
-                    documents={documents}
+            {documentItems.length > 0 && (
+                <GridSection
+                    id="timeline-documents"
+                    title="Documents"
+                    subtitle="Related resources"
+                    items={documentItems}
+                    columns={3}
+                    cardVariant={1}
+                    headerVariant={1}
+                    footerVariant={1}
                 />
             )}
-
-            <section className="w-full py-20 flex justify-center border-b border-black-pure">
-                <Link
-                    href={`/calendar/timelines/${slug}/details`}
-                    className="px-12 py-6 bg-black-pure text-white-pure font-mono text-sm font-bold uppercase tracking-widest hover:bg-primary-500 hover:text-black-pure transition-colors border-2 border-black-pure"
-                >
-                    View Full Details →
-                </Link>
-            </section>
         </main>
     )
 }

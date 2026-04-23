@@ -1,162 +1,181 @@
-import DocumentGrid from '@/components/Section/DocumentGrid'
-import ExpandableList from '@/components/Section/ExpandableList'
-import HeroMedia from '@/components/Section/HeroMedia'
-import InfoGrid from '@/components/Section/InfoGrid'
-import MapGrid from '@/components/Section/MapGrid'
-import PullQuote from '@/components/Section/PullQuote'
-import { Initiative, Media } from '@/payload-types'
+// app/(frontend)/about/initiatives/[slug]/page.tsx
+import GridSection from '@/components/Section/Blocks/GridSection'
+import HeroSection from '@/components/Section/Blocks/HeroSection'
+import ListSection from '@/components/Section/Blocks/ListSection'
+import MapSection from '@/components/Section/Blocks/MapSection'
+import QuoteSection from '@/components/Section/Blocks/QuoteSection'
+import StudySection from '@/components/Section/Blocks/StudySection'
+import { Media } from '@/payload-types'
 import configPromise from '@payload-config'
-import Link from 'next/link'
+import { unstable_cache } from 'next/cache'
 import { notFound } from 'next/navigation'
 import { getPayload } from 'payload'
 
-interface PageProps {
-    params: Promise<{
-        slug: string
-    }>
+function getMediaUrl(media: number | Media | null | undefined): string | undefined {
+    if (!media) return undefined
+    if (typeof media === 'object' && 'url' in media && media.url) return media.url
+    return undefined
 }
 
-async function getInitiative(slug: string): Promise<Initiative | null> {
-    const payload = await getPayload({ config: configPromise })
-    const { docs } = await payload.find({
-        collection: 'initiatives',
-        where: {
-            slug: {
-                equals: slug,
-            },
-        },
-    })
-    return docs[0] || null
-}
+const getInitiativeData = unstable_cache(
+    async (slug: string) => {
+        const payload = await getPayload({ config: configPromise })
+        const result = await payload.find({
+            collection: 'initiatives',
+            where: { slug: { equals: slug } },
+            limit: 1,
+        })
+        return result.docs[0] || null
+    },
+    ['initiative-detail'],
+    { revalidate: 3600, tags: ['initiative'] }
+)
 
-export default async function InitiativePage({ params }: PageProps) {
+export default async function InitiativePage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params
-    const initiative = await getInitiative(slug)
+    const initiative = await getInitiativeData(slug)
 
-    if (!initiative) {
-        return notFound()
+    if (!initiative) notFound()
+
+    const heroBackgroundImage = initiative.assets?.cover
+        ? getMediaUrl(initiative.assets.cover)
+        : initiative.seo?.image
+            ? getMediaUrl(initiative.seo.image)
+            : undefined
+
+    const studyImage = initiative.assets?.cover
+        ? getMediaUrl(initiative.assets.cover)
+        : initiative.assets?.thumbnail
+            ? getMediaUrl(initiative.assets.thumbnail)
+            : undefined
+
+    const study = {
+        id: String(initiative.id),
+        title: initiative.name,
+        description: initiative.basics?.description || initiative.basics?.mission || '',
+        image: studyImage || `https://picsum.photos/seed/${initiative.slug}/800/600`,
+        metrics: [
+            { label: 'Start Date', value: initiative.details?.start_date ? new Date(initiative.details.start_date).toLocaleDateString() : 'TBD' },
+            { label: 'End Date', value: initiative.details?.end_date ? new Date(initiative.details.end_date).toLocaleDateString() : 'Ongoing' },
+        ],
     }
 
-    const coverImage = initiative.assets?.cover && typeof initiative.assets.cover === 'object'
-        ? (initiative.assets.cover as Media)
+    const quoteItem = initiative.basics?.mission
+        ? {
+            id: String(initiative.id),
+            text: initiative.basics.mission,
+            author: initiative.name,
+        }
         : null
 
-    const infoBlocks = [
-        {
-            id: 'timeline',
-            label: 'TIMEFRAME',
-            title: initiative.details?.start_date ? 'ACTIVE' : 'PENDING',
-            description: initiative.basics?.description || undefined,
-            metadata: [
-                { key: 'START DATE', value: initiative.details?.start_date || 'TBD' },
-                { key: 'END DATE', value: initiative.details?.end_date || 'TBD' },
-            ]
-        },
-        {
-            id: 'mission',
-            label: 'CORE OBJECTIVE',
-            title: initiative.basics?.mission?.toUpperCase() || 'MISSION PENDING',
+    const mapLocations: any[] = []
+    if (initiative.details?.locations) {
+        mapLocations.push({
+            id: String(initiative.id),
+            name: initiative.name,
+            lat: initiative.details.locations[0],
+            lng: initiative.details.locations[1],
             description: initiative.basics?.tagline || undefined,
-            metadata: []
-        },
-    ]
+        })
+    }
 
-    const mapLocations = initiative.details?.locations ? [{
-        id: `${initiative.id}-location`,
-        title: initiative.name,
-        lat: initiative.details.locations[1],
-        lng: initiative.details.locations[0],
-        label: initiative.basics?.tagline || 'Location',
-        metadata: [
-            { label: 'START', value: initiative.details?.start_date || 'TBD' },
-            { label: 'END', value: initiative.details?.end_date || 'TBD' },
-        ]
-    }] : []
+    const expectationEntries: any[] = []
+    if (initiative.details?.expectations?.list) {
+        initiative.details.expectations.list.forEach((expectation, idx) => {
+            if (expectation.name) {
+                expectationEntries.push({
+                    id: expectation.id || `exp-${idx}`,
+                    title: expectation.name,
+                    subtitle: expectation.statement || expectation.criteria || undefined,
+                    status: expectation.type || undefined,
+                })
+            }
+        })
+    }
 
-    const expectationPanels = initiative.details?.expectations?.list?.map(exp => ({
-        id: exp.id || `${initiative.id}-exp-${exp.name}`,
-        title: exp.name || 'Expectation',
-        label: exp.type?.toUpperCase() || 'REQUIREMENT',
-        summary: exp.criteria || 'No criteria specified',
-        content: exp.statement || 'No additional details available',
-        metadata: [
-            { label: 'TYPE', value: exp.type?.toUpperCase() || 'STANDARD' },
-            { label: 'CRITERIA', value: exp.criteria || 'NOT DEFINED' },
-        ]
-    })) || []
-
-    const documents = initiative.assets?.documents?.filter((doc): doc is Media =>
-        typeof doc === 'object' && doc !== null && 'url' in doc
-    ).map(doc => ({
-        id: doc.id,
-        title: doc.filename || 'Document',
-        file: doc,
-        category: 'Initiative Document',
-        version: '1.0'
-    })) || []
+    const documentItems: any[] = []
+    if (initiative.assets?.documents) {
+        initiative.assets.documents.forEach((doc, idx) => {
+            const media = typeof doc === 'object' ? doc : null
+            const url = media ? getMediaUrl(media) : undefined
+            if (url && media) {
+                documentItems.push({
+                    id: String(media.id),
+                    title: media.alt || media.filename || `Document ${idx + 1}`,
+                    subtitle: media.mimeType || undefined,
+                    image: url,
+                    href: url,
+                })
+            }
+        })
+    }
 
     return (
         <main className="w-full">
-            <HeroMedia
-                id={`INT-${initiative.id}`}
+            <HeroSection
+                id="initiative-cover"
                 title={initiative.name}
-                meta={initiative.basics?.tagline || 'Community Initiative'}
-                image={coverImage}
-                tags={[
-                    'Initiative',
-                    initiative.details?.start_date ? 'Active' : 'Planning'
-                ]}
+                subtitle={initiative.basics?.tagline || ''}
+                description={initiative.basics?.description || undefined}
+                backgroundImage={heroBackgroundImage}
+                alignment="center"
             />
-
-            <InfoGrid
-                id="INT_SPECS"
-                title="Initiative Specifications"
-                blocks={infoBlocks}
-                columns={2}
+            <StudySection
+                id="initiative-details"
+                title="Overview"
+                subtitle="About this initiative"
+                studies={[study]}
+                variant="featured"
+                headerVariant={1}
+                footerVariant={1}
             />
-
-            <PullQuote
-                id="INT_MISSION"
-                title="Mission Statement"
-                quote={initiative.basics?.mission || initiative.basics?.description || 'Mission statement pending'}
-                attribution={initiative.basics?.tagline || 'Initiative'}
-                variant="center"
-            />
-
+            {quoteItem && (
+                <QuoteSection
+                    id="initiative-quote"
+                    title="Mission"
+                    subtitle="Our purpose"
+                    quotes={[quoteItem]}
+                    variant="grid"
+                    headerVariant={2}
+                    footerVariant={1}
+                />
+            )}
             {mapLocations.length > 0 && (
-                <MapGrid
-                    id="INT_LOCATION"
-                    title="Geographic Footprint"
+                <MapSection
+                    id="initiative-map"
+                    title="Location"
+                    subtitle="Where this takes place"
                     locations={mapLocations}
-                    initialCenter={[mapLocations[0].lng, mapLocations[0].lat]}
-                    initialZoom={12}
+                    zoom={12}
+                    headerVariant={1}
+                    footerVariant={1}
                 />
             )}
-
-            {expectationPanels.length > 0 && (
-                <ExpandableList
-                    id="INT_EXPECTATIONS"
-                    title="Expectations & Requirements"
-                    panels={expectationPanels}
+            {expectationEntries.length > 0 && (
+                <ListSection
+                    id="initiative-expectations"
+                    title="Expectations"
+                    subtitle="What we aim to achieve"
+                    entries={expectationEntries}
+                    variant="detailed"
+                    showStatus={true}
+                    showTimestamp={false}
+                    headerVariant={3}
+                    footerVariant={2}
                 />
             )}
-
-            {documents.length > 0 && (
-                <DocumentGrid
-                    id="INT_DOCS"
-                    title="Supporting Documents"
-                    documents={documents}
+            {documentItems.length > 0 && (
+                <GridSection
+                    id="initiative-documents"
+                    title="Documents"
+                    subtitle="Resources and materials"
+                    items={documentItems}
+                    columns={3}
+                    cardVariant={1}
+                    headerVariant={1}
+                    footerVariant={1}
                 />
             )}
-
-            <section className="w-full py-20 flex justify-center border-b border-black-pure">
-                <Link
-                    href={`/about/initiatives/${slug}/details`}
-                    className="px-12 py-6 bg-black-pure text-white-pure font-mono text-sm font-bold uppercase tracking-widest hover:bg-primary-500 hover:text-black-pure transition-colors border-2 border-black-pure"
-                >
-                    View Details →
-                </Link>
-            </section>
         </main>
     )
 }

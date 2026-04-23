@@ -1,126 +1,133 @@
-import ExpandableList from '@/components/Section/ExpandableList'
-import HeroMedia from '@/components/Section/HeroMedia'
-import StatsGrid from '@/components/Section/StatsGrid'
-import TimelineScroller from '@/components/Section/TimelineScroller'
-import { Media, Vacancy } from '@/payload-types'
+// app/(frontend)/opportunities/vacancies/[slug]/details/page.tsx
+import GridSection from '@/components/Section/Blocks/GridSection'
+import HeroSection from '@/components/Section/Blocks/HeroSection'
+import ListSection from '@/components/Section/Blocks/ListSection'
+import TimelineSection from '@/components/Section/Blocks/TimelineSection'
+import { Media } from '@/payload-types'
 import configPromise from '@payload-config'
+import { unstable_cache } from 'next/cache'
 import { notFound } from 'next/navigation'
 import { getPayload } from 'payload'
 
-interface PageProps {
-    params: Promise<{
-        slug: string
-    }>
+function getMediaUrl(media: number | Media | null | undefined): string | undefined {
+    if (!media) return undefined
+    if (typeof media === 'object' && 'url' in media && media.url) return media.url
+    return undefined
 }
 
-async function getVacancy(slug: string): Promise<Vacancy | null> {
-    const payload = await getPayload({ config: configPromise })
-    const { docs } = await payload.find({
-        collection: 'vacancies',
-        where: {
-            slug: {
-                equals: slug,
-            },
-        },
-        depth: 2,
-    })
-    return docs[0] || null
-}
+const getVacancyDetailsData = unstable_cache(
+    async (slug: string) => {
+        const payload = await getPayload({ config: configPromise })
+        const result = await payload.find({
+            collection: 'vacancies',
+            where: { slug: { equals: slug } },
+            limit: 1,
+        })
+        return result.docs[0] || null
+    },
+    ['vacancy-details'],
+    { revalidate: 3600, tags: ['vacancy-details'] }
+)
 
-export default async function VacancyDetailsPage({ params }: PageProps) {
+export default async function VacancyDetailsPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params
-    const vacancy = await getVacancy(slug)
+    const vacancy = await getVacancyDetailsData(slug)
 
-    if (!vacancy) {
-        return notFound()
+    if (!vacancy) notFound()
+
+    const heroBackgroundImage = vacancy.assets?.thumbnail
+        ? getMediaUrl(vacancy.assets.thumbnail)
+        : vacancy.seo?.image
+            ? getMediaUrl(vacancy.seo.image)
+            : undefined
+
+    const positionEvents: any[] = []
+    if (vacancy.details?.positions?.list) {
+        vacancy.details.positions.list.forEach((pos, idx) => {
+            if (pos.title) {
+                positionEvents.push({
+                    id: pos.id || `pos-${idx}`,
+                    date: pos.start ? new Date(pos.start).toLocaleDateString() : 'TBD',
+                    title: pos.title,
+                    description: pos.end ? `Until ${new Date(pos.end).toLocaleDateString()}` : undefined,
+                    status: idx === 0 ? 'active' as const : 'upcoming' as const,
+                })
+            }
+        })
     }
 
-    const thumbnailImage = vacancy.assets?.thumbnail && typeof vacancy.assets.thumbnail === 'object'
-        ? vacancy.assets.thumbnail as Media
-        : null
+    const specItems: any[] = []
+    if (vacancy.details?.specifications?.list) {
+        vacancy.details.specifications.list.forEach((spec) => {
+            if (spec.parameter) {
+                specItems.push({
+                    id: spec.id || String(Math.random()),
+                    title: spec.parameter,
+                    subtitle: spec.value || spec.description || undefined,
+                })
+            }
+        })
+    }
 
-    const timelineEvents = vacancy.details?.positions?.list?.map(pos => {
-        let status: 'completed' | 'active' | 'upcoming' | undefined = 'active'
-
-        if (pos.end) {
-            status = new Date(pos.end) <= new Date() ? 'completed' : 'active'
-        }
-
-        return {
-            id: pos.id || `${vacancy.id}-pos-${pos.title}`,
-            date: pos.start || 'TBD',
-            title: pos.title || 'Position',
-            description: pos.end ? `Through ${pos.end}` : 'Open-ended',
-            status: status
-        }
-    }) || []
-
-    const specStats = [
-        {
-            label: 'DEPARTMENT',
-            value: vacancy.details?.department?.toUpperCase() || 'TBD',
-            unit: '',
-            description: 'Team assignment'
-        },
-        {
-            label: 'CONTRACT',
-            value: vacancy.details?.contract?.toUpperCase()?.replace(/_/g, ' ') || 'FULL_TIME',
-            unit: '',
-            description: 'Employment type'
-        },
-        {
-            label: 'LOCATION',
-            value: vacancy.details?.locations ? 'ON-SITE' : 'REMOTE',
-            unit: '',
-            description: 'Work arrangement'
-        },
-    ]
-
-    const expectationPanels = vacancy.details?.expectations?.list?.map(exp => ({
-        id: exp.id || `${vacancy.id}-exp-${exp.name}`,
-        title: exp.name || 'Expectation',
-        label: exp.type?.toUpperCase() || 'REQUIREMENT',
-        summary: exp.criteria || 'Must meet criteria',
-        content: exp.statement || 'No additional details',
-        metadata: [
-            { label: 'TYPE', value: exp.type?.toUpperCase() || 'STANDARD' },
-            { label: 'CRITERIA', value: exp.criteria || 'TBD' },
-        ]
-    })) || []
+    const expectationEntries: any[] = []
+    if (vacancy.details?.expectations?.list) {
+        vacancy.details.expectations.list.forEach((exp) => {
+            if (exp.name) {
+                expectationEntries.push({
+                    id: exp.id || String(Math.random()),
+                    title: exp.name,
+                    subtitle: exp.statement || exp.criteria || undefined,
+                    status: exp.type || undefined,
+                })
+            }
+        })
+    }
 
     return (
         <main className="w-full">
-            <HeroMedia
-                id={`VAC-${vacancy.id}`}
-                title={vacancy.basics.title}
-                meta={vacancy.basics.description || 'Position Opening'}
-                image={thumbnailImage}
-                tags={[
-                    vacancy.details?.department || 'Position',
-                    vacancy.details?.contract?.toUpperCase()?.replace(/_/g, ' ') || 'Full Time'
-                ]}
+            <HeroSection
+                id="vacancy-details-cover"
+                title={vacancy.name}
+                subtitle={vacancy.basics.title}
+                description={vacancy.basics.description || undefined}
+                backgroundImage={heroBackgroundImage}
+                alignment="center"
+                badge={vacancy.details?.department || vacancy.details?.contract || undefined}
             />
-
-            {timelineEvents.length > 0 && (
-                <TimelineScroller
-                    id="VAC_POSITIONS"
-                    title="Position Timeline"
-                    events={timelineEvents}
+            {positionEvents.length > 0 && (
+                <TimelineSection
+                    id="vacancy-positions"
+                    title="Available Positions"
+                    subtitle="Open roles and timelines"
+                    events={positionEvents}
+                    orientation="horizontal"
+                    headerVariant={1}
+                    footerVariant={1}
                 />
             )}
-
-            <StatsGrid
-                id="VAC_SPECS_STATS"
-                title="Position Specifications"
-                items={specStats}
-                columns={3}
-            />
-
-            {expectationPanels.length > 0 && (
-                <ExpandableList
-                    id="VAC_EXPECTATIONS"
-                    title="Role Expectations"
-                    panels={expectationPanels}
+            {specItems.length > 0 && (
+                <GridSection
+                    id="vacancy-specifications"
+                    title="Specifications"
+                    subtitle="Role requirements"
+                    items={specItems}
+                    columns={3}
+                    cardVariant={1}
+                    headerVariant={2}
+                    footerVariant={1}
+                />
+            )}
+            {expectationEntries.length > 0 && (
+                <ListSection
+                    id="vacancy-expectations"
+                    title="Expectations"
+                    subtitle="What we're looking for"
+                    entries={expectationEntries}
+                    variant="detailed"
+                    showStatus={true}
+                    showTimestamp={false}
+                    headerVariant={3}
+                    footerVariant={2}
                 />
             )}
         </main>

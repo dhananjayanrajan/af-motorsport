@@ -1,145 +1,160 @@
-import CentralMedia from '@/components/Section/CentralMedia'
-import GalleryGrid from '@/components/Section/GalleryGrid'
-import InfoGrid from '@/components/Section/InfoGrid'
-import VideoCarousel from '@/components/Section/VideoCarousel'
-import { Individual, Media, Onboarding } from '@/payload-types'
+// app/(frontend)/opportunities/onboardings/[slug]/page.tsx
+import CarouselSection from '@/components/Section/Blocks/CarouselSection'
+import FeatureSection from '@/components/Section/Blocks/FeatureSection'
+import MasonrySection from '@/components/Section/Blocks/MasonrySection'
+import StudySection from '@/components/Section/Blocks/StudySection'
+import { Media } from '@/payload-types'
 import configPromise from '@payload-config'
-import Link from 'next/link'
+import { unstable_cache } from 'next/cache'
 import { notFound } from 'next/navigation'
 import { getPayload } from 'payload'
 
-interface PageProps {
-    params: Promise<{
-        slug: string
-    }>
+function getMediaUrl(media: number | Media | null | undefined): string | undefined {
+    if (!media) return undefined
+    if (typeof media === 'object' && 'url' in media && media.url) return media.url
+    return undefined
 }
 
-async function getOnboarding(slug: string): Promise<Onboarding | null> {
-    const payload = await getPayload({ config: configPromise })
-    const { docs } = await payload.find({
-        collection: 'onboardings',
-        where: {
-            slug: {
-                equals: slug,
-            },
-        },
-        depth: 2,
-    })
-    return docs[0] || null
-}
+const getOnboardingData = unstable_cache(
+    async (slug: string) => {
+        const payload = await getPayload({ config: configPromise })
+        const result = await payload.find({
+            collection: 'onboardings',
+            where: { slug: { equals: slug } },
+            limit: 1,
+        })
+        return result.docs[0] || null
+    },
+    ['onboarding-detail'],
+    { revalidate: 3600, tags: ['onboarding'] }
+)
 
-export default async function OnboardingPage({ params }: PageProps) {
+export default async function OnboardingPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params
-    const onboarding = await getOnboarding(slug)
+    const onboarding = await getOnboardingData(slug)
 
-    if (!onboarding) {
-        return notFound()
-    }
+    if (!onboarding) notFound()
 
-    const videoSlides = onboarding.assets?.videos?.filter((video): video is Media =>
-        typeof video === 'object' && video !== null && 'url' in video
-    ).map(video => ({
-        id: video.id.toString(),
-        title: video.filename || 'Video',
-        meta: 'ONBOARDING',
-        video: video,
-        poster: video.thumbnailURL ? { url: video.thumbnailURL } as Media : video,
-    })) || []
-
-    const certificateImage = onboarding.assets?.completion_certificate && typeof onboarding.assets.completion_certificate === 'object'
-        ? onboarding.assets.completion_certificate as Media
-        : null
-
-    const assignedToName = onboarding.details.assigned_to && typeof onboarding.details.assigned_to === 'object'
-        ? `${(onboarding.details.assigned_to as Individual).first_name} ${(onboarding.details.assigned_to as Individual).last_name}`
-        : 'TBD'
-
-    const infoBlocks = [
-        {
-            id: 'overview',
-            label: 'ONBOARDING',
-            title: onboarding.name,
-            description: onboarding.basics?.description || undefined,
-            metadata: [
-                { key: 'TYPE', value: onboarding.details.type?.toUpperCase() || 'DRIVER' },
-                { key: 'FORMAT', value: onboarding.details.format?.toUpperCase()?.replace(/_/g, ' ') || 'IN_PERSON' },
-                { key: 'STATUS', value: onboarding.details.status?.toUpperCase() || 'DRAFT' },
-            ]
-        },
-        {
-            id: 'assignment',
-            label: 'ASSIGNMENT',
-            title: assignedToName,
-            description: 'Assigned individual',
-            metadata: [
-                { key: 'START DATE', value: onboarding.details.start_date?.split('T')[0] || 'TBD' },
-                { key: 'END DATE', value: onboarding.details.end_date?.split('T')[0] || 'TBD' },
-            ]
-        },
-    ]
-
-    const galleryItems: { id: string; image: Media; title: string; category: string }[] = []
-
-    if (onboarding.assets?.thumbnail && typeof onboarding.assets.thumbnail === 'object') {
-        galleryItems.push({
-            id: (onboarding.assets.thumbnail as Media).id.toString(),
-            image: onboarding.assets.thumbnail as Media,
-            title: (onboarding.assets.thumbnail as Media).filename || 'Thumbnail',
-            category: onboarding.details.type?.toUpperCase() || 'ONBOARDING'
+    const videoSlides: any[] = []
+    if (onboarding.assets?.videos) {
+        onboarding.assets.videos.forEach((video, idx) => {
+            const media = typeof video === 'object' ? video : null
+            const url = media ? getMediaUrl(media) : undefined
+            if (url && media) {
+                videoSlides.push({
+                    id: String(media.id),
+                    title: media.alt || `Video ${idx + 1}`,
+                    description: onboarding.basics?.description || undefined,
+                    image: onboarding.assets?.thumbnail ? getMediaUrl(onboarding.assets.thumbnail) : `https://picsum.photos/seed/${onboarding.slug}-${idx}/800/600`,
+                    ctaLabel: 'Watch',
+                    ctaHref: url,
+                })
+            }
         })
     }
 
-    if (onboarding.assets?.cover && typeof onboarding.assets.cover === 'object') {
-        galleryItems.push({
-            id: (onboarding.assets.cover as Media).id.toString(),
-            image: onboarding.assets.cover as Media,
-            title: (onboarding.assets.cover as Media).filename || 'Cover',
-            category: onboarding.details.type?.toUpperCase() || 'ONBOARDING'
-        })
+    const studyImage = onboarding.assets?.cover
+        ? getMediaUrl(onboarding.assets.cover)
+        : onboarding.assets?.thumbnail
+            ? getMediaUrl(onboarding.assets.thumbnail)
+            : undefined
+
+    const study = {
+        id: String(onboarding.id),
+        title: onboarding.name,
+        description: onboarding.basics?.description || '',
+        image: studyImage || `https://picsum.photos/seed/${onboarding.slug}/800/600`,
+        metrics: [
+            { label: 'Type', value: onboarding.details?.type || 'N/A' },
+            { label: 'Format', value: onboarding.details?.format || 'N/A' },
+            { label: 'Status', value: onboarding.details?.status || 'N/A' },
+            { label: 'Start', value: onboarding.details?.start_date ? new Date(onboarding.details.start_date).toLocaleDateString() : 'TBD' },
+        ],
+    }
+
+    const certificateFeatures: any[] = []
+    if (onboarding.assets?.completion_certificate) {
+        const certUrl = getMediaUrl(onboarding.assets.completion_certificate)
+        if (certUrl) {
+            certificateFeatures.push({
+                id: 'certificate',
+                title: 'Completion Certificate',
+                description: 'Awarded upon successful completion',
+                image: certUrl,
+            })
+        }
+    }
+
+    const galleryItems: any[] = []
+    if (onboarding.assets?.thumbnail) {
+        const url = getMediaUrl(onboarding.assets.thumbnail)
+        if (url) {
+            galleryItems.push({
+                id: `thumb-${onboarding.id}`,
+                title: onboarding.name,
+                image: url,
+                height: 'medium' as const,
+            })
+        }
+    }
+    if (onboarding.assets?.cover) {
+        const url = getMediaUrl(onboarding.assets.cover)
+        if (url) {
+            galleryItems.push({
+                id: `cover-${onboarding.id}`,
+                title: onboarding.name,
+                image: url,
+                height: 'tall' as const,
+            })
+        }
     }
 
     return (
         <main className="w-full">
             {videoSlides.length > 0 && (
-                <VideoCarousel
+                <CarouselSection
+                    id="onboarding-videos"
+                    title="Onboarding Videos"
+                    subtitle={onboarding.name}
                     slides={videoSlides}
-                    sectionTitle="ONBOARDING_MEDIA"
+                    variant="full"
+                    headerVariant={1}
+                    footerVariant={1}
                 />
             )}
-
-            <InfoGrid
-                id="ONB_SPECS"
-                title="Onboarding Specifications"
-                blocks={infoBlocks}
-                columns={2}
+            <StudySection
+                id="onboarding-details"
+                title="Onboarding Overview"
+                subtitle="Key information"
+                studies={[study]}
+                variant="featured"
+                headerVariant={1}
+                footerVariant={1}
+                ctaLabel="View Full Details"
+                ctaPath={`/opportunities/onboardings/${onboarding.slug}/details`}
             />
-
-            {certificateImage && (
-                <CentralMedia
-                    id="ONB_CERT"
-                    title="Completion Certificate"
-                    meta={onboarding.name}
-                    image={certificateImage}
-                    tags={['CERTIFICATE', onboarding.details.type?.toUpperCase() || 'ONBOARDING']}
+            {certificateFeatures.length > 0 && (
+                <FeatureSection
+                    id="onboarding-certificate"
+                    title="Certificate"
+                    subtitle="Recognition of completion"
+                    features={certificateFeatures}
+                    columns={2}
+                    headerVariant={2}
+                    footerVariant={1}
                 />
             )}
-
             {galleryItems.length > 0 && (
-                <GalleryGrid
-                    id="ONB_GALLERY"
-                    title="Onboarding Gallery"
+                <MasonrySection
+                    id="onboarding-gallery"
+                    title="Gallery"
+                    subtitle="Onboarding imagery"
                     items={galleryItems}
+                    columns={2}
+                    headerVariant={3}
+                    footerVariant={2}
                 />
             )}
-
-            <section className="w-full py-20 flex justify-center border-b border-black-pure">
-                <Link
-                    href={`/opportunities/onboardings/${slug}/details`}
-                    className="px-12 py-6 bg-black-pure text-white-pure font-mono text-sm font-bold uppercase tracking-widest hover:bg-primary-500 hover:text-black-pure transition-colors border-2 border-black-pure"
-                >
-                    View Full Details →
-                </Link>
-            </section>
         </main>
     )
 }

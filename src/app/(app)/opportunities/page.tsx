@@ -1,127 +1,200 @@
-import DirectoryGrid from '@/components/Section/DirectoryGrid'
-import DirectoryList from '@/components/Section/DirectoryList'
-import { Media } from '@/payload-types'
+// app/(frontend)/opportunities/page.tsx
+import GridSection from '@/components/Section/Blocks/GridSection'
+import ListSection from '@/components/Section/Blocks/ListSection'
+import { Media, Meetup, Onboarding, Program, Vacancy } from '@/payload-types'
 import configPromise from '@payload-config'
+import { unstable_cache } from 'next/cache'
 import { getPayload } from 'payload'
 
-async function getOpportunitiesData() {
-    const payload = await getPayload({ config: configPromise })
-
-    const { docs: programs } = await payload.find({
-        collection: 'programs',
-        limit: 12,
-        sort: '-createdAt',
-    })
-
-    const { docs: onboardings } = await payload.find({
-        collection: 'onboardings',
-        limit: 10,
-        sort: '-createdAt',
-    })
-
-    const { docs: vacancies } = await payload.find({
-        collection: 'vacancies',
-        limit: 10,
-        sort: '-createdAt',
-    })
-
-    const { docs: meetups } = await payload.find({
-        collection: 'meetups',
-        limit: 12,
-        sort: '-details.start_date',
-    })
-
-    return { programs, onboardings, vacancies, meetups }
+function getMediaUrl(media: number | Media | null | undefined): string | undefined {
+    if (!media) return undefined
+    if (typeof media === 'object' && 'url' in media && media.url) return media.url
+    return undefined
 }
+
+const getOpportunitiesData = unstable_cache(
+    async () => {
+        const payload = await getPayload({ config: configPromise })
+
+        const [programs, onboardings, vacancies, meetups] = await Promise.all([
+            payload.find({
+                collection: 'programs',
+                limit: 12,
+                sort: '-createdAt',
+                select: {
+                    id: true,
+                    name: true,
+                    slug: true,
+                    basics: true,
+                    details: true,
+                    assets: true,
+                },
+            }),
+            payload.find({
+                collection: 'onboardings',
+                limit: 20,
+                sort: '-createdAt',
+                select: {
+                    id: true,
+                    name: true,
+                    slug: true,
+                    basics: true,
+                    details: true,
+                    assets: true,
+                },
+            }),
+            payload.find({
+                collection: 'vacancies',
+                limit: 20,
+                sort: '-createdAt',
+                select: {
+                    id: true,
+                    name: true,
+                    slug: true,
+                    basics: true,
+                    details: true,
+                    assets: true,
+                },
+            }),
+            payload.find({
+                collection: 'meetups',
+                limit: 12,
+                sort: 'details.start_date',
+                select: {
+                    id: true,
+                    name: true,
+                    slug: true,
+                    basics: true,
+                    details: true,
+                    assets: true,
+                },
+            }),
+        ])
+
+        return {
+            programs: programs.docs as Program[],
+            onboardings: onboardings.docs as Onboarding[],
+            vacancies: vacancies.docs as Vacancy[],
+            meetups: meetups.docs as Meetup[],
+        }
+    },
+    ['opportunities-page-data'],
+    { revalidate: 3600, tags: ['opportunities'] }
+)
 
 export default async function OpportunitiesPage() {
     const { programs, onboardings, vacancies, meetups } = await getOpportunitiesData()
 
-    const programItems = programs.map(program => {
-        const coverImage = program.assets?.cover && typeof program.assets.cover === 'object'
-            ? program.assets.cover as Media
-            : null
+    const programItems: any[] = programs.map((program: Program) => {
+        const imageUrl = program.assets?.thumbnail
+            ? getMediaUrl(program.assets.thumbnail)
+            : program.assets?.cover
+                ? getMediaUrl(program.assets.cover)
+                : `https://picsum.photos/seed/${program.slug}/400/300`
 
         return {
-            id: program.id.toString(),
+            id: String(program.id),
             title: program.name,
             subtitle: program.basics?.tagline || program.details?.objective || undefined,
-            label: program.basics?.identifiers?.code || program.details?.type?.toUpperCase() || 'PROGRAM',
-            image: coverImage,
+            image: imageUrl,
             href: `/opportunities/programs/${program.slug}`,
-            metadata: [
-                { label: 'STATUS', value: program.details?.status?.toUpperCase() || 'ACTIVE' },
-                { label: 'DURATION', value: program.details?.duration?.toUpperCase() || 'TBD' },
-            ]
+            label: program.details?.type || program.basics?.identifiers?.code || undefined,
         }
     })
 
-    const onboardingItems = onboardings.map(onboarding => ({
-        id: onboarding.id.toString(),
+    const onboardingEntries: any[] = onboardings.map((onboarding: Onboarding) => ({
+        id: String(onboarding.id),
         title: onboarding.name,
-        subtitle: onboarding.basics?.description || onboarding.details?.type || undefined,
-        tag: onboarding.basics?.identifiers?.code || 'ONBOARDING',
+        subtitle: onboarding.basics?.description || undefined,
+        status: onboarding.details?.status || undefined,
+        tag: onboarding.details?.type || onboarding.basics?.identifiers?.code || undefined,
         href: `/opportunities/onboardings/${onboarding.slug}`,
-        timestamp: onboarding.details?.start_date?.split('T')[0] || onboarding.createdAt.split('T')[0],
-        status: onboarding.details?.status?.toUpperCase() || 'DRAFT'
     }))
 
-    const vacancyItems = vacancies.map(vacancy => ({
-        id: vacancy.id.toString(),
-        title: vacancy.basics.title,
-        subtitle: vacancy.basics.description || vacancy.details?.department || undefined,
-        tag: vacancy.details?.contract?.toUpperCase() || 'FULL_TIME',
+    const vacancyEntries: any[] = vacancies.map((vacancy: Vacancy) => ({
+        id: String(vacancy.id),
+        title: vacancy.name,
+        subtitle: vacancy.basics?.description || vacancy.basics.title || undefined,
+        status: vacancy.details?.contract || undefined,
+        tag: vacancy.details?.department || undefined,
         href: `/opportunities/vacancies/${vacancy.slug}`,
-        timestamp: vacancy.createdAt.split('T')[0],
-        status: 'OPEN'
     }))
 
-    const meetupItems = meetups.map(meetup => {
-        const coverImage = meetup.assets?.cover && typeof meetup.assets.cover === 'object'
-            ? meetup.assets.cover as Media
-            : null
+    const meetupItems: any[] = meetups.map((meetup: Meetup) => {
+        const imageUrl = meetup.assets?.thumbnail
+            ? getMediaUrl(meetup.assets.thumbnail)
+            : meetup.assets?.cover
+                ? getMediaUrl(meetup.assets.cover)
+                : `https://picsum.photos/seed/${meetup.slug}/400/300`
 
         return {
-            id: meetup.id.toString(),
+            id: String(meetup.id),
             title: meetup.name,
-            subtitle: meetup.basics?.description || meetup.details?.format || undefined,
-            label: meetup.details?.access?.toUpperCase() || 'MEETUP',
-            image: coverImage,
+            subtitle: meetup.basics?.description || undefined,
+            image: imageUrl,
             href: `/opportunities/meetups/${meetup.slug}`,
-            metadata: [
-                { label: 'FORMAT', value: meetup.details?.format?.toUpperCase() || 'IN_PERSON' },
-                { label: 'DATE', value: meetup.details.start_date.split('T')[0] },
-            ]
+            label: meetup.details?.format || undefined,
+            metadata: {
+                Date: meetup.details?.start_date ? new Date(meetup.details.start_date).toLocaleDateString() : 'TBD',
+                Access: meetup.details?.access || 'N/A',
+            },
         }
     })
 
     return (
         <main className="w-full">
-            <DirectoryGrid
-                id="OPP_PROGRAMS"
-                title="Development Programs"
-                items={programItems}
-                variant="portrait"
-            />
-
-            <DirectoryList
-                id="OPP_ONBOARDINGS"
-                title="Onboarding Processes"
-                items={onboardingItems}
-            />
-
-            <DirectoryList
-                id="OPP_VACANCIES"
-                title="Open Positions"
-                items={vacancyItems}
-            />
-
-            <DirectoryGrid
-                id="OPP_MEETUPS"
-                title="Upcoming Meetups"
-                items={meetupItems}
-                variant="landscape"
-            />
+            {programItems.length > 0 && (
+                <GridSection
+                    id="opportunities-programs"
+                    title="Programs"
+                    subtitle="Development and training opportunities"
+                    items={programItems}
+                    columns={3}
+                    cardVariant={1}
+                    showMetadata={false}
+                    headerVariant={1}
+                    footerVariant={1}
+                />
+            )}
+            {onboardingEntries.length > 0 && (
+                <ListSection
+                    id="opportunities-onboardings"
+                    title="Onboarding"
+                    subtitle="Get started with our organization"
+                    entries={onboardingEntries}
+                    variant="detailed"
+                    showStatus={true}
+                    showTimestamp={false}
+                    headerVariant={2}
+                    footerVariant={1}
+                />
+            )}
+            {vacancyEntries.length > 0 && (
+                <ListSection
+                    id="opportunities-vacancies"
+                    title="Vacancies"
+                    subtitle="Current job openings"
+                    entries={vacancyEntries}
+                    variant="detailed"
+                    showStatus={true}
+                    showTimestamp={false}
+                    headerVariant={3}
+                    footerVariant={2}
+                />
+            )}
+            {meetupItems.length > 0 && (
+                <GridSection
+                    id="opportunities-meetups"
+                    title="Meetups"
+                    subtitle="Upcoming events and gatherings"
+                    items={meetupItems}
+                    columns={3}
+                    cardVariant={1}
+                    showMetadata={true}
+                    headerVariant={1}
+                    footerVariant={1}
+                />
+            )}
         </main>
     )
 }

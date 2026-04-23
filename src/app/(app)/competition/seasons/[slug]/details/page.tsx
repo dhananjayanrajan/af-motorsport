@@ -1,113 +1,130 @@
-import DirectoryGrid from '@/components/Section/DirectoryGrid'
-import HeroMedia from '@/components/Section/HeroMedia'
-import StatsGrid from '@/components/Section/StatsGrid'
-import { Media, Season, Series } from '@/payload-types'
+// app/(frontend)/competition/seasons/[slug]/details/page.tsx
+import GridSection from '@/components/Section/Blocks/GridSection'
+import HeroSection from '@/components/Section/Blocks/HeroSection'
+import { Media } from '@/payload-types'
 import configPromise from '@payload-config'
+import { unstable_cache } from 'next/cache'
 import { notFound } from 'next/navigation'
 import { getPayload } from 'payload'
 
-interface PageProps {
-    params: Promise<{
-        slug: string
-    }>
+function getMediaUrl(media: number | Media | null | undefined): string | undefined {
+    if (!media) return undefined
+    if (typeof media === 'object' && 'url' in media && media.url) return media.url
+    return undefined
 }
 
-async function getSeason(slug: string): Promise<Season | null> {
-    const payload = await getPayload({ config: configPromise })
-    const { docs } = await payload.find({
-        collection: 'seasons',
-        where: {
-            slug: {
-                equals: slug,
-            },
-        },
-        depth: 2,
-    })
-    return docs[0] || null
-}
+const getSeasonDetailsData = unstable_cache(
+    async (slug: string) => {
+        const payload = await getPayload({ config: configPromise })
+        const result = await payload.find({
+            collection: 'seasons',
+            where: { slug: { equals: slug } },
+            limit: 1,
+        })
+        return result.docs[0] || null
+    },
+    ['season-details'],
+    { revalidate: 3600, tags: ['season-details'] }
+)
 
-export default async function SeasonDetailsPage({ params }: PageProps) {
+export default async function SeasonDetailsPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params
-    const season = await getSeason(slug)
+    const season = await getSeasonDetailsData(slug)
 
-    if (!season) {
-        return notFound()
-    }
+    if (!season) notFound()
 
-    const coverImage = season.assets?.cover && typeof season.assets.cover === 'object'
-        ? (season.assets.cover as Media)
-        : null
+    const heroBackgroundImage = season.assets?.cover
+        ? getMediaUrl(season.assets.cover)
+        : season.seo?.image
+            ? getMediaUrl(season.seo.image)
+            : undefined
 
-    const statsItems = [
+    const specItems: any[] = [
         {
-            label: 'ENTRIES',
-            value: season.details.entries?.toString() || '0',
-            unit: 'TEAMS',
-            description: 'Registered competitors'
+            id: 'entries',
+            title: 'Total Entries',
+            subtitle: season.details?.entries ? String(season.details.entries) : 'N/A',
         },
         {
-            label: 'RACES',
-            value: season.details.races?.toString() || '0',
-            unit: 'EVENTS',
-            description: 'Scheduled races'
+            id: 'races',
+            title: 'Total Races',
+            subtitle: season.details?.races ? String(season.details.races) : 'N/A',
         },
         {
-            label: 'STATUS',
-            value: season.details.entries ? 'ACTIVE' : 'PENDING',
-            unit: '',
-            description: 'Season status'
+            id: 'code',
+            title: 'Season Code',
+            subtitle: season.basics?.identifiers?.code || season.basics?.identifiers?.abbreviation || 'N/A',
         },
     ]
 
-    let seriesImage: Media | null = null
-    const seriesObj = season.details.series
-    if (seriesObj && typeof seriesObj === 'object' && 'assets' in seriesObj) {
-        const seriesAsset = (seriesObj as Series).assets?.thumbnail
-        if (seriesAsset && typeof seriesAsset === 'object') {
-            seriesImage = seriesAsset as Media
+    const seriesItems: any[] = []
+    if (season.details.series) {
+        const series = season.details.series
+        if (typeof series === 'object' && 'name' in series) {
+            const seriesImage = series.assets?.thumbnail
+                ? getMediaUrl(series.assets.thumbnail)
+                : series.assets?.logo
+                    ? getMediaUrl(series.assets.logo)
+                    : series.assets?.cover
+                        ? getMediaUrl(series.assets.cover)
+                        : `https://picsum.photos/seed/${series.slug}/400/300`
+
+            seriesItems.push({
+                id: String(series.id),
+                title: series.name,
+                subtitle: series.basics?.tagline || undefined,
+                image: seriesImage,
+                href: `/competition/series/${series.slug}`,
+                label: series.details?.status || undefined,
+            })
         }
     }
 
-    const seriesItem = seriesObj && typeof seriesObj === 'object'
-        ? [{
-            id: (seriesObj as Series).id.toString(),
-            title: (seriesObj as Series).name,
-            subtitle: (seriesObj as Series).basics?.tagline || undefined,
-            label: (seriesObj as Series).basics?.identifiers?.code || 'SERIES',
-            image: seriesImage,
-            href: `/competition/series/${(seriesObj as Series).slug}`,
-            metadata: [
-                { label: 'STATUS', value: (seriesObj as Series).details?.status || 'Active' },
-            ]
-        }]
-        : []
+    const documentItems: any[] = []
 
     return (
         <main className="w-full">
-            <HeroMedia
-                id={season.basics?.identifiers?.code || `SSN-${season.id}`}
+            <HeroSection
+                id="season-details-cover"
                 title={season.name}
-                meta={season.basics?.tagline || 'Technical Specifications'}
-                image={coverImage}
-                tags={[
-                    'Season',
-                    'Details'
-                ]}
+                subtitle="Season Specifications"
+                description={season.basics?.description || undefined}
+                backgroundImage={heroBackgroundImage}
+                alignment="center"
+                badge={season.basics?.identifiers?.code || undefined}
             />
-
-            <StatsGrid
-                id="SSN_STATS"
-                title="Season Statistics"
-                items={statsItems}
+            <GridSection
+                id="season-specifications"
+                title="Specifications"
+                subtitle="Season details"
+                items={specItems}
                 columns={3}
+                cardVariant={1}
+                headerVariant={1}
+                footerVariant={1}
             />
-
-            {seriesItem.length > 0 && (
-                <DirectoryGrid
-                    id="SSN_SERIES"
-                    title="Parent Series"
-                    items={seriesItem}
-                    variant="square"
+            {seriesItems.length > 0 && (
+                <GridSection
+                    id="season-series"
+                    title="Series"
+                    subtitle="Parent championship"
+                    items={seriesItems}
+                    columns={1}
+                    cardVariant={1}
+                    headerVariant={2}
+                    footerVariant={1}
+                />
+            )}
+            {documentItems.length > 0 && (
+                <GridSection
+                    id="season-documents"
+                    title="Documents"
+                    subtitle="Season documentation"
+                    items={documentItems}
+                    columns={3}
+                    cardVariant={1}
+                    headerVariant={3}
+                    footerVariant={2}
                 />
             )}
         </main>

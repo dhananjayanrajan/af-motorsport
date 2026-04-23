@@ -1,165 +1,156 @@
-import GalleryGrid from '@/components/Section/GalleryGrid'
-import HeroMedia from '@/components/Section/HeroMedia'
-import InfoGrid from '@/components/Section/InfoGrid'
-import ProgressScroller from '@/components/Section/ProgressScroller'
-import { Media, Series } from '@/payload-types'
+// app/(frontend)/competition/series/[slug]/page.tsx
+import HeroSection from '@/components/Section/Blocks/HeroSection'
+import MasonrySection from '@/components/Section/Blocks/MasonrySection'
+import ScrollSection from '@/components/Section/Blocks/ScrollSection'
+import StudySection from '@/components/Section/Blocks/StudySection'
+import { Media } from '@/payload-types'
 import configPromise from '@payload-config'
-import Link from 'next/link'
+import { unstable_cache } from 'next/cache'
 import { notFound } from 'next/navigation'
 import { getPayload } from 'payload'
 
-interface PageProps {
-    params: Promise<{
-        slug: string
-    }>
+function getMediaUrl(media: number | Media | null | undefined): string | undefined {
+    if (!media) return undefined
+    if (typeof media === 'object' && 'url' in media && media.url) return media.url
+    return undefined
 }
 
-async function getSeries(slug: string): Promise<Series | null> {
-    const payload = await getPayload({ config: configPromise })
-    const { docs } = await payload.find({
-        collection: 'series',
-        where: {
-            slug: {
-                equals: slug,
-            },
-        },
-        depth: 1,
-    })
-    return docs[0] || null
-}
+const getSeriesData = unstable_cache(
+    async (slug: string) => {
+        const payload = await getPayload({ config: configPromise })
+        const result = await payload.find({
+            collection: 'series',
+            where: { slug: { equals: slug } },
+            limit: 1,
+        })
+        return result.docs[0] || null
+    },
+    ['series-detail'],
+    { revalidate: 3600, tags: ['series'] }
+)
 
-export default async function SeriesPage({ params }: PageProps) {
+export default async function SeriesPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params
-    const series = await getSeries(slug)
+    const series = await getSeriesData(slug)
 
-    if (!series) {
-        return notFound()
-    }
+    if (!series) notFound()
 
-    const heroImage = series.assets?.cover && typeof series.assets.cover === 'object'
-        ? (series.assets.cover as Media)
-        : null
+    const heroBackgroundImage = series.assets?.cover
+        ? getMediaUrl(series.assets.cover)
+        : series.seo?.image
+            ? getMediaUrl(series.seo.image)
+            : undefined
 
-    const infoBlocks = [
-        {
-            id: 'status',
-            label: 'STATUS',
-            title: series.details?.status?.toUpperCase() || 'ACTIVE',
-            description: series.basics?.description || undefined,
-            metadata: [
-                { key: 'ACCESS', value: series.details?.access || 'Public' },
-                { key: 'START DATE', value: series.details?.start_date || 'TBD' },
-                { key: 'END DATE', value: series.details?.end_date || 'TBD' },
-            ]
-        },
-        {
-            id: 'identity',
-            label: 'IDENTITY',
-            title: series.basics?.identifiers?.code || series.name,
-            description: series.basics?.tagline || undefined,
-            metadata: [
-                { key: 'ABBREVIATION', value: series.basics?.identifiers?.abbreviation || 'N/A' },
-            ]
-        },
+    const heroActions = [
+        { label: 'View Details', href: `/competition/series/${series.slug}/details`, variant: 'primary' as const },
     ]
 
-    const historySteps = []
+    const studyImage = series.assets?.cover
+        ? getMediaUrl(series.assets.cover)
+        : series.assets?.logo
+            ? getMediaUrl(series.assets.logo)
+            : series.assets?.thumbnail
+                ? getMediaUrl(series.assets.thumbnail)
+                : undefined
 
-    if (series.details?.predecessor && typeof series.details.predecessor === 'object') {
-        historySteps.push({
-            id: 'predecessor',
-            index: '01',
-            heading: 'Predecessor',
-            subheading: (series.details.predecessor as Series).name,
-            body: 'Previous iteration of this series',
-            percentage: 100
+    const study = {
+        id: String(series.id),
+        title: series.name,
+        description: series.basics?.description || series.basics?.tagline || '',
+        image: studyImage || `https://picsum.photos/seed/${series.slug}/800/600`,
+        metrics: [
+            { label: 'Status', value: series.details?.status || 'N/A' },
+            { label: 'Access', value: series.details?.access || 'N/A' },
+            { label: 'Start', value: series.details?.start_date ? new Date(series.details.start_date).toLocaleDateString() : 'N/A' },
+            { label: 'End', value: series.details?.end_date ? new Date(series.details.end_date).toLocaleDateString() : 'N/A' },
+        ],
+    }
+
+    const scrollItems: any[] = []
+    if (series.details?.history) {
+        scrollItems.push({
+            id: 'history',
+            title: 'Series History',
+            description: series.basics?.description || 'A legacy of racing excellence.',
+            percentage: 100,
+        })
+    }
+    if (series.details?.agenda) {
+        scrollItems.push({
+            id: 'agenda',
+            title: 'Agenda',
+            description: series.details.agenda,
+            percentage: 75,
         })
     }
 
-    if (series.details?.successor && typeof series.details.successor === 'object') {
-        historySteps.push({
-            id: 'successor',
-            index: '02',
-            heading: 'Successor',
-            subheading: (series.details.successor as Series).name,
-            body: 'Subsequent evolution',
-            percentage: 100
-        })
+    const galleryItems: any[] = []
+    if (series.assets?.cover) {
+        const url = getMediaUrl(series.assets.cover)
+        if (url) {
+            galleryItems.push({
+                id: `cover-${series.id}`,
+                title: series.name,
+                image: url,
+                height: 'tall' as const,
+            })
+        }
     }
-
-    const galleryItems: { id: string; image: Media; title: string; category: string }[] = []
-
-    if (series.assets?.thumbnail && typeof series.assets.thumbnail === 'object') {
-        galleryItems.push({
-            id: (series.assets.thumbnail as Media).id.toString(),
-            image: series.assets.thumbnail as Media,
-            title: (series.assets.thumbnail as Media).filename || 'Thumbnail',
-            category: series.basics?.identifiers?.code || 'SERIES'
-        })
-    }
-
-    if (series.assets?.cover && typeof series.assets.cover === 'object') {
-        galleryItems.push({
-            id: (series.assets.cover as Media).id.toString(),
-            image: series.assets.cover as Media,
-            title: (series.assets.cover as Media).filename || 'Cover',
-            category: series.basics?.identifiers?.code || 'SERIES'
-        })
-    }
-
-    if (series.assets?.logo && typeof series.assets.logo === 'object') {
-        galleryItems.push({
-            id: (series.assets.logo as Media).id.toString(),
-            image: series.assets.logo as Media,
-            title: (series.assets.logo as Media).filename || 'Logo',
-            category: series.basics?.identifiers?.code || 'SERIES'
-        })
+    if (series.assets?.logo) {
+        const url = getMediaUrl(series.assets.logo)
+        if (url) {
+            galleryItems.push({
+                id: `logo-${series.id}`,
+                title: `${series.name} Logo`,
+                image: url,
+                height: 'short' as const,
+            })
+        }
     }
 
     return (
         <main className="w-full">
-            <HeroMedia
-                id={series.basics?.identifiers?.code || `SRS-${series.id}`}
+            <HeroSection
+                id="series-hero"
                 title={series.name}
-                meta={series.basics?.tagline || 'Racing Series'}
-                image={heroImage}
-                tags={[
-                    series.details?.status || 'Active',
-                    series.details?.access || 'Public'
-                ]}
+                subtitle={series.basics?.tagline || ''}
+                description={series.basics?.description || undefined}
+                backgroundImage={heroBackgroundImage}
+                actions={heroActions}
+                alignment="center"
+                badge={series.basics?.identifiers?.abbreviation || series.basics?.identifiers?.code || undefined}
             />
-
-            <InfoGrid
-                id="SRS_SPECS"
-                title="Series Specifications"
-                blocks={infoBlocks}
-                columns={2}
+            <StudySection
+                id="series-details"
+                title="Series Overview"
+                subtitle="Key information"
+                studies={[study]}
+                variant="featured"
+                headerVariant={1}
+                footerVariant={1}
             />
-
-            {historySteps.length > 0 && (
-                <ProgressScroller
-                    id="SRS_HISTORY"
-                    title="Series Lineage"
-                    steps={historySteps}
+            {scrollItems.length > 0 && (
+                <ScrollSection
+                    id="series-history"
+                    title="History & Agenda"
+                    subtitle="The story of this series"
+                    items={scrollItems}
+                    variant="reveal"
+                    headerVariant={2}
+                    footerVariant={1}
                 />
             )}
-
             {galleryItems.length > 0 && (
-                <GalleryGrid
-                    id="SRS_GALLERY"
-                    title="Series Gallery"
+                <MasonrySection
+                    id="series-gallery"
+                    title="Gallery"
+                    subtitle="Series imagery"
                     items={galleryItems}
+                    columns={2}
+                    headerVariant={3}
+                    footerVariant={2}
                 />
             )}
-
-            <section className="w-full py-20 flex justify-center border-b border-black-pure">
-                <Link
-                    href={`/competition/series/${slug}/details`}
-                    className="px-12 py-6 bg-black-pure text-white-pure font-mono text-sm font-bold uppercase tracking-widest hover:bg-primary-500 hover:text-black-pure transition-colors border-2 border-black-pure"
-                >
-                    View Details →
-                </Link>
-            </section>
         </main>
     )
 }

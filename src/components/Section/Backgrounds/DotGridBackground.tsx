@@ -11,8 +11,8 @@ interface DotGridBackgroundProps {
 const DotGridBackground: React.FC<DotGridBackgroundProps> = ({
   zIndex = 'z-0',
   opacity = 0.4,
-  primaryColor = 'var(--primary)',
-  secondaryColor = 'var(--secondary)'
+  primaryColor = '#C0392B',
+  secondaryColor = '#E67E22'
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
 

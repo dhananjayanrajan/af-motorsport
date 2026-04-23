@@ -1,149 +1,209 @@
-import DocumentGrid from '@/components/Section/DocumentGrid'
-import ExpandableList from '@/components/Section/ExpandableList'
-import HeroMedia from '@/components/Section/HeroMedia'
-import MapGrid from '@/components/Section/MapGrid'
-import StatsGrid from '@/components/Section/StatsGrid'
-import { Circuit, Media } from '@/payload-types'
+// app/(frontend)/competition/circuits/[slug]/details/page.tsx
+import GridSection from '@/components/Section/Blocks/GridSection'
+import HeroSection from '@/components/Section/Blocks/HeroSection'
+import ListSection from '@/components/Section/Blocks/ListSection'
+import MapSection from '@/components/Section/Blocks/MapSection'
+import { Media } from '@/payload-types'
 import configPromise from '@payload-config'
+import { unstable_cache } from 'next/cache'
 import { notFound } from 'next/navigation'
 import { getPayload } from 'payload'
 
-interface PageProps {
-    params: Promise<{
-        slug: string
-    }>
+function getMediaUrl(media: number | Media | null | undefined): string | undefined {
+    if (!media) return undefined
+    if (typeof media === 'object' && 'url' in media && media.url) return media.url
+    return undefined
 }
 
-async function getCircuit(slug: string): Promise<Circuit | null> {
-    const payload = await getPayload({ config: configPromise })
-    const { docs } = await payload.find({
-        collection: 'circuits',
-        where: {
-            slug: {
-                equals: slug,
-            },
-        },
-        depth: 2,
-    })
-    return docs[0] || null
-}
+const getCircuitDetailsData = unstable_cache(
+    async (slug: string) => {
+        const payload = await getPayload({ config: configPromise })
+        const result = await payload.find({
+            collection: 'circuits',
+            where: { slug: { equals: slug } },
+            limit: 1,
+        })
+        return result.docs[0] || null
+    },
+    ['circuit-details'],
+    { revalidate: 3600, tags: ['circuit-details'] }
+)
 
-export default async function CircuitDetailsPage({ params }: PageProps) {
+export default async function CircuitDetailsPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params
-    const circuit = await getCircuit(slug)
+    const circuit = await getCircuitDetailsData(slug)
 
-    if (!circuit) {
-        return notFound()
+    if (!circuit) notFound()
+
+    const mapLocations: any[] = []
+    if (circuit.details?.location) {
+        mapLocations.push({
+            id: String(circuit.id),
+            name: circuit.name,
+            lat: circuit.details.location[0],
+            lng: circuit.details.location[1],
+            description: circuit.basics?.tagline || undefined,
+            address: circuit.details?.address || undefined,
+        })
     }
 
-    const coverImage = circuit.assets?.cover && typeof circuit.assets.cover === 'object'
-        ? (circuit.assets.cover as Media)
-        : null
+    const heroBackgroundImage = circuit.assets?.cover
+        ? getMediaUrl(circuit.assets.cover)
+        : circuit.seo?.image
+            ? getMediaUrl(circuit.seo.image)
+            : undefined
 
-    const mapLocations = circuit.details?.location ? [{
-        id: `${circuit.id}-location`,
-        title: circuit.name,
-        lat: circuit.details.location[1],
-        lng: circuit.details.location[0],
-        label: circuit.basics?.identifiers?.code || 'TRACK',
-        metadata: [
-            { label: 'TYPE', value: circuit.details?.type?.toUpperCase() || 'PERMANENT' },
-            { label: 'LENGTH', value: circuit.details?.length_km ? `${circuit.details.length_km} KM` : 'TBD' },
-        ]
-    }] : []
-
-    const statsItems = [
+    const specItems: any[] = [
         {
-            label: 'LENGTH',
-            value: circuit.details?.length_km?.toString() || '0',
-            unit: 'KM',
-            description: 'Track distance'
+            id: 'length-km',
+            title: 'Length (km)',
+            subtitle: circuit.details?.length_km ? `${circuit.details.length_km} km` : 'N/A',
         },
         {
-            label: 'LENGTH (MILES)',
-            value: circuit.details?.length_miles?.toString() || '0',
-            unit: 'MI',
-            description: 'Imperial measurement'
+            id: 'length-miles',
+            title: 'Length (miles)',
+            subtitle: circuit.details?.length_miles ? `${circuit.details.length_miles} mi` : 'N/A',
         },
         {
-            label: 'TURNS',
-            value: circuit.details?.turns?.toString() || '0',
-            unit: '',
-            description: 'Total corners'
+            id: 'turns',
+            title: 'Turns',
+            subtitle: circuit.details?.turns ? String(circuit.details.turns) : 'N/A',
         },
         {
-            label: 'DRS ZONES',
-            value: circuit.details?.drs_zones?.toString() || '0',
-            unit: 'ZONES',
-            description: 'Overtaking assistance zones'
+            id: 'drs-zones',
+            title: 'DRS Zones',
+            subtitle: circuit.details?.drs_zones ? String(circuit.details.drs_zones) : 'N/A',
+        },
+        {
+            id: 'fia-grade',
+            title: 'FIA Grade',
+            subtitle: circuit.details?.fia_grade || 'N/A',
+        },
+        {
+            id: 'elevation',
+            title: 'Elevation Change',
+            subtitle: circuit.details?.elevation_change ? `${circuit.details.elevation_change} m` : 'N/A',
+        },
+        {
+            id: 'capacity',
+            title: 'Capacity',
+            subtitle: circuit.details?.capacity ? circuit.details.capacity.toLocaleString() : 'N/A',
+        },
+        {
+            id: 'opened',
+            title: 'Opened',
+            subtitle: circuit.details?.opened || 'N/A',
+        },
+        {
+            id: 'record-lap',
+            title: 'Lap Record',
+            subtitle: circuit.metrics?.record_lap_time || 'N/A',
+        },
+        {
+            id: 'record-year',
+            title: 'Record Year',
+            subtitle: circuit.metrics?.record_lap_year || 'N/A',
         },
     ]
 
-    const renovationPanels = circuit.details?.renovated?.list?.map(ren => ({
-        id: ren.id || `${circuit.id}-ren-${ren.year}`,
-        title: ren.year || 'Renovation',
-        label: 'RENOVATION',
-        summary: ren.description || 'Circuit update',
-        content: ren.description || 'Full renovation details available',
-        metadata: [
-            { label: 'YEAR', value: ren.year || 'TBD' },
-            { label: 'SCOPE', value: 'TRACK MODIFICATION' },
-        ]
-    })) || []
+    const renovationEntries: any[] = []
+    if (circuit.details?.renovated?.list) {
+        circuit.details.renovated.list.forEach((reno) => {
+            if (reno.year) {
+                renovationEntries.push({
+                    id: reno.id || String(Math.random()),
+                    title: reno.year,
+                    subtitle: reno.description || undefined,
+                })
+            }
+        })
+    }
 
-    const documents = circuit.assets?.documents?.filter((doc): doc is Media =>
-        typeof doc === 'object' && doc !== null && 'url' in doc
-    ).map(doc => ({
-        id: doc.id,
-        title: doc.filename || 'Document',
-        file: doc,
-        category: 'Circuit Document',
-        version: '1.0'
-    })) || []
+    const documentItems: any[] = []
+    if (circuit.assets?.documents) {
+        circuit.assets.documents.forEach((doc, idx) => {
+            const media = typeof doc === 'object' ? doc : null
+            const url = media ? getMediaUrl(media) : undefined
+            if (url && media) {
+                documentItems.push({
+                    id: String(media.id),
+                    title: media.alt || media.filename || `Document ${idx + 1}`,
+                    subtitle: media.mimeType || undefined,
+                    image: url,
+                    href: url,
+                })
+            }
+        })
+    }
+    if (circuit.assets?.circuit_map) {
+        const url = getMediaUrl(circuit.assets.circuit_map)
+        if (url) {
+            const media = circuit.assets.circuit_map as Media
+            documentItems.push({
+                id: String(media.id),
+                title: 'Circuit Map',
+                subtitle: 'Track layout',
+                image: url,
+                href: url,
+            })
+        }
+    }
 
     return (
         <main className="w-full">
             {mapLocations.length > 0 && (
-                <MapGrid
-                    id="CCT_MAP"
-                    title="Circuit Location"
+                <MapSection
+                    id="circuit-map"
+                    title="Location"
+                    subtitle="Circuit location"
                     locations={mapLocations}
-                    initialCenter={[mapLocations[0].lng, mapLocations[0].lat]}
-                    initialZoom={12}
+                    zoom={14}
+                    headerVariant={1}
+                    footerVariant={1}
                 />
             )}
-
-            <HeroMedia
-                id={circuit.basics?.identifiers?.code || `CCT-${circuit.id}`}
+            <HeroSection
+                id="circuit-details-cover"
                 title={circuit.name}
-                meta={circuit.basics?.tagline || 'Technical Specifications'}
-                image={coverImage}
-                tags={[
-                    circuit.details?.type || 'Circuit',
-                    'Technical Specs'
-                ]}
+                subtitle={circuit.basics?.tagline || 'Circuit Specifications'}
+                description={circuit.basics?.description || undefined}
+                backgroundImage={heroBackgroundImage}
+                alignment="center"
+                badge={circuit.basics?.identifiers?.abbreviation || circuit.basics?.identifiers?.code || circuit.details?.type || undefined}
             />
-
-            <StatsGrid
-                id="CCT_STATS"
-                title="Track Statistics"
-                items={statsItems}
-                columns={4}
+            <GridSection
+                id="circuit-specifications"
+                title="Specifications"
+                subtitle="Technical details"
+                items={specItems}
+                columns={5}
+                cardVariant={1}
+                headerVariant={2}
+                footerVariant={1}
             />
-
-            {renovationPanels.length > 0 && (
-                <ExpandableList
-                    id="CCT_RENOVATIONS"
-                    title="Renovation History"
-                    panels={renovationPanels}
+            {renovationEntries.length > 0 && (
+                <ListSection
+                    id="circuit-renovations"
+                    title="Renovations"
+                    subtitle="Track modifications and updates"
+                    entries={renovationEntries}
+                    variant="detailed"
+                    showStatus={false}
+                    showTimestamp={false}
+                    headerVariant={3}
+                    footerVariant={2}
                 />
             )}
-
-            {documents.length > 0 && (
-                <DocumentGrid
-                    id="CCT_DOCS"
-                    title="Circuit Documents"
-                    documents={documents}
+            {documentItems.length > 0 && (
+                <GridSection
+                    id="circuit-documents"
+                    title="Documents"
+                    subtitle="Circuit documentation"
+                    items={documentItems}
+                    columns={3}
+                    cardVariant={1}
+                    headerVariant={1}
+                    footerVariant={1}
                 />
             )}
         </main>

@@ -1,172 +1,167 @@
-import CentralMedia from '@/components/Section/CentralMedia'
-import GalleryGrid from '@/components/Section/GalleryGrid'
-import InfoGrid from '@/components/Section/InfoGrid'
-import ProgressScroller from '@/components/Section/ProgressScroller'
-import VideoPlayer from '@/components/Section/VideoPlayer'
-import { Championship, Driver, Media } from '@/payload-types'
+// app/(frontend)/calendar/championships/[slug]/page.tsx
+import FeatureSection from '@/components/Section/Blocks/FeatureSection'
+import MasonrySection from '@/components/Section/Blocks/MasonrySection'
+import ScrollSection from '@/components/Section/Blocks/ScrollSection'
+import StudySection from '@/components/Section/Blocks/StudySection'
+import VideoSection from '@/components/Section/Blocks/VideoSection'
+import { Media } from '@/payload-types'
 import configPromise from '@payload-config'
-import Link from 'next/link'
+import { unstable_cache } from 'next/cache'
 import { notFound } from 'next/navigation'
 import { getPayload } from 'payload'
 
-interface PageProps {
-    params: Promise<{
-        slug: string
-    }>
+function getMediaUrl(media: number | Media | null | undefined): string | undefined {
+    if (!media) return undefined
+    if (typeof media === 'object' && 'url' in media && media.url) return media.url
+    return undefined
 }
 
-async function getChampionship(slug: string): Promise<Championship | null> {
-    const payload = await getPayload({ config: configPromise })
-    const { docs } = await payload.find({
-        collection: 'championships',
-        where: {
-            slug: {
-                equals: slug,
-            },
-        },
-        depth: 2,
-    })
-    return docs[0] || null
-}
+const getChampionshipData = unstable_cache(
+    async (slug: string) => {
+        const payload = await getPayload({ config: configPromise })
+        const result = await payload.find({
+            collection: 'championships',
+            where: { slug: { equals: slug } },
+            limit: 1,
+        })
+        return result.docs[0] || null
+    },
+    ['championship-detail'],
+    { revalidate: 3600, tags: ['championship'] }
+)
 
-export default async function ChampionshipPage({ params }: PageProps) {
+export default async function ChampionshipPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params
-    const championship = await getChampionship(slug)
+    const championship = await getChampionshipData(slug)
 
-    if (!championship) {
-        return notFound()
+    if (!championship) notFound()
+
+    const videoItems: any[] = []
+    if (championship.assets?.video) {
+        const videoUrl = getMediaUrl(championship.assets.video)
+        if (videoUrl) {
+            videoItems.push({
+                id: String(championship.id),
+                title: championship.name,
+                description: championship.basics?.tagline || undefined,
+                url: videoUrl,
+                poster: championship.assets?.thumbnail ? getMediaUrl(championship.assets.thumbnail) : undefined,
+            })
+        }
     }
 
-    const videoAsset = championship.assets?.video && typeof championship.assets.video === 'object'
-        ? (championship.assets.video as Media)
+    const studyImage = championship.assets?.cover
+        ? getMediaUrl(championship.assets.cover)
+        : championship.assets?.thumbnail
+            ? getMediaUrl(championship.assets.thumbnail)
+            : undefined
+
+    const study = {
+        id: String(championship.id),
+        title: championship.name,
+        description: championship.basics?.description || championship.basics?.tagline || '',
+        image: studyImage || `https://picsum.photos/seed/${championship.slug}/800/600`,
+        metrics: [
+            { label: 'Format', value: championship.details?.format || 'N/A' },
+            { label: 'Standings', value: championship.details?.standings_scope || 'N/A' },
+            { label: 'Start', value: championship.details?.start_date ? new Date(championship.details.start_date).toLocaleDateString() : 'TBD' },
+            { label: 'End', value: championship.details?.end_date ? new Date(championship.details.end_date).toLocaleDateString() : 'TBD' },
+        ],
+    }
+
+    const trophyFeature = championship.assets?.trophy
+        ? {
+            id: 'trophy',
+            title: 'Championship Trophy',
+            description: 'The ultimate prize awarded to the champion',
+            image: getMediaUrl(championship.assets.trophy) || `https://picsum.photos/seed/trophy-${championship.slug}/400/300`,
+        }
         : null
 
-    const posterAsset = championship.assets?.thumbnail && typeof championship.assets.thumbnail === 'object'
-        ? (championship.assets.thumbnail as Media)
-        : null
-
-    const trophyImage = championship.assets?.trophy && typeof championship.assets.trophy === 'object'
-        ? (championship.assets.trophy as Media)
-        : null
-
-    const infoBlocks = [
-        {
-            id: 'format',
-            label: 'FORMAT',
-            title: championship.details?.format?.toUpperCase() || 'STANDARD',
-            description: championship.basics?.description || undefined,
-            metadata: [
-                { key: 'STANDINGS SCOPE', value: championship.details?.standings_scope?.toUpperCase()?.replace(/_/g, ' ') || 'SEASON ONLY' },
-                { key: 'START DATE', value: championship.details?.start_date || 'TBD' },
-                { key: 'END DATE', value: championship.details?.end_date || 'TBD' },
-            ]
-        },
-        {
-            id: 'series',
-            label: 'SERIES',
-            title: championship.details?.series && typeof championship.details.series === 'object'
-                ? championship.details.series.name.toUpperCase()
-                : 'INDEPENDENT',
-            description: 'Parent championship series',
-            metadata: [
-                {
-                    key: 'SEASON', value: championship.details?.season && typeof championship.details.season === 'object'
-                        ? championship.details.season.name
-                        : 'TBD'
-                },
-            ]
-        },
-    ]
-
-    const historySteps = []
-
-    if (championship.details?.start_date) {
-        historySteps.push({
-            id: 'inaugural',
-            index: '01',
-            heading: 'Inaugural Season',
-            subheading: championship.details.start_date,
-            body: championship.basics?.description || 'Championship established',
-            percentage: 100
+    const scrollItems: any[] = []
+    if (championship.details?.history) {
+        scrollItems.push({
+            id: 'history',
+            title: 'Championship History',
+            description: championship.basics?.description || 'A legacy of excellence in motorsport competition.',
+            percentage: 100,
         })
     }
 
-    if (championship.details?.winner && typeof championship.details.winner === 'object') {
-        const winner = championship.details.winner as Driver
-        historySteps.push({
-            id: 'winner',
-            index: '02',
-            heading: 'Current Champion',
-            subheading: `${winner.first_name} ${winner.last_name}`,
-            body: championship.details.notes || 'Reigning champion',
-            percentage: 100
+    const galleryItems: any[] = []
+    if (championship.assets?.gallery) {
+        championship.assets.gallery.forEach((item, idx) => {
+            const media = typeof item === 'object' ? item : null
+            const url = media ? getMediaUrl(media) : undefined
+            if (url && media) {
+                galleryItems.push({
+                    id: String(media.id),
+                    title: media.alt || championship.name,
+                    image: url,
+                    height: idx % 3 === 0 ? 'tall' as const : idx % 2 === 0 ? 'medium' as const : 'short' as const,
+                })
+            }
         })
     }
-
-    const galleryItems = championship.assets?.gallery?.filter((item): item is Media =>
-        typeof item === 'object' && item !== null && 'url' in item
-    ).map(item => ({
-        id: item.id.toString(),
-        image: item,
-        title: item.filename || 'Gallery Image',
-        category: championship.basics?.identifiers?.code || 'Championship'
-    })) || []
 
     return (
         <main className="w-full">
-            <VideoPlayer
-                id={championship.basics?.identifiers?.code || `CHP-${championship.id}`}
-                title={championship.name}
-                meta={championship.basics?.tagline || 'Championship'}
-                video={videoAsset}
-                poster={posterAsset}
-                tags={[
-                    championship.details?.format || 'Championship',
-                    championship.details?.standings_scope?.replace(/_/g, ' ') || 'Season Only'
-                ]}
-            />
-
-            <InfoGrid
-                id="CHP_SPECS"
-                title="Championship Specifications"
-                blocks={infoBlocks}
-                columns={2}
-            />
-
-            {trophyImage && (
-                <CentralMedia
-                    id="CHP_TROPHY"
-                    title="Championship Trophy"
-                    meta={championship.basics?.tagline || 'Ultimate Prize'}
-                    image={trophyImage}
-                    tags={['TROPHY', 'AWARD', championship.basics?.identifiers?.code || 'CHAMPIONSHIP']}
+            {videoItems.length > 0 && (
+                <VideoSection
+                    id="championship-video"
+                    title="Championship Highlights"
+                    subtitle={championship.name}
+                    videos={videoItems}
+                    autoplay={false}
+                    showPlaylist={false}
+                    headerVariant={1}
+                    footerVariant={1}
                 />
             )}
-
-            {historySteps.length > 0 && (
-                <ProgressScroller
-                    id="CHP_HISTORY"
-                    title="Championship History"
-                    steps={historySteps}
+            <StudySection
+                id="championship-details"
+                title="Championship Overview"
+                subtitle="Key information"
+                studies={[study]}
+                variant="featured"
+                headerVariant={1}
+                footerVariant={1}
+            />
+            {trophyFeature && (
+                <FeatureSection
+                    id="championship-trophy"
+                    title="The Prize"
+                    subtitle="Championship trophy"
+                    features={[trophyFeature]}
+                    columns={2}
+                    headerVariant={2}
+                    footerVariant={1}
                 />
             )}
-
+            {scrollItems.length > 0 && (
+                <ScrollSection
+                    id="championship-history"
+                    title="History"
+                    subtitle="The story of this championship"
+                    items={scrollItems}
+                    variant="reveal"
+                    headerVariant={1}
+                    footerVariant={1}
+                />
+            )}
             {galleryItems.length > 0 && (
-                <GalleryGrid
-                    id="CHP_GALLERY"
-                    title="Championship Gallery"
+                <MasonrySection
+                    id="championship-gallery"
+                    title="Gallery"
+                    subtitle="Moments from the championship"
                     items={galleryItems}
+                    columns={3}
+                    headerVariant={3}
+                    footerVariant={2}
+                    ctaLabel="View Full Details"
+                    ctaPath={`/calendar/championships/${championship.slug}/details`}
                 />
             )}
-
-            <section className="w-full py-20 flex justify-center border-b border-black-pure">
-                <Link
-                    href={`/calendar/championships/${slug}/details`}
-                    className="px-12 py-6 bg-black-pure text-white-pure font-mono text-sm font-bold uppercase tracking-widest hover:bg-primary-500 hover:text-black-pure transition-colors border-2 border-black-pure"
-                >
-                    View Technical Details →
-                </Link>
-            </section>
         </main>
     )
 }

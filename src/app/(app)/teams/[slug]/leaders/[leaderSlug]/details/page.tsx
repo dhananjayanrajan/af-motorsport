@@ -1,126 +1,169 @@
-import DirectoryGrid from '@/components/Section/DirectoryGrid'
-import ExpandableList from '@/components/Section/ExpandableList'
-import PullQuote from '@/components/Section/PullQuote'
-import { Award, Leader, Media } from '@/payload-types'
+// app/(frontend)/teams/[teamSlug]/leaders/[leaderSlug]/details/page.tsx
+import GridSection from '@/components/Section/Blocks/GridSection'
+import ListSection from '@/components/Section/Blocks/ListSection'
+import QuoteSection from '@/components/Section/Blocks/QuoteSection'
+import { Award, Media } from '@/payload-types'
 import configPromise from '@payload-config'
+import { unstable_cache } from 'next/cache'
 import { notFound } from 'next/navigation'
 import { getPayload } from 'payload'
 
-interface PageProps {
-    params: Promise<{
-        slug: string
-        leaderSlug: string
-    }>
+function getMediaUrl(media: number | Media | null | undefined): string | undefined {
+    if (!media) return undefined
+    if (typeof media === 'object' && 'url' in media && media.url) return media.url
+    return undefined
 }
 
-async function getLeader(slug: string): Promise<Leader | null> {
-    const payload = await getPayload({ config: configPromise })
-    const { docs } = await payload.find({
-        collection: 'leaders',
-        where: {
-            slug: {
-                equals: slug,
-            },
-        },
-        depth: 2,
-    })
-    return docs[0] || null
-}
+const getLeaderDetailsData = unstable_cache(
+    async (slug: string) => {
+        const payload = await getPayload({ config: configPromise })
+        const result = await payload.find({
+            collection: 'leaders',
+            where: { slug: { equals: slug } },
+            limit: 1,
+        })
+        return result.docs[0] || null
+    },
+    ['leader-details'],
+    { revalidate: 3600, tags: ['leader-details'] }
+)
 
-async function getLeaderAwards(leaderId: number): Promise<Award[]> {
-    const payload = await getPayload({ config: configPromise })
-    const { docs } = await payload.find({
-        collection: 'awards',
-        where: {
-            id: {
-                exists: true,
-            },
-        },
-        limit: 20,
-    })
-    return docs.filter(award => award.details?.awarded_date)
-}
-
-export default async function LeaderDetailsPage({ params }: PageProps) {
+export default async function LeaderDetailsPage({ params }: { params: Promise<{ teamSlug: string; leaderSlug: string }> }) {
     const { leaderSlug } = await params
-    const leader = await getLeader(leaderSlug)
+    const leader = await getLeaderDetailsData(leaderSlug)
 
-    if (!leader) {
-        return notFound()
+    if (!leader) notFound()
+
+    const quoteItem = leader.details?.quote
+        ? {
+            id: String(leader.id),
+            text: leader.details.quote,
+            author: `${leader.first_name} ${leader.last_name}`,
+        }
+        : leader.details?.mission
+            ? {
+                id: String(leader.id),
+                text: leader.details.mission,
+                author: `${leader.first_name} ${leader.last_name}`,
+            }
+            : leader.details?.vision
+                ? {
+                    id: String(leader.id),
+                    text: leader.details.vision,
+                    author: `${leader.first_name} ${leader.last_name}`,
+                }
+                : null
+
+    const principleEntries: any[] = []
+    if (leader.details?.principles?.list) {
+        leader.details.principles.list.forEach((principle) => {
+            if (principle.name) {
+                principleEntries.push({
+                    id: principle.id || String(Math.random()),
+                    title: principle.name,
+                    subtitle: principle.statement || principle.description || undefined,
+                    status: principle.application || undefined,
+                })
+            }
+        })
     }
 
-    const awards = await getLeaderAwards(leader.id)
+    const awardItems: any[] = []
+    if (leader.details?.awards) {
+        leader.details.awards.forEach((awardRef) => {
+            const award = awardRef as Award
+            if (award && typeof award === 'object' && 'name' in award) {
+                const imageUrl = award.assets?.thumbnail
+                    ? getMediaUrl(award.assets.thumbnail)
+                    : award.assets?.candid
+                        ? getMediaUrl(award.assets.candid)
+                        : undefined
 
-    const principlePanels = leader.details?.principles?.list?.map(principle => ({
-        id: principle.id || `${leader.id}-${principle.name}`,
-        title: principle.name || 'Principle',
-        label: 'CORE VALUE',
-        summary: principle.statement || principle.description || 'Guiding principle',
-        content: principle.application || principle.rationale || 'No additional details',
-        metadata: [
-            { label: 'DESCRIPTION', value: principle.description || 'N/A' },
-            { label: 'APPLICATION', value: principle.application || 'Standard' },
-        ]
-    })) || []
+                awardItems.push({
+                    id: String(award.id),
+                    title: award.name,
+                    subtitle: award.details?.awarded_date || award.basics?.description || undefined,
+                    image: imageUrl,
+                })
+            }
+        })
+    }
 
-    const awardItems = awards.map(award => ({
-        id: award.id.toString(),
-        title: award.name,
-        subtitle: award.basics?.description || undefined,
-        label: award.details?.awarded_date?.split('-')[0] || 'AWARD',
-        image: award.assets?.thumbnail && typeof award.assets.thumbnail === 'object' ? award.assets.thumbnail as Media : null,
-        href: `/awards/${award.slug}`,
-        metadata: [
-            { label: 'DATE', value: award.details?.awarded_date?.split('T')[0] || 'TBD' },
-        ]
-    }))
+    const socialItems: any[] = []
+    if (leader.details?.socials?.list) {
+        leader.details.socials.list.forEach((social) => {
+            if (social.platform && social.username) {
+                socialItems.push({
+                    id: social.id || `${social.platform}-${social.username}`,
+                    title: social.platform,
+                    subtitle: `@${social.username}`,
+                })
+            }
+        })
+    }
 
-    const socialItems = leader.details?.socials?.list?.map(social => ({
-        id: social.id || `${leader.id}-${social.platform}`,
-        title: social.platform || 'Social',
-        subtitle: `@${social.username || 'profile'}`,
-        label: 'SOCIAL',
-        href: social.username ? `https://${social.platform?.toLowerCase()}.com/${social.username}` : undefined,
-        metadata: [
-            { label: 'PLATFORM', value: social.platform?.toUpperCase() || 'SOCIAL' },
-            { label: 'STATUS', value: 'ACTIVE' },
-        ]
-    })) || []
+    const websiteItems: any[] = []
+    if (leader.details?.websites?.list) {
+        leader.details.websites.list.forEach((website) => {
+            if (website.name && website.path) {
+                websiteItems.push({
+                    id: website.id || String(Math.random()),
+                    title: website.name,
+                    subtitle: website.path,
+                    href: website.path,
+                })
+            }
+        })
+    }
 
     return (
         <main className="w-full">
-            <PullQuote
-                id="LDR_QUOTE"
-                title="Leadership Quote"
-                quote={leader.details?.quote || leader.details?.vision || leader.details?.mission || 'Leadership is service'}
-                attribution={`${leader.first_name} ${leader.last_name}`}
-                role={leader.basics?.title || 'Leader'}
-                variant="center"
-            />
-
-            {principlePanels.length > 0 && (
-                <ExpandableList
-                    id="LDR_PRINCIPLES"
-                    title="Guiding Principles"
-                    panels={principlePanels}
+            {quoteItem && (
+                <QuoteSection
+                    id="leader-quote"
+                    title="Words of Wisdom"
+                    subtitle={`${leader.first_name} ${leader.last_name}`}
+                    quotes={[quoteItem]}
+                    variant="grid"
+                    headerVariant={1}
+                    footerVariant={1}
                 />
             )}
-
+            {principleEntries.length > 0 && (
+                <ListSection
+                    id="leader-principles"
+                    title="Principles"
+                    subtitle="Core values and beliefs"
+                    entries={principleEntries}
+                    variant="detailed"
+                    showStatus={true}
+                    showTimestamp={false}
+                    headerVariant={2}
+                    footerVariant={1}
+                />
+            )}
             {awardItems.length > 0 && (
-                <DirectoryGrid
-                    id="LDR_AWARDS"
-                    title="Awards & Recognition"
+                <GridSection
+                    id="leader-awards"
+                    title="Awards"
+                    subtitle="Recognition and honors"
                     items={awardItems}
-                    variant="square"
+                    columns={3}
+                    cardVariant={1}
+                    headerVariant={3}
+                    footerVariant={2}
                 />
             )}
-
-            {socialItems.length > 0 && (
-                <DirectoryGrid
-                    id="LDR_SOCIALS"
-                    title="Social Media"
-                    items={socialItems}
-                    variant="square"
+            {(socialItems.length > 0 || websiteItems.length > 0) && (
+                <GridSection
+                    id="leader-socials"
+                    title="Connect"
+                    subtitle="Social media and websites"
+                    items={[...socialItems, ...websiteItems]}
+                    columns={4}
+                    cardVariant={1}
+                    headerVariant={1}
+                    footerVariant={1}
                 />
             )}
         </main>

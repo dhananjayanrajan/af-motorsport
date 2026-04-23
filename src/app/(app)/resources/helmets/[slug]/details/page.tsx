@@ -1,90 +1,123 @@
-import DirectoryList from '@/components/Section/DirectoryList'
-import ExpandableList from '@/components/Section/ExpandableList'
-import HeroMedia from '@/components/Section/HeroMedia'
-import { Helmet, Media } from '@/payload-types'
+// app/(frontend)/resources/helmets/[slug]/details/page.tsx
+import HeroSection from '@/components/Section/Blocks/HeroSection'
+import ListSection from '@/components/Section/Blocks/ListSection'
+import { Media } from '@/payload-types'
 import configPromise from '@payload-config'
+import { unstable_cache } from 'next/cache'
 import { notFound } from 'next/navigation'
 import { getPayload } from 'payload'
 
-interface PageProps {
-    params: Promise<{
-        slug: string
-    }>
+function getMediaUrl(media: number | Media | null | undefined): string | undefined {
+    if (!media) return undefined
+    if (typeof media === 'object' && 'url' in media && media.url) return media.url
+    return undefined
 }
 
-async function getHelmet(slug: string): Promise<Helmet | null> {
-    const payload = await getPayload({ config: configPromise })
-    const { docs } = await payload.find({
-        collection: 'helmets',
-        where: {
-            slug: {
-                equals: slug,
-            },
-        },
-        depth: 2,
-    })
-    return docs[0] || null
-}
+const getHelmetDetailsData = unstable_cache(
+    async (slug: string) => {
+        const payload = await getPayload({ config: configPromise })
+        const result = await payload.find({
+            collection: 'helmets',
+            where: { slug: { equals: slug } },
+            limit: 1,
+        })
+        return result.docs[0] || null
+    },
+    ['helmet-details'],
+    { revalidate: 3600, tags: ['helmet-details'] }
+)
 
-export default async function HelmetDetailsPage({ params }: PageProps) {
+export default async function HelmetDetailsPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params
-    const helmet = await getHelmet(slug)
+    const helmet = await getHelmetDetailsData(slug)
 
-    if (!helmet) {
-        return notFound()
+    if (!helmet) notFound()
+
+    const heroBackgroundImage = helmet.assets?.avatar
+        ? getMediaUrl(helmet.assets.avatar)
+        : helmet.assets?.thumbnail
+            ? getMediaUrl(helmet.assets.thumbnail)
+            : helmet.seo?.image
+                ? getMediaUrl(helmet.seo.image)
+                : undefined
+
+    const manufacturerEntries: any[] = []
+    if (helmet.details?.manufacturers?.list) {
+        helmet.details.manufacturers.list.forEach((manufacturer) => {
+            if (manufacturer.name) {
+                manufacturerEntries.push({
+                    id: manufacturer.id || String(Math.random()),
+                    title: manufacturer.name,
+                    subtitle: manufacturer.description || undefined,
+                })
+            }
+        })
     }
 
-    const coverImage = helmet.assets?.thumbnail && typeof helmet.assets.thumbnail === 'object'
-        ? helmet.assets.thumbnail as Media
-        : null
+    const classificationEntries: any[] = []
+    if (helmet.details?.classifications?.list) {
+        helmet.details.classifications.list.forEach((classification) => {
+            if (classification.name) {
+                classificationEntries.push({
+                    id: classification.id || String(Math.random()),
+                    title: classification.name,
+                    subtitle: classification.description || classification.criteria || classification.definition || undefined,
+                })
+            }
+        })
+    }
 
-    const manufacturerItems = helmet.details?.manufacturers?.list?.map(man => ({
-        id: man.id || `${helmet.id}-man-${man.name}`,
-        title: man.name || 'Manufacturer',
-        subtitle: man.description || undefined,
-        tag: 'MANUFACTURER',
-        timestamp: 'TBD',
-        status: 'ACTIVE'
-    })) || []
+    if (helmet.details?.concept) {
+        classificationEntries.push({
+            id: 'concept',
+            title: 'Concept',
+            subtitle: helmet.details.concept,
+        })
+    }
 
-    const classificationPanels = helmet.details?.classifications?.list?.map(classif => ({
-        id: classif.id || `${helmet.id}-class-${classif.name}`,
-        title: classif.name || 'Classification',
-        label: classif.criteria?.toUpperCase() || 'STANDARD',
-        summary: classif.definition || 'Helmet classification',
-        content: classif.description || 'No additional details',
-        metadata: [
-            { label: 'CRITERIA', value: classif.criteria || 'TBD' },
-            { label: 'STANDARD', value: classif.definition || 'Industry standard' },
-        ]
-    })) || []
+    if (helmet.details?.inspiration) {
+        classificationEntries.push({
+            id: 'inspiration',
+            title: 'Inspiration',
+            subtitle: helmet.details.inspiration,
+        })
+    }
 
     return (
         <main className="w-full">
-            <HeroMedia
-                id={`HLM-${helmet.id}`}
+            <HeroSection
+                id="helmet-details-cover"
                 title={helmet.name}
-                meta={helmet.basics?.tagline || 'Technical Specifications'}
-                image={coverImage}
-                tags={[
-                    helmet.details?.usage || 'Helmet',
-                    'Technical Details'
-                ]}
+                subtitle={helmet.basics?.tagline || 'Helmet Details'}
+                description={helmet.basics?.description || undefined}
+                backgroundImage={heroBackgroundImage}
+                alignment="center"
+                badge={helmet.details?.usage || helmet.details?.style || undefined}
             />
-
-            {manufacturerItems.length > 0 && (
-                <DirectoryList
-                    id="HLM_MANUFACTURERS"
+            {manufacturerEntries.length > 0 && (
+                <ListSection
+                    id="helmet-manufacturers"
                     title="Manufacturers"
-                    items={manufacturerItems}
+                    subtitle="Helmet makers"
+                    entries={manufacturerEntries}
+                    variant="detailed"
+                    showStatus={false}
+                    showTimestamp={false}
+                    headerVariant={1}
+                    footerVariant={1}
                 />
             )}
-
-            {classificationPanels.length > 0 && (
-                <ExpandableList
-                    id="HLM_CLASSIFICATIONS"
-                    title="Classifications"
-                    panels={classificationPanels}
+            {classificationEntries.length > 0 && (
+                <ListSection
+                    id="helmet-classifications"
+                    title="Classifications & Details"
+                    subtitle="Helmet specifications"
+                    entries={classificationEntries}
+                    variant="detailed"
+                    showStatus={false}
+                    showTimestamp={false}
+                    headerVariant={2}
+                    footerVariant={1}
                 />
             )}
         </main>

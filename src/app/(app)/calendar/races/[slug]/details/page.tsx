@@ -1,157 +1,205 @@
-import GalleryGrid from '@/components/Section/GalleryGrid'
-import HeroMedia from '@/components/Section/HeroMedia'
-import InfoGrid from '@/components/Section/InfoGrid'
-import StatsGrid from '@/components/Section/StatsGrid'
-import { Event, Media, Race, Season, Series } from '@/payload-types'
+// app/(frontend)/calendar/races/[slug]/details/page.tsx
+import GridSection from '@/components/Section/Blocks/GridSection'
+import HeroSection from '@/components/Section/Blocks/HeroSection'
+import MasonrySection from '@/components/Section/Blocks/MasonrySection'
+import StudySection from '@/components/Section/Blocks/StudySection'
+import { Media } from '@/payload-types'
 import configPromise from '@payload-config'
+import { unstable_cache } from 'next/cache'
 import { notFound } from 'next/navigation'
 import { getPayload } from 'payload'
 
-interface PageProps {
-    params: Promise<{
-        slug: string
-    }>
+function getMediaUrl(media: number | Media | null | undefined): string | undefined {
+    if (!media) return undefined
+    if (typeof media === 'object' && 'url' in media && media.url) return media.url
+    return undefined
 }
 
-async function getRace(slug: string): Promise<Race | null> {
-    const payload = await getPayload({ config: configPromise })
-    const { docs } = await payload.find({
-        collection: 'races',
-        where: {
-            slug: {
-                equals: slug,
-            },
-        },
-        depth: 2,
-    })
-    return docs[0] || null
-}
+const getRaceDetailsData = unstable_cache(
+    async (slug: string) => {
+        const payload = await getPayload({ config: configPromise })
+        const result = await payload.find({
+            collection: 'races',
+            where: { slug: { equals: slug } },
+            limit: 1,
+        })
+        return result.docs[0] || null
+    },
+    ['race-details'],
+    { revalidate: 3600, tags: ['race-details'] }
+)
 
-export default async function RaceDetailsPage({ params }: PageProps) {
+export default async function RaceDetailsPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params
-    const race = await getRace(slug)
+    const race = await getRaceDetailsData(slug)
 
-    if (!race) {
-        return notFound()
-    }
+    if (!race) notFound()
 
-    const coverImage = race.assets?.cover && typeof race.assets.cover === 'object'
-        ? (race.assets.cover as Media)
-        : null
+    const heroBackgroundImage = race.assets?.cover
+        ? getMediaUrl(race.assets.cover)
+        : race.assets?.poster
+            ? getMediaUrl(race.assets.poster)
+            : race.seo?.image
+                ? getMediaUrl(race.seo.image)
+                : undefined
 
-    const statsItems = [
+    const specItems: any[] = [
         {
-            label: 'LAPS',
-            value: race.details.laps?.toString() || 'TBD',
-            unit: 'LAPS',
-            description: 'Total race distance'
+            id: 'type',
+            title: 'Race Type',
+            subtitle: race.details?.type || 'N/A',
         },
         {
-            label: 'DISTANCE',
-            value: race.details.distance_km?.toString() || 'TBD',
-            unit: 'KM',
-            description: 'Race length'
+            id: 'status',
+            title: 'Status',
+            subtitle: race.details?.status || 'N/A',
         },
         {
-            label: 'SAFETY CAR',
-            value: race.details.safety_car_periods?.toString() || '0',
-            unit: 'PERIODS',
-            description: 'Safety car deployments'
+            id: 'laps',
+            title: 'Laps',
+            subtitle: race.details?.laps ? String(race.details.laps) : 'N/A',
         },
         {
-            label: 'RED FLAGS',
-            value: race.details.red_flags?.toString() || '0',
-            unit: 'FLAGS',
-            description: 'Race stoppages'
-        },
-    ]
-
-    const eventName = race.details.event && typeof race.details.event === 'object'
-        ? (race.details.event as Event).name
-        : 'TBD'
-
-    const seasonName = race.details.season && typeof race.details.season === 'object'
-        ? (race.details.season as Season).name
-        : 'TBD'
-
-    const seriesName = race.details.series && typeof race.details.series === 'object'
-        ? (race.details.series as Series).name
-        : 'TBD'
-
-    const competitionBlocks = [
-        {
-            id: 'event',
-            label: 'EVENT',
-            title: eventName,
-            description: 'Parent event',
-            metadata: [
-                { key: 'SEASON', value: seasonName },
-                { key: 'SERIES', value: seriesName },
-            ]
+            id: 'distance',
+            title: 'Distance',
+            subtitle: race.details?.distance_km ? `${race.details.distance_km} km` : 'N/A',
         },
         {
             id: 'weather',
-            label: 'CONDITIONS',
-            title: race.details.weather?.toUpperCase() || 'TBD',
-            description: 'Track conditions during race',
-            metadata: [
-                { key: 'FASTEST LAP', value: race.details.fastest_lap_time || 'TBD' },
-            ]
+            title: 'Weather',
+            subtitle: race.details?.weather || 'N/A',
+        },
+        {
+            id: 'safety-car',
+            title: 'Safety Car Periods',
+            subtitle: race.details?.safety_car_periods ? String(race.details.safety_car_periods) : '0',
+        },
+        {
+            id: 'red-flags',
+            title: 'Red Flags',
+            subtitle: race.details?.red_flags ? String(race.details.red_flags) : '0',
+        },
+        {
+            id: 'fastest-lap',
+            title: 'Fastest Lap',
+            subtitle: race.details?.fastest_lap_time || 'N/A',
         },
     ]
 
-    const highlightItems = race.assets?.highlights?.filter((item): item is Media =>
-        typeof item === 'object' && item !== null && 'url' in item
-    ).map(item => ({
-        id: item.id.toString(),
-        image: item,
-        title: item.filename || 'Highlight',
-        category: 'RACE HIGHLIGHT'
-    })) || []
+    const competitionStudyImage = race.assets?.cover
+        ? getMediaUrl(race.assets.cover)
+        : race.assets?.poster
+            ? getMediaUrl(race.assets.poster)
+            : undefined
 
-    const documentItems = race.assets?.documents?.filter((doc): doc is Media =>
-        typeof doc === 'object' && doc !== null && 'url' in doc
-    ).map(doc => ({
-        id: doc.id.toString(),
-        image: doc,
-        title: doc.filename || 'Document',
-        category: 'RACE DOCUMENT'
-    })) || []
+    const competitionStudy = {
+        id: String(race.id),
+        title: 'Competition',
+        description: race.details?.notes || 'Race competition details and results.',
+        image: competitionStudyImage || `https://picsum.photos/seed/${race.slug}-comp/800/600`,
+        metrics: [
+            {
+                label: 'Winner',
+                value: race.details?.winner && typeof race.details.winner === 'object' && 'first_name' in race.details.winner
+                    ? `${race.details.winner.first_name} ${race.details.winner.last_name}`
+                    : 'N/A'
+            },
+            {
+                label: 'Pole Position',
+                value: race.details?.pole_position && typeof race.details.pole_position === 'object' && 'name' in race.details.pole_position
+                    ? race.details.pole_position.name
+                    : 'N/A'
+            },
+            {
+                label: 'Circuit',
+                value: race.details?.circuit && typeof race.details.circuit === 'object' && 'name' in race.details.circuit
+                    ? race.details.circuit.name
+                    : 'N/A'
+            },
+            {
+                label: 'Series',
+                value: race.details?.series && typeof race.details.series === 'object' && 'name' in race.details.series
+                    ? race.details.series.name
+                    : 'N/A'
+            },
+        ],
+    }
 
-    const allMediaItems = [...highlightItems, ...documentItems]
+    const highlightsAndDocsItems: any[] = []
+
+    if (race.assets?.highlights) {
+        race.assets.highlights.forEach((item, idx) => {
+            const media = typeof item === 'object' ? item : null
+            const url = media ? getMediaUrl(media) : undefined
+            if (url && media) {
+                highlightsAndDocsItems.push({
+                    id: String(media.id),
+                    title: media.alt || `Highlight ${idx + 1}`,
+                    image: url,
+                    category: 'Highlight',
+                    height: 'medium' as const,
+                })
+            }
+        })
+    }
+
+    if (race.assets?.documents) {
+        race.assets.documents.forEach((doc, idx) => {
+            const media = typeof doc === 'object' ? doc : null
+            const url = media ? getMediaUrl(media) : undefined
+            if (url && media) {
+                highlightsAndDocsItems.push({
+                    id: String(media.id),
+                    title: media.alt || media.filename || `Document ${idx + 1}`,
+                    description: media.mimeType || undefined,
+                    image: url,
+                    category: 'Document',
+                    height: 'short' as const,
+                })
+            }
+        })
+    }
 
     return (
         <main className="w-full">
-            <HeroMedia
-                id={race.basics?.identifiers?.code || `RCE-${race.id}`}
+            <HeroSection
+                id="race-details-cover"
                 title={race.name}
-                meta={race.basics?.tagline || 'Race Details'}
-                image={coverImage}
-                tags={[
-                    race.details.type || 'Race',
-                    race.details.status || 'Scheduled'
-                ]}
+                subtitle={race.basics?.tagline || 'Race Specifications'}
+                description={race.basics?.description || undefined}
+                backgroundImage={heroBackgroundImage}
+                alignment="center"
+                badge={race.basics?.identifiers?.code || race.details?.type || undefined}
+                meta={race.details?.start_date ? `Date: ${new Date(race.details.start_date).toLocaleDateString()}` : undefined}
             />
-
-            <StatsGrid
-                id="RCE_STATS"
-                title="Race Statistics"
-                items={statsItems}
+            <GridSection
+                id="race-specifications"
+                title="Specifications"
+                subtitle="Race details and statistics"
+                items={specItems}
                 columns={4}
+                cardVariant={1}
+                headerVariant={1}
+                footerVariant={1}
             />
-
-            <InfoGrid
-                id="RCE_COMPETITION"
-                title="Competition Information"
-                blocks={competitionBlocks}
-                columns={2}
+            <StudySection
+                id="race-competition"
+                title="Competition Details"
+                subtitle="Results and participants"
+                studies={[competitionStudy]}
+                variant="featured"
+                headerVariant={2}
+                footerVariant={1}
             />
-
-            {allMediaItems.length > 0 && (
-                <GalleryGrid
-                    id="RCE_MEDIA"
+            {highlightsAndDocsItems.length > 0 && (
+                <MasonrySection
+                    id="race-highlights-documents"
                     title="Highlights & Documents"
-                    items={allMediaItems}
+                    subtitle="Media and resources from the race"
+                    items={highlightsAndDocsItems}
+                    columns={3}
+                    headerVariant={3}
+                    footerVariant={2}
                 />
             )}
         </main>

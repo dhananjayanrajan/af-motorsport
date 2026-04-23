@@ -11,8 +11,8 @@ interface BlueprintsBackgroundProps {
 const BlueprintsBackground: React.FC<BlueprintsBackgroundProps> = ({
   zIndex = 'z-0',
   opacity = 0.25,
-  primaryColor = 'var(--primary)',
-  secondaryColor = 'var(--secondary)'
+  primaryColor = '#C0392B',
+  secondaryColor = '#E67E22'
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   
@@ -94,6 +94,7 @@ const BlueprintsBackground: React.FC<BlueprintsBackgroundProps> = ({
           
           ctx.beginPath()
           ctx.arc(offsetX + 32, offsetY, 8, 0, Math.PI * 2)
+          ctx.strokeStyle = primaryColor
           ctx.stroke()
           
           if ((x / 128 + y / 128) % 2 === 0) {

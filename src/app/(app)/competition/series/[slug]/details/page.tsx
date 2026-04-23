@@ -1,180 +1,151 @@
-import DirectoryGrid from '@/components/Section/DirectoryGrid'
-import DocumentGrid from '@/components/Section/DocumentGrid'
-import HeroMedia from '@/components/Section/HeroMedia'
-import MapGrid from '@/components/Section/MapGrid'
-import TimelineScroller from '@/components/Section/TimelineScroller'
-import { Media, Season, Series } from '@/payload-types'
+// app/(frontend)/competition/series/[slug]/details/page.tsx
+import GridSection from '@/components/Section/Blocks/GridSection'
+import HeroSection from '@/components/Section/Blocks/HeroSection'
+import MapSection from '@/components/Section/Blocks/MapSection'
+import TimelineSection from '@/components/Section/Blocks/TimelineSection'
+import { Media } from '@/payload-types'
 import configPromise from '@payload-config'
+import { unstable_cache } from 'next/cache'
 import { notFound } from 'next/navigation'
 import { getPayload } from 'payload'
 
-interface PageProps {
-    params: Promise<{
-        slug: string
-    }>
+function getMediaUrl(media: number | Media | null | undefined): string | undefined {
+    if (!media) return undefined
+    if (typeof media === 'object' && 'url' in media && media.url) return media.url
+    return undefined
 }
 
-async function getSeries(slug: string): Promise<Series | null> {
-    const payload = await getPayload({ config: configPromise })
-    const { docs } = await payload.find({
-        collection: 'series',
-        where: {
-            slug: {
-                equals: slug,
-            },
-        },
-        depth: 2,
-    })
-    return docs[0] || null
-}
+const getSeriesDetailsData = unstable_cache(
+    async (slug: string) => {
+        const payload = await getPayload({ config: configPromise })
+        const result = await payload.find({
+            collection: 'series',
+            where: { slug: { equals: slug } },
+            limit: 1,
+        })
+        return result.docs[0] || null
+    },
+    ['series-details'],
+    { revalidate: 3600, tags: ['series-details'] }
+)
 
-async function getSeasonsForSeries(seriesId: number): Promise<Season[]> {
-    const payload = await getPayload({ config: configPromise })
-    const { docs } = await payload.find({
-        collection: 'seasons',
-        where: {
-            'details.series': {
-                equals: seriesId,
-            },
-        },
-        limit: 20,
-        sort: '-createdAt',
-    })
-    return docs
-}
-
-export default async function SeriesDetailsPage({ params }: PageProps) {
+export default async function SeriesDetailsPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params
-    const series = await getSeries(slug)
+    const series = await getSeriesDetailsData(slug)
 
-    if (!series) {
-        return notFound()
-    }
+    if (!series) notFound()
 
-    const coverImage = series.assets?.cover && typeof series.assets.cover === 'object'
-        ? (series.assets.cover as Media)
-        : null
+    const heroBackgroundImage = series.assets?.cover
+        ? getMediaUrl(series.assets.cover)
+        : series.seo?.image
+            ? getMediaUrl(series.seo.image)
+            : undefined
 
-    const seasons = await getSeasonsForSeries(series.id)
-
-    const timelineEvents = []
-
+    const timelineEvents: any[] = []
     if (series.details?.start_date) {
-        let status: 'completed' | 'upcoming' | 'active' | undefined = 'upcoming'
-        if (new Date(series.details.start_date) <= new Date()) {
-            status = 'completed'
-        }
-
         timelineEvents.push({
             id: 'start',
-            date: series.details.start_date,
-            title: 'Series Inauguration',
-            description: series.basics?.description || 'Series established',
-            status: status
+            date: new Date(series.details.start_date).toLocaleDateString(),
+            title: 'Series Founded',
+            description: 'Series inception and first season',
+            status: 'completed' as const,
         })
     }
-
     if (series.details?.end_date) {
-        let status: 'completed' | 'upcoming' | 'active' | undefined = 'upcoming'
-        if (new Date(series.details.end_date) <= new Date()) {
-            status = 'completed'
-        }
-
         timelineEvents.push({
             id: 'end',
-            date: series.details.end_date,
+            date: new Date(series.details.end_date).toLocaleDateString(),
             title: 'Series Conclusion',
-            description: 'Final season',
-            status: status
+            description: 'Final season completed',
+            status: 'completed' as const,
         })
     }
 
-    const seasonItems = seasons.map(season => {
-        const thumbnail = season.assets?.cover && typeof season.assets.cover === 'object'
-            ? season.assets.cover as Media
-            : null
+    const seasonItems: any[] = []
 
-        return {
-            id: season.id.toString(),
-            title: season.name,
-            subtitle: season.basics?.tagline || undefined,
-            label: season.basics?.identifiers?.code || 'SEASON',
-            image: thumbnail,
-            href: `/competition/seasons/${season.slug}`,
-            metadata: [
-                { label: 'ENTRIES', value: season.details.entries?.toString() || 'TBD' },
-                { label: 'RACES', value: season.details.races?.toString() || 'TBD' },
-            ]
-        }
-    })
+    const mapLocations: any[] = []
+    if (series.details?.location) {
+        mapLocations.push({
+            id: String(series.id),
+            name: series.name,
+            lat: series.details.location[0],
+            lng: series.details.location[1],
+            description: series.basics?.tagline || undefined,
+        })
+    }
 
-    const mapLocations = series.details?.location ? [{
-        id: `${series.id}-location`,
-        title: series.name,
-        lat: series.details.location[1],
-        lng: series.details.location[0],
-        label: series.basics?.identifiers?.code || 'HQ',
-        metadata: [
-            { label: 'STATUS', value: series.details?.status || 'Active' },
-            { label: 'ACCESS', value: series.details?.access || 'Public' },
-        ]
-    }] : []
-
-    const documents = series.assets?.documents?.filter((doc): doc is Media =>
-        typeof doc === 'object' && doc !== null && 'url' in doc
-    ).map(doc => ({
-        id: doc.id,
-        title: doc.filename || 'Document',
-        file: doc,
-        category: 'Series Document',
-        version: '1.0'
-    })) || []
+    const documentItems: any[] = []
+    if (series.assets?.documents) {
+        series.assets.documents.forEach((doc, idx) => {
+            const media = typeof doc === 'object' ? doc : null
+            const url = media ? getMediaUrl(media) : undefined
+            if (url && media) {
+                documentItems.push({
+                    id: String(media.id),
+                    title: media.alt || media.filename || `Document ${idx + 1}`,
+                    subtitle: media.mimeType || undefined,
+                    image: url,
+                    href: url,
+                })
+            }
+        })
+    }
 
     return (
         <main className="w-full">
-            <HeroMedia
-                id={series.basics?.identifiers?.code || `SRS-${series.id}`}
+            <HeroSection
+                id="series-details-cover"
                 title={series.name}
-                meta={series.basics?.tagline || 'Technical Specifications'}
-                image={coverImage}
-                tags={[
-                    series.details?.status || 'Series',
-                    'Technical Details'
-                ]}
+                subtitle="Series Specifications"
+                description={series.basics?.description || undefined}
+                backgroundImage={heroBackgroundImage}
+                alignment="center"
+                badge={series.details?.status || undefined}
             />
-
             {timelineEvents.length > 0 && (
-                <TimelineScroller
-                    id="SRS_TIMELINE"
-                    title="Series Timeline"
+                <TimelineSection
+                    id="series-timeline"
+                    title="Timeline"
+                    subtitle="Key series dates"
                     events={timelineEvents}
+                    orientation="horizontal"
+                    headerVariant={1}
+                    footerVariant={1}
                 />
             )}
-
             {seasonItems.length > 0 && (
-                <DirectoryGrid
-                    id="SRS_SEASONS"
-                    title="Championship Seasons"
+                <GridSection
+                    id="series-seasons"
+                    title="Seasons"
+                    subtitle="Championship seasons"
                     items={seasonItems}
-                    variant="portrait"
+                    columns={3}
+                    cardVariant={1}
+                    headerVariant={2}
+                    footerVariant={1}
                 />
             )}
-
             {mapLocations.length > 0 && (
-                <MapGrid
-                    id="SRS_MAP"
-                    title="Headquarters Location"
+                <MapSection
+                    id="series-map"
+                    title="Location"
+                    subtitle="Series headquarters"
                     locations={mapLocations}
-                    initialCenter={[mapLocations[0].lng, mapLocations[0].lat]}
-                    initialZoom={10}
+                    zoom={12}
+                    headerVariant={1}
+                    footerVariant={1}
                 />
             )}
-
-            {documents.length > 0 && (
-                <DocumentGrid
-                    id="SRS_DOCS"
-                    title="Series Documents"
-                    documents={documents}
+            {documentItems.length > 0 && (
+                <GridSection
+                    id="series-documents"
+                    title="Documents"
+                    subtitle="Series documentation"
+                    items={documentItems}
+                    columns={3}
+                    cardVariant={1}
+                    headerVariant={3}
+                    footerVariant={2}
                 />
             )}
         </main>

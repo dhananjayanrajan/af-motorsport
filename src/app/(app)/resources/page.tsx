@@ -1,146 +1,215 @@
-import DirectoryGrid from '@/components/Section/DirectoryGrid'
-import { Media } from '@/payload-types'
+// app/(frontend)/resources/page.tsx
+import GridSection from '@/components/Section/Blocks/GridSection'
+import { Car, Garage, Helmet, Media, Suit } from '@/payload-types'
 import configPromise from '@payload-config'
+import { unstable_cache } from 'next/cache'
 import { getPayload } from 'payload'
 
-async function getResourcesData() {
-    const payload = await getPayload({ config: configPromise })
-
-    const { docs: cars } = await payload.find({
-        collection: 'cars',
-        limit: 12,
-        sort: '-createdAt',
-    })
-
-    const { docs: garages } = await payload.find({
-        collection: 'garages',
-        limit: 12,
-        sort: '-createdAt',
-    })
-
-    const { docs: helmets } = await payload.find({
-        collection: 'helmets',
-        limit: 12,
-        sort: '-createdAt',
-    })
-
-    const { docs: suits } = await payload.find({
-        collection: 'suits',
-        limit: 12,
-        sort: '-createdAt',
-    })
-
-    return { cars, garages, helmets, suits }
+function getMediaUrl(media: number | Media | null | undefined): string | undefined {
+    if (!media) return undefined
+    if (typeof media === 'object' && 'url' in media && media.url) return media.url
+    return undefined
 }
+
+const getResourcesData = unstable_cache(
+    async () => {
+        const payload = await getPayload({ config: configPromise })
+
+        const [cars, garages, helmets, suits] = await Promise.all([
+            payload.find({
+                collection: 'cars',
+                limit: 12,
+                sort: 'name',
+                select: {
+                    id: true,
+                    name: true,
+                    slug: true,
+                    basics: true,
+                    details: true,
+                    assets: true,
+                },
+            }),
+            payload.find({
+                collection: 'garages',
+                limit: 12,
+                sort: 'name',
+                select: {
+                    id: true,
+                    name: true,
+                    slug: true,
+                    basics: true,
+                    details: true,
+                    assets: true,
+                },
+            }),
+            payload.find({
+                collection: 'helmets',
+                limit: 12,
+                sort: 'name',
+                select: {
+                    id: true,
+                    name: true,
+                    slug: true,
+                    basics: true,
+                    details: true,
+                    assets: true,
+                },
+            }),
+            payload.find({
+                collection: 'suits',
+                limit: 12,
+                sort: 'name',
+                select: {
+                    id: true,
+                    name: true,
+                    slug: true,
+                    basics: true,
+                    details: true,
+                    assets: true,
+                },
+            }),
+        ])
+
+        return {
+            cars: cars.docs as Car[],
+            garages: garages.docs as Garage[],
+            helmets: helmets.docs as Helmet[],
+            suits: suits.docs as Suit[],
+        }
+    },
+    ['resources-page-data'],
+    { revalidate: 3600, tags: ['resources'] }
+)
 
 export default async function ResourcesPage() {
     const { cars, garages, helmets, suits } = await getResourcesData()
 
-    const carItems = cars.map(car => {
-        const thumbnail = car.assets?.thumbnail && typeof car.assets.thumbnail === 'object'
-            ? car.assets.thumbnail as Media
-            : null
+    const carItems: any[] = cars.map((car: Car) => {
+        const imageUrl = car.assets?.thumbnail
+            ? getMediaUrl(car.assets.thumbnail)
+            : car.assets?.avatar
+                ? getMediaUrl(car.assets.avatar)
+                : car.assets?.cover
+                    ? getMediaUrl(car.assets.cover)
+                    : `https://picsum.photos/seed/${car.slug}/400/300`
 
         return {
-            id: car.id.toString(),
+            id: String(car.id),
             title: car.name,
-            subtitle: car.basics?.tagline || car.basics?.identifiers?.model || undefined,
-            label: car.basics?.identifiers?.chassis || 'CAR',
-            image: thumbnail,
+            subtitle: car.basics?.identifiers?.model || car.basics?.tagline || undefined,
+            image: imageUrl,
             href: `/resources/cars/${car.slug}`,
-            metadata: [
-                { label: 'STATUS', value: car.details?.status || 'Active' },
-                { label: 'MODEL', value: car.basics?.identifiers?.model || 'TBD' },
-            ]
+            label: car.details?.status || car.basics?.identifiers?.chassis || undefined,
         }
     })
 
-    const garageItems = garages.map(garage => {
-        const thumbnail = garage.assets?.thumbnail && typeof garage.assets.thumbnail === 'object'
-            ? garage.assets.thumbnail as Media
-            : null
+    const garageItems: any[] = garages.map((garage: Garage) => {
+        const imageUrl = garage.assets?.thumbnail
+            ? getMediaUrl(garage.assets.thumbnail)
+            : garage.assets?.cover
+                ? getMediaUrl(garage.assets.cover)
+                : `https://picsum.photos/seed/${garage.slug}/400/300`
 
         return {
-            id: garage.id.toString(),
+            id: String(garage.id),
             title: garage.name,
-            subtitle: garage.basics?.tagline || garage.details?.type || undefined,
-            label: garage.basics?.identifiers?.code || 'GARAGE',
-            image: thumbnail,
+            subtitle: garage.basics?.tagline || garage.basics?.identifiers?.code || undefined,
+            image: imageUrl,
             href: `/resources/garages/${garage.slug}`,
-            metadata: [
-                { label: 'TYPE', value: garage.details?.type || 'Permanent' },
-                { label: 'CAPACITY', value: garage.details?.capacity?.toString() || 'TBD' },
-            ]
+            label: garage.details?.type || undefined,
         }
     })
 
-    const helmetItems = helmets.map(helmet => {
-        const thumbnail = helmet.assets?.thumbnail && typeof helmet.assets.thumbnail === 'object'
-            ? helmet.assets.thumbnail as Media
-            : null
+    const helmetItems: any[] = helmets.map((helmet: Helmet) => {
+        const imageUrl = helmet.assets?.thumbnail
+            ? getMediaUrl(helmet.assets.thumbnail)
+            : helmet.assets?.avatar
+                ? getMediaUrl(helmet.assets.avatar)
+                : helmet.assets?.images && helmet.assets.images.length > 0
+                    ? getMediaUrl(helmet.assets.images[0])
+                    : `https://picsum.photos/seed/${helmet.slug}/400/300`
 
         return {
-            id: helmet.id.toString(),
+            id: String(helmet.id),
             title: helmet.name,
-            subtitle: helmet.basics?.tagline || helmet.details?.branding || undefined,
-            label: helmet.details?.usage?.toUpperCase() || 'HELMET',
-            image: thumbnail,
+            subtitle: helmet.basics?.tagline || helmet.details?.designer || undefined,
+            image: imageUrl,
             href: `/resources/helmets/${helmet.slug}`,
-            metadata: [
-                { label: 'STYLE', value: helmet.details?.style || 'Modern' },
-                { label: 'YEAR', value: helmet.details?.year || 'TBD' },
-            ]
+            label: helmet.details?.usage || helmet.details?.style || undefined,
         }
     })
 
-    const suitItems = suits.map(suit => {
-        const thumbnail = suit.assets?.thumbnail && typeof suit.assets.thumbnail === 'object'
-            ? suit.assets.thumbnail as Media
-            : null
+    const suitItems: any[] = suits.map((suit: Suit) => {
+        const imageUrl = suit.assets?.thumbnail
+            ? getMediaUrl(suit.assets.thumbnail)
+            : suit.assets?.images && suit.assets.images.length > 0
+                ? getMediaUrl(suit.assets.images[0])
+                : `https://picsum.photos/seed/${suit.slug}/400/300`
 
         return {
-            id: suit.id.toString(),
+            id: String(suit.id),
             title: suit.name,
-            subtitle: suit.basics?.tagline || suit.details?.material || undefined,
-            label: suit.details?.usage?.toUpperCase() || 'SUIT',
-            image: thumbnail,
+            subtitle: suit.basics?.tagline || undefined,
+            image: imageUrl,
             href: `/resources/suits/${suit.slug}`,
-            metadata: [
-                { label: 'MATERIAL', value: suit.details?.material || 'Synthetic' },
-                { label: 'DURABILITY', value: suit.details?.durability || 'Medium' },
-            ]
+            label: suit.details?.usage || suit.details?.material || undefined,
         }
     })
 
     return (
         <main className="w-full">
-            <DirectoryGrid
-                id="RES_CARS"
-                title="Race Cars"
-                items={carItems}
-                variant="portrait"
-            />
-
-            <DirectoryGrid
-                id="RES_GARAGES"
-                title="Garages & Facilities"
-                items={garageItems}
-                variant="square"
-            />
-
-            <DirectoryGrid
-                id="RES_HELMETS"
-                title="Racing Helmets"
-                items={helmetItems}
-                variant="portrait"
-            />
-
-            <DirectoryGrid
-                id="RES_SUITS"
-                title="Driving Suits"
-                items={suitItems}
-                variant="portrait"
-            />
+            {carItems.length > 0 && (
+                <GridSection
+                    id="resources-cars"
+                    title="Cars"
+                    subtitle="Racing vehicles and machinery"
+                    items={carItems}
+                    columns={4}
+                    cardVariant={1}
+                    showMetadata={false}
+                    headerVariant={1}
+                    footerVariant={1}
+                />
+            )}
+            {garageItems.length > 0 && (
+                <GridSection
+                    id="resources-garages"
+                    title="Garages"
+                    subtitle="Team facilities and workspaces"
+                    items={garageItems}
+                    columns={4}
+                    cardVariant={1}
+                    showMetadata={false}
+                    headerVariant={2}
+                    footerVariant={1}
+                />
+            )}
+            {helmetItems.length > 0 && (
+                <GridSection
+                    id="resources-helmets"
+                    title="Helmets"
+                    subtitle="Driver head protection"
+                    items={helmetItems}
+                    columns={4}
+                    cardVariant={1}
+                    showMetadata={false}
+                    headerVariant={3}
+                    footerVariant={2}
+                />
+            )}
+            {suitItems.length > 0 && (
+                <GridSection
+                    id="resources-suits"
+                    title="Suits"
+                    subtitle="Racing apparel and gear"
+                    items={suitItems}
+                    columns={4}
+                    cardVariant={1}
+                    showMetadata={false}
+                    headerVariant={1}
+                    footerVariant={1}
+                />
+            )}
         </main>
     )
 }

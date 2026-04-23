@@ -1,208 +1,201 @@
-import GalleryGrid from '@/components/Section/GalleryGrid'
-import HeroMedia from '@/components/Section/HeroMedia'
-import InfoGrid from '@/components/Section/InfoGrid'
-import ProgressScroller from '@/components/Section/ProgressScroller'
-import PullQuote from '@/components/Section/PullQuote'
-import TimelineScroller from '@/components/Section/TimelineScroller'
-import { Hospitality, Media } from '@/payload-types'
+// app/(frontend)/about/hospitalities/[slug]/page.tsx
+import HeroSection from '@/components/Section/Blocks/HeroSection'
+import MasonrySection from '@/components/Section/Blocks/MasonrySection'
+import QuoteSection from '@/components/Section/Blocks/QuoteSection'
+import ScrollSection from '@/components/Section/Blocks/ScrollSection'
+import StudySection from '@/components/Section/Blocks/StudySection'
+import TimelineSection from '@/components/Section/Blocks/TimelineSection'
+import { Media } from '@/payload-types'
 import configPromise from '@payload-config'
-import Link from 'next/link'
+import { unstable_cache } from 'next/cache'
 import { notFound } from 'next/navigation'
 import { getPayload } from 'payload'
 
-interface PageProps {
-    params: Promise<{
-        slug: string
-    }>
+function getMediaUrl(media: number | Media | null | undefined): string | undefined {
+    if (!media) return undefined
+    if (typeof media === 'object' && 'url' in media && media.url) return media.url
+    return undefined
 }
 
-async function getHospitality(slug: string): Promise<Hospitality | null> {
-    const payload = await getPayload({ config: configPromise })
-    const { docs } = await payload.find({
-        collection: 'hospitalities',
-        where: {
-            slug: {
-                equals: slug,
-            },
-        },
-    })
-    return docs[0] || null
-}
+const getHospitalityData = unstable_cache(
+    async (slug: string) => {
+        const payload = await getPayload({ config: configPromise })
+        const result = await payload.find({
+            collection: 'hospitalities',
+            where: { slug: { equals: slug } },
+            limit: 1,
+        })
+        return result.docs[0] || null
+    },
+    ['hospitality-detail'],
+    { revalidate: 3600, tags: ['hospitality'] }
+)
 
-export default async function HospitalityPage({ params }: PageProps) {
+export default async function HospitalityPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params
-    const hospitality = await getHospitality(slug)
+    const hospitality = await getHospitalityData(slug)
 
-    if (!hospitality) {
-        return notFound()
-    }
+    if (!hospitality) notFound()
 
-    const coverImage = hospitality.assets?.cover && typeof hospitality.assets.cover === 'object'
-        ? (hospitality.assets.cover as Media)
-        : null
-
-    const infoBlocks = [
-        {
-            id: 'availability',
-            label: 'STATUS',
-            title: hospitality.details?.status?.toUpperCase() || 'AVAILABLE',
-            description: hospitality.basics?.description || undefined,
-            metadata: [
-                { key: 'TYPE', value: hospitality.details?.type?.toUpperCase()?.replace(/_/g, ' ') || 'HOSPITALITY' },
-                { key: 'ACCESS', value: hospitality.details?.access?.toUpperCase()?.replace(/_/g, ' ') || 'PUBLIC' },
-                { key: 'CAPACITY', value: hospitality.details?.capacity?.toString() || 'TBD' },
-                { key: 'PRICE/GUEST', value: hospitality.details?.price_per_guest ? `$${hospitality.details.price_per_guest}` : 'CONTACT SALES' },
-            ]
-        },
-        {
-            id: 'schedule',
-            label: 'SCHEDULE',
-            title: hospitality.details?.start_date ? 'BOOKING OPEN' : 'DATES TBD',
-            description: 'Experience timeframe',
-            metadata: [
-                { key: 'START DATE', value: hospitality.details?.start_date || 'TBD' },
-                { key: 'END DATE', value: hospitality.details?.end_date || 'TBD' },
-            ]
-        },
+    const coverActions = [
+        { label: 'View Details', href: `/about/hospitalities/${hospitality.slug}/details`, variant: 'primary' as const },
     ]
 
-    const historySteps = []
+    const heroBackgroundImage = hospitality.assets?.cover
+        ? getMediaUrl(hospitality.assets.cover)
+        : hospitality.seo?.image
+            ? getMediaUrl(hospitality.seo.image)
+            : undefined
 
-    if (hospitality.details?.inclusions?.list && hospitality.details.inclusions.list.length > 0) {
-        historySteps.push({
-            id: 'inclusions',
-            index: '01',
-            heading: 'Inclusions',
-            subheading: 'What\'s included',
-            body: hospitality.details.inclusions.list.map(i => i.name).filter(Boolean).join(' • ') || 'Premium amenities included',
-            percentage: 100
+    const studyImage = hospitality.assets?.cover
+        ? getMediaUrl(hospitality.assets.cover)
+        : hospitality.assets?.thumbnail
+            ? getMediaUrl(hospitality.assets.thumbnail)
+            : undefined
+
+    const study = {
+        id: String(hospitality.id),
+        title: hospitality.name,
+        description: hospitality.basics?.description || hospitality.basics?.tagline || '',
+        image: studyImage || `https://picsum.photos/seed/${hospitality.slug}/800/600`,
+        metrics: [
+            { label: 'Status', value: hospitality.details?.status || 'N/A' },
+            { label: 'Access', value: hospitality.details?.access || 'N/A' },
+            { label: 'Capacity', value: hospitality.details?.capacity ? String(hospitality.details.capacity) : 'N/A' },
+            { label: 'Price', value: hospitality.details?.price_per_guest ? `$${hospitality.details.price_per_guest}` : 'N/A' },
+        ],
+    }
+
+    const quoteItem = hospitality.basics?.tagline
+        ? {
+            id: String(hospitality.id),
+            text: hospitality.basics.tagline,
+            author: hospitality.name,
+        }
+        : null
+
+    const scrollItems: any[] = []
+    if (hospitality.details?.history) {
+        scrollItems.push({
+            id: 'history',
+            title: 'Our History',
+            description: 'A legacy of premium hospitality experiences in motorsport.',
+            percentage: 100,
         })
     }
 
-    if (hospitality.details?.exclusions?.list && hospitality.details.exclusions.list.length > 0) {
-        historySteps.push({
-            id: 'exclusions',
-            index: '02',
-            heading: 'Exclusions',
-            subheading: 'Not included',
-            body: hospitality.details.exclusions.list.map(i => i.name).filter(Boolean).join(' • ') || 'Additional fees may apply',
-            percentage: 100
-        })
-    }
-
-    if (hospitality.details?.requirements?.list && hospitality.details.requirements.list.length > 0) {
-        historySteps.push({
-            id: 'requirements',
-            index: '03',
-            heading: 'Requirements',
-            subheading: 'Guest prerequisites',
-            body: hospitality.details.requirements.list.map(i => i.name).filter(Boolean).join(' • ') || 'Standard terms apply',
-            percentage: 100
-        })
-    }
-
-    const timelineEvents = []
-
+    const timelineEvents: any[] = []
     if (hospitality.details?.start_date) {
-        let status: 'completed' | 'upcoming' | 'active' | undefined = 'upcoming'
-        if (new Date(hospitality.details.start_date) <= new Date()) {
-            status = 'completed'
-        }
-
         timelineEvents.push({
-            id: 'opening',
-            date: hospitality.details.start_date,
-            title: 'Booking Opens',
-            description: 'Reservations become available',
-            status: status
+            id: 'start',
+            date: new Date(hospitality.details.start_date).toLocaleDateString(),
+            title: 'Experience Begins',
+            description: 'Hospitality opening date',
+            status: 'upcoming' as const,
         })
     }
-
     if (hospitality.details?.end_date) {
-        let status: 'completed' | 'upcoming' | 'active' | undefined = 'upcoming'
-        if (new Date(hospitality.details.end_date) <= new Date()) {
-            status = 'completed'
-        }
-
         timelineEvents.push({
-            id: 'closing',
-            date: hospitality.details.end_date,
-            title: 'Experience Ends',
-            description: 'Final date for this hospitality package',
-            status: status
+            id: 'end',
+            date: new Date(hospitality.details.end_date).toLocaleDateString(),
+            title: 'Experience Concludes',
+            description: 'Final day of hospitality',
+            status: 'upcoming' as const,
         })
     }
 
-    const galleryItems = hospitality.assets?.gallery?.filter((item): item is Media =>
-        typeof item === 'object' && item !== null && 'url' in item
-    ).map(item => ({
-        id: item.id.toString(),
-        image: item,
-        title: item.filename || 'Gallery Image',
-        category: hospitality.details?.type?.replace(/_/g, ' ') || 'Hospitality'
-    })) || []
+    const galleryItems: any[] = []
+    if (hospitality.assets?.gallery) {
+        hospitality.assets.gallery.forEach((item, idx) => {
+            const media = typeof item === 'object' ? item : null
+            const url = media ? getMediaUrl(media) : undefined
+            if (url && media) {
+                galleryItems.push({
+                    id: String(media.id),
+                    title: media.alt || hospitality.name,
+                    image: url,
+                    height: idx % 3 === 0 ? 'tall' as const : idx % 2 === 0 ? 'medium' as const : 'short' as const,
+                })
+            }
+        })
+    }
+    if (galleryItems.length === 0 && hospitality.assets?.cover) {
+        const url = getMediaUrl(hospitality.assets.cover)
+        if (url) {
+            galleryItems.push({
+                id: String(hospitality.id),
+                title: hospitality.name,
+                image: url,
+                height: 'medium' as const,
+            })
+        }
+    }
 
     return (
         <main className="w-full">
-            <HeroMedia
-                id={hospitality.basics?.identifiers?.code || `HSP-${hospitality.id}`}
+            <HeroSection
+                id="hospitality-cover"
                 title={hospitality.name}
-                meta={hospitality.basics?.tagline || 'Premium Experience'}
-                image={coverImage}
-                tags={[
-                    hospitality.details?.type?.replace(/_/g, ' ') || 'Hospitality',
-                    hospitality.details?.status?.replace(/_/g, ' ') || 'Available'
-                ]}
+                subtitle={hospitality.basics?.tagline || ''}
+                description={hospitality.basics?.description || undefined}
+                backgroundImage={heroBackgroundImage}
+                actions={coverActions}
+                alignment="center"
+                badge={hospitality.details?.type || undefined}
             />
-
-            <InfoGrid
-                id="HSP_SPECS"
-                title="Experience Specifications"
-                blocks={infoBlocks}
-                columns={2}
+            <StudySection
+                id="hospitality-details"
+                title="Experience Details"
+                subtitle="What to expect"
+                studies={[study]}
+                variant="featured"
+                headerVariant={1}
+                footerVariant={1}
             />
-
-            <PullQuote
-                id="HSP_QUOTE"
-                title="Experience Overview"
-                quote={hospitality.basics?.description || hospitality.basics?.tagline || 'Premium hospitality experience'}
-                attribution={hospitality.name}
-                role={hospitality.details?.type?.replace(/_/g, ' ') || 'Hospitality Package'}
-                variant="center"
-            />
-
-            {historySteps.length > 0 && (
-                <ProgressScroller
-                    id="HSP_BREAKDOWN"
-                    title="Package Breakdown"
-                    steps={historySteps}
+            {quoteItem && (
+                <QuoteSection
+                    id="hospitality-quote"
+                    title="Experience"
+                    subtitle="Premium hospitality"
+                    quotes={[quoteItem]}
+                    variant="grid"
+                    headerVariant={2}
+                    footerVariant={1}
                 />
             )}
-
+            {scrollItems.length > 0 && (
+                <ScrollSection
+                    id="hospitality-history"
+                    title="Heritage"
+                    subtitle="Our hospitality legacy"
+                    items={scrollItems}
+                    variant="reveal"
+                    headerVariant={1}
+                    footerVariant={1}
+                />
+            )}
             {timelineEvents.length > 0 && (
-                <TimelineScroller
-                    id="HSP_TIMELINE"
-                    title="Important Dates"
+                <TimelineSection
+                    id="hospitality-timeline"
+                    title="Schedule"
+                    subtitle="Key dates"
                     events={timelineEvents}
+                    orientation="horizontal"
+                    headerVariant={3}
+                    footerVariant={2}
                 />
             )}
-
             {galleryItems.length > 0 && (
-                <GalleryGrid
-                    id="HSP_GALLERY"
-                    title="Experience Gallery"
+                <MasonrySection
+                    id="hospitality-gallery"
+                    title="Gallery"
+                    subtitle="Glimpses of the experience"
                     items={galleryItems}
+                    columns={3}
+                    headerVariant={1}
+                    footerVariant={1}
                 />
             )}
-
-            <section className="w-full py-20 flex justify-center border-b border-black-pure">
-                <Link
-                    href={`/about/hospitalities/${slug}/details`}
-                    className="px-12 py-6 bg-black-pure text-white-pure font-mono text-sm font-bold uppercase tracking-widest hover:bg-primary-500 hover:text-black-pure transition-colors border-2 border-black-pure"
-                >
-                    View Full Details →
-                </Link>
-            </section>
         </main>
     )
 }

@@ -1,137 +1,176 @@
-import DocumentGrid from '@/components/Section/DocumentGrid'
-import ExpandableList from '@/components/Section/ExpandableList'
-import StatsGrid from '@/components/Section/StatsGrid'
-import TimelineScroller from '@/components/Section/TimelineScroller'
-import { Media, Plan } from '@/payload-types'
+// app/(frontend)/about/plans/[slug]/details/page.tsx
+import GridSection from '@/components/Section/Blocks/GridSection'
+import ListSection from '@/components/Section/Blocks/ListSection'
+import TimelineSection from '@/components/Section/Blocks/TimelineSection'
+import { Media } from '@/payload-types'
 import configPromise from '@payload-config'
+import { unstable_cache } from 'next/cache'
 import { notFound } from 'next/navigation'
 import { getPayload } from 'payload'
 
-interface PageProps {
-    params: Promise<{
-        slug: string
-    }>
+function getMediaUrl(media: number | Media | null | undefined): string | undefined {
+    if (!media) return undefined
+    if (typeof media === 'object' && 'url' in media && media.url) return media.url
+    return undefined
 }
 
-async function getPlan(slug: string): Promise<Plan | null> {
-    const payload = await getPayload({ config: configPromise })
-    const { docs } = await payload.find({
-        collection: 'plans',
-        where: {
-            slug: {
-                equals: slug,
-            },
-        },
-    })
-    return docs[0] || null
-}
+const getPlanDetailsData = unstable_cache(
+    async (slug: string) => {
+        const payload = await getPayload({ config: configPromise })
+        const result = await payload.find({
+            collection: 'plans',
+            where: { slug: { equals: slug } },
+            limit: 1,
+        })
+        return result.docs[0] || null
+    },
+    ['plan-details'],
+    { revalidate: 3600, tags: ['plan-details'] }
+)
 
-export default async function PlanDetailsPage({ params }: PageProps) {
+export default async function PlanDetailsPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params
-    const plan = await getPlan(slug)
+    const plan = await getPlanDetailsData(slug)
 
-    if (!plan) {
-        return notFound()
+    if (!plan) notFound()
+
+    const milestoneEvents: any[] = []
+    if (plan.traits?.milestones?.list) {
+        plan.traits.milestones.list.forEach((milestone, idx) => {
+            if (milestone.name) {
+                milestoneEvents.push({
+                    id: milestone.id || `milestone-${idx}`,
+                    date: milestone.due_date ? new Date(milestone.due_date).toLocaleDateString() : 'TBD',
+                    title: milestone.name,
+                    description: milestone.description || undefined,
+                    status: idx === 0 ? 'completed' as const : idx === 1 ? 'active' as const : 'upcoming' as const,
+                })
+            }
+        })
     }
 
-    const timelineEvents = plan.traits?.milestones?.list?.map(milestone => {
-        let status: 'completed' | 'upcoming' | 'active' | undefined = undefined
+    const deliverableEntries: any[] = []
+    if (plan.traits?.deliverables?.list) {
+        plan.traits.deliverables.list.forEach((deliverable) => {
+            if (deliverable.name) {
+                deliverableEntries.push({
+                    id: deliverable.id || String(Math.random()),
+                    title: deliverable.name,
+                    subtitle: deliverable.description || undefined,
+                    status: deliverable.type || undefined,
+                })
+            }
+        })
+    }
 
-        if (milestone.due_date && plan.details?.end_date) {
-            status = new Date(milestone.due_date) <= new Date(plan.details.end_date) ? 'completed' : 'upcoming'
-        }
+    const riskEntries: any[] = []
+    if (plan.traits?.risks?.list) {
+        plan.traits.risks.list.forEach((risk) => {
+            if (risk.name) {
+                riskEntries.push({
+                    id: risk.id || String(Math.random()),
+                    title: risk.name,
+                    subtitle: risk.mitigation || undefined,
+                    status: risk.likelihood || undefined,
+                    tag: risk.impact || undefined,
+                })
+            }
+        })
+    }
 
-        return {
-            id: milestone.id || `${plan.id}-${milestone.name}`,
-            date: milestone.due_date || 'TBD',
-            title: milestone.name || 'Milestone',
-            description: milestone.description || undefined,
-            status: status
-        }
-    }) || []
+    const kpiItems: any[] = []
+    if (plan.traits?.kpis?.list) {
+        plan.traits.kpis.list.forEach((kpi) => {
+            if (kpi.name) {
+                kpiItems.push({
+                    id: kpi.id || String(Math.random()),
+                    title: kpi.name,
+                    subtitle: kpi.target ? `Target: ${kpi.target}${kpi.unit ? ` ${kpi.unit}` : ''}` : undefined,
+                })
+            }
+        })
+    }
 
-    const deliverablePanels = plan.traits?.deliverables?.list?.map(deliverable => ({
-        id: deliverable.id || `${plan.id}-del-${deliverable.name}`,
-        title: deliverable.name || 'Deliverable',
-        label: deliverable.type || 'DELIVERABLE',
-        summary: deliverable.description || 'No description provided',
-        content: deliverable.description || 'No additional details available',
-        metadata: [
-            { label: 'TYPE', value: deliverable.type?.toUpperCase() || 'STANDARD' },
-            { label: 'STATUS', value: 'PENDING' }
-        ]
-    })) || []
-
-    const riskPanels = plan.traits?.risks?.list?.map(risk => ({
-        id: risk.id || `${plan.id}-risk-${risk.name}`,
-        title: risk.name || 'Risk',
-        label: `${risk.likelihood?.toUpperCase() || 'MEDIUM'} IMPACT`,
-        summary: `Likelihood: ${risk.likelihood || 'medium'} | Impact: ${risk.impact || 'medium'}`,
-        content: risk.mitigation || 'No mitigation strategy defined',
-        metadata: [
-            { label: 'LIKELIHOOD', value: risk.likelihood?.toUpperCase() || 'MEDIUM' },
-            { label: 'IMPACT', value: risk.impact?.toUpperCase() || 'MEDIUM' },
-            { label: 'SEVERITY', value: risk.likelihood === 'high' && risk.impact === 'critical' ? 'CRITICAL' : 'MODERATE' }
-        ]
-    })) || []
-
-    const kpiStats = plan.traits?.kpis?.list?.map(kpi => ({
-        label: kpi.name || 'Key Performance Indicator',
-        value: kpi.target || '0',
-        unit: kpi.unit || undefined,
-        description: `Target ${kpi.unit ? `in ${kpi.unit}` : 'value'}`
-    })) || []
-
-    const documents = plan.assets?.documents?.filter((doc): doc is Media =>
-        typeof doc === 'object' && doc !== null && 'url' in doc
-    ).map(doc => ({
-        id: doc.id,
-        title: doc.filename || 'Document',
-        file: doc,
-        category: 'Plan Document',
-        version: '1.0'
-    })) || []
+    const documentItems: any[] = []
+    if (plan.assets?.documents) {
+        plan.assets.documents.forEach((doc, idx) => {
+            const media = typeof doc === 'object' ? doc : null
+            const url = media ? getMediaUrl(media) : undefined
+            if (url) {
+                documentItems.push({
+                    id: media?.id ? String(media.id) : `doc-${idx}`,
+                    title: media?.alt || media?.filename || `Document ${idx + 1}`,
+                    subtitle: media?.mimeType || undefined,
+                    image: url,
+                    href: url,
+                })
+            }
+        })
+    }
 
     return (
         <main className="w-full">
-            {timelineEvents.length > 0 && (
-                <TimelineScroller
-                    id="PLN_MILESTONES"
+            {milestoneEvents.length > 0 && (
+                <TimelineSection
+                    id="plan-milestones"
                     title="Milestones"
-                    events={timelineEvents}
+                    subtitle="Key achievements and targets"
+                    events={milestoneEvents}
+                    orientation="vertical"
+                    headerVariant={1}
+                    footerVariant={1}
                 />
             )}
-
-            {deliverablePanels.length > 0 && (
-                <ExpandableList
-                    id="PLN_DELIVERABLES"
+            {deliverableEntries.length > 0 && (
+                <ListSection
+                    id="plan-deliverables"
                     title="Deliverables"
-                    panels={deliverablePanels}
+                    subtitle="Expected outputs and outcomes"
+                    entries={deliverableEntries}
+                    variant="detailed"
+                    showStatus={true}
+                    showTimestamp={false}
+                    headerVariant={2}
+                    footerVariant={1}
                 />
             )}
-
-            {riskPanels.length > 0 && (
-                <ExpandableList
-                    id="PLN_RISKS"
-                    title="Risks"
-                    panels={riskPanels}
+            {riskEntries.length > 0 && (
+                <ListSection
+                    id="plan-risks"
+                    title="Risk Assessment"
+                    subtitle="Identified risks and mitigations"
+                    entries={riskEntries}
+                    variant="detailed"
+                    showStatus={true}
+                    showTimestamp={false}
+                    headerVariant={1}
+                    footerVariant={1}
                 />
             )}
-
-            {kpiStats.length > 0 && (
-                <StatsGrid
-                    id="PLN_KPIS"
+            {kpiItems.length > 0 && (
+                <GridSection
+                    id="plan-kpis"
                     title="Key Performance Indicators"
-                    items={kpiStats}
+                    subtitle="Measuring success"
+                    items={kpiItems}
                     columns={4}
+                    cardVariant={1}
+                    showMetadata={false}
+                    headerVariant={3}
+                    footerVariant={2}
                 />
             )}
-
-            {documents.length > 0 && (
-                <DocumentGrid
-                    id="PLN_DOCS"
+            {documentItems.length > 0 && (
+                <GridSection
+                    id="plan-documents"
                     title="Documents"
-                    documents={documents}
+                    subtitle="Supporting materials and resources"
+                    items={documentItems}
+                    columns={3}
+                    cardVariant={1}
+                    showMetadata={false}
+                    headerVariant={1}
+                    footerVariant={1}
                 />
             )}
         </main>

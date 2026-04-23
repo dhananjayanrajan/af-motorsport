@@ -1,132 +1,166 @@
-import CollapsibleGrid from '@/components/Section/CollapsibleGrid'
-import DocumentGrid from '@/components/Section/DocumentGrid'
-import ExpandableList from '@/components/Section/ExpandableList'
-import MapGrid from '@/components/Section/MapGrid'
-import { Hospitality, Media } from '@/payload-types'
+// app/(frontend)/about/hospitalities/[slug]/details/page.tsx
+import GridSection from '@/components/Section/Blocks/GridSection'
+import ListSection from '@/components/Section/Blocks/ListSection'
+import MapSection from '@/components/Section/Blocks/MapSection'
+import { Media } from '@/payload-types'
 import configPromise from '@payload-config'
+import { unstable_cache } from 'next/cache'
 import { notFound } from 'next/navigation'
 import { getPayload } from 'payload'
 
-interface PageProps {
-    params: Promise<{
-        slug: string
-    }>
+function getMediaUrl(media: number | Media | null | undefined): string | undefined {
+    if (!media) return undefined
+    if (typeof media === 'object' && 'url' in media && media.url) return media.url
+    return undefined
 }
 
-async function getHospitality(slug: string): Promise<Hospitality | null> {
-    const payload = await getPayload({ config: configPromise })
-    const { docs } = await payload.find({
-        collection: 'hospitalities',
-        where: {
-            slug: {
-                equals: slug,
-            },
-        },
-    })
-    return docs[0] || null
-}
+const getHospitalityDetailsData = unstable_cache(
+    async (slug: string) => {
+        const payload = await getPayload({ config: configPromise })
+        const result = await payload.find({
+            collection: 'hospitalities',
+            where: { slug: { equals: slug } },
+            limit: 1,
+        })
+        return result.docs[0] || null
+    },
+    ['hospitality-details'],
+    { revalidate: 3600, tags: ['hospitality-details'] }
+)
 
-export default async function HospitalityDetailsPage({ params }: PageProps) {
+export default async function HospitalityDetailsPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params
-    const hospitality = await getHospitality(slug)
+    const hospitality = await getHospitalityDetailsData(slug)
 
-    if (!hospitality) {
-        return notFound()
+    if (!hospitality) notFound()
+
+    const mapLocations: any[] = []
+    if (hospitality.details?.location) {
+        mapLocations.push({
+            id: String(hospitality.id),
+            name: hospitality.name,
+            lat: hospitality.details.location[0],
+            lng: hospitality.details.location[1],
+            description: hospitality.basics?.tagline || undefined,
+        })
     }
 
-    const mapLocations = hospitality.details?.location ? [{
-        id: `${hospitality.id}-location`,
-        title: hospitality.name,
-        lat: hospitality.details.location[1],
-        lng: hospitality.details.location[0],
-        label: hospitality.basics?.tagline || 'Venue Location',
-        metadata: [
-            { label: 'TYPE', value: hospitality.details?.type?.replace(/_/g, ' ') || 'Hospitality' },
-            { label: 'ACCESS', value: hospitality.details?.access?.replace(/_/g, ' ') || 'Public' },
-        ]
-    }] : []
+    const inclusionItems: any[] = []
+    if (hospitality.details?.inclusions?.list) {
+        hospitality.details.inclusions.list.forEach((item) => {
+            if (item.name) {
+                inclusionItems.push({
+                    id: item.id || String(Math.random()),
+                    title: item.name,
+                    subtitle: item.description || undefined,
+                })
+            }
+        })
+    }
 
-    const inclusionItems = hospitality.details?.inclusions?.list?.map(item => ({
-        id: item.id || `${hospitality.id}-inc-${item.name}`,
-        title: item.name || 'Inclusion',
-        subtitle: item.description || undefined,
-        content: item.description || 'No additional details available',
-        label: 'INCLUDED'
-    })) || []
+    const exclusionItems: any[] = []
+    if (hospitality.details?.exclusions?.list) {
+        hospitality.details.exclusions.list.forEach((item) => {
+            if (item.name) {
+                exclusionItems.push({
+                    id: item.id || String(Math.random()),
+                    title: item.name,
+                    subtitle: item.description || undefined,
+                })
+            }
+        })
+    }
 
-    const exclusionItems = hospitality.details?.exclusions?.list?.map(item => ({
-        id: item.id || `${hospitality.id}-exc-${item.name}`,
-        title: item.name || 'Exclusion',
-        subtitle: item.description || undefined,
-        content: item.description || 'Not included in this package',
-        label: 'EXCLUDED'
-    })) || []
+    const requirementEntries: any[] = []
+    if (hospitality.details?.requirements?.list) {
+        hospitality.details.requirements.list.forEach((item) => {
+            if (item.name) {
+                requirementEntries.push({
+                    id: item.id || String(Math.random()),
+                    title: item.name,
+                    subtitle: item.description || undefined,
+                })
+            }
+        })
+    }
 
-    const requirementPanels = hospitality.details?.requirements?.list?.map(req => ({
-        id: req.id || `${hospitality.id}-req-${req.name}`,
-        title: req.name || 'Requirement',
-        label: 'GUEST REQUIREMENT',
-        summary: req.description || 'Please review terms',
-        content: req.description || 'Standard hospitality terms apply',
-        metadata: [
-            { label: 'VERIFICATION', value: 'REQUIRED' },
-            { label: 'COMPLIANCE', value: 'MANDATORY' },
-        ]
-    })) || []
-
-    const documents = hospitality.assets?.documents?.filter((doc): doc is Media =>
-        typeof doc === 'object' && doc !== null && 'url' in doc
-    ).map(doc => ({
-        id: doc.id,
-        title: doc.filename || 'Document',
-        file: doc,
-        category: 'Hospitality Document',
-        version: '1.0'
-    })) || []
+    const documentItems: any[] = []
+    if (hospitality.assets?.documents) {
+        hospitality.assets.documents.forEach((doc, idx) => {
+            const media = typeof doc === 'object' ? doc : null
+            const url = media ? getMediaUrl(media) : undefined
+            if (url && media) {
+                documentItems.push({
+                    id: String(media.id),
+                    title: media.alt || media.filename || `Document ${idx + 1}`,
+                    subtitle: media.mimeType || undefined,
+                    image: url,
+                    href: url,
+                })
+            }
+        })
+    }
 
     return (
         <main className="w-full">
             {mapLocations.length > 0 && (
-                <MapGrid
-                    id="HSP_MAP"
-                    title="Venue Location"
+                <MapSection
+                    id="hospitality-map"
+                    title="Location"
+                    subtitle="Where to find us"
                     locations={mapLocations}
-                    initialCenter={[mapLocations[0].lng, mapLocations[0].lat]}
-                    initialZoom={15}
+                    zoom={14}
+                    headerVariant={1}
+                    footerVariant={1}
                 />
             )}
-
             {inclusionItems.length > 0 && (
-                <CollapsibleGrid
-                    id="HSP_INCLUSIONS"
-                    title="Inclusions"
+                <GridSection
+                    id="hospitality-inclusions"
+                    title="What's Included"
+                    subtitle="Everything that comes with your experience"
                     items={inclusionItems}
-                    columns={2}
+                    columns={3}
+                    cardVariant={1}
+                    headerVariant={2}
+                    footerVariant={1}
                 />
             )}
-
             {exclusionItems.length > 0 && (
-                <CollapsibleGrid
-                    id="HSP_EXCLUSIONS"
-                    title="Exclusions"
+                <GridSection
+                    id="hospitality-exclusions"
+                    title="What's Not Included"
+                    subtitle="Please note the following exclusions"
                     items={exclusionItems}
-                    columns={2}
+                    columns={3}
+                    cardVariant={1}
+                    headerVariant={1}
+                    footerVariant={1}
                 />
             )}
-
-            {requirementPanels.length > 0 && (
-                <ExpandableList
-                    id="HSP_REQUIREMENTS"
-                    title="Guest Requirements"
-                    panels={requirementPanels}
+            {requirementEntries.length > 0 && (
+                <ListSection
+                    id="hospitality-requirements"
+                    title="Requirements"
+                    subtitle="What you need to know before booking"
+                    entries={requirementEntries}
+                    variant="detailed"
+                    showStatus={false}
+                    showTimestamp={false}
+                    headerVariant={3}
+                    footerVariant={2}
                 />
             )}
-
-            {documents.length > 0 && (
-                <DocumentGrid
-                    id="HSP_DOCS"
-                    title="Terms & Documentation"
-                    documents={documents}
+            {documentItems.length > 0 && (
+                <GridSection
+                    id="hospitality-documents"
+                    title="Documents"
+                    subtitle="Additional information"
+                    items={documentItems}
+                    columns={3}
+                    cardVariant={1}
+                    headerVariant={1}
+                    footerVariant={1}
                 />
             )}
         </main>

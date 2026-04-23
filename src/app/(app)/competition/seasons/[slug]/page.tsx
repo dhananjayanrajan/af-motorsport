@@ -1,166 +1,164 @@
-import GalleryGrid from '@/components/Section/GalleryGrid'
-import InfoGrid from '@/components/Section/InfoGrid'
-import ProgressScroller from '@/components/Section/ProgressScroller'
-import VideoPlayer from '@/components/Section/VideoPlayer'
-import { Media, Season, Series } from '@/payload-types'
+// app/(frontend)/competition/seasons/[slug]/page.tsx
+import MasonrySection from '@/components/Section/Blocks/MasonrySection'
+import ScrollSection from '@/components/Section/Blocks/ScrollSection'
+import StudySection from '@/components/Section/Blocks/StudySection'
+import VideoSection from '@/components/Section/Blocks/VideoSection'
+import { Media } from '@/payload-types'
 import configPromise from '@payload-config'
-import Link from 'next/link'
+import { unstable_cache } from 'next/cache'
 import { notFound } from 'next/navigation'
 import { getPayload } from 'payload'
 
-interface PageProps {
-    params: Promise<{
-        slug: string
-    }>
+function getMediaUrl(media: number | Media | null | undefined): string | undefined {
+    if (!media) return undefined
+    if (typeof media === 'object' && 'url' in media && media.url) return media.url
+    return undefined
 }
 
-async function getSeason(slug: string): Promise<Season | null> {
-    const payload = await getPayload({ config: configPromise })
-    const { docs } = await payload.find({
-        collection: 'seasons',
-        where: {
-            slug: {
-                equals: slug,
-            },
-        },
-        depth: 2,
-    })
-    return docs[0] || null
-}
+const getSeasonData = unstable_cache(
+    async (slug: string) => {
+        const payload = await getPayload({ config: configPromise })
+        const result = await payload.find({
+            collection: 'seasons',
+            where: { slug: { equals: slug } },
+            limit: 1,
+        })
+        return result.docs[0] || null
+    },
+    ['season-detail'],
+    { revalidate: 3600, tags: ['season'] }
+)
 
-export default async function SeasonPage({ params }: PageProps) {
+export default async function SeasonPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params
-    const season = await getSeason(slug)
+    const season = await getSeasonData(slug)
 
-    if (!season) {
-        return notFound()
+    if (!season) notFound()
+
+    const videoItems: any[] = []
+    if (season.assets?.trailer) {
+        const videoUrl = getMediaUrl(season.assets.trailer)
+        if (videoUrl) {
+            videoItems.push({
+                id: String(season.id),
+                title: season.name,
+                description: season.basics?.tagline || undefined,
+                url: videoUrl,
+                poster: season.assets?.cover ? getMediaUrl(season.assets.cover) : undefined,
+            })
+        }
     }
 
-    const videoAsset = season.assets?.trailer && typeof season.assets.trailer === 'object'
-        ? (season.assets.trailer as Media)
-        : null
+    const studyImage = season.assets?.cover
+        ? getMediaUrl(season.assets.cover)
+        : season.seo?.image
+            ? getMediaUrl(season.seo.image)
+            : undefined
 
-    const posterAsset = season.assets?.cover && typeof season.assets.cover === 'object'
-        ? (season.assets.cover as Media)
-        : null
+    const study = {
+        id: String(season.id),
+        title: season.name,
+        description: season.basics?.description || season.basics?.tagline || '',
+        image: studyImage || `https://picsum.photos/seed/${season.slug}/800/600`,
+        metrics: [
+            { label: 'Entries', value: season.details?.entries ? String(season.details.entries) : 'N/A' },
+            { label: 'Races', value: season.details?.races ? String(season.details.races) : 'N/A' },
+            { label: 'Series', value: typeof season.details.series === 'object' && 'name' in season.details.series ? season.details.series.name : 'N/A' },
+        ],
+    }
 
-    const seriesName = season.details.series && typeof season.details.series === 'object'
-        ? (season.details.series as Series).name
-        : 'TBD'
-
-    const infoBlocks = [
-        {
-            id: 'overview',
-            label: 'OVERVIEW',
-            title: season.name,
-            description: season.basics?.description || undefined,
-            metadata: [
-                { key: 'SERIES', value: seriesName },
-                { key: 'ENTRIES', value: season.details.entries?.toString() || 'TBD' },
-                { key: 'RACES', value: season.details.races?.toString() || 'TBD' },
-            ]
-        },
-        {
-            id: 'identity',
-            label: 'IDENTIFIERS',
-            title: season.basics?.identifiers?.code || 'SEASON',
-            description: season.basics?.tagline || undefined,
-            metadata: [
-                { key: 'CODE', value: season.basics?.identifiers?.code || 'N/A' },
-                { key: 'ABBREVIATION', value: season.basics?.identifiers?.abbreviation || 'N/A' },
-            ]
-        },
-    ]
-
-    const historySteps = []
-
-    if (season.details.entries) {
-        historySteps.push({
-            id: 'entries',
-            index: '01',
-            heading: 'Total Entries',
-            subheading: `${season.details.entries} Competitors`,
-            body: season.details.notes || 'Registered participants',
-            percentage: 100
+    const scrollItems: any[] = []
+    if (season.details?.history) {
+        scrollItems.push({
+            id: 'history',
+            title: 'Season History',
+            description: season.basics?.description || 'A remarkable season of competition.',
+            percentage: 100,
+        })
+    }
+    if (season.details?.notes) {
+        scrollItems.push({
+            id: 'notes',
+            title: 'Season Notes',
+            description: season.details.notes,
+            percentage: 75,
         })
     }
 
-    if (season.details.races) {
-        historySteps.push({
-            id: 'races',
-            index: '02',
-            heading: 'Race Calendar',
-            subheading: `${season.details.races} Events`,
-            body: 'Full season schedule',
-            percentage: 100
+    const galleryItems: any[] = []
+    if (season.assets?.gallery) {
+        season.assets.gallery.forEach((item, idx) => {
+            const media = typeof item === 'object' ? item : null
+            const url = media ? getMediaUrl(media) : undefined
+            if (url && media) {
+                galleryItems.push({
+                    id: String(media.id),
+                    title: media.alt || season.name,
+                    image: url,
+                    height: idx % 3 === 0 ? 'tall' as const : idx % 2 === 0 ? 'medium' as const : 'short' as const,
+                })
+            }
         })
     }
-
-    const galleryItems = season.assets?.gallery?.filter((item): item is Media =>
-        typeof item === 'object' && item !== null && 'url' in item
-    ).map(item => ({
-        id: item.id.toString(),
-        image: item,
-        title: item.filename || 'Gallery Image',
-        category: season.basics?.identifiers?.code || 'SEASON'
-    })) || []
-
-    const highlightItems = season.assets?.highlights?.filter((item): item is Media =>
-        typeof item === 'object' && item !== null && 'url' in item
-    ).map(item => ({
-        id: item.id.toString(),
-        image: item,
-        title: item.filename || 'Highlight',
-        category: 'SEASON HIGHLIGHT'
-    })) || []
-
-    const allGalleryItems = [...galleryItems, ...highlightItems]
+    if (galleryItems.length === 0 && season.assets?.cover) {
+        const url = getMediaUrl(season.assets.cover)
+        if (url) {
+            galleryItems.push({
+                id: String(season.id),
+                title: season.name,
+                image: url,
+                height: 'medium' as const,
+            })
+        }
+    }
 
     return (
         <main className="w-full">
-            <VideoPlayer
-                id={season.basics?.identifiers?.code || `SSN-${season.id}`}
-                title={season.name}
-                meta={season.basics?.tagline || 'Racing Season'}
-                video={videoAsset}
-                poster={posterAsset}
-                tags={[
-                    'Season',
-                    season.details.series ? 'Active' : 'Draft'
-                ]}
-            />
-
-            <InfoGrid
-                id="SSN_SPECS"
-                title="Season Specifications"
-                blocks={infoBlocks}
-                columns={2}
-            />
-
-            {historySteps.length > 0 && (
-                <ProgressScroller
-                    id="SSN_HISTORY"
-                    title="Season Statistics"
-                    steps={historySteps}
+            {videoItems.length > 0 && (
+                <VideoSection
+                    id="season-video"
+                    title="Season Trailer"
+                    subtitle={season.name}
+                    videos={videoItems}
+                    autoplay={false}
+                    showPlaylist={false}
+                    headerVariant={1}
+                    footerVariant={1}
                 />
             )}
-
-            {allGalleryItems.length > 0 && (
-                <GalleryGrid
-                    id="SSN_GALLERY"
-                    title="Season Gallery"
-                    items={allGalleryItems}
+            <StudySection
+                id="season-details"
+                title="Season Overview"
+                subtitle="Key information"
+                studies={[study]}
+                variant="featured"
+                headerVariant={1}
+                footerVariant={1}
+                ctaLabel="View Full Details"
+                ctaPath={`/competition/seasons/${season.slug}/details`}
+            />
+            {scrollItems.length > 0 && (
+                <ScrollSection
+                    id="season-history"
+                    title="History & Notes"
+                    subtitle="Season background"
+                    items={scrollItems}
+                    variant="reveal"
+                    headerVariant={2}
+                    footerVariant={1}
                 />
             )}
-
-            <section className="w-full py-20 flex justify-center border-b border-black-pure">
-                <Link
-                    href={`/competition/seasons/${slug}/details`}
-                    className="px-12 py-6 bg-black-pure text-white-pure font-mono text-sm font-bold uppercase tracking-widest hover:bg-primary-500 hover:text-black-pure transition-colors border-2 border-black-pure"
-                >
-                    View Details →
-                </Link>
-            </section>
+            {galleryItems.length > 0 && (
+                <MasonrySection
+                    id="season-gallery"
+                    title="Gallery"
+                    subtitle="Season highlights"
+                    items={galleryItems}
+                    columns={3}
+                    headerVariant={3}
+                    footerVariant={2}
+                />
+            )}
         </main>
     )
 }

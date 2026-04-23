@@ -1,197 +1,247 @@
-import DirectoryGrid from '@/components/Section/DirectoryGrid'
-import HeroMedia from '@/components/Section/HeroMedia'
-import PullQuote from '@/components/Section/PullQuote'
-import StatsGrid from '@/components/Section/StatsGrid'
-import { Award, Driver, Media, Skill } from '@/payload-types'
+// app/(frontend)/teams/[teamSlug]/drivers/[driverSlug]/details/page.tsx
+import GridSection from '@/components/Section/Blocks/GridSection'
+import HeroSection from '@/components/Section/Blocks/HeroSection'
+import QuoteSection from '@/components/Section/Blocks/QuoteSection'
+import TableSection from '@/components/Section/Blocks/TableSection'
+import { Award, Media, Point, Result, Skill } from '@/payload-types'
 import configPromise from '@payload-config'
+import { unstable_cache } from 'next/cache'
 import { notFound } from 'next/navigation'
 import { getPayload } from 'payload'
 
-interface PageProps {
-    params: Promise<{
-        slug: string
-        driverSlug: string
-    }>
+function getMediaUrl(media: number | Media | null | undefined): string | undefined {
+    if (!media) return undefined
+    if (typeof media === 'object' && 'url' in media && media.url) return media.url
+    return undefined
 }
 
-async function getDriver(slug: string): Promise<Driver | null> {
-    const payload = await getPayload({ config: configPromise })
-    const { docs } = await payload.find({
-        collection: 'drivers',
-        where: {
-            slug: {
-                equals: slug,
-            },
-        },
-        depth: 2,
-    })
-    return docs[0] || null
-}
+const getDriverDetailsData = unstable_cache(
+    async (slug: string) => {
+        const payload = await getPayload({ config: configPromise })
+        const result = await payload.find({
+            collection: 'drivers',
+            where: { slug: { equals: slug } },
+            limit: 1,
+        })
+        return result.docs[0] || null
+    },
+    ['driver-details'],
+    { revalidate: 3600, tags: ['driver-details'] }
+)
 
-async function getDriverAwards(driverId: number): Promise<Award[]> {
-    const payload = await getPayload({ config: configPromise })
-    const { docs } = await payload.find({
-        collection: 'awards',
-        where: {
-            id: {
-                exists: true,
-            },
-        },
-        limit: 20,
-    })
-    return docs.filter(award => award.details?.awarded_date)
-}
-
-export default async function DriverDetailsPage({ params }: PageProps) {
+export default async function DriverDetailsPage({ params }: { params: Promise<{ teamSlug: string; driverSlug: string }> }) {
     const { driverSlug } = await params
-    const driver = await getDriver(driverSlug)
+    const driver = await getDriverDetailsData(driverSlug)
 
-    if (!driver) {
-        return notFound()
-    }
+    if (!driver) notFound()
 
-    const coverImage = driver.assets?.cover && typeof driver.assets.cover === 'object'
-        ? driver.assets.cover as Media
+    const heroBackgroundImage = driver.assets?.cover
+        ? getMediaUrl(driver.assets.cover)
+        : driver.assets?.avatar
+            ? getMediaUrl(driver.assets.avatar)
+            : driver.seo?.image
+                ? getMediaUrl(driver.seo.image)
+                : undefined
+
+    const quoteItem = driver.basics?.catchphrase
+        ? {
+            id: String(driver.id),
+            text: driver.basics.catchphrase,
+            author: `${driver.first_name} ${driver.last_name}`,
+        }
         : null
 
-    const awards = await getDriverAwards(driver.id)
-
-    const specStats = [
+    const specItems: any[] = [
         {
-            label: 'RACING NUMBER',
-            value: driver.basics?.racing_number?.toString() || '00',
-            unit: '',
-            description: 'Competition identifier'
+            id: 'racing-number',
+            title: 'Racing Number',
+            subtitle: driver.basics?.racing_number ? `#${driver.basics.racing_number}` : 'N/A',
         },
         {
-            label: 'DEBUT YEAR',
-            value: driver.basics?.debut_date?.split('-')[0] || 'TBD',
-            unit: '',
-            description: 'First professional race'
+            id: 'nickname',
+            title: 'Nickname',
+            subtitle: driver.basics?.nickname || 'N/A',
         },
         {
-            label: 'CAREER STATUS',
-            value: driver.basics?.retirement_date ? 'RETIRED' : 'ACTIVE',
-            unit: '',
-            description: driver.basics?.retirement_date ? `Retired ${driver.basics.retirement_date.split('-')[0]}` : 'Currently competing'
+            id: 'callsign',
+            title: 'Callsign',
+            subtitle: driver.basics?.callsign || 'N/A',
+        },
+        {
+            id: 'birth-date',
+            title: 'Birth Date',
+            subtitle: driver.basics?.birth_date || 'N/A',
+        },
+        {
+            id: 'debut-date',
+            title: 'Debut Date',
+            subtitle: driver.basics?.debut_date || 'N/A',
+        },
+        {
+            id: 'nationality',
+            title: 'Nationality',
+            subtitle: driver.basics?.nationality && typeof driver.basics.nationality === 'object' && 'name' in driver.basics.nationality ? driver.basics.nationality.name : 'N/A',
         },
     ]
 
-    const skillStats = (driver.details?.skills || []).map(skill => {
-        if (typeof skill === 'object' && skill !== null && 'name' in skill) {
-            return {
-                label: (skill as Skill).name.toUpperCase(),
-                value: 'PROFICIENT',
-                unit: '',
-                description: 'Core competency'
+    const skillItems: any[] = []
+    if (driver.details?.skills) {
+        driver.details.skills.forEach((skillRef) => {
+            const skill = skillRef as Skill
+            if (skill && typeof skill === 'object' && 'name' in skill) {
+                skillItems.push({
+                    id: String(skill.id),
+                    title: skill.name,
+                    subtitle: skill.details?.depth || skill.details?.complexity || skill.basics?.description || undefined,
+                })
             }
-        }
-        return null
-    }).filter(Boolean) as { label: string; value: string; unit: string; description: string }[]
-
-    if (skillStats.length === 0) {
-        skillStats.push(
-            { label: 'RACE CRAFT', value: 'ELITE', unit: '', description: 'Racing expertise' },
-            { label: 'TECHNICAL', value: 'ADVANCED', unit: '', description: 'Engineering knowledge' },
-            { label: 'FITNESS', value: 'PEAK', unit: '', description: 'Physical condition' }
-        )
+        })
     }
 
-    const awardItems = awards.map(award => ({
-        id: award.id.toString(),
-        title: award.name,
-        subtitle: award.basics?.description || undefined,
-        label: award.details?.awarded_date?.split('-')[0] || 'AWARD',
-        image: award.assets?.thumbnail && typeof award.assets.thumbnail === 'object' ? award.assets.thumbnail as Media : null,
-        href: `/awards/${award.slug}`,
-        metadata: [
-            { label: 'DATE', value: award.details?.awarded_date?.split('T')[0] || 'TBD' },
-        ]
-    }))
+    const awardItems: any[] = []
+    if (driver.details?.awards) {
+        driver.details.awards.forEach((awardRef) => {
+            const award = awardRef as Award
+            if (award && typeof award === 'object' && 'name' in award) {
+                const imageUrl = award.assets?.thumbnail
+                    ? getMediaUrl(award.assets.thumbnail)
+                    : award.assets?.candid
+                        ? getMediaUrl(award.assets.candid)
+                        : undefined
 
-    const socialItems = driver.details?.socials?.list?.map(social => ({
-        id: social.id || `${driver.id}-${social.platform}`,
-        title: social.platform || 'Social',
-        subtitle: `@${social.username || 'profile'}`,
-        label: 'SOCIAL',
-        href: social.username ? `https://${social.platform?.toLowerCase()}.com/${social.username}` : undefined,
-        metadata: [
-            { label: 'PLATFORM', value: social.platform?.toUpperCase() || 'SOCIAL' },
-            { label: 'STATUS', value: 'ACTIVE' },
-        ]
-    })) || []
+                awardItems.push({
+                    id: String(award.id),
+                    title: award.name,
+                    subtitle: award.details?.awarded_date || award.basics?.description || undefined,
+                    image: imageUrl,
+                })
+            }
+        })
+    }
+
+    const tableColumns = [
+        { key: 'event', label: 'Event', sortable: true },
+        { key: 'position', label: 'Position', sortable: true },
+        { key: 'points', label: 'Points', sortable: true },
+        { key: 'status', label: 'Status', sortable: true },
+    ]
+
+    const tableRows: any[] = []
+    if (driver.details?.results) {
+        driver.details.results.slice(0, 10).forEach((resultRef) => {
+            const result = resultRef as Result
+            if (result && typeof result === 'object' && 'name' in result) {
+                let pointsValue = 'N/A'
+                if (driver.details?.points) {
+                    const pointRef = driver.details.points[0] as Point
+                    if (pointRef && typeof pointRef === 'object' && 'details' in pointRef) {
+                        pointsValue = pointRef.details?.value ? String(pointRef.details.value) : 'N/A'
+                    }
+                }
+
+                tableRows.push({
+                    id: String(result.id),
+                    cells: {
+                        event: result.name,
+                        position: result.details?.overall ? String(result.details.overall) : 'N/A',
+                        points: pointsValue,
+                        status: result.details?.status || 'N/A',
+                    },
+                })
+            }
+        })
+    }
+
+    const socialItems: any[] = []
+    if (driver.details?.socials?.list) {
+        driver.details.socials.list.forEach((social) => {
+            if (social.platform && social.username) {
+                socialItems.push({
+                    id: social.id || `${social.platform}-${social.username}`,
+                    title: social.platform,
+                    subtitle: `@${social.username}`,
+                })
+            }
+        })
+    }
 
     return (
         <main className="w-full">
-            <HeroMedia
-                id={`DRV-${driver.id}`}
+            <HeroSection
+                id="driver-details-cover"
                 title={`${driver.first_name} ${driver.last_name}`}
-                meta={driver.basics?.nickname || driver.basics?.competition_name || 'Driver Profile'}
-                image={coverImage}
-                tags={[
-                    driver.basics?.gender || 'Driver',
-                    'Technical Specs'
-                ]}
+                subtitle={driver.basics?.competition_name || driver.basics?.nickname || ''}
+                description={driver.basics?.callsign || undefined}
+                backgroundImage={heroBackgroundImage}
+                alignment="center"
+                badge={driver.basics?.racing_number ? `#${driver.basics.racing_number}` : undefined}
             />
-
-            <PullQuote
-                id="DRV_CATCHPHRASE"
-                title="Driver Quote"
-                quote={driver.basics?.catchphrase || driver.basics?.nickname || 'Racing is life'}
-                attribution={`${driver.first_name} ${driver.last_name}`}
-                role={driver.basics?.competition_name || 'Professional Driver'}
-                variant="center"
-            />
-
-            <StatsGrid
-                id="DRV_SPECS_STATS"
-                title="Career Statistics"
-                items={specStats}
-                columns={3}
-            />
-
-            <StatsGrid
-                id="DRV_SKILLS"
-                title="Driver Skills"
-                items={skillStats}
-                columns={3}
-            />
-
-            {awardItems.length > 0 && (
-                <DirectoryGrid
-                    id="DRV_AWARDS"
-                    title="Awards & Achievements"
-                    items={awardItems}
-                    variant="square"
+            {quoteItem && (
+                <QuoteSection
+                    id="driver-catchphrase"
+                    title="Catchphrase"
+                    subtitle="In their own words"
+                    quotes={[quoteItem]}
+                    variant="grid"
+                    headerVariant={2}
+                    footerVariant={1}
                 />
             )}
-
-            <div className="w-full py-20 flex justify-center border-b border-black-pure bg-white-pure">
-                <div className="max-w-4xl w-full px-8">
-                    <div className="flex h-16 border-b border-black-pure items-center px-6 justify-between bg-white-pure mb-8">
-                        <div className="flex items-center gap-4">
-                            <span className="text-[11px] font-bold tracking-tight text-black-pure">DRV_RESULTS</span>
-                            <div className="h-4 w-[1px] bg-neutral-200" />
-                            <h2 className="text-[11px] text-neutral-500 uppercase tracking-wide">Points & Results</h2>
-                        </div>
-                    </div>
-                    <div className="bg-neutral-50 border-2 border-black-pure p-12 text-center">
-                        <p className="font-mono text-sm font-black uppercase text-black-pure">
-                            CHART TABLE COMPONENT - RACE RESULTS & POINTS VISUALIZATION
-                        </p>
-                        <p className="font-mono text-[10px] text-neutral-400 uppercase mt-4">
-                            Historical race data and championship points progression
-                        </p>
-                    </div>
-                </div>
-            </div>
-
+            <GridSection
+                id="driver-specifications"
+                title="Specifications"
+                subtitle="Driver details"
+                items={specItems}
+                columns={3}
+                cardVariant={1}
+                headerVariant={1}
+                footerVariant={1}
+            />
+            {skillItems.length > 0 && (
+                <GridSection
+                    id="driver-skills"
+                    title="Skills"
+                    subtitle="Driver capabilities"
+                    items={skillItems}
+                    columns={4}
+                    cardVariant={1}
+                    headerVariant={3}
+                    footerVariant={2}
+                />
+            )}
+            {awardItems.length > 0 && (
+                <GridSection
+                    id="driver-awards"
+                    title="Awards"
+                    subtitle="Career achievements"
+                    items={awardItems}
+                    columns={3}
+                    cardVariant={1}
+                    headerVariant={1}
+                    footerVariant={1}
+                />
+            )}
+            {tableRows.length > 0 && (
+                <TableSection
+                    id="driver-results"
+                    title="Points & Results"
+                    subtitle="Performance history"
+                    columns={tableColumns}
+                    rows={tableRows}
+                    headerVariant={2}
+                    footerVariant={1}
+                />
+            )}
             {socialItems.length > 0 && (
-                <DirectoryGrid
-                    id="DRV_SOCIALS"
+                <GridSection
+                    id="driver-socials"
                     title="Social Media"
+                    subtitle="Connect with the driver"
                     items={socialItems}
-                    variant="square"
+                    columns={4}
+                    cardVariant={1}
+                    headerVariant={1}
+                    footerVariant={1}
                 />
             )}
         </main>

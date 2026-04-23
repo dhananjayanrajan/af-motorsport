@@ -1,185 +1,277 @@
-import DirectoryGrid from '@/components/Section/DirectoryGrid'
-import DirectoryTabs from '@/components/Section/DirectoryTabs'
-import DocumentGrid from '@/components/Section/DocumentGrid'
-import HeroMedia from '@/components/Section/HeroMedia'
-import { Driver, Individual, Leader, Media, Meetup, Member, Organization } from '@/payload-types'
+// app/(frontend)/opportunities/meetups/[slug]/details/page.tsx
+import GridSection from '@/components/Section/Blocks/GridSection'
+import HeroSection from '@/components/Section/Blocks/HeroSection'
+import TabSection from '@/components/Section/Blocks/TabSection'
+import { Driver, Individual, Leader, Media, Member, Organization } from '@/payload-types'
 import configPromise from '@payload-config'
+import { unstable_cache } from 'next/cache'
 import { notFound } from 'next/navigation'
 import { getPayload } from 'payload'
 
-interface PageProps {
-    params: Promise<{
-        slug: string
-    }>
+function getMediaUrl(media: number | Media | null | undefined): string | undefined {
+    if (!media) return undefined
+    if (typeof media === 'object' && 'url' in media && media.url) return media.url
+    return undefined
 }
 
-async function getMeetup(slug: string): Promise<Meetup | null> {
-    const payload = await getPayload({ config: configPromise })
-    const { docs } = await payload.find({
-        collection: 'meetups',
-        where: {
-            slug: {
-                equals: slug,
-            },
-        },
-        depth: 2,
-    })
-    return docs[0] || null
-}
+const getMeetupDetailsData = unstable_cache(
+    async (slug: string) => {
+        const payload = await getPayload({ config: configPromise })
+        const result = await payload.find({
+            collection: 'meetups',
+            where: { slug: { equals: slug } },
+            limit: 1,
+        })
+        return result.docs[0] || null
+    },
+    ['meetup-details'],
+    { revalidate: 3600, tags: ['meetup-details'] }
+)
 
-export default async function MeetupDetailsPage({ params }: PageProps) {
+export default async function MeetupDetailsPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params
-    const meetup = await getMeetup(slug)
+    const meetup = await getMeetupDetailsData(slug)
 
-    if (!meetup) {
-        return notFound()
+    if (!meetup) notFound()
+
+    const heroBackgroundImage = meetup.assets?.cover
+        ? getMediaUrl(meetup.assets.cover)
+        : meetup.seo?.image
+            ? getMediaUrl(meetup.seo.image)
+            : undefined
+
+    const hostItems: any[] = []
+
+    if (meetup.details?.hosts?.leaders) {
+        meetup.details.hosts.leaders.forEach((leaderRef) => {
+            const leader = leaderRef as Leader
+            if (leader && typeof leader === 'object' && 'first_name' in leader) {
+                const imageUrl = leader.assets?.avatar ? getMediaUrl(leader.assets.avatar) : `https://picsum.photos/seed/${leader.id}/400/300`
+                hostItems.push({
+                    id: String(leader.id),
+                    title: `${leader.first_name} ${leader.last_name}`,
+                    subtitle: leader.basics?.title || 'Leader',
+                    image: imageUrl,
+                })
+            }
+        })
     }
 
-    const coverImage = meetup.assets?.cover && typeof meetup.assets.cover === 'object'
-        ? meetup.assets.cover as Media
-        : null
+    if (meetup.details?.hosts?.individuals) {
+        meetup.details.hosts.individuals.forEach((individualRef) => {
+            const individual = individualRef as Individual
+            if (individual && typeof individual === 'object' && 'first_name' in individual) {
+                const imageUrl = individual.assets?.avatar ? getMediaUrl(individual.assets.avatar) : individual.assets?.thumbnail ? getMediaUrl(individual.assets.thumbnail) : `https://picsum.photos/seed/${individual.id}/400/300`
+                hostItems.push({
+                    id: String(individual.id),
+                    title: `${individual.first_name} ${individual.last_name}`,
+                    subtitle: individual.basics?.type || 'Host',
+                    image: imageUrl,
+                })
+            }
+        })
+    }
 
-    const hostItems: { id: string; title: string; subtitle?: string; label: string; image: Media | null; metadata: { label: string; value: string }[] }[] = []
+    if (meetup.details?.hosts?.organizations) {
+        meetup.details.hosts.organizations.forEach((orgRef) => {
+            const org = orgRef as Organization
+            if (org && typeof org === 'object' && 'name' in org) {
+                const imageUrl = org.assets?.logo ? getMediaUrl(org.assets.logo) : org.assets?.alt_logo ? getMediaUrl(org.assets.alt_logo) : `https://picsum.photos/seed/${org.id}/400/300`
+                hostItems.push({
+                    id: String(org.id),
+                    title: org.name,
+                    subtitle: org.basics?.type || 'Organization',
+                    image: imageUrl,
+                })
+            }
+        })
+    }
 
-    const orgHosts = meetup.details.hosts?.organizations?.filter((h): h is Organization =>
-        typeof h === 'object' && h !== null && 'name' in h
-    ).map(host => ({
-        id: host.id.toString(),
-        title: host.name,
-        subtitle: host.basics?.tagline || host.basics?.type || undefined,
-        label: 'ORGANIZATION',
-        image: host.assets?.logo && typeof host.assets.logo === 'object' ? host.assets.logo as Media : null,
-        metadata: [{ label: 'TYPE', value: host.basics?.type || 'Partner' }]
-    })) || []
+    const driverAttendeeItems: any[] = []
+    const memberAttendeeItems: any[] = []
+    const leaderAttendeeItems: any[] = []
+    const individualAttendeeItems: any[] = []
+    const orgAttendeeItems: any[] = []
 
-    const leaderHosts = meetup.details.hosts?.leaders?.filter((h): h is Leader =>
-        typeof h === 'object' && h !== null && 'first_name' in h
-    ).map(host => ({
-        id: host.id.toString(),
-        title: `${host.first_name} ${host.last_name}`,
-        subtitle: host.basics?.title || host.basics?.nickname || undefined,
-        label: 'LEADER',
-        image: host.assets?.avatar && typeof host.assets.avatar === 'object' ? host.assets.avatar as Media : null,
-        metadata: [{ label: 'ROLE', value: host.basics?.title || 'Host' }]
-    })) || []
+    if (meetup.details?.attendees?.drivers) {
+        meetup.details.attendees.drivers.forEach((driverRef) => {
+            const driver = driverRef as Driver
+            if (driver && typeof driver === 'object' && 'first_name' in driver) {
+                const imageUrl = driver.assets?.avatar ? getMediaUrl(driver.assets.avatar) : `https://picsum.photos/seed/${driver.id}/400/300`
+                driverAttendeeItems.push({
+                    id: String(driver.id),
+                    title: `${driver.first_name} ${driver.last_name}`,
+                    subtitle: driver.basics?.racing_number ? `#${driver.basics.racing_number}` : undefined,
+                    image: imageUrl,
+                })
+            }
+        })
+    }
 
-    const individualHosts = meetup.details.hosts?.individuals?.filter((h): h is Individual =>
-        typeof h === 'object' && h !== null && 'first_name' in h
-    ).map(host => ({
-        id: host.id.toString(),
-        title: `${host.first_name} ${host.last_name}`,
-        subtitle: host.basics?.type || host.basics?.description || undefined,
-        label: 'INDIVIDUAL',
-        image: host.assets?.avatar && typeof host.assets.avatar === 'object' ? host.assets.avatar as Media : null,
-        metadata: [{ label: 'TYPE', value: host.basics?.type || 'Host' }]
-    })) || []
+    if (meetup.details?.attendees?.members) {
+        meetup.details.attendees.members.forEach((memberRef) => {
+            const member = memberRef as Member
+            if (member && typeof member === 'object' && 'first_name' in member) {
+                const imageUrl = member.assets?.avatar ? getMediaUrl(member.assets.avatar) : `https://picsum.photos/seed/${member.id}/400/300`
+                memberAttendeeItems.push({
+                    id: String(member.id),
+                    title: `${member.first_name} ${member.last_name}`,
+                    subtitle: member.details?.duties || undefined,
+                    image: imageUrl,
+                })
+            }
+        })
+    }
 
-    hostItems.push(...orgHosts, ...leaderHosts, ...individualHosts)
+    if (meetup.details?.attendees?.leaders) {
+        meetup.details.attendees.leaders.forEach((leaderRef) => {
+            const leader = leaderRef as Leader
+            if (leader && typeof leader === 'object' && 'first_name' in leader) {
+                const imageUrl = leader.assets?.avatar ? getMediaUrl(leader.assets.avatar) : `https://picsum.photos/seed/${leader.id}/400/300`
+                leaderAttendeeItems.push({
+                    id: String(leader.id),
+                    title: `${leader.first_name} ${leader.last_name}`,
+                    subtitle: leader.basics?.title || undefined,
+                    image: imageUrl,
+                })
+            }
+        })
+    }
 
-    const attendeeItems: { id: string; name: string; role: string; organization: string; image: Media | null; type: 'HOST' | 'GUEST' | 'SPEAKER' | 'PARTNER' }[] = []
+    if (meetup.details?.attendees?.individuals) {
+        meetup.details.attendees.individuals.forEach((individualRef) => {
+            const individual = individualRef as Individual
+            if (individual && typeof individual === 'object' && 'first_name' in individual) {
+                const imageUrl = individual.assets?.avatar ? getMediaUrl(individual.assets.avatar) : individual.assets?.thumbnail ? getMediaUrl(individual.assets.thumbnail) : `https://picsum.photos/seed/${individual.id}/400/300`
+                individualAttendeeItems.push({
+                    id: String(individual.id),
+                    title: `${individual.first_name} ${individual.last_name}`,
+                    subtitle: individual.basics?.type || undefined,
+                    image: imageUrl,
+                })
+            }
+        })
+    }
 
-    const driverAttendees = meetup.details.attendees?.drivers?.filter((a): a is Driver =>
-        typeof a === 'object' && a !== null && 'first_name' in a
-    ).map(attendee => ({
-        id: attendee.id.toString(),
-        name: `${attendee.first_name} ${attendee.last_name}`,
-        role: attendee.basics?.nickname || attendee.basics?.competition_name || 'Driver',
-        organization: attendee.basics?.nationality && typeof attendee.basics.nationality === 'object' ? (attendee.basics.nationality as { name: string }).name : 'Driver',
-        image: attendee.assets?.avatar && typeof attendee.assets.avatar === 'object' ? attendee.assets.avatar as Media : null,
-        type: 'GUEST' as const
-    })) || []
+    if (meetup.details?.attendees?.organizations) {
+        meetup.details.attendees.organizations.forEach((orgRef) => {
+            const org = orgRef as Organization
+            if (org && typeof org === 'object' && 'name' in org) {
+                const imageUrl = org.assets?.logo ? getMediaUrl(org.assets.logo) : org.assets?.alt_logo ? getMediaUrl(org.assets.alt_logo) : `https://picsum.photos/seed/${org.id}/400/300`
+                orgAttendeeItems.push({
+                    id: String(org.id),
+                    title: org.name,
+                    subtitle: org.basics?.type || undefined,
+                    image: imageUrl,
+                })
+            }
+        })
+    }
 
-    const memberAttendees = meetup.details.attendees?.members?.filter((a): a is Member =>
-        typeof a === 'object' && a !== null && 'first_name' in a
-    ).map(attendee => ({
-        id: attendee.id.toString(),
-        name: `${attendee.first_name} ${attendee.last_name}`,
-        role: attendee.basics?.nickname || attendee.details?.duties || 'Member',
-        organization: attendee.basics?.nationality && typeof attendee.basics.nationality === 'object' ? (attendee.basics.nationality as { name: string }).name : 'Staff',
-        image: attendee.assets?.avatar && typeof attendee.assets.avatar === 'object' ? attendee.assets.avatar as Media : null,
-        type: 'GUEST' as const
-    })) || []
+    const attendeeTabs: any[] = []
 
-    const leaderAttendees = meetup.details.attendees?.leaders?.filter((a): a is Leader =>
-        typeof a === 'object' && a !== null && 'first_name' in a
-    ).map(attendee => ({
-        id: attendee.id.toString(),
-        name: `${attendee.first_name} ${attendee.last_name}`,
-        role: attendee.basics?.title || attendee.basics?.nickname || 'Leader',
-        organization: attendee.basics?.nationality && typeof attendee.basics.nationality === 'object' ? (attendee.basics.nationality as { name: string }).name : 'Leadership',
-        image: attendee.assets?.avatar && typeof attendee.assets.avatar === 'object' ? attendee.assets.avatar as Media : null,
-        type: 'SPEAKER' as const
-    })) || []
+    if (driverAttendeeItems.length > 0) {
+        attendeeTabs.push({
+            id: 'drivers',
+            label: 'Drivers',
+            content: <GridSection id="attendees-drivers" title="" subtitle="" items={driverAttendeeItems} columns={4} cardVariant={1} headerVariant={1} footerVariant={1} />,
+        })
+    }
 
-    const individualAttendees = meetup.details.attendees?.individuals?.filter((a): a is Individual =>
-        typeof a === 'object' && a !== null && 'first_name' in a
-    ).map(attendee => ({
-        id: attendee.id.toString(),
-        name: `${attendee.first_name} ${attendee.last_name}`,
-        role: attendee.basics?.type || 'Individual',
-        organization: attendee.basics?.description || 'Guest',
-        image: attendee.assets?.avatar && typeof attendee.assets.avatar === 'object' ? attendee.assets.avatar as Media : null,
-        type: 'GUEST' as const
-    })) || []
+    if (memberAttendeeItems.length > 0) {
+        attendeeTabs.push({
+            id: 'members',
+            label: 'Members',
+            content: <GridSection id="attendees-members" title="" subtitle="" items={memberAttendeeItems} columns={4} cardVariant={1} headerVariant={1} footerVariant={1} />,
+        })
+    }
 
-    const orgAttendees = meetup.details.attendees?.organizations?.filter((a): a is Organization =>
-        typeof a === 'object' && a !== null && 'name' in a
-    ).map(attendee => ({
-        id: attendee.id.toString(),
-        name: attendee.name,
-        role: attendee.basics?.type || 'Organization',
-        organization: attendee.name,
-        image: attendee.assets?.logo && typeof attendee.assets.logo === 'object' ? attendee.assets.logo as Media : null,
-        type: 'PARTNER' as const
-    })) || []
+    if (leaderAttendeeItems.length > 0) {
+        attendeeTabs.push({
+            id: 'leaders',
+            label: 'Leaders',
+            content: <GridSection id="attendees-leaders" title="" subtitle="" items={leaderAttendeeItems} columns={4} cardVariant={1} headerVariant={1} footerVariant={1} />,
+        })
+    }
 
-    attendeeItems.push(...driverAttendees, ...memberAttendees, ...leaderAttendees, ...individualAttendees, ...orgAttendees)
+    if (individualAttendeeItems.length > 0) {
+        attendeeTabs.push({
+            id: 'individuals',
+            label: 'Individuals',
+            content: <GridSection id="attendees-individuals" title="" subtitle="" items={individualAttendeeItems} columns={4} cardVariant={1} headerVariant={1} footerVariant={1} />,
+        })
+    }
 
-    const documents = meetup.assets?.documents?.filter((doc): doc is Media =>
-        typeof doc === 'object' && doc !== null && 'url' in doc
-    ).map(doc => ({
-        id: doc.id,
-        title: doc.filename || 'Document',
-        file: doc,
-        category: 'Meetup Document',
-        version: '1.0'
-    })) || []
+    if (orgAttendeeItems.length > 0) {
+        attendeeTabs.push({
+            id: 'organizations',
+            label: 'Organizations',
+            content: <GridSection id="attendees-organizations" title="" subtitle="" items={orgAttendeeItems} columns={4} cardVariant={1} headerVariant={1} footerVariant={1} />,
+        })
+    }
+
+    const documentItems: any[] = []
+    if (meetup.assets?.documents) {
+        meetup.assets.documents.forEach((doc, idx) => {
+            const media = typeof doc === 'object' ? doc : null
+            const url = media ? getMediaUrl(media) : undefined
+            if (url && media) {
+                documentItems.push({
+                    id: String(media.id),
+                    title: media.alt || media.filename || `Document ${idx + 1}`,
+                    subtitle: media.mimeType || undefined,
+                    image: url,
+                    href: url,
+                })
+            }
+        })
+    }
 
     return (
         <main className="w-full">
-            <HeroMedia
-                id={`MUP-${meetup.id}`}
+            <HeroSection
+                id="meetup-details-cover"
                 title={meetup.name}
-                meta={meetup.basics?.description || 'Community Meetup'}
-                image={coverImage}
-                tags={[
-                    meetup.details.format || 'Meetup',
-                    'Details'
-                ]}
+                subtitle={meetup.details?.format || ''}
+                description={meetup.basics?.description || undefined}
+                backgroundImage={heroBackgroundImage}
+                alignment="center"
+                badge={meetup.details?.access || undefined}
+                meta={new Date(meetup.details.start_date).toLocaleDateString()}
             />
-
             {hostItems.length > 0 && (
-                <DirectoryGrid
-                    id="MUP_HOSTS"
+                <GridSection
+                    id="meetup-hosts"
                     title="Hosts"
+                    subtitle="Event organizers"
                     items={hostItems}
-                    variant="square"
+                    columns={4}
+                    cardVariant={1}
+                    headerVariant={1}
+                    footerVariant={1}
                 />
             )}
-
-            {attendeeItems.length > 0 && (
-                <DirectoryTabs
-                    id="MUP_ATTENDEES"
+            {attendeeTabs.length > 0 && (
+                <TabSection
+                    id="meetup-attendees"
                     title="Attendees"
-                    items={attendeeItems}
+                    subtitle="Event participants"
+                    tabs={attendeeTabs}
+                    variant="underline"
+                    headerVariant={2}
+                    footerVariant={1}
                 />
             )}
-
-            {documents.length > 0 && (
-                <DocumentGrid
-                    id="MUP_DOCS"
-                    title="Event Documents"
-                    documents={documents}
+            {documentItems.length > 0 && (
+                <GridSection
+                    id="meetup-documents"
+                    title="Documents"
+                    subtitle="Event resources"
+                    items={documentItems}
+                    columns={3}
+                    cardVariant={1}
+                    headerVariant={3}
+                    footerVariant={2}
                 />
             )}
         </main>

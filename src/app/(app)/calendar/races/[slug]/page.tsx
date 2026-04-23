@@ -1,178 +1,156 @@
-import GalleryGrid from '@/components/Section/GalleryGrid'
-import InfoGrid from '@/components/Section/InfoGrid'
-import ProgressScroller from '@/components/Section/ProgressScroller'
-import VideoPlayer from '@/components/Section/VideoPlayer'
-import { Circuit, Driver, Entry, Media, Race } from '@/payload-types'
+// app/(frontend)/calendar/races/[slug]/page.tsx
+import MasonrySection from '@/components/Section/Blocks/MasonrySection'
+import ScrollSection from '@/components/Section/Blocks/ScrollSection'
+import StudySection from '@/components/Section/Blocks/StudySection'
+import VideoSection from '@/components/Section/Blocks/VideoSection'
+import { Media } from '@/payload-types'
 import configPromise from '@payload-config'
-import Link from 'next/link'
+import { unstable_cache } from 'next/cache'
 import { notFound } from 'next/navigation'
 import { getPayload } from 'payload'
 
-interface PageProps {
-    params: Promise<{
-        slug: string
-    }>
+function getMediaUrl(media: number | Media | null | undefined): string | undefined {
+    if (!media) return undefined
+    if (typeof media === 'object' && 'url' in media && media.url) return media.url
+    return undefined
 }
 
-async function getRace(slug: string): Promise<Race | null> {
-    const payload = await getPayload({ config: configPromise })
-    const { docs } = await payload.find({
-        collection: 'races',
-        where: {
-            slug: {
-                equals: slug,
-            },
-        },
-        depth: 2,
-    })
-    return docs[0] || null
-}
+const getRaceData = unstable_cache(
+    async (slug: string) => {
+        const payload = await getPayload({ config: configPromise })
+        const result = await payload.find({
+            collection: 'races',
+            where: { slug: { equals: slug } },
+            limit: 1,
+        })
+        return result.docs[0] || null
+    },
+    ['race-detail'],
+    { revalidate: 3600, tags: ['race'] }
+)
 
-export default async function RacePage({ params }: PageProps) {
+export default async function RacePage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params
-    const race = await getRace(slug)
+    const race = await getRaceData(slug)
 
-    if (!race) {
-        return notFound()
+    if (!race) notFound()
+
+    const videoItems: any[] = []
+    if (race.assets?.video) {
+        const videoUrl = getMediaUrl(race.assets.video)
+        if (videoUrl) {
+            videoItems.push({
+                id: String(race.id),
+                title: race.name,
+                description: race.basics?.tagline || undefined,
+                url: videoUrl,
+                poster: race.assets?.poster ? getMediaUrl(race.assets.poster) : race.assets?.thumbnail ? getMediaUrl(race.assets.thumbnail) : undefined,
+            })
+        }
     }
 
-    const videoAsset = race.assets?.video && typeof race.assets.video === 'object'
-        ? (race.assets.video as Media)
-        : null
+    const studyImage = race.assets?.cover
+        ? getMediaUrl(race.assets.cover)
+        : race.assets?.poster
+            ? getMediaUrl(race.assets.poster)
+            : race.assets?.thumbnail
+                ? getMediaUrl(race.assets.thumbnail)
+                : undefined
 
-    const posterAsset = race.assets?.poster && typeof race.assets.poster === 'object'
-        ? (race.assets.poster as Media)
-        : null
+    const study = {
+        id: String(race.id),
+        title: race.name,
+        description: race.basics?.description || race.basics?.tagline || '',
+        image: studyImage || `https://picsum.photos/seed/${race.slug}/800/600`,
+        metrics: [
+            { label: 'Type', value: race.details?.type || 'N/A' },
+            { label: 'Status', value: race.details?.status || 'N/A' },
+            { label: 'Laps', value: race.details?.laps ? String(race.details.laps) : 'N/A' },
+            { label: 'Distance', value: race.details?.distance_km ? `${race.details.distance_km} km` : 'N/A' },
+        ],
+    }
 
-    const circuitName = race.details.circuit && typeof race.details.circuit === 'object'
-        ? (race.details.circuit as Circuit).name
-        : 'TBD'
-
-    const seriesName = race.details.series && typeof race.details.series === 'object'
-        ? (race.details.series as { name: string }).name
-        : 'TBD'
-
-    const winnerName = race.details.winner && typeof race.details.winner === 'object'
-        ? `${(race.details.winner as Driver).first_name} ${(race.details.winner as Driver).last_name}`
-        : 'TBD'
-
-    const infoBlocks = [
-        {
-            id: 'race-info',
-            label: 'RACE DETAILS',
-            title: race.details.type?.toUpperCase() || 'FEATURE RACE',
-            description: race.basics?.description || undefined,
-            metadata: [
-                { key: 'STATUS', value: race.details.status?.toUpperCase() || 'SCHEDULED' },
-                { key: 'CIRCUIT', value: circuitName },
-                { key: 'SERIES', value: seriesName },
-                { key: 'LAPS', value: race.details.laps?.toString() || 'TBD' },
-                { key: 'DISTANCE', value: race.details.distance_km ? `${race.details.distance_km} KM` : 'TBD' },
-            ]
-        },
-        {
-            id: 'schedule',
-            label: 'SCHEDULE',
-            title: race.details.start_date ? 'RACE DAY' : 'DATES TBD',
-            description: 'Event timeline',
-            metadata: [
-                { key: 'START DATE', value: race.details.start_date?.split('T')[0] || 'TBD' },
-                { key: 'END DATE', value: race.details.end_date?.split('T')[0] || 'TBD' },
-            ]
-        },
-    ]
-
-    const historySteps = []
-
-    if (race.details.winner && typeof race.details.winner === 'object') {
-        historySteps.push({
-            id: 'winner',
-            index: '01',
-            heading: 'Race Winner',
-            subheading: winnerName,
-            body: race.details.notes || 'Victory achieved',
-            percentage: 100
+    const scrollItems: any[] = []
+    if (race.details?.history) {
+        scrollItems.push({
+            id: 'history',
+            title: 'Race History',
+            description: race.basics?.description || 'A look back at this historic event.',
+            percentage: 100,
+        })
+    }
+    if (race.details?.notes) {
+        scrollItems.push({
+            id: 'notes',
+            title: 'Race Notes',
+            description: race.details.notes,
+            percentage: 75,
         })
     }
 
-    if (race.details.fastest_lap && typeof race.details.fastest_lap === 'object') {
-        const fastestLapEntry = race.details.fastest_lap as Entry
-        historySteps.push({
-            id: 'fastest-lap',
-            index: '02',
-            heading: 'Fastest Lap',
-            subheading: fastestLapEntry.name || 'Driver',
-            body: race.details.fastest_lap_time || 'Time TBD',
-            percentage: 100
+    const galleryItems: any[] = []
+    if (race.assets?.gallery) {
+        race.assets.gallery.forEach((item, idx) => {
+            const media = typeof item === 'object' ? item : null
+            const url = media ? getMediaUrl(media) : undefined
+            if (url && media) {
+                galleryItems.push({
+                    id: String(media.id),
+                    title: media.alt || race.name,
+                    image: url,
+                    height: idx % 3 === 0 ? 'tall' as const : idx % 2 === 0 ? 'medium' as const : 'short' as const,
+                })
+            }
         })
     }
-
-    if (race.details.pole_position && typeof race.details.pole_position === 'object') {
-        const poleEntry = race.details.pole_position as Entry
-        historySteps.push({
-            id: 'pole',
-            index: '03',
-            heading: 'Pole Position',
-            subheading: poleEntry.name || 'Driver',
-            body: 'Qualifying leader',
-            percentage: 100
-        })
-    }
-
-    const galleryItems = race.assets?.gallery?.filter((item): item is Media =>
-        typeof item === 'object' && item !== null && 'url' in item
-    ).map(item => ({
-        id: item.id.toString(),
-        image: item,
-        title: item.filename || 'Gallery Image',
-        category: race.details.type?.toUpperCase() || 'RACE'
-    })) || []
 
     return (
         <main className="w-full">
-            <VideoPlayer
-                id={race.basics?.identifiers?.code || `RCE-${race.id}`}
-                title={race.name}
-                meta={race.basics?.tagline || 'Race'}
-                video={videoAsset}
-                poster={posterAsset}
-                tags={[
-                    race.details.type || 'Race',
-                    race.details.status || 'Scheduled'
-                ]}
-            />
-
-            <InfoGrid
-                id="RCE_SPECS"
-                title="Race Specifications"
-                blocks={infoBlocks}
-                columns={2}
-            />
-
-            {historySteps.length > 0 && (
-                <ProgressScroller
-                    id="RCE_HISTORY"
+            {videoItems.length > 0 && (
+                <VideoSection
+                    id="race-video"
                     title="Race Highlights"
-                    steps={historySteps}
+                    subtitle={race.name}
+                    videos={videoItems}
+                    autoplay={false}
+                    showPlaylist={false}
+                    headerVariant={1}
+                    footerVariant={1}
                 />
             )}
-
+            <StudySection
+                id="race-details"
+                title="Race Overview"
+                subtitle="Event information"
+                studies={[study]}
+                variant="featured"
+                headerVariant={1}
+                footerVariant={1}
+                ctaLabel="View Full Details"
+                ctaPath={`/calendar/races/${race.slug}/details`}
+            />
+            {scrollItems.length > 0 && (
+                <ScrollSection
+                    id="race-history"
+                    title="History & Notes"
+                    subtitle="Race background"
+                    items={scrollItems}
+                    variant="reveal"
+                    headerVariant={2}
+                    footerVariant={1}
+                />
+            )}
             {galleryItems.length > 0 && (
-                <GalleryGrid
-                    id="RCE_GALLERY"
-                    title="Race Gallery"
+                <MasonrySection
+                    id="race-gallery"
+                    title="Gallery"
+                    subtitle="Images from the event"
                     items={galleryItems}
+                    columns={3}
+                    headerVariant={3}
+                    footerVariant={2}
                 />
             )}
-
-            <section className="w-full py-20 flex justify-center border-b border-black-pure">
-                <Link
-                    href={`/calendar/races/${slug}/details`}
-                    className="px-12 py-6 bg-black-pure text-white-pure font-mono text-sm font-bold uppercase tracking-widest hover:bg-primary-500 hover:text-black-pure transition-colors border-2 border-black-pure"
-                >
-                    View Technical Details →
-                </Link>
-            </section>
         </main>
     )
 }

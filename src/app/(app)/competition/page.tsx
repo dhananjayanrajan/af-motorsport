@@ -1,172 +1,250 @@
-import DirectoryGrid from '@/components/Section/DirectoryGrid'
-import DirectoryList from '@/components/Section/DirectoryList'
-import MapGrid from '@/components/Section/MapGrid'
-import { Country, Media, Season, Series } from '@/payload-types'
+// app/(frontend)/competition/page.tsx
+import GridSection from '@/components/Section/Blocks/GridSection'
+import ListSection from '@/components/Section/Blocks/ListSection'
+import MapSection from '@/components/Section/Blocks/MapSection'
+import { Circuit, Event, Media, Season, Series, Session } from '@/payload-types'
 import configPromise from '@payload-config'
+import { unstable_cache } from 'next/cache'
 import { getPayload } from 'payload'
 
-async function getCompetitionData() {
-    const payload = await getPayload({ config: configPromise })
-
-    const { docs: series } = await payload.find({
-        collection: 'series',
-        limit: 12,
-        sort: '-createdAt',
-    })
-
-    const { docs: seasons } = await payload.find({
-        collection: 'seasons',
-        limit: 10,
-        sort: '-createdAt',
-    })
-
-    const { docs: events } = await payload.find({
-        collection: 'events',
-        limit: 12,
-        sort: '-details.start_date',
-    })
-
-    const { docs: sessions } = await payload.find({
-        collection: 'sessions',
-        limit: 10,
-        sort: '-createdAt',
-    })
-
-    const { docs: circuits } = await payload.find({
-        collection: 'circuits',
-        limit: 20,
-    })
-
-    return { series, seasons, events, sessions, circuits }
+function getMediaUrl(media: number | Media | null | undefined): string | undefined {
+    if (!media) return undefined
+    if (typeof media === 'object' && 'url' in media && media.url) return media.url
+    return undefined
 }
 
+const getCompetitionData = unstable_cache(
+    async () => {
+        const payload = await getPayload({ config: configPromise })
+
+        const [seriesList, seasons, events, sessions, circuits] = await Promise.all([
+            payload.find({
+                collection: 'series',
+                limit: 12,
+                sort: '-createdAt',
+                select: {
+                    id: true,
+                    name: true,
+                    slug: true,
+                    basics: true,
+                    details: true,
+                    assets: true,
+                    updatedAt: true,
+                    createdAt: true,
+                },
+            }),
+            payload.find({
+                collection: 'seasons',
+                limit: 20,
+                sort: '-createdAt',
+                select: {
+                    id: true,
+                    name: true,
+                    slug: true,
+                    basics: true,
+                    details: true,
+                    assets: true,
+                    updatedAt: true,
+                    createdAt: true,
+                },
+            }),
+            payload.find({
+                collection: 'events',
+                limit: 12,
+                sort: 'details.start_date',
+                select: {
+                    id: true,
+                    name: true,
+                    slug: true,
+                    basics: true,
+                    details: true,
+                    assets: true,
+                    updatedAt: true,
+                    createdAt: true,
+                },
+            }),
+            payload.find({
+                collection: 'sessions',
+                limit: 20,
+                sort: '-createdAt',
+                select: {
+                    id: true,
+                    name: true,
+                    slug: true,
+                    basics: true,
+                    details: true,
+                    metrics: true,
+                    assets: true,
+                    updatedAt: true,
+                    createdAt: true,
+                },
+            }),
+            payload.find({
+                collection: 'circuits',
+                limit: 50,
+                sort: 'name',
+                select: {
+                    id: true,
+                    name: true,
+                    slug: true,
+                    basics: true,
+                    details: true,
+                    assets: true,
+                    updatedAt: true,
+                    createdAt: true,
+                },
+            }),
+        ])
+
+        return {
+            seriesList: seriesList.docs as Series[],
+            seasons: seasons.docs as Season[],
+            events: events.docs as Event[],
+            sessions: sessions.docs as Session[],
+            circuits: circuits.docs as Circuit[],
+        }
+    },
+    ['competition-page-data'],
+    { revalidate: 3600, tags: ['competition'] }
+)
+
 export default async function CompetitionPage() {
-    const { series, seasons, events, sessions, circuits } = await getCompetitionData()
+    const { seriesList, seasons, events, sessions, circuits } = await getCompetitionData()
 
-    const seriesItems = series.map(s => {
-        const thumbnail = s.assets?.thumbnail && typeof s.assets.thumbnail === 'object'
-            ? s.assets.thumbnail as Media
-            : null
+    const seriesItems: any[] = seriesList.map((series: Series) => {
+        const imageUrl = series.assets?.thumbnail
+            ? getMediaUrl(series.assets.thumbnail)
+            : series.assets?.logo
+                ? getMediaUrl(series.assets.logo)
+                : series.assets?.cover
+                    ? getMediaUrl(series.assets.cover)
+                    : `https://picsum.photos/seed/${series.slug}/400/300`
 
         return {
-            id: s.id.toString(),
-            title: s.name,
-            subtitle: s.basics?.tagline || undefined,
-            label: s.basics?.identifiers?.code || 'SERIES',
-            image: thumbnail,
-            href: `/competition/series/${s.slug}`,
-            metadata: [
-                { label: 'STATUS', value: s.details?.status || 'Active' },
-                { label: 'ACCESS', value: s.details?.access || 'Public' },
-            ]
+            id: String(series.id),
+            title: series.name,
+            subtitle: series.basics?.tagline || series.basics?.identifiers?.abbreviation || undefined,
+            image: imageUrl,
+            href: `/competition/series/${series.slug}`,
+            label: series.details?.status || undefined,
         }
     })
 
-    const seasonItems = seasons.map(s => {
-        const seriesName = s.details.series && typeof s.details.series === 'object'
-            ? (s.details.series as Series).name
-            : 'TBD'
+    const seasonEntries: any[] = seasons.map((season: Season) => ({
+        id: String(season.id),
+        title: season.name,
+        subtitle: season.basics?.tagline || season.basics?.description || undefined,
+        status: typeof season.details.series === 'object' && 'name' in season.details.series ? season.details.series.name : undefined,
+        tag: season.basics?.identifiers?.code || season.basics?.identifiers?.abbreviation || undefined,
+        href: `/competition/seasons/${season.slug}`,
+    }))
+
+    const eventItems: any[] = events.map((event: Event) => {
+        const imageUrl = event.assets?.thumbnail
+            ? getMediaUrl(event.assets.thumbnail)
+            : event.assets?.poster
+                ? getMediaUrl(event.assets.poster)
+                : event.assets?.cover
+                    ? getMediaUrl(event.assets.cover)
+                    : `https://picsum.photos/seed/${event.slug}/400/300`
 
         return {
-            id: s.id.toString(),
-            title: s.name,
-            subtitle: seriesName,
-            tag: s.basics?.identifiers?.code || 'SEASON',
-            href: `/competition/seasons/${s.slug}`,
-            timestamp: s.createdAt.split('T')[0],
-            status: s.details.entries ? `${s.details.entries} ENTRIES` : undefined
+            id: String(event.id),
+            title: event.name,
+            subtitle: event.basics?.tagline || undefined,
+            image: imageUrl,
+            href: `/competition/events/${event.slug}`,
+            label: event.details?.status || undefined,
+            metadata: {
+                Date: event.details?.start_date ? new Date(event.details.start_date).toLocaleDateString() : 'TBD',
+                Season: typeof event.details.season === 'object' && 'name' in event.details.season ? event.details.season.name : 'N/A',
+            },
         }
     })
 
-    const eventItems = events.map(e => {
-        const thumbnail = e.assets?.thumbnail && typeof e.assets.thumbnail === 'object'
-            ? e.assets.thumbnail as Media
-            : null
+    const sessionEntries: any[] = sessions.map((session: Session) => ({
+        id: String(session.id),
+        title: session.name,
+        subtitle: session.basics?.segment || session.basics?.description || undefined,
+        status: session.details?.access || undefined,
+        tag: session.basics?.identifiers?.code || undefined,
+        href: `/competition/sessions/${session.slug}`,
+    }))
 
-        const seasonName = e.details.season && typeof e.details.season === 'object'
-            ? (e.details.season as Season).name
-            : undefined
-
-        return {
-            id: e.id.toString(),
-            title: e.name,
-            subtitle: seasonName,
-            label: e.basics?.identifiers?.code || 'EVENT',
-            image: thumbnail,
-            href: `/competition/events/${e.slug}`,
-            metadata: [
-                { label: 'STATUS', value: e.details.status || 'Scheduled' },
-                { label: 'START', value: e.details.start_date?.split('T')[0] || 'TBD' },
-            ]
-        }
-    })
-
-    const sessionItems = sessions.map(s => {
-        return {
-            id: s.id.toString(),
-            title: s.name,
-            subtitle: s.basics?.segment || 'Session',
-            tag: s.basics?.identifiers?.code || 'SESSION',
-            href: `/competition/sessions/${s.slug}`,
-            timestamp: s.createdAt.split('T')[0],
-            status: s.details?.access?.toUpperCase() || 'PUBLIC'
-        }
-    })
-
-    const circuitLocations = circuits.filter(c => c.details?.location).map(c => {
-        const countryName = c.details?.country && typeof c.details.country === 'object'
-            ? (c.details.country as Country).name
-            : undefined
-
-        return {
-            id: c.id.toString(),
-            title: c.name,
-            lat: c.details!.location![1],
-            lng: c.details!.location![0],
-            label: c.basics?.identifiers?.code || 'CIRCUIT',
-            metadata: [
-                { label: 'TYPE', value: c.details?.type?.toUpperCase() || 'PERMANENT' },
-                { label: 'LENGTH', value: c.details?.length_km ? `${c.details.length_km} KM` : 'TBD' },
-                { label: 'COUNTRY', value: countryName || 'TBD' },
-            ],
-            category: c.details?.type?.toUpperCase() || 'CIRCUIT'
-        }
-    })
+    const mapLocations: any[] = circuits
+        .filter((circuit: Circuit) => circuit.details?.location)
+        .map((circuit: Circuit) => ({
+            id: String(circuit.id),
+            name: circuit.name,
+            lat: circuit.details?.location?.[0] || 0,
+            lng: circuit.details?.location?.[1] || 0,
+            description: circuit.basics?.tagline || circuit.basics?.identifiers?.abbreviation || undefined,
+            address: circuit.details?.address || undefined,
+        }))
 
     return (
         <main className="w-full">
-            <DirectoryGrid
-                id="COMP_SERIES"
-                title="Racing Series"
-                items={seriesItems}
-                variant="square"
-            />
-
-            <DirectoryList
-                id="COMP_SEASONS"
-                title="Championship Seasons"
-                items={seasonItems}
-            />
-
-            <DirectoryGrid
-                id="COMP_EVENTS"
-                title="Race Events"
-                items={eventItems}
-                variant="landscape"
-            />
-
-            <DirectoryList
-                id="COMP_SESSIONS"
-                title="Practice & Qualifying Sessions"
-                items={sessionItems}
-            />
-
-            {circuitLocations.length > 0 && (
-                <MapGrid
-                    id="COMP_CIRCUITS"
-                    title="Circuit Locations"
-                    locations={circuitLocations}
-                    initialZoom={3}
+            {seriesItems.length > 0 && (
+                <GridSection
+                    id="competition-series"
+                    title="Racing Series"
+                    subtitle="Active championships and series"
+                    items={seriesItems}
+                    columns={4}
+                    cardVariant={1}
+                    showMetadata={false}
+                    headerVariant={1}
+                    footerVariant={1}
+                />
+            )}
+            {seasonEntries.length > 0 && (
+                <ListSection
+                    id="competition-seasons"
+                    title="Seasons"
+                    subtitle="Championship seasons"
+                    entries={seasonEntries}
+                    variant="detailed"
+                    showStatus={true}
+                    showTimestamp={false}
+                    headerVariant={2}
+                    footerVariant={1}
+                />
+            )}
+            {eventItems.length > 0 && (
+                <GridSection
+                    id="competition-events"
+                    title="Events"
+                    subtitle="Race weekends and meetings"
+                    items={eventItems}
+                    columns={3}
+                    cardVariant={1}
+                    showMetadata={true}
+                    headerVariant={3}
+                    footerVariant={2}
+                />
+            )}
+            {sessionEntries.length > 0 && (
+                <ListSection
+                    id="competition-sessions"
+                    title="Sessions"
+                    subtitle="Practice, qualifying, and race sessions"
+                    entries={sessionEntries}
+                    variant="detailed"
+                    showStatus={true}
+                    showTimestamp={false}
+                    headerVariant={1}
+                    footerVariant={1}
+                />
+            )}
+            {mapLocations.length > 0 && (
+                <MapSection
+                    id="competition-circuits"
+                    title="Circuits"
+                    subtitle="Race tracks around the world"
+                    locations={mapLocations}
+                    zoom={2}
+                    headerVariant={2}
+                    footerVariant={1}
                 />
             )}
         </main>

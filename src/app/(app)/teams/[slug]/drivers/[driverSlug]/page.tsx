@@ -1,270 +1,293 @@
-import CentralMedia from '@/components/Section/CentralMedia'
-import DirectoryGrid from '@/components/Section/DirectoryGrid'
-import DirectoryList from '@/components/Section/DirectoryList'
-import GalleryGrid from '@/components/Section/GalleryGrid'
-import InfoGrid from '@/components/Section/InfoGrid'
-import ProgressScroller from '@/components/Section/ProgressScroller'
-import VideoPlayer from '@/components/Section/VideoPlayer'
-import { Celebration, Driver, Incident, Media, Member } from '@/payload-types'
+// app/(frontend)/teams/[teamSlug]/drivers/[driverSlug]/page.tsx
+import FeatureSection from '@/components/Section/Blocks/FeatureSection'
+import GridSection from '@/components/Section/Blocks/GridSection'
+import ListSection from '@/components/Section/Blocks/ListSection'
+import MasonrySection from '@/components/Section/Blocks/MasonrySection'
+import ScrollSection from '@/components/Section/Blocks/ScrollSection'
+import StudySection from '@/components/Section/Blocks/StudySection'
+import VideoSection from '@/components/Section/Blocks/VideoSection'
+import { Celebration, Incident, Media, Member } from '@/payload-types'
 import configPromise from '@payload-config'
+import { unstable_cache } from 'next/cache'
 import { notFound } from 'next/navigation'
 import { getPayload } from 'payload'
 
-interface PageProps {
-    params: Promise<{
-        slug: string
-        driverSlug: string
-    }>
+function getMediaUrl(media: number | Media | null | undefined): string | undefined {
+    if (!media) return undefined
+    if (typeof media === 'object' && 'url' in media && media.url) return media.url
+    return undefined
 }
 
-async function getDriver(slug: string): Promise<Driver | null> {
-    const payload = await getPayload({ config: configPromise })
-    const { docs } = await payload.find({
-        collection: 'drivers',
-        where: {
-            slug: {
-                equals: slug,
+const getDriverData = unstable_cache(
+    async (slug: string) => {
+        const payload = await getPayload({ config: configPromise })
+        const result = await payload.find({
+            collection: 'drivers',
+            where: { slug: { equals: slug } },
+            limit: 1,
+        })
+        return result.docs[0] || null
+    },
+    ['driver-detail'],
+    { revalidate: 3600, tags: ['driver'] }
+)
+
+const getCrewMembers = unstable_cache(
+    async () => {
+        const payload = await getPayload({ config: configPromise })
+        const result = await payload.find({
+            collection: 'members',
+            limit: 8,
+            select: {
+                id: true,
+                first_name: true,
+                last_name: true,
+                slug: true,
+                basics: true,
+                details: true,
+                assets: true,
             },
-        },
-        depth: 2,
-    })
-    return docs[0] || null
-}
+        })
+        return result.docs as Member[]
+    },
+    ['crew-members'],
+    { revalidate: 3600 }
+)
 
-async function getCrewMembers(driverId: number): Promise<Member[]> {
-    const payload = await getPayload({ config: configPromise })
-    const { docs } = await payload.find({
-        collection: 'members',
-        where: {
-            'details.skills': {
-                exists: true,
+const getCelebrations = unstable_cache(
+    async () => {
+        const payload = await getPayload({ config: configPromise })
+        const result = await payload.find({
+            collection: 'celebrations',
+            limit: 8,
+            select: {
+                id: true,
+                name: true,
+                slug: true,
+                basics: true,
+                details: true,
+                assets: true,
             },
-        },
-        limit: 20,
-    })
-    return docs
-}
+        })
+        return result.docs as Celebration[]
+    },
+    ['celebrations'],
+    { revalidate: 3600 }
+)
 
-async function getCelebrationsForDriver(driverId: number): Promise<Celebration[]> {
-    const payload = await getPayload({ config: configPromise })
-    const { docs } = await payload.find({
-        collection: 'celebrations',
-        where: {
-            'details.drivers': {
-                in: [driverId],
+const getIncidents = unstable_cache(
+    async () => {
+        const payload = await getPayload({ config: configPromise })
+        const result = await payload.find({
+            collection: 'incidents',
+            limit: 10,
+            select: {
+                id: true,
+                name: true,
+                slug: true,
+                basics: true,
+                details: true,
             },
-        },
-        limit: 20,
-    })
-    return docs
-}
+        })
+        return result.docs as Incident[]
+    },
+    ['incidents'],
+    { revalidate: 3600 }
+)
 
-async function getIncidentsForDriver(driverId: number): Promise<Incident[]> {
-    const payload = await getPayload({ config: configPromise })
-    const { docs } = await payload.find({
-        collection: 'incidents',
-        where: {
-            'details.drivers': {
-                in: [driverId],
-            },
-        },
-        limit: 20,
-    })
-    return docs
-}
+export default async function DriverPage({ params }: { params: Promise<{ teamSlug: string; driverSlug: string }> }) {
+    const { teamSlug, driverSlug } = await params
+    const driver = await getDriverData(driverSlug)
 
-export default async function DriverPage({ params }: PageProps) {
-    const { driverSlug } = await params
-    const driver = await getDriver(driverSlug)
+    if (!driver) notFound()
 
-    if (!driver) {
-        return notFound()
+    const crewMembers = await getCrewMembers()
+    const celebrations = await getCelebrations()
+    const incidents = await getIncidents()
+
+    const videoItems: any[] = []
+
+    const studyImage = driver.assets?.avatar
+        ? getMediaUrl(driver.assets.avatar)
+        : driver.assets?.cover
+            ? getMediaUrl(driver.assets.cover)
+            : undefined
+
+    const study = {
+        id: String(driver.id),
+        title: `${driver.first_name} ${driver.last_name}`,
+        description: driver.basics?.callsign || driver.basics?.catchphrase || '',
+        image: studyImage || `https://picsum.photos/seed/${driver.slug}/800/600`,
+        metrics: [
+            { label: 'Number', value: driver.basics?.racing_number ? `#${driver.basics.racing_number}` : 'N/A' },
+            { label: 'Nationality', value: driver.basics?.nationality && typeof driver.basics.nationality === 'object' && 'name' in driver.basics.nationality ? driver.basics.nationality.name : 'N/A' },
+            { label: 'Born', value: driver.basics?.birth_date || 'N/A' },
+            { label: 'Debut', value: driver.basics?.debut_date || 'N/A' },
+        ],
     }
 
-    const videoAsset = driver.assets?.gallery?.list?.[0]?.image && typeof driver.assets.gallery.list[0].image === 'object'
-        ? driver.assets.gallery.list[0].image as Media
-        : null
+    const autographFeatures = driver.assets?.autograph
+        ? [{
+            id: 'autograph',
+            title: 'Autograph',
+            description: `${driver.first_name} ${driver.last_name}`,
+            image: getMediaUrl(driver.assets.autograph) || `https://picsum.photos/seed/autograph-${driver.slug}/400/300`,
+        }]
+        : []
 
-    const posterAsset = driver.assets?.avatar && typeof driver.assets.avatar === 'object'
-        ? driver.assets.avatar as Media
-        : null
-
-    const autographImage = driver.assets?.autograph && typeof driver.assets.autograph === 'object'
-        ? driver.assets.autograph as Media
-        : null
-
-    const crewMembers = await getCrewMembers(driver.id)
-    const celebrations = await getCelebrationsForDriver(driver.id)
-    const incidents = await getIncidentsForDriver(driver.id)
-
-    const infoBlocks = [
-        {
-            id: 'identity',
-            label: 'IDENTITY',
-            title: `${driver.first_name} ${driver.last_name}`,
-            description: driver.basics?.nickname || driver.basics?.competition_name || undefined,
-            metadata: [
-                { key: 'RACING #', value: driver.basics?.racing_number?.toString() || 'TBD' },
-                { key: 'NATIONALITY', value: driver.basics?.nationality && typeof driver.basics.nationality === 'object' ? (driver.basics.nationality as { name: string }).name : 'TBD' },
-                { key: 'GENDER', value: driver.basics?.gender || 'Undisclosed' },
-            ]
-        },
-        {
-            id: 'career',
-            label: 'CAREER',
-            title: driver.basics?.debut_date ? 'ACTIVE' : 'PENDING',
-            description: 'Professional racing career',
-            metadata: [
-                { key: 'DEBUT', value: driver.basics?.debut_date?.split('-')[0] || 'TBD' },
-                { key: 'RETIREMENT', value: driver.basics?.retirement_date?.split('-')[0] || 'Active' },
-            ]
-        },
-    ]
-
-    const historySteps = []
-
-    if (driver.basics?.debut_date) {
-        historySteps.push({
-            id: 'debut',
-            index: '01',
-            heading: 'Racing Debut',
-            subheading: driver.basics.debut_date.split('-')[0],
-            body: driver.basics?.catchphrase || 'Professional career began',
-            percentage: 100
+    const scrollItems: any[] = []
+    if (driver.details?.biography) {
+        scrollItems.push({
+            id: 'biography',
+            title: 'Biography',
+            description: 'Driver background and career highlights.',
+            percentage: 100,
         })
     }
 
-    if (driver.basics?.birth_date) {
-        historySteps.push({
-            id: 'birth',
-            index: '02',
-            heading: 'Date of Birth',
-            subheading: driver.basics.birth_date,
-            body: driver.basics?.pronouns ? `Pronouns: ${driver.basics.pronouns}` : undefined,
-            percentage: 100
-        })
-    }
+    const crewMemberItems: any[] = crewMembers.map((member: Member) => {
+        const imageUrl = member.assets?.avatar
+            ? getMediaUrl(member.assets.avatar)
+            : `https://picsum.photos/seed/${member.id}/400/300`
 
-    const crewItems = crewMembers.map(member => ({
-        id: member.id.toString(),
-        title: `${member.first_name} ${member.last_name}`,
-        subtitle: member.basics?.nickname || member.details?.duties || undefined,
-        label: 'CREW',
-        image: member.assets?.avatar && typeof member.assets.avatar === 'object' ? member.assets.avatar as Media : null,
-        href: `/teams/${member.slug}`,
-        metadata: [
-            { label: 'DUTIES', value: member.details?.duties?.substring(0, 30) || 'Team Member' },
-        ]
-    }))
+        return {
+            id: String(member.id),
+            title: `${member.first_name} ${member.last_name}`,
+            subtitle: member.details?.duties || member.basics?.description || undefined,
+            image: imageUrl,
+        }
+    })
 
-    const celebrationItems = celebrations.map(celeb => ({
-        id: celeb.id.toString(),
-        title: celeb.name,
-        subtitle: celeb.basics?.description || undefined,
-        label: 'CELEBRATION',
-        image: celeb.assets?.thumbnail && typeof celeb.assets.thumbnail === 'object' ? celeb.assets.thumbnail as Media : null,
-        href: `/celebrations/${celeb.slug}`,
-        metadata: [
-            { label: 'DATE', value: celeb.details?.date_time?.split('T')[0] || 'TBD' },
-            { label: 'ACCESS', value: celeb.details?.exclusivity || 'Public' },
-        ]
-    }))
-
-    const incidentListItems = incidents.map(incident => ({
-        id: incident.id.toString(),
-        title: incident.name,
-        subtitle: incident.basics?.description || undefined,
-        tag: 'INCIDENT',
-        href: `/incidents/${incident.slug}`,
-        timestamp: incident.details?.date_time?.split('T')[0] || 'TBD',
-        status: 'REVIEWED'
-    }))
-
-    const galleryItems = []
-
+    const galleryItems: any[] = []
     if (driver.assets?.gallery?.list) {
-        for (const item of driver.assets.gallery.list) {
-            if (item.image && typeof item.image === 'object') {
+        driver.assets.gallery.list.forEach((item, idx) => {
+            const media = typeof item.image === 'object' ? item.image : null
+            const url = media ? getMediaUrl(media) : undefined
+            if (url && media) {
                 galleryItems.push({
-                    id: (item.image as Media).id.toString(),
-                    image: item.image as Media,
-                    title: item.caption || (item.image as Media).filename || 'Gallery Image',
-                    category: driver.basics?.competition_name || 'DRIVER'
+                    id: item.id || String(idx),
+                    title: item.caption || media.alt || `${driver.first_name} ${driver.last_name}`,
+                    image: url,
+                    height: idx % 3 === 0 ? 'tall' as const : idx % 2 === 0 ? 'medium' as const : 'short' as const,
                 })
             }
-        }
+        })
     }
+
+    const celebrationItems: any[] = celebrations.map((celebration: Celebration) => {
+        const imageUrl = celebration.assets?.thumbnail
+            ? getMediaUrl(celebration.assets.thumbnail)
+            : `https://picsum.photos/seed/${celebration.id}/400/300`
+
+        return {
+            id: String(celebration.id),
+            title: celebration.name,
+            subtitle: celebration.basics?.description || undefined,
+            image: imageUrl,
+            href: `/celebrations/${celebration.slug}`,
+        }
+    })
+
+    const incidentEntries: any[] = incidents.map((incident: Incident) => ({
+        id: String(incident.id),
+        title: incident.name,
+        subtitle: incident.basics?.description || undefined,
+        href: `/incidents/${incident.slug}`,
+    }))
 
     return (
         <main className="w-full">
-            <VideoPlayer
-                id={`DRV-${driver.id}`}
-                title={`${driver.first_name} ${driver.last_name}`}
-                meta={driver.basics?.nickname || driver.basics?.competition_name || 'Driver'}
-                video={videoAsset}
-                poster={posterAsset}
-                tags={[
-                    driver.basics?.gender || 'Driver',
-                    driver.basics?.nationality ? 'Racing' : 'Athlete'
-                ]}
-            />
-
-            <InfoGrid
-                id="DRV_SPECS"
-                title="Driver Specifications"
-                blocks={infoBlocks}
-                columns={2}
-            />
-
-            {autographImage && (
-                <CentralMedia
-                    id="DRV_AUTOGRAPH"
-                    title="Driver Autograph"
-                    meta={driver.basics?.catchphrase || 'Signature'}
-                    image={autographImage}
-                    tags={['AUTOGRAPH', driver.basics?.competition_name || 'DRIVER']}
+            {videoItems.length > 0 && (
+                <VideoSection
+                    id="driver-video"
+                    title="Driver Highlights"
+                    subtitle={`${driver.first_name} ${driver.last_name}`}
+                    videos={videoItems}
+                    autoplay={false}
+                    showPlaylist={false}
+                    headerVariant={1}
+                    footerVariant={1}
                 />
             )}
-
-            {historySteps.length > 0 && (
-                <ProgressScroller
-                    id="DRV_HISTORY"
-                    title="Driver History"
-                    steps={historySteps}
+            <StudySection
+                id="driver-details"
+                title="Driver Profile"
+                subtitle="Key information"
+                studies={[study]}
+                variant="featured"
+                headerVariant={1}
+                footerVariant={1}
+                ctaLabel="View Full Details"
+                ctaPath={`/teams/${teamSlug}/drivers/${driver.slug}/details`}
+            />
+            {autographFeatures.length > 0 && (
+                <FeatureSection
+                    id="driver-autograph"
+                    title="Autograph"
+                    subtitle="Official signature"
+                    features={autographFeatures}
+                    columns={2}
+                    headerVariant={2}
+                    footerVariant={1}
                 />
             )}
-
-            {crewItems.length > 0 && (
-                <DirectoryGrid
-                    id="DRV_CREW"
+            {scrollItems.length > 0 && (
+                <ScrollSection
+                    id="driver-history"
+                    title="History"
+                    subtitle="Career background"
+                    items={scrollItems}
+                    variant="reveal"
+                    headerVariant={1}
+                    footerVariant={1}
+                />
+            )}
+            {crewMemberItems.length > 0 && (
+                <GridSection
+                    id="driver-crew"
                     title="Crew Members"
-                    items={crewItems}
-                    variant="square"
+                    subtitle="Supporting team"
+                    items={crewMemberItems}
+                    columns={4}
+                    cardVariant={1}
+                    headerVariant={3}
+                    footerVariant={2}
                 />
             )}
-
             {galleryItems.length > 0 && (
-                <GalleryGrid
-                    id="DRV_GALLERY"
-                    title="Driver Gallery"
+                <MasonrySection
+                    id="driver-gallery"
+                    title="Gallery"
+                    subtitle="Driver imagery"
                     items={galleryItems}
+                    columns={3}
+                    headerVariant={1}
+                    footerVariant={1}
                 />
             )}
-
             {celebrationItems.length > 0 && (
-                <DirectoryGrid
-                    id="DRV_CELEBRATIONS"
+                <GridSection
+                    id="driver-celebrations"
                     title="Celebrations"
+                    subtitle="Career highlights"
                     items={celebrationItems}
-                    variant="square"
+                    columns={3}
+                    cardVariant={1}
+                    headerVariant={1}
+                    footerVariant={1}
                 />
             )}
-
-            {incidentListItems.length > 0 && (
-                <DirectoryList
-                    id="DRV_INCIDENTS"
+            {incidentEntries.length > 0 && (
+                <ListSection
+                    id="driver-incidents"
                     title="Incidents"
-                    items={incidentListItems}
+                    subtitle="Notable events"
+                    entries={incidentEntries}
+                    variant="detailed"
+                    showStatus={false}
+                    showTimestamp={false}
+                    headerVariant={1}
+                    footerVariant={1}
                 />
             )}
         </main>

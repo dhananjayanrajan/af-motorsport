@@ -1,196 +1,197 @@
-import CardCarousel from '@/components/Section/CardCarousel'
-import GalleryGrid from '@/components/Section/GalleryGrid'
-import HeroMedia from '@/components/Section/HeroMedia'
-import ProgressScroller from '@/components/Section/ProgressScroller'
-import StatsGrid from '@/components/Section/StatsGrid'
-import VideoCarousel from '@/components/Section/VideoCarousel'
-import { Entry, Media, Session } from '@/payload-types'
+// app/(frontend)/competition/sessions/[slug]/page.tsx
+import CarouselSection from '@/components/Section/Blocks/CarouselSection'
+import GridSection from '@/components/Section/Blocks/GridSection'
+import HeroSection from '@/components/Section/Blocks/HeroSection'
+import MasonrySection from '@/components/Section/Blocks/MasonrySection'
+import ScrollSection from '@/components/Section/Blocks/ScrollSection'
+import { Media } from '@/payload-types'
 import configPromise from '@payload-config'
+import { unstable_cache } from 'next/cache'
 import { notFound } from 'next/navigation'
 import { getPayload } from 'payload'
 
-interface PageProps {
-    params: Promise<{
-        slug: string
-    }>
+function getMediaUrl(media: number | Media | null | undefined): string | undefined {
+    if (!media) return undefined
+    if (typeof media === 'object' && 'url' in media && media.url) return media.url
+    return undefined
 }
 
-async function getSession(slug: string): Promise<Session | null> {
-    const payload = await getPayload({ config: configPromise })
-    const { docs } = await payload.find({
-        collection: 'sessions',
-        where: {
-            slug: {
-                equals: slug,
-            },
-        },
-        depth: 2,
-    })
-    return docs[0] || null
-}
+const getSessionData = unstable_cache(
+    async (slug: string) => {
+        const payload = await getPayload({ config: configPromise })
+        const result = await payload.find({
+            collection: 'sessions',
+            where: { slug: { equals: slug } },
+            limit: 1,
+        })
+        return result.docs[0] || null
+    },
+    ['session-detail'],
+    { revalidate: 3600, tags: ['session'] }
+)
 
-async function getEntriesForSession(sessionId: number): Promise<Entry[]> {
-    const payload = await getPayload({ config: configPromise })
-    const { docs } = await payload.find({
-        collection: 'entries',
-        where: {
-            'details.session': {
-                equals: sessionId,
-            },
-        },
-        limit: 20,
-    })
-    return docs
-}
-
-export default async function SessionPage({ params }: PageProps) {
+export default async function SessionPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params
-    const session = await getSession(slug)
+    const session = await getSessionData(slug)
 
-    if (!session) {
-        return notFound()
-    }
+    if (!session) notFound()
 
-    const videoSlides = session.assets?.videos?.filter((video): video is Media =>
-        typeof video === 'object' && video !== null && 'url' in video
-    ).map(video => ({
-        id: video.id.toString(),
-        title: video.filename || 'Video',
-        meta: 'SESSION COVERAGE',
-        video: video,
-        poster: video.thumbnailURL ? { url: video.thumbnailURL } as Media : video,
-    })) || []
-
-    const thumbnailImage = session.assets?.thumbnail && typeof session.assets.thumbnail === 'object'
-        ? (session.assets.thumbnail as Media)
-        : null
-
-    const historySteps = []
-
-    if (session.metrics?.quantifiers?.laps) {
-        historySteps.push({
-            id: 'laps',
-            index: '01',
-            heading: 'Total Laps',
-            subheading: `${session.metrics.quantifiers.laps} Laps`,
-            body: session.metrics.quantifiers.specification || 'Session length',
-            percentage: 100
+    const videoSlides: any[] = []
+    if (session.assets?.videos) {
+        session.assets.videos.forEach((video, idx) => {
+            const media = typeof video === 'object' ? video : null
+            const url = media ? getMediaUrl(media) : undefined
+            if (url && media) {
+                videoSlides.push({
+                    id: String(media.id),
+                    title: media.alt || `Video ${idx + 1}`,
+                    description: session.basics?.segment || undefined,
+                    image: session.assets?.thumbnail ? getMediaUrl(session.assets.thumbnail) : `https://picsum.photos/seed/${session.slug}-${idx}/800/600`,
+                    ctaLabel: 'Watch',
+                    ctaHref: url,
+                })
+            }
         })
     }
 
-    if (session.metrics?.quantifiers?.duration) {
-        historySteps.push({
-            id: 'duration',
-            index: '02',
-            heading: 'Duration',
-            subheading: `${session.metrics.quantifiers.duration} Minutes`,
-            body: 'Session runtime',
-            percentage: 100
+    const scrollItems: any[] = []
+    if (session.details?.history) {
+        scrollItems.push({
+            id: 'history',
+            title: 'Session History',
+            description: session.basics?.description || 'Session background and context.',
+            percentage: 100,
+        })
+    }
+    if (session.details?.notes) {
+        scrollItems.push({
+            id: 'notes',
+            title: 'Session Notes',
+            description: session.details.notes,
+            percentage: 75,
         })
     }
 
-    if (session.metrics?.quantifiers?.distance) {
-        historySteps.push({
-            id: 'distance',
-            index: '03',
-            heading: 'Distance',
-            subheading: `${session.metrics.quantifiers.distance} KM`,
-            body: 'Total covered distance',
-            percentage: 100
-        })
-    }
+    const heroBackgroundImage = session.assets?.thumbnail
+        ? getMediaUrl(session.assets.thumbnail)
+        : session.seo?.image
+            ? getMediaUrl(session.seo.image)
+            : undefined
 
-    const statsItems = [
+    const specItems: any[] = [
         {
-            label: 'ACCESS',
-            value: session.details?.access?.toUpperCase() || 'PUBLIC',
-            unit: '',
-            description: 'Session accessibility'
+            id: 'segment',
+            title: 'Segment',
+            subtitle: session.basics?.segment || 'N/A',
         },
         {
-            label: 'SEGMENT',
-            value: session.basics?.segment?.toUpperCase() || 'SESSION',
-            unit: '',
-            description: 'Session type'
+            id: 'access',
+            title: 'Access',
+            subtitle: session.details?.access || 'N/A',
+        },
+        {
+            id: 'code',
+            title: 'Session Code',
+            subtitle: session.basics?.identifiers?.code || 'N/A',
+        },
+        {
+            id: 'laps',
+            title: 'Laps',
+            subtitle: session.metrics?.quantifiers?.laps ? String(session.metrics.quantifiers.laps) : 'N/A',
+        },
+        {
+            id: 'distance',
+            title: 'Distance',
+            subtitle: session.metrics?.quantifiers?.distance ? `${session.metrics.quantifiers.distance} km` : 'N/A',
+        },
+        {
+            id: 'duration',
+            title: 'Duration',
+            subtitle: session.metrics?.quantifiers?.duration ? `${session.metrics.quantifiers.duration} min` : 'N/A',
         },
     ]
 
-    const entries = await getEntriesForSession(session.id)
+    const entrySlides: any[] = []
 
-    const entryCards = entries.map(entry => ({
-        id: entry.id.toString(),
-        title: entry.name,
-        category: entry.details.status || 'Entered',
-        label: entry.basics?.identifiers?.number || 'ENTRY',
-        href: `/competition/entries/${entry.slug}`,
-        image: entry.assets?.thumbnail && typeof entry.assets.thumbnail === 'object'
-            ? entry.assets.thumbnail as Media
-            : null,
-        stats: [
-            { label: 'GRID', value: entry.details.grid_position?.toString() || 'TBD' },
-            { label: 'START', value: entry.details.start_position?.toString() || 'TBD' },
-            { label: 'FINISH', value: entry.details.finish_position?.toString() || 'TBD' },
-        ]
-    }))
-
-    const galleryItems = session.assets?.gallery?.filter((item): item is Media =>
-        typeof item === 'object' && item !== null && 'url' in item
-    ).map(item => ({
-        id: item.id.toString(),
-        image: item,
-        title: item.filename || 'Gallery Image',
-        category: session.basics?.segment?.toUpperCase() || 'SESSION'
-    })) || []
+    const galleryItems: any[] = []
+    if (session.assets?.gallery) {
+        session.assets.gallery.forEach((item, idx) => {
+            const media = typeof item === 'object' ? item : null
+            const url = media ? getMediaUrl(media) : undefined
+            if (url && media) {
+                galleryItems.push({
+                    id: String(media.id),
+                    title: media.alt || session.name,
+                    image: url,
+                    height: idx % 3 === 0 ? 'tall' as const : idx % 2 === 0 ? 'medium' as const : 'short' as const,
+                })
+            }
+        })
+    }
 
     return (
         <main className="w-full">
             {videoSlides.length > 0 && (
-                <VideoCarousel
+                <CarouselSection
+                    id="session-videos"
+                    title="Session Videos"
+                    subtitle={session.name}
                     slides={videoSlides}
-                    sectionTitle="SESSION_HIGHLIGHTS"
+                    variant="full"
+                    headerVariant={1}
+                    footerVariant={1}
                 />
             )}
-
-            {historySteps.length > 0 && (
-                <ProgressScroller
-                    id="SES_HISTORY"
-                    title="Session Metrics"
-                    steps={historySteps}
+            {scrollItems.length > 0 && (
+                <ScrollSection
+                    id="session-history"
+                    title="History & Notes"
+                    subtitle="Session background"
+                    items={scrollItems}
+                    variant="reveal"
+                    headerVariant={2}
+                    footerVariant={1}
                 />
             )}
-
-            {thumbnailImage && (
-                <HeroMedia
-                    id={session.basics?.identifiers?.code || `SES-${session.id}`}
-                    title={session.name}
-                    meta={session.basics?.description || 'Race Session'}
-                    image={thumbnailImage}
-                    tags={[
-                        session.basics?.segment || 'Session',
-                        session.details?.access || 'Public'
-                    ]}
-                />
-            )}
-
-            <StatsGrid
-                id="SES_STATS"
-                title="Session Information"
-                items={statsItems}
-                columns={2}
+            <HeroSection
+                id="session-cover"
+                title={session.name}
+                subtitle={session.basics?.segment || ''}
+                description={session.basics?.description || undefined}
+                backgroundImage={heroBackgroundImage}
+                alignment="center"
+                badge={session.details?.access || undefined}
             />
-
-            {entryCards.length > 0 && (
-                <CardCarousel
-                    cards={entryCards}
-                    sectionTitle="ENTRY_LIST"
+            <GridSection
+                id="session-specifications"
+                title="Specifications"
+                subtitle="Session details"
+                items={specItems}
+                columns={3}
+                cardVariant={1}
+                headerVariant={3}
+                footerVariant={2}
+            />
+            {entrySlides.length > 0 && (
+                <CarouselSection
+                    id="session-entries"
+                    title="Entries"
+                    subtitle="Participating entries"
+                    slides={entrySlides}
+                    variant="card"
+                    headerVariant={1}
+                    footerVariant={1}
                 />
             )}
-
             {galleryItems.length > 0 && (
-                <GalleryGrid
-                    id="SES_GALLERY"
-                    title="Session Gallery"
+                <MasonrySection
+                    id="session-gallery"
+                    title="Gallery"
+                    subtitle="Session imagery"
                     items={galleryItems}
+                    columns={3}
+                    headerVariant={1}
+                    footerVariant={1}
                 />
             )}
         </main>

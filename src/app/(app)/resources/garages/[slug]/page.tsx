@@ -1,159 +1,146 @@
-import GalleryGrid from '@/components/Section/GalleryGrid'
-import HeroMedia from '@/components/Section/HeroMedia'
-import InfoGrid from '@/components/Section/InfoGrid'
-import ProgressScroller from '@/components/Section/ProgressScroller'
-import { Garage, Media } from '@/payload-types'
+// app/(frontend)/resources/garages/[slug]/page.tsx
+import HeroSection from '@/components/Section/Blocks/HeroSection'
+import MasonrySection from '@/components/Section/Blocks/MasonrySection'
+import ScrollSection from '@/components/Section/Blocks/ScrollSection'
+import StudySection from '@/components/Section/Blocks/StudySection'
+import { Media } from '@/payload-types'
 import configPromise from '@payload-config'
-import Link from 'next/link'
+import { unstable_cache } from 'next/cache'
 import { notFound } from 'next/navigation'
 import { getPayload } from 'payload'
 
-interface PageProps {
-    params: Promise<{
-        slug: string
-    }>
+function getMediaUrl(media: number | Media | null | undefined): string | undefined {
+    if (!media) return undefined
+    if (typeof media === 'object' && 'url' in media && media.url) return media.url
+    return undefined
 }
 
-async function getGarage(slug: string): Promise<Garage | null> {
-    const payload = await getPayload({ config: configPromise })
-    const { docs } = await payload.find({
-        collection: 'garages',
-        where: {
-            slug: {
-                equals: slug,
-            },
-        },
-        depth: 2,
-    })
-    return docs[0] || null
-}
+const getGarageData = unstable_cache(
+    async (slug: string) => {
+        const payload = await getPayload({ config: configPromise })
+        const result = await payload.find({
+            collection: 'garages',
+            where: { slug: { equals: slug } },
+            limit: 1,
+        })
+        return result.docs[0] || null
+    },
+    ['garage-detail'],
+    { revalidate: 3600, tags: ['garage'] }
+)
 
-export default async function GaragePage({ params }: PageProps) {
+export default async function GaragePage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params
-    const garage = await getGarage(slug)
+    const garage = await getGarageData(slug)
 
-    if (!garage) {
-        return notFound()
-    }
+    if (!garage) notFound()
 
-    const heroImage = garage.assets?.cover && typeof garage.assets.cover === 'object'
-        ? garage.assets.cover as Media
-        : null
+    const heroBackgroundImage = garage.assets?.cover
+        ? getMediaUrl(garage.assets.cover)
+        : garage.seo?.image
+            ? getMediaUrl(garage.seo.image)
+            : undefined
 
-    const infoBlocks = [
-        {
-            id: 'overview',
-            label: 'GARAGE',
-            title: garage.name,
-            description: garage.basics?.description || undefined,
-            metadata: [
-                { key: 'TYPE', value: garage.details?.type || 'Permanent' },
-                { key: 'ACCESSIBILITY', value: garage.details?.accessibility || 'Restricted' },
-                { key: 'CAPACITY', value: garage.details?.capacity?.toString() || 'TBD' },
-            ]
-        },
-        {
-            id: 'dimensions',
-            label: 'DIMENSIONS',
-            title: garage.details?.size_sq_m ? `${garage.details.size_sq_m} SQ M` : 'TBD',
-            description: 'Facility size',
-            metadata: [
-                { key: 'START DATE', value: garage.details?.start_date?.split('T')[0] || 'TBD' },
-                { key: 'END DATE', value: garage.details?.end_date?.split('T')[0] || 'Present' },
-            ]
-        },
+    const heroActions = [
+        { label: 'View Details', href: `/resources/garages/${garage.slug}/details`, variant: 'primary' as const },
     ]
 
-    const historySteps = []
+    const studyImage = garage.assets?.cover
+        ? getMediaUrl(garage.assets.cover)
+        : garage.assets?.thumbnail
+            ? getMediaUrl(garage.assets.thumbnail)
+            : undefined
 
-    if (garage.details?.start_date) {
-        historySteps.push({
-            id: 'opening',
-            index: '01',
-            heading: 'Facility Opened',
-            subheading: garage.details.start_date.split('T')[0],
-            body: garage.basics?.tagline || 'Garage established',
-            percentage: 100
+    const study = {
+        id: String(garage.id),
+        title: garage.name,
+        description: garage.basics?.description || garage.basics?.tagline || '',
+        image: studyImage || `https://picsum.photos/seed/${garage.slug}/800/600`,
+        metrics: [
+            { label: 'Type', value: garage.details?.type || 'N/A' },
+            { label: 'Capacity', value: garage.details?.capacity ? String(garage.details.capacity) : 'N/A' },
+            { label: 'Size', value: garage.details?.size_sq_m ? `${garage.details.size_sq_m} m²` : 'N/A' },
+            { label: 'Access', value: garage.details?.accessibility || 'N/A' },
+        ],
+    }
+
+    const scrollItems: any[] = []
+    if (garage.details?.history) {
+        scrollItems.push({
+            id: 'history',
+            title: 'Garage History',
+            description: garage.basics?.description || 'A facility with a rich motorsport heritage.',
+            percentage: 100,
+        })
+    }
+    if (garage.details?.notes) {
+        scrollItems.push({
+            id: 'notes',
+            title: 'Notes',
+            description: garage.details.notes,
+            percentage: 75,
         })
     }
 
-    const galleryItems: { id: string; image: Media; title: string; category: string }[] = []
-
-    if (garage.assets?.thumbnail && typeof garage.assets.thumbnail === 'object') {
-        galleryItems.push({
-            id: (garage.assets.thumbnail as Media).id.toString(),
-            image: garage.assets.thumbnail as Media,
-            title: (garage.assets.thumbnail as Media).filename || 'Thumbnail',
-            category: garage.details?.type?.toUpperCase() || 'GARAGE'
-        })
-    }
-
-    if (garage.assets?.cover && typeof garage.assets.cover === 'object') {
-        galleryItems.push({
-            id: (garage.assets.cover as Media).id.toString(),
-            image: garage.assets.cover as Media,
-            title: (garage.assets.cover as Media).filename || 'Cover',
-            category: garage.details?.type?.toUpperCase() || 'GARAGE'
-        })
-    }
-
+    const galleryItems: any[] = []
     if (garage.assets?.gallery) {
-        for (const item of garage.assets.gallery) {
-            if (typeof item === 'object' && item !== null && 'url' in item) {
+        garage.assets.gallery.forEach((item, idx) => {
+            const media = typeof item === 'object' ? item : null
+            const url = media ? getMediaUrl(media) : undefined
+            if (url && media) {
                 galleryItems.push({
-                    id: (item as Media).id.toString(),
-                    image: item as Media,
-                    title: (item as Media).filename || 'Gallery Image',
-                    category: garage.details?.type?.toUpperCase() || 'GARAGE'
+                    id: String(media.id),
+                    title: media.alt || garage.name,
+                    image: url,
+                    height: idx % 3 === 0 ? 'tall' as const : idx % 2 === 0 ? 'medium' as const : 'short' as const,
                 })
             }
-        }
+        })
     }
 
     return (
         <main className="w-full">
-            <HeroMedia
-                id={garage.basics?.identifiers?.code || `GRG-${garage.id}`}
+            <HeroSection
+                id="garage-hero"
                 title={garage.name}
-                meta={garage.basics?.tagline || 'Strategic Technical Facility'}
-                image={heroImage}
-                tags={[
-                    garage.details?.type || 'Operational Base',
-                    garage.details?.accessibility || 'Restricted'
-                ]}
+                subtitle={garage.basics?.tagline || ''}
+                description={garage.basics?.description || undefined}
+                backgroundImage={heroBackgroundImage}
+                actions={heroActions}
+                alignment="center"
+                badge={garage.basics?.identifiers?.code || garage.details?.type || undefined}
             />
-
-            <InfoGrid
-                id="GRG_SPECS"
-                title="Garage Specifications"
-                blocks={infoBlocks}
-                columns={2}
+            <StudySection
+                id="garage-details"
+                title="Garage Overview"
+                subtitle="Facility information"
+                studies={[study]}
+                variant="featured"
+                headerVariant={1}
+                footerVariant={1}
             />
-
-            {historySteps.length > 0 && (
-                <ProgressScroller
-                    id="GRG_HISTORY"
-                    title="Facility History"
-                    steps={historySteps}
+            {scrollItems.length > 0 && (
+                <ScrollSection
+                    id="garage-history"
+                    title="History & Notes"
+                    subtitle="Facility background"
+                    items={scrollItems}
+                    variant="reveal"
+                    headerVariant={2}
+                    footerVariant={1}
                 />
             )}
-
             {galleryItems.length > 0 && (
-                <GalleryGrid
-                    id="GRG_GALLERY"
-                    title="Garage Gallery"
+                <MasonrySection
+                    id="garage-gallery"
+                    title="Gallery"
+                    subtitle="Facility imagery"
                     items={galleryItems}
+                    columns={3}
+                    headerVariant={3}
+                    footerVariant={2}
                 />
             )}
-
-            <section className="w-full py-20 flex justify-center border-b border-black-pure">
-                <Link
-                    href={`/resources/garages/${slug}/details`}
-                    className="px-12 py-6 bg-black-pure text-white-pure font-mono text-sm font-bold uppercase tracking-widest hover:bg-primary-500 hover:text-black-pure transition-colors border-2 border-black-pure"
-                >
-                    View Details →
-                </Link>
-            </section>
         </main>
     )
 }

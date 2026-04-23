@@ -11,8 +11,8 @@ interface ShapesBackgroundProps {
 const ShapesBackground: React.FC<ShapesBackgroundProps> = ({
   zIndex = 'z-0',
   opacity = 0.35,
-  primaryColor = 'var(--primary)',
-  secondaryColor = 'var(--secondary)'
+  primaryColor = '#C0392B',
+  secondaryColor = '#E67E22'
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   
@@ -23,78 +23,13 @@ const ShapesBackground: React.FC<ShapesBackgroundProps> = ({
     if (!ctx) return
     
     let animationFrame: number
-    let shapes: Array<{x: number, y: number, type: number, speed: number, size: number, rotation: number, rotSpeed: number}>
     let time = 0
-    
-    const initShapes = (w: number, h: number) => {
-      const count = Math.floor(w * h / 8000)
-      shapes = []
-      for (let i = 0; i < count; i++) {
-        shapes.push({
-          x: Math.random() * w,
-          y: Math.random() * h,
-          type: Math.floor(Math.random() * 5),
-          speed: 0.2 + Math.random() * 1,
-          size: 16 + Math.random() * 32,
-          rotation: Math.random() * Math.PI * 2,
-          rotSpeed: (Math.random() - 0.5) * 0.02
-        })
-      }
-    }
     
     const resize = () => {
       const parent = canvas.parentElement
       if (!parent) return
       canvas.width = parent.clientWidth
       canvas.height = parent.clientHeight
-      initShapes(canvas.width, canvas.height)
-    }
-    
-    const drawShape = (ctx: CanvasRenderingContext2D, shape: any, color: string, globalAlpha: number) => {
-      ctx.save()
-      ctx.translate(shape.x, shape.y)
-      ctx.rotate(shape.rotation)
-      ctx.scale(1 + Math.sin(time * 0.5 + shape.x * 0.01) * 0.1, 1)
-      ctx.beginPath()
-      
-      switch(shape.type) {
-        case 0: // triangle
-          ctx.moveTo(0, -shape.size / 2)
-          ctx.lineTo(shape.size / 2, shape.size / 2)
-          ctx.lineTo(-shape.size / 2, shape.size / 2)
-          break
-        case 1: // rectangle
-          ctx.rect(-shape.size / 2, -shape.size / 2, shape.size, shape.size)
-          break
-        case 2: // hexagon
-          for (let i = 0; i < 6; i++) {
-            const angle = i * Math.PI * 2 / 6
-            const x = Math.cos(angle) * shape.size / 2
-            const y = Math.sin(angle) * shape.size / 2
-            if (i === 0) ctx.moveTo(x, y)
-            else ctx.lineTo(x, y)
-          }
-          break
-        case 3: // cross
-          ctx.rect(-shape.size / 6, -shape.size / 2, shape.size / 3, shape.size)
-          ctx.rect(-shape.size / 2, -shape.size / 6, shape.size, shape.size / 3)
-          break
-        case 4: // chevron
-          ctx.moveTo(-shape.size / 2, -shape.size / 4)
-          ctx.lineTo(0, shape.size / 4)
-          ctx.lineTo(shape.size / 2, -shape.size / 4)
-          break
-      }
-      
-      ctx.closePath()
-      ctx.fillStyle = color
-      ctx.globalAlpha = globalAlpha
-      ctx.fill()
-      ctx.strokeStyle = color
-      ctx.lineWidth = 0.5
-      ctx.globalAlpha = globalAlpha * 0.7
-      ctx.stroke()
-      ctx.restore()
     }
     
     const draw = () => {
@@ -103,16 +38,61 @@ const ShapesBackground: React.FC<ShapesBackgroundProps> = ({
       const h = canvas.height
       ctx.clearRect(0, 0, w, h)
       
-      for (const shape of shapes) {
-        shape.x += shape.speed * (Math.sin(time * 0.2) * 0.5 + 0.5)
-        shape.rotation += shape.rotSpeed
-        if (shape.x > w + shape.size) shape.x = -shape.size
-        if (shape.x < -shape.size) shape.x = w + shape.size
-        
-        const isPrimary = Math.floor(shape.x / 40 + shape.y / 40) % 2 === 0
-        const color = isPrimary ? primaryColor : secondaryColor
-        const dynamicOpacity = 0.15 + Math.sin(shape.x * 0.02 + shape.y * 0.02 + time) * 0.1
-        drawShape(ctx, shape, color, dynamicOpacity * opacity)
+      const spacing = 48
+      const cols = Math.ceil(w / spacing) + 2
+      const rows = Math.ceil(h / spacing) + 2
+      
+      for (let i = 0; i < rows; i++) {
+        for (let j = 0; j < cols; j++) {
+          const x = j * spacing
+          const y = i * spacing + Math.sin(time + i * 0.5) * 8
+          const variant = (i + j) % 5
+          const isPrimary = (i + j) % 2 === 0
+          const color = isPrimary ? primaryColor : secondaryColor
+          const alpha = 0.15 + Math.sin(i * 0.5 + j * 0.3 + time) * 0.1
+          
+          ctx.save()
+          ctx.translate(x, y)
+          ctx.rotate(Math.sin(time + i * 0.2 + j * 0.3) * 0.2)
+          ctx.beginPath()
+          
+          if (variant === 0) {
+            ctx.moveTo(0, -12)
+            ctx.lineTo(12, 12)
+            ctx.lineTo(-12, 12)
+          } else if (variant === 1) {
+            ctx.rect(-10, -10, 20, 20)
+          } else if (variant === 2) {
+            for (let k = 0; k < 6; k++) {
+              const angle = k * Math.PI * 2 / 6
+              const xOff = Math.cos(angle) * 10
+              const yOff = Math.sin(angle) * 10
+              if (k === 0) ctx.moveTo(xOff, yOff)
+              else ctx.lineTo(xOff, yOff)
+            }
+            ctx.closePath()
+          } else if (variant === 3) {
+            ctx.moveTo(-10, 0)
+            ctx.lineTo(0, -10)
+            ctx.lineTo(10, 0)
+            ctx.lineTo(0, 10)
+          } else {
+            ctx.moveTo(-8, -8)
+            ctx.lineTo(8, -8)
+            ctx.lineTo(8, 8)
+            ctx.lineTo(-8, 8)
+          }
+          
+          ctx.closePath()
+          ctx.fillStyle = color
+          ctx.globalAlpha = alpha * opacity
+          ctx.fill()
+          ctx.strokeStyle = color
+          ctx.lineWidth = 0.5
+          ctx.globalAlpha = alpha * 0.7
+          ctx.stroke()
+          ctx.restore()
+        }
       }
       
       time += 0.033

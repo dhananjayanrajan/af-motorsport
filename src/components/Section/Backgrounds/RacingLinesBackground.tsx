@@ -11,8 +11,8 @@ interface RacingLinesBackgroundProps {
 const RacingLinesBackground: React.FC<RacingLinesBackgroundProps> = ({
   zIndex = 'z-0',
   opacity = 0.3,
-  primaryColor = 'var(--primary)',
-  secondaryColor = 'var(--secondary)'
+  primaryColor = '#C0392B',
+  secondaryColor = '#E67E22'
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   
@@ -62,19 +62,17 @@ const RacingLinesBackground: React.FC<RacingLinesBackgroundProps> = ({
           ctx.moveTo(x, y - 2)
           ctx.lineTo(x + 30, y + 2)
           ctx.lineWidth = 0.5
+          ctx.strokeStyle = lineColor
+          ctx.globalAlpha = (lineOpacity * 0.7) * opacity
           ctx.stroke()
         }
         
         if (i % 2 === 0) {
-          const gradient = ctx.createLinearGradient(0, y - 4, w, y + 4)
-          gradient.addColorStop(0, 'transparent')
-          gradient.addColorStop(0.5, lineColor)
-          gradient.addColorStop(1, 'transparent')
           ctx.beginPath()
           ctx.moveTo(0, y - 4)
           ctx.lineTo(w, y - 4)
           ctx.lineWidth = 2
-          ctx.strokeStyle = gradient
+          ctx.strokeStyle = lineColor
           ctx.globalAlpha = 0.15 * opacity
           ctx.stroke()
         }

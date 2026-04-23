@@ -1,189 +1,234 @@
-import DirectoryGrid from '@/components/Section/DirectoryGrid'
-import GalleryGrid from '@/components/Section/GalleryGrid'
-import InfoGrid from '@/components/Section/InfoGrid'
-import ProgressScroller from '@/components/Section/ProgressScroller'
-import PullQuote from '@/components/Section/PullQuote'
-import { Driver, Leader, Media, Team } from '@/payload-types'
+// app/(frontend)/teams/[slug]/page.tsx
+import GridSection from '@/components/Section/Blocks/GridSection'
+import MasonrySection from '@/components/Section/Blocks/MasonrySection'
+import QuoteSection from '@/components/Section/Blocks/QuoteSection'
+import ScrollSection from '@/components/Section/Blocks/ScrollSection'
+import StudySection from '@/components/Section/Blocks/StudySection'
+import { Driver, Leader, Media } from '@/payload-types'
 import configPromise from '@payload-config'
+import { unstable_cache } from 'next/cache'
 import { notFound } from 'next/navigation'
 import { getPayload } from 'payload'
 
-interface PageProps {
-    params: Promise<{
-        slug: string
-    }>
+function getMediaUrl(media: number | Media | null | undefined): string | undefined {
+    if (!media) return undefined
+    if (typeof media === 'object' && 'url' in media && media.url) return media.url
+    return undefined
 }
 
-async function getTeam(slug: string): Promise<Team | null> {
-    const payload = await getPayload({ config: configPromise })
-    const { docs } = await payload.find({
-        collection: 'teams',
-        where: {
-            slug: {
-                equals: slug,
+const getTeamData = unstable_cache(
+    async (slug: string) => {
+        const payload = await getPayload({ config: configPromise })
+        const result = await payload.find({
+            collection: 'teams',
+            where: { slug: { equals: slug } },
+            limit: 1,
+        })
+        return result.docs[0] || null
+    },
+    ['team-detail'],
+    { revalidate: 3600, tags: ['team'] }
+)
+
+const getTeamDrivers = unstable_cache(
+    async (teamId: number) => {
+        const payload = await getPayload({ config: configPromise })
+        const result = await payload.find({
+            collection: 'drivers',
+            where: {},
+            limit: 20,
+            select: {
+                id: true,
+                first_name: true,
+                last_name: true,
+                slug: true,
+                basics: true,
+                assets: true,
             },
-        },
-        depth: 2,
-    })
-    return docs[0] || null
-}
+        })
+        return result.docs as Driver[]
+    },
+    ['team-drivers'],
+    { revalidate: 3600 }
+)
 
-async function getTeamDrivers(teamId: number): Promise<Driver[]> {
-    const payload = await getPayload({ config: configPromise })
-    const { docs } = await payload.find({
-        collection: 'drivers',
-        where: {
-            'details.cars': {
-                in: [teamId],
+const getTeamLeaders = unstable_cache(
+    async (teamId: number) => {
+        const payload = await getPayload({ config: configPromise })
+        const result = await payload.find({
+            collection: 'leaders',
+            where: {},
+            limit: 20,
+            select: {
+                id: true,
+                first_name: true,
+                last_name: true,
+                slug: true,
+                basics: true,
+                assets: true,
             },
-        },
-        limit: 20,
-    })
-    return docs
-}
+        })
+        return result.docs as Leader[]
+    },
+    ['team-leaders'],
+    { revalidate: 3600 }
+)
 
-async function getTeamLeaders(teamId: number): Promise<Leader[]> {
-    const payload = await getPayload({ config: configPromise })
-    const { docs } = await payload.find({
-        collection: 'leaders',
-        where: {
-            'details.designations': {
-                exists: true,
-            },
-        },
-        limit: 20,
-    })
-    return docs
-}
-
-export default async function TeamPage({ params }: PageProps) {
+export default async function TeamPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params
-    const team = await getTeam(slug)
+    const team = await getTeamData(slug)
 
-    if (!team) {
-        return notFound()
-    }
+    if (!team) notFound()
 
     const drivers = await getTeamDrivers(team.id)
     const leaders = await getTeamLeaders(team.id)
 
-    const infoBlocks = [
-        {
-            id: 'overview',
-            label: 'OVERVIEW',
-            title: team.name,
-            description: team.basics?.description || undefined,
-            metadata: [
-                { key: 'COUNTRY', value: team.details?.country && typeof team.details.country === 'object' ? (team.details.country as { name: string }).name : 'TBD' },
-                { key: 'WEBSITE', value: team.details?.website || 'TBD' },
-            ]
-        },
-        {
-            id: 'timeline',
-            label: 'TIMELINE',
-            title: team.details?.start_date ? 'ACTIVE' : 'PENDING',
-            description: 'Team operational period',
-            metadata: [
-                { key: 'START DATE', value: team.details?.start_date?.split('-')[0] || 'TBD' },
-                { key: 'END DATE', value: team.details?.end_date?.split('-')[0] || 'PRESENT' },
-            ]
-        },
-    ]
+    const quoteItem = team.basics?.tagline
+        ? {
+            id: String(team.id),
+            text: team.basics.tagline,
+            author: team.name,
+        }
+        : null
 
-    const historySteps = []
+    const studyImage = team.assets?.cover
+        ? getMediaUrl(team.assets.cover)
+        : team.assets?.logo
+            ? getMediaUrl(team.assets.logo)
+            : undefined
 
-    if (team.details?.start_date) {
-        historySteps.push({
-            id: 'founded',
-            index: '01',
-            heading: 'Team Founded',
-            subheading: team.details.start_date.split('-')[0],
-            body: team.basics?.description || 'Team established',
-            percentage: 100
+    const study = {
+        id: String(team.id),
+        title: team.name,
+        description: team.basics?.description || '',
+        image: studyImage || `https://picsum.photos/seed/${team.slug}/800/600`,
+        metrics: [
+            { label: 'Founded', value: team.details?.start_date || 'N/A' },
+            { label: 'Country', value: team.details?.country && typeof team.details.country === 'object' && 'name' in team.details.country ? team.details.country.name : 'N/A' },
+            { label: 'Website', value: team.details?.website || 'N/A' },
+        ],
+    }
+
+    const scrollItems: any[] = []
+    if (team.details?.history) {
+        scrollItems.push({
+            id: 'history',
+            title: 'Team History',
+            description: team.basics?.description || 'A legacy of racing excellence.',
+            percentage: 100,
         })
     }
 
-    const driverItems = drivers.map(driver => ({
-        id: driver.id.toString(),
-        title: `${driver.first_name} ${driver.last_name}`,
-        subtitle: driver.basics?.nickname || driver.basics?.competition_name || undefined,
-        label: `#${driver.basics?.racing_number || '00'}`,
-        image: driver.assets?.avatar && typeof driver.assets.avatar === 'object' ? driver.assets.avatar as Media : null,
-        href: `/teams/${slug}/drivers/${driver.slug}`,
-        metadata: [
-            { label: 'NATIONALITY', value: driver.basics?.nationality && typeof driver.basics.nationality === 'object' ? (driver.basics.nationality as { name: string }).name : 'TBD' },
-        ]
-    }))
+    const driverItems: any[] = drivers.slice(0, 8).map((driver: Driver) => {
+        const imageUrl = driver.assets?.avatar
+            ? getMediaUrl(driver.assets.avatar)
+            : `https://picsum.photos/seed/${driver.slug}/400/300`
 
-    const leaderItems = leaders.map(leader => ({
-        id: leader.id.toString(),
-        title: `${leader.first_name} ${leader.last_name}`,
-        subtitle: leader.basics?.title || leader.basics?.nickname || undefined,
-        label: 'LEADER',
-        image: leader.assets?.avatar && typeof leader.assets.avatar === 'object' ? leader.assets.avatar as Media : null,
-        href: `/teams/${slug}/leaders/${leader.slug}`,
-        metadata: [
-            { label: 'ROLE', value: leader.basics?.title || 'Leadership' },
-        ]
-    }))
+        return {
+            id: String(driver.id),
+            title: `${driver.first_name} ${driver.last_name}`,
+            subtitle: driver.basics?.racing_number ? `#${driver.basics.racing_number}` : driver.basics?.nickname || undefined,
+            image: imageUrl,
+            href: `/teams/${team.slug}/drivers/${driver.slug}`,
+        }
+    })
 
-    const galleryItems = team.assets?.gallery?.filter((item): item is Media =>
-        typeof item === 'object' && item !== null && 'url' in item
-    ).map(item => ({
-        id: item.id.toString(),
-        image: item,
-        title: item.filename || 'Gallery Image',
-        category: team.name
-    })) || []
+    const leaderItems: any[] = leaders.slice(0, 8).map((leader: Leader) => {
+        const imageUrl = leader.assets?.avatar
+            ? getMediaUrl(leader.assets.avatar)
+            : `https://picsum.photos/seed/${leader.slug}/400/300`
+
+        return {
+            id: String(leader.id),
+            title: `${leader.first_name} ${leader.last_name}`,
+            subtitle: leader.basics?.title || undefined,
+            image: imageUrl,
+            href: `/teams/${team.slug}/leaders/${leader.slug}`,
+        }
+    })
+
+    const galleryItems: any[] = []
+    if (team.assets?.gallery) {
+        team.assets.gallery.forEach((item, idx) => {
+            const media = typeof item === 'object' ? item : null
+            const url = media ? getMediaUrl(media) : undefined
+            if (url && media) {
+                galleryItems.push({
+                    id: String(media.id),
+                    title: media.alt || team.name,
+                    image: url,
+                    height: idx % 3 === 0 ? 'tall' as const : idx % 2 === 0 ? 'medium' as const : 'short' as const,
+                })
+            }
+        })
+    }
 
     return (
         <main className="w-full">
-            <PullQuote
-                id={`TM-${team.id}`}
-                title="Team Statement"
-                quote={team.basics?.tagline || team.basics?.description || 'Professional racing team'}
-                attribution={team.name}
-                variant="center"
-            />
-
-            <InfoGrid
-                id="TM_SPECS"
-                title="Team Specifications"
-                blocks={infoBlocks}
-                columns={2}
-            />
-
-            {historySteps.length > 0 && (
-                <ProgressScroller
-                    id="TM_HISTORY"
-                    title="Team History"
-                    steps={historySteps}
+            {quoteItem && (
+                <QuoteSection
+                    id="team-tagline"
+                    title="Team Tagline"
+                    subtitle={team.name}
+                    quotes={[quoteItem]}
+                    variant="grid"
+                    headerVariant={1}
+                    footerVariant={1}
                 />
             )}
-
+            <StudySection
+                id="team-details"
+                title="Team Overview"
+                subtitle="Key information"
+                studies={[study]}
+                variant="featured"
+                headerVariant={1}
+                footerVariant={1}
+            />
+            {scrollItems.length > 0 && (
+                <ScrollSection
+                    id="team-history"
+                    title="History"
+                    subtitle="Team background"
+                    items={scrollItems}
+                    variant="reveal"
+                    headerVariant={2}
+                    footerVariant={1}
+                />
+            )}
             {driverItems.length > 0 && (
-                <DirectoryGrid
-                    id="TM_DRIVERS"
+                <GridSection
+                    id="team-drivers"
                     title="Drivers"
+                    subtitle="Team drivers"
                     items={driverItems}
-                    variant="portrait"
+                    columns={4}
+                    cardVariant={1}
+                    headerVariant={3}
+                    footerVariant={2}
                 />
             )}
-
             {leaderItems.length > 0 && (
-                <DirectoryGrid
-                    id="TM_LEADERS"
+                <GridSection
+                    id="team-leaders"
                     title="Leadership"
+                    subtitle="Team management"
                     items={leaderItems}
-                    variant="square"
+                    columns={4}
+                    cardVariant={1}
+                    headerVariant={1}
+                    footerVariant={1}
                 />
             )}
-
             {galleryItems.length > 0 && (
-                <GalleryGrid
-                    id="TM_GALLERY"
-                    title="Team Gallery"
+                <MasonrySection
+                    id="team-gallery"
+                    title="Gallery"
+                    subtitle="Team imagery"
                     items={galleryItems}
+                    columns={3}
+                    headerVariant={1}
+                    footerVariant={1}
                 />
             )}
         </main>

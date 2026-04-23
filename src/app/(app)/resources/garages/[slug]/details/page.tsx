@@ -1,109 +1,136 @@
-import CollapsibleGrid from '@/components/Section/CollapsibleGrid'
-import DirectoryList from '@/components/Section/DirectoryList'
-import DocumentGrid from '@/components/Section/DocumentGrid'
-import HeroMedia from '@/components/Section/HeroMedia'
-import { Garage, Media, Organization } from '@/payload-types'
+// app/(frontend)/resources/garages/[slug]/details/page.tsx
+import GridSection from '@/components/Section/Blocks/GridSection'
+import HeroSection from '@/components/Section/Blocks/HeroSection'
+import ListSection from '@/components/Section/Blocks/ListSection'
+import { Media, Organization } from '@/payload-types'
 import configPromise from '@payload-config'
+import { unstable_cache } from 'next/cache'
 import { notFound } from 'next/navigation'
 import { getPayload } from 'payload'
 
-interface PageProps {
-    params: Promise<{
-        slug: string
-    }>
+function getMediaUrl(media: number | Media | null | undefined): string | undefined {
+    if (!media) return undefined
+    if (typeof media === 'object' && 'url' in media && media.url) return media.url
+    return undefined
 }
 
-async function getGarage(slug: string): Promise<Garage | null> {
-    const payload = await getPayload({ config: configPromise })
-    const { docs } = await payload.find({
-        collection: 'garages',
-        where: {
-            slug: {
-                equals: slug,
-            },
-        },
-        depth: 2,
-    })
-    return docs[0] || null
-}
+const getGarageDetailsData = unstable_cache(
+    async (slug: string) => {
+        const payload = await getPayload({ config: configPromise })
+        const result = await payload.find({
+            collection: 'garages',
+            where: { slug: { equals: slug } },
+            limit: 1,
+        })
+        return result.docs[0] || null
+    },
+    ['garage-details'],
+    { revalidate: 3600, tags: ['garage-details'] }
+)
 
-export default async function GarageDetailsPage({ params }: PageProps) {
+export default async function GarageDetailsPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params
-    const garage = await getGarage(slug)
+    const garage = await getGarageDetailsData(slug)
 
-    if (!garage) {
-        return notFound()
+    if (!garage) notFound()
+
+    const heroBackgroundImage = garage.assets?.cover
+        ? getMediaUrl(garage.assets.cover)
+        : garage.seo?.image
+            ? getMediaUrl(garage.seo.image)
+            : undefined
+
+    const amenityItems: any[] = []
+    if (garage.details?.amenities?.list) {
+        garage.details.amenities.list.forEach((amenity) => {
+            if (amenity.name) {
+                amenityItems.push({
+                    id: amenity.id || String(Math.random()),
+                    title: amenity.name,
+                    subtitle: amenity.description || undefined,
+                })
+            }
+        })
     }
 
-    const coverImage = garage.assets?.cover && typeof garage.assets.cover === 'object'
-        ? garage.assets.cover as Media
-        : null
+    const operatorEntries: any[] = []
+    if (garage.details?.operators) {
+        garage.details.operators.forEach((operatorRef) => {
+            const operator = operatorRef as Organization
+            if (operator && typeof operator === 'object' && 'name' in operator) {
+                operatorEntries.push({
+                    id: String(operator.id),
+                    title: operator.name,
+                    subtitle: operator.basics?.type || operator.basics?.industry || undefined,
+                    href: `/organizations/${operator.slug}`,
+                })
+            }
+        })
+    }
 
-    const amenityItems = garage.details?.amenities?.list?.map(amenity => ({
-        id: amenity.id || `${garage.id}-amen-${amenity.name}`,
-        title: amenity.name || 'Amenity',
-        subtitle: amenity.description || undefined,
-        content: amenity.description || 'Standard amenity',
-        label: 'FACILITY'
-    })) || []
-
-    const operatorItems = garage.details?.operators?.filter((op): op is Organization =>
-        typeof op === 'object' && op !== null && 'name' in op
-    ).map(op => ({
-        id: op.id.toString(),
-        title: op.name,
-        subtitle: op.basics?.tagline || op.basics?.type || undefined,
-        tag: 'OPERATOR',
-        href: `/teams/${op.slug}`,
-        timestamp: op.details?.founded?.split('-')[0] || 'TBD',
-        status: op.basics?.industry?.split(' ')[0] || 'Service Provider'
-    })) || []
-
-    const documents = garage.assets?.documents?.filter((doc): doc is Media =>
-        typeof doc === 'object' && doc !== null && 'url' in doc
-    ).map(doc => ({
-        id: doc.id,
-        title: doc.filename || 'Document',
-        file: doc,
-        category: 'Garage Document',
-        version: '1.0'
-    })) || []
+    const documentItems: any[] = []
+    if (garage.assets?.documents) {
+        garage.assets.documents.forEach((doc, idx) => {
+            const media = typeof doc === 'object' ? doc : null
+            const url = media ? getMediaUrl(media) : undefined
+            if (url && media) {
+                documentItems.push({
+                    id: String(media.id),
+                    title: media.alt || media.filename || `Document ${idx + 1}`,
+                    subtitle: media.mimeType || undefined,
+                    image: url,
+                    href: url,
+                })
+            }
+        })
+    }
 
     return (
         <main className="w-full">
-            <HeroMedia
-                id={garage.basics?.identifiers?.code || `GRG-${garage.id}`}
+            <HeroSection
+                id="garage-details-cover"
                 title={garage.name}
-                meta={garage.basics?.tagline || 'Technical Specifications'}
-                image={coverImage}
-                tags={[
-                    garage.details?.type || 'Garage',
-                    'Technical Details'
-                ]}
+                subtitle="Garage Details"
+                description={garage.basics?.description || undefined}
+                backgroundImage={heroBackgroundImage}
+                alignment="center"
+                badge={garage.details?.type || undefined}
             />
-
             {amenityItems.length > 0 && (
-                <CollapsibleGrid
-                    id="GRG_AMENITIES"
-                    title="Facility Amenities"
+                <GridSection
+                    id="garage-amenities"
+                    title="Amenities"
+                    subtitle="Facility features"
                     items={amenityItems}
-                    columns={2}
+                    columns={3}
+                    cardVariant={1}
+                    headerVariant={1}
+                    footerVariant={1}
                 />
             )}
-
-            {operatorItems.length > 0 && (
-                <DirectoryList
-                    id="GRG_OPERATORS"
+            {operatorEntries.length > 0 && (
+                <ListSection
+                    id="garage-operators"
                     title="Operators"
-                    items={operatorItems}
+                    subtitle="Facility management"
+                    entries={operatorEntries}
+                    variant="detailed"
+                    showStatus={false}
+                    showTimestamp={false}
+                    headerVariant={2}
+                    footerVariant={1}
                 />
             )}
-
-            {documents.length > 0 && (
-                <DocumentGrid
-                    id="GRG_DOCS"
-                    title="Facility Documents"
-                    documents={documents}
+            {documentItems.length > 0 && (
+                <GridSection
+                    id="garage-documents"
+                    title="Documents"
+                    subtitle="Facility documentation"
+                    items={documentItems}
+                    columns={3}
+                    cardVariant={1}
+                    headerVariant={3}
+                    footerVariant={2}
                 />
             )}
         </main>
