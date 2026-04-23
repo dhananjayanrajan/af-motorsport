@@ -112,6 +112,12 @@ export default async function ChampionshipPage({ params }: { params: Promise<{ s
                     title="Championship Highlights"
                     subtitle={championship.name}
                     videos={videoItems}
+                    labels={{
+                        channelPrefix: 'CH',
+                        broadcastStatus: 'LIVE',
+                        liveFeed: 'FEED',
+                        metaTransmission: 'TRANS',
+                    }}
                     autoplay={false}
                     showPlaylist={false}
                     headerVariant={1}
@@ -133,6 +139,11 @@ export default async function ChampionshipPage({ params }: { params: Promise<{ s
                     title="The Prize"
                     subtitle="Championship trophy"
                     features={[trophyFeature]}
+                    labels={{
+                        specIndex: 'TRP',
+                        statsLabel: 'INFO',
+                        ctaLabel: 'VIEW',
+                    }}
                     columns={2}
                     headerVariant={2}
                     footerVariant={1}
@@ -144,6 +155,11 @@ export default async function ChampionshipPage({ params }: { params: Promise<{ s
                     title="History"
                     subtitle="The story of this championship"
                     items={scrollItems}
+                    labels={{
+                        indexPrefix: 'SEC',
+                        progressLabel: 'PROG',
+                        statusComplete: 'DONE',
+                    }}
                     variant="reveal"
                     headerVariant={1}
                     footerVariant={1}
@@ -155,6 +171,10 @@ export default async function ChampionshipPage({ params }: { params: Promise<{ s
                     title="Gallery"
                     subtitle="Moments from the championship"
                     items={galleryItems}
+                    labels={{
+                        categoryPrefix: 'CAT',
+                        idPrefix: 'IMG',
+                    }}
                     columns={3}
                     headerVariant={3}
                     footerVariant={2}

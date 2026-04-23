@@ -12,11 +12,17 @@ export interface Tab {
   icon?: React.ReactNode
 }
 
+interface TabLabels {
+  channelPrefix: string
+  statusActive: string
+}
+
 interface TabSectionProps {
   id: string
   title: string
   subtitle: string
   tabs: Tab[]
+  labels: TabLabels
   defaultTab?: string
   variant?: 'underline' | 'pill' | 'block'
   ctaLabel?: string
@@ -30,7 +36,11 @@ const TabSection: React.FC<TabSectionProps> = ({
   id,
   title,
   subtitle,
-  tabs,
+  tabs = [],
+  labels = {
+    channelPrefix: '',
+    statusActive: ''
+  },
   defaultTab,
   variant = 'underline',
   ctaLabel,
@@ -42,39 +52,83 @@ const TabSection: React.FC<TabSectionProps> = ({
   const [activeTab, setActiveTab] = useState(defaultTab || tabs[0]?.id)
 
   const tabButtonStyles = {
-    underline: 'border-b-2 border-transparent hover:border-primary focus:border-primary data-[active=true]:border-primary',
-    pill: 'rounded-full hover:bg-primary/10 focus:bg-primary/10 data-[active=true]:bg-primary data-[active=true]:text-primary-foreground',
-    block: 'flex-1 text-center border border-border hover:bg-accent focus:bg-accent data-[active=true]:bg-primary data-[active=true]:text-primary-foreground'
+    underline: 'border-b border-black-pure/10 data-[active=true]:border-primary-500 data-[active=true]:border-b-2',
+    pill: 'border border-black-pure data-[active=true]:bg-black-pure data-[active=true]:text-white-pure',
+    block: 'flex-1 border border-black-pure hover:bg-slate-50 data-[active=true]:bg-primary-500 data-[active=true]:text-black-pure'
   }
 
   return (
-    <section className="relative w-full bg-background py-16 md:py-24">
+    <section id={id} className="relative w-full bg-white-pure border-t border-black-pure overflow-hidden">
       {background}
-      <div className="relative z-10 container mx-auto px-4">
-        <SectionHeader title={title} subtitle={subtitle} variant={headerVariant} metadata={String(tabs.length)} />
-        <div className="mt-8">
-          <div className={`flex flex-wrap gap-2 ${variant === 'block' ? 'flex-col sm:flex-row' : ''}`}>
-            {tabs.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                data-active={activeTab === tab.id}
-                className={`px-6 py-3 font-mono font-semibold uppercase tracking-wide transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary active:scale-95 ${tabButtonStyles[variant]}`}
-              >
-                <div className="flex items-center gap-2">
-                  {tab.icon && <span className="w-4 h-4">{tab.icon}</span>}
-                  {tab.label}
-                </div>
-              </button>
-            ))}
-          </div>
-          <div className="mt-8 p-6 bg-card border border-border rounded-xl transition-all duration-500">
-            {tabs.find(t => t.id === activeTab)?.content}
+
+      <SectionHeader
+        title={title}
+        subtitle={subtitle}
+        variant={headerVariant}
+        metadata={String(tabs.length).padStart(2, '0')}
+      />
+
+      <div className="relative z-10 w-full flex flex-col">
+        <div className="w-full bg-slate-50/50 border-b border-black-pure">
+          <div className={`flex flex-wrap ${variant === 'block' ? 'flex-col md:flex-row' : 'gap-px bg-black-pure/10'}`}>
+            {tabs.map((tab, idx) => {
+              const isActive = activeTab === tab.id
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  data-active={isActive}
+                  className={`relative px-8 py-6 bg-white-pure font-mono font-black uppercase tracking-widest transition-all duration-150 focus:outline-none group ${tabButtonStyles[variant]}`}
+                >
+                  <div className="flex flex-col items-start gap-1">
+                    <div className="flex items-center gap-3">
+                      <span className={`text-[8px] transition-colors ${isActive ? 'text-primary-500' : 'text-black-pure/20'}`}>
+                        {labels.channelPrefix}{String(idx + 1).padStart(2, '0')}
+                      </span>
+                      {isActive && (
+                        <span className="text-[8px] text-primary-500 animate-pulse">
+                          {labels.statusActive}
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-3">
+                      {tab.icon && (
+                        <span className={`w-4 h-4 transition-colors ${isActive ? 'text-primary-500' : 'text-black-pure/40'}`}>
+                          {tab.icon}
+                        </span>
+                      )}
+                      <span className={`text-xs md:text-sm transition-colors ${isActive ? 'text-black-pure' : 'text-black-pure/40 group-hover:text-black-pure'}`}>
+                        {tab.label}
+                      </span>
+                    </div>
+                  </div>
+                  {isActive && variant === 'underline' && (
+                    <div className="absolute bottom-0 left-0 w-full h-1 bg-primary-500" />
+                  )}
+                </button>
+              )
+            })}
           </div>
         </div>
-        {ctaLabel && ctaPath && <div className="flex justify-center mt-12"><SectionButton label={ctaLabel} href={ctaPath} variant="primary" size="lg" /></div>}
-        <SectionFooter variant={footerVariant} />
+
+        <div className="w-full p-8 md:p-16 min-h-[400px] border-b border-black-pure flex flex-col">
+          <div className="relative w-full h-full animate-in fade-in duration-500">
+            <div className="absolute -top-4 -left-4 w-8 h-8 border-t border-l border-black-pure/10" />
+            <div className="text-black-pure font-mono uppercase">
+              {tabs.find(t => t.id === activeTab)?.content}
+            </div>
+            <div className="absolute -bottom-4 -right-4 w-8 h-8 border-b border-r border-black-pure/10" />
+          </div>
+        </div>
       </div>
+
+      {ctaLabel && ctaPath && (
+        <div className="p-16 flex justify-center bg-white-pure">
+          <SectionButton label={ctaLabel} href={ctaPath} variant="primary" size="lg" />
+        </div>
+      )}
+
+      <SectionFooter variant={footerVariant} />
     </section>
   )
 }

@@ -109,6 +109,20 @@ export default async function HospitalityDetailsPage({ params }: { params: Promi
                     title="Location"
                     subtitle="Where to find us"
                     locations={mapLocations}
+                    labels={{
+                        hqLabel: 'HQ',
+                        intelLabel: 'INTEL',
+                        routeLabel: 'ROUTE',
+                        timeLabel: 'TIME',
+                        distLabel: 'DIST',
+                        recordLabel: 'VIEW',
+                        filterLabels: {
+                            all: 'ALL',
+                            primary: 'PRIMARY',
+                            satellite: 'SATELLITE',
+                            pathing: 'ROUTES',
+                        },
+                    }}
                     zoom={14}
                     headerVariant={1}
                     footerVariant={1}
@@ -120,10 +134,13 @@ export default async function HospitalityDetailsPage({ params }: { params: Promi
                     title="What's Included"
                     subtitle="Everything that comes with your experience"
                     items={inclusionItems}
+                    labels={{
+                        unitsCount: 'ITEMS',
+                        viewProject: 'VIEW',
+                        sectionIndex: 'INC',
+                        fallbackAlt: 'Item',
+                    }}
                     columns={3}
-                    cardVariant={1}
-                    headerVariant={2}
-                    footerVariant={1}
                 />
             )}
             {exclusionItems.length > 0 && (
@@ -132,10 +149,13 @@ export default async function HospitalityDetailsPage({ params }: { params: Promi
                     title="What's Not Included"
                     subtitle="Please note the following exclusions"
                     items={exclusionItems}
+                    labels={{
+                        unitsCount: 'ITEMS',
+                        viewProject: 'VIEW',
+                        sectionIndex: 'EXC',
+                        fallbackAlt: 'Item',
+                    }}
                     columns={3}
-                    cardVariant={1}
-                    headerVariant={1}
-                    footerVariant={1}
                 />
             )}
             {requirementEntries.length > 0 && (
@@ -144,7 +164,11 @@ export default async function HospitalityDetailsPage({ params }: { params: Promi
                     title="Requirements"
                     subtitle="What you need to know before booking"
                     entries={requirementEntries}
-                    variant="detailed"
+                    labels={{
+                        statusPrefix: 'STAT',
+                        timePrefix: 'TIME',
+                        indexPrefix: 'REQ',
+                    }}
                     showStatus={false}
                     showTimestamp={false}
                     headerVariant={3}
@@ -157,10 +181,13 @@ export default async function HospitalityDetailsPage({ params }: { params: Promi
                     title="Documents"
                     subtitle="Additional information"
                     items={documentItems}
+                    labels={{
+                        unitsCount: 'DOCS',
+                        viewProject: 'VIEW',
+                        sectionIndex: 'DOC',
+                        fallbackAlt: 'Document',
+                    }}
                     columns={3}
-                    cardVariant={1}
-                    headerVariant={1}
-                    footerVariant={1}
                 />
             )}
         </main>

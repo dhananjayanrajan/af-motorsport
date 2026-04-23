@@ -135,6 +135,10 @@ export default async function InitiativePage({ params }: { params: Promise<{ slu
                     title="Mission"
                     subtitle="Our purpose"
                     quotes={[quoteItem]}
+                    labels={{
+                        commStatus: 'COMM',
+                        ratingLabel: 'RATING',
+                    }}
                     variant="grid"
                     headerVariant={2}
                     footerVariant={1}
@@ -146,6 +150,20 @@ export default async function InitiativePage({ params }: { params: Promise<{ slu
                     title="Location"
                     subtitle="Where this takes place"
                     locations={mapLocations}
+                    labels={{
+                        hqLabel: 'HQ',
+                        intelLabel: 'INTEL',
+                        routeLabel: 'ROUTE',
+                        timeLabel: 'TIME',
+                        distLabel: 'DIST',
+                        recordLabel: 'VIEW',
+                        filterLabels: {
+                            all: 'ALL',
+                            primary: 'PRIMARY',
+                            satellite: 'SATELLITE',
+                            pathing: 'ROUTES',
+                        },
+                    }}
                     zoom={12}
                     headerVariant={1}
                     footerVariant={1}
@@ -157,7 +175,11 @@ export default async function InitiativePage({ params }: { params: Promise<{ slu
                     title="Expectations"
                     subtitle="What we aim to achieve"
                     entries={expectationEntries}
-                    variant="detailed"
+                    labels={{
+                        statusPrefix: 'TYPE',
+                        timePrefix: 'TIME',
+                        indexPrefix: 'EXP',
+                    }}
                     showStatus={true}
                     showTimestamp={false}
                     headerVariant={3}
@@ -170,10 +192,13 @@ export default async function InitiativePage({ params }: { params: Promise<{ slu
                     title="Documents"
                     subtitle="Resources and materials"
                     items={documentItems}
+                    labels={{
+                        unitsCount: 'DOCS',
+                        viewProject: 'VIEW',
+                        sectionIndex: 'DOC',
+                        fallbackAlt: 'Document',
+                    }}
                     columns={3}
-                    cardVariant={1}
-                    headerVariant={1}
-                    footerVariant={1}
                 />
             )}
         </main>

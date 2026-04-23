@@ -174,7 +174,21 @@ export default async function MeetupDetailsPage({ params }: { params: Promise<{ 
         attendeeTabs.push({
             id: 'drivers',
             label: 'Drivers',
-            content: <GridSection id="attendees-drivers" title="" subtitle="" items={driverAttendeeItems} columns={4} cardVariant={1} headerVariant={1} footerVariant={1} />,
+            content: (
+                <GridSection
+                    id="attendees-drivers"
+                    title=""
+                    subtitle=""
+                    items={driverAttendeeItems}
+                    labels={{
+                        unitsCount: 'DRV',
+                        viewProject: 'VIEW',
+                        sectionIndex: 'DRV',
+                        fallbackAlt: 'Driver',
+                    }}
+                    columns={4}
+                />
+            ),
         })
     }
 
@@ -182,7 +196,21 @@ export default async function MeetupDetailsPage({ params }: { params: Promise<{ 
         attendeeTabs.push({
             id: 'members',
             label: 'Members',
-            content: <GridSection id="attendees-members" title="" subtitle="" items={memberAttendeeItems} columns={4} cardVariant={1} headerVariant={1} footerVariant={1} />,
+            content: (
+                <GridSection
+                    id="attendees-members"
+                    title=""
+                    subtitle=""
+                    items={memberAttendeeItems}
+                    labels={{
+                        unitsCount: 'MEM',
+                        viewProject: 'VIEW',
+                        sectionIndex: 'MEM',
+                        fallbackAlt: 'Member',
+                    }}
+                    columns={4}
+                />
+            ),
         })
     }
 
@@ -190,7 +218,21 @@ export default async function MeetupDetailsPage({ params }: { params: Promise<{ 
         attendeeTabs.push({
             id: 'leaders',
             label: 'Leaders',
-            content: <GridSection id="attendees-leaders" title="" subtitle="" items={leaderAttendeeItems} columns={4} cardVariant={1} headerVariant={1} footerVariant={1} />,
+            content: (
+                <GridSection
+                    id="attendees-leaders"
+                    title=""
+                    subtitle=""
+                    items={leaderAttendeeItems}
+                    labels={{
+                        unitsCount: 'LDR',
+                        viewProject: 'VIEW',
+                        sectionIndex: 'LDR',
+                        fallbackAlt: 'Leader',
+                    }}
+                    columns={4}
+                />
+            ),
         })
     }
 
@@ -198,7 +240,21 @@ export default async function MeetupDetailsPage({ params }: { params: Promise<{ 
         attendeeTabs.push({
             id: 'individuals',
             label: 'Individuals',
-            content: <GridSection id="attendees-individuals" title="" subtitle="" items={individualAttendeeItems} columns={4} cardVariant={1} headerVariant={1} footerVariant={1} />,
+            content: (
+                <GridSection
+                    id="attendees-individuals"
+                    title=""
+                    subtitle=""
+                    items={individualAttendeeItems}
+                    labels={{
+                        unitsCount: 'IND',
+                        viewProject: 'VIEW',
+                        sectionIndex: 'IND',
+                        fallbackAlt: 'Individual',
+                    }}
+                    columns={4}
+                />
+            ),
         })
     }
 
@@ -206,7 +262,21 @@ export default async function MeetupDetailsPage({ params }: { params: Promise<{ 
         attendeeTabs.push({
             id: 'organizations',
             label: 'Organizations',
-            content: <GridSection id="attendees-organizations" title="" subtitle="" items={orgAttendeeItems} columns={4} cardVariant={1} headerVariant={1} footerVariant={1} />,
+            content: (
+                <GridSection
+                    id="attendees-organizations"
+                    title=""
+                    subtitle=""
+                    items={orgAttendeeItems}
+                    labels={{
+                        unitsCount: 'ORG',
+                        viewProject: 'VIEW',
+                        sectionIndex: 'ORG',
+                        fallbackAlt: 'Organization',
+                    }}
+                    columns={4}
+                />
+            ),
         })
     }
 
@@ -245,10 +315,13 @@ export default async function MeetupDetailsPage({ params }: { params: Promise<{ 
                     title="Hosts"
                     subtitle="Event organizers"
                     items={hostItems}
+                    labels={{
+                        unitsCount: 'HOST',
+                        viewProject: 'VIEW',
+                        sectionIndex: 'HST',
+                        fallbackAlt: 'Host',
+                    }}
                     columns={4}
-                    cardVariant={1}
-                    headerVariant={1}
-                    footerVariant={1}
                 />
             )}
             {attendeeTabs.length > 0 && (
@@ -257,6 +330,10 @@ export default async function MeetupDetailsPage({ params }: { params: Promise<{ 
                     title="Attendees"
                     subtitle="Event participants"
                     tabs={attendeeTabs}
+                    labels={{
+                        channelPrefix: 'CH',
+                        statusActive: 'ACTIVE',
+                    }}
                     variant="underline"
                     headerVariant={2}
                     footerVariant={1}
@@ -268,10 +345,13 @@ export default async function MeetupDetailsPage({ params }: { params: Promise<{ 
                     title="Documents"
                     subtitle="Event resources"
                     items={documentItems}
+                    labels={{
+                        unitsCount: 'DOCS',
+                        viewProject: 'VIEW',
+                        sectionIndex: 'DOC',
+                        fallbackAlt: 'Document',
+                    }}
                     columns={3}
-                    cardVariant={1}
-                    headerVariant={3}
-                    footerVariant={2}
                 />
             )}
         </main>

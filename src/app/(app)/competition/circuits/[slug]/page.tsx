@@ -132,6 +132,12 @@ export default async function CircuitPage({ params }: { params: Promise<{ slug: 
                     title="Circuit Video"
                     subtitle={circuit.name}
                     videos={videoItems}
+                    labels={{
+                        channelPrefix: 'CH',
+                        broadcastStatus: 'LIVE',
+                        liveFeed: 'FEED',
+                        metaTransmission: 'TRANS',
+                    }}
                     autoplay={false}
                     showPlaylist={false}
                     headerVariant={1}
@@ -155,6 +161,10 @@ export default async function CircuitPage({ params }: { params: Promise<{ slug: 
                     title="Circuit Statement"
                     subtitle="What defines this track"
                     quotes={[quoteItem]}
+                    labels={{
+                        commStatus: 'COMM',
+                        ratingLabel: 'RATING',
+                    }}
                     variant="grid"
                     headerVariant={2}
                     footerVariant={1}
@@ -166,6 +176,11 @@ export default async function CircuitPage({ params }: { params: Promise<{ slug: 
                     title="History & Notes"
                     subtitle="Circuit background"
                     items={scrollItems}
+                    labels={{
+                        indexPrefix: 'SEC',
+                        progressLabel: 'PROG',
+                        statusComplete: 'DONE',
+                    }}
                     variant="reveal"
                     headerVariant={1}
                     footerVariant={1}
@@ -177,6 +192,10 @@ export default async function CircuitPage({ params }: { params: Promise<{ slug: 
                     title="Gallery"
                     subtitle="Circuit imagery"
                     items={galleryItems}
+                    labels={{
+                        categoryPrefix: 'CAT',
+                        idPrefix: 'IMG',
+                    }}
                     columns={3}
                     headerVariant={3}
                     footerVariant={2}

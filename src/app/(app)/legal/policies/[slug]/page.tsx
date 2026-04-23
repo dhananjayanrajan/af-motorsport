@@ -64,6 +64,11 @@ export default async function PolicyPage({ params }: { params: Promise<{ slug: s
                 title={policy.name}
                 subtitle="Policy Details"
                 features={[feature]}
+                labels={{
+                    specIndex: 'POL',
+                    statsLabel: 'INFO',
+                    ctaLabel: 'REVIEW',
+                }}
                 columns={2}
                 headerVariant={1}
                 footerVariant={1}
@@ -74,10 +79,13 @@ export default async function PolicyPage({ params }: { params: Promise<{ slug: s
                     title="Download"
                     subtitle="Available document"
                     items={downloadItems}
+                    labels={{
+                        unitsCount: 'DOCS',
+                        viewProject: 'VIEW',
+                        sectionIndex: 'DL',
+                        fallbackAlt: 'Document',
+                    }}
                     columns={1}
-                    cardVariant={1}
-                    headerVariant={2}
-                    footerVariant={1}
                 />
             )}
         </main>

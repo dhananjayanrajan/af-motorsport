@@ -105,6 +105,12 @@ export default async function SuitPage({ params }: { params: Promise<{ slug: str
                     title="Suit Video"
                     subtitle={suit.name}
                     videos={videoItems}
+                    labels={{
+                        channelPrefix: 'CH',
+                        broadcastStatus: 'LIVE',
+                        liveFeed: 'FEED',
+                        metaTransmission: 'TRANS',
+                    }}
                     autoplay={false}
                     showPlaylist={false}
                     headerVariant={1}
@@ -126,7 +132,11 @@ export default async function SuitPage({ params }: { params: Promise<{ slug: str
                     title="Manufacturers"
                     subtitle="Suit makers"
                     entries={manufacturerEntries}
-                    variant="detailed"
+                    labels={{
+                        statusPrefix: 'STAT',
+                        timePrefix: 'TIME',
+                        indexPrefix: 'MFR',
+                    }}
                     showStatus={false}
                     showTimestamp={false}
                     headerVariant={2}
@@ -139,6 +149,10 @@ export default async function SuitPage({ params }: { params: Promise<{ slug: str
                     title="Gallery"
                     subtitle="Suit imagery"
                     items={galleryItems}
+                    labels={{
+                        categoryPrefix: 'CAT',
+                        idPrefix: 'IMG',
+                    }}
                     columns={3}
                     headerVariant={3}
                     footerVariant={2}

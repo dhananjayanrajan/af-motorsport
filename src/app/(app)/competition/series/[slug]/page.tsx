@@ -135,6 +135,11 @@ export default async function SeriesPage({ params }: { params: Promise<{ slug: s
                     title="History & Agenda"
                     subtitle="The story of this series"
                     items={scrollItems}
+                    labels={{
+                        indexPrefix: 'SEC',
+                        progressLabel: 'PROG',
+                        statusComplete: 'DONE',
+                    }}
                     variant="reveal"
                     headerVariant={2}
                     footerVariant={1}
@@ -146,6 +151,10 @@ export default async function SeriesPage({ params }: { params: Promise<{ slug: s
                     title="Gallery"
                     subtitle="Series imagery"
                     items={galleryItems}
+                    labels={{
+                        categoryPrefix: 'CAT',
+                        idPrefix: 'IMG',
+                    }}
                     columns={2}
                     headerVariant={3}
                     footerVariant={2}

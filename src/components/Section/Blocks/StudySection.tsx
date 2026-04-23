@@ -1,9 +1,9 @@
 "use client"
 import React, { useState } from 'react'
-import SectionHeader from '../Components/SectionHeader'
-import SectionFooter from '../Components/SectionFooter'
-import SectionButton from '../Components/SectionButton'
 import MosaicBackground from '../Backgrounds/MosaicBackground'
+import SectionButton from '../Components/SectionButton'
+import SectionFooter from '../Components/SectionFooter'
+import SectionHeader from '../Components/SectionHeader'
 
 export interface Study {
   id: string

@@ -124,6 +124,10 @@ export default async function LeaderDetailsPage({ params }: { params: Promise<{ 
                     title="Words of Wisdom"
                     subtitle={`${leader.first_name} ${leader.last_name}`}
                     quotes={[quoteItem]}
+                    labels={{
+                        commStatus: 'COMM',
+                        ratingLabel: 'RATING',
+                    }}
                     variant="grid"
                     headerVariant={1}
                     footerVariant={1}
@@ -135,7 +139,11 @@ export default async function LeaderDetailsPage({ params }: { params: Promise<{ 
                     title="Principles"
                     subtitle="Core values and beliefs"
                     entries={principleEntries}
-                    variant="detailed"
+                    labels={{
+                        statusPrefix: 'APPLY',
+                        timePrefix: 'TIME',
+                        indexPrefix: 'PRN',
+                    }}
                     showStatus={true}
                     showTimestamp={false}
                     headerVariant={2}
@@ -148,10 +156,13 @@ export default async function LeaderDetailsPage({ params }: { params: Promise<{ 
                     title="Awards"
                     subtitle="Recognition and honors"
                     items={awardItems}
+                    labels={{
+                        unitsCount: 'AWD',
+                        viewProject: 'VIEW',
+                        sectionIndex: 'AWD',
+                        fallbackAlt: 'Award',
+                    }}
                     columns={3}
-                    cardVariant={1}
-                    headerVariant={3}
-                    footerVariant={2}
                 />
             )}
             {(socialItems.length > 0 || websiteItems.length > 0) && (
@@ -160,10 +171,13 @@ export default async function LeaderDetailsPage({ params }: { params: Promise<{ 
                     title="Connect"
                     subtitle="Social media and websites"
                     items={[...socialItems, ...websiteItems]}
+                    labels={{
+                        unitsCount: 'CON',
+                        viewProject: 'VIEW',
+                        sectionIndex: 'CON',
+                        fallbackAlt: 'Connect',
+                    }}
                     columns={4}
-                    cardVariant={1}
-                    headerVariant={1}
-                    footerVariant={1}
                 />
             )}
         </main>

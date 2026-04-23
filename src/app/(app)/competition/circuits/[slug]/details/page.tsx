@@ -157,6 +157,20 @@ export default async function CircuitDetailsPage({ params }: { params: Promise<{
                     title="Location"
                     subtitle="Circuit location"
                     locations={mapLocations}
+                    labels={{
+                        hqLabel: 'HQ',
+                        intelLabel: 'INTEL',
+                        routeLabel: 'ROUTE',
+                        timeLabel: 'TIME',
+                        distLabel: 'DIST',
+                        recordLabel: 'VIEW',
+                        filterLabels: {
+                            all: 'ALL',
+                            primary: 'PRIMARY',
+                            satellite: 'SATELLITE',
+                            pathing: 'ROUTES',
+                        },
+                    }}
                     zoom={14}
                     headerVariant={1}
                     footerVariant={1}
@@ -176,10 +190,13 @@ export default async function CircuitDetailsPage({ params }: { params: Promise<{
                 title="Specifications"
                 subtitle="Technical details"
                 items={specItems}
-                columns={5}
-                cardVariant={1}
-                headerVariant={2}
-                footerVariant={1}
+                labels={{
+                    unitsCount: 'SPECS',
+                    viewProject: 'VIEW',
+                    sectionIndex: 'SPC',
+                    fallbackAlt: 'Spec',
+                }}
+                columns={4}
             />
             {renovationEntries.length > 0 && (
                 <ListSection
@@ -187,7 +204,11 @@ export default async function CircuitDetailsPage({ params }: { params: Promise<{
                     title="Renovations"
                     subtitle="Track modifications and updates"
                     entries={renovationEntries}
-                    variant="detailed"
+                    labels={{
+                        statusPrefix: 'STAT',
+                        timePrefix: 'TIME',
+                        indexPrefix: 'REN',
+                    }}
                     showStatus={false}
                     showTimestamp={false}
                     headerVariant={3}
@@ -200,10 +221,13 @@ export default async function CircuitDetailsPage({ params }: { params: Promise<{
                     title="Documents"
                     subtitle="Circuit documentation"
                     items={documentItems}
+                    labels={{
+                        unitsCount: 'DOCS',
+                        viewProject: 'VIEW',
+                        sectionIndex: 'DOC',
+                        fallbackAlt: 'Document',
+                    }}
                     columns={3}
-                    cardVariant={1}
-                    headerVariant={1}
-                    footerVariant={1}
                 />
             )}
         </main>

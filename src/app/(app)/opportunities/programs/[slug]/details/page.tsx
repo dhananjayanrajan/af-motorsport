@@ -139,7 +139,11 @@ export default async function ProgramDetailsPage({ params }: { params: Promise<{
                     title="Eligibility"
                     subtitle="Requirements to participate"
                     entries={eligibilityEntries}
-                    variant="detailed"
+                    labels={{
+                        statusPrefix: 'STAT',
+                        timePrefix: 'TIME',
+                        indexPrefix: 'ELG',
+                    }}
                     showStatus={false}
                     showTimestamp={false}
                     headerVariant={1}
@@ -152,7 +156,11 @@ export default async function ProgramDetailsPage({ params }: { params: Promise<{
                     title="Curriculum"
                     subtitle="Program modules and deliverables"
                     entries={curriculumEntries}
-                    variant="detailed"
+                    labels={{
+                        statusPrefix: 'DUR',
+                        timePrefix: 'TIME',
+                        indexPrefix: 'MOD',
+                    }}
                     showStatus={true}
                     showTimestamp={false}
                     headerVariant={2}
@@ -165,10 +173,13 @@ export default async function ProgramDetailsPage({ params }: { params: Promise<{
                     title="Mentors"
                     subtitle="Program guides and instructors"
                     items={mentorItems}
+                    labels={{
+                        unitsCount: 'MENT',
+                        viewProject: 'VIEW',
+                        sectionIndex: 'MTR',
+                        fallbackAlt: 'Mentor',
+                    }}
                     columns={4}
-                    cardVariant={1}
-                    headerVariant={3}
-                    footerVariant={2}
                 />
             )}
             {participantItems.length > 0 && (
@@ -177,10 +188,13 @@ export default async function ProgramDetailsPage({ params }: { params: Promise<{
                     title="Participants"
                     subtitle="Current program members"
                     items={participantItems}
+                    labels={{
+                        unitsCount: 'PART',
+                        viewProject: 'VIEW',
+                        sectionIndex: 'PRT',
+                        fallbackAlt: 'Participant',
+                    }}
                     columns={4}
-                    cardVariant={1}
-                    headerVariant={1}
-                    footerVariant={1}
                 />
             )}
             {documentItems.length > 0 && (
@@ -189,10 +203,13 @@ export default async function ProgramDetailsPage({ params }: { params: Promise<{
                     title="Documents"
                     subtitle="Program resources"
                     items={documentItems}
+                    labels={{
+                        unitsCount: 'DOCS',
+                        viewProject: 'VIEW',
+                        sectionIndex: 'DOC',
+                        fallbackAlt: 'Document',
+                    }}
                     columns={3}
-                    cardVariant={1}
-                    headerVariant={1}
-                    footerVariant={1}
                 />
             )}
         </main>

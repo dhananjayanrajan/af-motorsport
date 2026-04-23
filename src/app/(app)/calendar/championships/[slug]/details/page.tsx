@@ -154,10 +154,13 @@ export default async function ChampionshipDetailsPage({ params }: { params: Prom
                 title="Specifications"
                 subtitle="Championship details"
                 items={specItems}
+                labels={{
+                    unitsCount: 'SPECS',
+                    viewProject: 'VIEW',
+                    sectionIndex: 'SPC',
+                    fallbackAlt: 'Spec',
+                }}
                 columns={4}
-                cardVariant={1}
-                headerVariant={1}
-                footerVariant={1}
             />
             {podiumFeatures.length > 0 && (
                 <FeatureSection
@@ -165,6 +168,11 @@ export default async function ChampionshipDetailsPage({ params }: { params: Prom
                     title="Podium"
                     subtitle="Top finishers"
                     features={podiumFeatures}
+                    labels={{
+                        specIndex: 'POD',
+                        statsLabel: 'INFO',
+                        ctaLabel: 'VIEW',
+                    }}
                     columns={3}
                     headerVariant={2}
                     footerVariant={1}
@@ -176,6 +184,15 @@ export default async function ChampionshipDetailsPage({ params }: { params: Prom
                     title="Timeline"
                     subtitle="Key championship dates"
                     events={timelineEvents}
+                    labels={{
+                        statusPrefix: 'STAT',
+                        eventIndexLabel: 'EVENT',
+                        deploymentStatus: {
+                            completed: 'DONE',
+                            active: 'ACTIVE',
+                            upcoming: 'UPCOMING',
+                        },
+                    }}
                     orientation="horizontal"
                     headerVariant={3}
                     footerVariant={2}
@@ -187,7 +204,11 @@ export default async function ChampionshipDetailsPage({ params }: { params: Prom
                     title="Regulations"
                     subtitle="Governing rules"
                     entries={regulationEntries}
-                    variant="detailed"
+                    labels={{
+                        statusPrefix: 'STAT',
+                        timePrefix: 'TIME',
+                        indexPrefix: 'REG',
+                    }}
                     showStatus={false}
                     showTimestamp={false}
                     headerVariant={1}
@@ -200,10 +221,13 @@ export default async function ChampionshipDetailsPage({ params }: { params: Prom
                     title="Documents"
                     subtitle="Official championship documents"
                     items={documentItems}
+                    labels={{
+                        unitsCount: 'DOCS',
+                        viewProject: 'VIEW',
+                        sectionIndex: 'DOC',
+                        fallbackAlt: 'Document',
+                    }}
                     columns={3}
-                    cardVariant={1}
-                    headerVariant={1}
-                    footerVariant={1}
                 />
             )}
         </main>

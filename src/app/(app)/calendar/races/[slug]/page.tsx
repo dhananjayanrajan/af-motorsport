@@ -112,6 +112,12 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
                     title="Race Highlights"
                     subtitle={race.name}
                     videos={videoItems}
+                    labels={{
+                        channelPrefix: 'CH',
+                        broadcastStatus: 'LIVE',
+                        liveFeed: 'FEED',
+                        metaTransmission: 'TRANS',
+                    }}
                     autoplay={false}
                     showPlaylist={false}
                     headerVariant={1}
@@ -135,6 +141,11 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
                     title="History & Notes"
                     subtitle="Race background"
                     items={scrollItems}
+                    labels={{
+                        indexPrefix: 'SEC',
+                        progressLabel: 'PROG',
+                        statusComplete: 'DONE',
+                    }}
                     variant="reveal"
                     headerVariant={2}
                     footerVariant={1}
@@ -146,6 +157,10 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
                     title="Gallery"
                     subtitle="Images from the event"
                     items={galleryItems}
+                    labels={{
+                        categoryPrefix: 'CAT',
+                        idPrefix: 'IMG',
+                    }}
                     columns={3}
                     headerVariant={3}
                     footerVariant={2}

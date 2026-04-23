@@ -53,6 +53,10 @@ export default function ContactPage() {
         title="Send a Message"
         subtitle="Choose a department"
         panels={contactPanels}
+        labels={{
+          expansionState: { open: 'OPEN', closed: 'CLOSED' },
+          metadataTitle: 'DETAILS',
+        }}
         allowMultiple={false}
         headerVariant={1}
         footerVariant={1}
@@ -62,6 +66,20 @@ export default function ContactPage() {
         title="Our Location"
         subtitle="Visit us in person"
         locations={locations}
+        labels={{
+          hqLabel: 'HQ',
+          intelLabel: 'INTEL',
+          routeLabel: 'ROUTE',
+          timeLabel: 'TIME',
+          distLabel: 'DIST',
+          recordLabel: 'VIEW',
+          filterLabels: {
+            all: 'ALL',
+            primary: 'PRIMARY',
+            satellite: 'SATELLITE',
+            pathing: 'ROUTES',
+          },
+        }}
         zoom={14}
         headerVariant={2}
         footerVariant={1}

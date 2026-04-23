@@ -75,7 +75,6 @@ export default async function SeasonDetailsPage({ params }: { params: Promise<{ 
                 subtitle: series.basics?.tagline || undefined,
                 image: seriesImage,
                 href: `/competition/series/${series.slug}`,
-                label: series.details?.status || undefined,
             })
         }
     }
@@ -98,10 +97,13 @@ export default async function SeasonDetailsPage({ params }: { params: Promise<{ 
                 title="Specifications"
                 subtitle="Season details"
                 items={specItems}
+                labels={{
+                    unitsCount: 'SPECS',
+                    viewProject: 'VIEW',
+                    sectionIndex: 'SPC',
+                    fallbackAlt: 'Spec',
+                }}
                 columns={3}
-                cardVariant={1}
-                headerVariant={1}
-                footerVariant={1}
             />
             {seriesItems.length > 0 && (
                 <GridSection
@@ -109,10 +111,13 @@ export default async function SeasonDetailsPage({ params }: { params: Promise<{ 
                     title="Series"
                     subtitle="Parent championship"
                     items={seriesItems}
+                    labels={{
+                        unitsCount: 'SERIES',
+                        viewProject: 'VIEW',
+                        sectionIndex: 'SRS',
+                        fallbackAlt: 'Series',
+                    }}
                     columns={1}
-                    cardVariant={1}
-                    headerVariant={2}
-                    footerVariant={1}
                 />
             )}
             {documentItems.length > 0 && (
@@ -121,10 +126,13 @@ export default async function SeasonDetailsPage({ params }: { params: Promise<{ 
                     title="Documents"
                     subtitle="Season documentation"
                     items={documentItems}
+                    labels={{
+                        unitsCount: 'DOCS',
+                        viewProject: 'VIEW',
+                        sectionIndex: 'DOC',
+                        fallbackAlt: 'Document',
+                    }}
                     columns={3}
-                    cardVariant={1}
-                    headerVariant={3}
-                    footerVariant={2}
                 />
             )}
         </main>

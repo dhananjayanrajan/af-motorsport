@@ -80,7 +80,11 @@ export default async function LegalPage() {
                     title="Policies"
                     subtitle="Our legal policies and terms"
                     entries={policyEntries}
-                    variant="detailed"
+                    labels={{
+                        statusPrefix: 'VER',
+                        timePrefix: 'DATE',
+                        indexPrefix: 'POL',
+                    }}
                     showStatus
                     showTimestamp
                     headerVariant={1}
@@ -93,7 +97,11 @@ export default async function LegalPage() {
                     title="Regulations"
                     subtitle="Sporting and technical regulations"
                     entries={regulationEntries}
-                    variant="detailed"
+                    labels={{
+                        statusPrefix: 'STAT',
+                        timePrefix: 'TIME',
+                        indexPrefix: 'REG',
+                    }}
                     showStatus
                     showTimestamp={false}
                     headerVariant={1}

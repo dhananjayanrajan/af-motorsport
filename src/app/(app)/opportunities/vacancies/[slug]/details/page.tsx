@@ -100,6 +100,15 @@ export default async function VacancyDetailsPage({ params }: { params: Promise<{
                     title="Available Positions"
                     subtitle="Open roles and timelines"
                     events={positionEvents}
+                    labels={{
+                        statusPrefix: 'STAT',
+                        eventIndexLabel: 'EVENT',
+                        deploymentStatus: {
+                            completed: 'DONE',
+                            active: 'ACTIVE',
+                            upcoming: 'UPCOMING',
+                        },
+                    }}
                     orientation="horizontal"
                     headerVariant={1}
                     footerVariant={1}
@@ -111,10 +120,13 @@ export default async function VacancyDetailsPage({ params }: { params: Promise<{
                     title="Specifications"
                     subtitle="Role requirements"
                     items={specItems}
+                    labels={{
+                        unitsCount: 'SPEC',
+                        viewProject: 'VIEW',
+                        sectionIndex: 'SPC',
+                        fallbackAlt: 'Spec',
+                    }}
                     columns={3}
-                    cardVariant={1}
-                    headerVariant={2}
-                    footerVariant={1}
                 />
             )}
             {expectationEntries.length > 0 && (
@@ -123,7 +135,11 @@ export default async function VacancyDetailsPage({ params }: { params: Promise<{
                     title="Expectations"
                     subtitle="What we're looking for"
                     entries={expectationEntries}
-                    variant="detailed"
+                    labels={{
+                        statusPrefix: 'TYPE',
+                        timePrefix: 'TIME',
+                        indexPrefix: 'EXP',
+                    }}
                     showStatus={true}
                     showTimestamp={false}
                     headerVariant={3}

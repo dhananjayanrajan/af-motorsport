@@ -108,6 +108,15 @@ export default async function SeriesDetailsPage({ params }: { params: Promise<{ 
                     title="Timeline"
                     subtitle="Key series dates"
                     events={timelineEvents}
+                    labels={{
+                        statusPrefix: 'STAT',
+                        eventIndexLabel: 'EVENT',
+                        deploymentStatus: {
+                            completed: 'DONE',
+                            active: 'ACTIVE',
+                            upcoming: 'UPCOMING',
+                        },
+                    }}
                     orientation="horizontal"
                     headerVariant={1}
                     footerVariant={1}
@@ -119,10 +128,13 @@ export default async function SeriesDetailsPage({ params }: { params: Promise<{ 
                     title="Seasons"
                     subtitle="Championship seasons"
                     items={seasonItems}
+                    labels={{
+                        unitsCount: 'SEASONS',
+                        viewProject: 'VIEW',
+                        sectionIndex: 'SEA',
+                        fallbackAlt: 'Season',
+                    }}
                     columns={3}
-                    cardVariant={1}
-                    headerVariant={2}
-                    footerVariant={1}
                 />
             )}
             {mapLocations.length > 0 && (
@@ -131,6 +143,20 @@ export default async function SeriesDetailsPage({ params }: { params: Promise<{ 
                     title="Location"
                     subtitle="Series headquarters"
                     locations={mapLocations}
+                    labels={{
+                        hqLabel: 'HQ',
+                        intelLabel: 'INTEL',
+                        routeLabel: 'ROUTE',
+                        timeLabel: 'TIME',
+                        distLabel: 'DIST',
+                        recordLabel: 'VIEW',
+                        filterLabels: {
+                            all: 'ALL',
+                            primary: 'PRIMARY',
+                            satellite: 'SATELLITE',
+                            pathing: 'ROUTES',
+                        },
+                    }}
                     zoom={12}
                     headerVariant={1}
                     footerVariant={1}
@@ -142,10 +168,13 @@ export default async function SeriesDetailsPage({ params }: { params: Promise<{ 
                     title="Documents"
                     subtitle="Series documentation"
                     items={documentItems}
+                    labels={{
+                        unitsCount: 'DOCS',
+                        viewProject: 'VIEW',
+                        sectionIndex: 'DOC',
+                        fallbackAlt: 'Document',
+                    }}
                     columns={3}
-                    cardVariant={1}
-                    headerVariant={3}
-                    footerVariant={2}
                 />
             )}
         </main>

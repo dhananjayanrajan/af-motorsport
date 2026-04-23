@@ -100,7 +100,11 @@ export default async function HelmetDetailsPage({ params }: { params: Promise<{ 
                     title="Manufacturers"
                     subtitle="Helmet makers"
                     entries={manufacturerEntries}
-                    variant="detailed"
+                    labels={{
+                        statusPrefix: 'STAT',
+                        timePrefix: 'TIME',
+                        indexPrefix: 'MFR',
+                    }}
                     showStatus={false}
                     showTimestamp={false}
                     headerVariant={1}
@@ -113,7 +117,11 @@ export default async function HelmetDetailsPage({ params }: { params: Promise<{ 
                     title="Classifications & Details"
                     subtitle="Helmet specifications"
                     entries={classificationEntries}
-                    variant="detailed"
+                    labels={{
+                        statusPrefix: 'STAT',
+                        timePrefix: 'TIME',
+                        indexPrefix: 'CLS',
+                    }}
                     showStatus={false}
                     showTimestamp={false}
                     headerVariant={2}

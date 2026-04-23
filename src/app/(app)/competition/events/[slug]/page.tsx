@@ -142,12 +142,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
             {videoSlides.length > 0 && (
                 <CarouselSection
                     id="event-videos"
-                    title="Event Videos"
-                    subtitle={event.name}
                     slides={videoSlides}
-                    variant="card"
-                    headerVariant={1}
-                    footerVariant={1}
                 />
             )}
             <StudySection
@@ -165,6 +160,11 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
                     title="History & Notes"
                     subtitle="Event background"
                     items={scrollItems}
+                    labels={{
+                        indexPrefix: 'SEC',
+                        progressLabel: 'PROG',
+                        statusComplete: 'DONE',
+                    }}
                     variant="reveal"
                     headerVariant={2}
                     footerVariant={1}
@@ -184,10 +184,13 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
                 title="Specifications"
                 subtitle="Event details"
                 items={specItems}
+                labels={{
+                    unitsCount: 'SPECS',
+                    viewProject: 'VIEW',
+                    sectionIndex: 'SPC',
+                    fallbackAlt: 'Spec',
+                }}
                 columns={4}
-                cardVariant={1}
-                headerVariant={3}
-                footerVariant={2}
             />
             {seasonEntries.length > 0 && (
                 <ListSection
@@ -195,7 +198,11 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
                     title="Season"
                     subtitle="Part of championship season"
                     entries={seasonEntries}
-                    variant="detailed"
+                    labels={{
+                        statusPrefix: 'CODE',
+                        timePrefix: 'TIME',
+                        indexPrefix: 'SEA',
+                    }}
                     showStatus={true}
                     showTimestamp={false}
                     headerVariant={1}

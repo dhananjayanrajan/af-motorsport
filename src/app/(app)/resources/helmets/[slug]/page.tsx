@@ -93,6 +93,12 @@ export default async function HelmetPage({ params }: { params: Promise<{ slug: s
                     title="Helmet Video"
                     subtitle={helmet.name}
                     videos={videoItems}
+                    labels={{
+                        channelPrefix: 'CH',
+                        broadcastStatus: 'LIVE',
+                        liveFeed: 'FEED',
+                        metaTransmission: 'TRANS',
+                    }}
                     autoplay={false}
                     showPlaylist={false}
                     headerVariant={1}
@@ -116,6 +122,10 @@ export default async function HelmetPage({ params }: { params: Promise<{ slug: s
                     title="Gallery"
                     subtitle="Helmet imagery"
                     items={galleryItems}
+                    labels={{
+                        categoryPrefix: 'CAT',
+                        idPrefix: 'IMG',
+                    }}
                     columns={3}
                     headerVariant={2}
                     footerVariant={1}

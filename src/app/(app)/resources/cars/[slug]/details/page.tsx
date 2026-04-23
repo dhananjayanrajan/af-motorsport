@@ -115,7 +115,11 @@ export default async function CarDetailsPage({ params }: { params: Promise<{ slu
                     title="Manufacturers"
                     subtitle="Builders and constructors"
                     entries={manufacturerEntries}
-                    variant="detailed"
+                    labels={{
+                        statusPrefix: 'TYPE',
+                        timePrefix: 'TIME',
+                        indexPrefix: 'MFR',
+                    }}
                     showStatus={false}
                     showTimestamp={false}
                     headerVariant={1}
@@ -128,7 +132,11 @@ export default async function CarDetailsPage({ params }: { params: Promise<{ slu
                     title="Classifications"
                     subtitle="Vehicle categories"
                     entries={classificationEntries}
-                    variant="detailed"
+                    labels={{
+                        statusPrefix: 'STAT',
+                        timePrefix: 'TIME',
+                        indexPrefix: 'CLS',
+                    }}
                     showStatus={false}
                     showTimestamp={false}
                     headerVariant={2}
@@ -141,10 +149,13 @@ export default async function CarDetailsPage({ params }: { params: Promise<{ slu
                     title="Specifications"
                     subtitle="Technical details"
                     items={specItems}
+                    labels={{
+                        unitsCount: 'SPEC',
+                        viewProject: 'VIEW',
+                        sectionIndex: 'SPC',
+                        fallbackAlt: 'Spec',
+                    }}
                     columns={3}
-                    cardVariant={1}
-                    headerVariant={3}
-                    footerVariant={2}
                 />
             )}
             {documentItems.length > 0 && (
@@ -153,10 +164,13 @@ export default async function CarDetailsPage({ params }: { params: Promise<{ slu
                     title="Documents"
                     subtitle="Technical documentation"
                     items={documentItems}
+                    labels={{
+                        unitsCount: 'DOCS',
+                        viewProject: 'VIEW',
+                        sectionIndex: 'DOC',
+                        fallbackAlt: 'Document',
+                    }}
                     columns={3}
-                    cardVariant={1}
-                    headerVariant={1}
-                    footerVariant={1}
                 />
             )}
         </main>

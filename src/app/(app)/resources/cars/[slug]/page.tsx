@@ -115,6 +115,12 @@ export default async function CarPage({ params }: { params: Promise<{ slug: stri
                     title="Car Video"
                     subtitle={car.name}
                     videos={videoItems}
+                    labels={{
+                        channelPrefix: 'CH',
+                        broadcastStatus: 'LIVE',
+                        liveFeed: 'FEED',
+                        metaTransmission: 'TRANS',
+                    }}
                     autoplay={false}
                     showPlaylist={false}
                     headerVariant={1}
@@ -138,6 +144,11 @@ export default async function CarPage({ params }: { params: Promise<{ slug: stri
                     title="History"
                     subtitle="Development and legacy"
                     items={scrollItems}
+                    labels={{
+                        indexPrefix: 'SEC',
+                        progressLabel: 'PROG',
+                        statusComplete: 'DONE',
+                    }}
                     variant="reveal"
                     headerVariant={2}
                     footerVariant={1}
@@ -149,6 +160,10 @@ export default async function CarPage({ params }: { params: Promise<{ slug: stri
                     title="Gallery"
                     subtitle="Car imagery"
                     items={galleryItems}
+                    labels={{
+                        categoryPrefix: 'CAT',
+                        idPrefix: 'IMG',
+                    }}
                     columns={3}
                     headerVariant={3}
                     footerVariant={2}

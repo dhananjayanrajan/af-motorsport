@@ -116,6 +116,15 @@ export default async function PlanDetailsPage({ params }: { params: Promise<{ sl
                     title="Milestones"
                     subtitle="Key achievements and targets"
                     events={milestoneEvents}
+                    labels={{
+                        statusPrefix: 'STAT',
+                        eventIndexLabel: 'EVENT',
+                        deploymentStatus: {
+                            completed: 'DONE',
+                            active: 'ACTIVE',
+                            upcoming: 'UPCOMING',
+                        },
+                    }}
                     orientation="vertical"
                     headerVariant={1}
                     footerVariant={1}
@@ -127,7 +136,11 @@ export default async function PlanDetailsPage({ params }: { params: Promise<{ sl
                     title="Deliverables"
                     subtitle="Expected outputs and outcomes"
                     entries={deliverableEntries}
-                    variant="detailed"
+                    labels={{
+                        statusPrefix: 'TYPE',
+                        timePrefix: 'TIME',
+                        indexPrefix: 'DEL',
+                    }}
                     showStatus={true}
                     showTimestamp={false}
                     headerVariant={2}
@@ -140,7 +153,11 @@ export default async function PlanDetailsPage({ params }: { params: Promise<{ sl
                     title="Risk Assessment"
                     subtitle="Identified risks and mitigations"
                     entries={riskEntries}
-                    variant="detailed"
+                    labels={{
+                        statusPrefix: 'LIKELY',
+                        timePrefix: 'TIME',
+                        indexPrefix: 'RSK',
+                    }}
                     showStatus={true}
                     showTimestamp={false}
                     headerVariant={1}
@@ -153,11 +170,13 @@ export default async function PlanDetailsPage({ params }: { params: Promise<{ sl
                     title="Key Performance Indicators"
                     subtitle="Measuring success"
                     items={kpiItems}
+                    labels={{
+                        unitsCount: 'KPIS',
+                        viewProject: 'VIEW',
+                        sectionIndex: 'KPI',
+                        fallbackAlt: 'KPI',
+                    }}
                     columns={4}
-                    cardVariant={1}
-                    showMetadata={false}
-                    headerVariant={3}
-                    footerVariant={2}
                 />
             )}
             {documentItems.length > 0 && (
@@ -166,11 +185,13 @@ export default async function PlanDetailsPage({ params }: { params: Promise<{ sl
                     title="Documents"
                     subtitle="Supporting materials and resources"
                     items={documentItems}
+                    labels={{
+                        unitsCount: 'DOCS',
+                        viewProject: 'VIEW',
+                        sectionIndex: 'DOC',
+                        fallbackAlt: 'Document',
+                    }}
                     columns={3}
-                    cardVariant={1}
-                    showMetadata={false}
-                    headerVariant={1}
-                    footerVariant={1}
                 />
             )}
         </main>

@@ -94,13 +94,6 @@ export default async function CalendarPage() {
             subtitle: race.basics?.tagline || race.basics?.identifiers?.code || undefined,
             image: imageUrl,
             href: `/calendar/races/${race.slug}`,
-            label: race.details?.type || undefined,
-            metadata: {
-                Date: race.details?.start_date ? new Date(race.details.start_date).toLocaleDateString() : 'TBD',
-                Status: race.details?.status || 'Scheduled',
-                Laps: race.details?.laps ? String(race.details.laps) : 'N/A',
-                Distance: race.details?.distance_km ? `${race.details.distance_km} km` : 'N/A',
-            },
         }
     })
 
@@ -112,6 +105,15 @@ export default async function CalendarPage() {
                     title="Upcoming Championships"
                     subtitle="Season schedules and series"
                     events={championshipEvents}
+                    labels={{
+                        statusPrefix: 'STAT',
+                        eventIndexLabel: 'EVENT',
+                        deploymentStatus: {
+                            completed: 'DONE',
+                            active: 'ACTIVE',
+                            upcoming: 'UPCOMING',
+                        },
+                    }}
                     orientation="horizontal"
                     headerVariant={1}
                     footerVariant={1}
@@ -123,11 +125,13 @@ export default async function CalendarPage() {
                     title="Upcoming Races"
                     subtitle="Scheduled events"
                     items={raceItems}
+                    labels={{
+                        unitsCount: 'RACES',
+                        viewProject: 'VIEW',
+                        sectionIndex: 'RCE',
+                        fallbackAlt: 'Race',
+                    }}
                     columns={3}
-                    cardVariant={1}
-                    showMetadata={true}
-                    headerVariant={2}
-                    footerVariant={1}
                 />
             )}
         </main>

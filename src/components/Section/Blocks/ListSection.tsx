@@ -1,9 +1,8 @@
 "use client"
-import React, { useState, useEffect, useRef } from 'react'
-import SectionHeader from '../Components/SectionHeader'
+import Link from 'next/link'
+import React, { useEffect, useRef, useState } from 'react'
 import SectionFooter from '../Components/SectionFooter'
-import SectionButton from '../Components/SectionButton'
-import WeaveBackground from '../Backgrounds/WeaveBackground'
+import SectionHeader from '../Components/SectionHeader'
 
 export interface ListEntry {
   id: string
@@ -16,42 +15,50 @@ export interface ListEntry {
   metadata?: Record<string, string>
 }
 
+interface ListLabels {
+  statusPrefix: string
+  timePrefix: string
+  indexPrefix: string
+}
+
 interface ListSectionProps {
   id: string
   title: string
   subtitle: string
   entries: ListEntry[]
-  variant?: 'simple' | 'detailed' | 'compact'
+  labels: ListLabels
   showStatus?: boolean
   showTimestamp?: boolean
   ctaLabel?: string
   ctaPath?: string
   headerVariant?: 1 | 2 | 3
   footerVariant?: 1 | 2 | 3
-  background?: React.ReactNode
 }
 
 const ListSection: React.FC<ListSectionProps> = ({
   id,
   title,
   subtitle,
-  entries,
-  variant = 'detailed',
+  entries = [],
+  labels = {
+    statusPrefix: '',
+    timePrefix: '',
+    indexPrefix: ''
+  },
   showStatus = true,
   showTimestamp = true,
   ctaLabel,
   ctaPath,
   headerVariant = 1,
-  footerVariant = 1,
-  background = <WeaveBackground opacity={0.3} />
+  footerVariant = 1
 }) => {
   const [visibleIndices, setVisibleIndices] = useState<Set<number>>(new Set())
   const itemRefs = useRef<(HTMLDivElement | null)[]>([])
 
   useEffect(() => {
     const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
+      (obsEntries) => {
+        obsEntries.forEach((entry) => {
           if (entry.isIntersecting) {
             const index = Number(entry.target.getAttribute('data-index'))
             setVisibleIndices(prev => new Set(prev).add(index))
@@ -59,7 +66,7 @@ const ListSection: React.FC<ListSectionProps> = ({
           }
         })
       },
-      { threshold: 0.1, rootMargin: '50px' }
+      { threshold: 0.1 }
     )
     itemRefs.current.forEach((ref, idx) => {
       if (ref) {
@@ -70,97 +77,106 @@ const ListSection: React.FC<ListSectionProps> = ({
     return () => observer.disconnect()
   }, [entries])
 
-  const getStatusColor = (status?: string) => {
-    if (!status) return 'bg-muted-foreground'
-    const s = status.toLowerCase()
-    if (s.includes('active') || s.includes('open')) return 'bg-green-500'
-    if (s.includes('completed') || s.includes('closed')) return 'bg-blue-500'
-    if (s.includes('pending')) return 'bg-yellow-500'
-    if (s.includes('cancelled')) return 'bg-red-500'
-    return 'bg-primary'
-  }
-
-  if (variant === 'compact') {
-    return (
-      <section className="relative w-full bg-background py-16 md:py-24">
-        {background}
-        <div className="relative z-10 container mx-auto px-4">
-          <SectionHeader title={title} subtitle={subtitle} variant={headerVariant} metadata={String(entries.length)} />
-          <div className="mt-8 divide-y divide-border border border-border rounded-lg overflow-hidden">
-            {entries.map((entry, idx) => (
-              <div
-                key={entry.id}
-                ref={el => { itemRefs.current[idx] = el }}
-                className={`flex items-center justify-between p-4 bg-card hover:bg-accent/50 transition-all duration-300 transform ${visibleIndices.has(idx) ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`}
-              >
-                <div className="flex items-center gap-4">
-                  {showStatus && entry.status && <div className={`w-2 h-2 rounded-full ${getStatusColor(entry.status)}`} />}
-                  <span className="font-mono text-sm text-muted-foreground w-12">{String(idx + 1).padStart(2, '0')}</span>
-                  <h3 className="font-semibold text-foreground">{entry.title}</h3>
-                </div>
-                {entry.href && (
-                  <a href={entry.href} className="text-primary hover:underline text-sm">View →</a>
-                )}
-              </div>
-            ))}
-          </div>
-          {ctaLabel && ctaPath && <div className="flex justify-center mt-12"><SectionButton label={ctaLabel} href={ctaPath} variant="primary" /></div>}
-          <SectionFooter variant={footerVariant} />
-        </div>
-      </section>
-    )
-  }
-
   return (
-    <section className="relative w-full bg-background py-16 md:py-24">
-      {background}
-      <div className="relative z-10 container mx-auto px-4">
-        <SectionHeader title={title} subtitle={subtitle} variant={headerVariant} metadata={String(entries.length)} />
-        <div className="mt-12 space-y-4">
-          {entries.map((entry, idx) => (
-            <div
-              key={entry.id}
-              ref={el => { itemRefs.current[idx] = el }}
-              className={`group flex flex-col md:flex-row items-stretch border border-border rounded-lg bg-card hover:bg-accent/50 transition-all duration-300 transform ${visibleIndices.has(idx) ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}`}
-            >
-              <div className="w-16 md:w-24 border-r border-border flex items-center justify-center bg-card group-hover:bg-foreground transition-colors duration-300 rounded-l-lg">
-                <span className="font-mono text-sm font-semibold text-foreground group-hover:text-primary">{String(idx + 1).padStart(3, '0')}</span>
-              </div>
-              <div className="flex-1 p-6 md:p-8 flex flex-col md:flex-row md:items-center justify-between gap-6">
-                <div className="space-y-2">
-                  {entry.tag && <span className="px-3 py-1 bg-primary text-primary-foreground text-xs font-mono font-semibold uppercase rounded">{entry.tag}</span>}
-                  <h3 className="font-bold text-2xl md:text-3xl text-foreground uppercase leading-none tracking-tight italic group-hover:text-primary transition-colors">{entry.title}</h3>
-                  {entry.subtitle && <p className="font-mono text-sm text-muted-foreground uppercase tracking-wider">{entry.subtitle}</p>}
+    <section id={id} className="relative w-full bg-white-pure border-t border-black-pure overflow-hidden">
+      <SectionHeader
+        title={title}
+        subtitle={subtitle}
+        variant={headerVariant}
+        metadata={String(entries.length).padStart(2, '0')}
+      />
+
+      <div className="w-full flex flex-col border-b border-black-pure">
+        {entries.map((entry, idx) => (
+          <div
+            key={entry.id}
+            ref={el => { itemRefs.current[idx] = el }}
+            className={`group relative flex flex-col md:flex-row items-stretch border-b border-black-pure last:border-b-0 bg-white-pure transition-all duration-700 ease-[0.16,1,0.3,1] ${visibleIndices.has(idx) ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
+              }`}
+          >
+            {entry.href && (
+              <Link href={entry.href} className="absolute inset-0 z-40 outline-none" aria-label={entry.title} />
+            )}
+
+            <div className="w-16 md:w-24 border-r border-black-pure flex flex-col items-center justify-center bg-white-pure group-hover:bg-black-pure transition-colors duration-300 shrink-0">
+              <span className="text-[10px] font-mono font-black text-black-pure/20 group-hover:text-white-pure/20 uppercase mb-1">
+                {labels.indexPrefix}
+              </span>
+              <span className="text-xl font-mono font-black text-black-pure group-hover:text-primary-500 tabular-nums">
+                {String(idx + 1).padStart(2, '0')}
+              </span>
+            </div>
+
+            <div className="flex-grow p-8 md:p-12 flex flex-col md:flex-row md:items-center justify-between gap-8">
+              <div className="flex flex-col items-start gap-4">
+                {entry.tag && (
+                  <span className="px-4 py-1 bg-black-pure text-white-pure text-[9px] font-mono font-black uppercase tracking-[0.2em] group-hover:bg-primary-500 group-hover:text-black-pure transition-colors">
+                    {entry.tag}
+                  </span>
+                )}
+                <div className="flex flex-col">
+                  <h3 className="text-2xl md:text-4xl font-mono font-black text-black-pure uppercase leading-none tracking-tighter group-hover:translate-x-2 transition-transform duration-300">
+                    {entry.title}
+                  </h3>
+                  {entry.subtitle && (
+                    <p className="mt-2 text-[11px] font-mono font-black text-black-pure/40 uppercase tracking-widest">
+                      {entry.subtitle}
+                    </p>
+                  )}
                 </div>
-                <div className="flex flex-wrap items-center gap-6">
-                  {showTimestamp && entry.timestamp && (
-                    <div className="flex flex-col items-end">
-                      <span className="text-xs font-mono text-muted-foreground uppercase">Timestamp</span>
-                      <span className="text-sm font-mono font-semibold text-foreground uppercase">{entry.timestamp}</span>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-12 md:gap-16">
+                {showTimestamp && entry.timestamp && (
+                  <div className="flex flex-col items-start md:items-end min-w-[100px]">
+                    <span className="text-[9px] font-mono font-black text-black-pure/20 uppercase mb-2 tracking-widest">
+                      {labels.timePrefix}
+                    </span>
+                    <span className="text-xs font-mono font-black text-black-pure uppercase tabular-nums">
+                      {entry.timestamp}
+                    </span>
+                  </div>
+                )}
+
+                {showStatus && entry.status && (
+                  <div className="flex flex-col items-start md:items-end min-w-[100px]">
+                    <span className="text-[9px] font-mono font-black text-black-pure/20 uppercase mb-2 tracking-widest">
+                      {labels.statusPrefix}
+                    </span>
+                    <div className="flex items-center gap-3">
+                      <div className="w-1.5 h-1.5 bg-primary-500 animate-pulse" />
+                      <span className="text-xs font-mono font-black text-black-pure uppercase italic">
+                        {entry.status}
+                      </span>
                     </div>
-                  )}
-                  {showStatus && entry.status && (
-                    <div className="flex flex-col items-end">
-                      <span className="text-xs font-mono text-muted-foreground uppercase">Status</span>
-                      <div className="flex items-center gap-2">
-                        <div className={`w-2 h-2 rounded-full ${getStatusColor(entry.status)}`} />
-                        <span className="text-sm font-mono font-semibold text-foreground uppercase">{entry.status}</span>
-                      </div>
-                    </div>
-                  )}
-                  {entry.href && (
-                    <div className="w-10 h-10 flex items-center justify-center border-2 border-foreground rounded-full group-hover:bg-primary group-hover:border-primary transition-all">
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
-                    </div>
-                  )}
+                  </div>
+                )}
+
+                <div className="w-12 h-12 flex items-center justify-center border border-black-pure group-hover:bg-primary-500 transition-all duration-300">
+                  <svg className="w-5 h-5 text-black-pure group-hover:rotate-45 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="square" strokeLinejoin="miter" strokeWidth={3} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                  </svg>
                 </div>
               </div>
             </div>
-          ))}
-        </div>
-        {ctaLabel && ctaPath && <div className="flex justify-center mt-12"><SectionButton label={ctaLabel} href={ctaPath} variant="primary" size="lg" /></div>}
-        <SectionFooter variant={footerVariant} />
+
+            <div className="absolute bottom-0 left-0 h-[1px] bg-primary-500 w-0 group-hover:w-full transition-all duration-500 ease-out" />
+          </div>
+        ))}
       </div>
+
+      {ctaLabel && ctaPath && (
+        <div className="p-12 md:p-16 flex justify-center bg-slate-50/50">
+          <Link
+            href={ctaPath}
+            className="px-16 py-6 bg-black-pure text-white-pure font-mono font-black text-xs uppercase tracking-[0.3em] hover:bg-primary-500 hover:text-black-pure transition-colors duration-150 border border-black-pure shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-1 hover:translate-y-1"
+          >
+            {ctaLabel}
+          </Link>
+        </div>
+      )}
+
+      <SectionFooter variant={footerVariant} />
     </section>
   )
 }

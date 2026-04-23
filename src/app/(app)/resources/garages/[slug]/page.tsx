@@ -125,6 +125,11 @@ export default async function GaragePage({ params }: { params: Promise<{ slug: s
                     title="History & Notes"
                     subtitle="Facility background"
                     items={scrollItems}
+                    labels={{
+                        indexPrefix: 'SEC',
+                        progressLabel: 'PROG',
+                        statusComplete: 'DONE',
+                    }}
                     variant="reveal"
                     headerVariant={2}
                     footerVariant={1}
@@ -136,6 +141,10 @@ export default async function GaragePage({ params }: { params: Promise<{ slug: s
                     title="Gallery"
                     subtitle="Facility imagery"
                     items={galleryItems}
+                    labels={{
+                        categoryPrefix: 'CAT',
+                        idPrefix: 'IMG',
+                    }}
                     columns={3}
                     headerVariant={3}
                     footerVariant={2}

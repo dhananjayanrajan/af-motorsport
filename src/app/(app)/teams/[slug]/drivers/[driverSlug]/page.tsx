@@ -203,6 +203,12 @@ export default async function DriverPage({ params }: { params: Promise<{ teamSlu
                     title="Driver Highlights"
                     subtitle={`${driver.first_name} ${driver.last_name}`}
                     videos={videoItems}
+                    labels={{
+                        channelPrefix: 'CH',
+                        broadcastStatus: 'LIVE',
+                        liveFeed: 'FEED',
+                        metaTransmission: 'TRANS',
+                    }}
                     autoplay={false}
                     showPlaylist={false}
                     headerVariant={1}
@@ -226,6 +232,11 @@ export default async function DriverPage({ params }: { params: Promise<{ teamSlu
                     title="Autograph"
                     subtitle="Official signature"
                     features={autographFeatures}
+                    labels={{
+                        specIndex: 'AUT',
+                        statsLabel: 'INFO',
+                        ctaLabel: 'VIEW',
+                    }}
                     columns={2}
                     headerVariant={2}
                     footerVariant={1}
@@ -237,6 +248,11 @@ export default async function DriverPage({ params }: { params: Promise<{ teamSlu
                     title="History"
                     subtitle="Career background"
                     items={scrollItems}
+                    labels={{
+                        indexPrefix: 'SEC',
+                        progressLabel: 'PROG',
+                        statusComplete: 'DONE',
+                    }}
                     variant="reveal"
                     headerVariant={1}
                     footerVariant={1}
@@ -248,10 +264,13 @@ export default async function DriverPage({ params }: { params: Promise<{ teamSlu
                     title="Crew Members"
                     subtitle="Supporting team"
                     items={crewMemberItems}
+                    labels={{
+                        unitsCount: 'CREW',
+                        viewProject: 'VIEW',
+                        sectionIndex: 'CRW',
+                        fallbackAlt: 'Crew',
+                    }}
                     columns={4}
-                    cardVariant={1}
-                    headerVariant={3}
-                    footerVariant={2}
                 />
             )}
             {galleryItems.length > 0 && (
@@ -260,6 +279,10 @@ export default async function DriverPage({ params }: { params: Promise<{ teamSlu
                     title="Gallery"
                     subtitle="Driver imagery"
                     items={galleryItems}
+                    labels={{
+                        categoryPrefix: 'CAT',
+                        idPrefix: 'IMG',
+                    }}
                     columns={3}
                     headerVariant={1}
                     footerVariant={1}
@@ -271,10 +294,13 @@ export default async function DriverPage({ params }: { params: Promise<{ teamSlu
                     title="Celebrations"
                     subtitle="Career highlights"
                     items={celebrationItems}
+                    labels={{
+                        unitsCount: 'CEL',
+                        viewProject: 'VIEW',
+                        sectionIndex: 'CEL',
+                        fallbackAlt: 'Celebration',
+                    }}
                     columns={3}
-                    cardVariant={1}
-                    headerVariant={1}
-                    footerVariant={1}
                 />
             )}
             {incidentEntries.length > 0 && (
@@ -283,7 +309,11 @@ export default async function DriverPage({ params }: { params: Promise<{ teamSlu
                     title="Incidents"
                     subtitle="Notable events"
                     entries={incidentEntries}
-                    variant="detailed"
+                    labels={{
+                        statusPrefix: 'STAT',
+                        timePrefix: 'TIME',
+                        indexPrefix: 'INC',
+                    }}
                     showStatus={false}
                     showTimestamp={false}
                     headerVariant={1}

@@ -145,7 +145,6 @@ export default async function AboutPage() {
       subtitle: initiative.basics?.mission || initiative.basics?.tagline || undefined,
       image: imageUrl,
       href: `/about/initiatives/${initiative.slug}`,
-      label: initiative.basics?.tagline?.slice(0, 20) || undefined,
     }
   })
 
@@ -167,6 +166,11 @@ export default async function AboutPage() {
           title="Our Identity"
           subtitle="Who we are and what we stand for"
           features={identityFeatures}
+          labels={{
+            specIndex: 'ID',
+            statsLabel: 'INFO',
+            ctaLabel: 'LEARN',
+          }}
           columns={2}
           headerVariant={1}
           footerVariant={1}
@@ -175,15 +179,8 @@ export default async function AboutPage() {
       {statementSlides.length > 0 && (
         <CarouselSection
           id="about-statements"
-          title="Official Statements"
-          subtitle="Our position on key matters"
           slides={statementSlides}
-          variant="card"
           autoplayDelay={5000}
-          showArrows={true}
-          showDots={true}
-          headerVariant={2}
-          footerVariant={1}
         />
       )}
       {planEntries.length > 0 && (
@@ -192,7 +189,11 @@ export default async function AboutPage() {
           title="Strategic Plans"
           subtitle="Our roadmap for the future"
           entries={planEntries}
-          variant="detailed"
+          labels={{
+            statusPrefix: 'STAT',
+            timePrefix: 'DATE',
+            indexPrefix: 'PLN',
+          }}
           showStatus={true}
           showTimestamp={true}
           headerVariant={1}
@@ -207,13 +208,13 @@ export default async function AboutPage() {
           title="Initiatives"
           subtitle="Programs we support and champion"
           items={initiativeItems}
+          labels={{
+            unitsCount: 'INIT',
+            viewProject: 'VIEW',
+            sectionIndex: 'INI',
+            fallbackAlt: 'Initiative',
+          }}
           columns={3}
-          cardVariant={1}
-          showMetadata={false}
-          headerVariant={3}
-          footerVariant={2}
-          ctaLabel="All Initiatives"
-          ctaPath="/about/initiatives"
         />
       )}
       {hospitalityEntries.length > 0 && (
@@ -222,7 +223,11 @@ export default async function AboutPage() {
           title="Hospitality Experiences"
           subtitle="Premium trackside experiences"
           entries={hospitalityEntries}
-          variant="detailed"
+          labels={{
+            statusPrefix: 'STAT',
+            timePrefix: 'DATE',
+            indexPrefix: 'HSP',
+          }}
           showStatus={true}
           showTimestamp={true}
           headerVariant={1}

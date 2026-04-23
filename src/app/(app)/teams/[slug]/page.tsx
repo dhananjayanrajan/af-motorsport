@@ -171,6 +171,10 @@ export default async function TeamPage({ params }: { params: Promise<{ slug: str
                     title="Team Tagline"
                     subtitle={team.name}
                     quotes={[quoteItem]}
+                    labels={{
+                        commStatus: 'COMM',
+                        ratingLabel: 'RATING',
+                    }}
                     variant="grid"
                     headerVariant={1}
                     footerVariant={1}
@@ -191,6 +195,11 @@ export default async function TeamPage({ params }: { params: Promise<{ slug: str
                     title="History"
                     subtitle="Team background"
                     items={scrollItems}
+                    labels={{
+                        indexPrefix: 'SEC',
+                        progressLabel: 'PROG',
+                        statusComplete: 'DONE',
+                    }}
                     variant="reveal"
                     headerVariant={2}
                     footerVariant={1}
@@ -202,10 +211,13 @@ export default async function TeamPage({ params }: { params: Promise<{ slug: str
                     title="Drivers"
                     subtitle="Team drivers"
                     items={driverItems}
+                    labels={{
+                        unitsCount: 'DRV',
+                        viewProject: 'VIEW',
+                        sectionIndex: 'DRV',
+                        fallbackAlt: 'Driver',
+                    }}
                     columns={4}
-                    cardVariant={1}
-                    headerVariant={3}
-                    footerVariant={2}
                 />
             )}
             {leaderItems.length > 0 && (
@@ -214,10 +226,13 @@ export default async function TeamPage({ params }: { params: Promise<{ slug: str
                     title="Leadership"
                     subtitle="Team management"
                     items={leaderItems}
+                    labels={{
+                        unitsCount: 'LDR',
+                        viewProject: 'VIEW',
+                        sectionIndex: 'LDR',
+                        fallbackAlt: 'Leader',
+                    }}
                     columns={4}
-                    cardVariant={1}
-                    headerVariant={1}
-                    footerVariant={1}
                 />
             )}
             {galleryItems.length > 0 && (
@@ -226,6 +241,10 @@ export default async function TeamPage({ params }: { params: Promise<{ slug: str
                     title="Gallery"
                     subtitle="Team imagery"
                     items={galleryItems}
+                    labels={{
+                        categoryPrefix: 'CAT',
+                        idPrefix: 'IMG',
+                    }}
                     columns={3}
                     headerVariant={1}
                     footerVariant={1}

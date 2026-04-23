@@ -80,6 +80,10 @@ export default async function VacancyPage({ params }: { params: Promise<{ slug: 
                 title="Application"
                 subtitle="How to apply"
                 panels={[applicationPanel]}
+                labels={{
+                    expansionState: { open: 'OPEN', closed: 'CLOSED' },
+                    metadataTitle: 'DETAILS',
+                }}
                 allowMultiple={false}
                 headerVariant={2}
                 footerVariant={1}

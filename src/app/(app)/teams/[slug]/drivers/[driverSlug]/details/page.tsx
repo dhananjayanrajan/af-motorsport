@@ -182,6 +182,10 @@ export default async function DriverDetailsPage({ params }: { params: Promise<{ 
                     title="Catchphrase"
                     subtitle="In their own words"
                     quotes={[quoteItem]}
+                    labels={{
+                        commStatus: 'COMM',
+                        ratingLabel: 'RATING',
+                    }}
                     variant="grid"
                     headerVariant={2}
                     footerVariant={1}
@@ -192,10 +196,13 @@ export default async function DriverDetailsPage({ params }: { params: Promise<{ 
                 title="Specifications"
                 subtitle="Driver details"
                 items={specItems}
+                labels={{
+                    unitsCount: 'SPEC',
+                    viewProject: 'VIEW',
+                    sectionIndex: 'SPC',
+                    fallbackAlt: 'Spec',
+                }}
                 columns={3}
-                cardVariant={1}
-                headerVariant={1}
-                footerVariant={1}
             />
             {skillItems.length > 0 && (
                 <GridSection
@@ -203,10 +210,13 @@ export default async function DriverDetailsPage({ params }: { params: Promise<{ 
                     title="Skills"
                     subtitle="Driver capabilities"
                     items={skillItems}
+                    labels={{
+                        unitsCount: 'SKL',
+                        viewProject: 'VIEW',
+                        sectionIndex: 'SKL',
+                        fallbackAlt: 'Skill',
+                    }}
                     columns={4}
-                    cardVariant={1}
-                    headerVariant={3}
-                    footerVariant={2}
                 />
             )}
             {awardItems.length > 0 && (
@@ -215,10 +225,13 @@ export default async function DriverDetailsPage({ params }: { params: Promise<{ 
                     title="Awards"
                     subtitle="Career achievements"
                     items={awardItems}
+                    labels={{
+                        unitsCount: 'AWD',
+                        viewProject: 'VIEW',
+                        sectionIndex: 'AWD',
+                        fallbackAlt: 'Award',
+                    }}
                     columns={3}
-                    cardVariant={1}
-                    headerVariant={1}
-                    footerVariant={1}
                 />
             )}
             {tableRows.length > 0 && (
@@ -228,6 +241,10 @@ export default async function DriverDetailsPage({ params }: { params: Promise<{ 
                     subtitle="Performance history"
                     columns={tableColumns}
                     rows={tableRows}
+                    labels={{
+                        sortActive: 'SORT',
+                        rowIndicator: 'ROW',
+                    }}
                     headerVariant={2}
                     footerVariant={1}
                 />
@@ -238,10 +255,13 @@ export default async function DriverDetailsPage({ params }: { params: Promise<{ 
                     title="Social Media"
                     subtitle="Connect with the driver"
                     items={socialItems}
+                    labels={{
+                        unitsCount: 'SOC',
+                        viewProject: 'VIEW',
+                        sectionIndex: 'SOC',
+                        fallbackAlt: 'Social',
+                    }}
                     columns={4}
-                    cardVariant={1}
-                    headerVariant={1}
-                    footerVariant={1}
                 />
             )}
         </main>

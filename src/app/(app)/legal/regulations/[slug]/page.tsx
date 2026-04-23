@@ -65,6 +65,11 @@ export default async function RegulationPage({ params }: { params: Promise<{ slu
                 title={regulation.name}
                 subtitle="Regulation Details"
                 features={[feature]}
+                labels={{
+                    specIndex: 'REG',
+                    statsLabel: 'INFO',
+                    ctaLabel: 'REVIEW',
+                }}
                 columns={2}
                 headerVariant={1}
                 footerVariant={1}
@@ -75,10 +80,13 @@ export default async function RegulationPage({ params }: { params: Promise<{ slu
                     title="Download"
                     subtitle="Available document"
                     items={downloadItems}
+                    labels={{
+                        unitsCount: 'DOCS',
+                        viewProject: 'VIEW',
+                        sectionIndex: 'DL',
+                        fallbackAlt: 'Document',
+                    }}
                     columns={1}
-                    cardVariant={1}
-                    headerVariant={2}
-                    footerVariant={1}
                 />
             )}
         </main>

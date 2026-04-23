@@ -134,12 +134,7 @@ export default async function SessionPage({ params }: { params: Promise<{ slug: 
             {videoSlides.length > 0 && (
                 <CarouselSection
                     id="session-videos"
-                    title="Session Videos"
-                    subtitle={session.name}
                     slides={videoSlides}
-                    variant="full"
-                    headerVariant={1}
-                    footerVariant={1}
                 />
             )}
             {scrollItems.length > 0 && (
@@ -148,6 +143,11 @@ export default async function SessionPage({ params }: { params: Promise<{ slug: 
                     title="History & Notes"
                     subtitle="Session background"
                     items={scrollItems}
+                    labels={{
+                        indexPrefix: 'SEC',
+                        progressLabel: 'PROG',
+                        statusComplete: 'DONE',
+                    }}
                     variant="reveal"
                     headerVariant={2}
                     footerVariant={1}
@@ -167,20 +167,18 @@ export default async function SessionPage({ params }: { params: Promise<{ slug: 
                 title="Specifications"
                 subtitle="Session details"
                 items={specItems}
+                labels={{
+                    unitsCount: 'SPECS',
+                    viewProject: 'VIEW',
+                    sectionIndex: 'SPC',
+                    fallbackAlt: 'Spec',
+                }}
                 columns={3}
-                cardVariant={1}
-                headerVariant={3}
-                footerVariant={2}
             />
             {entrySlides.length > 0 && (
                 <CarouselSection
                     id="session-entries"
-                    title="Entries"
-                    subtitle="Participating entries"
                     slides={entrySlides}
-                    variant="card"
-                    headerVariant={1}
-                    footerVariant={1}
                 />
             )}
             {galleryItems.length > 0 && (
@@ -189,6 +187,10 @@ export default async function SessionPage({ params }: { params: Promise<{ slug: 
                     title="Gallery"
                     subtitle="Session imagery"
                     items={galleryItems}
+                    labels={{
+                        categoryPrefix: 'CAT',
+                        idPrefix: 'IMG',
+                    }}
                     columns={3}
                     headerVariant={1}
                     footerVariant={1}

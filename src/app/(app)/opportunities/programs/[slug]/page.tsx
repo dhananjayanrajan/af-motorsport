@@ -172,12 +172,7 @@ export default async function ProgramPage({ params }: { params: Promise<{ slug: 
             {organizationSlides.length > 0 && (
                 <CarouselSection
                     id="program-partners-sponsors"
-                    title="Partners & Sponsors"
-                    subtitle="Organizations supporting this program"
                     slides={organizationSlides}
-                    variant="card"
-                    headerVariant={2}
-                    footerVariant={1}
                 />
             )}
             {galleryItems.length > 0 && (
@@ -186,6 +181,10 @@ export default async function ProgramPage({ params }: { params: Promise<{ slug: 
                     title="Gallery"
                     subtitle="Program imagery"
                     items={galleryItems}
+                    labels={{
+                        categoryPrefix: 'CAT',
+                        idPrefix: 'IMG',
+                    }}
                     columns={3}
                     headerVariant={3}
                     footerVariant={2}

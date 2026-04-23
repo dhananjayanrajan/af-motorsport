@@ -116,7 +116,11 @@ export default async function OnboardingDetailsPage({ params }: { params: Promis
                     title="Tasks"
                     subtitle="Onboarding checklist"
                     entries={taskEntries}
-                    variant="detailed"
+                    labels={{
+                        statusPrefix: 'STAT',
+                        timePrefix: 'TIME',
+                        indexPrefix: 'TSK',
+                    }}
                     showStatus={true}
                     showTimestamp={false}
                     headerVariant={1}
@@ -129,7 +133,11 @@ export default async function OnboardingDetailsPage({ params }: { params: Promis
                     title="Modules"
                     subtitle="Training content"
                     entries={moduleEntries}
-                    variant="detailed"
+                    labels={{
+                        statusPrefix: 'STAT',
+                        timePrefix: 'TIME',
+                        indexPrefix: 'MOD',
+                    }}
                     showStatus={true}
                     showTimestamp={false}
                     headerVariant={2}
@@ -142,7 +150,11 @@ export default async function OnboardingDetailsPage({ params }: { params: Promis
                     title="Quizzes"
                     subtitle="Knowledge checks"
                     entries={quizEntries}
-                    variant="detailed"
+                    labels={{
+                        statusPrefix: 'STAT',
+                        timePrefix: 'TIME',
+                        indexPrefix: 'QUZ',
+                    }}
                     showStatus={true}
                     showTimestamp={false}
                     headerVariant={3}
@@ -155,10 +167,13 @@ export default async function OnboardingDetailsPage({ params }: { params: Promis
                     title="Documents"
                     subtitle="Onboarding resources"
                     items={documentItems}
+                    labels={{
+                        unitsCount: 'DOCS',
+                        viewProject: 'VIEW',
+                        sectionIndex: 'DOC',
+                        fallbackAlt: 'Document',
+                    }}
                     columns={3}
-                    cardVariant={1}
-                    headerVariant={1}
-                    footerVariant={1}
                 />
             )}
         </main>

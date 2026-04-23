@@ -126,7 +126,6 @@ export default async function CompetitionPage() {
             subtitle: series.basics?.tagline || series.basics?.identifiers?.abbreviation || undefined,
             image: imageUrl,
             href: `/competition/series/${series.slug}`,
-            label: series.details?.status || undefined,
         }
     })
 
@@ -154,11 +153,6 @@ export default async function CompetitionPage() {
             subtitle: event.basics?.tagline || undefined,
             image: imageUrl,
             href: `/competition/events/${event.slug}`,
-            label: event.details?.status || undefined,
-            metadata: {
-                Date: event.details?.start_date ? new Date(event.details.start_date).toLocaleDateString() : 'TBD',
-                Season: typeof event.details.season === 'object' && 'name' in event.details.season ? event.details.season.name : 'N/A',
-            },
         }
     })
 
@@ -190,11 +184,13 @@ export default async function CompetitionPage() {
                     title="Racing Series"
                     subtitle="Active championships and series"
                     items={seriesItems}
+                    labels={{
+                        unitsCount: 'SERIES',
+                        viewProject: 'VIEW',
+                        sectionIndex: 'SRS',
+                        fallbackAlt: 'Series',
+                    }}
                     columns={4}
-                    cardVariant={1}
-                    showMetadata={false}
-                    headerVariant={1}
-                    footerVariant={1}
                 />
             )}
             {seasonEntries.length > 0 && (
@@ -203,7 +199,11 @@ export default async function CompetitionPage() {
                     title="Seasons"
                     subtitle="Championship seasons"
                     entries={seasonEntries}
-                    variant="detailed"
+                    labels={{
+                        statusPrefix: 'SERIES',
+                        timePrefix: 'TIME',
+                        indexPrefix: 'SEA',
+                    }}
                     showStatus={true}
                     showTimestamp={false}
                     headerVariant={2}
@@ -216,11 +216,13 @@ export default async function CompetitionPage() {
                     title="Events"
                     subtitle="Race weekends and meetings"
                     items={eventItems}
+                    labels={{
+                        unitsCount: 'EVENTS',
+                        viewProject: 'VIEW',
+                        sectionIndex: 'EVT',
+                        fallbackAlt: 'Event',
+                    }}
                     columns={3}
-                    cardVariant={1}
-                    showMetadata={true}
-                    headerVariant={3}
-                    footerVariant={2}
                 />
             )}
             {sessionEntries.length > 0 && (
@@ -229,7 +231,11 @@ export default async function CompetitionPage() {
                     title="Sessions"
                     subtitle="Practice, qualifying, and race sessions"
                     entries={sessionEntries}
-                    variant="detailed"
+                    labels={{
+                        statusPrefix: 'ACCESS',
+                        timePrefix: 'TIME',
+                        indexPrefix: 'SES',
+                    }}
                     showStatus={true}
                     showTimestamp={false}
                     headerVariant={1}
@@ -242,6 +248,20 @@ export default async function CompetitionPage() {
                     title="Circuits"
                     subtitle="Race tracks around the world"
                     locations={mapLocations}
+                    labels={{
+                        hqLabel: 'HQ',
+                        intelLabel: 'INTEL',
+                        routeLabel: 'ROUTE',
+                        timeLabel: 'TIME',
+                        distLabel: 'DIST',
+                        recordLabel: 'VIEW',
+                        filterLabels: {
+                            all: 'ALL',
+                            primary: 'PRIMARY',
+                            satellite: 'SATELLITE',
+                            pathing: 'ROUTES',
+                        },
+                    }}
                     zoom={2}
                     headerVariant={2}
                     footerVariant={1}

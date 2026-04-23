@@ -132,6 +132,15 @@ export default async function TimelinePage({ params }: { params: Promise<{ slug:
                     title="Milestones"
                     subtitle="Key achievements along the way"
                     events={milestoneEvents}
+                    labels={{
+                        statusPrefix: 'STAT',
+                        eventIndexLabel: 'EVENT',
+                        deploymentStatus: {
+                            completed: 'DONE',
+                            active: 'ACTIVE',
+                            upcoming: 'UPCOMING',
+                        },
+                    }}
                     orientation={timeline.details?.orientation === 'vertical' ? 'vertical' : 'horizontal'}
                     headerVariant={2}
                     footerVariant={1}
@@ -143,10 +152,13 @@ export default async function TimelinePage({ params }: { params: Promise<{ slug:
                     title="Events"
                     subtitle="Notable moments"
                     items={eventItems}
+                    labels={{
+                        unitsCount: 'EVENTS',
+                        viewProject: 'VIEW',
+                        sectionIndex: 'EVT',
+                        fallbackAlt: 'Event',
+                    }}
                     columns={3}
-                    cardVariant={1}
-                    headerVariant={3}
-                    footerVariant={2}
                 />
             )}
             {documentItems.length > 0 && (
@@ -155,10 +167,13 @@ export default async function TimelinePage({ params }: { params: Promise<{ slug:
                     title="Documents"
                     subtitle="Related resources"
                     items={documentItems}
+                    labels={{
+                        unitsCount: 'DOCS',
+                        viewProject: 'VIEW',
+                        sectionIndex: 'DOC',
+                        fallbackAlt: 'Document',
+                    }}
                     columns={3}
-                    cardVariant={1}
-                    headerVariant={1}
-                    footerVariant={1}
                 />
             )}
         </main>

@@ -98,7 +98,6 @@ export default async function OpportunitiesPage() {
             subtitle: program.basics?.tagline || program.details?.objective || undefined,
             image: imageUrl,
             href: `/opportunities/programs/${program.slug}`,
-            label: program.details?.type || program.basics?.identifiers?.code || undefined,
         }
     })
 
@@ -133,11 +132,6 @@ export default async function OpportunitiesPage() {
             subtitle: meetup.basics?.description || undefined,
             image: imageUrl,
             href: `/opportunities/meetups/${meetup.slug}`,
-            label: meetup.details?.format || undefined,
-            metadata: {
-                Date: meetup.details?.start_date ? new Date(meetup.details.start_date).toLocaleDateString() : 'TBD',
-                Access: meetup.details?.access || 'N/A',
-            },
         }
     })
 
@@ -149,11 +143,13 @@ export default async function OpportunitiesPage() {
                     title="Programs"
                     subtitle="Development and training opportunities"
                     items={programItems}
+                    labels={{
+                        unitsCount: 'PROG',
+                        viewProject: 'VIEW',
+                        sectionIndex: 'PRG',
+                        fallbackAlt: 'Program',
+                    }}
                     columns={3}
-                    cardVariant={1}
-                    showMetadata={false}
-                    headerVariant={1}
-                    footerVariant={1}
                 />
             )}
             {onboardingEntries.length > 0 && (
@@ -162,7 +158,11 @@ export default async function OpportunitiesPage() {
                     title="Onboarding"
                     subtitle="Get started with our organization"
                     entries={onboardingEntries}
-                    variant="detailed"
+                    labels={{
+                        statusPrefix: 'STAT',
+                        timePrefix: 'TIME',
+                        indexPrefix: 'ONB',
+                    }}
                     showStatus={true}
                     showTimestamp={false}
                     headerVariant={2}
@@ -175,7 +175,11 @@ export default async function OpportunitiesPage() {
                     title="Vacancies"
                     subtitle="Current job openings"
                     entries={vacancyEntries}
-                    variant="detailed"
+                    labels={{
+                        statusPrefix: 'CONTR',
+                        timePrefix: 'TIME',
+                        indexPrefix: 'VAC',
+                    }}
                     showStatus={true}
                     showTimestamp={false}
                     headerVariant={3}
@@ -188,11 +192,13 @@ export default async function OpportunitiesPage() {
                     title="Meetups"
                     subtitle="Upcoming events and gatherings"
                     items={meetupItems}
+                    labels={{
+                        unitsCount: 'MEET',
+                        viewProject: 'VIEW',
+                        sectionIndex: 'MTG',
+                        fallbackAlt: 'Meetup',
+                    }}
                     columns={3}
-                    cardVariant={1}
-                    showMetadata={true}
-                    headerVariant={1}
-                    footerVariant={1}
                 />
             )}
         </main>

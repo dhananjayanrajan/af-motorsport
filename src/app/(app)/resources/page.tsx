@@ -99,7 +99,6 @@ export default async function ResourcesPage() {
             subtitle: car.basics?.identifiers?.model || car.basics?.tagline || undefined,
             image: imageUrl,
             href: `/resources/cars/${car.slug}`,
-            label: car.details?.status || car.basics?.identifiers?.chassis || undefined,
         }
     })
 
@@ -116,7 +115,6 @@ export default async function ResourcesPage() {
             subtitle: garage.basics?.tagline || garage.basics?.identifiers?.code || undefined,
             image: imageUrl,
             href: `/resources/garages/${garage.slug}`,
-            label: garage.details?.type || undefined,
         }
     })
 
@@ -135,7 +133,6 @@ export default async function ResourcesPage() {
             subtitle: helmet.basics?.tagline || helmet.details?.designer || undefined,
             image: imageUrl,
             href: `/resources/helmets/${helmet.slug}`,
-            label: helmet.details?.usage || helmet.details?.style || undefined,
         }
     })
 
@@ -152,7 +149,6 @@ export default async function ResourcesPage() {
             subtitle: suit.basics?.tagline || undefined,
             image: imageUrl,
             href: `/resources/suits/${suit.slug}`,
-            label: suit.details?.usage || suit.details?.material || undefined,
         }
     })
 
@@ -164,11 +160,13 @@ export default async function ResourcesPage() {
                     title="Cars"
                     subtitle="Racing vehicles and machinery"
                     items={carItems}
+                    labels={{
+                        unitsCount: 'CARS',
+                        viewProject: 'VIEW',
+                        sectionIndex: 'CAR',
+                        fallbackAlt: 'Car',
+                    }}
                     columns={4}
-                    cardVariant={1}
-                    showMetadata={false}
-                    headerVariant={1}
-                    footerVariant={1}
                 />
             )}
             {garageItems.length > 0 && (
@@ -177,11 +175,13 @@ export default async function ResourcesPage() {
                     title="Garages"
                     subtitle="Team facilities and workspaces"
                     items={garageItems}
+                    labels={{
+                        unitsCount: 'GAR',
+                        viewProject: 'VIEW',
+                        sectionIndex: 'GRG',
+                        fallbackAlt: 'Garage',
+                    }}
                     columns={4}
-                    cardVariant={1}
-                    showMetadata={false}
-                    headerVariant={2}
-                    footerVariant={1}
                 />
             )}
             {helmetItems.length > 0 && (
@@ -190,11 +190,13 @@ export default async function ResourcesPage() {
                     title="Helmets"
                     subtitle="Driver head protection"
                     items={helmetItems}
+                    labels={{
+                        unitsCount: 'HELM',
+                        viewProject: 'VIEW',
+                        sectionIndex: 'HLM',
+                        fallbackAlt: 'Helmet',
+                    }}
                     columns={4}
-                    cardVariant={1}
-                    showMetadata={false}
-                    headerVariant={3}
-                    footerVariant={2}
                 />
             )}
             {suitItems.length > 0 && (
@@ -203,11 +205,13 @@ export default async function ResourcesPage() {
                     title="Suits"
                     subtitle="Racing apparel and gear"
                     items={suitItems}
+                    labels={{
+                        unitsCount: 'SUIT',
+                        viewProject: 'VIEW',
+                        sectionIndex: 'SUT',
+                        fallbackAlt: 'Suit',
+                    }}
                     columns={4}
-                    cardVariant={1}
-                    showMetadata={false}
-                    headerVariant={1}
-                    footerVariant={1}
                 />
             )}
         </main>

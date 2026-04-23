@@ -177,10 +177,13 @@ export default async function RaceDetailsPage({ params }: { params: Promise<{ sl
                 title="Specifications"
                 subtitle="Race details and statistics"
                 items={specItems}
+                labels={{
+                    unitsCount: 'SPECS',
+                    viewProject: 'VIEW',
+                    sectionIndex: 'SPC',
+                    fallbackAlt: 'Spec',
+                }}
                 columns={4}
-                cardVariant={1}
-                headerVariant={1}
-                footerVariant={1}
             />
             <StudySection
                 id="race-competition"
@@ -197,6 +200,10 @@ export default async function RaceDetailsPage({ params }: { params: Promise<{ sl
                     title="Highlights & Documents"
                     subtitle="Media and resources from the race"
                     items={highlightsAndDocsItems}
+                    labels={{
+                        categoryPrefix: 'CAT',
+                        idPrefix: 'IMG',
+                    }}
                     columns={3}
                     headerVariant={3}
                     footerVariant={2}

@@ -158,6 +158,10 @@ export default async function HospitalityPage({ params }: { params: Promise<{ sl
                     title="Experience"
                     subtitle="Premium hospitality"
                     quotes={[quoteItem]}
+                    labels={{
+                        commStatus: 'COMM',
+                        ratingLabel: 'RATING',
+                    }}
                     variant="grid"
                     headerVariant={2}
                     footerVariant={1}
@@ -169,6 +173,11 @@ export default async function HospitalityPage({ params }: { params: Promise<{ sl
                     title="Heritage"
                     subtitle="Our hospitality legacy"
                     items={scrollItems}
+                    labels={{
+                        indexPrefix: 'SEC',
+                        progressLabel: 'PROG',
+                        statusComplete: 'DONE',
+                    }}
                     variant="reveal"
                     headerVariant={1}
                     footerVariant={1}
@@ -180,6 +189,15 @@ export default async function HospitalityPage({ params }: { params: Promise<{ sl
                     title="Schedule"
                     subtitle="Key dates"
                     events={timelineEvents}
+                    labels={{
+                        statusPrefix: 'STAT',
+                        eventIndexLabel: 'EVENT',
+                        deploymentStatus: {
+                            completed: 'DONE',
+                            active: 'ACTIVE',
+                            upcoming: 'UPCOMING',
+                        },
+                    }}
                     orientation="horizontal"
                     headerVariant={3}
                     footerVariant={2}
@@ -191,6 +209,10 @@ export default async function HospitalityPage({ params }: { params: Promise<{ sl
                     title="Gallery"
                     subtitle="Glimpses of the experience"
                     items={galleryItems}
+                    labels={{
+                        categoryPrefix: 'CAT',
+                        idPrefix: 'IMG',
+                    }}
                     columns={3}
                     headerVariant={1}
                     footerVariant={1}

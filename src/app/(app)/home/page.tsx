@@ -1,7 +1,7 @@
 // app/(frontend)/page.tsx (Home)
-import CarouselSection from '@/components/Section/Blocks/CarouselSection'
 import FeatureSection from '@/components/Section/Blocks/FeatureSection'
 import GridSection from '@/components/Section/Blocks/GridSection'
+import VideoSection from '@/components/Section/Blocks/VideoSection'
 import { Media } from '@/payload-types'
 import configPromise from '@payload-config'
 import { unstable_cache } from 'next/cache'
@@ -138,9 +138,8 @@ export default async function HomePage() {
   const videoSlides = videoItems.map((item) => {
     let title = ''
     let description = ''
-    let imageUrl: string | undefined = undefined
-    let meta = ''
-    let ctaHref = '#'
+    let posterUrl: string | undefined = undefined
+    let duration = ''
 
     if ('name' in item && item.name) title = item.name
     else if ('first_name' in item && 'last_name' in item) title = `${item.first_name} ${item.last_name}`
@@ -149,31 +148,22 @@ export default async function HomePage() {
 
     const assets = (item as any).assets
     if (assets) {
-      if (assets.thumbnail) imageUrl = getMediaUrl(assets.thumbnail)
-      if (!imageUrl && assets.cover) imageUrl = getMediaUrl(assets.cover)
-      if (!imageUrl && assets.poster) imageUrl = getMediaUrl(assets.poster)
+      if (assets.thumbnail) posterUrl = getMediaUrl(assets.thumbnail)
+      if (!posterUrl && assets.cover) posterUrl = getMediaUrl(assets.cover)
+      if (!posterUrl && assets.poster) posterUrl = getMediaUrl(assets.poster)
     }
 
-    if ('type' in item && item.type && typeof item.type === 'string') meta = item.type
-    if ('slug' in item && item.slug && typeof item.slug === 'string') ctaHref = `/${item.slug}`
-
-    return { id: String(item.id), title, description, image: imageUrl, meta, ctaLabel: 'Watch', ctaHref }
-  })
-
-  const imageSlides = slidesDocs.map((slide) => {
-    let imageUrl: string | undefined = undefined
-    if (slide.assets) {
-      if (slide.assets.background) imageUrl = getMediaUrl(slide.assets.background)
-      if (!imageUrl && slide.assets.thumbnail) imageUrl = getMediaUrl(slide.assets.thumbnail)
+    if ('details' in item && (item as any).details?.start_date) {
+      duration = new Date((item as any).details.start_date).toISOString().split('T')[0]
     }
+
     return {
-      id: String(slide.id),
-      title: slide.name,
-      description: slide.basics?.description || undefined,
-      image: imageUrl,
-      meta: slide.details?.type || '',
-      ctaLabel: 'View',
-      ctaHref: `/slides/${slide.slug}`,
+      id: String(item.id),
+      title,
+      description,
+      url: posterUrl || '',
+      poster: posterUrl,
+      duration,
     }
   })
 
@@ -188,7 +178,6 @@ export default async function HomePage() {
       title: series.name,
       subtitle: series.basics?.identifiers?.code || series.basics?.tagline || '',
       image: imageUrl,
-      label: series.basics?.identifiers?.code?.slice(0, 3).toUpperCase() || '',
       href: `/competition/series/${series.slug}`,
     }
   })
@@ -234,31 +223,17 @@ export default async function HomePage() {
   return (
     <main className="w-full">
       {videoSlides.length > 0 && (
-        <CarouselSection
+        <VideoSection
           id="home-videos"
           title="Latest Media"
           subtitle="Recent events, sessions & onboardings"
-          slides={videoSlides}
-          variant="full"
-          autoplayDelay={6000}
-          showArrows
-          showDots
-          headerVariant={2}
-          footerVariant={1}
-        />
-      )}
-      {imageSlides.length > 0 && (
-        <CarouselSection
-          id="home-slides"
-          title="Featured Slides"
-          subtitle="Visual highlights"
-          slides={imageSlides}
-          variant="card"
-          autoplayDelay={5000}
-          showArrows
-          showDots
-          headerVariant={1}
-          footerVariant={1}
+          videos={videoSlides}
+          labels={{
+            channelPrefix: 'CH',
+            broadcastStatus: 'LIVE',
+            liveFeed: 'FEED',
+            metaTransmission: 'TRANS',
+          }}
         />
       )}
       {gridItems.length > 0 && (
@@ -267,13 +242,13 @@ export default async function HomePage() {
           title="Competition"
           subtitle="Active racing series"
           items={gridItems}
+          labels={{
+            unitsCount: 'SERIES',
+            viewProject: 'VIEW',
+            sectionIndex: 'COMP',
+            fallbackAlt: 'Series',
+          }}
           columns={4}
-          cardVariant={1}
-          showMetadata={false}
-          headerVariant={3}
-          footerVariant={2}
-          ctaLabel="View All Series"
-          ctaPath="/competition"
         />
       )}
       {raceFeatures.length > 0 && (
@@ -282,10 +257,12 @@ export default async function HomePage() {
           title="Recent Races"
           subtitle="Latest completed events"
           features={raceFeatures}
+          labels={{
+            specIndex: 'RACE',
+            statsLabel: 'STATS',
+            ctaLabel: 'VIEW',
+          }}
           columns={3}
-          headerVariant={1}
-          footerVariant={2}
-          ctaLabel="All Races"
           ctaPath="/calendar/races"
         />
       )}
@@ -295,10 +272,12 @@ export default async function HomePage() {
           title="Featured Drivers"
           subtitle="Top competitors"
           features={driverFeatures}
+          labels={{
+            specIndex: 'DRV',
+            statsLabel: 'INFO',
+            ctaLabel: 'PROFILE',
+          }}
           columns={3}
-          headerVariant={1}
-          footerVariant={1}
-          ctaLabel="All Drivers"
           ctaPath="/teams"
         />
       )}

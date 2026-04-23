@@ -102,10 +102,13 @@ export default async function GarageDetailsPage({ params }: { params: Promise<{ 
                     title="Amenities"
                     subtitle="Facility features"
                     items={amenityItems}
+                    labels={{
+                        unitsCount: 'AMEN',
+                        viewProject: 'VIEW',
+                        sectionIndex: 'AMN',
+                        fallbackAlt: 'Amenity',
+                    }}
                     columns={3}
-                    cardVariant={1}
-                    headerVariant={1}
-                    footerVariant={1}
                 />
             )}
             {operatorEntries.length > 0 && (
@@ -114,7 +117,11 @@ export default async function GarageDetailsPage({ params }: { params: Promise<{ 
                     title="Operators"
                     subtitle="Facility management"
                     entries={operatorEntries}
-                    variant="detailed"
+                    labels={{
+                        statusPrefix: 'TYPE',
+                        timePrefix: 'TIME',
+                        indexPrefix: 'OPR',
+                    }}
                     showStatus={false}
                     showTimestamp={false}
                     headerVariant={2}
@@ -127,10 +134,13 @@ export default async function GarageDetailsPage({ params }: { params: Promise<{ 
                     title="Documents"
                     subtitle="Facility documentation"
                     items={documentItems}
+                    labels={{
+                        unitsCount: 'DOCS',
+                        viewProject: 'VIEW',
+                        sectionIndex: 'DOC',
+                        fallbackAlt: 'Document',
+                    }}
                     columns={3}
-                    cardVariant={1}
-                    headerVariant={3}
-                    footerVariant={2}
                 />
             )}
         </main>

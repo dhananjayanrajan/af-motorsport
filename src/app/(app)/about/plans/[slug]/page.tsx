@@ -140,6 +140,10 @@ export default async function PlanPage({ params }: { params: Promise<{ slug: str
                     title="Guiding Statement"
                     subtitle="Our north star"
                     quotes={[quoteItem]}
+                    labels={{
+                        commStatus: 'COMM',
+                        ratingLabel: 'RATING',
+                    }}
                     variant="grid"
                     headerVariant={2}
                     footerVariant={1}
@@ -151,6 +155,15 @@ export default async function PlanPage({ params }: { params: Promise<{ slug: str
                     title="Timeline"
                     subtitle="Key milestones and dates"
                     events={timelineEvents}
+                    labels={{
+                        statusPrefix: 'STAT',
+                        eventIndexLabel: 'EVENT',
+                        deploymentStatus: {
+                            completed: 'DONE',
+                            active: 'ACTIVE',
+                            upcoming: 'UPCOMING',
+                        },
+                    }}
                     orientation="horizontal"
                     headerVariant={1}
                     footerVariant={1}

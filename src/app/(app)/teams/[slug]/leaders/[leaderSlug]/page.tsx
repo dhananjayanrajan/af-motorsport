@@ -89,7 +89,6 @@ export default async function LeaderPage({ params }: { params: Promise<{ teamSlu
         : leader.assets?.cover
             ? getMediaUrl(leader.assets.cover)
             : undefined
-
     const study = {
         id: String(leader.id),
         title: `${leader.first_name} ${leader.last_name}`,
@@ -187,6 +186,12 @@ export default async function LeaderPage({ params }: { params: Promise<{ teamSlu
                     title="Leader Highlights"
                     subtitle={`${leader.first_name} ${leader.last_name}`}
                     videos={videoItems}
+                    labels={{
+                        channelPrefix: 'CH',
+                        broadcastStatus: 'LIVE',
+                        liveFeed: 'FEED',
+                        metaTransmission: 'TRANS',
+                    }}
                     autoplay={false}
                     showPlaylist={false}
                     headerVariant={1}
@@ -210,6 +215,11 @@ export default async function LeaderPage({ params }: { params: Promise<{ teamSlu
                     title="Autograph"
                     subtitle="Official signature"
                     features={autographFeatures}
+                    labels={{
+                        specIndex: 'AUT',
+                        statsLabel: 'INFO',
+                        ctaLabel: 'VIEW',
+                    }}
                     columns={2}
                     headerVariant={2}
                     footerVariant={1}
@@ -221,6 +231,11 @@ export default async function LeaderPage({ params }: { params: Promise<{ teamSlu
                     title="History"
                     subtitle="Career background"
                     items={scrollItems}
+                    labels={{
+                        indexPrefix: 'SEC',
+                        progressLabel: 'PROG',
+                        statusComplete: 'DONE',
+                    }}
                     variant="reveal"
                     headerVariant={1}
                     footerVariant={1}
@@ -232,6 +247,10 @@ export default async function LeaderPage({ params }: { params: Promise<{ teamSlu
                     title="Gallery"
                     subtitle="Leader imagery"
                     items={galleryItems}
+                    labels={{
+                        categoryPrefix: 'CAT',
+                        idPrefix: 'IMG',
+                    }}
                     columns={3}
                     headerVariant={1}
                     footerVariant={1}
@@ -243,10 +262,13 @@ export default async function LeaderPage({ params }: { params: Promise<{ teamSlu
                     title="Celebrations"
                     subtitle="Career highlights"
                     items={celebrationItems}
+                    labels={{
+                        unitsCount: 'CEL',
+                        viewProject: 'VIEW',
+                        sectionIndex: 'CEL',
+                        fallbackAlt: 'Celebration',
+                    }}
                     columns={3}
-                    cardVariant={1}
-                    headerVariant={3}
-                    footerVariant={2}
                 />
             )}
             {interviewItems.length > 0 && (
@@ -255,10 +277,13 @@ export default async function LeaderPage({ params }: { params: Promise<{ teamSlu
                     title="Interviews"
                     subtitle="Media appearances"
                     items={interviewItems}
+                    labels={{
+                        unitsCount: 'INT',
+                        viewProject: 'VIEW',
+                        sectionIndex: 'INT',
+                        fallbackAlt: 'Interview',
+                    }}
                     columns={3}
-                    cardVariant={1}
-                    headerVariant={1}
-                    footerVariant={1}
                 />
             )}
         </main>

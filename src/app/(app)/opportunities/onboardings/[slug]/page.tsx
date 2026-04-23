@@ -114,12 +114,7 @@ export default async function OnboardingPage({ params }: { params: Promise<{ slu
             {videoSlides.length > 0 && (
                 <CarouselSection
                     id="onboarding-videos"
-                    title="Onboarding Videos"
-                    subtitle={onboarding.name}
                     slides={videoSlides}
-                    variant="full"
-                    headerVariant={1}
-                    footerVariant={1}
                 />
             )}
             <StudySection
@@ -139,6 +134,11 @@ export default async function OnboardingPage({ params }: { params: Promise<{ slu
                     title="Certificate"
                     subtitle="Recognition of completion"
                     features={certificateFeatures}
+                    labels={{
+                        specIndex: 'CRT',
+                        statsLabel: 'INFO',
+                        ctaLabel: 'VIEW',
+                    }}
                     columns={2}
                     headerVariant={2}
                     footerVariant={1}
@@ -150,6 +150,10 @@ export default async function OnboardingPage({ params }: { params: Promise<{ slu
                     title="Gallery"
                     subtitle="Onboarding imagery"
                     items={galleryItems}
+                    labels={{
+                        categoryPrefix: 'CAT',
+                        idPrefix: 'IMG',
+                    }}
                     columns={2}
                     headerVariant={3}
                     footerVariant={2}

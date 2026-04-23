@@ -89,9 +89,6 @@ export default async function TeamsPage() {
             subtitle: team.basics?.tagline || undefined,
             image: imageUrl,
             href: `/teams/${team.slug}`,
-            metadata: team.details?.country && typeof team.details.country === 'object' && 'name' in team.details.country
-                ? { Country: team.details.country.name }
-                : undefined,
         }
     })
 
@@ -124,10 +121,6 @@ export default async function TeamsPage() {
             subtitle: org.basics?.tagline || org.basics?.type || undefined,
             image: imageUrl,
             href: `/teams/organizations/${org.slug}`,
-            label: org.basics?.identifiers?.code || undefined,
-            metadata: org.details?.founded
-                ? { Founded: org.details.founded }
-                : undefined,
         }
     })
 
@@ -139,11 +132,13 @@ export default async function TeamsPage() {
                     title="Teams"
                     subtitle="Racing teams and organizations"
                     items={teamItems}
+                    labels={{
+                        unitsCount: 'TEAMS',
+                        viewProject: 'VIEW',
+                        sectionIndex: 'TMS',
+                        fallbackAlt: 'Team',
+                    }}
                     columns={4}
-                    cardVariant={1}
-                    showMetadata={true}
-                    headerVariant={1}
-                    footerVariant={1}
                 />
             )}
             {individualItems.length > 0 && (
@@ -152,11 +147,13 @@ export default async function TeamsPage() {
                     title="Individuals"
                     subtitle="Team personnel and staff"
                     items={individualItems}
+                    labels={{
+                        unitsCount: 'IND',
+                        viewProject: 'VIEW',
+                        sectionIndex: 'IND',
+                        fallbackAlt: 'Individual',
+                    }}
                     columns={4}
-                    cardVariant={1}
-                    showMetadata={false}
-                    headerVariant={2}
-                    footerVariant={1}
                 />
             )}
             {organizationItems.length > 0 && (
@@ -165,11 +162,13 @@ export default async function TeamsPage() {
                     title="Organizations"
                     subtitle="Partners and affiliates"
                     items={organizationItems}
+                    labels={{
+                        unitsCount: 'ORG',
+                        viewProject: 'VIEW',
+                        sectionIndex: 'ORG',
+                        fallbackAlt: 'Organization',
+                    }}
                     columns={4}
-                    cardVariant={1}
-                    showMetadata={true}
-                    headerVariant={3}
-                    footerVariant={2}
                 />
             )}
         </main>
