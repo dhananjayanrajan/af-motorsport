@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import BlueprintsBackground from '../Backgrounds/BlueprintsBackground'
 import SectionButton from '../Components/SectionButton'
 import SectionFooter from '../Components/SectionFooter'
+import SectionHeader from '../Components/SectionHeader'
 
 export interface VideoItem {
   id: string
@@ -92,6 +93,13 @@ const VideoSection: React.FC<VideoSectionProps> = ({
   return (
     <section id={id} className="relative w-full bg-white-pure border-t border-black-pure overflow-hidden">
       {background}
+
+      <SectionHeader
+        title={title}
+        subtitle={subtitle}
+        variant={headerVariant}
+        metadata={String(videos.length).padStart(2, '0')}
+      />
 
       <div className="w-full relative bg-black-pure">
         <div className="relative flex flex-col bg-black-pure min-h-[calc(100vh-200px)]">
