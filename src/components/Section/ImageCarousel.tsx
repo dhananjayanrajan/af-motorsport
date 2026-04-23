@@ -1,5 +1,4 @@
-'use client'
-
+"use client"
 import { Media } from '@/payload-types'
 import Autoplay from 'embla-carousel-autoplay'
 import useEmblaCarousel from 'embla-carousel-react'
@@ -27,8 +26,14 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
     sectionTitle,
 }) => {
     const [progress, setProgress] = useState(0)
+    const [isHovered, setIsHovered] = useState(false)
 
-    const autoplay = Autoplay({ delay: 4000, stopOnInteraction: false, stopOnMouseEnter: true })
+    const autoplay = Autoplay({
+        delay: 4000,
+        stopOnInteraction: false,
+        stopOnMouseEnter: true
+    })
+
     const [emblaRef, emblaApi] = useEmblaCarousel(
         { loop: true, align: 'center', skipSnaps: false },
         [autoplay]
@@ -39,12 +44,15 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
 
     useEffect(() => {
         if (!emblaApi) return
+
         const onSelect = () => {
             const progressValue = ((emblaApi.selectedScrollSnap() + 1) / emblaApi.scrollSnapList().length) * 100
             setProgress(progressValue)
         }
+
         emblaApi.on('select', onSelect)
         onSelect()
+
         return () => {
             emblaApi.off('select', onSelect)
         }
@@ -55,88 +63,107 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
     }
 
     return (
-        <section className="relative w-full bg-white-pure flex flex-col overflow-hidden">
-            <div className="flex h-16 md:h-20 border-b border-black-pure divide-x divide-black-pure bg-white-pure z-30">
-                <div className="w-16 md:w-20 flex items-center justify-center bg-black-pure group hover:bg-primary-500 transition-colors duration-300">
-                    <div className="w-4 h-4 md:w-5 md:h-5 border-2 border-primary-500 rounded-full flex items-center justify-center group-hover:scale-125 transition-transform duration-500">
-                        <div className="w-1 h-1 bg-primary-500 rounded-full" />
-                    </div>
-                </div>
-                <div className="flex-1 flex items-center px-4 md:px-8">
-                    <h2 className="font-mono text-[10px] md:text-xs font-black tracking-wider uppercase text-neutral-400">
+        <section
+            className="relative w-full bg-background flex flex-col overflow-hidden py-16 md:py-24"
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+        >
+            <div className="container mx-auto px-4">
+                <div className="flex items-center justify-between mb-12">
+                    <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-foreground uppercase tracking-tight">
                         {sectionTitle}
                     </h2>
+
+                    <div className="flex items-center gap-2">
+                        <button
+                            onClick={scrollPrev}
+                            className="w-12 h-12 flex items-center justify-center border border-border rounded-full hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-300 group"
+                            aria-label="Previous image"
+                        >
+                            <svg className="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                            </svg>
+                        </button>
+                        <button
+                            onClick={scrollNext}
+                            className="w-12 h-12 flex items-center justify-center border border-border rounded-full hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-300 group"
+                            aria-label="Next image"
+                        >
+                            <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                            </svg>
+                        </button>
+                    </div>
                 </div>
-                <div className="flex bg-white-pure">
-                    <button
-                        onClick={scrollPrev}
-                        className="w-12 md:w-16 lg:w-20 flex items-center justify-center hover:bg-primary-500 border-l border-black-pure transition-all duration-300 group"
-                        aria-label="Previous image"
-                    >
-                        <span className="font-mono text-xs md:text-sm font-black group-hover:scale-110 transition-transform">◀</span>
-                    </button>
-                    <button
-                        onClick={scrollNext}
-                        className="w-12 md:w-16 lg:w-20 flex items-center justify-center hover:bg-primary-500 border-l border-black-pure transition-all duration-300 group"
-                        aria-label="Next image"
-                    >
-                        <span className="font-mono text-xs md:text-sm font-black group-hover:scale-110 transition-transform">▶</span>
-                    </button>
-                </div>
-            </div>
 
-            <div className="overflow-hidden" ref={emblaRef}>
-                <div className="flex">
-                    {slides.map((slide, index) => {
-                        const placeholderId = `${slide.id}-${index}`
-                        const src = typeof slide.image === 'string'
-                            ? slide.image
-                            : slide.image?.url || `https://picsum.photos/seed/${placeholderId}/1280/720`
+                <div className="overflow-hidden" ref={emblaRef}>
+                    <div className="flex">
+                        {slides.map((slide, index) => {
+                            const placeholderId = `${slide.id}-${index}`
+                            const src = typeof slide.image === 'string'
+                                ? slide.image
+                                : slide.image?.url || `https://picsum.photos/seed/${placeholderId}/1280/720`
 
-                        return (
-                            <div
-                                key={slide.id}
-                                className="flex-[0_0_90%] md:flex-[0_0_75%] lg:flex-[0_0_65%] min-w-0 relative px-4 py-8 md:py-12 group"
-                            >
-                                <div className="relative aspect-video w-full border-2 md:border-4 border-black-pure bg-neutral-200 overflow-hidden shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] md:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] group-hover:-translate-y-1 group-hover:-translate-x-1 transition-all duration-500">
-                                    <Image
-                                        src={src}
-                                        alt={slide.title}
-                                        fill
-                                        sizes="(max-width: 768px) 90vw, (max-width: 1200px) 70vw, 50vw"
-                                        className="object-cover transition-transform duration-1000 group-hover:scale-105"
-                                        priority={index === 0}
-                                    />
-                                    <div className="absolute inset-0 bg-black-pure/10 group-hover:bg-black-pure/0 transition-colors duration-500" />
+                            return (
+                                <div
+                                    key={slide.id}
+                                    className="flex-[0_0_90%] md:flex-[0_0_75%] lg:flex-[0_0_65%] min-w-0 relative px-4 py-8 md:py-12 group"
+                                >
+                                    <div className="relative aspect-video w-full border border-border bg-muted overflow-hidden shadow-lg rounded-lg group-hover:shadow-xl transition-all duration-500 group-hover:-translate-y-1">
+                                        <Image
+                                            src={src}
+                                            alt={slide.title}
+                                            fill
+                                            sizes="(max-width: 768px) 90vw, (max-width: 1200px) 70vw, 50vw"
+                                            className="object-cover transition-transform duration-1000 group-hover:scale-105"
+                                            priority={index === 0}
+                                        />
 
-                                    <div className="absolute top-0 left-0 w-full p-4 flex justify-between items-start pointer-events-none">
-                                        <div className="bg-primary-500 border border-black-pure px-2 py-0.5">
-                                            <span className="font-mono text-[10px] font-black text-black-pure">
-                                                {(index + 1).toString().padStart(3, '0')}
-                                            </span>
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+                                        <div className="absolute top-4 left-4">
+                                            <div className="bg-primary/90 backdrop-blur-sm px-3 py-1 rounded-md">
+                                                <span className="font-mono text-sm font-semibold text-primary-foreground">
+                                                    {(index + 1).toString().padStart(3, '0')}
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <div className="absolute bottom-0 left-0 w-full p-6 md:p-8">
+                                            <h3 className="font-bold text-xl md:text-3xl text-white uppercase leading-tight mb-2 drop-shadow-md">
+                                                {slide.title}
+                                            </h3>
+                                            <p className="font-mono text-sm font-semibold text-primary-300 uppercase">
+                                                {slide.meta}
+                                            </p>
                                         </div>
                                     </div>
-
-                                    <div className="absolute bottom-0 left-0 w-full p-4 md:p-8 bg-gradient-to-t from-black-pure/90 via-black-pure/40 to-transparent">
-                                        <h3 className="font-bold text-xl md:text-4xl text-white-pure uppercase leading-tight mb-1">
-                                            {slide.title}
-                                        </h3>
-                                        <p className="font-mono text-[10px] md:text-xs font-black text-primary-500 uppercase">
-                                            {slide.meta}
-                                        </p>
-                                    </div>
                                 </div>
-                            </div>
-                        )
-                    })}
+                            )
+                        })}
+                    </div>
                 </div>
-            </div>
 
-            <div className="h-2 w-full bg-neutral-200 border-t border-black-pure">
-                <div
-                    className="h-full bg-primary-500 transition-all duration-300"
-                    style={{ width: `${progress}%` }}
-                />
+                <div className="mt-8 h-2 w-full bg-muted rounded-full overflow-hidden">
+                    <div
+                        className="h-full bg-primary transition-all duration-300 rounded-full"
+                        style={{ width: `${progress}%` }}
+                    />
+                </div>
+
+                <div className="flex justify-center gap-2 mt-4">
+                    {slides.map((_, index) => (
+                        <button
+                            key={index}
+                            onClick={() => emblaApi?.scrollTo(index)}
+                            className={`w-2 h-2 rounded-full transition-all duration-300 ${Math.abs(progress - ((index + 1) / slides.length) * 100) < 5
+                                    ? 'bg-primary w-8'
+                                    : 'bg-muted-foreground/30 hover:bg-muted-foreground/50'
+                                }`}
+                            aria-label={`Go to slide ${index + 1}`}
+                        />
+                    ))}
+                </div>
             </div>
         </section>
     )

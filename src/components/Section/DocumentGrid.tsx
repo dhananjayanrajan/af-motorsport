@@ -1,5 +1,4 @@
-'use client'
-
+"use client"
 import { Media } from '@/payload-types'
 import { Download, FileText } from 'lucide-react'
 import React, { useState } from 'react'
@@ -30,7 +29,6 @@ const DocumentGrid: React.FC<DocumentGridProps> = ({ id, title, documents }) => 
         if (!url) return
 
         setDownloadingId(doc.id)
-
         const link = document.createElement('a')
         link.href = url
         link.setAttribute('download', doc.title)
@@ -47,106 +45,109 @@ const DocumentGrid: React.FC<DocumentGridProps> = ({ id, title, documents }) => 
     if (!documents || documents.length === 0) return null
 
     return (
-        <section className="relative w-full bg-white-pure flex flex-col border-b-2 border-black-pure">
-            <SectionHeader
-                title={title}
-                subtitle={id}
-                variant={3}
-            />
+        <section className="relative w-full bg-background flex flex-col py-16 md:py-24 border-b border-border">
+            <div className="container mx-auto px-4">
+                <SectionHeader title={title} subtitle={id} variant={3} />
 
-            <div className="flex h-12 bg-black-pure border-b-2 border-black-pure px-6 items-center">
-                <span className="font-mono text-[10px] font-black text-primary-500 uppercase tracking-widest">
-                    STORAGE_NODE // {documents.length.toString().padStart(3, '0')}_ASSETS_AVAILABLE
-                </span>
-            </div>
+                <div className="mt-8 mb-12 flex items-center">
+                    <span className="font-mono text-sm font-semibold text-primary uppercase tracking-wider">
+                        Storage Node // {documents.length.toString().padStart(3, '0')} Assets Available
+                    </span>
+                </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 divide-x-2 divide-y-2 divide-black-pure border-b-2 border-black-pure">
-                {documents.map((doc, index) => {
-                    const isDownloading = downloadingId === doc.id
-                    const fileData = typeof doc.file === 'object' ? doc.file : null
-                    const fileSize = fileData?.filesize ? (fileData.filesize / 1024 / 1024).toFixed(2) : '0.00'
-                    const fileExt = fileData?.mimeType?.split('/')[1]?.toUpperCase() || 'PDF'
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                    {documents.map((doc, index) => {
+                        const isDownloading = downloadingId === doc.id
+                        const fileData = typeof doc.file === 'object' ? doc.file : null
+                        const fileSize = fileData?.filesize ? (fileData.filesize / 1024 / 1024).toFixed(2) : '0.00'
+                        const fileExt = fileData?.mimeType?.split('/')[1]?.toUpperCase() || 'PDF'
 
-                    return (
-                        <div
-                            key={doc.id}
-                            className="group relative flex flex-col p-8 md:p-12 min-h-[420px] bg-white-pure hover:bg-neutral-50 transition-colors duration-300"
-                        >
-                            <div className="flex justify-between items-start mb-12">
-                                <div className="flex flex-col gap-1">
-                                    <span className="font-mono text-[10px] font-black text-primary-500 uppercase tracking-widest italic">
-                                        // {doc.category || 'ASSET_TYPE'}
-                                    </span>
-                                    <span className="font-mono text-[10px] font-black text-black-pure/20">
-                                        REF_{(index + 1).toString().padStart(3, '0')}
-                                    </span>
-                                </div>
-                                <div className="w-14 h-14 border-2 border-black-pure flex items-center justify-center bg-white-pure group-hover:bg-black-pure group-hover:text-white-pure transition-all duration-300 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] group-hover:shadow-none group-hover:translate-x-1 group-hover:translate-y-1">
-                                    <FileText className="w-6 h-6" />
-                                </div>
-                            </div>
-
-                            <div className="flex-1">
-                                <h3 className="font-bold text-2xl md:text-3xl text-black-pure uppercase leading-[0.9] tracking-tighter mb-6 group-hover:text-primary-500 transition-colors italic">
-                                    {doc.title}
-                                </h3>
-
-                                <div className="flex flex-wrap gap-2">
-                                    <div className="bg-black-pure px-3 py-1 border-2 border-black-pure">
-                                        <span className="text-[10px] font-black text-white-pure uppercase font-mono tracking-tighter">
-                                            {fileExt}
+                        return (
+                            <div
+                                key={doc.id}
+                                className="group relative flex flex-col p-8 md:p-12 min-h-[420px] bg-card border border-border rounded-lg hover:bg-accent/50 transition-colors duration-300 shadow-sm hover:shadow-md"
+                            >
+                                <div className="flex justify-between items-start mb-12">
+                                    <div className="flex flex-col gap-1">
+                                        <span className="font-mono text-sm font-semibold text-primary uppercase tracking-wider italic">
+                                            {doc.category || 'Asset Type'}
+                                        </span>
+                                        <span className="font-mono text-sm font-semibold text-muted-foreground/30">
+                                            Ref {(index + 1).toString().padStart(3, '0')}
                                         </span>
                                     </div>
-                                    <div className="bg-white-pure px-3 py-1 border-2 border-black-pure">
-                                        <span className="text-[10px] font-black text-black-pure uppercase font-mono tracking-tighter">
-                                            {fileSize} MB
-                                        </span>
+
+                                    <div className="w-14 h-14 border-2 border-foreground flex items-center justify-center bg-card group-hover:bg-foreground group-hover:text-background transition-all duration-300 shadow-sm rounded-full">
+                                        <FileText className="w-6 h-6" />
                                     </div>
-                                    {doc.version && (
-                                        <div className="bg-primary-500 px-3 py-1 border-2 border-black-pure">
-                                            <span className="text-[10px] font-black text-black-pure uppercase font-mono tracking-tighter">
-                                                V_{doc.version}
+                                </div>
+
+                                <div className="flex-1">
+                                    <h3 className="font-bold text-2xl md:text-3xl text-foreground uppercase leading-[0.9] tracking-tighter mb-6 group-hover:text-primary transition-colors italic">
+                                        {doc.title}
+                                    </h3>
+
+                                    <div className="flex flex-wrap gap-2">
+                                        <div className="bg-foreground px-3 py-1 border border-foreground rounded-md">
+                                            <span className="text-sm font-semibold text-background uppercase font-mono tracking-tighter">
+                                                {fileExt}
                                             </span>
                                         </div>
-                                    )}
-                                </div>
-                            </div>
-
-                            <div className="mt-12">
-                                <button
-                                    onClick={() => handleDownload(doc)}
-                                    disabled={isDownloading}
-                                    className="w-full flex items-center justify-between py-4 border-t-2 border-black-pure group/btn"
-                                >
-                                    <span className="font-mono text-xs font-black uppercase text-black-pure group-hover/btn:text-primary-500 transition-colors">
-                                        {isDownloading ? 'EXECUTE_TRANSFER...' : 'PULL_FROM_SERVER'}
-                                    </span>
-                                    <div className="relative overflow-hidden w-6 h-6">
-                                        {isDownloading ? (
-                                            <div className="w-full h-full border-2 border-primary-500 border-t-transparent rounded-full animate-spin" />
-                                        ) : (
-                                            <Download className="w-full h-full group-hover/btn:translate-y-1 transition-transform" />
+                                        <div className="bg-card px-3 py-1 border border-border rounded-md">
+                                            <span className="text-sm font-semibold text-foreground uppercase font-mono tracking-tighter">
+                                                {fileSize} MB
+                                            </span>
+                                        </div>
+                                        {doc.version && (
+                                            <div className="bg-primary px-3 py-1 border border-primary rounded-md">
+                                                <span className="text-sm font-semibold text-primary-foreground uppercase font-mono tracking-tighter">
+                                                    V_{doc.version}
+                                                </span>
+                                            </div>
                                         )}
                                     </div>
-                                </button>
-                            </div>
+                                </div>
 
-                            <div className="absolute top-0 right-0 w-20 h-20 pointer-events-none opacity-0 group-hover:opacity-10 transition-opacity">
-                                <div className="absolute top-4 right-4 w-12 h-12 border-t-4 border-r-4 border-black-pure" />
+                                <div className="mt-12">
+                                    <button
+                                        onClick={() => handleDownload(doc)}
+                                        disabled={isDownloading}
+                                        className="w-full flex items-center justify-between py-4 border-t border-border group/btn"
+                                    >
+                                        <span className="font-mono text-sm font-semibold uppercase text-foreground group-hover/btn:text-primary transition-colors">
+                                            {isDownloading ? 'Processing...' : 'Download'}
+                                        </span>
+                                        <div className="relative overflow-hidden w-6 h-6">
+                                            {isDownloading ? (
+                                                <div className="w-full h-full border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                                            ) : (
+                                                <Download className="w-full h-full group-hover/btn:translate-y-1 transition-transform" />
+                                            )}
+                                        </div>
+                                    </button>
+                                </div>
+
+                                <div className="absolute top-0 right-0 w-20 h-20 pointer-events-none opacity-0 group-hover:opacity-10 transition-opacity">
+                                    <div className="absolute top-4 right-4 w-12 h-12 border-t-4 border-r-4 border-foreground rounded-tr-lg" />
+                                </div>
                             </div>
-                        </div>
-                    )
-                })}
+                        )
+                    })}
+                </div>
+
+                <div className="mt-16 flex justify-center">
+                    <SectionCTA
+                        label="Full Document Registry"
+                        path={`/archive/${id}`}
+                        variant={2}
+                        infoLabel="Access Files"
+                    />
+                </div>
+
+                <div className="mt-16">
+                    <SectionFooter variant={2} />
+                </div>
             </div>
-
-            <SectionCTA
-                label="Full Document Registry"
-                path={`/archive/${id}`}
-                variant={2}
-                infoLabel="ACCESS_FILES"
-            />
-
-            <SectionFooter variant={2} />
         </section>
     )
 }

@@ -1,5 +1,4 @@
 "use client"
-
 import React, { useEffect, useRef } from 'react'
 
 interface GridBaseProps {
@@ -75,7 +74,7 @@ const GridBase: React.FC<GridBaseProps> = ({
             const cols = columnCount
             const colWidth = width / cols
 
-            ctx.strokeStyle = 'rgb(25, 25, 25)'
+            ctx.strokeStyle = 'rgba(0, 0, 0, 0.1)'
             ctx.lineWidth = 0.5
             ctx.globalAlpha = opacity
 

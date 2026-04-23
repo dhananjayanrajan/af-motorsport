@@ -1,5 +1,4 @@
-'use client'
-
+"use client"
 import { Media } from '@/payload-types'
 import Image from 'next/image'
 import React, { KeyboardEvent, useEffect, useRef, useState } from 'react'
@@ -23,9 +22,9 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     video,
     poster,
     tags,
-    playLabel = 'PLAY',
-    liveLabel = 'LIVE',
-    pausedLabel = 'PAUSED',
+    playLabel = 'Play',
+    liveLabel = 'Live',
+    pausedLabel = 'Paused',
 }) => {
     const videoRef = useRef<HTMLVideoElement>(null)
     const [isPlaying, setIsPlaying] = useState(false)
@@ -42,6 +41,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
                 togglePlay()
             }
         }
+
         window.addEventListener('keydown', handleKeyDown as any)
         return () => window.removeEventListener('keydown', handleKeyDown as any)
     }, [isPlaying])
@@ -77,24 +77,25 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     }
 
     return (
-        <section className="relative w-full min-h-screen bg-black-pure flex flex-col overflow-hidden">
-            <div className="flex h-16 border-b border-neutral-800 items-center px-4 md:px-6 justify-between bg-black-pure z-30 sticky top-0">
+        <section className="relative w-full min-h-screen bg-foreground flex flex-col overflow-hidden">
+            <div className="flex h-16 border-b border-neutral-800 items-center px-4 md:px-6 justify-between bg-foreground z-30 sticky top-0">
                 <div className="flex items-center gap-3 md:gap-4">
-                    <span className="text-[10px] md:text-xs font-bold tracking-wider text-primary-500 font-mono">
+                    <span className="text-sm md:text-base font-bold tracking-wider text-primary font-mono">
                         {id}
                     </span>
                     <div className="h-3 w-px bg-neutral-800" />
                     <div className="flex gap-2 md:gap-3">
                         {tags.map((tag, i) => (
-                            <span key={i} className="text-[8px] md:text-[10px] text-neutral-500 uppercase tracking-wide font-mono">
+                            <span key={i} className="text-sm md:text-base text-neutral-500 uppercase tracking-wide font-mono">
                                 {tag}
                             </span>
                         ))}
                     </div>
                 </div>
+
                 <div className="flex items-center gap-3">
                     <div className={`w-2 h-2 rounded-full ${isPlaying ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`} />
-                    <span className="text-[8px] md:text-[10px] text-neutral-500 font-mono uppercase">
+                    <span className="text-sm md:text-base text-neutral-500 font-mono uppercase">
                         {isPlaying ? liveLabel : pausedLabel}
                     </span>
                 </div>
@@ -131,33 +132,33 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
                             fill
                             className="object-cover"
                         />
-                        <div className="absolute inset-0 bg-black-pure/40 flex items-center justify-center">
-                            <span className="text-white-pure text-base md:text-lg font-mono">Video unavailable</span>
+                        <div className="absolute inset-0 bg-foreground/40 flex items-center justify-center">
+                            <span className="text-background text-base md:text-lg font-mono">Video unavailable</span>
                         </div>
                     </div>
                 )}
 
-                <div className="absolute inset-0 bg-gradient-to-t from-black-pure via-black-pure/20 to-transparent pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-t from-foreground via-foreground/20 to-transparent pointer-events-none" />
 
                 <div className="absolute bottom-0 left-0 w-full p-6 md:p-10 lg:p-16 z-30 pointer-events-none">
                     <div className="max-w-3xl">
-                        <p className="text-primary-500 text-xs md:text-sm font-bold mb-3 md:mb-4 tracking-wider">
+                        <p className="text-primary text-sm md:text-lg font-bold mb-3 md:mb-4 tracking-wider">
                             {meta}
                         </p>
-                        <h1 className="font-race text-3xl sm:text-4xl md:text-5xl lg:text-5xl xl:text-5xl text-white-pure uppercase leading-[0.9] drop-shadow-2xl">
+                        <h1 className="font-race text-3xl sm:text-4xl md:text-5xl lg:text-5xl xl:text-5xl text-background uppercase leading-[0.9] drop-shadow-2xl">
                             {title}
                         </h1>
                     </div>
                 </div>
 
                 {!isPlaying && (
-                    <div className="absolute inset-0 flex items-center justify-center z-40 bg-black-pure/60 backdrop-blur-sm transition-all duration-500 group">
+                    <div className="absolute inset-0 flex items-center justify-center z-40 bg-foreground/60 backdrop-blur-sm transition-all duration-500 group">
                         <button
                             onClick={togglePlay}
-                            className="bg-primary-500 text-black-pure px-6 md:px-10 py-3 md:py-5 border-2 border-black-pure text-xs md:text-sm font-black uppercase tracking-wider hover:scale-110 focus:scale-110 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus:ring-offset-black-pure transition-transform duration-300 cursor-pointer flex items-center gap-3"
+                            className="bg-primary text-primary-foreground px-6 md:px-10 py-3 md:py-5 border-2 border-foreground text-sm md:text-lg font-bold uppercase tracking-wider hover:scale-110 focus:scale-110 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-foreground transition-transform duration-300 cursor-pointer flex items-center gap-3 rounded-md"
                             aria-label={playLabel}
                         >
-                            <svg className="w-4 h-4 md:w-5 md:h-5" fill="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-5 h-5 md:w-6 md:h-6" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M8 5v14l11-7z" />
                             </svg>
                             {playLabel}
@@ -167,7 +168,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
 
                 <div className="absolute bottom-0 left-0 w-full h-1 bg-neutral-800">
                     <div
-                        className="h-full bg-primary-500 transition-all duration-300"
+                        className="h-full bg-primary transition-all duration-300"
                         style={{ width: `${progress}%` }}
                         role="progressbar"
                         aria-valuenow={progress}
@@ -177,8 +178,8 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
                 </div>
 
                 <div className="absolute top-4 right-4 md:top-6 md:right-6 flex gap-2 z-30">
-                    <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-black-pure/50 backdrop-blur-sm flex items-center justify-center border border-white-pure/20">
-                        <svg className="w-4 h-4 text-white-pure" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-foreground/50 backdrop-blur-sm flex items-center justify-center border border-white/20">
+                        <svg className="w-5 h-5 text-background" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
                         </svg>
                     </div>

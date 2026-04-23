@@ -1,5 +1,4 @@
-'use client'
-
+"use client"
 import { Media } from '@/payload-types'
 import useEmblaCarousel from 'embla-carousel-react'
 import { ChevronRight } from 'lucide-react'
@@ -23,8 +22,14 @@ interface CardCarouselProps {
     exploreLabel?: string
 }
 
-const CardCarousel: React.FC<CardCarouselProps> = ({ cards, sectionTitle, exploreLabel = 'EXPLORE' }) => {
+const CardCarousel: React.FC<CardCarouselProps> = ({
+    cards,
+    sectionTitle,
+    exploreLabel = 'Explore'
+}) => {
     const [progress, setProgress] = useState(0)
+    const [isHovered, setIsHovered] = useState(false)
+
     const [emblaRef, emblaApi] = useEmblaCarousel({
         loop: true,
         align: 'start',
@@ -36,12 +41,15 @@ const CardCarousel: React.FC<CardCarouselProps> = ({ cards, sectionTitle, explor
 
     useEffect(() => {
         if (!emblaApi) return
+
         const onSelect = () => {
             const progressValue = ((emblaApi.selectedScrollSnap() + 1) / emblaApi.scrollSnapList().length) * 100
             setProgress(progressValue)
         }
+
         emblaApi.on('select', onSelect)
         onSelect()
+
         return () => {
             emblaApi.off('select', onSelect)
         }
@@ -52,110 +60,132 @@ const CardCarousel: React.FC<CardCarouselProps> = ({ cards, sectionTitle, explor
     }
 
     return (
-        <section className="relative w-full bg-white-pure flex flex-col overflow-hidden border-b border-black-pure">
-            <div className="flex h-16 md:h-20 border-b border-black-pure divide-x divide-black-pure bg-white-pure z-30">
-                <div className="w-16 md:w-20 flex items-center justify-center bg-black-pure group hover:bg-primary-500 transition-colors duration-300">
-                    <div className="w-3 h-3 md:w-4 md:h-4 bg-primary-500 group-hover:bg-black-pure rounded-sm rotate-45 group-hover:rotate-90 transition-all duration-500" />
-                </div>
-                <div className="flex-1 flex items-center px-4 md:px-8">
-                    <h2 className="font-mono text-[10px] md:text-xs font-black tracking-wider uppercase text-neutral-400">
+        <section
+            className="relative w-full bg-background flex flex-col overflow-hidden py-16 md:py-24 border-b border-border"
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+        >
+            <div className="container mx-auto px-4">
+                <div className="flex items-center justify-between mb-12">
+                    <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-foreground uppercase tracking-tight">
                         {sectionTitle}
                     </h2>
-                </div>
-                <div className="flex bg-white-pure">
-                    <button
-                        onClick={scrollPrev}
-                        className="w-12 md:w-16 lg:w-20 flex items-center justify-center hover:bg-primary-500 border-l border-black-pure transition-all duration-300 group"
-                        aria-label="Previous slide"
-                    >
-                        <span className="font-mono text-xs md:text-sm font-black group-hover:scale-110 transition-transform">◀</span>
-                    </button>
-                    <button
-                        onClick={scrollNext}
-                        className="w-12 md:w-16 lg:w-20 flex items-center justify-center hover:bg-primary-500 border-l border-black-pure transition-all duration-300 group"
-                        aria-label="Next slide"
-                    >
-                        <span className="font-mono text-xs md:text-sm font-black group-hover:scale-110 transition-transform">▶</span>
-                    </button>
-                </div>
-            </div>
 
-            <div className="overflow-hidden" ref={emblaRef}>
-                <div className="flex">
-                    {cards.map((card, index) => {
-                        const placeholderId = `${card.id}-${index}`
-                        const src = typeof card.image === 'string'
-                            ? card.image
-                            : card.image?.url || `https://picsum.photos/seed/${placeholderId}/600/800`
+                    <div className="flex items-center gap-2">
+                        <button
+                            onClick={scrollPrev}
+                            className="w-12 h-12 flex items-center justify-center border border-border rounded-full hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-300 group"
+                            aria-label="Previous slide"
+                        >
+                            <svg className="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                            </svg>
+                        </button>
+                        <button
+                            onClick={scrollNext}
+                            className="w-12 h-12 flex items-center justify-center border border-border rounded-full hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-300 group"
+                            aria-label="Next slide"
+                        >
+                            <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
 
-                        return (
-                            <div
-                                key={card.id}
-                                className="flex-[0_0_100%] sm:flex-[0_0_50%] lg:flex-[0_0_33.33%] xl:flex-[0_0_25%] min-w-0 border-r border-black-pure bg-white-pure group relative"
-                            >
-                                <Link
-                                    href={card.href}
-                                    className="flex flex-col h-full"
+                <div className="overflow-hidden" ref={emblaRef}>
+                    <div className="flex">
+                        {cards.map((card, index) => {
+                            const placeholderId = `${card.id}-${index}`
+                            const src = typeof card.image === 'string'
+                                ? card.image
+                                : card.image?.url || `https://picsum.photos/seed/${placeholderId}/600/800`
+
+                            return (
+                                <div
+                                    key={card.id}
+                                    className="flex-[0_0_100%] sm:flex-[0_0_50%] lg:flex-[0_0_33.33%] xl:flex-[0_0_25%] min-w-0 border-r border-border last:border-r-0 bg-card group relative px-2"
                                 >
-                                    <div className="relative aspect-[4/5] w-full border-b border-black-pure overflow-hidden">
-                                        <Image
-                                            src={src}
-                                            alt={card.title}
-                                            fill
-                                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                                            className="object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700"
-                                        />
-                                        <div className="absolute inset-0 bg-black-pure/10 group-hover:bg-transparent transition-colors duration-500" />
-                                        <div className="absolute top-0 left-0 bg-black-pure text-white-pure px-3 py-1 font-mono text-[9px] font-black uppercase">
-                                            {card.category}
-                                        </div>
-                                    </div>
+                                    <Link
+                                        href={card.href}
+                                        className="flex flex-col h-full border border-border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-300"
+                                    >
+                                        <div className="relative aspect-[4/5] w-full overflow-hidden">
+                                            <Image
+                                                src={src}
+                                                alt={card.title}
+                                                fill
+                                                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                                                className="object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700"
+                                            />
+                                            <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-500" />
 
-                                    <div className="p-5 md:p-8 flex flex-col justify-between flex-grow">
-                                        <div>
-                                            <span className="font-mono text-[9px] font-black text-primary-500 uppercase block mb-2 tracking-widest">
-                                                {card.label}
-                                            </span>
-                                            <h3 className="font-bold text-xl md:text-2xl text-black-pure uppercase leading-tight group-hover:text-primary-500 transition-colors duration-300">
-                                                {card.title}
-                                            </h3>
+                                            <div className="absolute top-4 left-4 bg-foreground/90 backdrop-blur-sm text-background px-3 py-1 font-mono text-sm font-semibold uppercase rounded-md">
+                                                {card.category}
+                                            </div>
                                         </div>
 
-                                        <div className="mt-8">
-                                            {card.stats && card.stats.length > 0 && (
-                                                <div className="grid grid-cols-2 gap-4 border-t border-black-pure pt-4 mb-6">
-                                                    {card.stats.map((stat, sIdx) => (
-                                                        <div key={sIdx}>
-                                                            <p className="font-mono text-[8px] text-neutral-400 uppercase">{stat.label}</p>
-                                                            <p className="font-mono text-[10px] font-black text-black-pure">{stat.value}</p>
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                            )}
-                                            <div className="flex items-center justify-between">
-                                                <span className="font-mono text-[10px] font-black uppercase tracking-widest">{exploreLabel}</span>
-                                                <div className="w-8 h-8 bg-black-pure flex items-center justify-center text-white-pure group-hover:bg-primary-500 group-hover:text-black-pure transition-all duration-300">
-                                                    <ChevronRight className="w-4 h-4" />
+                                        <div className="p-6 md:p-8 flex flex-col justify-between flex-grow">
+                                            <div>
+                                                <span className="font-mono text-sm font-semibold text-primary uppercase block mb-2 tracking-wider">
+                                                    {card.label}
+                                                </span>
+                                                <h3 className="font-bold text-xl md:text-2xl text-foreground uppercase leading-tight group-hover:text-primary transition-colors duration-300">
+                                                    {card.title}
+                                                </h3>
+                                            </div>
+
+                                            <div className="mt-8">
+                                                {card.stats && card.stats.length > 0 && (
+                                                    <div className="grid grid-cols-2 gap-4 border-t border-border pt-4 mb-6">
+                                                        {card.stats.map((stat, sIdx) => (
+                                                            <div key={sIdx}>
+                                                                <p className="font-mono text-xs text-muted-foreground uppercase">{stat.label}</p>
+                                                                <p className="font-mono text-sm font-semibold text-foreground">{stat.value}</p>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                )}
+
+                                                <div className="flex items-center justify-between">
+                                                    <span className="font-mono text-sm font-semibold uppercase tracking-wider">{exploreLabel}</span>
+                                                    <div className="w-10 h-10 bg-foreground flex items-center justify-center text-background group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300 rounded-full">
+                                                        <ChevronRight className="w-5 h-5" />
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
+                                    </Link>
+
+                                    <div className="absolute top-4 right-4 w-8 h-8 bg-foreground text-background flex items-center justify-center font-mono text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none rounded-full">
+                                        {(index + 1).toString().padStart(2, '0')}
                                     </div>
-                                </Link>
-
-                                <div className="absolute top-0 right-0 w-8 h-8 bg-black-pure text-white-pure flex items-center justify-center font-mono text-[10px] opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-                                    {(index + 1).toString().padStart(2, '0')}
                                 </div>
-                            </div>
-                        )
-                    })}
+                            )
+                        })}
+                    </div>
                 </div>
-            </div>
 
-            <div className="h-1.5 w-full bg-neutral-100 border-t border-black-pure">
-                <div
-                    className="h-full bg-primary-500 transition-all duration-300"
-                    style={{ width: `${progress}%` }}
-                />
+                <div className="mt-8 h-1.5 w-full bg-muted rounded-full overflow-hidden">
+                    <div
+                        className="h-full bg-primary transition-all duration-300 rounded-full"
+                        style={{ width: `${progress}%` }}
+                    />
+                </div>
+
+                <div className="flex justify-center gap-2 mt-4">
+                    {cards.map((_, index) => (
+                        <button
+                            key={index}
+                            onClick={() => emblaApi?.scrollTo(index)}
+                            className={`w-2 h-2 rounded-full transition-all duration-300 ${Math.abs(progress - ((index + 1) / cards.length) * 100) < 5
+                                    ? 'bg-primary w-8'
+                                    : 'bg-muted-foreground/30 hover:bg-muted-foreground/50'
+                                }`}
+                            aria-label={`Go to slide ${index + 1}`}
+                        />
+                    ))}
+                </div>
             </div>
         </section>
     )

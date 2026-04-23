@@ -1,5 +1,4 @@
-'use client'
-
+"use client"
 import { Media } from '@/payload-types'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -35,6 +34,7 @@ const DirectoryGrid: React.FC<DirectoryGridProps> = ({
         square: 'aspect-square',
         landscape: 'aspect-[16/9]'
     }
+
     const [visibleItems, setVisibleItems] = useState<Set<number>>(new Set())
     const itemRefs = useRef<(HTMLDivElement | null)[]>([])
 
@@ -69,108 +69,108 @@ const DirectoryGrid: React.FC<DirectoryGridProps> = ({
     if (!items || items.length === 0) return null
 
     return (
-        <section className="relative w-full bg-white-pure flex flex-col border-b-2 border-black-pure">
-            <SectionHeader
-                title={title}
-                subtitle={id}
-                variant={2}
-            />
+        <section className="relative w-full bg-background flex flex-col py-16 md:py-24 border-b border-border">
+            <div className="container mx-auto px-4">
+                <SectionHeader title={title} subtitle={id} variant={2} />
 
-            <div className="flex h-12 bg-black-pure border-b-2 border-black-pure px-6 items-center justify-between">
-                <span className="font-mono text-[10px] font-black text-white-pure uppercase tracking-widest">
-                    DIRECTORY_FLUX // {items.length.toString().padStart(3, '0')}_NODES_DETECTED
-                </span>
-                <div className="flex items-center gap-4">
-                    <span className="font-mono text-[10px] font-black text-primary-500 uppercase italic">
-                        LAYOUT: {variant.toUpperCase()}
+                <div className="mt-8 mb-12 flex h-12 bg-foreground border-b border-border px-6 items-center justify-between rounded-t-lg">
+                    <span className="font-mono text-sm font-semibold text-background uppercase tracking-wider">
+                        Directory Flux // {items.length.toString().padStart(3, '0')} Nodes Detected
                     </span>
+                    <div className="flex items-center gap-4">
+                        <span className="font-mono text-sm font-semibold text-primary uppercase italic">
+                            Layout: {variant.toUpperCase()}
+                        </span>
+                    </div>
                 </div>
-            </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 divide-x-2 divide-y-2 divide-black-pure border-b-2 border-black-pure bg-black-pure">
-                {items.map((item, index) => {
-                    const src = typeof item.image === 'object' ? item.image?.url : item.image || ''
-                    const Wrapper = item.href ? Link : 'div'
-                    const isVisible = visibleItems.has(index)
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                    {items.map((item, index) => {
+                        const src = typeof item.image === 'object' ? item.image?.url : item.image || ''
+                        const Wrapper = item.href ? Link : 'div'
+                        const isVisible = visibleItems.has(index)
 
-                    return (
-                        <Wrapper
-                            key={item.id}
-                            href={item.href as string}
-                            className={`flex flex-col group bg-white-pure hover:bg-neutral-50 transition-all duration-500 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-12 opacity-0'
-                                }`}
-                        >
-                            <div
-                                ref={(el) => setRef(el as HTMLDivElement, index)}
-                                className={`relative w-full overflow-hidden border-b-2 border-black-pure ${aspectRatio[variant]}`}
+                        return (
+                            <Wrapper
+                                key={item.id}
+                                href={item.href as string}
+                                className={`flex flex-col group bg-card hover:bg-accent/50 transition-all duration-500 transform rounded-lg overflow-hidden border border-border shadow-sm hover:shadow-md ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-12 opacity-0'
+                                    }`}
                             >
-                                <Image
-                                    src={src as string}
-                                    alt={item.title}
-                                    fill
-                                    className="object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105"
-                                />
+                                <div
+                                    ref={(el) => setRef(el as HTMLDivElement, index)}
+                                    className={`relative w-full overflow-hidden border-b-2 border-border ${aspectRatio[variant]}`}
+                                >
+                                    <Image
+                                        src={src as string}
+                                        alt={item.title}
+                                        fill
+                                        className="object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105"
+                                    />
 
-                                {item.label && (
-                                    <div className="absolute top-0 left-0 p-4">
-                                        <div className="bg-primary-500 border-2 border-black-pure px-3 py-1 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-                                            <span className="font-mono text-[10px] font-black text-black-pure uppercase tracking-tighter">
-                                                {item.label}
-                                            </span>
+                                    {item.label && (
+                                        <div className="absolute top-4 left-4">
+                                            <div className="bg-primary border-2 border-foreground px-3 py-1 shadow-sm rounded-md">
+                                                <span className="font-mono text-sm font-semibold text-primary-foreground uppercase tracking-tighter">
+                                                    {item.label}
+                                                </span>
+                                            </div>
                                         </div>
+                                    )}
+
+                                    <div className="absolute top-4 right-4">
+                                        <span className="font-mono text-sm font-semibold text-background mix-blend-difference opacity-60">
+                                            Ref {(index + 1).toString().padStart(3, '0')}
+                                        </span>
                                     </div>
-                                )}
 
-                                <div className="absolute top-0 right-0 p-4">
-                                    <span className="font-mono text-[10px] font-black text-white-pure mix-blend-difference opacity-50">
-                                        REF_{(index + 1).toString().padStart(3, '0')}
-                                    </span>
-                                </div>
-
-                                {item.href && (
-                                    <div className="absolute bottom-4 right-4 translate-y-12 group-hover:translate-y-0 transition-transform duration-300">
-                                        <div className="bg-black-pure text-primary-500 w-12 h-12 flex items-center justify-center border-2 border-primary-500 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-                                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                                            </svg>
+                                    {item.href && (
+                                        <div className="absolute bottom-4 right-4 translate-y-12 group-hover:translate-y-0 transition-transform duration-300">
+                                            <div className="bg-foreground text-primary w-12 h-12 flex items-center justify-center border-2 border-primary shadow-sm rounded-full">
+                                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                                </svg>
+                                            </div>
                                         </div>
-                                    </div>
-                                )}
-                            </div>
-
-                            <div className="p-8 md:p-10 flex flex-col flex-1">
-                                <div className="mb-8">
-                                    <h3 className="font-bold text-2xl md:text-3xl text-black-pure uppercase leading-[0.9] tracking-tighter italic group-hover:text-primary-500 transition-colors">
-                                        {item.title}
-                                    </h3>
-                                    {item.subtitle && (
-                                        <p className="font-mono text-[10px] font-black text-neutral-400 uppercase mt-2 tracking-widest pl-1">
-                                            // {item.subtitle}
-                                        </p>
                                     )}
                                 </div>
 
-                                {item.metadata && (
-                                    <div className="mt-auto pt-8 border-t-2 border-black-pure/10 flex flex-col gap-2">
-                                        {item.metadata.map((meta, mIdx) => (
-                                            <div key={mIdx} className="flex justify-between items-end border-b border-black-pure/5 pb-1">
-                                                <span className="font-mono text-[8px] text-neutral-300 font-black uppercase tracking-widest">
-                                                    {meta.label}
-                                                </span>
-                                                <span className="text-[10px] text-black-pure font-black uppercase italic tracking-tighter">
-                                                    {meta.value}
-                                                </span>
-                                            </div>
-                                        ))}
+                                <div className="p-8 md:p-10 flex flex-col flex-1">
+                                    <div className="mb-8">
+                                        <h3 className="font-bold text-2xl md:text-3xl text-foreground uppercase leading-[0.9] tracking-tighter italic group-hover:text-primary transition-colors">
+                                            {item.title}
+                                        </h3>
+                                        {item.subtitle && (
+                                            <p className="font-mono text-sm font-semibold text-muted-foreground uppercase mt-2 tracking-wider pl-1">
+                                                {item.subtitle}
+                                            </p>
+                                        )}
                                     </div>
-                                )}
-                            </div>
-                        </Wrapper>
-                    )
-                })}
-            </div>
 
-            <SectionFooter variant={3} />
+                                    {item.metadata && (
+                                        <div className="mt-auto pt-8 border-t-2 border-border/10 flex flex-col gap-2">
+                                            {item.metadata.map((meta, mIdx) => (
+                                                <div key={mIdx} className="flex justify-between items-end border-b border-border/5 pb-1">
+                                                    <span className="font-mono text-xs text-muted-foreground font-semibold uppercase tracking-wider">
+                                                        {meta.label}
+                                                    </span>
+                                                    <span className="text-sm text-foreground font-semibold uppercase italic tracking-tighter">
+                                                        {meta.value}
+                                                    </span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+                            </Wrapper>
+                        )
+                    })}
+                </div>
+
+                <div className="mt-16">
+                    <SectionFooter variant={3} />
+                </div>
+            </div>
         </section>
     )
 }

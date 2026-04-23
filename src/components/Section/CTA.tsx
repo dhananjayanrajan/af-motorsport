@@ -1,5 +1,4 @@
 "use client"
-
 import React from 'react'
 
 interface SectionCTAProps {
@@ -20,8 +19,8 @@ const SectionCTA: React.FC<SectionCTAProps> = ({
     path,
     description,
     onClick,
-    buttonBgColor = "bg-black-pure",
-    buttonTextColor = "text-white-pure",
+    buttonBgColor = "bg-foreground",
+    buttonTextColor = "text-background",
     variant = 1,
     infoLabel = "",
     directoryLabel = "",
@@ -29,16 +28,18 @@ const SectionCTA: React.FC<SectionCTAProps> = ({
 }) => {
     if (variant === 2) {
         return (
-            <div className="mt-auto flex flex-col w-full border-t-2 border-black-pure">
+            <div className="mt-auto flex flex-col w-full border-t border-border">
                 <button
                     onClick={onClick}
-                    className="flex items-stretch group outline-none h-32"
+                    className="flex items-stretch group outline-none h-20 md:h-24 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300"
                 >
-                    <div className={`flex-1 ${buttonBgColor} ${buttonTextColor} flex items-center px-8 md:px-12 transition-colors duration-100 group-hover:bg-primary-500 group-hover:text-black-pure`}>
-                        <span className="font-black text-xl md:text-2xl uppercase tracking-normal truncate">{label}</span>
+                    <div className={`flex-1 ${buttonBgColor} ${buttonTextColor} flex items-center px-8 md:px-12 transition-colors duration-300 group-hover:bg-primary group-hover:text-primary-foreground`}>
+                        <span className="font-bold text-xl md:text-2xl uppercase tracking-wide truncate">{label}</span>
                     </div>
-                    <div className="w-32 bg-secondary-500 flex items-center justify-center group-hover:bg-black-pure group-hover:text-white-pure border-l-2 border-black-pure transition-colors duration-100 shrink-0">
-                        <div className="w-8 h-8 border-t-2 border-r-2 border-black-pure group-hover:border-white-pure rotate-45 -ml-2" />
+                    <div className="w-24 md:w-32 bg-secondary flex items-center justify-center group-hover:bg-foreground group-hover:text-background border-l border-border transition-colors duration-300 shrink-0">
+                        <svg className="w-6 h-6 transform group-hover:rotate-45 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                        </svg>
                     </div>
                 </button>
             </div>
@@ -47,11 +48,13 @@ const SectionCTA: React.FC<SectionCTAProps> = ({
 
     if (variant === 3) {
         return (
-            <div className="mt-auto p-8 border-t-2 border-black-pure bg-black-pure">
-                <p className="text-primary-500 font-mono text-xs mb-6 tracking-normal uppercase font-black">{proceedLabel || 'LOCATION'} // {path}</p>
+            <div className="mt-auto p-8 border-t border-border bg-foreground rounded-lg">
+                {proceedLabel && (
+                    <p className="text-primary font-mono text-sm mb-6 tracking-wide uppercase font-semibold">{proceedLabel} // {path}</p>
+                )}
                 <button
                     onClick={onClick}
-                    className="w-full border-2 border-white-pure py-6 px-8 text-white-pure font-black font-mono tracking-normal uppercase hover:bg-white-pure hover:text-black-pure focus:bg-primary-500 focus:text-black-pure focus:border-black-pure transition-colors duration-100 text-base outline-none"
+                    className="w-full border-2 border-background py-4 px-8 text-background font-bold font-mono tracking-wide uppercase hover:bg-background hover:text-foreground focus:bg-primary focus:text-primary-foreground focus:border-primary transition-colors duration-300 text-base outline-none rounded-md"
                 >
                     {label}
                 </button>
@@ -60,23 +63,26 @@ const SectionCTA: React.FC<SectionCTAProps> = ({
     }
 
     return (
-        <div className="mt-auto flex flex-col bg-white-pure border-t-2 border-black-pure">
+        <div className="mt-auto flex flex-col bg-card border border-border rounded-lg overflow-hidden shadow-sm">
             {description && (
-                <div className="p-8 border-b-2 border-black-pure">
-                    <p className="text-xs font-mono font-black uppercase tracking-normal text-secondary-500 mb-4">{infoLabel || 'DATA_POINT'}</p>
-                    <p className="text-sm font-mono font-black uppercase tracking-normal leading-tight text-black-pure border-l-8 border-primary-500 pl-6">
+                <div className="p-8 border-b border-border">
+                    {infoLabel && (
+                        <p className="text-sm font-semibold uppercase tracking-wide text-secondary mb-4">{infoLabel}</p>
+                    )}
+                    <p className="text-base font-medium uppercase leading-relaxed text-foreground border-l-4 border-primary pl-6">
                         {description}
                     </p>
                 </div>
             )}
+
             <div className="flex flex-col">
-                <div className="flex items-center justify-between px-8 h-12 bg-black-pure overflow-hidden">
-                    <span className="text-xs font-mono font-black uppercase text-white-pure/40 tracking-normal whitespace-nowrap">{directoryLabel || 'PATH'}</span>
-                    <span className="text-xs font-mono font-black uppercase text-primary-500 tracking-normal whitespace-nowrap ml-4">{path}</span>
+                <div className="flex items-center justify-between px-8 h-12 bg-muted/50 overflow-hidden">
+                    <span className="text-sm font-semibold uppercase text-muted-foreground tracking-wide whitespace-nowrap">{directoryLabel || 'Path'}</span>
+                    <span className="text-sm font-semibold uppercase text-primary tracking-wide whitespace-nowrap ml-4">{path}</span>
                 </div>
                 <button
                     onClick={onClick}
-                    className={`w-full h-24 ${buttonBgColor} ${buttonTextColor} font-mono text-base font-black uppercase tracking-normal hover:bg-primary-500 hover:text-black-pure focus:bg-secondary-500 focus:text-black-pure transition-colors duration-100 outline-none`}
+                    className={`w-full h-20 md:h-24 ${buttonBgColor} ${buttonTextColor} font-mono text-base font-bold uppercase tracking-wide hover:bg-primary hover:text-primary-foreground focus:bg-secondary focus:text-secondary-foreground transition-colors duration-300 outline-none`}
                 >
                     {label}
                 </button>

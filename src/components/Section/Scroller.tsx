@@ -1,5 +1,4 @@
-'use client'
-
+"use client"
 import React, { useEffect, useRef, useState } from 'react'
 
 interface SectionScrollerProps {
@@ -11,7 +10,7 @@ interface SectionScrollerProps {
 
 const SectionScroller: React.FC<SectionScrollerProps> = ({
     items,
-    delimiter = <span className="text-white-pure px-6 opacity-30">✦</span>,
+    delimiter = <span className="text-background px-6 opacity-30">•</span>,
     velocity = 30,
     variant = 1
 }) => {
@@ -36,26 +35,27 @@ const SectionScroller: React.FC<SectionScrollerProps> = ({
             const style = document.createElement('style')
             style.id = styleId
             style.innerHTML = `
-                @keyframes marquee_forward {
-                    0% { transform: translateX(0); }
-                    100% { transform: translateX(-50%); }
-                }
-                @keyframes marquee_reverse {
-                    0% { transform: translateX(-50%); }
-                    100% { transform: translateX(0); }
-                }
-                .animate-marquee-forward {
-                    animation: marquee_forward linear infinite;
-                }
-                .animate-marquee-backward {
-                    animation: marquee_reverse linear infinite;
-                }
-                .scroller-pause {
-                    animation-play-state: paused !important;
-                }
-            `
+        @keyframes marquee_forward {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+        @keyframes marquee_reverse {
+          0% { transform: translateX(-50%); }
+          100% { transform: translateX(0); }
+        }
+        .animate-marquee-forward {
+          animation: marquee_forward linear infinite;
+        }
+        .animate-marquee-backward {
+          animation: marquee_reverse linear infinite;
+        }
+        .scroller-pause {
+          animation-play-state: paused !important;
+        }
+      `
             document.head.appendChild(style)
         }
+
         return () => window.removeEventListener("scroll", handleScroll)
     }, [])
 
@@ -63,11 +63,11 @@ const SectionScroller: React.FC<SectionScrollerProps> = ({
 
     const getVariantStyles = () => {
         switch (variant) {
-            case 2: return { bg: "bg-black-pure", text: "text-primary-500", h: "h-12 md:h-14" }
-            case 3: return { bg: "bg-secondary-500", text: "text-black-pure", h: "h-16 md:h-20" }
-            case 4: return { bg: "bg-white-pure", text: "text-tertiary-500", h: "h-14 md:h-16" }
-            case 5: return { bg: "bg-tertiary-500", text: "text-white-pure", h: "h-20 md:h-24" }
-            default: return { bg: "bg-primary-500", text: "text-black-pure", h: "h-12 md:h-16" }
+            case 2: return { bg: "bg-foreground", text: "text-primary", h: "h-12 md:h-14" }
+            case 3: return { bg: "bg-secondary", text: "text-secondary-foreground", h: "h-16 md:h-20" }
+            case 4: return { bg: "bg-background", text: "text-tertiary-500", h: "h-14 md:h-16" }
+            case 5: return { bg: "bg-tertiary-500", text: "text-tertiary-foreground", h: "h-20 md:h-24" }
+            default: return { bg: "bg-primary", text: "text-primary-foreground", h: "h-12 md:h-16" }
         }
     }
 
@@ -77,7 +77,7 @@ const SectionScroller: React.FC<SectionScrollerProps> = ({
         <div key={groupIndex} className="flex items-center">
             {items.map((item, i) => (
                 <React.Fragment key={i}>
-                    <span className={`text-sm md:text-base font-black tracking-wide font-mono uppercase px-6 md:px-8 whitespace-nowrap ${styles.text} hover:scale-110 transition-transform duration-300 cursor-default`}>
+                    <span className={`text-sm md:text-base font-bold tracking-wide font-mono uppercase px-6 md:px-8 whitespace-nowrap ${styles.text} hover:scale-110 transition-transform duration-300 cursor-default`}>
                         {item}
                     </span>
                     {delimiter}
@@ -90,6 +90,7 @@ const SectionScroller: React.FC<SectionScrollerProps> = ({
         <div className={`w-full ${styles.bg} overflow-hidden shrink-0 ${styles.h} flex items-center relative group`}>
             <div className={`absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r ${styles.bg} to-transparent z-10 pointer-events-none`} />
             <div className={`absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l ${styles.bg} to-transparent z-10 pointer-events-none`} />
+
             <div className={`flex whitespace-nowrap ${animationClass} group-hover:scroller-pause`} style={{ animationDuration: `${velocity}s` }}>
                 {[...Array(4)].map((_, i) => renderGroup(i))}
             </div>

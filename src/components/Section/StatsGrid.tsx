@@ -1,5 +1,4 @@
-'use client'
-
+"use client"
 import React, { useEffect, useRef, useState } from 'react'
 import SectionCTA from './CTA'
 import SectionHeader from './Header'
@@ -24,6 +23,7 @@ const StatsGrid: React.FC<StatsGridProps> = ({ id, title, items, columns = 4 }) 
         3: 'lg:grid-cols-3',
         4: 'lg:grid-cols-4'
     }
+
     const [countedValues, setCountedValues] = useState<(number | string)[]>(items.map(() => 0))
     const refs = useRef<(HTMLDivElement | null)[]>([])
 
@@ -87,59 +87,54 @@ const StatsGrid: React.FC<StatsGridProps> = ({ id, title, items, columns = 4 }) 
     if (!items || items.length === 0) return null
 
     return (
-        <section className="relative w-full bg-white-pure flex flex-col border-b-2 border-black-pure">
-            <SectionHeader
-                title={title}
-                subtitle={id}
-                variant={3}
-            />
+        <section className="relative w-full bg-background flex flex-col py-16 md:py-24">
+            <div className="container mx-auto px-4">
+                <SectionHeader title={title} subtitle={id} variant={3} />
 
-            <div className={`grid grid-cols-1 sm:grid-cols-2 ${gridCols[columns]} divide-x-2 divide-y-2 divide-black-pure border-b-2 border-black-pure`}>
-                {items.map((item, index) => (
-                    <div
-                        key={index}
-                        ref={el => { refs.current[index] = el }}
-                        className="p-8 md:p-12 lg:p-16 flex flex-col justify-between bg-white-pure hover:bg-neutral-50 transition-colors duration-300 group relative overflow-hidden"
-                    >
-                        <div className="relative z-10">
-                            <span className="text-[10px] font-black text-neutral-400 uppercase tracking-widest block mb-2 group-hover:text-primary-500 transition-colors">
-                                {item.label}
-                            </span>
-                            <div className="h-1.5 w-8 bg-black-pure group-hover:w-24 group-hover:bg-primary-500 transition-all duration-500" />
-                        </div>
-
-                        <div className="mt-12 relative z-10">
-                            <div className="flex items-baseline gap-2 flex-wrap">
-                                <span className="font-bold text-5xl md:text-6xl lg:text-7xl text-black-pure uppercase leading-none tracking-tighter">
-                                    {countedValues[index] || 0}
+                <div className={`grid grid-cols-1 sm:grid-cols-2 ${gridCols[columns]} gap-8 mt-12`}>
+                    {items.map((item, index) => (
+                        <div
+                            key={index}
+                            ref={el => { refs.current[index] = el }}
+                            className="p-8 bg-card border border-border rounded-lg shadow-sm hover:shadow-md transition-all duration-300 group relative overflow-hidden"
+                        >
+                            <div className="relative z-10">
+                                <span className="text-sm font-semibold text-muted-foreground uppercase tracking-wider block mb-2 group-hover:text-primary transition-colors">
+                                    {item.label}
                                 </span>
-                                {item.unit && (
-                                    <span className="text-sm md:text-base font-black text-primary-500 uppercase italic">
-                                        {item.unit}
-                                    </span>
-                                )}
+                                <div className="h-1 w-12 bg-border group-hover:w-24 group-hover:bg-primary transition-all duration-500 rounded-full" />
                             </div>
 
-                            {item.description && (
-                                <p className="mt-6 text-[11px] font-mono font-black text-neutral-500 uppercase leading-tight max-w-[240px]">
-                                    {item.description}
-                                </p>
-                            )}
+                            <div className="mt-8 relative z-10">
+                                <div className="flex items-baseline gap-2 flex-wrap">
+                                    <span className="font-bold text-4xl md:text-5xl lg:text-6xl text-foreground leading-none tracking-tight">
+                                        {countedValues[index] || 0}
+                                    </span>
+                                    {item.unit && (
+                                        <span className="text-base font-semibold text-primary uppercase">
+                                            {item.unit}
+                                        </span>
+                                    )}
+                                </div>
+                                {item.description && (
+                                    <p className="mt-4 text-base font-medium text-muted-foreground leading-relaxed max-w-xs">
+                                        {item.description}
+                                    </p>
+                                )}
+                            </div>
                         </div>
+                    ))}
+                </div>
 
-                        <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-100 transition-opacity">
-                            <div className="w-12 h-12 border-t-2 border-r-2 border-black-pure" />
-                        </div>
-                    </div>
-                ))}
+                <div className="mt-16 flex justify-center">
+                    <SectionCTA
+                        label="Explore Comprehensive Data"
+                        path={`/analytics/${id}`}
+                        variant={3}
+                        proceedLabel="View Analytics"
+                    />
+                </div>
             </div>
-
-            <SectionCTA
-                label="Explore Comprehensive Data"
-                path={`/analytics/${id}`}
-                variant={3}
-                proceedLabel="ANALYTICS_NODE"
-            />
         </section>
     )
 }

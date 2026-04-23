@@ -1,5 +1,4 @@
 "use client"
-
 import { Championship } from '@/payload-types'
 import React from 'react'
 
@@ -12,18 +11,18 @@ interface SectionHeaderProps {
 
 const SectionHeader: React.FC<SectionHeaderProps> = ({ title, subtitle, variant = 1, championships = [] }) => {
     const total = championships?.length ?? 0
-    const heading = "text-xl md:text-3xl font-black uppercase tracking-normal"
+    const heading = "text-2xl md:text-3xl lg:text-4xl font-bold uppercase tracking-normal"
 
     if (variant === 2) {
         return (
-            <header className="w-full bg-black-pure border-b-2 border-black-pure flex flex-col md:flex-row items-stretch">
-                <div className="p-8 border-b-2 md:border-b-0 md:border-r-2 border-white-pure/20 bg-primary-500 flex-1">
-                    <h1 className={`${heading} text-black-pure`}>{title || 'DIRECTORY'}</h1>
+            <header className="w-full bg-foreground border-b border-border flex flex-col md:flex-row items-stretch rounded-t-lg overflow-hidden">
+                <div className="p-8 border-b md:border-b-0 md:border-r border-white/20 bg-primary flex-1">
+                    <h1 className={`${heading} text-primary-foreground`}>{title || 'Directory'}</h1>
                 </div>
-                <div className="p-8 flex-1 bg-white-pure">
-                    <h2 className={`${heading} text-black-pure opacity-40`}>{subtitle || 'SUB-DIRECTORY'}</h2>
+                <div className="p-8 flex-1 bg-background">
+                    <h2 className={`${heading} text-foreground opacity-60`}>{subtitle || 'Sub-Directory'}</h2>
                 </div>
-                <div className="w-24 bg-secondary-500 flex items-center justify-center border-l-2 border-black-pure font-black text-2xl text-black-pure">
+                <div className="w-24 bg-secondary flex items-center justify-center border-l border-border font-semibold text-2xl text-secondary-foreground">
                     {total}
                 </div>
             </header>
@@ -32,26 +31,26 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({ title, subtitle, variant 
 
     if (variant === 3) {
         return (
-            <header className="w-full border-b-2 border-black-pure bg-white-pure grid grid-cols-1 md:grid-cols-4">
-                <div className="col-span-1 md:col-span-3 p-8 border-b-2 md:border-b-0 md:border-r-2 border-black-pure">
-                    <h1 className={`${heading} text-black-pure`}>{title || 'PRIMARY VIEW'}</h1>
+            <header className="w-full border-b border-border bg-background grid grid-cols-1 md:grid-cols-4 rounded-t-lg overflow-hidden">
+                <div className="col-span-1 md:col-span-3 p-8 border-b md:border-b-0 md:border-r border-border">
+                    <h1 className={`${heading} text-foreground`}>{title || 'Primary View'}</h1>
                 </div>
-                <div className="p-8 bg-primary-500 flex items-center justify-between">
-                    <span className="font-mono font-black text-black-pure">TOTAL</span>
-                    <span className="font-black text-2xl text-black-pure">{total}</span>
+                <div className="p-8 bg-primary flex items-center justify-between">
+                    <span className="font-mono font-semibold text-primary-foreground">Total</span>
+                    <span className="font-semibold text-2xl text-primary-foreground">{total}</span>
                 </div>
             </header>
         )
     }
 
     return (
-        <header className="w-full bg-white-pure border-b-2 border-black-pure flex items-stretch">
-            <div className="w-16 md:w-24 bg-primary-500 border-r-2 border-black-pure flex items-center justify-center font-black text-black-pure">
+        <header className="w-full bg-background border-b border-border flex items-stretch rounded-t-lg overflow-hidden">
+            <div className="w-16 md:w-24 bg-primary border-r border-border flex items-center justify-center font-semibold text-primary-foreground">
                 {total}
             </div>
             <div className="p-8 flex-1">
-                <h1 className={`${heading} text-black-pure`}>{title || 'MAIN SECTION'}</h1>
-                <p className="font-mono text-sm font-black text-secondary-500 mt-2">{subtitle || 'SUPPORTING DETAIL'}</p>
+                <h1 className={`${heading} text-foreground`}>{title || 'Main Section'}</h1>
+                <p className="font-mono text-base font-semibold text-secondary mt-2">{subtitle || 'Supporting Detail'}</p>
             </div>
         </header>
     )
