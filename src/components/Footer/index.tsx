@@ -4,6 +4,11 @@ import { unstable_cache } from 'next/cache'
 import { getPayload } from 'payload'
 import { CustomFooter } from '../Custom/layout/Footer'
 
+const getFooter = getCachedGlobal('footer', 1)
+const getSocials = getCachedGlobal('socials', 1)
+const getQuestions = getCachedGlobal('questions', 1)
+const getAnnouncements = getCachedGlobal('announcements', 1)
+
 const getCachedOrganizations = unstable_cache(
   async () => {
     const payload = await getPayload({ config: configPromise })
@@ -27,10 +32,10 @@ const getCachedOrganizations = unstable_cache(
 
 export async function Footer() {
   const [footer, socials, questions, announcements, organizations] = await Promise.all([
-    getCachedGlobal('footer', 1)(),
-    getCachedGlobal('socials', 1)(),
-    getCachedGlobal('questions', 1)(),
-    getCachedGlobal('announcements', 1)(),
+    getFooter(),
+    getSocials(),
+    getQuestions(),
+    getAnnouncements(),
     getCachedOrganizations(),
   ])
 
