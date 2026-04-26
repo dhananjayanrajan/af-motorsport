@@ -1,11 +1,9 @@
-// app/(frontend)/teams/[teamSlug]/drivers/[driverSlug]/page.tsx
 import FeatureSection from '@/components/Section/Blocks/FeatureSection'
 import GridSection from '@/components/Section/Blocks/GridSection'
 import ListSection from '@/components/Section/Blocks/ListSection'
 import MasonrySection from '@/components/Section/Blocks/MasonrySection'
 import ScrollSection from '@/components/Section/Blocks/ScrollSection'
 import StudySection from '@/components/Section/Blocks/StudySection'
-import VideoSection from '@/components/Section/Blocks/VideoSection'
 import { Celebration, Incident, Media, Member } from '@/payload-types'
 import configPromise from '@payload-config'
 import { unstable_cache } from 'next/cache'
@@ -25,6 +23,16 @@ const getDriverData = unstable_cache(
             collection: 'drivers',
             where: { slug: { equals: slug } },
             limit: 1,
+            depth: 1,
+            select: {
+                id: true,
+                first_name: true,
+                last_name: true,
+                slug: true,
+                basics: { racing_number: true, nationality: true, birth_date: true, debut_date: true, callsign: true, catchphrase: true },
+                assets: { avatar: true, cover: true, autograph: true, gallery: true },
+                details: { biography: true },
+            },
         })
         return result.docs[0] || null
     },
@@ -38,14 +46,14 @@ const getCrewMembers = unstable_cache(
         const result = await payload.find({
             collection: 'members',
             limit: 8,
+            depth: 1,
             select: {
                 id: true,
                 first_name: true,
                 last_name: true,
-                slug: true,
-                basics: true,
-                details: true,
-                assets: true,
+                basics: { description: true },
+                details: { duties: true },
+                assets: { avatar: true },
             },
         })
         return result.docs as Member[]
@@ -60,13 +68,13 @@ const getCelebrations = unstable_cache(
         const result = await payload.find({
             collection: 'celebrations',
             limit: 8,
+            depth: 1,
             select: {
                 id: true,
                 name: true,
                 slug: true,
-                basics: true,
-                details: true,
-                assets: true,
+                basics: { description: true },
+                assets: { thumbnail: true },
             },
         })
         return result.docs as Celebration[]
@@ -81,12 +89,12 @@ const getIncidents = unstable_cache(
         const result = await payload.find({
             collection: 'incidents',
             limit: 10,
+            depth: 1,
             select: {
                 id: true,
                 name: true,
                 slug: true,
-                basics: true,
-                details: true,
+                basics: { description: true },
             },
         })
         return result.docs as Incident[]
@@ -97,124 +105,88 @@ const getIncidents = unstable_cache(
 
 export default async function DriverPage({ params }: { params: Promise<{ teamSlug: string; driverSlug: string }> }) {
     const { teamSlug, driverSlug } = await params
-    const driver = await getDriverData(driverSlug)
+
+    // Fetch all required data in parallel
+    const [driver, crewMembers, celebrations, incidents] = await Promise.all([
+        getDriverData(driverSlug),
+        getCrewMembers(),
+        getCelebrations(),
+        getIncidents(),
+    ])
 
     if (!driver) notFound()
 
-    const crewMembers = await getCrewMembers()
-    const celebrations = await getCelebrations()
-    const incidents = await getIncidents()
+    const driverFullName = `${driver.first_name || ''} ${driver.last_name || ''}`.trim() || 'Unnamed Driver'
 
-    const videoItems: any[] = []
-
-    const studyImage = driver.assets?.avatar
-        ? getMediaUrl(driver.assets.avatar)
-        : driver.assets?.cover
-            ? getMediaUrl(driver.assets.cover)
-            : undefined
+    const studyImage = getMediaUrl(driver.assets?.avatar) ||
+        getMediaUrl(driver.assets?.cover) ||
+        `https://picsum.photos/seed/${driver.slug}/800/600`
 
     const study = {
         id: String(driver.id),
-        title: `${driver.first_name} ${driver.last_name}`,
+        title: driverFullName,
         description: driver.basics?.callsign || driver.basics?.catchphrase || '',
-        image: studyImage || `https://picsum.photos/seed/${driver.slug}/800/600`,
+        image: studyImage,
         metrics: [
             { label: 'Number', value: driver.basics?.racing_number ? `#${driver.basics.racing_number}` : 'N/A' },
-            { label: 'Nationality', value: driver.basics?.nationality && typeof driver.basics.nationality === 'object' && 'name' in driver.basics.nationality ? driver.basics.nationality.name : 'N/A' },
+            { label: 'Nationality', value: (driver.basics?.nationality && typeof driver.basics.nationality === 'object' && 'name' in driver.basics.nationality) ? driver.basics.nationality.name : 'N/A' },
             { label: 'Born', value: driver.basics?.birth_date || 'N/A' },
             { label: 'Debut', value: driver.basics?.debut_date || 'N/A' },
         ],
     }
 
-    const autographFeatures = driver.assets?.autograph
-        ? [{
-            id: 'autograph',
-            title: 'Autograph',
-            description: `${driver.first_name} ${driver.last_name}`,
-            image: getMediaUrl(driver.assets.autograph) || `https://picsum.photos/seed/autograph-${driver.slug}/400/300`,
-        }]
-        : []
+    const autographFeatures = driver.assets?.autograph ? [{
+        id: 'autograph',
+        title: 'Autograph',
+        description: driverFullName,
+        image: getMediaUrl(driver.assets.autograph) || `https://picsum.photos/seed/autograph-${driver.slug}/400/300`,
+    }] : []
 
-    const scrollItems: any[] = []
-    if (driver.details?.biography) {
-        scrollItems.push({
-            id: 'biography',
-            title: 'Biography',
-            description: 'Driver background and career highlights.',
-            percentage: 100,
-        })
-    }
+    const scrollItems = driver.details?.biography ? [{
+        id: 'biography',
+        title: 'Biography',
+        description: 'Driver background and career highlights.',
+        percentage: 100,
+    }] : []
 
-    const crewMemberItems: any[] = crewMembers.map((member: Member) => {
-        const imageUrl = member.assets?.avatar
-            ? getMediaUrl(member.assets.avatar)
-            : `https://picsum.photos/seed/${member.id}/400/300`
+    const crewMemberItems = crewMembers.map((member) => ({
+        id: String(member.id),
+        title: `${member.first_name || ''} ${member.last_name || ''}`.trim() || 'Crew Member',
+        subtitle: member.details?.duties || member.basics?.description || undefined,
+        image: getMediaUrl(member.assets?.avatar) || `https://picsum.photos/seed/${member.id}/400/300`,
+    }))
 
-        return {
-            id: String(member.id),
-            title: `${member.first_name} ${member.last_name}`,
-            subtitle: member.details?.duties || member.basics?.description || undefined,
-            image: imageUrl,
-        }
-    })
-
-    const galleryItems: any[] = []
-    if (driver.assets?.gallery?.list) {
-        driver.assets.gallery.list.forEach((item, idx) => {
+    const galleryItems = (driver.assets?.gallery?.list || [])
+        .map((item, idx) => {
             const media = typeof item.image === 'object' ? item.image : null
-            const url = media ? getMediaUrl(media) : undefined
-            if (url && media) {
-                galleryItems.push({
-                    id: item.id || String(idx),
-                    title: item.caption || media.alt || `${driver.first_name} ${driver.last_name}`,
-                    image: url,
-                    height: idx % 3 === 0 ? 'tall' as const : idx % 2 === 0 ? 'medium' as const : 'short' as const,
-                })
+            const url = getMediaUrl(media)
+            if (!url || !media) return null
+            return {
+                id: item.id || String(idx),
+                title: item.caption || media.alt || driverFullName,
+                image: url,
+                height: (idx % 3 === 0 ? 'tall' : idx % 2 === 0 ? 'medium' : 'short') as 'tall' | 'medium' | 'short',
             }
         })
-    }
+        .filter((i): i is NonNullable<typeof i> => i !== null)
 
-    const celebrationItems: any[] = celebrations.map((celebration: Celebration) => {
-        const imageUrl = celebration.assets?.thumbnail
-            ? getMediaUrl(celebration.assets.thumbnail)
-            : `https://picsum.photos/seed/${celebration.id}/400/300`
+    const celebrationItems = celebrations.map((celebration) => ({
+        id: String(celebration.id),
+        title: celebration.name || '',
+        subtitle: celebration.basics?.description || undefined,
+        image: getMediaUrl(celebration.assets?.thumbnail) || `https://picsum.photos/seed/${celebration.id}/400/300`,
+        href: `/celebrations/${celebration.slug}`,
+    }))
 
-        return {
-            id: String(celebration.id),
-            title: celebration.name,
-            subtitle: celebration.basics?.description || undefined,
-            image: imageUrl,
-            href: `/celebrations/${celebration.slug}`,
-        }
-    })
-
-    const incidentEntries: any[] = incidents.map((incident: Incident) => ({
+    const incidentEntries = incidents.map((incident) => ({
         id: String(incident.id),
-        title: incident.name,
+        title: incident.name || '',
         subtitle: incident.basics?.description || undefined,
         href: `/incidents/${incident.slug}`,
     }))
 
     return (
         <main className="w-full">
-            {videoItems.length > 0 && (
-                <VideoSection
-                    id="driver-video"
-                    title="Driver Highlights"
-                    subtitle={`${driver.first_name} ${driver.last_name}`}
-                    videos={videoItems}
-                    labels={{
-                        channelPrefix: 'CH',
-                        broadcastStatus: 'LIVE',
-                        liveFeed: 'FEED',
-                        metaTransmission: 'TRANS',
-                    }}
-                    autoplay={false}
-                    showPlaylist={false}
-                    headerVariant={1}
-                    footerVariant={1}
-                />
-            )}
             <StudySection
                 id="driver-details"
                 title="Driver Profile"
@@ -316,8 +288,6 @@ export default async function DriverPage({ params }: { params: Promise<{ teamSlu
                     }}
                     showStatus={false}
                     showTimestamp={false}
-                    headerVariant={1}
-                    footerVariant={1}
                 />
             )}
         </main>

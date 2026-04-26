@@ -1,4 +1,3 @@
-// app/(frontend)/about/plans/[slug]/page.tsx
 import HeroSection from '@/components/Section/Blocks/HeroSection'
 import QuoteSection from '@/components/Section/Blocks/QuoteSection'
 import StudySection from '@/components/Section/Blocks/StudySection'
@@ -15,6 +14,15 @@ function getMediaUrl(media: number | Media | null | undefined): string | undefin
     return undefined
 }
 
+function resolveAssetUrl(assets: any, ...keys: string[]): string | undefined {
+    if (!assets) return undefined
+    for (const key of keys) {
+        const url = getMediaUrl(assets[key])
+        if (url) return url
+    }
+    return undefined
+}
+
 const getPlanData = unstable_cache(
     async (slug: string) => {
         const payload = await getPayload({ config: configPromise })
@@ -22,6 +30,39 @@ const getPlanData = unstable_cache(
             collection: 'plans',
             where: { slug: { equals: slug } },
             limit: 1,
+            depth: 1,
+            select: {
+                id: true,
+                name: true,
+                slug: true,
+                basics: {
+                    description: true,
+                    tagline: true,
+                    identifiers: { code: true },
+                },
+                details: {
+                    mission: true,
+                    vision: true,
+                    status: true,
+                    priority: true,
+                    scope: true,
+                    budget: true,
+                    currency: true,
+                    start_date: true,
+                    end_date: true,
+                },
+                assets: {
+                    cover: true,
+                },
+                traits: {
+                    milestones: {
+                        list: true,
+                    },
+                },
+                seo: {
+                    image: true,
+                },
+            },
         })
         return result.docs[0] || null
     },
@@ -36,25 +77,22 @@ export default async function PlanPage({ params }: { params: Promise<{ slug: str
     if (!plan) notFound()
 
     const coverActions = [
-        { label: 'View Details', href: `/about/plans/${plan.slug}/details`, variant: 'primary' as const },
+        { label: 'VIEW SPECIFICATIONS', href: `/about/plans/${plan.slug}/details`, variant: 'primary' as const },
     ]
 
-    const studyImage = plan.assets?.cover
-        ? getMediaUrl(plan.assets.cover)
-        : plan.seo?.image
-            ? getMediaUrl(plan.seo.image)
-            : `https://picsum.photos/seed/${plan.slug}/800/600`
+    const heroBackgroundImage = resolveAssetUrl(plan.assets, 'cover') || getMediaUrl(plan.seo?.image)
+    const studyImage = resolveAssetUrl(plan.assets, 'cover') || getMediaUrl(plan.seo?.image)
 
     const study = {
         id: String(plan.id),
         title: plan.name,
         description: plan.basics?.description || plan.details?.mission || plan.details?.vision || '',
-        image: studyImage || `https://picsum.photos/seed/${plan.slug}/800/600`,
+        image: studyImage || '',
         metrics: [
-            { label: 'Status', value: plan.details?.status || 'N/A' },
-            { label: 'Priority', value: plan.details?.priority || 'N/A' },
-            { label: 'Scope', value: plan.details?.scope || 'N/A' },
-            { label: 'Budget', value: plan.details?.budget && plan.details?.currency ? `${plan.details.currency} ${plan.details.budget}` : 'N/A' },
+            { label: 'STATUS', value: plan.details?.status || 'N/A' },
+            { label: 'PRIORITY', value: plan.details?.priority || 'N/A' },
+            { label: 'SCOPE', value: plan.details?.scope || 'N/A' },
+            { label: 'BUDGET', value: plan.details?.budget && plan.details?.currency ? `${plan.details.currency} ${plan.details.budget}` : 'N/A' },
         ],
     }
 
@@ -62,13 +100,13 @@ export default async function PlanPage({ params }: { params: Promise<{ slug: str
         ? {
             id: 'plan-mission',
             text: plan.details.mission,
-            author: 'Mission Statement',
+            author: 'MISSION_STATEMENT',
         }
         : plan.details?.vision
             ? {
                 id: 'plan-vision',
                 text: plan.details.vision,
-                author: 'Vision Statement',
+                author: 'VISION_STATEMENT',
             }
             : null
 
@@ -77,8 +115,8 @@ export default async function PlanPage({ params }: { params: Promise<{ slug: str
     if (plan.details?.start_date) {
         timelineEvents.push({
             id: 'plan-start',
-            date: new Date(plan.details.start_date).toLocaleDateString(),
-            title: 'Plan Initiation',
+            date: new Date(plan.details.start_date).toISOString().split('T')[0],
+            title: 'INITIATION',
             description: plan.basics?.tagline || 'Strategic plan commencement',
             status: 'completed' as const,
         })
@@ -89,8 +127,8 @@ export default async function PlanPage({ params }: { params: Promise<{ slug: str
             if (milestone.name) {
                 timelineEvents.push({
                     id: milestone.id || `milestone-${idx}`,
-                    date: milestone.due_date ? new Date(milestone.due_date).toLocaleDateString() : 'TBD',
-                    title: milestone.name,
+                    date: milestone.due_date ? new Date(milestone.due_date).toISOString().split('T')[0] : 'TBD',
+                    title: milestone.name.toUpperCase(),
                     description: milestone.description || undefined,
                     status: idx === 0 ? 'active' as const : 'upcoming' as const,
                 })
@@ -101,34 +139,30 @@ export default async function PlanPage({ params }: { params: Promise<{ slug: str
     if (plan.details?.end_date) {
         timelineEvents.push({
             id: 'plan-end',
-            date: new Date(plan.details.end_date).toLocaleDateString(),
-            title: 'Target Completion',
-            description: 'Expected conclusion of plan objectives',
+            date: new Date(plan.details.end_date).toISOString().split('T')[0],
+            title: 'COMPLETION',
+            description: 'Targeted conclusion of strategic objectives',
             status: 'upcoming' as const,
         })
     }
-
-    const heroBackgroundImage = plan.assets?.cover
-        ? getMediaUrl(plan.assets.cover)
-        : `https://picsum.photos/seed/${plan.slug}/1920/1080`
 
     return (
         <main className="w-full">
             <HeroSection
                 id="plan-cover"
                 title={plan.name}
-                subtitle={plan.basics?.tagline || 'Strategic Plan'}
+                subtitle={plan.basics?.tagline || 'STRATEGIC_PLAN'}
                 description={plan.basics?.description || undefined}
                 backgroundImage={heroBackgroundImage}
                 actions={coverActions}
                 alignment="center"
-                badge={plan.basics?.identifiers?.code || plan.details?.scope || undefined}
-                meta={plan.details?.start_date ? `Started: ${new Date(plan.details.start_date).toLocaleDateString()}` : undefined}
+                badge={plan.basics?.identifiers?.code || plan.details?.scope || 'PLAN'}
+                meta={plan.details?.start_date ? `INITIALIZED: ${new Date(plan.details.start_date).toISOString().split('T')[0]}` : undefined}
             />
             <StudySection
                 id="plan-details"
-                title="Plan Overview"
-                subtitle="Key information and metrics"
+                title="SPECIFICATIONS"
+                subtitle="Primary operational data and performance metrics"
                 studies={[study]}
                 variant="featured"
                 headerVariant={1}
@@ -137,12 +171,12 @@ export default async function PlanPage({ params }: { params: Promise<{ slug: str
             {quoteItem && (
                 <QuoteSection
                     id="plan-quote"
-                    title="Guiding Statement"
-                    subtitle="Our north star"
+                    title="PHILOSOPHY"
+                    subtitle="Strategic guiding parameters"
                     quotes={[quoteItem]}
                     labels={{
-                        commStatus: 'COMM',
-                        ratingLabel: 'RATING',
+                        commStatus: 'SYS',
+                        ratingLabel: 'RANK',
                     }}
                     variant="grid"
                     headerVariant={2}
@@ -152,22 +186,22 @@ export default async function PlanPage({ params }: { params: Promise<{ slug: str
             {timelineEvents.length > 0 && (
                 <TimelineSection
                     id="plan-timeline"
-                    title="Timeline"
-                    subtitle="Key milestones and dates"
+                    title="OPERATIONS"
+                    subtitle="Strategic milestone tracking"
                     events={timelineEvents}
                     labels={{
                         statusPrefix: 'STAT',
-                        eventIndexLabel: 'EVENT',
+                        eventIndexLabel: 'STEP',
                         deploymentStatus: {
-                            completed: 'DONE',
+                            completed: 'SYNCED',
                             active: 'ACTIVE',
-                            upcoming: 'UPCOMING',
+                            upcoming: 'PENDING',
                         },
                     }}
                     orientation="horizontal"
                     headerVariant={1}
                     footerVariant={1}
-                    ctaLabel="View Full Details"
+                    ctaLabel="VIEW FULL PARAMETERS"
                     ctaPath={`/about/plans/${plan.slug}/details`}
                 />
             )}

@@ -1,4 +1,3 @@
-// app/(frontend)/about/plans/[slug]/details/page.tsx
 import GridSection from '@/components/Section/Blocks/GridSection'
 import ListSection from '@/components/Section/Blocks/ListSection'
 import TimelineSection from '@/components/Section/Blocks/TimelineSection'
@@ -21,6 +20,27 @@ const getPlanDetailsData = unstable_cache(
             collection: 'plans',
             where: { slug: { equals: slug } },
             limit: 1,
+            depth: 1,
+            select: {
+                id: true,
+                assets: {
+                    documents: true,
+                },
+                traits: {
+                    milestones: {
+                        list: true,
+                    },
+                    deliverables: {
+                        list: true,
+                    },
+                    risks: {
+                        list: true,
+                    },
+                    kpis: {
+                        list: true,
+                    },
+                },
+            },
         })
         return result.docs[0] || null
     },
@@ -40,8 +60,8 @@ export default async function PlanDetailsPage({ params }: { params: Promise<{ sl
             if (milestone.name) {
                 milestoneEvents.push({
                     id: milestone.id || `milestone-${idx}`,
-                    date: milestone.due_date ? new Date(milestone.due_date).toLocaleDateString() : 'TBD',
-                    title: milestone.name,
+                    date: milestone.due_date ? new Date(milestone.due_date).toISOString().split('T')[0] : 'TBD',
+                    title: milestone.name.toUpperCase(),
                     description: milestone.description || undefined,
                     status: idx === 0 ? 'completed' as const : idx === 1 ? 'active' as const : 'upcoming' as const,
                 })
@@ -57,7 +77,7 @@ export default async function PlanDetailsPage({ params }: { params: Promise<{ sl
                     id: deliverable.id || String(Math.random()),
                     title: deliverable.name,
                     subtitle: deliverable.description || undefined,
-                    status: deliverable.type || undefined,
+                    status: deliverable.type || 'ASSET',
                 })
             }
         })
@@ -71,8 +91,8 @@ export default async function PlanDetailsPage({ params }: { params: Promise<{ sl
                     id: risk.id || String(Math.random()),
                     title: risk.name,
                     subtitle: risk.mitigation || undefined,
-                    status: risk.likelihood || undefined,
-                    tag: risk.impact || undefined,
+                    status: risk.likelihood || 'LOW',
+                    tag: risk.impact || 'MINIMAL',
                 })
             }
         })
@@ -85,22 +105,21 @@ export default async function PlanDetailsPage({ params }: { params: Promise<{ sl
                 kpiItems.push({
                     id: kpi.id || String(Math.random()),
                     title: kpi.name,
-                    subtitle: kpi.target ? `Target: ${kpi.target}${kpi.unit ? ` ${kpi.unit}` : ''}` : undefined,
+                    subtitle: kpi.target ? `TARGET: ${kpi.target}${kpi.unit ? ` ${kpi.unit}` : ''}` : undefined,
                 })
             }
         })
     }
 
     const documentItems: any[] = []
-    if (plan.assets?.documents) {
+    if (plan.assets?.documents && Array.isArray(plan.assets.documents)) {
         plan.assets.documents.forEach((doc, idx) => {
-            const media = typeof doc === 'object' ? doc : null
-            const url = media ? getMediaUrl(media) : undefined
+            const url = getMediaUrl(doc)
             if (url) {
                 documentItems.push({
-                    id: media?.id ? String(media.id) : `doc-${idx}`,
-                    title: media?.alt || media?.filename || `Document ${idx + 1}`,
-                    subtitle: media?.mimeType || undefined,
+                    id: (typeof doc === 'object' && doc.id) ? String(doc.id) : `doc-${idx}`,
+                    title: (typeof doc === 'object' && (doc.alt || doc.filename)) || `DOC_${idx + 1}`,
+                    subtitle: (typeof doc === 'object' && doc.mimeType) || 'APPLICATION/PDF',
                     image: url,
                     href: url,
                 })
@@ -113,16 +132,16 @@ export default async function PlanDetailsPage({ params }: { params: Promise<{ sl
             {milestoneEvents.length > 0 && (
                 <TimelineSection
                     id="plan-milestones"
-                    title="Milestones"
-                    subtitle="Key achievements and targets"
+                    title="MILESTONES"
+                    subtitle="Critical path achievements and scheduled targets"
                     events={milestoneEvents}
                     labels={{
                         statusPrefix: 'STAT',
-                        eventIndexLabel: 'EVENT',
+                        eventIndexLabel: 'STEP',
                         deploymentStatus: {
-                            completed: 'DONE',
+                            completed: 'SYNCED',
                             active: 'ACTIVE',
-                            upcoming: 'UPCOMING',
+                            upcoming: 'PENDING',
                         },
                     }}
                     orientation="vertical"
@@ -133,48 +152,44 @@ export default async function PlanDetailsPage({ params }: { params: Promise<{ sl
             {deliverableEntries.length > 0 && (
                 <ListSection
                     id="plan-deliverables"
-                    title="Deliverables"
-                    subtitle="Expected outputs and outcomes"
+                    title="DELIVERABLES"
+                    subtitle="Projected operational outputs and technical outcomes"
                     entries={deliverableEntries}
                     labels={{
                         statusPrefix: 'TYPE',
-                        timePrefix: 'TIME',
+                        timePrefix: 'SYNC',
                         indexPrefix: 'DEL',
                     }}
                     showStatus={true}
                     showTimestamp={false}
-                    headerVariant={2}
-                    footerVariant={1}
                 />
             )}
             {riskEntries.length > 0 && (
                 <ListSection
                     id="plan-risks"
-                    title="Risk Assessment"
-                    subtitle="Identified risks and mitigations"
+                    title="ASSESSMENT"
+                    subtitle="Risk mitigation and likelihood parameters"
                     entries={riskEntries}
                     labels={{
-                        statusPrefix: 'LIKELY',
-                        timePrefix: 'TIME',
+                        statusPrefix: 'LEVEL',
+                        timePrefix: 'CALC',
                         indexPrefix: 'RSK',
                     }}
                     showStatus={true}
                     showTimestamp={false}
-                    headerVariant={1}
-                    footerVariant={1}
                 />
             )}
             {kpiItems.length > 0 && (
                 <GridSection
                     id="plan-kpis"
-                    title="Key Performance Indicators"
-                    subtitle="Measuring success"
+                    title="PERFORMANCE"
+                    subtitle="Success metrics and target indicators"
                     items={kpiItems}
                     labels={{
                         unitsCount: 'KPIS',
-                        viewProject: 'VIEW',
-                        sectionIndex: 'KPI',
-                        fallbackAlt: 'KPI',
+                        viewProject: 'DATA',
+                        sectionIndex: 'MET',
+                        fallbackAlt: 'Metric',
                     }}
                     columns={4}
                 />
@@ -182,14 +197,14 @@ export default async function PlanDetailsPage({ params }: { params: Promise<{ sl
             {documentItems.length > 0 && (
                 <GridSection
                     id="plan-documents"
-                    title="Documents"
-                    subtitle="Supporting materials and resources"
+                    title="ARCHIVE"
+                    subtitle="Technical documentation and supporting resources"
                     items={documentItems}
                     labels={{
                         unitsCount: 'DOCS',
-                        viewProject: 'VIEW',
-                        sectionIndex: 'DOC',
-                        fallbackAlt: 'Document',
+                        viewProject: 'FETCH',
+                        sectionIndex: 'DAT',
+                        fallbackAlt: 'File',
                     }}
                     columns={3}
                 />

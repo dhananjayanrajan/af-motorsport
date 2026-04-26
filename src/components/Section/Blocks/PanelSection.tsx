@@ -1,3 +1,4 @@
+// PanelSection.tsx
 "use client"
 import { ChevronRight, Hash, Minus, Plus } from 'lucide-react'
 import React, { useState } from 'react'
@@ -74,81 +75,80 @@ const PanelSection: React.FC<PanelSectionProps> = ({
         metadata={String(panels.length).padStart(2, '0')}
       />
 
-      <div className="w-full flex flex-col border-b border-black-pure bg-black-pure gap-[1px]">
+      <div className="w-full flex flex-col border-b border-black-pure bg-white-pure gap-px">
         {panels.map((panel, idx) => {
           const isOpen = openPanels.has(panel.id)
 
           return (
             <div
               key={panel.id}
-              className={`relative flex flex-col transition-colors duration-200 ${isOpen ? 'bg-neutral-100' : 'bg-white-pure'
-                }`}
+              className={`relative flex flex-col transition-all duration-300 ${isOpen ? 'bg-neutral-50' : 'bg-white-pure'}`}
             >
               <button
                 onClick={() => togglePanel(panel.id)}
-                className="w-full flex items-stretch text-left outline-none group border-b border-black-pure last:border-b-0"
+                className="w-full flex items-stretch text-left outline-none group border-b border-black-pure last:border-b-0 transition-all duration-300 hover:bg-neutral-50"
+                style={{ minHeight: '88px' }}
               >
-                <div className={`w-16 md:w-20 border-r border-black-pure flex flex-col items-center justify-center shrink-0 transition-colors ${isOpen ? 'bg-black-pure text-primary' : 'bg-white-pure text-black-pure'}`}>
-                  <span className="text-[10px] font-mono font-black mb-2 tabular-nums">
+                <div className={`w-20 border-r border-black-pure flex flex-col items-center justify-center shrink-0 transition-all duration-300 ${isOpen ? 'bg-black-pure text-primary-500' : 'bg-white-pure text-black-pure'}`}>
+                  <span className="text-base font-bold mb-2">
                     {String(idx + 1).padStart(2, '0')}
                   </span>
-                  <div className={`transition-transform duration-200 ${isOpen ? 'rotate-90' : 'rotate-0'}`}>
+                  <div className={`transition-all duration-300 ${isOpen ? 'rotate-90' : 'rotate-0'}`}>
                     {isOpen ? <Minus className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
                   </div>
                 </div>
 
-                <div className="flex-grow p-6 md:p-8 flex items-center justify-between gap-8 group-hover:bg-neutral-50 transition-colors">
+                <div className="flex-grow p-6 md:p-8 flex items-center justify-between gap-8">
                   <div className="flex flex-col gap-2">
                     <div className="flex items-center gap-2">
-                      <Hash className={`w-3 h-3 ${isOpen ? 'text-primary' : 'text-neutral-300'}`} />
-                      <span className="text-[8px] font-mono font-black text-neutral-500 uppercase tracking-widest">
+                      <Hash className={`w-3 h-3 transition-colors duration-300 ${isOpen ? 'text-primary-500' : 'text-black-pure/30'}`} />
+                      <span className="text-base font-bold text-black-pure/60">
                         {isOpen ? labels.expansionState.open : labels.expansionState.closed}
                       </span>
                     </div>
-                    <h3 className="text-lg md:text-xl font-mono font-black uppercase text-black-pure tracking-tight">
+                    <h3 className="text-2xl font-bold text-black-pure transition-colors duration-300 group-hover:text-primary-500">
                       {panel.title}
                     </h3>
                   </div>
 
                   <div className="hidden md:flex items-center gap-12">
-                    <p className="text-[9px] font-mono font-bold text-neutral-400 uppercase tracking-wide max-w-[200px] text-right">
+                    <p className="text-base font-bold text-black-pure/60 max-w-[200px] text-right">
                       {panel.summary}
                     </p>
-                    <div className={`w-8 h-8 border border-black-pure flex items-center justify-center transition-all ${isOpen ? 'bg-primary shadow-none translate-x-1 translate-y-1' : 'bg-white-pure shadow-[4px_4px_0px_0px_#000000]'}`}>
-                      <ChevronRight className="w-4 h-4" />
+                    <div className={`w-8 h-8 border border-black-pure flex items-center justify-center transition-all duration-300 ${isOpen ? 'bg-primary-500' : 'bg-white-pure group-hover:bg-primary-500'}`}>
+                      <ChevronRight className={`w-4 h-4 transition-all duration-300 ${isOpen ? 'rotate-90' : 'group-hover:translate-x-1'}`} />
                     </div>
                   </div>
                 </div>
               </button>
 
               <div
-                className={`overflow-hidden transition-all duration-300 ${isOpen ? 'max-h-[2000px]' : 'max-h-0'
-                  }`}
+                className={`overflow-hidden transition-all duration-400 ${isOpen ? 'max-h-[800px]' : 'max-h-0'}`}
               >
-                <div className="p-8 md:p-12 md:pl-32 bg-neutral-100">
+                <div className="p-8 md:p-12 md:pl-32 bg-neutral-50">
                   <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
                     <div className="lg:col-span-7">
-                      <div className="text-black-pure font-mono text-[11px] font-bold uppercase leading-relaxed space-y-6">
+                      <div className="text-black-pure text-base space-y-6">
                         {panel.content}
                       </div>
                     </div>
 
                     {panel.metadata && (
                       <div className="lg:col-span-5">
-                        <div className="border border-black-pure bg-white-pure shadow-[8px_8px_0px_0px_#000000]">
+                        <div className="border border-black-pure bg-white-pure transition-all duration-300 hover:shadow-lg">
                           <div className="px-4 py-2 border-b border-black-pure bg-black-pure flex items-center justify-between">
-                            <span className="text-[8px] font-mono font-black text-primary uppercase tracking-widest">
+                            <span className="text-base font-bold text-primary-500">
                               {labels.metadataTitle}
                             </span>
-                            <div className="w-2 h-2 bg-primary" />
+                            <div className="w-2 h-2 bg-primary-500 transition-all duration-300 animate-pulse" />
                           </div>
                           <div className="flex flex-col">
                             {Object.entries(panel.metadata).map(([key, val]) => (
-                              <div key={key} className="border-b border-black-pure last:border-b-0 p-4 flex justify-between items-center group/meta hover:bg-neutral-50 transition-colors">
-                                <span className="text-[8px] font-mono font-black text-neutral-400 uppercase">
+                              <div key={key} className="border-b border-black-pure last:border-b-0 p-4 flex justify-between items-center transition-all duration-300 hover:bg-neutral-50">
+                                <span className="text-base font-bold text-black-pure/60">
                                   {key}
                                 </span>
-                                <p className="text-[10px] font-mono font-black text-black-pure uppercase tabular-nums">
+                                <p className="text-base font-bold text-black-pure">
                                   {val}
                                 </p>
                               </div>
@@ -166,7 +166,7 @@ const PanelSection: React.FC<PanelSectionProps> = ({
       </div>
 
       {ctaLabel && ctaPath && (
-        <div className="p-16 flex justify-center bg-white-pure border-b border-black-pure">
+        <div className="py-16 flex justify-center bg-white-pure border-b border-black-pure">
           <SectionButton label={ctaLabel} href={ctaPath} variant="primary" size="lg" />
         </div>
       )}

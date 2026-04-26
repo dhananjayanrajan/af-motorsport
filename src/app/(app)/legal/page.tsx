@@ -1,6 +1,5 @@
-// app/(frontend)/legal/page.tsx
 import ListSection from '@/components/Section/Blocks/ListSection'
-import { Media, Policy, Regulation } from '@/payload-types'
+import { Media } from '@/payload-types'
 import configPromise from '@payload-config'
 import { unstable_cache } from 'next/cache'
 import { getPayload } from 'payload'
@@ -19,23 +18,33 @@ const getLegalData = unstable_cache(
             payload.find({
                 collection: 'policies',
                 limit: 50,
-                sort: '-createdAt',
+                sort: '-basics.effective_date',
+                depth: 1,
                 select: {
                     id: true,
                     name: true,
                     slug: true,
-                    basics: { description: true, version: true, effective_date: true },
+                    basics: {
+                        description: true,
+                        version: true,
+                        effective_date: true,
+                    },
                 },
             }),
             payload.find({
                 collection: 'regulations',
                 limit: 50,
                 sort: '-createdAt',
+                depth: 1,
                 select: {
                     id: true,
                     name: true,
                     slug: true,
-                    basics: { description: true, status: true, type: true },
+                    basics: {
+                        description: true,
+                        status: true,
+                        type: true,
+                    },
                 },
             }),
         ])
@@ -52,60 +61,56 @@ const getLegalData = unstable_cache(
 export default async function LegalPage() {
     const { policies, regulations } = await getLegalData()
 
-    const policyEntries = policies.map((policy: Policy) => ({
+    const policyEntries = policies.map((policy: any) => ({
         id: String(policy.id),
-        title: policy.name,
-        subtitle: policy.basics?.description || '',
-        status: policy.basics?.version || '',
-        tag: policy.basics?.effective_date ? new Date(policy.basics.effective_date).toLocaleDateString() : undefined,
+        title: policy.name.toUpperCase(),
+        subtitle: policy.basics?.description || 'Official framework documentation',
+        status: (policy.basics?.version || '1.0.0').toUpperCase(),
+        tag: policy.basics?.effective_date ? new Date(policy.basics.effective_date).toISOString().split('T')[0] : 'PENDING',
         href: `/legal/policies/${policy.slug}`,
         timestamp: policy.basics?.effective_date || undefined,
     }))
 
-    const regulationEntries = regulations.map((regulation: Regulation) => ({
+    const regulationEntries = regulations.map((regulation: any) => ({
         id: String(regulation.id),
-        title: regulation.name,
-        subtitle: regulation.basics?.description || '',
-        status: regulation.basics?.status || '',
-        tag: regulation.basics?.type || '',
+        title: regulation.name.toUpperCase(),
+        subtitle: regulation.basics?.description || 'Governing sporting and technical directives',
+        status: (regulation.basics?.status || 'Active').toUpperCase(),
+        tag: (regulation.basics?.type || 'Technical').toUpperCase(),
         href: `/legal/regulations/${regulation.slug}`,
         timestamp: undefined,
     }))
 
     return (
-        <main className="w-full">
+        <main className="w-full bg-black-pure">
             {policyEntries.length > 0 && (
                 <ListSection
                     id="legal-policies"
-                    title="Policies"
-                    subtitle="Our legal policies and terms"
+                    title="Corporate Policies"
+                    subtitle="Legal framework and operational terms of service"
                     entries={policyEntries}
                     labels={{
-                        statusPrefix: 'VER',
-                        timePrefix: 'DATE',
-                        indexPrefix: 'POL',
+                        statusPrefix: 'Version',
+                        timePrefix: 'Effective',
+                        indexPrefix: 'Policy',
                     }}
-                    showStatus
-                    showTimestamp
-                    headerVariant={1}
-                    footerVariant={1}
+                    showStatus={true}
+                    showTimestamp={true}
                 />
             )}
             {regulationEntries.length > 0 && (
                 <ListSection
                     id="legal-regulations"
-                    title="Regulations"
-                    subtitle="Sporting and technical regulations"
+                    title="Sporting Regulations"
+                    subtitle="Technical directives and competitive governing rules"
                     entries={regulationEntries}
                     labels={{
-                        statusPrefix: 'STAT',
-                        timePrefix: 'TIME',
-                        indexPrefix: 'REG',
+                        statusPrefix: 'State',
+                        timePrefix: 'Updated',
+                        indexPrefix: 'Article',
                     }}
-                    showStatus
+                    showStatus={true}
                     showTimestamp={false}
-                    headerVariant={1}
-                    footerVariant={1}
                 />
             )}
         </main>

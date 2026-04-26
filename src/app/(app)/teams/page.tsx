@@ -1,4 +1,3 @@
-// app/(frontend)/teams/page.tsx
 import GridSection from '@/components/Section/Blocks/GridSection'
 import { Individual, Media, Organization, Team } from '@/payload-types'
 import configPromise from '@payload-config'
@@ -20,45 +19,40 @@ const getTeamsData = unstable_cache(
                 collection: 'teams',
                 limit: 12,
                 sort: 'name',
+                depth: 1,
                 select: {
                     id: true,
                     name: true,
                     slug: true,
-                    basics: true,
-                    details: true,
-                    assets: true,
-                    updatedAt: true,
-                    createdAt: true,
+                    basics: { tagline: true },
+                    assets: { logo: true, cover: true },
                 },
             }),
             payload.find({
                 collection: 'individuals',
                 limit: 12,
                 sort: 'last_name',
+                depth: 1,
                 select: {
                     id: true,
                     first_name: true,
                     last_name: true,
                     slug: true,
-                    basics: true,
-                    assets: true,
-                    updatedAt: true,
-                    createdAt: true,
+                    basics: { type: true, description: true },
+                    assets: { avatar: true, thumbnail: true },
                 },
             }),
             payload.find({
                 collection: 'organizations',
                 limit: 12,
                 sort: 'name',
+                depth: 1,
                 select: {
                     id: true,
                     name: true,
                     slug: true,
-                    basics: true,
-                    details: true,
-                    assets: true,
-                    updatedAt: true,
-                    createdAt: true,
+                    basics: { tagline: true, type: true },
+                    assets: { logo: true, alt_logo: true },
                 },
             }),
         ])
@@ -76,53 +70,35 @@ const getTeamsData = unstable_cache(
 export default async function TeamsPage() {
     const { teams, individuals, organizations } = await getTeamsData()
 
-    const teamItems: any[] = teams.map((team: Team) => {
-        const imageUrl = team.assets?.logo
-            ? getMediaUrl(team.assets.logo)
-            : team.assets?.cover
-                ? getMediaUrl(team.assets.cover)
-                : `https://picsum.photos/seed/${team.slug}/400/300`
+    const teamItems = teams.map((team) => ({
+        id: String(team.id),
+        title: team.name || '',
+        subtitle: team.basics?.tagline || undefined,
+        image: getMediaUrl(team.assets?.logo) ||
+            getMediaUrl(team.assets?.cover) ||
+            `https://picsum.photos/seed/${team.slug}/400/300`,
+        href: `/teams/${team.slug}`,
+    }))
 
-        return {
-            id: String(team.id),
-            title: team.name,
-            subtitle: team.basics?.tagline || undefined,
-            image: imageUrl,
-            href: `/teams/${team.slug}`,
-        }
-    })
+    const individualItems = individuals.map((individual) => ({
+        id: String(individual.id),
+        title: `${individual.first_name || ''} ${individual.last_name || ''}`.trim() || 'Unnamed',
+        subtitle: individual.basics?.type || individual.basics?.description || undefined,
+        image: getMediaUrl(individual.assets?.avatar) ||
+            getMediaUrl(individual.assets?.thumbnail) ||
+            `https://picsum.photos/seed/${individual.slug}/400/300`,
+        href: `/teams/individuals/${individual.slug}`,
+    }))
 
-    const individualItems: any[] = individuals.map((individual: Individual) => {
-        const imageUrl = individual.assets?.avatar
-            ? getMediaUrl(individual.assets.avatar)
-            : individual.assets?.thumbnail
-                ? getMediaUrl(individual.assets.thumbnail)
-                : `https://picsum.photos/seed/${individual.slug}/400/300`
-
-        return {
-            id: String(individual.id),
-            title: `${individual.first_name} ${individual.last_name}`,
-            subtitle: individual.basics?.type || individual.basics?.description || undefined,
-            image: imageUrl,
-            href: `/teams/individuals/${individual.slug}`,
-        }
-    })
-
-    const organizationItems: any[] = organizations.map((org: Organization) => {
-        const imageUrl = org.assets?.logo
-            ? getMediaUrl(org.assets.logo)
-            : org.assets?.alt_logo
-                ? getMediaUrl(org.assets.alt_logo)
-                : `https://picsum.photos/seed/${org.slug}/400/300`
-
-        return {
-            id: String(org.id),
-            title: org.name,
-            subtitle: org.basics?.tagline || org.basics?.type || undefined,
-            image: imageUrl,
-            href: `/teams/organizations/${org.slug}`,
-        }
-    })
+    const organizationItems = organizations.map((org) => ({
+        id: String(org.id),
+        title: org.name || '',
+        subtitle: org.basics?.tagline || org.basics?.type || undefined,
+        image: getMediaUrl(org.assets?.logo) ||
+            getMediaUrl(org.assets?.alt_logo) ||
+            `https://picsum.photos/seed/${org.slug}/400/300`,
+        href: `/teams/organizations/${org.slug}`,
+    }))
 
     return (
         <main className="w-full">

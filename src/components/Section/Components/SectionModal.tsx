@@ -1,3 +1,4 @@
+// SectionModal.tsx
 "use client"
 import Image from 'next/image'
 import React, { useEffect } from 'react'
@@ -44,7 +45,7 @@ const SectionModal: React.FC<SectionModalProps> = ({
 
     if (!isOpen) return null
 
-    const buttonBase = "font-mono font-black uppercase tracking-widest transition-all duration-300 focus-visible:ring-2 focus-visible:ring-primary-500 active:scale-[0.98]"
+    const buttonBase = "font-bold transition-all duration-300 focus-visible:ring-2 focus-visible:ring-primary-500 active:scale-[0.98]"
 
     const getImageSrc = () => {
         if (imageUrl && imageUrl.trim() !== '') return imageUrl
@@ -52,13 +53,13 @@ const SectionModal: React.FC<SectionModalProps> = ({
     }
 
     return (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 sm:p-6 md:p-12 animate-in fade-in duration-300">
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 md:p-8 animate-in fade-in duration-300">
             <div
-                className="absolute inset-0 bg-black-pure/90 backdrop-blur-sm transition-opacity duration-300"
+                className="absolute inset-0 bg-black-pure/90 transition-opacity duration-300"
                 onClick={onClose}
             />
-            <div className="relative w-full max-w-6xl h-full max-h-[700px] bg-white-pure flex flex-col md:flex-row overflow-hidden border-2 border-black-pure shadow-2xl animate-in zoom-in-95 duration-300">
-                <div className="relative w-full md:w-5/12 h-48 md:h-full bg-black-pure border-b md:border-b-0 md:border-r-2 border-black-pure overflow-hidden shrink-0 group">
+            <div className="relative w-full max-w-5xl h-full max-h-[700px] bg-white-pure flex flex-col md:flex-row overflow-hidden border border-black-pure animate-in zoom-in-95 duration-300">
+                <div className="relative w-full md:w-5/12 h-48 md:h-full bg-black-pure border-b md:border-b-0 md:border-r border-black-pure overflow-hidden shrink-0 group">
                     <Image
                         src={getImageSrc()}
                         alt={title}
@@ -67,84 +68,84 @@ const SectionModal: React.FC<SectionModalProps> = ({
                         priority
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black-pure via-transparent to-transparent" />
-                    <div className="absolute bottom-4 left-4 bg-white-pure border-2 border-black-pure px-4 sm:px-6 py-2 sm:py-3">
+                    <div className="absolute bottom-4 left-4 bg-white-pure border border-black-pure px-6 py-3">
                         <div className="flex items-center gap-2">
-                            <div className="size-2 bg-primary-500 animate-pulse" />
-                            <span className="font-mono text-[10px] sm:text-xs font-black uppercase text-black-pure tracking-widest">
-                                {idCode || 'REF_001'} // ORIGIN STAMP
+                            <div className="w-2 h-2 bg-primary-500 transition-all duration-300 group-hover:bg-secondary-500" />
+                            <span className="text-base font-bold text-black-pure">
+                                {idCode || 'REF_001'}
                             </span>
                         </div>
                     </div>
-                    <div className="absolute top-4 right-4 size-8 bg-primary-500 border border-black-pure flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                        <div className="size-2 bg-black-pure rotate-45" />
+                    <div className="absolute top-4 right-4 w-8 h-8 bg-primary-500 border border-black-pure flex items-center justify-center opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                        <div className="w-2 h-2 bg-black-pure" />
                     </div>
                 </div>
                 <div className="flex-1 flex flex-col overflow-hidden">
-                    <div className="flex items-stretch border-b-2 border-black-pure h-14 sm:h-16 shrink-0">
-                        <div className="flex-1 flex items-center px-6 sm:px-8 bg-secondary-500">
+                    <div className="flex items-stretch border-b border-black-pure h-16 shrink-0">
+                        <div className="flex-1 flex items-center px-8 bg-secondary-500">
                             <div className="flex items-center gap-3">
-                                <div className="size-2 bg-black-pure" />
-                                <span className="font-mono text-[10px] sm:text-xs font-black uppercase text-black-pure tracking-widest">
+                                <div className="w-2 h-2 bg-black-pure" />
+                                <span className="text-base font-bold text-black-pure">
                                     {infoLabel}
                                 </span>
                             </div>
                         </div>
                         <button
                             onClick={onClose}
-                            className="w-14 sm:w-16 h-full flex items-center justify-center bg-black-pure text-white-pure hover:bg-primary-500 hover:text-black-pure focus-visible:ring-2 focus-visible:ring-primary-500 transition-all duration-300 outline-none border-l-2 border-black-pure group"
+                            className="w-16 h-full flex items-center justify-center bg-black-pure text-white-pure hover:bg-primary-500 hover:text-black-pure focus-visible:ring-2 focus-visible:ring-primary-500 transition-all duration-300 outline-none border-l border-black-pure group"
                         >
-                            <span className="font-black text-sm uppercase group-hover:rotate-90 transition-transform duration-300">X</span>
+                            <span className="font-bold text-base transition-transform duration-300 group-hover:rotate-90">X</span>
                         </button>
                     </div>
-                    <div className="flex-1 p-6 sm:p-8 md:p-12 flex flex-col overflow-y-auto">
+                    <div className="flex-1 p-8 md:p-12 flex flex-col overflow-y-auto">
                         <div className="mb-6">
                             <div className="flex items-center gap-2 mb-3">
                                 <div className="w-8 h-0.5 bg-primary-500" />
-                                <span className="text-[10px] font-mono font-black text-primary-500 tracking-widest uppercase">DETAILS</span>
+                                <span className="text-base font-bold text-primary-500">DETAILS</span>
                             </div>
-                            <h3 className="text-2xl sm:text-3xl md:text-4xl font-black uppercase tracking-tighter text-black-pure leading-none mb-4">
+                            <h3 className="text-2xl font-bold text-black-pure mb-4">
                                 {title}
                             </h3>
-                            <div className="p-4 bg-white-100 border-2 border-black-pure">
-                                <p className="text-xs font-mono font-black uppercase leading-relaxed text-black-pure/70">
+                            <div className="p-4 bg-neutral-50 border border-black-pure">
+                                <p className="text-base font-bold text-black-pure/70">
                                     {description}
                                 </p>
                             </div>
                         </div>
-                        <div className="grid grid-cols-2 gap-px bg-black-pure border-2 border-black-pure mb-6 overflow-hidden">
+                        <div className="grid grid-cols-2 gap-px bg-black-pure border border-black-pure mb-6 overflow-hidden">
                             {stats.map((stat, i) => (
-                                <div key={i} className="bg-white-pure p-3 sm:p-4 flex flex-col gap-2 group hover:bg-black-pure transition-colors duration-300">
-                                    <span className="text-[10px] font-mono font-black uppercase text-black-pure/40 group-hover:text-white-pure/40 tracking-widest">
+                                <div key={i} className="bg-white-pure p-4 flex flex-col gap-2 transition-all duration-300 hover:bg-black-pure group">
+                                    <span className="text-base font-bold text-black-pure/40 transition-colors duration-300 group-hover:text-white-pure/40">
                                         {stat.label}
                                     </span>
-                                    <div className="flex items-center gap-2 sm:gap-3">
-                                        <div className={`w-2 h-2 sm:w-3 sm:h-3 ${stat.color} border border-black-pure group-hover:border-white-pure`} />
-                                        <p className="text-sm sm:text-base font-black uppercase text-black-pure group-hover:text-white-pure tracking-tighter">
+                                    <div className="flex items-center gap-3">
+                                        <div className={`w-2 h-2 ${stat.color} border border-black-pure transition-colors duration-300 group-hover:border-white-pure`} />
+                                        <p className="text-2xl font-bold text-black-pure transition-colors duration-300 group-hover:text-white-pure">
                                             {stat.val}
                                         </p>
                                     </div>
                                 </div>
                             ))}
                         </div>
-                        <div className="mt-auto flex gap-px bg-black-pure border-2 border-black-pure overflow-hidden shrink-0">
+                        <div className="mt-auto flex gap-px bg-black-pure border border-black-pure overflow-hidden shrink-0">
                             <button
                                 onClick={onAction}
-                                className={`${buttonBase} flex-1 h-14 sm:h-16 bg-primary-500 text-black-pure hover:bg-black-pure hover:text-white-pure relative overflow-hidden group`}
+                                className={`${buttonBase} flex-1 h-16 bg-primary-500 text-black-pure hover:bg-black-pure hover:text-white-pure relative overflow-hidden group`}
                             >
                                 <span className="relative z-10">{buttonLabel}</span>
-                                <div className="absolute bottom-0 left-0 h-0.5 w-full bg-secondary-500 scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
+                                <div className="absolute bottom-0 left-0 h-0.5 w-full bg-secondary-500 transition-transform duration-500 origin-left scale-x-0 group-hover:scale-x-100" />
                             </button>
-                            <div className="w-14 sm:w-16 h-14 sm:h-16 bg-black-pure flex items-center justify-center group">
-                                <div className="size-5 sm:size-6 border-2 border-white-pure flex items-center justify-center group-hover:border-primary-500 transition-colors">
-                                    <div className="size-1.5 sm:size-2 bg-white-pure animate-pulse group-hover:bg-primary-500" />
+                            <div className="w-16 h-16 bg-black-pure flex items-center justify-center transition-all duration-300 group hover:bg-primary-500">
+                                <div className="w-6 h-6 border-2 border-white-pure flex items-center justify-center transition-colors duration-300 group-hover:border-black-pure">
+                                    <div className="w-1.5 h-1.5 bg-white-pure transition-all duration-300 group-hover:bg-black-pure" />
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div className="h-1 w-full flex shrink-0">
-                        <div className="flex-1 bg-primary-500" />
-                        <div className="flex-1 bg-secondary-500" />
-                        <div className="flex-1 bg-black-pure" />
+                        <div className="flex-1 bg-primary-500 transition-all duration-300 hover:flex-[2]" />
+                        <div className="flex-1 bg-secondary-500 transition-all duration-300 hover:flex-[2]" />
+                        <div className="flex-1 bg-black-pure transition-all duration-300 hover:flex-[2]" />
                     </div>
                 </div>
             </div>

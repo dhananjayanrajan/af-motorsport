@@ -1,4 +1,3 @@
-// app/(frontend)/calendar/championships/[slug]/details/page.tsx
 import FeatureSection from '@/components/Section/Blocks/FeatureSection'
 import GridSection from '@/components/Section/Blocks/GridSection'
 import HeroSection from '@/components/Section/Blocks/HeroSection'
@@ -16,6 +15,15 @@ function getMediaUrl(media: number | Media | null | undefined): string | undefin
     return undefined
 }
 
+function resolveAssetUrl(assets: any, ...keys: string[]): string | undefined {
+    if (!assets) return undefined
+    for (const key of keys) {
+        const url = getMediaUrl(assets[key])
+        if (url) return url
+    }
+    return undefined
+}
+
 const getChampionshipDetailsData = unstable_cache(
     async (slug: string) => {
         const payload = await getPayload({ config: configPromise })
@@ -23,6 +31,37 @@ const getChampionshipDetailsData = unstable_cache(
             collection: 'championships',
             where: { slug: { equals: slug } },
             limit: 1,
+            depth: 1,
+            select: {
+                id: true,
+                name: true,
+                slug: true,
+                basics: {
+                    description: true,
+                    identifiers: {
+                        code: true,
+                        abbreviation: true
+                    },
+                },
+                assets: {
+                    cover: true,
+                    documents: true,
+                },
+                details: {
+                    format: true,
+                    standings_scope: true,
+                    season: true,
+                    start_date: true,
+                    end_date: true,
+                    winner: true,
+                    runner_up: true,
+                    third_place: true,
+                    regulations: true,
+                },
+                seo: {
+                    image: true,
+                },
+            },
         })
         return result.docs[0] || null
     },
@@ -36,31 +75,27 @@ export default async function ChampionshipDetailsPage({ params }: { params: Prom
 
     if (!championship) notFound()
 
-    const heroBackgroundImage = championship.assets?.cover
-        ? getMediaUrl(championship.assets.cover)
-        : championship.seo?.image
-            ? getMediaUrl(championship.seo.image)
-            : undefined
+    const heroBackgroundImage = resolveAssetUrl(championship.assets, 'cover') || getMediaUrl(championship.seo?.image)
 
     const specItems: any[] = [
         {
             id: 'format',
-            title: 'Format',
+            title: 'FORMAT',
             subtitle: championship.details?.format || 'N/A',
         },
         {
             id: 'standings',
-            title: 'Standings Scope',
+            title: 'STANDINGS_SCOPE',
             subtitle: championship.details?.standings_scope || 'N/A',
         },
         {
             id: 'code',
-            title: 'Championship Code',
+            title: 'CHAMPIONSHIP_ID',
             subtitle: championship.basics?.identifiers?.code || championship.basics?.identifiers?.abbreviation || 'N/A',
         },
         {
             id: 'season',
-            title: 'Season',
+            title: 'SEASON_CYCLE',
             subtitle: championship.details?.season && typeof championship.details.season === 'object' && 'name' in championship.details.season ? championship.details.season.name : 'N/A',
         },
     ]
@@ -70,24 +105,24 @@ export default async function ChampionshipDetailsPage({ params }: { params: Prom
         const winner = championship.details.winner
         podiumFeatures.push({
             id: 'winner',
-            title: 'Champion',
-            description: typeof winner === 'object' && 'first_name' in winner && 'last_name' in winner ? `${winner.first_name} ${winner.last_name}` : 'Winner',
+            title: 'CHAMPION_P1',
+            description: typeof winner === 'object' && 'first_name' in winner && 'last_name' in winner ? `${winner.first_name} ${winner.last_name}` : 'WINNER',
         })
     }
     if (championship.details?.runner_up) {
         const runnerUp = championship.details.runner_up
         podiumFeatures.push({
             id: 'runner-up',
-            title: 'Runner Up',
-            description: typeof runnerUp === 'object' && 'first_name' in runnerUp && 'last_name' in runnerUp ? `${runnerUp.first_name} ${runnerUp.last_name}` : 'Runner Up',
+            title: 'RUNNER_UP_P2',
+            description: typeof runnerUp === 'object' && 'first_name' in runnerUp && 'last_name' in runnerUp ? `${runnerUp.first_name} ${runnerUp.last_name}` : 'RUNNER_UP',
         })
     }
     if (championship.details?.third_place) {
         const thirdPlace = championship.details.third_place
         podiumFeatures.push({
             id: 'third-place',
-            title: 'Third Place',
-            description: typeof thirdPlace === 'object' && 'first_name' in thirdPlace && 'last_name' in thirdPlace ? `${thirdPlace.first_name} ${thirdPlace.last_name}` : 'Third Place',
+            title: 'THIRD_PLACE_P3',
+            description: typeof thirdPlace === 'object' && 'first_name' in thirdPlace && 'last_name' in thirdPlace ? `${thirdPlace.first_name} ${thirdPlace.last_name}` : 'THIRD_PLACE',
         })
     }
 
@@ -95,18 +130,18 @@ export default async function ChampionshipDetailsPage({ params }: { params: Prom
     if (championship.details?.start_date) {
         timelineEvents.push({
             id: 'start',
-            date: new Date(championship.details.start_date).toLocaleDateString(),
-            title: 'Championship Start',
-            description: 'Season commencement',
+            date: new Date(championship.details.start_date).toISOString().split('T')[0],
+            title: 'INITIALIZATION',
+            description: 'Season commencement and entry verification.',
             status: 'completed' as const,
         })
     }
     if (championship.details?.end_date) {
         timelineEvents.push({
             id: 'end',
-            date: new Date(championship.details.end_date).toLocaleDateString(),
-            title: 'Championship Finale',
-            description: 'Season conclusion',
+            date: new Date(championship.details.end_date).toISOString().split('T')[0],
+            title: 'TERMINATION',
+            description: 'Season conclusion and final points calculation.',
             status: 'upcoming' as const,
         })
     }
@@ -116,21 +151,20 @@ export default async function ChampionshipDetailsPage({ params }: { params: Prom
         const reg = championship.details.regulations
         regulationEntries.push({
             id: String(typeof reg === 'object' ? reg.id : reg),
-            title: 'Championship Regulations',
-            subtitle: 'Sporting and technical rules',
+            title: 'CHAMPIONSHIP_REGULATIONS',
+            subtitle: 'Sporting and technical governing rules for the current series cycle.',
         })
     }
 
     const documentItems: any[] = []
-    if (championship.assets?.documents) {
+    if (championship.assets?.documents && Array.isArray(championship.assets.documents)) {
         championship.assets.documents.forEach((doc, idx) => {
-            const media = typeof doc === 'object' ? doc : null
-            const url = media ? getMediaUrl(media) : undefined
-            if (url && media) {
+            const url = getMediaUrl(doc)
+            if (url) {
                 documentItems.push({
-                    id: String(media.id),
-                    title: media.alt || media.filename || `Document ${idx + 1}`,
-                    subtitle: media.mimeType || undefined,
+                    id: (typeof doc === 'object' && doc.id) ? String(doc.id) : `doc-${idx}`,
+                    title: (typeof doc === 'object' && (doc.alt || doc.filename)) || `DOC_${idx + 1}`,
+                    subtitle: (typeof doc === 'object' && doc.mimeType) || 'APPLICATION/PDF',
                     image: url,
                     href: url,
                 })
@@ -143,20 +177,20 @@ export default async function ChampionshipDetailsPage({ params }: { params: Prom
             <HeroSection
                 id="championship-details-cover"
                 title={championship.name}
-                subtitle="Championship Specifications"
+                subtitle="CHAMPIONSHIP_SPECIFICATIONS"
                 description={championship.basics?.description || undefined}
                 backgroundImage={heroBackgroundImage}
                 alignment="center"
-                badge={championship.basics?.identifiers?.code || undefined}
+                badge={championship.basics?.identifiers?.code || 'SERIES'}
             />
             <GridSection
                 id="championship-specifications"
-                title="Specifications"
-                subtitle="Championship details"
+                title="PARAMETERS"
+                subtitle="Technical series specifications and identification codes"
                 items={specItems}
                 labels={{
                     unitsCount: 'SPECS',
-                    viewProject: 'VIEW',
+                    viewProject: 'DATA',
                     sectionIndex: 'SPC',
                     fallbackAlt: 'Spec',
                 }}
@@ -165,13 +199,13 @@ export default async function ChampionshipDetailsPage({ params }: { params: Prom
             {podiumFeatures.length > 0 && (
                 <FeatureSection
                     id="championship-podium"
-                    title="Podium"
-                    subtitle="Top finishers"
-                    features={podiumFeatures}
+                    title="CLASSIFICATION"
+                    subtitle="Primary podium rankings"
+                    features={[...podiumFeatures]}
                     labels={{
                         specIndex: 'POD',
-                        statsLabel: 'INFO',
-                        ctaLabel: 'VIEW',
+                        statsLabel: 'DATA',
+                        ctaLabel: 'SCAN',
                     }}
                     columns={3}
                     headerVariant={2}
@@ -181,16 +215,16 @@ export default async function ChampionshipDetailsPage({ params }: { params: Prom
             {timelineEvents.length > 0 && (
                 <TimelineSection
                     id="championship-timeline"
-                    title="Timeline"
-                    subtitle="Key championship dates"
+                    title="CHRONOLOGY"
+                    subtitle="Key series operational dates"
                     events={timelineEvents}
                     labels={{
                         statusPrefix: 'STAT',
-                        eventIndexLabel: 'EVENT',
+                        eventIndexLabel: 'STEP',
                         deploymentStatus: {
-                            completed: 'DONE',
+                            completed: 'SYNCED',
                             active: 'ACTIVE',
-                            upcoming: 'UPCOMING',
+                            upcoming: 'PENDING',
                         },
                     }}
                     orientation="horizontal"
@@ -201,31 +235,29 @@ export default async function ChampionshipDetailsPage({ params }: { params: Prom
             {regulationEntries.length > 0 && (
                 <ListSection
                     id="championship-regulations"
-                    title="Regulations"
-                    subtitle="Governing rules"
+                    title="GOVERNANCE"
+                    subtitle="Technical and sporting regulatory frameworks"
                     entries={regulationEntries}
                     labels={{
-                        statusPrefix: 'STAT',
-                        timePrefix: 'TIME',
+                        statusPrefix: 'REQD',
+                        timePrefix: 'SYNC',
                         indexPrefix: 'REG',
                     }}
                     showStatus={false}
                     showTimestamp={false}
-                    headerVariant={1}
-                    footerVariant={1}
                 />
             )}
             {documentItems.length > 0 && (
                 <GridSection
                     id="championship-documents"
-                    title="Documents"
-                    subtitle="Official championship documents"
+                    title="ARCHIVE"
+                    subtitle="Official championship documentation and resources"
                     items={documentItems}
                     labels={{
                         unitsCount: 'DOCS',
-                        viewProject: 'VIEW',
-                        sectionIndex: 'DOC',
-                        fallbackAlt: 'Document',
+                        viewProject: 'FETCH',
+                        sectionIndex: 'DAT',
+                        fallbackAlt: 'File',
                     }}
                     columns={3}
                 />

@@ -1,4 +1,3 @@
-// app/(frontend)/opportunities/meetups/[slug]/details/page.tsx
 import GridSection from '@/components/Section/Blocks/GridSection'
 import HeroSection from '@/components/Section/Blocks/HeroSection'
 import TabSection from '@/components/Section/Blocks/TabSection'
@@ -21,6 +20,38 @@ const getMeetupDetailsData = unstable_cache(
             collection: 'meetups',
             where: { slug: { equals: slug } },
             limit: 1,
+            depth: 1,
+            select: {
+                id: true,
+                name: true,
+                basics: {
+                    description: true,
+                },
+                assets: {
+                    cover: true,
+                    documents: true,
+                },
+                seo: {
+                    image: true,
+                },
+                details: {
+                    format: true,
+                    access: true,
+                    start_date: true,
+                    hosts: {
+                        leaders: true,
+                        individuals: true,
+                        organizations: true,
+                    },
+                    attendees: {
+                        drivers: true,
+                        members: true,
+                        leaders: true,
+                        individuals: true,
+                        organizations: true,
+                    },
+                },
+            },
         })
         return result.docs[0] || null
     },
@@ -312,7 +343,7 @@ export default async function MeetupDetailsPage({ params }: { params: Promise<{ 
             {hostItems.length > 0 && (
                 <GridSection
                     id="meetup-hosts"
-                    title="Hosts"
+                    title="HOSTS"
                     subtitle="Event organizers"
                     items={hostItems}
                     labels={{
@@ -327,7 +358,7 @@ export default async function MeetupDetailsPage({ params }: { params: Promise<{ 
             {attendeeTabs.length > 0 && (
                 <TabSection
                     id="meetup-attendees"
-                    title="Attendees"
+                    title="ATTENDEES"
                     subtitle="Event participants"
                     tabs={attendeeTabs}
                     labels={{
@@ -342,7 +373,7 @@ export default async function MeetupDetailsPage({ params }: { params: Promise<{ 
             {documentItems.length > 0 && (
                 <GridSection
                     id="meetup-documents"
-                    title="Documents"
+                    title="RESOURCES"
                     subtitle="Event resources"
                     items={documentItems}
                     labels={{

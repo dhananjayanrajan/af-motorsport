@@ -1,9 +1,9 @@
+// TimelineSection.tsx
 "use client"
 import useEmblaCarousel from 'embla-carousel-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
-import BlueprintsBackground from '../Backgrounds/BlueprintsBackground'
 import SectionButton from '../Components/SectionButton'
 import SectionFooter from '../Components/SectionFooter'
 import SectionHeader from '../Components/SectionHeader'
@@ -60,7 +60,7 @@ const TimelineSection: React.FC<TimelineSectionProps> = ({
   ctaPath,
   headerVariant = 1,
   footerVariant = 1,
-  background = <BlueprintsBackground opacity={0.25} />
+  background
 }) => {
   const [hoveredEvent, setHoveredEvent] = useState<string | null>(null)
   const [progress, setProgress] = useState(0)
@@ -78,38 +78,38 @@ const TimelineSection: React.FC<TimelineSectionProps> = ({
     switch (status) {
       case 'active': return { color: 'text-primary-500', label: labels.deploymentStatus.active, bar: 'bg-primary-500' }
       case 'completed': return { color: 'text-black-pure', label: labels.deploymentStatus.completed, bar: 'bg-black-pure' }
-      default: return { color: 'text-black-pure/20', label: labels.deploymentStatus.upcoming, bar: 'bg-black-pure/10' }
+      default: return { color: 'text-black-pure/30', label: labels.deploymentStatus.upcoming, bar: 'bg-black-pure/10' }
     }
   }
 
   const VerticalEvent = ({ event, idx }: { event: TimelineEvent; idx: number }) => {
     const meta = getStatusMeta(event.status)
     return (
-      <div className="relative pl-16 md:pl-24 group">
+      <div className="relative pl-20 group">
         <div className="absolute left-0 top-0 h-full flex flex-col items-center shrink-0">
-          <div className={`w-10 h-10 border border-black-pure flex items-center justify-center transition-colors duration-300 ${event.status === 'active' ? 'bg-primary-500 border-primary-500' : 'bg-white-pure'}`}>
-            {event.icon || <span className="text-xs font-mono font-black">{String(idx + 1).padStart(2, '0')}</span>}
+          <div className={`w-10 h-10 border border-black-pure flex items-center justify-center transition-all duration-300 ${event.status === 'active' ? 'bg-primary-500 border-primary-500' : 'bg-white-pure group-hover:bg-primary-500'}`}>
+            {event.icon || <span className="text-base font-bold transition-colors duration-300 group-hover:text-white-pure">{String(idx + 1).padStart(2, '0')}</span>}
           </div>
-          <div className="w-px flex-grow bg-black-pure/10" />
+          <div className="w-px flex-grow bg-black-pure/10 transition-all duration-300 group-hover:bg-primary-500" />
         </div>
 
         <div className="pb-16">
           <div className="flex flex-col mb-4">
             <div className="flex items-center gap-4 mb-2">
-              <span className={`text-[10px] font-mono font-black uppercase tracking-[0.3em] ${meta.color}`}>
+              <span className={`text-base font-bold transition-all duration-300 ${meta.color}`}>
                 {meta.label}
               </span>
-              <div className={`h-px w-12 ${meta.bar}`} />
+              <div className={`h-px w-12 transition-all duration-300 ${meta.bar}`} />
             </div>
-            <span className="text-sm font-mono font-black text-black-pure/30 uppercase tracking-widest">{event.date}</span>
+            <span className="text-base text-black-pure/60">{event.date}</span>
           </div>
 
-          <div className="p-8 md:p-12 border border-black-pure bg-white-pure hover:bg-slate-50 transition-colors duration-300 relative">
-            <h3 className="text-2xl md:text-4xl font-mono font-black uppercase tracking-tighter text-black-pure mb-4 italic leading-none">
+          <div className="p-8 md:p-12 border border-black-pure bg-white-pure transition-all duration-300 hover:bg-neutral-50 hover:translate-x-1 relative">
+            <h3 className="text-2xl font-bold text-black-pure mb-4 transition-colors duration-300 hover:text-primary-500">
               {event.title}
             </h3>
             {event.description && (
-              <p className="text-[11px] font-mono font-black text-black-pure/60 uppercase leading-relaxed max-w-xl">
+              <p className="text-base text-black-pure/60">
                 {event.description}
               </p>
             )}
@@ -126,14 +126,14 @@ const TimelineSection: React.FC<TimelineSectionProps> = ({
         {background}
         <SectionHeader title={title} subtitle={subtitle} variant={headerVariant} metadata={String(events.length).padStart(2, '0')} />
         <div className="relative z-10 w-full p-8 md:p-24 border-b border-black-pure">
-          <div className="flex flex-col">
+          <div className="flex flex-col max-w-4xl mx-auto">
             {events.map((event, idx) => (
               <VerticalEvent key={event.id} event={event} idx={idx} />
             ))}
           </div>
         </div>
         {ctaLabel && ctaPath && (
-          <div className="p-16 flex justify-center bg-white-pure">
+          <div className="py-16 flex justify-center bg-white-pure">
             <SectionButton label={ctaLabel} href={ctaPath} variant="primary" size="lg" />
           </div>
         )}
@@ -148,8 +148,6 @@ const TimelineSection: React.FC<TimelineSectionProps> = ({
       <SectionHeader title={title} subtitle={subtitle} variant={headerVariant} metadata={String(events.length).padStart(2, '0')} />
 
       <div className="relative w-full border-b border-black-pure">
-        <div className="absolute inset-0 pointer-events-none opacity-5 bg-[linear-gradient(45deg,transparent_25%,rgba(0,0,0,0.1)_50%,transparent_75%)] bg-[length:200%_200%]" />
-
         <div className="overflow-hidden cursor-grab active:cursor-grabbing" ref={emblaRef}>
           <div className="flex">
             {events.map((event, idx) => {
@@ -167,20 +165,20 @@ const TimelineSection: React.FC<TimelineSectionProps> = ({
                     <div className="relative p-8 md:p-12 h-full flex flex-col bg-white-pure transition-all duration-500 hover:bg-black-pure">
                       <div className="flex justify-between items-start mb-8">
                         <div className="flex flex-col">
-                          <span className="text-[10px] font-mono font-black text-black-pure/20 uppercase tracking-[0.4em] mb-1 group-hover:text-white-pure/20 transition-colors duration-500">
+                          <span className="text-base text-black-pure/30 mb-1 transition-colors duration-500 group-hover:text-white-pure/30">
                             {labels.eventIndexLabel}_0{idx + 1}
                           </span>
-                          <span className={`text-[10px] font-mono font-black uppercase tracking-widest transition-colors duration-500 ${meta.color} group-hover:text-primary-500`}>
+                          <span className={`text-base font-bold transition-all duration-500 ${meta.color} group-hover:text-primary-500`}>
                             {meta.label}
                           </span>
                         </div>
                         <div className="flex items-center gap-3">
                           {event.code && (
-                            <div className="px-2 py-1 bg-black-pure text-white-pure group-hover:bg-white-pure group-hover:text-black-pure transition-colors duration-500">
-                              <span className="text-[8px] font-mono font-black uppercase tracking-wider">{event.code}</span>
+                            <div className="px-2 py-1 bg-black-pure text-white-pure transition-all duration-500 group-hover:bg-white-pure group-hover:text-black-pure">
+                              <span className="text-base font-bold">{event.code}</span>
                             </div>
                           )}
-                          <span className="text-xs font-mono font-black text-black-pure uppercase tabular-nums group-hover:text-white-pure transition-colors duration-500">
+                          <span className="text-base font-bold text-black-pure transition-all duration-500 group-hover:text-white-pure">
                             {event.date}
                           </span>
                         </div>
@@ -195,23 +193,23 @@ const TimelineSection: React.FC<TimelineSectionProps> = ({
                             className="object-cover transition-all duration-700 group-hover:scale-110"
                             sizes="(max-width: 768px) 100vw, 33vw"
                           />
-                          <div className="absolute inset-0 bg-black-pure/0 group-hover:bg-black-pure/20 transition-colors duration-500" />
+                          <div className="absolute inset-0 bg-black-pure/0 transition-colors duration-500 group-hover:bg-black-pure/20" />
                         </div>
                       )}
 
-                      <h3 className={`text-2xl md:text-3xl font-mono font-black uppercase tracking-tighter leading-none mb-4 transition-all duration-500 ${isHovered ? 'text-primary-500' : 'text-black-pure group-hover:text-white-pure'}`}>
+                      <h3 className={`text-2xl font-bold mb-4 transition-all duration-500 ${isHovered ? 'text-primary-500' : 'text-black-pure group-hover:text-white-pure'}`}>
                         {event.title}
                       </h3>
 
                       {event.description && (
-                        <p className="text-[11px] font-mono font-black text-black-pure/50 uppercase leading-relaxed mb-8 flex-grow transition-colors duration-500 group-hover:text-white-pure/50">
+                        <p className="text-base text-black-pure/60 mb-8 flex-grow transition-colors duration-500 group-hover:text-white-pure/60">
                           {event.description}
                         </p>
                       )}
 
                       {event.format && (
                         <div className="mb-6">
-                          <span className="text-[8px] font-mono font-black text-black-pure/40 uppercase tracking-wider group-hover:text-white-pure/40 transition-colors duration-500">
+                          <span className="text-base text-black-pure/40 transition-colors duration-500 group-hover:text-white-pure/40">
                             {event.format}
                           </span>
                         </div>
@@ -234,7 +232,7 @@ const TimelineSection: React.FC<TimelineSectionProps> = ({
           </div>
         </div>
 
-        <div className="h-16 flex items-center bg-slate-50 px-8 border-t border-black-pure">
+        <div className="flex items-center bg-neutral-50 px-8 border-t border-black-pure" style={{ height: '64px' }}>
           <div className="w-full bg-black-pure/5 h-1 relative overflow-hidden flex gap-1">
             {[...Array(50)].map((_, i) => (
               <div
@@ -247,7 +245,7 @@ const TimelineSection: React.FC<TimelineSectionProps> = ({
       </div>
 
       {ctaLabel && ctaPath && (
-        <div className="p-16 flex justify-center bg-white-pure">
+        <div className="py-16 flex justify-center bg-white-pure">
           <SectionButton label={ctaLabel} href={ctaPath} variant="primary" size="lg" />
         </div>
       )}

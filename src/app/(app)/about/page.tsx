@@ -1,4 +1,3 @@
-// app/(frontend)/about/page.tsx
 import CarouselSection from '@/components/Section/Blocks/CarouselSection'
 import FeatureSection from '@/components/Section/Blocks/FeatureSection'
 import GridSection from '@/components/Section/Blocks/GridSection'
@@ -14,69 +13,105 @@ function getMediaUrl(media: number | Media | null | undefined): string | undefin
   return undefined
 }
 
+function resolveAssetUrl(assets: any, ...keys: string[]): string | undefined {
+  if (!assets) return undefined
+  for (const key of keys) {
+    const url = getMediaUrl(assets[key])
+    if (url) return url
+  }
+  return undefined
+}
+
 const getAboutData = unstable_cache(
   async () => {
     const payload = await getPayload({ config: configPromise })
 
     const [identityGlobal, statements, plans, initiatives, hospitalities] = await Promise.all([
-      payload.findGlobal({ slug: 'identity' }) as Promise<Identity>,
+      payload.findGlobal({
+        slug: 'identity',
+        select: {
+          mission: true,
+          vision: true,
+        },
+      }) as Promise<Identity>,
       payload.find({
         collection: 'statements',
         limit: 10,
+        depth: 1,
         sort: '-createdAt',
         select: {
           id: true,
           name: true,
           slug: true,
-          basics: true,
-          seo: true,
-          updatedAt: true,
-          createdAt: true,
+          basics: {
+            description: true,
+            status: true,
+          },
+          seo: {
+            image: true,
+          },
+          tags: true,
         },
       }),
       payload.find({
         collection: 'plans',
         limit: 10,
+        depth: 1,
         sort: '-createdAt',
         select: {
           id: true,
           name: true,
           slug: true,
-          basics: true,
-          details: true,
-          assets: true,
-          updatedAt: true,
-          createdAt: true,
+          basics: {
+            description: true,
+            tagline: true,
+            identifiers: { code: true },
+          },
+          details: {
+            status: true,
+            scope: true,
+            start_date: true,
+          },
         },
       }),
       payload.find({
         collection: 'initiatives',
         limit: 10,
+        depth: 1,
         sort: '-createdAt',
         select: {
           id: true,
           name: true,
           slug: true,
-          basics: true,
-          details: true,
-          assets: true,
-          updatedAt: true,
-          createdAt: true,
+          basics: {
+            mission: true,
+            tagline: true,
+          },
+          assets: {
+            thumbnail: true,
+            cover: true,
+          },
         },
       }),
       payload.find({
         collection: 'hospitalities',
         limit: 10,
+        depth: 1,
         sort: '-createdAt',
         select: {
           id: true,
           name: true,
           slug: true,
-          basics: true,
-          details: true,
-          assets: true,
-          updatedAt: true,
-          createdAt: true,
+          basics: {
+            description: true,
+            tagline: true,
+            identifiers: { code: true },
+          },
+          details: {
+            status: true,
+            type: true,
+            start_date: true,
+          },
         },
       }),
     ])
@@ -99,26 +134,24 @@ export default async function AboutPage() {
   const identityFeatures = [
     {
       id: 'identity-mission',
-      title: 'Our Mission',
-      description: identity.mission || 'Driving excellence in motorsport through innovation and integrity.',
+      title: 'MISSION',
+      description: identity.mission || 'Advancing the standards of professional competition through technical precision.',
       stats: [
-        { label: 'Vision', value: identity.vision || 'To be the global leader in racing excellence.' },
+        { label: 'VISION', value: identity.vision || 'Global leadership in motorsport infrastructure.' },
       ],
     },
   ]
 
   const statementSlides = statements.map((statement: Statement) => {
-    const imageUrl = statement.seo?.image
-      ? getMediaUrl(statement.seo.image)
-      : `https://picsum.photos/seed/${statement.slug}/800/600`
+    const imageUrl = getMediaUrl(statement.seo?.image)
     return {
       id: String(statement.id),
       title: statement.name,
       description: statement.basics?.description || undefined,
-      image: imageUrl,
+      image: imageUrl || '',
       meta: statement.basics?.status || undefined,
       tags: statement.tags ? statement.tags.map((tag: any) => typeof tag === 'object' ? tag.name : String(tag)) : undefined,
-      ctaLabel: 'Read Statement',
+      ctaLabel: 'READ STATEMENT',
       ctaHref: `/about/statements/${statement.slug}`,
     }
   })
@@ -127,23 +160,19 @@ export default async function AboutPage() {
     id: String(plan.id),
     title: plan.name,
     subtitle: plan.basics?.tagline || plan.basics?.description || undefined,
-    status: plan.details?.status || undefined,
-    tag: plan.details?.scope || plan.basics?.identifiers?.code || undefined,
+    status: plan.details?.status || 'ACTIVE',
+    tag: plan.details?.scope || plan.basics?.identifiers?.code || 'PLAN',
     href: `/about/plans/${plan.slug}`,
-    timestamp: plan.details?.start_date || undefined,
+    timestamp: plan.details?.start_date ? new Date(plan.details.start_date).toISOString().split('T')[0] : undefined,
   }))
 
   const initiativeItems = initiatives.map((initiative: Initiative) => {
-    const imageUrl = initiative.assets?.thumbnail
-      ? getMediaUrl(initiative.assets.thumbnail)
-      : initiative.assets?.cover
-        ? getMediaUrl(initiative.assets.cover)
-        : `https://picsum.photos/seed/${initiative.slug}/400/300`
+    const imageUrl = resolveAssetUrl(initiative.assets, 'thumbnail', 'cover')
     return {
       id: String(initiative.id),
       title: initiative.name,
       subtitle: initiative.basics?.mission || initiative.basics?.tagline || undefined,
-      image: imageUrl,
+      image: imageUrl || '',
       href: `/about/initiatives/${initiative.slug}`,
     }
   })
@@ -152,10 +181,10 @@ export default async function AboutPage() {
     id: String(hospitality.id),
     title: hospitality.name,
     subtitle: hospitality.basics?.tagline || hospitality.basics?.description || undefined,
-    status: hospitality.details?.status || undefined,
-    tag: hospitality.details?.type || hospitality.basics?.identifiers?.code || undefined,
+    status: hospitality.details?.status || 'OPEN',
+    tag: hospitality.details?.type || hospitality.basics?.identifiers?.code || 'HSP',
     href: `/about/hospitalities/${hospitality.slug}`,
-    timestamp: hospitality.details?.start_date || undefined,
+    timestamp: hospitality.details?.start_date ? new Date(hospitality.details.start_date).toISOString().split('T')[0] : undefined,
   }))
 
   return (
@@ -163,55 +192,51 @@ export default async function AboutPage() {
       {identityFeatures.length > 0 && (
         <FeatureSection
           id="about-identity"
-          title="Our Identity"
-          subtitle="Who we are and what we stand for"
+          title="IDENTITY"
+          subtitle="Core values and organizational objectives"
           features={identityFeatures}
           labels={{
             specIndex: 'ID',
-            statsLabel: 'INFO',
-            ctaLabel: 'LEARN',
+            statsLabel: 'DATA',
+            ctaLabel: 'VIEW',
           }}
           columns={2}
           headerVariant={1}
           footerVariant={1}
         />
       )}
-      {statementSlides.length > 0 && (
-        <CarouselSection
-          id="about-statements"
-          slides={statementSlides}
-          autoplayDelay={5000}
-        />
-      )}
+      <CarouselSection
+        id="about-statements"
+        slides={statementSlides}
+        autoplayDelay={5000}
+      />
       {planEntries.length > 0 && (
         <ListSection
           id="about-plans"
-          title="Strategic Plans"
-          subtitle="Our roadmap for the future"
+          title="STRATEGY"
+          subtitle="Long-term operational roadmap"
           entries={planEntries}
           labels={{
-            statusPrefix: 'STAT',
-            timePrefix: 'DATE',
+            statusPrefix: 'SYSTEM',
+            timePrefix: 'RELEASE',
             indexPrefix: 'PLN',
           }}
           showStatus={true}
           showTimestamp={true}
-          headerVariant={1}
-          footerVariant={1}
-          ctaLabel="View All Plans"
+          ctaLabel="VIEW ALL PLANS"
           ctaPath="/about/plans"
         />
       )}
       {initiativeItems.length > 0 && (
         <GridSection
           id="about-initiatives"
-          title="Initiatives"
-          subtitle="Programs we support and champion"
+          title="PROGRAMS"
+          subtitle="Active developmental initiatives"
           items={initiativeItems}
           labels={{
             unitsCount: 'INIT',
-            viewProject: 'VIEW',
-            sectionIndex: 'INI',
+            viewProject: 'OPEN',
+            sectionIndex: 'PRG',
             fallbackAlt: 'Initiative',
           }}
           columns={3}
@@ -220,19 +245,17 @@ export default async function AboutPage() {
       {hospitalityEntries.length > 0 && (
         <ListSection
           id="about-hospitalities"
-          title="Hospitality Experiences"
-          subtitle="Premium trackside experiences"
+          title="HOSPITALITY"
+          subtitle="Exclusive trackside environment network"
           entries={hospitalityEntries}
           labels={{
-            statusPrefix: 'STAT',
-            timePrefix: 'DATE',
+            statusPrefix: 'STATUS',
+            timePrefix: 'UPCOMING',
             indexPrefix: 'HSP',
           }}
           showStatus={true}
           showTimestamp={true}
-          headerVariant={1}
-          footerVariant={1}
-          ctaLabel="Explore Hospitality"
+          ctaLabel="EXPLORE ACCESS"
           ctaPath="/about/hospitalities"
         />
       )}

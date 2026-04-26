@@ -1,4 +1,3 @@
-// app/(frontend)/competition/page.tsx
 import GridSection from '@/components/Section/Blocks/GridSection'
 import ListSection from '@/components/Section/Blocks/ListSection'
 import MapSection from '@/components/Section/Blocks/MapSection'
@@ -13,6 +12,15 @@ function getMediaUrl(media: number | Media | null | undefined): string | undefin
     return undefined
 }
 
+function resolveAssetUrl(assets: any, ...keys: string[]): string | undefined {
+    if (!assets) return undefined
+    for (const key of keys) {
+        const url = getMediaUrl(assets[key])
+        if (url) return url
+    }
+    return undefined
+}
+
 const getCompetitionData = unstable_cache(
     async () => {
         const payload = await getPayload({ config: configPromise })
@@ -22,76 +30,96 @@ const getCompetitionData = unstable_cache(
                 collection: 'series',
                 limit: 12,
                 sort: '-createdAt',
+                depth: 1,
                 select: {
                     id: true,
                     name: true,
                     slug: true,
-                    basics: true,
-                    details: true,
-                    assets: true,
-                    updatedAt: true,
-                    createdAt: true,
+                    basics: {
+                        tagline: true,
+                        identifiers: { abbreviation: true }
+                    },
+                    assets: {
+                        thumbnail: true,
+                        logo: true,
+                        cover: true
+                    },
                 },
             }),
             payload.find({
                 collection: 'seasons',
                 limit: 20,
                 sort: '-createdAt',
+                depth: 1,
                 select: {
                     id: true,
                     name: true,
                     slug: true,
-                    basics: true,
-                    details: true,
-                    assets: true,
-                    updatedAt: true,
-                    createdAt: true,
+                    basics: {
+                        tagline: true,
+                        description: true,
+                        identifiers: { code: true, abbreviation: true }
+                    },
+                    details: {
+                        series: true
+                    },
                 },
             }),
             payload.find({
                 collection: 'events',
                 limit: 12,
                 sort: 'details.start_date',
+                depth: 1,
                 select: {
                     id: true,
                     name: true,
                     slug: true,
-                    basics: true,
-                    details: true,
-                    assets: true,
-                    updatedAt: true,
-                    createdAt: true,
+                    basics: {
+                        tagline: true
+                    },
+                    assets: {
+                        thumbnail: true,
+                        poster: true,
+                        cover: true
+                    },
                 },
             }),
             payload.find({
                 collection: 'sessions',
                 limit: 20,
                 sort: '-createdAt',
+                depth: 1,
                 select: {
                     id: true,
                     name: true,
                     slug: true,
-                    basics: true,
-                    details: true,
-                    metrics: true,
-                    assets: true,
-                    updatedAt: true,
-                    createdAt: true,
+                    basics: {
+                        segment: true,
+                        description: true,
+                        identifiers: { code: true }
+                    },
+                    details: {
+                        access: true
+                    },
                 },
             }),
             payload.find({
                 collection: 'circuits',
                 limit: 50,
                 sort: 'name',
+                depth: 1,
                 select: {
                     id: true,
                     name: true,
                     slug: true,
-                    basics: true,
-                    details: true,
-                    assets: true,
-                    updatedAt: true,
-                    createdAt: true,
+                    basics: {
+                        tagline: true,
+                        identifiers: { abbreviation: true }
+                    },
+                    details: {
+                        location: true,
+                        address: true
+                    },
                 },
             }),
         ])
@@ -112,18 +140,12 @@ export default async function CompetitionPage() {
     const { seriesList, seasons, events, sessions, circuits } = await getCompetitionData()
 
     const seriesItems: any[] = seriesList.map((series: Series) => {
-        const imageUrl = series.assets?.thumbnail
-            ? getMediaUrl(series.assets.thumbnail)
-            : series.assets?.logo
-                ? getMediaUrl(series.assets.logo)
-                : series.assets?.cover
-                    ? getMediaUrl(series.assets.cover)
-                    : `https://picsum.photos/seed/${series.slug}/400/300`
+        const imageUrl = resolveAssetUrl(series.assets, 'thumbnail', 'logo', 'cover') || ''
 
         return {
             id: String(series.id),
-            title: series.name,
-            subtitle: series.basics?.tagline || series.basics?.identifiers?.abbreviation || undefined,
+            title: series.name.toUpperCase(),
+            subtitle: series.basics?.tagline || series.basics?.identifiers?.abbreviation || 'ACTIVE_SERIES',
             image: imageUrl,
             href: `/competition/series/${series.slug}`,
         }
@@ -131,26 +153,20 @@ export default async function CompetitionPage() {
 
     const seasonEntries: any[] = seasons.map((season: Season) => ({
         id: String(season.id),
-        title: season.name,
-        subtitle: season.basics?.tagline || season.basics?.description || undefined,
-        status: typeof season.details.series === 'object' && 'name' in season.details.series ? season.details.series.name : undefined,
-        tag: season.basics?.identifiers?.code || season.basics?.identifiers?.abbreviation || undefined,
+        title: season.name.toUpperCase(),
+        subtitle: season.basics?.tagline || season.basics?.description || 'SEASON_CYCLE',
+        status: (typeof season.details.series === 'object' && season.details.series && 'name' in season.details.series) ? (season.details.series.name as string).toUpperCase() : 'UNASSIGNED',
+        tag: season.basics?.identifiers?.code || season.basics?.identifiers?.abbreviation || 'SEA_ID',
         href: `/competition/seasons/${season.slug}`,
     }))
 
     const eventItems: any[] = events.map((event: Event) => {
-        const imageUrl = event.assets?.thumbnail
-            ? getMediaUrl(event.assets.thumbnail)
-            : event.assets?.poster
-                ? getMediaUrl(event.assets.poster)
-                : event.assets?.cover
-                    ? getMediaUrl(event.assets.cover)
-                    : `https://picsum.photos/seed/${event.slug}/400/300`
+        const imageUrl = resolveAssetUrl(event.assets, 'thumbnail', 'poster', 'cover') || ''
 
         return {
             id: String(event.id),
-            title: event.name,
-            subtitle: event.basics?.tagline || undefined,
+            title: event.name.toUpperCase(),
+            subtitle: event.basics?.tagline || 'SCHEDULED_EVENT',
             image: imageUrl,
             href: `/competition/events/${event.slug}`,
         }
@@ -158,10 +174,10 @@ export default async function CompetitionPage() {
 
     const sessionEntries: any[] = sessions.map((session: Session) => ({
         id: String(session.id),
-        title: session.name,
-        subtitle: session.basics?.segment || session.basics?.description || undefined,
-        status: session.details?.access || undefined,
-        tag: session.basics?.identifiers?.code || undefined,
+        title: session.name.toUpperCase(),
+        subtitle: session.basics?.segment || session.basics?.description || 'SESSION_LOG',
+        status: (session.details?.access || 'PUBLIC').toUpperCase(),
+        tag: session.basics?.identifiers?.code || 'SES_ID',
         href: `/competition/sessions/${session.slug}`,
     }))
 
@@ -169,11 +185,11 @@ export default async function CompetitionPage() {
         .filter((circuit: Circuit) => circuit.details?.location)
         .map((circuit: Circuit) => ({
             id: String(circuit.id),
-            name: circuit.name,
+            name: circuit.name.toUpperCase(),
             lat: circuit.details?.location?.[0] || 0,
             lng: circuit.details?.location?.[1] || 0,
-            description: circuit.basics?.tagline || circuit.basics?.identifiers?.abbreviation || undefined,
-            address: circuit.details?.address || undefined,
+            description: circuit.basics?.tagline || circuit.basics?.identifiers?.abbreviation || 'CIRCUIT_HUB',
+            address: circuit.details?.address || 'COORDINATES_ONLY',
         }))
 
     return (
@@ -181,12 +197,12 @@ export default async function CompetitionPage() {
             {seriesItems.length > 0 && (
                 <GridSection
                     id="competition-series"
-                    title="Racing Series"
-                    subtitle="Active championships and series"
+                    title="SERIES"
+                    subtitle="Primary racing classifications and active series intelligence"
                     items={seriesItems}
                     labels={{
                         unitsCount: 'SERIES',
-                        viewProject: 'VIEW',
+                        viewProject: 'DATA',
                         sectionIndex: 'SRS',
                         fallbackAlt: 'Series',
                     }}
@@ -196,29 +212,27 @@ export default async function CompetitionPage() {
             {seasonEntries.length > 0 && (
                 <ListSection
                     id="competition-seasons"
-                    title="Seasons"
-                    subtitle="Championship seasons"
+                    title="SEASONS"
+                    subtitle="Historical and active championship season cycles"
                     entries={seasonEntries}
                     labels={{
                         statusPrefix: 'SERIES',
-                        timePrefix: 'TIME',
+                        timePrefix: 'SYNC',
                         indexPrefix: 'SEA',
                     }}
                     showStatus={true}
                     showTimestamp={false}
-                    headerVariant={2}
-                    footerVariant={1}
                 />
             )}
             {eventItems.length > 0 && (
                 <GridSection
                     id="competition-events"
-                    title="Events"
-                    subtitle="Race weekends and meetings"
+                    title="EVENTS"
+                    subtitle="Operational event meetings and documented race weekends"
                     items={eventItems}
                     labels={{
                         unitsCount: 'EVENTS',
-                        viewProject: 'VIEW',
+                        viewProject: 'DATA',
                         sectionIndex: 'EVT',
                         fallbackAlt: 'Event',
                     }}
@@ -228,38 +242,36 @@ export default async function CompetitionPage() {
             {sessionEntries.length > 0 && (
                 <ListSection
                     id="competition-sessions"
-                    title="Sessions"
-                    subtitle="Practice, qualifying, and race sessions"
+                    title="SESSIONS"
+                    subtitle="Telemetry logs for practice, qualifying, and race segments"
                     entries={sessionEntries}
                     labels={{
                         statusPrefix: 'ACCESS',
-                        timePrefix: 'TIME',
+                        timePrefix: 'SYNC',
                         indexPrefix: 'SES',
                     }}
                     showStatus={true}
                     showTimestamp={false}
-                    headerVariant={1}
-                    footerVariant={1}
                 />
             )}
             {mapLocations.length > 0 && (
                 <MapSection
                     id="competition-circuits"
-                    title="Circuits"
-                    subtitle="Race tracks around the world"
+                    title="CIRCUITS"
+                    subtitle="Global circuit deployment coordinates and facility data"
                     locations={mapLocations}
                     labels={{
-                        hqLabel: 'HQ',
-                        intelLabel: 'INTEL',
-                        routeLabel: 'ROUTE',
+                        hqLabel: 'HUB',
+                        intelLabel: 'DATA',
+                        routeLabel: 'SCAN',
                         timeLabel: 'TIME',
-                        distLabel: 'DIST',
+                        distLabel: 'KM',
                         recordLabel: 'VIEW',
                         filterLabels: {
-                            all: 'ALL',
+                            all: 'GLOBAL',
                             primary: 'PRIMARY',
-                            satellite: 'SATELLITE',
-                            pathing: 'ROUTES',
+                            satellite: 'EXT',
+                            pathing: 'GPS',
                         },
                     }}
                     zoom={2}

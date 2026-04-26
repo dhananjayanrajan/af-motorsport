@@ -1,4 +1,3 @@
-// app/(frontend)/resources/garages/[slug]/details/page.tsx
 import GridSection from '@/components/Section/Blocks/GridSection'
 import HeroSection from '@/components/Section/Blocks/HeroSection'
 import ListSection from '@/components/Section/Blocks/ListSection'
@@ -21,6 +20,28 @@ const getGarageDetailsData = unstable_cache(
             collection: 'garages',
             where: { slug: { equals: slug } },
             limit: 1,
+            depth: 1,
+            select: {
+                id: true,
+                name: true,
+                basics: {
+                    description: true,
+                },
+                assets: {
+                    cover: true,
+                    documents: true,
+                },
+                seo: {
+                    image: true,
+                },
+                details: {
+                    type: true,
+                    operators: true,
+                    amenities: {
+                        list: true,
+                    },
+                },
+            },
         })
         return result.docs[0] || null
     },
@@ -34,62 +55,45 @@ export default async function GarageDetailsPage({ params }: { params: Promise<{ 
 
     if (!garage) notFound()
 
-    const heroBackgroundImage = garage.assets?.cover
-        ? getMediaUrl(garage.assets.cover)
-        : garage.seo?.image
-            ? getMediaUrl(garage.seo.image)
-            : undefined
+    const heroBackgroundImage = getMediaUrl(garage.assets?.cover) || getMediaUrl(garage.seo?.image)
 
-    const amenityItems: any[] = []
-    if (garage.details?.amenities?.list) {
-        garage.details.amenities.list.forEach((amenity) => {
-            if (amenity.name) {
-                amenityItems.push({
-                    id: amenity.id || String(Math.random()),
-                    title: amenity.name,
-                    subtitle: amenity.description || undefined,
-                })
-            }
-        })
-    }
+    const amenityItems = (garage.details?.amenities?.list || [])
+        .filter((amenity) => amenity.name)
+        .map((amenity, idx) => ({
+            id: amenity.id || String(idx),
+            title: amenity.name || '',
+            subtitle: amenity.description || undefined,
+        }))
 
-    const operatorEntries: any[] = []
-    if (garage.details?.operators) {
-        garage.details.operators.forEach((operatorRef) => {
-            const operator = operatorRef as Organization
-            if (operator && typeof operator === 'object' && 'name' in operator) {
-                operatorEntries.push({
-                    id: String(operator.id),
-                    title: operator.name,
-                    subtitle: operator.basics?.type || operator.basics?.industry || undefined,
-                    href: `/organizations/${operator.slug}`,
-                })
-            }
-        })
-    }
+    const operatorEntries = (garage.details?.operators || [])
+        .filter((op): op is Organization => typeof op === 'object' && op !== null && 'name' in op)
+        .map((op) => ({
+            id: String(op.id),
+            title: op.name || '',
+            subtitle: op.basics?.type || op.basics?.industry || undefined,
+            href: `/organizations/${op.slug}`,
+        }))
 
-    const documentItems: any[] = []
-    if (garage.assets?.documents) {
-        garage.assets.documents.forEach((doc, idx) => {
+    const documentItems = (garage.assets?.documents || [])
+        .map((doc, idx) => {
             const media = typeof doc === 'object' ? doc : null
-            const url = media ? getMediaUrl(media) : undefined
-            if (url && media) {
-                documentItems.push({
-                    id: String(media.id),
-                    title: media.alt || media.filename || `Document ${idx + 1}`,
-                    subtitle: media.mimeType || undefined,
-                    image: url,
-                    href: url,
-                })
+            const url = getMediaUrl(media)
+            if (!url || !media) return null
+            return {
+                id: String(media.id),
+                title: media.alt || media.filename || `Document ${idx + 1}`,
+                subtitle: media.mimeType || undefined,
+                image: url,
+                href: url,
             }
         })
-    }
+        .filter((doc): doc is NonNullable<typeof doc> => doc !== null)
 
     return (
         <main className="w-full">
             <HeroSection
                 id="garage-details-cover"
-                title={garage.name}
+                title={garage.name || ''}
                 subtitle="Garage Details"
                 description={garage.basics?.description || undefined}
                 backgroundImage={heroBackgroundImage}
@@ -124,8 +128,6 @@ export default async function GarageDetailsPage({ params }: { params: Promise<{ 
                     }}
                     showStatus={false}
                     showTimestamp={false}
-                    headerVariant={2}
-                    footerVariant={1}
                 />
             )}
             {documentItems.length > 0 && (

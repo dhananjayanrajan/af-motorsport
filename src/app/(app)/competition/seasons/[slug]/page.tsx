@@ -1,4 +1,3 @@
-// app/(frontend)/competition/seasons/[slug]/page.tsx
 import MasonrySection from '@/components/Section/Blocks/MasonrySection'
 import ScrollSection from '@/components/Section/Blocks/ScrollSection'
 import StudySection from '@/components/Section/Blocks/StudySection'
@@ -15,6 +14,15 @@ function getMediaUrl(media: number | Media | null | undefined): string | undefin
     return undefined
 }
 
+function resolveAssetUrl(assets: any, ...keys: string[]): string | undefined {
+    if (!assets) return undefined
+    for (const key of keys) {
+        const url = getMediaUrl(assets[key])
+        if (url) return url
+    }
+    return undefined
+}
+
 const getSeasonData = unstable_cache(
     async (slug: string) => {
         const payload = await getPayload({ config: configPromise })
@@ -22,6 +30,31 @@ const getSeasonData = unstable_cache(
             collection: 'seasons',
             where: { slug: { equals: slug } },
             limit: 1,
+            depth: 1,
+            select: {
+                id: true,
+                name: true,
+                slug: true,
+                basics: {
+                    tagline: true,
+                    description: true,
+                },
+                assets: {
+                    trailer: true,
+                    cover: true,
+                    gallery: true,
+                },
+                details: {
+                    entries: true,
+                    races: true,
+                    series: true,
+                    history: true,
+                    notes: true,
+                },
+                seo: {
+                    image: true,
+                },
+            },
         })
         return result.docs[0] || null
     },
@@ -42,28 +75,24 @@ export default async function SeasonPage({ params }: { params: Promise<{ slug: s
             videoItems.push({
                 id: String(season.id),
                 title: season.name,
-                description: season.basics?.tagline || undefined,
+                description: season.basics?.tagline || 'Season preview video',
                 url: videoUrl,
-                poster: season.assets?.cover ? getMediaUrl(season.assets.cover) : undefined,
+                poster: resolveAssetUrl(season.assets, 'cover'),
             })
         }
     }
 
-    const studyImage = season.assets?.cover
-        ? getMediaUrl(season.assets.cover)
-        : season.seo?.image
-            ? getMediaUrl(season.seo.image)
-            : undefined
+    const studyImage = resolveAssetUrl(season.assets, 'cover') || getMediaUrl(season.seo?.image)
 
     const study = {
         id: String(season.id),
         title: season.name,
         description: season.basics?.description || season.basics?.tagline || '',
-        image: studyImage || `https://picsum.photos/seed/${season.slug}/800/600`,
+        image: studyImage || '',
         metrics: [
-            { label: 'Entries', value: season.details?.entries ? String(season.details.entries) : 'N/A' },
-            { label: 'Races', value: season.details?.races ? String(season.details.races) : 'N/A' },
-            { label: 'Series', value: typeof season.details.series === 'object' && 'name' in season.details.series ? season.details.series.name : 'N/A' },
+            { label: 'Total Entries', value: season.details?.entries ? String(season.details.entries) : 'N/A' },
+            { label: 'Race Events', value: season.details?.races ? String(season.details.races) : 'N/A' },
+            { label: 'Parent Series', value: (typeof season.details?.series === 'object' && season.details.series && 'name' in season.details.series) ? season.details.series.name : 'N/A' },
         ],
     }
 
@@ -72,28 +101,27 @@ export default async function SeasonPage({ params }: { params: Promise<{ slug: s
         scrollItems.push({
             id: 'history',
             title: 'Season History',
-            description: season.basics?.description || 'A remarkable season of competition.',
+            description: 'Comprehensive overview of the competitive landscape and historical milestones of this season.',
             percentage: 100,
         })
     }
     if (season.details?.notes) {
         scrollItems.push({
             id: 'notes',
-            title: 'Season Notes',
+            title: 'Official Notes',
             description: season.details.notes,
             percentage: 75,
         })
     }
 
     const galleryItems: any[] = []
-    if (season.assets?.gallery) {
+    if (season.assets?.gallery && Array.isArray(season.assets.gallery)) {
         season.assets.gallery.forEach((item, idx) => {
-            const media = typeof item === 'object' ? item : null
-            const url = media ? getMediaUrl(media) : undefined
-            if (url && media) {
+            const url = getMediaUrl(item)
+            if (url) {
                 galleryItems.push({
-                    id: String(media.id),
-                    title: media.alt || season.name,
+                    id: String(typeof item === 'object' ? item.id : idx),
+                    title: (typeof item === 'object' && item.alt) || season.name,
                     image: url,
                     height: idx % 3 === 0 ? 'tall' as const : idx % 2 === 0 ? 'medium' as const : 'short' as const,
                 })
@@ -113,7 +141,7 @@ export default async function SeasonPage({ params }: { params: Promise<{ slug: s
     }
 
     return (
-        <main className="w-full">
+        <main className="w-full bg-black-pure">
             {videoItems.length > 0 && (
                 <VideoSection
                     id="season-video"
@@ -122,9 +150,9 @@ export default async function SeasonPage({ params }: { params: Promise<{ slug: s
                     videos={videoItems}
                     labels={{
                         channelPrefix: 'CH',
-                        broadcastStatus: 'LIVE',
-                        liveFeed: 'FEED',
-                        metaTransmission: 'TRANS',
+                        broadcastStatus: 'Live',
+                        liveFeed: 'Feed',
+                        metaTransmission: 'Data',
                     }}
                     autoplay={false}
                     showPlaylist={false}
@@ -135,7 +163,7 @@ export default async function SeasonPage({ params }: { params: Promise<{ slug: s
             <StudySection
                 id="season-details"
                 title="Season Overview"
-                subtitle="Key information"
+                subtitle="Primary competition information"
                 studies={[study]}
                 variant="featured"
                 headerVariant={1}
@@ -146,13 +174,13 @@ export default async function SeasonPage({ params }: { params: Promise<{ slug: s
             {scrollItems.length > 0 && (
                 <ScrollSection
                     id="season-history"
-                    title="History & Notes"
-                    subtitle="Season background"
+                    title="Archive"
+                    subtitle="Historical records and season notes"
                     items={scrollItems}
                     labels={{
-                        indexPrefix: 'SEC',
-                        progressLabel: 'PROG',
-                        statusComplete: 'DONE',
+                        indexPrefix: 'Part',
+                        progressLabel: 'Read',
+                        statusComplete: 'Done',
                     }}
                     variant="reveal"
                     headerVariant={2}
@@ -163,11 +191,11 @@ export default async function SeasonPage({ params }: { params: Promise<{ slug: s
                 <MasonrySection
                     id="season-gallery"
                     title="Gallery"
-                    subtitle="Season highlights"
+                    subtitle="Visual highlights from the season"
                     items={galleryItems}
                     labels={{
-                        categoryPrefix: 'CAT',
-                        idPrefix: 'IMG',
+                        categoryPrefix: 'Type',
+                        idPrefix: 'Photo',
                     }}
                     columns={3}
                     headerVariant={3}

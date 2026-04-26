@@ -1,10 +1,8 @@
 "use client"
-import { Activity, AlertTriangle, List, Monitor, Pause, Play, VideoOff, X } from 'lucide-react'
+import { Activity, AlertTriangle, ChevronLeft, ChevronRight, List, Monitor, Pause, Play, VideoOff, X } from 'lucide-react'
 import React, { useEffect, useRef, useState } from 'react'
 import BlueprintsBackground from '../Backgrounds/BlueprintsBackground'
 import SectionButton from '../Components/SectionButton'
-import SectionFooter from '../Components/SectionFooter'
-import SectionHeader from '../Components/SectionHeader'
 
 export interface VideoItem {
   id: string
@@ -41,24 +39,22 @@ interface VideoSectionProps {
 
 const VideoSection: React.FC<VideoSectionProps> = ({
   id,
-  title,
-  subtitle,
   videos = [],
   labels,
   autoplay = false,
   showPlaylist = true,
   ctaLabel,
   ctaPath,
-  headerVariant = 1,
-  footerVariant = 1,
   background = <BlueprintsBackground opacity={0.3} />
 }) => {
   const [activeVideo, setActiveVideo] = useState<VideoItem>(videos[0])
   const [isPlaying, setIsPlaying] = useState(autoplay)
   const [isPlaylistOpen, setIsPlaylistOpen] = useState(false)
+  const [isLoaded, setIsLoaded] = useState(false)
   const videoRef = useRef<HTMLVideoElement>(null)
 
   useEffect(() => {
+    setIsLoaded(true)
     if (isPlaylistOpen) {
       document.body.style.overflow = 'hidden'
     } else {
@@ -78,10 +74,7 @@ const VideoSection: React.FC<VideoSectionProps> = ({
   }
 
   const handleVideoEnd = () => {
-    if (videoRef.current) {
-      videoRef.current.currentTime = 0
-      videoRef.current.play()
-    }
+    handleNext()
   }
 
   const handleVideoSelect = (video: VideoItem) => {
@@ -90,22 +83,28 @@ const VideoSection: React.FC<VideoSectionProps> = ({
     setIsPlaylistOpen(false)
   }
 
-  return (
-    <section id={id} className="relative w-full bg-white-pure border-t border-black-pure overflow-hidden">
-      {background}
+  const handleNext = () => {
+    const currentIndex = videos.findIndex(v => v.id === activeVideo.id)
+    const nextIndex = (currentIndex + 1) % videos.length
+    handleVideoSelect(videos[nextIndex])
+  }
 
-      <SectionHeader
-        title={title}
-        subtitle={subtitle}
-        variant={headerVariant}
-        metadata={String(videos.length).padStart(2, '0')}
-      />
+  const handlePrevious = () => {
+    const currentIndex = videos.findIndex(v => v.id === activeVideo.id)
+    const prevIndex = (currentIndex - 1 + videos.length) % videos.length
+    handleVideoSelect(videos[prevIndex])
+  }
+
+  return (
+    <section id={id} className={`relative w-full bg-white-pure border-t border-black-pure overflow-hidden transition-opacity duration-1000 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}>
+      {background}
 
       <div className="w-full relative bg-black-pure">
         <div className="relative flex flex-col bg-black-pure min-h-[calc(100vh-200px)]">
-          <div className="absolute top-4 left-6 z-20 flex items-center gap-3">
-            <div className={`w-2 h-2 rounded-full animate-pulse ${hasVideoSource ? 'bg-primary-500' : 'bg-red-500'}`} />
-            <span className="text-[10px] font-mono font-black text-white-pure uppercase tracking-[0.2em]">
+
+          <div className="absolute top-0 left-0 z-20 p-6 flex items-center gap-4 bg-black-pure/40 backdrop-blur-md border-b border-r border-white-pure/10">
+            <div className={`w-3 h-3 ${hasVideoSource ? 'bg-primary-500' : 'bg-red-500'} animate-pulse`} />
+            <span className="text-xs font-bold text-white-pure uppercase tracking-[0.3em]">
               {activeVideo?.id}
             </span>
           </div>
@@ -113,20 +112,34 @@ const VideoSection: React.FC<VideoSectionProps> = ({
           {showPlaylist && (
             <button
               onClick={() => setIsPlaylistOpen(true)}
-              className="absolute top-4 right-6 z-20 w-10 h-10 border border-white-pure/20 bg-black-pure/80 backdrop-blur-sm flex items-center justify-center hover:bg-primary-500 hover:border-primary-500 focus:bg-primary-500 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 active:scale-95 transition-all duration-300 group"
+              className="absolute top-0 right-0 z-40 w-16 h-16 border-l border-b border-white-pure/20 bg-black-pure flex items-center justify-center hover:bg-primary-500 transition-all duration-300 group"
             >
-              <List className="w-4 h-4 text-white-pure group-hover:text-black-pure group-focus:text-black-pure group-active:text-black-pure" />
+              <List className="w-6 h-6 text-white-pure group-hover:text-black-pure transition-transform duration-300 group-hover:scale-110" />
             </button>
           )}
 
-          <div className="relative w-full overflow-hidden flex items-center justify-center bg-zinc-900" style={{ height: 'calc(100vh - 200px)' }}>
+          <div className="relative w-full overflow-hidden flex items-center justify-center bg-black-pure group/player" style={{ height: 'calc(100vh - 200px)' }}>
+            <button
+              onClick={handlePrevious}
+              className="absolute left-0 z-30 w-16 h-full flex items-center justify-center text-white-pure/0 hover:text-white-pure hover:bg-white-pure/5 transition-all duration-500"
+            >
+              <ChevronLeft className="w-10 h-10 translate-x-4 group-hover/player:translate-x-0 transition-transform duration-500" />
+            </button>
+
+            <button
+              onClick={handleNext}
+              className="absolute right-0 z-30 w-16 h-full flex items-center justify-center text-white-pure/0 hover:text-white-pure hover:bg-white-pure/5 transition-all duration-500"
+            >
+              <ChevronRight className="w-10 h-10 -translate-x-4 group-hover/player:translate-x-0 transition-transform duration-500" />
+            </button>
+
             {hasVideoSource ? (
               <>
                 <video
                   ref={videoRef}
                   src={activeVideo.url}
                   poster={activeVideo.poster}
-                  className="w-full h-full object-contain"
+                  className="w-full h-full object-cover opacity-90 transition-opacity duration-700"
                   onEnded={handleVideoEnd}
                   autoPlay={autoplay}
                   controls={false}
@@ -136,27 +149,26 @@ const VideoSection: React.FC<VideoSectionProps> = ({
                 {!isPlaying && (
                   <button
                     onClick={togglePlay}
-                    className="absolute inset-0 flex items-center justify-center group z-10 focus:outline-none focus:ring-4 focus:ring-primary-500 active:scale-95"
+                    className="absolute inset-0 flex items-center justify-center group z-10 transition-all duration-500"
                   >
-                    <div className="w-20 h-20 border border-white-pure/20 flex items-center justify-center bg-black-pure/40 backdrop-blur-sm group-hover:bg-primary-500 group-focus:bg-primary-500 group-active:bg-primary-500 transition-all duration-300">
-                      <Play className="w-8 h-8 text-white-pure fill-current group-hover:text-black-pure group-focus:text-black-pure group-active:text-black-pure" />
+                    <div className="w-24 h-24 border border-white-pure bg-black-pure/20 backdrop-blur-sm group-hover:bg-primary-500 group-hover:scale-110 transition-all duration-500 flex items-center justify-center">
+                      <Play className="w-10 h-10 text-white-pure fill-current group-hover:text-black-pure transition-colors" />
                     </div>
                   </button>
                 )}
               </>
             ) : (
               <div className="absolute inset-0 flex flex-col items-center justify-center bg-black-pure">
-                <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_2px,3px_100%]" />
-                <div className="flex flex-col items-center gap-6">
+                <div className="flex flex-col items-center gap-8 animate-in fade-in zoom-in duration-700">
                   <div className="relative">
-                    <VideoOff className="w-16 h-16 text-white-pure/10" />
-                    <AlertTriangle className="absolute -bottom-2 -right-2 w-8 h-8 text-primary-500 animate-pulse" />
+                    <VideoOff className="w-20 h-20 text-white-pure/5" />
+                    <AlertTriangle className="absolute -top-2 -right-2 w-10 h-10 text-primary-500" />
                   </div>
-                  <div className="text-center space-y-2">
-                    <p className="text-[10px] font-mono font-black text-primary-500 uppercase tracking-[0.4em] leading-none">
+                  <div className="text-center space-y-4">
+                    <p className="text-sm font-bold text-primary-500 uppercase tracking-[0.5em]">
                       {labels.statusLost || labels.liveFeed}
                     </p>
-                    <p className="text-[8px] font-mono font-black text-white-pure/20 uppercase tracking-widest">
+                    <p className="text-[10px] font-bold text-white-pure/30 uppercase tracking-[0.2em]">
                       {activeVideo?.id}
                     </p>
                   </div>
@@ -165,39 +177,39 @@ const VideoSection: React.FC<VideoSectionProps> = ({
             )}
           </div>
 
-          <div className="p-8 md:p-12 border-t border-white-pure/10 flex flex-col md:flex-row items-stretch md:items-center gap-8">
+          <div className="p-0 border-t border-white-pure/10 flex flex-col md:flex-row items-stretch">
             <button
               onClick={togglePlay}
               disabled={!hasVideoSource}
-              className={`w-16 h-16 border border-white-pure/20 flex items-center justify-center transition-all focus:outline-none focus:ring-4 focus:ring-primary-500 active:scale-95 ${hasVideoSource ? 'hover:bg-primary-500 focus:bg-primary-500 group cursor-pointer' : 'opacity-20 cursor-not-allowed'}`}
+              className={`w-24 h-24 border-r border-white-pure/10 flex items-center justify-center transition-all ${hasVideoSource ? 'hover:bg-primary-500 group' : 'opacity-10 cursor-not-allowed'}`}
             >
               {isPlaying ? (
-                <Pause className="w-6 h-6 text-white-pure group-hover:text-black-pure group-focus:text-black-pure" />
+                <Pause className="w-8 h-8 text-white-pure group-hover:text-black-pure transition-colors" />
               ) : (
-                <Play className="w-6 h-6 text-white-pure group-hover:text-black-pure group-focus:text-black-pure ml-1" />
+                <Play className="w-8 h-8 text-white-pure group-hover:text-black-pure transition-colors" />
               )}
             </button>
 
-            <div className="flex-grow">
-              <div className="flex items-center gap-4 mb-2">
+            <div className="flex-grow p-8 flex flex-col justify-center">
+              <div className="flex items-center gap-4 mb-3">
                 <Monitor className={`w-4 h-4 ${hasVideoSource ? 'text-primary-500' : 'text-red-500'}`} />
-                <span className={`text-[10px] font-mono font-black uppercase tracking-widest ${hasVideoSource ? 'text-primary-500' : 'text-red-500'}`}>
+                <span className={`text-[10px] font-bold uppercase tracking-[0.3em] ${hasVideoSource ? 'text-primary-500' : 'text-red-500'}`}>
                   {labels.broadcastStatus}
                 </span>
               </div>
-              <h4 className="text-xl md:text-3xl font-mono font-black text-white-pure uppercase italic tracking-tighter leading-none">
+              <h4 className="text-2xl md:text-4xl font-bold text-white-pure uppercase tracking-tight">
                 {activeVideo?.title}
               </h4>
               {activeVideo?.description && (
-                <p className="text-[11px] font-mono font-black text-white-pure/40 uppercase mt-2 tracking-wide truncate max-w-2xl">
+                <p className="text-xs font-medium text-white-pure/40 uppercase mt-4 tracking-widest max-w-3xl">
                   {activeVideo.description}
                 </p>
               )}
             </div>
 
-            <div className="hidden md:flex flex-col items-end shrink-0 opacity-40">
-              <Activity className="w-8 h-8 text-white-pure mb-2" />
-              <span className="text-[9px] font-mono font-black text-white-pure uppercase tracking-[0.3em]">
+            <div className="hidden md:flex flex-col items-center justify-center px-12 border-l border-white-pure/10 bg-white-pure/5">
+              <Activity className="w-6 h-6 text-primary-500 mb-3 animate-pulse" />
+              <span className="text-[10px] font-bold text-white-pure uppercase tracking-[0.4em]">
                 {activeVideo?.duration}
               </span>
             </div>
@@ -206,35 +218,33 @@ const VideoSection: React.FC<VideoSectionProps> = ({
       </div>
 
       {ctaLabel && ctaPath && (
-        <div className="p-16 flex justify-center bg-white-pure border-b border-black-pure">
+        <div className="p-20 flex justify-center bg-white-pure border-b border-black-pure">
           <SectionButton label={ctaLabel} href={ctaPath} variant="primary" size="lg" />
         </div>
       )}
 
-      <SectionFooter variant={footerVariant} />
-
       <div
-        className={`fixed inset-0 z-[110] bg-black-pure backdrop-blur-sm transition-opacity duration-300 ${isPlaylistOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
-          }`}
+        className={`fixed inset-0 z-[110] bg-black-pure/60 backdrop-blur-xl transition-opacity duration-700 ${isPlaylistOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
         onClick={() => setIsPlaylistOpen(false)}
       />
 
       <aside
-        className={`fixed top-0 right-0 z-[120] h-full w-full sm:w-[400px] md:w-[480px] bg-white-pure shadow-2xl border-l-2 border-black-pure transition-transform duration-500 ease-out transform ${isPlaylistOpen ? 'translate-x-0' : 'translate-x-full'
-          } flex flex-col`}
+        className={`fixed top-0 right-0 z-[120] h-full w-full sm:w-[450px] bg-white-pure border-l border-black-pure transition-transform duration-700 cubic-bezier(0.16, 1, 0.3, 1) ${isPlaylistOpen ? 'translate-x-0' : 'translate-x-full'} flex flex-col shadow-[0_0_100px_rgba(0,0,0,0.5)]`}
       >
-        <div className="p-6 border-b-2 border-black-pure bg-slate-50 flex items-center justify-between shrink-0">
-          <div className="flex items-center gap-3">
-            <div className="w-1 h-6 bg-primary-500" />
-            <span className="text-[10px] font-mono font-black text-black-pure uppercase tracking-widest">
-              {labels.channelPrefix} ({String(videos.length).padStart(2, '0')})
+        <div className="p-8 border-b border-black-pure bg-white-pure flex items-center justify-between">
+          <div className="flex flex-col gap-1">
+            <span className="text-[10px] font-bold text-black-pure/40 uppercase tracking-[0.3em]">
+              Media Gallery
+            </span>
+            <span className="text-lg font-bold text-black-pure uppercase tracking-tighter">
+              {labels.channelPrefix} / {String(videos.length).padStart(2, '0')}
             </span>
           </div>
           <button
             onClick={() => setIsPlaylistOpen(false)}
-            className="w-10 h-10 border-2 border-black-pure bg-white-pure flex items-center justify-center hover:bg-primary-500 focus:bg-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 active:scale-95 transition-all duration-300 group"
+            className="w-12 h-12 border border-black-pure flex items-center justify-center hover:bg-black-pure hover:text-white-pure transition-all duration-300 group"
           >
-            <X className="w-4 h-4 text-black-pure group-hover:text-black-pure group-focus:text-black-pure group-active:text-black-pure group-hover:rotate-90 group-focus:rotate-90 group-active:rotate-90 transition-transform duration-300" />
+            <X className="w-5 h-5 group-hover:rotate-180 transition-transform duration-500" />
           </button>
         </div>
 
@@ -245,33 +255,25 @@ const VideoSection: React.FC<VideoSectionProps> = ({
               <button
                 key={video.id}
                 onClick={() => handleVideoSelect(video)}
-                className={`w-full flex items-stretch border-b border-black-pure last:border-b-0 transition-all duration-150 group focus:outline-none focus:ring-2 focus:ring-primary-500 ${isActive ? 'bg-primary-500' : 'bg-white-pure hover:bg-slate-50 focus:bg-slate-50 active:bg-slate-100'
-                  }`}
+                className={`w-full flex items-stretch border-b border-black-pure last:border-b-0 transition-all duration-300 group relative overflow-hidden ${isActive ? 'bg-primary-500' : 'bg-white-pure hover:bg-black-pure hover:text-white-pure'}`}
               >
                 <div
-                  className={`w-20 flex items-center justify-center border-r border-black-pure shrink-0 transition-colors ${isActive ? 'bg-black-pure text-primary-500' : 'text-black-pure'
-                    }`}
+                  className={`w-16 flex items-center justify-center border-r border-black-pure shrink-0 transition-colors ${isActive ? 'bg-black-pure text-primary-500' : 'text-black-pure group-hover:text-white-pure'}`}
                 >
-                  <span className="text-base font-mono font-black italic">
+                  <span className="text-sm font-bold">
                     {String(idx + 1).padStart(2, '0')}
                   </span>
                 </div>
 
-                <div className="p-6 flex-grow flex flex-col text-left">
-                  <h4
-                    className={`text-sm font-mono font-black uppercase tracking-tight leading-tight mb-2 ${isActive ? 'text-black-pure' : 'text-black-pure'
-                      }`}
-                  >
+                <div className="p-8 flex-grow flex flex-col text-left">
+                  <h4 className={`text-sm font-bold uppercase tracking-tight mb-2 ${isActive ? 'text-black-pure' : ''}`}>
                     {video.title}
                   </h4>
-                  <div className="flex items-center gap-4">
-                    <span
-                      className={`text-[9px] font-mono font-black uppercase tracking-widest ${isActive ? 'text-black-pure' : 'text-black-pure'
-                        }`}
-                    >
+                  <div className="flex items-center gap-6">
+                    <span className={`text-[10px] font-bold uppercase tracking-widest ${isActive ? 'text-black-pure/60' : 'text-black-pure/40 group-hover:text-white-pure/60'}`}>
                       {video.duration}
                     </span>
-                    {isActive && <div className="h-px flex-grow bg-black-pure" />}
+                    {isActive && <div className="h-[2px] flex-grow bg-black-pure animate-in slide-in-from-left duration-500" />}
                   </div>
                 </div>
               </button>
@@ -279,20 +281,19 @@ const VideoSection: React.FC<VideoSectionProps> = ({
           })}
         </div>
 
-        <div className="p-6 bg-white-pure border-t-2 border-black-pure shrink-0">
+        <div className="p-8 bg-white-pure border-t border-black-pure flex flex-col gap-6">
           <SectionButton
-            label="CLOSE"
+            label={labels.metaTransmission}
             variant="primary"
             size="lg"
             fullWidth
             onClick={() => setIsPlaylistOpen(false)}
           />
-        </div>
-
-        <div className="h-1 w-full flex shrink-0">
-          <div className="flex-1 bg-primary-500" />
-          <div className="flex-1 bg-secondary-500" />
-          <div className="flex-1 bg-black-pure" />
+          <div className="flex h-1 gap-1">
+            <div className="flex-1 bg-primary-500 transition-all duration-500 hover:flex-[2]" />
+            <div className="flex-1 bg-black-pure transition-all duration-500 hover:flex-[2]" />
+            <div className="flex-1 bg-zinc-200 transition-all duration-500 hover:flex-[2]" />
+          </div>
         </div>
       </aside>
     </section>

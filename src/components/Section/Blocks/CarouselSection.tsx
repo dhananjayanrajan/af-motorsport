@@ -1,3 +1,4 @@
+// CarouselSection.tsx
 "use client"
 import Autoplay from 'embla-carousel-autoplay'
 import useEmblaCarousel from 'embla-carousel-react'
@@ -32,26 +33,18 @@ const CarouselSection: React.FC<CarouselSectionProps> = ({
   ctaLabel,
   ctaPath
 }) => {
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [itemsPerPage, setItemsPerPage] = useState(1)
 
   const [emblaRef, emblaApi] = useEmblaCarousel(
-    {
-      loop: true,
-      align: 'start',
-      skipSnaps: false,
-      containScroll: 'trimSnaps',
-      dragFree: true,
-      duration: 50
-    },
+    { loop: true, align: 'start', skipSnaps: false, containScroll: 'trimSnaps', dragFree: false, duration: 40 },
     [Autoplay({ delay: autoplayDelay, stopOnInteraction: false, stopOnMouseEnter: true })]
   )
 
   const updateItemsPerPage = useCallback(() => {
     const width = window.innerWidth
-    if (width >= 1280) setItemsPerPage(4)
-    else if (width >= 1024) setItemsPerPage(3)
+    if (width >= 1536) setItemsPerPage(4)
+    else if (width >= 1280) setItemsPerPage(3)
     else if (width >= 768) setItemsPerPage(2)
     else setItemsPerPage(1)
   }, [])
@@ -79,141 +72,108 @@ const CarouselSection: React.FC<CarouselSectionProps> = ({
 
   const getImageUrl = (image?: string, index: number = 0) => {
     if (image && image.trim() !== '') return image
-    return `https://picsum.photos/id/${(index + 120) * 2}/1200/1600`
+    return `https://picsum.photos/seed/${index + 50}/1200/1600`
   }
 
   return (
-    <section id={id} className="relative w-full h-screen flex flex-col bg-white-pure overflow-hidden">
+    <section id={id} className="relative w-full h-[90vh] md:h-screen flex flex-col bg-white-pure overflow-hidden border-t-2 border-black-pure">
       <div className="flex-grow flex w-full overflow-hidden" ref={emblaRef}>
         <div className="flex h-full w-full touch-pan-y">
           {slides.map((slide, idx) => (
             <div
               key={slide.id}
-              onMouseEnter={() => setHoveredIndex(idx)}
-              onMouseLeave={() => setHoveredIndex(null)}
               style={{ flex: `0 0 ${100 / itemsPerPage}%` }}
-              className="relative h-full cursor-grab active:cursor-grabbing group border-r border-black-pure last:border-r-0 overflow-hidden bg-black-pure"
+              className="relative h-full group border-r-2 border-black-pure last:border-r-0 overflow-hidden cursor-pointer"
             >
-              <Link
-                href={slide.ctaHref || '#'}
-                className="absolute inset-0 z-40 outline-none"
-                aria-label={slide.title}
-              />
+              <Link href={slide.ctaHref || '#'} className="absolute inset-0 z-40" aria-label={slide.title} />
 
               <div className="absolute inset-0 z-0 pointer-events-none">
                 <motion.img
                   src={getImageUrl(slide.image, idx)}
                   alt={slide.title}
-                  initial={false}
-                  animate={{
-                    scale: hoveredIndex === idx ? 1.05 : 1.2,
-                    opacity: hoveredIndex === idx ? 0.9 : 0.6
-                  }}
-                  transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ duration: 0.8 }}
                   className="absolute inset-0 w-full h-full object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-b from-black-pure via-black-pure/20 to-transparent opacity-80" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black-pure via-black-pure/20 to-transparent opacity-80" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black-pure/90 via-black-pure/30 to-transparent" />
               </div>
 
-              <div className="absolute inset-x-0 bottom-0 z-20 flex flex-col pointer-events-none p-12">
-                <div className="flex items-center gap-4 mb-6">
-                  <span className="text-[10px] font-mono font-black text-primary-500 tracking-[0.3em]">
+              <div className="absolute inset-x-0 bottom-0 z-20 flex flex-col p-6 sm:p-8 md:p-12">
+                <div className="flex items-center gap-3 mb-4">
+                  <span className="text-base font-mono font-black text-primary-500 uppercase tracking-widest">
                     {slide.meta}
                   </span>
+                  <div className="h-[2px] w-8 bg-primary-500/50" />
                 </div>
 
-                <h3 className="font-mono font-black tracking-normal text-white-pure leading-[0.9] mb-8 text-xl md:text-2xl lg:text-3xl max-w-[12ch]">
+                <h3 className="text-lg sm:text-xl md:text-2xl font-black text-white-pure uppercase tracking-tighter leading-tight mb-6 transition-colors group-hover:text-primary-500">
                   {slide.title}
                 </h3>
 
-                <div className={`
-                  transition-all duration-600 ease-[0.16,1,0.3,1]
-                  ${hoveredIndex === idx ? 'opacity-100 translate-y-0 max-h-60' : 'opacity-0 translate-y-12 max-h-0'}
-                `}>
-                  <p className="text-[11px] font-mono font-black text-white-pure/50 leading-relaxed mb-10 max-w-[280px]">
+                <div className="transition-all duration-500 overflow-hidden opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0">
+                  <p className="text-base font-sans font-bold text-white-pure/70 uppercase mb-8">
                     {slide.description}
                   </p>
-
                   {slide.ctaLabel && (
-                    <div className="inline-flex items-center bg-white-pure text-black-pure px-10 py-5 group-hover:bg-primary-500 transition-colors duration-100">
-                      <span className="text-[10px] font-mono font-black tracking-widest">
+                    <div className="inline-flex items-center gap-4 text-white-pure">
+                      <span className="text-base font-mono font-black uppercase tracking-widest border-b-2 border-primary-500 pb-1">
                         {slide.ctaLabel}
                       </span>
+                      <ArrowRight className="w-5 h-5 text-primary-500" />
                     </div>
                   )}
                 </div>
               </div>
 
-              <div className="absolute top-12 right-12 z-30">
-                <div className="flex flex-col items-end">
-                  <span className="text-xs font-mono font-black text-white-pure tracking-widest mb-2">
-                    Entry
-                  </span>
-                  <span className="text-2xl font-mono font-black text-primary">
-                    {String(idx + 1).padStart(2, '0')}
-                  </span>
-                </div>
+              <div className="absolute top-8 right-8 z-30">
+                <span className="text-base font-mono font-black text-white-pure/20 tabular-nums">
+                  {String(idx + 1).padStart(2, '0')}
+                </span>
               </div>
             </div>
           ))}
         </div>
       </div>
 
-      <div className="relative z-50 w-full bg-white-pure border-t border-black-pure h-20 md:h-28 flex items-stretch">
-        <div className="flex items-stretch border-r border-black-pure bg-black-pure px-10 group transition-colors duration-100 hover:bg-primary-500">
+      <div className="relative z-50 w-full bg-white-pure border-t-2 border-black-pure h-24 md:h-32 flex items-stretch">
+        <div className="hidden sm:flex items-stretch border-r-2 border-black-pure bg-white-100 px-8 md:px-12">
           <div className="flex flex-col justify-center">
-            <span className="text-xs font-mono font-black text-white-pure">Current Slide</span>
-            <span className="text-2xl font-mono font-black text-white-pure group-hover:text-black-pure tabular-nums">
+            <span className="text-base font-mono font-black text-black-pure/40 uppercase tracking-widest">CURRENT</span>
+            <span className="text-xl md:text-2xl font-mono font-black text-black-pure tabular-nums">
               {String(selectedIndex + 1).padStart(2, '0')}
             </span>
           </div>
         </div>
 
-        <div className="flex-grow flex items-center px-12 gap-16">
-          <div className="flex-grow h-1 bg-black-pure/5 relative">
+        <div className="flex-grow flex items-center px-6 md:px-12 gap-8 md:gap-12">
+          <div className="flex-grow h-[2px] bg-white-100 relative">
             <motion.div
               className="absolute h-full bg-black-pure left-0"
-              initial={false}
-              animate={{
-                width: `${((selectedIndex + 1) / slides.length) * 100}%`
-              }}
-              transition={{ type: "spring", stiffness: 150, damping: 30 }}
+              animate={{ width: `${((selectedIndex + 1) / slides.length) * 100}%` }}
+              transition={{ duration: 0.5, ease: "easeInOut" }}
             />
-            <div className="absolute top-4 left-0 w-full flex justify-between">
-              {slides.map((_, i) => (
-                <div key={i} className={`w-px h-2 bg-black-pure ${i === selectedIndex ? 'h-4 bg-primary-500' : ''}`} />
-              ))}
-            </div>
           </div>
 
-          <div className="hidden xl:flex items-center gap-8">
-            <div className="flex flex-col items-end">
-              <span className="text-xs font-mono font-black text-black-pure">Total Slides</span>
-              <span className="text-2xl font-mono font-black text-black-pure">{String(slides.length).padStart(2, '0')}</span>
-            </div>
+          <div className="flex items-stretch h-full py-6 md:py-8">
+            <button
+              onClick={scrollPrev}
+              className="w-12 md:w-16 h-full flex items-center justify-center border-2 border-black-pure text-black-pure hover:bg-black-pure hover:text-white-pure transition-colors focus-visible:ring-2 focus-visible:ring-primary-500"
+            >
+              <ChevronLeft className="h-5 w-5" />
+            </button>
+            <button
+              onClick={scrollNext}
+              className="w-12 md:w-16 h-full flex items-center justify-center border-y-2 border-r-2 border-black-pure text-black-pure hover:bg-black-pure hover:text-white-pure transition-colors focus-visible:ring-2 focus-visible:ring-primary-500"
+            >
+              <ChevronRight className="h-5 w-5" />
+            </button>
           </div>
-        </div>
-
-        <div className="flex items-stretch border-l border-black-pure">
-          <button
-            onClick={scrollPrev}
-            className="w-20 md:w-28 bg-white-pure hover:bg-black-pure hover:text-white-pure transition-colors duration-100 flex items-center justify-center group"
-          >
-            <ChevronLeft className="h-6 w-6 transition-transform group-hover:-translate-x-2" />
-          </button>
-          <button
-            onClick={scrollNext}
-            className="w-20 md:w-28 border-l border-black-pure bg-white-pure hover:bg-black-pure hover:text-white-pure transition-colors duration-100 flex items-center justify-center group"
-          >
-            <ChevronRight className="h-6 w-6 transition-transform group-hover:translate-x-2" />
-          </button>
         </div>
 
         {ctaLabel && ctaPath && (
           <Link
             href={ctaPath}
-            className="flex items-center px-16 bg-black-pure text-white-pure font-mono font-black text-[11px] tracking-[0.2em] hover:bg-primary-500 hover:text-black-pure transition-colors duration-100 border-l border-black-pure"
+            className="hidden lg:flex items-center px-10 md:px-16 bg-black-pure text-white-pure text-base font-mono font-black uppercase tracking-widest hover:bg-primary-500 hover:text-black-pure transition-colors border-l-2 border-black-pure focus-visible:ring-2 focus-visible:ring-primary-500"
           >
             {ctaLabel}
           </Link>
@@ -222,5 +182,11 @@ const CarouselSection: React.FC<CarouselSectionProps> = ({
     </section>
   )
 }
+
+const ArrowRight = ({ className }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square" strokeLinejoin="miter">
+    <path d="M5 12h14M12 5l7 7-7 7" />
+  </svg>
+)
 
 export default CarouselSection

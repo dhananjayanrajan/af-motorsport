@@ -1,4 +1,3 @@
-// app/(frontend)/opportunities/programs/[slug]/page.tsx
 import CarouselSection from '@/components/Section/Blocks/CarouselSection'
 import HeroSection from '@/components/Section/Blocks/HeroSection'
 import MasonrySection from '@/components/Section/Blocks/MasonrySection'
@@ -22,6 +21,34 @@ const getProgramData = unstable_cache(
             collection: 'programs',
             where: { slug: { equals: slug } },
             limit: 1,
+            depth: 1,
+            select: {
+                id: true,
+                name: true,
+                slug: true,
+                basics: {
+                    tagline: true,
+                    description: true,
+                    identifiers: { code: true },
+                },
+                assets: {
+                    cover: true,
+                    thumbnail: true,
+                    gallery: true,
+                },
+                seo: {
+                    image: true,
+                },
+                details: {
+                    objective: true,
+                    status: true,
+                    type: true,
+                    duration: true,
+                    start_date: true,
+                    partners: true,
+                    sponsors: true,
+                },
+            },
         })
         return result.docs[0] || null
     },
@@ -39,8 +66,13 @@ const getOrganizations = unstable_cache(
                 id: true,
                 name: true,
                 slug: true,
-                basics: true,
-                assets: true,
+                basics: {
+                    tagline: true,
+                },
+                assets: {
+                    logo: true,
+                    alt_logo: true,
+                },
             },
         })
         return result.docs as Organization[]
@@ -55,23 +87,15 @@ export default async function ProgramPage({ params }: { params: Promise<{ slug: 
 
     if (!program) notFound()
 
-    const organizations = await getOrganizations()
+    await getOrganizations()
 
     const heroActions = [
         { label: 'View Details', href: `/opportunities/programs/${program.slug}/details`, variant: 'primary' as const },
     ]
 
-    const heroBackgroundImage = program.assets?.cover
-        ? getMediaUrl(program.assets.cover)
-        : program.seo?.image
-            ? getMediaUrl(program.seo.image)
-            : undefined
+    const heroBackgroundImage = getMediaUrl(program.assets?.cover) || getMediaUrl(program.seo?.image)
 
-    const studyImage = program.assets?.cover
-        ? getMediaUrl(program.assets.cover)
-        : program.assets?.thumbnail
-            ? getMediaUrl(program.assets.thumbnail)
-            : undefined
+    const studyImage = getMediaUrl(program.assets?.cover) || getMediaUrl(program.assets?.thumbnail)
 
     const study = {
         id: String(program.id),
@@ -92,11 +116,7 @@ export default async function ProgramPage({ params }: { params: Promise<{ slug: 
         program.details.partners.forEach((partnerRef) => {
             const partner = partnerRef as Organization
             if (partner && typeof partner === 'object' && 'name' in partner) {
-                const imageUrl = partner.assets?.logo
-                    ? getMediaUrl(partner.assets.logo)
-                    : partner.assets?.alt_logo
-                        ? getMediaUrl(partner.assets.alt_logo)
-                        : `https://picsum.photos/seed/${partner.slug}/400/300`
+                const imageUrl = getMediaUrl(partner.assets?.logo) || getMediaUrl(partner.assets?.alt_logo) || `https://picsum.photos/seed/${partner.slug}/400/300`
 
                 organizationSlides.push({
                     id: String(partner.id),
@@ -114,11 +134,7 @@ export default async function ProgramPage({ params }: { params: Promise<{ slug: 
         program.details.sponsors.forEach((sponsorRef) => {
             const sponsor = sponsorRef as Organization
             if (sponsor && typeof sponsor === 'object' && 'name' in sponsor) {
-                const imageUrl = sponsor.assets?.logo
-                    ? getMediaUrl(sponsor.assets.logo)
-                    : sponsor.assets?.alt_logo
-                        ? getMediaUrl(sponsor.assets.alt_logo)
-                        : `https://picsum.photos/seed/${sponsor.slug}/400/300`
+                const imageUrl = getMediaUrl(sponsor.assets?.logo) || getMediaUrl(sponsor.assets?.alt_logo) || `https://picsum.photos/seed/${sponsor.slug}/400/300`
 
                 organizationSlides.push({
                     id: String(sponsor.id),
@@ -132,21 +148,17 @@ export default async function ProgramPage({ params }: { params: Promise<{ slug: 
         })
     }
 
-    const galleryItems: any[] = []
-    if (program.assets?.gallery) {
-        program.assets.gallery.forEach((item, idx) => {
-            const media = typeof item === 'object' ? item : null
-            const url = media ? getMediaUrl(media) : undefined
-            if (url && media) {
-                galleryItems.push({
-                    id: String(media.id),
-                    title: media.alt || program.name,
-                    image: url,
-                    height: idx % 3 === 0 ? 'tall' as const : idx % 2 === 0 ? 'medium' as const : 'short' as const,
-                })
-            }
-        })
-    }
+    const galleryItems: any[] = (program.assets?.gallery || []).map((item, idx) => {
+        const media = item as Media
+        const url = getMediaUrl(media)
+        if (!url) return null
+        return {
+            id: String(media.id),
+            title: media.alt || program.name,
+            image: url,
+            height: idx % 3 === 0 ? 'tall' as const : idx % 2 === 0 ? 'medium' as const : 'short' as const,
+        }
+    }).filter(Boolean)
 
     return (
         <main className="w-full">

@@ -1,4 +1,3 @@
-// app/(frontend)/resources/page.tsx
 import GridSection from '@/components/Section/Blocks/GridSection'
 import { Car, Garage, Helmet, Media, Suit } from '@/payload-types'
 import configPromise from '@payload-config'
@@ -20,52 +19,53 @@ const getResourcesData = unstable_cache(
                 collection: 'cars',
                 limit: 12,
                 sort: 'name',
+                depth: 1,
                 select: {
                     id: true,
                     name: true,
                     slug: true,
-                    basics: true,
-                    details: true,
-                    assets: true,
+                    basics: { identifiers: true, tagline: true },
+                    assets: { thumbnail: true, avatar: true, cover: true },
                 },
             }),
             payload.find({
                 collection: 'garages',
                 limit: 12,
                 sort: 'name',
+                depth: 1,
                 select: {
                     id: true,
                     name: true,
                     slug: true,
-                    basics: true,
-                    details: true,
-                    assets: true,
+                    basics: { tagline: true, identifiers: true },
+                    assets: { thumbnail: true, cover: true },
                 },
             }),
             payload.find({
                 collection: 'helmets',
                 limit: 12,
                 sort: 'name',
+                depth: 1,
                 select: {
                     id: true,
                     name: true,
                     slug: true,
-                    basics: true,
-                    details: true,
-                    assets: true,
+                    basics: { tagline: true },
+                    details: { designer: true },
+                    assets: { thumbnail: true, avatar: true, images: true },
                 },
             }),
             payload.find({
                 collection: 'suits',
                 limit: 12,
                 sort: 'name',
+                depth: 1,
                 select: {
                     id: true,
                     name: true,
                     slug: true,
-                    basics: true,
-                    details: true,
-                    assets: true,
+                    basics: { tagline: true },
+                    assets: { thumbnail: true, images: true },
                 },
             }),
         ])
@@ -84,70 +84,50 @@ const getResourcesData = unstable_cache(
 export default async function ResourcesPage() {
     const { cars, garages, helmets, suits } = await getResourcesData()
 
-    const carItems: any[] = cars.map((car: Car) => {
-        const imageUrl = car.assets?.thumbnail
-            ? getMediaUrl(car.assets.thumbnail)
-            : car.assets?.avatar
-                ? getMediaUrl(car.assets.avatar)
-                : car.assets?.cover
-                    ? getMediaUrl(car.assets.cover)
-                    : `https://picsum.photos/seed/${car.slug}/400/300`
+    const carItems = cars.map((car) => ({
+        id: String(car.id),
+        title: car.name || '',
+        subtitle: car.basics?.identifiers?.model || car.basics?.tagline || undefined,
+        image: getMediaUrl(car.assets?.thumbnail) ||
+            getMediaUrl(car.assets?.avatar) ||
+            getMediaUrl(car.assets?.cover) ||
+            `https://picsum.photos/seed/${car.slug}/400/300`,
+        href: `/resources/cars/${car.slug}`,
+    }))
 
-        return {
-            id: String(car.id),
-            title: car.name,
-            subtitle: car.basics?.identifiers?.model || car.basics?.tagline || undefined,
-            image: imageUrl,
-            href: `/resources/cars/${car.slug}`,
-        }
-    })
+    const garageItems = garages.map((garage) => ({
+        id: String(garage.id),
+        title: garage.name || '',
+        subtitle: garage.basics?.tagline || garage.basics?.identifiers?.code || undefined,
+        image: getMediaUrl(garage.assets?.thumbnail) ||
+            getMediaUrl(garage.assets?.cover) ||
+            `https://picsum.photos/seed/${garage.slug}/400/300`,
+        href: `/resources/garages/${garage.slug}`,
+    }))
 
-    const garageItems: any[] = garages.map((garage: Garage) => {
-        const imageUrl = garage.assets?.thumbnail
-            ? getMediaUrl(garage.assets.thumbnail)
-            : garage.assets?.cover
-                ? getMediaUrl(garage.assets.cover)
-                : `https://picsum.photos/seed/${garage.slug}/400/300`
-
-        return {
-            id: String(garage.id),
-            title: garage.name,
-            subtitle: garage.basics?.tagline || garage.basics?.identifiers?.code || undefined,
-            image: imageUrl,
-            href: `/resources/garages/${garage.slug}`,
-        }
-    })
-
-    const helmetItems: any[] = helmets.map((helmet: Helmet) => {
-        const imageUrl = helmet.assets?.thumbnail
-            ? getMediaUrl(helmet.assets.thumbnail)
-            : helmet.assets?.avatar
-                ? getMediaUrl(helmet.assets.avatar)
-                : helmet.assets?.images && helmet.assets.images.length > 0
-                    ? getMediaUrl(helmet.assets.images[0])
-                    : `https://picsum.photos/seed/${helmet.slug}/400/300`
-
+    const helmetItems = helmets.map((helmet) => {
+        const firstImage = helmet.assets?.images?.[0]
         return {
             id: String(helmet.id),
-            title: helmet.name,
+            title: helmet.name || '',
             subtitle: helmet.basics?.tagline || helmet.details?.designer || undefined,
-            image: imageUrl,
+            image: getMediaUrl(helmet.assets?.thumbnail) ||
+                getMediaUrl(helmet.assets?.avatar) ||
+                getMediaUrl(typeof firstImage === 'object' ? firstImage : null) ||
+                `https://picsum.photos/seed/${helmet.slug}/400/300`,
             href: `/resources/helmets/${helmet.slug}`,
         }
     })
 
-    const suitItems: any[] = suits.map((suit: Suit) => {
-        const imageUrl = suit.assets?.thumbnail
-            ? getMediaUrl(suit.assets.thumbnail)
-            : suit.assets?.images && suit.assets.images.length > 0
-                ? getMediaUrl(suit.assets.images[0])
-                : `https://picsum.photos/seed/${suit.slug}/400/300`
-
+    const suitItems = suits.map((suit) => {
+        const firstImage = suit.assets?.images?.[0]
         return {
             id: String(suit.id),
-            title: suit.name,
+            title: suit.name || '',
             subtitle: suit.basics?.tagline || undefined,
-            image: imageUrl,
+            image: getMediaUrl(suit.assets?.thumbnail) ||
+                getMediaUrl(typeof firstImage === 'object' ? firstImage : null) ||
+                `https://picsum.photos/seed/${suit.slug}/400/300`,
             href: `/resources/suits/${suit.slug}`,
         }
     })

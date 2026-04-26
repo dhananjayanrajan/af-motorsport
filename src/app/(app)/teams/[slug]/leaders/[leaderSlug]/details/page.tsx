@@ -21,6 +21,27 @@ const getLeaderDetailsData = unstable_cache(
             collection: 'leaders',
             where: { slug: { equals: slug } },
             limit: 1,
+            depth: 1, // Depth 1 for essential relationship resolution (Awards/Media)
+            select: {
+                id: true,
+                first_name: true,
+                last_name: true,
+                details: {
+                    quote: true,
+                    mission: true,
+                    vision: true,
+                    principles: {
+                        list: true,
+                    },
+                    awards: true,
+                    socials: {
+                        list: true,
+                    },
+                    websites: {
+                        list: true,
+                    },
+                },
+            },
         })
         return result.docs[0] || null
     },
@@ -34,26 +55,30 @@ export default async function LeaderDetailsPage({ params }: { params: Promise<{ 
 
     if (!leader) notFound()
 
+    const leaderName = `${leader.first_name || ''} ${leader.last_name || ''}`.trim() || 'Leader'
+
+    // 1. Complex Quote Logic with Priority Chain
     const quoteItem = leader.details?.quote
         ? {
             id: String(leader.id),
             text: leader.details.quote,
-            author: `${leader.first_name} ${leader.last_name}`,
+            author: leaderName,
         }
         : leader.details?.mission
             ? {
                 id: String(leader.id),
                 text: leader.details.mission,
-                author: `${leader.first_name} ${leader.last_name}`,
+                author: leaderName,
             }
             : leader.details?.vision
                 ? {
                     id: String(leader.id),
                     text: leader.details.vision,
-                    author: `${leader.first_name} ${leader.last_name}`,
+                    author: leaderName,
                 }
                 : null
 
+    // 2. High-Density Principle Mapping
     const principleEntries: any[] = []
     if (leader.details?.principles?.list) {
         leader.details.principles.list.forEach((principle) => {
@@ -68,6 +93,7 @@ export default async function LeaderDetailsPage({ params }: { params: Promise<{ 
         })
     }
 
+    // 3. Performance-Focused Award Resolution
     const awardItems: any[] = []
     if (leader.details?.awards) {
         leader.details.awards.forEach((awardRef) => {
@@ -89,6 +115,7 @@ export default async function LeaderDetailsPage({ params }: { params: Promise<{ 
         })
     }
 
+    // 4. Combined Connectivity Items (Socials + Websites)
     const socialItems: any[] = []
     if (leader.details?.socials?.list) {
         leader.details.socials.list.forEach((social) => {
@@ -122,7 +149,7 @@ export default async function LeaderDetailsPage({ params }: { params: Promise<{ 
                 <QuoteSection
                     id="leader-quote"
                     title="Words of Wisdom"
-                    subtitle={`${leader.first_name} ${leader.last_name}`}
+                    subtitle={leaderName}
                     quotes={[quoteItem]}
                     labels={{
                         commStatus: 'COMM',
@@ -146,8 +173,6 @@ export default async function LeaderDetailsPage({ params }: { params: Promise<{ 
                     }}
                     showStatus={true}
                     showTimestamp={false}
-                    headerVariant={2}
-                    footerVariant={1}
                 />
             )}
             {awardItems.length > 0 && (
@@ -167,7 +192,7 @@ export default async function LeaderDetailsPage({ params }: { params: Promise<{ 
             )}
             {(socialItems.length > 0 || websiteItems.length > 0) && (
                 <GridSection
-                    id="leader-socials"
+                    id="leader-connect"
                     title="Connect"
                     subtitle="Social media and websites"
                     items={[...socialItems, ...websiteItems]}

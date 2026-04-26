@@ -1,4 +1,3 @@
-// app/(frontend)/about/hospitalities/[slug]/details/page.tsx
 import GridSection from '@/components/Section/Blocks/GridSection'
 import ListSection from '@/components/Section/Blocks/ListSection'
 import MapSection from '@/components/Section/Blocks/MapSection'
@@ -21,6 +20,30 @@ const getHospitalityDetailsData = unstable_cache(
             collection: 'hospitalities',
             where: { slug: { equals: slug } },
             limit: 1,
+            depth: 1,
+            select: {
+                id: true,
+                name: true,
+                slug: true,
+                basics: {
+                    tagline: true,
+                },
+                assets: {
+                    documents: true,
+                },
+                details: {
+                    location: true,
+                    inclusions: {
+                        list: true,
+                    },
+                    exclusions: {
+                        list: true,
+                    },
+                    requirements: {
+                        list: true,
+                    },
+                },
+            },
         })
         return result.docs[0] || null
     },
@@ -35,7 +58,7 @@ export default async function HospitalityDetailsPage({ params }: { params: Promi
     if (!hospitality) notFound()
 
     const mapLocations: any[] = []
-    if (hospitality.details?.location) {
+    if (hospitality.details?.location && Array.isArray(hospitality.details.location)) {
         mapLocations.push({
             id: String(hospitality.id),
             name: hospitality.name,
@@ -85,15 +108,14 @@ export default async function HospitalityDetailsPage({ params }: { params: Promi
     }
 
     const documentItems: any[] = []
-    if (hospitality.assets?.documents) {
+    if (hospitality.assets?.documents && Array.isArray(hospitality.assets.documents)) {
         hospitality.assets.documents.forEach((doc, idx) => {
-            const media = typeof doc === 'object' ? doc : null
-            const url = media ? getMediaUrl(media) : undefined
-            if (url && media) {
+            const url = getMediaUrl(doc)
+            if (url) {
                 documentItems.push({
-                    id: String(media.id),
-                    title: media.alt || media.filename || `Document ${idx + 1}`,
-                    subtitle: media.mimeType || undefined,
+                    id: String(typeof doc === 'object' ? doc.id : idx),
+                    title: (typeof doc === 'object' && (doc.alt || doc.filename)) || `DOC_${idx + 1}`,
+                    subtitle: (typeof doc === 'object' && doc.mimeType) || 'APPLICATION/PDF',
                     image: url,
                     href: url,
                 })
@@ -106,16 +128,16 @@ export default async function HospitalityDetailsPage({ params }: { params: Promi
             {mapLocations.length > 0 && (
                 <MapSection
                     id="hospitality-map"
-                    title="Location"
-                    subtitle="Where to find us"
+                    title="DEPLOYMENT"
+                    subtitle="Geospatial coordinates for onsite access"
                     locations={mapLocations}
                     labels={{
-                        hqLabel: 'HQ',
+                        hqLabel: 'BASE',
                         intelLabel: 'INTEL',
-                        routeLabel: 'ROUTE',
-                        timeLabel: 'TIME',
-                        distLabel: 'DIST',
-                        recordLabel: 'VIEW',
+                        routeLabel: 'PATH',
+                        timeLabel: 'ETA',
+                        distLabel: 'RAD',
+                        recordLabel: 'LOG',
                         filterLabels: {
                             all: 'ALL',
                             primary: 'PRIMARY',
@@ -131,14 +153,14 @@ export default async function HospitalityDetailsPage({ params }: { params: Promi
             {inclusionItems.length > 0 && (
                 <GridSection
                     id="hospitality-inclusions"
-                    title="What's Included"
-                    subtitle="Everything that comes with your experience"
+                    title="INCLUSIONS"
+                    subtitle="Standard operational components included"
                     items={inclusionItems}
                     labels={{
                         unitsCount: 'ITEMS',
-                        viewProject: 'VIEW',
+                        viewProject: 'INFO',
                         sectionIndex: 'INC',
-                        fallbackAlt: 'Item',
+                        fallbackAlt: 'Inclusion',
                     }}
                     columns={3}
                 />
@@ -146,14 +168,14 @@ export default async function HospitalityDetailsPage({ params }: { params: Promi
             {exclusionItems.length > 0 && (
                 <GridSection
                     id="hospitality-exclusions"
-                    title="What's Not Included"
-                    subtitle="Please note the following exclusions"
+                    title="EXCLUSIONS"
+                    subtitle="Non-standard and optional parameters"
                     items={exclusionItems}
                     labels={{
                         unitsCount: 'ITEMS',
-                        viewProject: 'VIEW',
+                        viewProject: 'INFO',
                         sectionIndex: 'EXC',
-                        fallbackAlt: 'Item',
+                        fallbackAlt: 'Exclusion',
                     }}
                     columns={3}
                 />
@@ -161,31 +183,29 @@ export default async function HospitalityDetailsPage({ params }: { params: Promi
             {requirementEntries.length > 0 && (
                 <ListSection
                     id="hospitality-requirements"
-                    title="Requirements"
-                    subtitle="What you need to know before booking"
+                    title="CRITERIA"
+                    subtitle="Prerequisite specifications for entry"
                     entries={requirementEntries}
                     labels={{
-                        statusPrefix: 'STAT',
-                        timePrefix: 'TIME',
-                        indexPrefix: 'REQ',
+                        statusPrefix: 'REQD',
+                        timePrefix: 'SYNC',
+                        indexPrefix: 'CRIT',
                     }}
                     showStatus={false}
                     showTimestamp={false}
-                    headerVariant={3}
-                    footerVariant={2}
                 />
             )}
             {documentItems.length > 0 && (
                 <GridSection
                     id="hospitality-documents"
-                    title="Documents"
-                    subtitle="Additional information"
+                    title="ARCHIVE"
+                    subtitle="Technical documentation and media assets"
                     items={documentItems}
                     labels={{
                         unitsCount: 'DOCS',
-                        viewProject: 'VIEW',
-                        sectionIndex: 'DOC',
-                        fallbackAlt: 'Document',
+                        viewProject: 'FETCH',
+                        sectionIndex: 'DAT',
+                        fallbackAlt: 'File',
                     }}
                     columns={3}
                 />

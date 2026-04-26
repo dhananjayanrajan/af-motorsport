@@ -1,5 +1,6 @@
+// FeatureSection.tsx
 "use client"
-import { ArrowRight } from 'lucide-react'
+import { ArrowRight, Layers } from 'lucide-react'
 import Link from 'next/link'
 import React, { useEffect, useRef, useState } from 'react'
 import SectionFooter from '../Components/SectionFooter'
@@ -42,49 +43,58 @@ const FeatureSection: React.FC<FeatureSectionProps> = ({
     statsLabel: '',
     ctaLabel: ''
   },
-  columns = 3,
   ctaPath,
   headerVariant = 1,
   footerVariant = 1
 }) => {
-  const [visibleIndices, setVisibleIndices] = useState<Set<number>>(new Set())
-  const itemRefs = useRef<(HTMLDivElement | null)[]>([])
-
-  const gridCols = {
-    2: 'grid-cols-1 md:grid-cols-2',
-    3: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3',
-    4: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4'
-  }
-
-  const getImageUrl = (image?: string, index: number = 0) => {
-    if (image && image.trim() !== '') return image
-    return `https://picsum.photos/id/${(index + 40) * 3}/800/600`
-  }
+  const [scrollProgress, setScrollProgress] = useState(0)
+  const [isInSection, setIsInSection] = useState(false)
+  const [activeIndex, setActiveIndex] = useState(0)
+  const containerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (obsEntries) => {
-        obsEntries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const index = Number(entry.target.getAttribute('data-index'))
-            setVisibleIndices(prev => new Set(prev).add(index))
-            observer.unobserve(entry.target)
-          }
-        })
-      },
-      { threshold: 0.1 }
-    )
-    itemRefs.current.forEach((ref, idx) => {
-      if (ref) {
-        ref.setAttribute('data-index', String(idx))
-        observer.observe(ref)
+    const handleScroll = () => {
+      if (!containerRef.current) return
+
+      const rect = containerRef.current.getBoundingClientRect()
+      const windowHeight = window.innerHeight
+
+      const visible = rect.top < windowHeight && rect.bottom > 0
+      setIsInSection(visible)
+
+      if (visible) {
+        const totalHeight = rect.height - windowHeight
+        const currentScroll = Math.max(0, -rect.top)
+        const progress = currentScroll / totalHeight
+        setScrollProgress(Math.min(Math.max(progress, 0), 1))
+
+        const calculatedIndex = Math.floor(progress * features.length)
+        setActiveIndex(Math.min(calculatedIndex, features.length - 1))
       }
-    })
-    return () => observer.disconnect()
-  }, [features])
+    }
+
+    window.addEventListener("scroll", handleScroll)
+    handleScroll()
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [id, features.length])
+
+  const scrollToNext = () => {
+    const section = document.getElementById(id)
+    if (section) {
+      const nextSibling = section.nextElementSibling
+      if (nextSibling) {
+        nextSibling.scrollIntoView({ behavior: 'smooth' })
+      } else {
+        window.scrollTo({
+          top: section.offsetTop + section.offsetHeight,
+          behavior: 'smooth'
+        })
+      }
+    }
+  }
 
   return (
-    <section id={id} className="relative w-full bg-white-pure border-t border-black-pure overflow-hidden">
+    <section id={id} ref={containerRef} className="relative w-full bg-white-pure border-t border-black-pure">
       <SectionHeader
         title={title}
         subtitle={subtitle}
@@ -92,100 +102,114 @@ const FeatureSection: React.FC<FeatureSectionProps> = ({
         metadata={String(features.length).padStart(2, '0')}
       />
 
-      <div className="w-full px-4 md:px-8 py-10 md:py-16 bg-neutral-100">
-        <div className={`grid ${gridCols[columns]} gap-4 md:gap-6`}>
-          {features.map((feature, idx) => (
+      <div className="relative">
+        <div className="hidden lg:flex fixed left-10 top-1/2 -translate-y-1/2 z-40 flex-col gap-6 pointer-events-none">
+          {features.map((_, i) => (
             <div
-              key={feature.id}
-              ref={el => { itemRefs.current[idx] = el }}
-              className={`group relative flex flex-col bg-white-pure border border-black-pure transition-all duration-200 shadow-[4px_4px_0px_0px_#000000] hover:shadow-none hover:translate-x-[4px] hover:translate-y-[4px] active:scale-[0.98] ${visibleIndices.has(idx) ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
-                }`}
-            >
-              <div className="relative aspect-video overflow-hidden border-b border-black-pure bg-black-pure">
-                <img
-                  src={getImageUrl(feature.image, idx)}
-                  alt={feature.title}
-                  className="w-full h-full object-cover grayscale transition-all duration-300 group-hover:grayscale-0 group-hover:scale-105"
-                />
+              key={i}
+              className={`h-10 w-[2px] transition-all duration-700 ${i === activeIndex ? 'bg-primary-500' : 'bg-black-pure/10'}`}
+            />
+          ))}
+        </div>
 
-                <div className="absolute top-0 left-0 bg-primary px-2 py-0.5 border-b border-r border-black-pure">
-                  <span className="text-[10px] font-mono font-black text-black-pure tabular-nums">
+        {features.map((feature, idx) => (
+          <div
+            key={feature.id}
+            className="sticky top-0 h-screen w-full flex items-center justify-center border-b border-black-pure overflow-hidden group/item bg-white-pure"
+          >
+            <div className="relative z-10 w-full max-w-[1400px] px-6 sm:px-10 md:px-16 lg:px-24 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-center">
+
+              <div className="lg:col-span-6 flex flex-col justify-center space-y-6 md:space-y-8">
+                <div className="flex items-center gap-4">
+                  <span className="text-2xl font-bold text-primary-500">
                     {String(idx + 1).padStart(2, '0')}
                   </span>
-                </div>
-
-                <div className="absolute bottom-0 right-0 bg-white-pure px-2 py-0.5 border-t border-l border-black-pure">
-                  <span className="text-[7px] font-mono font-black text-black-pure uppercase tracking-widest">
+                  <div className="h-px w-10 bg-black-pure/20 transition-all duration-500 group-hover/item:w-20" />
+                  <span className="text-base font-bold text-black-pure/60 transition-colors duration-300 group-hover/item:text-primary-500">
                     {labels.specIndex}
                   </span>
                 </div>
-              </div>
 
-              <div className="p-5 flex flex-col flex-grow">
-                <div className="flex items-start justify-between mb-4">
-                  {feature.icon && (
-                    <div className="w-8 h-8 bg-black-pure flex items-center justify-center border border-black-pure group-hover:bg-primary transition-colors">
-                      <div className="text-primary group-hover:text-black-pure scale-75">
-                        {feature.icon}
-                      </div>
-                    </div>
-                  )}
-                  <div className="flex gap-1">
-                    <div className="w-1 h-1 bg-black-pure" />
-                    <div className="w-1 h-1 bg-black-pure group-hover:bg-primary transition-colors" />
-                    <div className="w-1 h-1 bg-black-pure" />
-                  </div>
+                <div className="space-y-4">
+                  <h3 className="text-2xl font-bold text-black-pure transition-colors duration-300 group-hover/item:text-primary-500">
+                    {feature.title}
+                  </h3>
+                  <p className="text-base font-medium text-black-pure/60">
+                    {feature.description}
+                  </p>
                 </div>
 
-                <h3 className="text-base font-mono font-black uppercase tracking-tight leading-none mb-3 group-hover:translate-x-1 transition-transform">
-                  {feature.title}
-                </h3>
-
-                <p className="text-[10px] font-mono font-bold text-black-pure uppercase tracking-wide leading-relaxed mb-6 line-clamp-3">
-                  {feature.description}
-                </p>
-
                 {feature.stats && feature.stats.length > 0 && (
-                  <div className="grid grid-cols-2 gap-[1px] bg-black-pure border border-black-pure mb-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
                     {feature.stats.map((stat, statIdx) => (
-                      <div key={statIdx} className="bg-white-pure p-2 group-hover:bg-neutral-50 transition-colors">
-                        <p className="text-[7px] font-mono font-black text-neutral-500 uppercase mb-1">
+                      <div key={statIdx} className="flex flex-col p-5 bg-neutral-50 border-l-2 border-black-pure hover:border-primary-500 transition-all duration-500 hover:translate-x-1">
+                        <span className="text-base font-bold text-black-pure/60 mb-1">
                           {stat.label}
-                        </p>
-                        <p className="text-[10px] font-mono font-black text-black-pure uppercase truncate tabular-nums">
+                        </span>
+                        <span className="text-2xl font-bold text-black-pure">
                           {stat.value}
-                        </p>
+                        </span>
                       </div>
                     ))}
                   </div>
                 )}
 
-                <div className="mt-auto">
+                <div className="pt-4">
                   <Link
                     href={ctaPath ? `${ctaPath}/${feature.id}` : `/${feature.id}`}
-                    className="flex items-center justify-between w-full py-2 px-3 border border-black-pure bg-white-pure text-black-pure font-mono font-black text-[9px] uppercase tracking-widest transition-all hover:bg-black-pure hover:text-primary"
+                    className="inline-flex items-center group/link"
                   >
-                    <span>{labels.ctaLabel}</span>
-                    <ArrowRight className="w-3 h-3 transition-transform group-hover:translate-x-1" />
+                    <div className="relative overflow-hidden bg-black-pure px-8 py-4 flex items-center gap-4 transition-all duration-500 hover:bg-primary-500 hover:translate-x-1">
+                      <span className="relative z-10 text-base font-bold text-white-pure group-hover/link:text-black-pure transition-colors duration-300">
+                        {labels.ctaLabel}
+                      </span>
+                      <ArrowRight className="relative z-10 w-5 h-5 text-white-pure group-hover/link:text-black-pure group-hover/link:translate-x-2 transition-all duration-300" />
+                    </div>
                   </Link>
                 </div>
               </div>
+
+              <div className="hidden lg:flex lg:col-span-6 relative aspect-[4/3] items-center justify-center overflow-hidden border border-black-pure bg-neutral-100">
+                <img
+                  src={feature.image || `https://picsum.photos/seed/${feature.id}/800/600`}
+                  alt={feature.title}
+                  className="w-full h-full object-cover transition-all duration-700 group-hover/item:scale-105"
+                />
+                <div className="absolute inset-0 bg-black-pure/0 group-hover/item:bg-black-pure/10 transition-colors duration-500" />
+
+                <div className="absolute bottom-0 left-0 bg-white-pure p-6 border-t border-r border-black-pure transition-all duration-500 translate-y-full group-hover/item:translate-y-0">
+                  {feature.icon ? (
+                    <div className="text-black-pure w-8 h-8">
+                      {feature.icon}
+                    </div>
+                  ) : (
+                    <Layers className="w-8 h-8 text-black-pure transition-transform duration-300 group-hover/item:rotate-12" />
+                  )}
+                </div>
+              </div>
+
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
       </div>
 
-      {ctaPath && labels.ctaLabel && (
-        <div className="p-12 flex justify-center bg-white-pure border-t border-black-pure">
-          <Link
-            href={ctaPath}
-            className="flex items-center gap-3 px-10 py-4 bg-white-pure text-black-pure font-mono font-black text-xs uppercase tracking-[0.3em] border border-black-pure shadow-[6px_6px_0px_0px_#000000] transition-all hover:shadow-none hover:translate-x-[6px] hover:translate-y-[6px] hover:bg-primary active:bg-black-pure active:text-primary"
-          >
-            <span>{labels.ctaLabel}</span>
-            <ArrowRight className="w-4 h-4" />
-          </Link>
-        </div>
-      )}
+      <div
+        className={`fixed bottom-8 right-8 z-[100] transition-all duration-700 ${isInSection ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0'}`}
+      >
+        <button
+          onClick={scrollToNext}
+          className="w-20 h-20 bg-white-pure border border-black-pure flex flex-col items-center justify-center group hover:bg-black-pure transition-all duration-500 hover:scale-105"
+        >
+          <div className="w-6 h-6 border-t-2 border-r-2 border-black-pure rotate-45 group-hover:border-white-pure transition-all duration-300" />
+          <span className="text-base font-bold text-black-pure group-hover:text-white-pure mt-2 transition-colors duration-300">
+            {Math.round(scrollProgress * 100)}%
+          </span>
+          <div
+            className="absolute bottom-0 left-0 h-[3px] bg-primary-500 transition-all duration-300"
+            style={{ width: `${scrollProgress * 100}%` }}
+          />
+        </button>
+      </div>
 
       <SectionFooter variant={footerVariant} />
     </section>

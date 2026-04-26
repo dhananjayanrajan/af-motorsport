@@ -1,4 +1,3 @@
-// app/(frontend)/resources/cars/[slug]/details/page.tsx
 import GridSection from '@/components/Section/Blocks/GridSection'
 import HeroSection from '@/components/Section/Blocks/HeroSection'
 import ListSection from '@/components/Section/Blocks/ListSection'
@@ -21,6 +20,33 @@ const getCarDetailsData = unstable_cache(
             collection: 'cars',
             where: { slug: { equals: slug } },
             limit: 1,
+            depth: 1,
+            select: {
+                id: true,
+                name: true,
+                basics: {
+                    tagline: true,
+                    description: true,
+                    identifiers: { chassis: true },
+                },
+                assets: {
+                    cover: true,
+                    documents: true,
+                },
+                seo: {
+                    image: true,
+                },
+                details: {
+                    status: true,
+                    manufacturers: true,
+                    classifications: {
+                        list: true,
+                    },
+                    specifications: {
+                        list: true,
+                    },
+                },
+            },
         })
         return result.docs[0] || null
     },
@@ -34,75 +60,53 @@ export default async function CarDetailsPage({ params }: { params: Promise<{ slu
 
     if (!car) notFound()
 
-    const heroBackgroundImage = car.assets?.cover
-        ? getMediaUrl(car.assets.cover)
-        : car.seo?.image
-            ? getMediaUrl(car.seo.image)
-            : undefined
+    const heroBackgroundImage = getMediaUrl(car.assets?.cover) || getMediaUrl(car.seo?.image)
 
-    const manufacturerEntries: any[] = []
-    if (car.details?.manufacturers) {
-        car.details.manufacturers.forEach((manufacturerRef) => {
-            const manufacturer = manufacturerRef as Organization
-            if (manufacturer && typeof manufacturer === 'object' && 'name' in manufacturer) {
-                manufacturerEntries.push({
-                    id: String(manufacturer.id),
-                    title: manufacturer.name,
-                    subtitle: manufacturer.basics?.type || manufacturer.basics?.industry || undefined,
-                    href: `/organizations/${manufacturer.slug}`,
-                })
-            }
-        })
-    }
+    const manufacturerEntries = (car.details?.manufacturers || [])
+        .filter((m): m is Organization => typeof m === 'object' && m !== null && 'name' in m)
+        .map((m) => ({
+            id: String(m.id),
+            title: m.name || '',
+            subtitle: m.basics?.type || m.basics?.industry || undefined,
+            href: `/organizations/${m.slug}`,
+        }))
 
-    const classificationEntries: any[] = []
-    if (car.details?.classifications?.list) {
-        car.details.classifications.list.forEach((classification) => {
-            if (classification.name) {
-                classificationEntries.push({
-                    id: classification.id || String(Math.random()),
-                    title: classification.name,
-                    subtitle: classification.description || classification.criteria || classification.definition || undefined,
-                })
-            }
-        })
-    }
+    const classificationEntries = (car.details?.classifications?.list || [])
+        .filter((c) => c.name)
+        .map((c, idx) => ({
+            id: c.id || String(idx),
+            title: c.name || '',
+            subtitle: c.description || c.criteria || c.definition || undefined,
+        }))
 
-    const specItems: any[] = []
-    if (car.details?.specifications?.list) {
-        car.details.specifications.list.forEach((spec) => {
-            if (spec.parameter) {
-                specItems.push({
-                    id: spec.id || String(Math.random()),
-                    title: spec.parameter,
-                    subtitle: spec.value || spec.description || undefined,
-                })
-            }
-        })
-    }
+    const specItems = (car.details?.specifications?.list || [])
+        .filter((s) => s.parameter)
+        .map((s, idx) => ({
+            id: s.id || String(idx),
+            title: s.parameter || '',
+            subtitle: s.value || s.description || undefined,
+        }))
 
-    const documentItems: any[] = []
-    if (car.assets?.documents) {
-        car.assets.documents.forEach((doc, idx) => {
+    const documentItems = (car.assets?.documents || [])
+        .map((doc, idx) => {
             const media = typeof doc === 'object' ? doc : null
-            const url = media ? getMediaUrl(media) : undefined
-            if (url && media) {
-                documentItems.push({
-                    id: String(media.id),
-                    title: media.alt || media.filename || `Document ${idx + 1}`,
-                    subtitle: media.mimeType || undefined,
-                    image: url,
-                    href: url,
-                })
+            const url = getMediaUrl(media)
+            if (!url || !media) return null
+            return {
+                id: String(media.id),
+                title: media.alt || media.filename || `Document ${idx + 1}`,
+                subtitle: media.mimeType || undefined,
+                image: url,
+                href: url,
             }
         })
-    }
+        .filter((d): d is NonNullable<typeof d> => d !== null)
 
     return (
         <main className="w-full">
             <HeroSection
                 id="car-details-cover"
-                title={car.name}
+                title={car.name || ''}
                 subtitle={car.basics?.tagline || 'Car Specifications'}
                 description={car.basics?.description || undefined}
                 backgroundImage={heroBackgroundImage}
@@ -122,8 +126,6 @@ export default async function CarDetailsPage({ params }: { params: Promise<{ slu
                     }}
                     showStatus={false}
                     showTimestamp={false}
-                    headerVariant={1}
-                    footerVariant={1}
                 />
             )}
             {classificationEntries.length > 0 && (
@@ -139,8 +141,6 @@ export default async function CarDetailsPage({ params }: { params: Promise<{ slu
                     }}
                     showStatus={false}
                     showTimestamp={false}
-                    headerVariant={2}
-                    footerVariant={1}
                 />
             )}
             {specItems.length > 0 && (

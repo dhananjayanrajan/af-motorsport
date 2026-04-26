@@ -1,4 +1,3 @@
-// app/(frontend)/teams/[slug]/page.tsx
 import GridSection from '@/components/Section/Blocks/GridSection'
 import MasonrySection from '@/components/Section/Blocks/MasonrySection'
 import QuoteSection from '@/components/Section/Blocks/QuoteSection'
@@ -23,6 +22,15 @@ const getTeamData = unstable_cache(
             collection: 'teams',
             where: { slug: { equals: slug } },
             limit: 1,
+            depth: 1,
+            select: {
+                id: true,
+                name: true,
+                slug: true,
+                basics: { tagline: true, description: true },
+                assets: { cover: true, logo: true, gallery: true },
+                details: { start_date: true, country: true, website: true, history: true },
+            },
         })
         return result.docs[0] || null
     },
@@ -35,15 +43,16 @@ const getTeamDrivers = unstable_cache(
         const payload = await getPayload({ config: configPromise })
         const result = await payload.find({
             collection: 'drivers',
-            where: {},
-            limit: 20,
+            where: { team: { equals: teamId } }, // Added filter logic
+            limit: 8,
+            depth: 1,
             select: {
                 id: true,
                 first_name: true,
                 last_name: true,
                 slug: true,
-                basics: true,
-                assets: true,
+                basics: { racing_number: true, nickname: true },
+                assets: { avatar: true },
             },
         })
         return result.docs as Driver[]
@@ -57,15 +66,16 @@ const getTeamLeaders = unstable_cache(
         const payload = await getPayload({ config: configPromise })
         const result = await payload.find({
             collection: 'leaders',
-            where: {},
-            limit: 20,
+            where: { team: { equals: teamId } }, // Added filter logic
+            limit: 8,
+            depth: 1,
             select: {
                 id: true,
                 first_name: true,
                 last_name: true,
                 slug: true,
-                basics: true,
-                assets: true,
+                basics: { title: true },
+                assets: { avatar: true },
             },
         })
         return result.docs as Leader[]
@@ -80,88 +90,73 @@ export default async function TeamPage({ params }: { params: Promise<{ slug: str
 
     if (!team) notFound()
 
-    const drivers = await getTeamDrivers(team.id)
-    const leaders = await getTeamLeaders(team.id)
+    const [drivers, leaders] = await Promise.all([
+        getTeamDrivers(team.id),
+        getTeamLeaders(team.id),
+    ])
 
-    const quoteItem = team.basics?.tagline
-        ? {
-            id: String(team.id),
-            text: team.basics.tagline,
-            author: team.name,
-        }
-        : null
+    const quoteItem = team.basics?.tagline ? {
+        id: String(team.id),
+        text: team.basics.tagline,
+        author: team.name || 'Team',
+    } : null
 
-    const studyImage = team.assets?.cover
-        ? getMediaUrl(team.assets.cover)
-        : team.assets?.logo
-            ? getMediaUrl(team.assets.logo)
-            : undefined
+    const studyImage = getMediaUrl(team.assets?.cover) ||
+        getMediaUrl(team.assets?.logo) ||
+        `https://picsum.photos/seed/${team.slug}/800/600`
+
+    const countryName = team.details?.country && typeof team.details.country === 'object' && 'name' in team.details.country
+        ? team.details.country.name
+        : 'N/A'
 
     const study = {
         id: String(team.id),
-        title: team.name,
+        title: team.name || '',
         description: team.basics?.description || '',
-        image: studyImage || `https://picsum.photos/seed/${team.slug}/800/600`,
+        image: studyImage,
         metrics: [
             { label: 'Founded', value: team.details?.start_date || 'N/A' },
-            { label: 'Country', value: team.details?.country && typeof team.details.country === 'object' && 'name' in team.details.country ? team.details.country.name : 'N/A' },
+            { label: 'Country', value: countryName },
             { label: 'Website', value: team.details?.website || 'N/A' },
         ],
     }
 
-    const scrollItems: any[] = []
-    if (team.details?.history) {
-        scrollItems.push({
-            id: 'history',
-            title: 'Team History',
-            description: team.basics?.description || 'A legacy of racing excellence.',
-            percentage: 100,
-        })
-    }
+    const scrollItems = team.details?.history ? [{
+        id: 'history',
+        title: 'Team History',
+        description: team.basics?.description || 'A legacy of racing excellence.',
+        percentage: 100,
+    }] : []
 
-    const driverItems: any[] = drivers.slice(0, 8).map((driver: Driver) => {
-        const imageUrl = driver.assets?.avatar
-            ? getMediaUrl(driver.assets.avatar)
-            : `https://picsum.photos/seed/${driver.slug}/400/300`
+    const driverItems = drivers.map((driver) => ({
+        id: String(driver.id),
+        title: `${driver.first_name || ''} ${driver.last_name || ''}`.trim() || 'Unknown Driver',
+        subtitle: driver.basics?.racing_number ? `#${driver.basics.racing_number}` : driver.basics?.nickname || undefined,
+        image: getMediaUrl(driver.assets?.avatar) || `https://picsum.photos/seed/${driver.slug}/400/300`,
+        href: `/teams/${team.slug}/drivers/${driver.slug}`,
+    }))
 
-        return {
-            id: String(driver.id),
-            title: `${driver.first_name} ${driver.last_name}`,
-            subtitle: driver.basics?.racing_number ? `#${driver.basics.racing_number}` : driver.basics?.nickname || undefined,
-            image: imageUrl,
-            href: `/teams/${team.slug}/drivers/${driver.slug}`,
-        }
-    })
+    const leaderItems = leaders.map((leader) => ({
+        id: String(leader.id),
+        title: `${leader.first_name || ''} ${leader.last_name || ''}`.trim() || 'Unknown Leader',
+        subtitle: leader.basics?.title || undefined,
+        image: getMediaUrl(leader.assets?.avatar) || `https://picsum.photos/seed/${leader.slug}/400/300`,
+        href: `/teams/${team.slug}/leaders/${leader.slug}`,
+    }))
 
-    const leaderItems: any[] = leaders.slice(0, 8).map((leader: Leader) => {
-        const imageUrl = leader.assets?.avatar
-            ? getMediaUrl(leader.assets.avatar)
-            : `https://picsum.photos/seed/${leader.slug}/400/300`
-
-        return {
-            id: String(leader.id),
-            title: `${leader.first_name} ${leader.last_name}`,
-            subtitle: leader.basics?.title || undefined,
-            image: imageUrl,
-            href: `/teams/${team.slug}/leaders/${leader.slug}`,
-        }
-    })
-
-    const galleryItems: any[] = []
-    if (team.assets?.gallery) {
-        team.assets.gallery.forEach((item, idx) => {
+    const galleryItems = (team.assets?.gallery || [])
+        .map((item, idx) => {
             const media = typeof item === 'object' ? item : null
-            const url = media ? getMediaUrl(media) : undefined
-            if (url && media) {
-                galleryItems.push({
-                    id: String(media.id),
-                    title: media.alt || team.name,
-                    image: url,
-                    height: idx % 3 === 0 ? 'tall' as const : idx % 2 === 0 ? 'medium' as const : 'short' as const,
-                })
+            const url = getMediaUrl(media)
+            if (!url || !media) return null
+            return {
+                id: String(media.id),
+                title: media.alt || team.name || '',
+                image: url,
+                height: (idx % 3 === 0 ? 'tall' : idx % 2 === 0 ? 'medium' : 'short') as 'tall' | 'medium' | 'short',
             }
         })
-    }
+        .filter((item): item is NonNullable<typeof item> => item !== null)
 
     return (
         <main className="w-full">

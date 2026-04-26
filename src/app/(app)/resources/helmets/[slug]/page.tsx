@@ -1,4 +1,3 @@
-// app/(frontend)/resources/helmets/[slug]/page.tsx
 import MasonrySection from '@/components/Section/Blocks/MasonrySection'
 import StudySection from '@/components/Section/Blocks/StudySection'
 import VideoSection from '@/components/Section/Blocks/VideoSection'
@@ -21,6 +20,28 @@ const getHelmetData = unstable_cache(
             collection: 'helmets',
             where: { slug: { equals: slug } },
             limit: 1,
+            depth: 1,
+            select: {
+                id: true,
+                name: true,
+                slug: true,
+                basics: {
+                    tagline: true,
+                    description: true,
+                },
+                assets: {
+                    video: true,
+                    thumbnail: true,
+                    avatar: true,
+                    images: true,
+                },
+                details: {
+                    usage: true,
+                    designer: true,
+                    style: true,
+                    year: true,
+                },
+            },
         })
         return result.docs[0] || null
     },
@@ -34,33 +55,28 @@ export default async function HelmetPage({ params }: { params: Promise<{ slug: s
 
     if (!helmet) notFound()
 
-    const videoItems: any[] = []
-    if (helmet.assets?.video) {
-        const videoUrl = getMediaUrl(helmet.assets.video)
-        if (videoUrl) {
-            videoItems.push({
-                id: String(helmet.id),
-                title: helmet.name,
-                description: helmet.basics?.tagline || undefined,
-                url: videoUrl,
-                poster: helmet.assets?.thumbnail ? getMediaUrl(helmet.assets.thumbnail) : helmet.assets?.avatar ? getMediaUrl(helmet.assets.avatar) : undefined,
-            })
-        }
-    }
+    const videoUrl = getMediaUrl(helmet.assets?.video)
+    const videoItems = videoUrl
+        ? [{
+            id: String(helmet.id),
+            title: helmet.name || '',
+            description: helmet.basics?.tagline || undefined,
+            url: videoUrl,
+            poster: getMediaUrl(helmet.assets?.thumbnail) || getMediaUrl(helmet.assets?.avatar),
+        }]
+        : []
 
-    const studyImage = helmet.assets?.avatar
-        ? getMediaUrl(helmet.assets.avatar)
-        : helmet.assets?.thumbnail
-            ? getMediaUrl(helmet.assets.thumbnail)
-            : helmet.assets?.images && helmet.assets.images.length > 0
-                ? getMediaUrl(helmet.assets.images[0])
-                : undefined
+    const firstGalleryImage = helmet.assets?.images?.[0]
+    const studyImage = getMediaUrl(helmet.assets?.avatar) ||
+        getMediaUrl(helmet.assets?.thumbnail) ||
+        getMediaUrl(typeof firstGalleryImage === 'object' ? firstGalleryImage : null) ||
+        `https://picsum.photos/seed/${helmet.slug}/800/600`
 
     const study = {
         id: String(helmet.id),
-        title: helmet.name,
+        title: helmet.name || '',
         description: helmet.basics?.description || helmet.basics?.tagline || '',
-        image: studyImage || `https://picsum.photos/seed/${helmet.slug}/800/600`,
+        image: studyImage,
         metrics: [
             { label: 'Usage', value: helmet.details?.usage || 'N/A' },
             { label: 'Designer', value: helmet.details?.designer || 'N/A' },
@@ -69,21 +85,19 @@ export default async function HelmetPage({ params }: { params: Promise<{ slug: s
         ],
     }
 
-    const galleryItems: any[] = []
-    if (helmet.assets?.images) {
-        helmet.assets.images.forEach((item, idx) => {
+    const galleryItems = (helmet.assets?.images || [])
+        .map((item, idx) => {
             const media = typeof item === 'object' ? item : null
-            const url = media ? getMediaUrl(media) : undefined
-            if (url && media) {
-                galleryItems.push({
-                    id: String(media.id),
-                    title: media.alt || helmet.name,
-                    image: url,
-                    height: idx % 3 === 0 ? 'tall' as const : idx % 2 === 0 ? 'medium' as const : 'short' as const,
-                })
+            const url = getMediaUrl(media)
+            if (!url || !media) return null
+            return {
+                id: String(media.id),
+                title: media.alt || helmet.name || '',
+                image: url,
+                height: (idx % 3 === 0 ? 'tall' : idx % 2 === 0 ? 'medium' : 'short') as 'tall' | 'medium' | 'short',
             }
         })
-    }
+        .filter((item): item is NonNullable<typeof item> => item !== null)
 
     return (
         <main className="w-full">
@@ -91,7 +105,7 @@ export default async function HelmetPage({ params }: { params: Promise<{ slug: s
                 <VideoSection
                     id="helmet-video"
                     title="Helmet Video"
-                    subtitle={helmet.name}
+                    subtitle={helmet.name || ''}
                     videos={videoItems}
                     labels={{
                         channelPrefix: 'CH',

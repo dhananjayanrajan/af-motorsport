@@ -1,4 +1,3 @@
-// app/(frontend)/opportunities/vacancies/[slug]/details/page.tsx
 import GridSection from '@/components/Section/Blocks/GridSection'
 import HeroSection from '@/components/Section/Blocks/HeroSection'
 import ListSection from '@/components/Section/Blocks/ListSection'
@@ -22,6 +21,34 @@ const getVacancyDetailsData = unstable_cache(
             collection: 'vacancies',
             where: { slug: { equals: slug } },
             limit: 1,
+            depth: 1,
+            select: {
+                id: true,
+                name: true,
+                basics: {
+                    title: true,
+                    description: true,
+                },
+                assets: {
+                    thumbnail: true,
+                },
+                seo: {
+                    image: true,
+                },
+                details: {
+                    department: true,
+                    contract: true,
+                    positions: {
+                        list: true,
+                    },
+                    specifications: {
+                        list: true,
+                    },
+                    expectations: {
+                        list: true,
+                    },
+                },
+            },
         })
         return result.docs[0] || null
     },
@@ -35,53 +62,34 @@ export default async function VacancyDetailsPage({ params }: { params: Promise<{
 
     if (!vacancy) notFound()
 
-    const heroBackgroundImage = vacancy.assets?.thumbnail
-        ? getMediaUrl(vacancy.assets.thumbnail)
-        : vacancy.seo?.image
-            ? getMediaUrl(vacancy.seo.image)
-            : undefined
+    const heroBackgroundImage = getMediaUrl(vacancy.assets?.thumbnail) || getMediaUrl(vacancy.seo?.image)
 
-    const positionEvents: any[] = []
-    if (vacancy.details?.positions?.list) {
-        vacancy.details.positions.list.forEach((pos, idx) => {
-            if (pos.title) {
-                positionEvents.push({
-                    id: pos.id || `pos-${idx}`,
-                    date: pos.start ? new Date(pos.start).toLocaleDateString() : 'TBD',
-                    title: pos.title,
-                    description: pos.end ? `Until ${new Date(pos.end).toLocaleDateString()}` : undefined,
-                    status: idx === 0 ? 'active' as const : 'upcoming' as const,
-                })
-            }
-        })
-    }
+    const positionEvents = (vacancy.details?.positions?.list || [])
+        .filter((pos) => pos.title)
+        .map((pos, idx) => ({
+            id: String(pos.id || idx),
+            date: pos.start ? new Date(pos.start).toLocaleDateString() : 'TBD',
+            title: pos.title || '',
+            description: pos.end ? `Until ${new Date(pos.end).toLocaleDateString()}` : undefined,
+            status: (idx === 0 ? 'active' : 'upcoming') as 'active' | 'upcoming',
+        }))
 
-    const specItems: any[] = []
-    if (vacancy.details?.specifications?.list) {
-        vacancy.details.specifications.list.forEach((spec) => {
-            if (spec.parameter) {
-                specItems.push({
-                    id: spec.id || String(Math.random()),
-                    title: spec.parameter,
-                    subtitle: spec.value || spec.description || undefined,
-                })
-            }
-        })
-    }
+    const specItems = (vacancy.details?.specifications?.list || [])
+        .filter((spec) => spec.parameter)
+        .map((spec) => ({
+            id: spec.id || String(Math.random()),
+            title: spec.parameter || '',
+            subtitle: spec.value || spec.description || undefined,
+        }))
 
-    const expectationEntries: any[] = []
-    if (vacancy.details?.expectations?.list) {
-        vacancy.details.expectations.list.forEach((exp) => {
-            if (exp.name) {
-                expectationEntries.push({
-                    id: exp.id || String(Math.random()),
-                    title: exp.name,
-                    subtitle: exp.statement || exp.criteria || undefined,
-                    status: exp.type || undefined,
-                })
-            }
-        })
-    }
+    const expectationEntries = (vacancy.details?.expectations?.list || [])
+        .filter((exp) => exp.name)
+        .map((exp) => ({
+            id: exp.id || String(Math.random()),
+            title: exp.name || '',
+            subtitle: exp.statement || exp.criteria || undefined,
+            status: exp.type || undefined,
+        }))
 
     return (
         <main className="w-full">
@@ -142,8 +150,6 @@ export default async function VacancyDetailsPage({ params }: { params: Promise<{
                     }}
                     showStatus={true}
                     showTimestamp={false}
-                    headerVariant={3}
-                    footerVariant={2}
                 />
             )}
         </main>

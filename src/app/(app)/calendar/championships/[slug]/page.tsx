@@ -1,4 +1,3 @@
-// app/(frontend)/calendar/championships/[slug]/page.tsx
 import FeatureSection from '@/components/Section/Blocks/FeatureSection'
 import MasonrySection from '@/components/Section/Blocks/MasonrySection'
 import ScrollSection from '@/components/Section/Blocks/ScrollSection'
@@ -16,6 +15,15 @@ function getMediaUrl(media: number | Media | null | undefined): string | undefin
     return undefined
 }
 
+function resolveAssetUrl(assets: any, ...keys: string[]): string | undefined {
+    if (!assets) return undefined
+    for (const key of keys) {
+        const url = getMediaUrl(assets[key])
+        if (url) return url
+    }
+    return undefined
+}
+
 const getChampionshipData = unstable_cache(
     async (slug: string) => {
         const payload = await getPayload({ config: configPromise })
@@ -23,6 +31,30 @@ const getChampionshipData = unstable_cache(
             collection: 'championships',
             where: { slug: { equals: slug } },
             limit: 1,
+            depth: 1,
+            select: {
+                id: true,
+                name: true,
+                slug: true,
+                basics: {
+                    description: true,
+                    tagline: true,
+                },
+                assets: {
+                    video: true,
+                    thumbnail: true,
+                    cover: true,
+                    trophy: true,
+                    gallery: true,
+                },
+                details: {
+                    format: true,
+                    standings_scope: true,
+                    start_date: true,
+                    end_date: true,
+                    history: true,
+                },
+            },
         })
         return result.docs[0] || null
     },
@@ -42,39 +74,35 @@ export default async function ChampionshipPage({ params }: { params: Promise<{ s
         if (videoUrl) {
             videoItems.push({
                 id: String(championship.id),
-                title: championship.name,
+                title: championship.name.toUpperCase(),
                 description: championship.basics?.tagline || undefined,
                 url: videoUrl,
-                poster: championship.assets?.thumbnail ? getMediaUrl(championship.assets.thumbnail) : undefined,
+                poster: resolveAssetUrl(championship.assets, 'thumbnail', 'cover'),
             })
         }
     }
 
-    const studyImage = championship.assets?.cover
-        ? getMediaUrl(championship.assets.cover)
-        : championship.assets?.thumbnail
-            ? getMediaUrl(championship.assets.thumbnail)
-            : undefined
+    const studyImage = resolveAssetUrl(championship.assets, 'cover', 'thumbnail')
 
     const study = {
         id: String(championship.id),
         title: championship.name,
         description: championship.basics?.description || championship.basics?.tagline || '',
-        image: studyImage || `https://picsum.photos/seed/${championship.slug}/800/600`,
+        image: studyImage || '',
         metrics: [
-            { label: 'Format', value: championship.details?.format || 'N/A' },
-            { label: 'Standings', value: championship.details?.standings_scope || 'N/A' },
-            { label: 'Start', value: championship.details?.start_date ? new Date(championship.details.start_date).toLocaleDateString() : 'TBD' },
-            { label: 'End', value: championship.details?.end_date ? new Date(championship.details.end_date).toLocaleDateString() : 'TBD' },
+            { label: 'FORMAT', value: championship.details?.format || 'N/A' },
+            { label: 'SCOPE', value: championship.details?.standings_scope || 'N/A' },
+            { label: 'INITIALIZED', value: championship.details?.start_date ? new Date(championship.details.start_date).toISOString().split('T')[0] : 'TBD' },
+            { label: 'CONCLUDED', value: championship.details?.end_date ? new Date(championship.details.end_date).toISOString().split('T')[0] : 'TBD' },
         ],
     }
 
     const trophyFeature = championship.assets?.trophy
         ? {
             id: 'trophy',
-            title: 'Championship Trophy',
-            description: 'The ultimate prize awarded to the champion',
-            image: getMediaUrl(championship.assets.trophy) || `https://picsum.photos/seed/trophy-${championship.slug}/400/300`,
+            title: 'TROPHY_SPEC',
+            description: 'The primary achievement credential awarded to the series victor.',
+            image: getMediaUrl(championship.assets.trophy) || '',
         }
         : null
 
@@ -82,21 +110,20 @@ export default async function ChampionshipPage({ params }: { params: Promise<{ s
     if (championship.details?.history) {
         scrollItems.push({
             id: 'history',
-            title: 'Championship History',
-            description: championship.basics?.description || 'A legacy of excellence in motorsport competition.',
+            title: 'CHRONOLOGY',
+            description: 'Comprehensive archival data documenting the evolution of this racing series.',
             percentage: 100,
         })
     }
 
     const galleryItems: any[] = []
-    if (championship.assets?.gallery) {
+    if (championship.assets?.gallery && Array.isArray(championship.assets.gallery)) {
         championship.assets.gallery.forEach((item, idx) => {
-            const media = typeof item === 'object' ? item : null
-            const url = media ? getMediaUrl(media) : undefined
-            if (url && media) {
+            const url = getMediaUrl(item)
+            if (url) {
                 galleryItems.push({
-                    id: String(media.id),
-                    title: media.alt || championship.name,
+                    id: String(typeof item === 'object' ? item.id : idx),
+                    title: (typeof item === 'object' && item.alt) || championship.name,
                     image: url,
                     height: idx % 3 === 0 ? 'tall' as const : idx % 2 === 0 ? 'medium' as const : 'short' as const,
                 })
@@ -109,14 +136,14 @@ export default async function ChampionshipPage({ params }: { params: Promise<{ s
             {videoItems.length > 0 && (
                 <VideoSection
                     id="championship-video"
-                    title="Championship Highlights"
-                    subtitle={championship.name}
+                    title="BROADCAST"
+                    subtitle="Visual telemetry and highlight feeds"
                     videos={videoItems}
                     labels={{
                         channelPrefix: 'CH',
-                        broadcastStatus: 'LIVE',
-                        liveFeed: 'FEED',
-                        metaTransmission: 'TRANS',
+                        broadcastStatus: 'REC',
+                        liveFeed: 'LIVE',
+                        metaTransmission: 'ENC',
                     }}
                     autoplay={false}
                     showPlaylist={false}
@@ -126,8 +153,8 @@ export default async function ChampionshipPage({ params }: { params: Promise<{ s
             )}
             <StudySection
                 id="championship-details"
-                title="Championship Overview"
-                subtitle="Key information"
+                title="SPECIFICATIONS"
+                subtitle="Technical series data and operational parameters"
                 studies={[study]}
                 variant="featured"
                 headerVariant={1}
@@ -136,13 +163,13 @@ export default async function ChampionshipPage({ params }: { params: Promise<{ s
             {trophyFeature && (
                 <FeatureSection
                     id="championship-trophy"
-                    title="The Prize"
-                    subtitle="Championship trophy"
+                    title="ACHIEVEMENT"
+                    subtitle="Championship accolade specifications"
                     features={[trophyFeature]}
                     labels={{
                         specIndex: 'TRP',
-                        statsLabel: 'INFO',
-                        ctaLabel: 'VIEW',
+                        statsLabel: 'DATA',
+                        ctaLabel: 'SCAN',
                     }}
                     columns={2}
                     headerVariant={2}
@@ -152,13 +179,13 @@ export default async function ChampionshipPage({ params }: { params: Promise<{ s
             {scrollItems.length > 0 && (
                 <ScrollSection
                     id="championship-history"
-                    title="History"
-                    subtitle="The story of this championship"
+                    title="ARCHIVE"
+                    subtitle="Historical performance documentation"
                     items={scrollItems}
                     labels={{
-                        indexPrefix: 'SEC',
-                        progressLabel: 'PROG',
-                        statusComplete: 'DONE',
+                        indexPrefix: 'LOG',
+                        progressLabel: 'DATA',
+                        statusComplete: 'SYNC',
                     }}
                     variant="reveal"
                     headerVariant={1}
@@ -168,17 +195,17 @@ export default async function ChampionshipPage({ params }: { params: Promise<{ s
             {galleryItems.length > 0 && (
                 <MasonrySection
                     id="championship-gallery"
-                    title="Gallery"
-                    subtitle="Moments from the championship"
+                    title="MEDIA"
+                    subtitle="Documented visual intelligence"
                     items={galleryItems}
                     labels={{
-                        categoryPrefix: 'CAT',
+                        categoryPrefix: 'TYPE',
                         idPrefix: 'IMG',
                     }}
                     columns={3}
                     headerVariant={3}
                     footerVariant={2}
-                    ctaLabel="View Full Details"
+                    ctaLabel="VIEW FULL PARAMETERS"
                     ctaPath={`/calendar/championships/${championship.slug}/details`}
                 />
             )}

@@ -24,6 +24,28 @@ const getLeaderData = unstable_cache(
             collection: 'leaders',
             where: { slug: { equals: slug } },
             limit: 1,
+            depth: 1,
+            select: {
+                id: true,
+                first_name: true,
+                last_name: true,
+                slug: true,
+                basics: {
+                    title: true,
+                    nationality: true,
+                    debut_date: true,
+                },
+                details: {
+                    mission: true,
+                    biography: true,
+                    history: true,
+                },
+                assets: {
+                    avatar: true,
+                    cover: true,
+                    gallery: true,
+                },
+            },
         })
         return result.docs[0] || null
     },
@@ -37,13 +59,17 @@ const getCelebrations = unstable_cache(
         const result = await payload.find({
             collection: 'celebrations',
             limit: 8,
+            depth: 1,
             select: {
                 id: true,
                 name: true,
                 slug: true,
-                basics: true,
-                details: true,
-                assets: true,
+                basics: {
+                    description: true,
+                },
+                assets: {
+                    thumbnail: true,
+                },
             },
         })
         return result.docs as Celebration[]
@@ -58,13 +84,19 @@ const getInterviews = unstable_cache(
         const result = await payload.find({
             collection: 'interviews',
             limit: 8,
+            depth: 1,
             select: {
                 id: true,
                 name: true,
                 slug: true,
-                basics: true,
-                details: true,
-                assets: true,
+                basics: {
+                    summary: true,
+                    tagline: true,
+                },
+                assets: {
+                    thumbnail: true,
+                    cover: true,
+                },
             },
         })
         return result.docs as Interview[]
@@ -75,20 +107,25 @@ const getInterviews = unstable_cache(
 
 export default async function LeaderPage({ params }: { params: Promise<{ teamSlug: string; leaderSlug: string }> }) {
     const { teamSlug, leaderSlug } = await params
-    const leader = await getLeaderData(leaderSlug)
+
+    // CRITICAL PERFORMANCE: Parallelized data fetching
+    const [leader, celebrations, interviews] = await Promise.all([
+        getLeaderData(leaderSlug),
+        getCelebrations(),
+        getInterviews(),
+    ])
 
     if (!leader) notFound()
 
-    const celebrations = await getCelebrations()
-    const interviews = await getInterviews()
-
     const videoItems: any[] = []
 
+    // Study Section Logic Preservation
     const studyImage = leader.assets?.avatar
         ? getMediaUrl(leader.assets.avatar)
         : leader.assets?.cover
             ? getMediaUrl(leader.assets.cover)
             : undefined
+
     const study = {
         id: String(leader.id),
         title: `${leader.first_name} ${leader.last_name}`,
@@ -103,6 +140,7 @@ export default async function LeaderPage({ params }: { params: Promise<{ teamSlu
 
     const autographFeatures: any[] = []
 
+    // Scroll Items High-Density Logic
     const scrollItems: any[] = []
     if (leader.details?.biography) {
         scrollItems.push({
@@ -121,6 +159,7 @@ export default async function LeaderPage({ params }: { params: Promise<{ teamSlu
         })
     }
 
+    // Gallery Masonry Imperative Mapping
     const galleryItems: any[] = []
     if (leader.assets?.gallery) {
         leader.assets.gallery.forEach((item, idx) => {
@@ -148,6 +187,7 @@ export default async function LeaderPage({ params }: { params: Promise<{ teamSlu
         }
     }
 
+    // Grid Mapping for Celebrations & Interviews
     const celebrationItems: any[] = celebrations.map((celebration: Celebration) => {
         const imageUrl = celebration.assets?.thumbnail
             ? getMediaUrl(celebration.assets.thumbnail)

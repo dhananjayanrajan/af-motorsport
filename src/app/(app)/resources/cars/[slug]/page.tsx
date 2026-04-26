@@ -1,4 +1,3 @@
-// app/(frontend)/resources/cars/[slug]/page.tsx
 import MasonrySection from '@/components/Section/Blocks/MasonrySection'
 import ScrollSection from '@/components/Section/Blocks/ScrollSection'
 import StudySection from '@/components/Section/Blocks/StudySection'
@@ -22,6 +21,29 @@ const getCarData = unstable_cache(
             collection: 'cars',
             where: { slug: { equals: slug } },
             limit: 1,
+            depth: 1,
+            select: {
+                id: true,
+                name: true,
+                slug: true,
+                basics: {
+                    tagline: true,
+                    description: true,
+                    identifiers: { chassis: true, model: true },
+                },
+                assets: {
+                    video: true,
+                    thumbnail: true,
+                    cover: true,
+                    avatar: true,
+                    gallery: true,
+                },
+                details: {
+                    status: true,
+                    technicalCategories: true,
+                    history: true,
+                },
+            },
         })
         return result.docs[0] || null
     },
@@ -35,33 +57,27 @@ export default async function CarPage({ params }: { params: Promise<{ slug: stri
 
     if (!car) notFound()
 
-    const videoItems: any[] = []
-    if (car.assets?.video) {
-        const videoUrl = getMediaUrl(car.assets.video)
-        if (videoUrl) {
-            videoItems.push({
-                id: String(car.id),
-                title: car.name,
-                description: car.basics?.tagline || undefined,
-                url: videoUrl,
-                poster: car.assets?.thumbnail ? getMediaUrl(car.assets.thumbnail) : car.assets?.cover ? getMediaUrl(car.assets.cover) : undefined,
-            })
-        }
-    }
+    const videoUrl = getMediaUrl(car.assets?.video)
+    const videoItems = videoUrl
+        ? [{
+            id: String(car.id),
+            title: car.name || '',
+            description: car.basics?.tagline || undefined,
+            url: videoUrl,
+            poster: getMediaUrl(car.assets?.thumbnail) || getMediaUrl(car.assets?.cover),
+        }]
+        : []
 
-    const studyImage = car.assets?.cover
-        ? getMediaUrl(car.assets.cover)
-        : car.assets?.avatar
-            ? getMediaUrl(car.assets.avatar)
-            : car.assets?.thumbnail
-                ? getMediaUrl(car.assets.thumbnail)
-                : undefined
+    const studyImage = getMediaUrl(car.assets?.cover) ||
+        getMediaUrl(car.assets?.avatar) ||
+        getMediaUrl(car.assets?.thumbnail) ||
+        `https://picsum.photos/seed/${car.slug}/800/600`
 
     const study = {
         id: String(car.id),
-        title: car.name,
+        title: car.name || '',
         description: car.basics?.description || car.basics?.tagline || '',
-        image: studyImage || `https://picsum.photos/seed/${car.slug}/800/600`,
+        image: studyImage,
         metrics: [
             { label: 'Chassis', value: car.basics?.identifiers?.chassis || 'N/A' },
             { label: 'Model', value: car.basics?.identifiers?.model || 'N/A' },
@@ -70,39 +86,37 @@ export default async function CarPage({ params }: { params: Promise<{ slug: stri
         ],
     }
 
-    const scrollItems: any[] = []
-    if (car.details?.history) {
-        scrollItems.push({
+    const scrollItems = car.details?.history
+        ? [{
             id: 'history',
             title: 'Car History',
             description: car.basics?.description || 'A remarkable racing machine with a storied past.',
             percentage: 100,
-        })
-    }
+        }]
+        : []
 
-    const galleryItems: any[] = []
-    if (car.assets?.gallery) {
-        car.assets.gallery.forEach((item, idx) => {
+    let galleryItems = (car.assets?.gallery || [])
+        .map((item, idx) => {
             const media = typeof item === 'object' ? item : null
-            const url = media ? getMediaUrl(media) : undefined
-            if (url && media) {
-                galleryItems.push({
-                    id: String(media.id),
-                    title: media.alt || car.name,
-                    image: url,
-                    height: idx % 3 === 0 ? 'tall' as const : idx % 2 === 0 ? 'medium' as const : 'short' as const,
-                })
+            const url = getMediaUrl(media)
+            if (!url || !media) return null
+            return {
+                id: String(media.id),
+                title: media.alt || car.name || '',
+                image: url,
+                height: (idx % 3 === 0 ? 'tall' : idx % 2 === 0 ? 'medium' : 'short') as 'tall' | 'medium' | 'short',
             }
         })
-    }
+        .filter((item): item is NonNullable<typeof item> => item !== null)
+
     if (galleryItems.length === 0 && car.assets?.cover) {
-        const url = getMediaUrl(car.assets.cover)
-        if (url) {
+        const coverUrl = getMediaUrl(car.assets.cover)
+        if (coverUrl) {
             galleryItems.push({
                 id: String(car.id),
-                title: car.name,
-                image: url,
-                height: 'medium' as const,
+                title: car.name || '',
+                image: coverUrl,
+                height: 'medium',
             })
         }
     }

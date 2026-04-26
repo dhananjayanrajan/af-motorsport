@@ -1,3 +1,4 @@
+// SectionScroller.tsx
 "use client"
 import React, { useEffect, useRef, useState } from 'react'
 
@@ -10,7 +11,7 @@ interface SectionScrollerProps {
 
 const SectionScroller: React.FC<SectionScrollerProps> = ({
     items,
-    delimiter = <span className="text-current px-4 sm:px-6 opacity-30 font-black">//</span>,
+    delimiter = <span className="text-current px-6 opacity-30 font-bold">//</span>,
     velocity = 30,
     variant = 1
 }) => {
@@ -63,11 +64,11 @@ const SectionScroller: React.FC<SectionScrollerProps> = ({
 
     const getVariantStyles = () => {
         switch (variant) {
-            case 2: return { bg: "bg-black-pure", text: "text-primary-500", h: "h-12 md:h-14", border: "border-white-pure/20" }
-            case 3: return { bg: "bg-secondary-500", text: "text-black-pure", h: "h-14 md:h-16 lg:h-20", border: "border-black-pure" }
-            case 4: return { bg: "bg-white-pure", text: "text-tertiary-500", h: "h-12 md:h-14 lg:h-16", border: "border-black-pure" }
-            case 5: return { bg: "bg-tertiary-500", text: "text-black-pure", h: "h-16 md:h-20 lg:h-24", border: "border-black-pure" }
-            default: return { bg: "bg-primary-500", text: "text-black-pure", h: "h-12 md:h-16", border: "border-black-pure" }
+            case 2: return { bg: "bg-black-pure", text: "text-primary-500", h: "h-14", border: "border-white-pure/20" }
+            case 3: return { bg: "bg-secondary-500", text: "text-black-pure", h: "h-16", border: "border-black-pure" }
+            case 4: return { bg: "bg-white-pure", text: "text-black-pure", h: "h-14", border: "border-black-pure" }
+            case 5: return { bg: "bg-primary-500", text: "text-black-pure", h: "h-20", border: "border-black-pure" }
+            default: return { bg: "bg-primary-500", text: "text-black-pure", h: "h-14", border: "border-black-pure" }
         }
     }
 
@@ -77,9 +78,9 @@ const SectionScroller: React.FC<SectionScrollerProps> = ({
         <div key={groupIndex} className="flex items-center">
             {items.map((item, i) => (
                 <React.Fragment key={i}>
-                    <div className="flex items-center gap-2 sm:gap-3 group/item">
-                        <span className="text-[8px] sm:text-[10px] font-black font-mono opacity-40">{String(i + 1).padStart(2, '0')}</span>
-                        <span className={`text-xs sm:text-sm md:text-base font-black tracking-wider font-mono uppercase px-2 sm:px-3 md:px-4 whitespace-nowrap ${styles.text} group-hover/item:scale-110 transition-transform duration-300 cursor-default`}>
+                    <div className="flex items-center gap-3 group/item">
+                        <span className="text-base font-bold opacity-40">{String(i + 1).padStart(2, '0')}</span>
+                        <span className={`text-base font-bold px-4 whitespace-nowrap ${styles.text} transition-transform duration-300 group-hover/item:scale-110 cursor-default`}>
                             {item}
                         </span>
                     </div>
@@ -90,9 +91,9 @@ const SectionScroller: React.FC<SectionScrollerProps> = ({
     )
 
     return (
-        <div className={`w-full ${styles.bg} border-y-2 ${styles.border} overflow-hidden shrink-0 ${styles.h} flex items-center relative group`}>
-            <div className={`absolute left-0 top-0 bottom-0 w-12 sm:w-16 bg-gradient-to-r ${styles.bg} to-transparent z-10 pointer-events-none`} />
-            <div className={`absolute right-0 top-0 bottom-0 w-12 sm:w-16 bg-gradient-to-l ${styles.bg} to-transparent z-10 pointer-events-none`} />
+        <div className={`w-full ${styles.bg} border-y ${styles.border} overflow-hidden shrink-0 ${styles.h} flex items-center relative group`}>
+            <div className={`absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r ${styles.bg} to-transparent z-10 pointer-events-none`} />
+            <div className={`absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l ${styles.bg} to-transparent z-10 pointer-events-none`} />
             <div className={`flex whitespace-nowrap ${animationClass} group-hover:scroller-pause`} style={{ animationDuration: `${velocity}s` }}>
                 {[...Array(4)].map((_, i) => renderGroup(i))}
             </div>

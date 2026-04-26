@@ -1,4 +1,3 @@
-// app/(frontend)/legal/policies/[slug]/page.tsx
 import FeatureSection from '@/components/Section/Blocks/FeatureSection'
 import GridSection from '@/components/Section/Blocks/GridSection'
 import { Media } from '@/payload-types'
@@ -20,6 +19,19 @@ const getPolicyData = unstable_cache(
             collection: 'policies',
             where: { slug: { equals: slug } },
             limit: 1,
+            depth: 1,
+            select: {
+                id: true,
+                name: true,
+                slug: true,
+                basics: {
+                    description: true,
+                    version: true,
+                    effective_date: true,
+                    last_reviewed: true,
+                    document: true,
+                },
+            },
         })
         return result.docs[0] || null
     },
@@ -35,39 +47,40 @@ export default async function PolicyPage({ params }: { params: Promise<{ slug: s
 
     const feature = {
         id: String(policy.id),
-        title: policy.name,
-        description: policy.basics?.description || '',
-        image: policy.basics?.document ? getMediaUrl(policy.basics.document) : `https://picsum.photos/seed/${policy.slug}/800/600`,
+        title: policy.name.toUpperCase(),
+        description: policy.basics?.description || 'Official corporate policy and procedural documentation.',
+        image: getMediaUrl(policy.basics?.document) || '',
         stats: [
-            { label: 'Version', value: policy.basics?.version || 'N/A' },
-            { label: 'Effective', value: policy.basics?.effective_date ? new Date(policy.basics.effective_date).toLocaleDateString() : 'N/A' },
-            { label: 'Last Reviewed', value: policy.basics?.last_reviewed ? new Date(policy.basics.last_reviewed).toLocaleDateString() : 'N/A' },
+            { label: 'Release Version', value: (policy.basics?.version || '1.0.0').toUpperCase() },
+            { label: 'Effective Cycle', value: policy.basics?.effective_date ? new Date(policy.basics.effective_date).toISOString().split('T')[0] : 'TBD' },
+            { label: 'Validation Date', value: policy.basics?.last_reviewed ? new Date(policy.basics.last_reviewed).toISOString().split('T')[0] : 'TBD' },
         ],
     }
 
-    const downloadItems = policy.basics?.document
-        ? [
-            {
-                id: String(policy.id),
-                title: 'Download Document',
-                subtitle: policy.basics?.version ? `Version ${policy.basics.version}` : '',
-                image: getMediaUrl(policy.basics.document) || `https://picsum.photos/seed/${policy.slug}/200/200`,
-                href: getMediaUrl(policy.basics.document) || '#',
-            },
-        ]
-        : []
+    const downloadItems = []
+    const docUrl = getMediaUrl(policy.basics?.document)
+
+    if (docUrl) {
+        downloadItems.push({
+            id: String(policy.id),
+            title: 'Official Documentation',
+            subtitle: policy.basics?.version ? `Revision ${policy.basics.version}` : 'Current Revision',
+            image: docUrl,
+            href: docUrl,
+        })
+    }
 
     return (
-        <main className="w-full">
+        <main className="w-full bg-black-pure">
             <FeatureSection
-                id="policy-content"
-                title={policy.name}
-                subtitle="Policy Details"
+                id="policy-summary"
+                title="Policy Framework"
+                subtitle="Governing directives and procedural guidelines"
                 features={[feature]}
                 labels={{
-                    specIndex: 'POL',
-                    statsLabel: 'INFO',
-                    ctaLabel: 'REVIEW',
+                    specIndex: 'Index',
+                    statsLabel: 'Protocol',
+                    ctaLabel: 'Execute',
                 }}
                 columns={2}
                 headerVariant={1}
@@ -75,14 +88,14 @@ export default async function PolicyPage({ params }: { params: Promise<{ slug: s
             />
             {downloadItems.length > 0 && (
                 <GridSection
-                    id="policy-download"
-                    title="Download"
-                    subtitle="Available document"
+                    id="policy-assets"
+                    title="Documentation"
+                    subtitle="Downloadable regulatory assets"
                     items={downloadItems}
                     labels={{
-                        unitsCount: 'DOCS',
-                        viewProject: 'VIEW',
-                        sectionIndex: 'DL',
+                        unitsCount: 'Files',
+                        viewProject: 'Download',
+                        sectionIndex: 'Asset',
                         fallbackAlt: 'Document',
                     }}
                     columns={1}

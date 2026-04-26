@@ -22,6 +22,38 @@ const getDriverDetailsData = unstable_cache(
             collection: 'drivers',
             where: { slug: { equals: slug } },
             limit: 1,
+            depth: 1,
+            select: {
+                id: true,
+                first_name: true,
+                last_name: true,
+                basics: {
+                    competition_name: true,
+                    nickname: true,
+                    callsign: true,
+                    racing_number: true,
+                    catchphrase: true,
+                    birth_date: true,
+                    debut_date: true,
+                    nationality: true,
+                },
+                assets: {
+                    cover: true,
+                    avatar: true,
+                },
+                seo: {
+                    image: true,
+                },
+                details: {
+                    skills: true,
+                    awards: true,
+                    results: true,
+                    points: true,
+                    socials: {
+                        list: true,
+                    },
+                },
+            },
         })
         return result.docs[0] || null
     },
@@ -35,6 +67,7 @@ export default async function DriverDetailsPage({ params }: { params: Promise<{ 
 
     if (!driver) notFound()
 
+    // 1. Optimized Hero Asset Chain
     const heroBackgroundImage = driver.assets?.cover
         ? getMediaUrl(driver.assets.cover)
         : driver.assets?.avatar
@@ -43,6 +76,7 @@ export default async function DriverDetailsPage({ params }: { params: Promise<{ 
                 ? getMediaUrl(driver.seo.image)
                 : undefined
 
+    // 2. Quote Logic Restoration
     const quoteItem = driver.basics?.catchphrase
         ? {
             id: String(driver.id),
@@ -51,6 +85,7 @@ export default async function DriverDetailsPage({ params }: { params: Promise<{ 
         }
         : null
 
+    // 3. Maximum Specificity Specifications
     const specItems: any[] = [
         {
             id: 'racing-number',
@@ -84,6 +119,7 @@ export default async function DriverDetailsPage({ params }: { params: Promise<{ 
         },
     ]
 
+    // 4. Performance-Focused Imperative Mapping
     const skillItems: any[] = []
     if (driver.details?.skills) {
         driver.details.skills.forEach((skillRef) => {
@@ -119,6 +155,7 @@ export default async function DriverDetailsPage({ params }: { params: Promise<{ 
         })
     }
 
+    // 5. High-Density Table Logic
     const tableColumns = [
         { key: 'event', label: 'Event', sortable: true },
         { key: 'position', label: 'Position', sortable: true },

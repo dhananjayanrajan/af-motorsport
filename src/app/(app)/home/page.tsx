@@ -13,122 +13,174 @@ function getMediaUrl(media: number | Media | null | undefined): string | undefin
   return undefined
 }
 
-async function fetchData() {
-  const payload = await getPayload({ config: configPromise })
-
-  const [events, sessions, onboardings, slidesDocs, seriesList, races, drivers] = await Promise.all([
-    payload.find({
-      collection: 'events',
-      limit: 5,
-      sort: '-details.start_date',
-      select: {
-        id: true,
-        name: true,
-        slug: true,
-        basics: { description: true, tagline: true, identifiers: { code: true } },
-        assets: { thumbnail: true, cover: true, poster: true },
-        details: { start_date: true, type: true },
-      },
-    }),
-    payload.find({
-      collection: 'sessions',
-      limit: 5,
-      sort: '-createdAt',
-      select: {
-        id: true,
-        name: true,
-        slug: true,
-        basics: { description: true, identifiers: { code: true } },
-        assets: { thumbnail: true, cover: true },
-      },
-    }),
-    payload.find({
-      collection: 'onboardings',
-      limit: 5,
-      sort: '-createdAt',
-      select: {
-        id: true,
-        name: true,
-        slug: true,
-        basics: { description: true },
-        assets: { thumbnail: true, cover: true },
-      },
-    }),
-    payload.find({
-      collection: 'slides',
-      limit: 10,
-      sort: '-createdAt',
-      select: {
-        id: true,
-        name: true,
-        slug: true,
-        basics: { description: true },
-        assets: { background: true, thumbnail: true },
-        details: { type: true },
-      },
-    }),
-    payload.find({
-      collection: 'series',
-      limit: 6,
-      sort: '-createdAt',
-      select: {
-        id: true,
-        name: true,
-        slug: true,
-        createdAt: true,
-        basics: { description: true, tagline: true, identifiers: { code: true } },
-        assets: { thumbnail: true, cover: true },
-      },
-    }),
-    payload.find({
-      collection: 'races',
-      where: { 'details.status': { equals: 'completed' } },
-      limit: 3,
-      sort: '-details.start_date',
-      select: {
-        id: true,
-        name: true,
-        slug: true,
-        basics: { description: true },
-        assets: { thumbnail: true, cover: true },
-        details: { distance_km: true, status: true },
-      },
-    }),
-    payload.find({
-      collection: 'drivers',
-      limit: 3,
-      sort: '-createdAt',
-      select: {
-        id: true,
-        first_name: true,
-        last_name: true,
-        slug: true,
-        basics: {
-          racing_number: true,
-          callsign: true,
-          catchphrase: true,
-          tagline: true,
-          description: true,
-          nationality: true,
-        },
-        assets: { avatar: true },
-      },
-    }),
-  ])
-
-  return {
-    events: events.docs,
-    sessions: sessions.docs,
-    onboardings: onboardings.docs,
-    slidesDocs: slidesDocs.docs,
-    seriesList: seriesList.docs,
-    races: races.docs,
-    drivers: drivers.docs,
+function resolveAssetUrl(assets: any, ...keys: string[]): string | undefined {
+  if (!assets) return undefined
+  for (const key of keys) {
+    const url = getMediaUrl(assets[key])
+    if (url) return url
   }
+  return undefined
 }
 
 const getHomeData = unstable_cache(
-  fetchData,
+  async () => {
+    const payload = await getPayload({ config: configPromise })
+
+    const [events, sessions, onboardings, slidesDocs, seriesList, races, drivers] = await Promise.all([
+      payload.find({
+        collection: 'events',
+        limit: 5,
+        depth: 1,
+        sort: '-details.start_date',
+        select: {
+          id: true,
+          name: true,
+          slug: true,
+          basics: {
+            description: true,
+            tagline: true,
+            identifiers: { code: true },
+          },
+          assets: {
+            thumbnail: true,
+            cover: true,
+            poster: true,
+          },
+          details: {
+            start_date: true,
+            type: true,
+          },
+        },
+      }),
+      payload.find({
+        collection: 'sessions',
+        limit: 5,
+        depth: 1,
+        sort: '-createdAt',
+        select: {
+          id: true,
+          name: true,
+          slug: true,
+          basics: {
+            description: true,
+            identifiers: { code: true },
+          },
+          assets: {
+            thumbnail: true,
+            cover: true,
+          },
+        },
+      }),
+      payload.find({
+        collection: 'onboardings',
+        limit: 5,
+        depth: 1,
+        sort: '-createdAt',
+        select: {
+          id: true,
+          name: true,
+          slug: true,
+          basics: { description: true },
+          assets: {
+            thumbnail: true,
+            cover: true,
+          },
+        },
+      }),
+      payload.find({
+        collection: 'slides',
+        limit: 10,
+        depth: 1,
+        sort: '-createdAt',
+        select: {
+          id: true,
+          name: true,
+          slug: true,
+          basics: { description: true },
+          assets: {
+            background: true,
+            thumbnail: true,
+          },
+          details: { type: true },
+        },
+      }),
+      payload.find({
+        collection: 'series',
+        limit: 6,
+        depth: 1,
+        sort: '-createdAt',
+        select: {
+          id: true,
+          name: true,
+          slug: true,
+          createdAt: true,
+          basics: {
+            description: true,
+            tagline: true,
+            identifiers: { code: true },
+          },
+          assets: {
+            thumbnail: true,
+            cover: true,
+          },
+        },
+      }),
+      payload.find({
+        collection: 'races',
+        where: {
+          'details.status': { equals: 'completed' },
+        },
+        limit: 3,
+        depth: 1,
+        sort: '-details.start_date',
+        select: {
+          id: true,
+          name: true,
+          slug: true,
+          basics: { description: true },
+          assets: {
+            thumbnail: true,
+            cover: true,
+          },
+          details: {
+            distance_km: true,
+            status: true,
+          },
+        },
+      }),
+      payload.find({
+        collection: 'drivers',
+        limit: 3,
+        depth: 1,
+        sort: '-createdAt',
+        select: {
+          id: true,
+          first_name: true,
+          last_name: true,
+          slug: true,
+          basics: {
+            racing_number: true,
+            callsign: true,
+            catchphrase: true,
+            tagline: true,
+            description: true,
+            nationality: true,
+          },
+          assets: { avatar: true },
+        },
+      }),
+    ])
+
+    return {
+      events: events.docs,
+      sessions: sessions.docs,
+      onboardings: onboardings.docs,
+      slidesDocs: slidesDocs.docs,
+      seriesList: seriesList.docs,
+      races: races.docs,
+      drivers: drivers.docs,
+    }
+  },
   ['home-page-data'],
   { revalidate: 60, tags: ['home'] }
 )
@@ -144,17 +196,18 @@ export default async function HomePage() {
     let posterUrl: string | undefined = undefined
     let duration = ''
 
-    if ('name' in item && item.name) title = item.name
-    else if ('first_name' in item && 'last_name' in item) title = `${item.first_name} ${item.last_name}`
+    if ('name' in item && item.name) {
+      title = item.name
+    } else if ('first_name' in item && 'last_name' in item) {
+      title = `${item.first_name} ${item.last_name}`
+    }
 
-    if ('basics' in item && item.basics?.description) description = item.basics.description
+    if ('basics' in item && item.basics?.description) {
+      description = item.basics.description
+    }
 
     const assets = (item as any).assets
-    if (assets) {
-      if (assets.thumbnail) posterUrl = getMediaUrl(assets.thumbnail)
-      if (!posterUrl && assets.cover) posterUrl = getMediaUrl(assets.cover)
-      if (!posterUrl && assets.poster) posterUrl = getMediaUrl(assets.poster)
-    }
+    posterUrl = resolveAssetUrl(assets, 'thumbnail', 'cover', 'poster')
 
     if ('details' in item && (item as any).details?.start_date) {
       duration = new Date((item as any).details.start_date).toISOString().split('T')[0]
@@ -185,42 +238,34 @@ export default async function HomePage() {
       subtitle: series.basics?.identifiers?.code || series.basics?.tagline || '',
       tag: series.basics?.identifiers?.code || 'SERIES',
       href: `/competition/series/${series.slug}`,
-      timestamp: timestamp,
+      timestamp,
       status: 'ACTIVE',
     }
   })
 
-  const raceFeatures = races.map((race) => {
-    let imageUrl: string | undefined = undefined
-    if (race.assets) {
-      if (race.assets.thumbnail) imageUrl = getMediaUrl(race.assets.thumbnail)
-      if (!imageUrl && race.assets.cover) imageUrl = getMediaUrl(race.assets.cover)
-    }
-    return {
-      id: String(race.id),
-      title: race.name,
-      description: race.basics?.description || '',
-      image: imageUrl,
-      stats: [
-        { label: 'Distance', value: race.details?.distance_km ? `${race.details.distance_km} km` : '' },
-        { label: 'Status', value: race.details?.status || '' },
-      ],
-    }
-  })
+  const raceFeatures = races.map((race) => ({
+    id: String(race.id),
+    title: race.name,
+    description: race.basics?.description || '',
+    image: resolveAssetUrl(race.assets, 'thumbnail', 'cover'),
+    stats: [
+      { label: 'Distance', value: race.details?.distance_km ? `${race.details.distance_km} km` : '' },
+      { label: 'Status', value: race.details?.status || '' },
+    ],
+  }))
 
   const driverFeatures = drivers.map((driver) => {
-    let imageUrl: string | undefined = undefined
-    if (driver.assets?.avatar) imageUrl = getMediaUrl(driver.assets.avatar)
-    let nationality = ''
     const nationalityRef = driver.basics?.nationality
-    if (nationalityRef && typeof nationalityRef === 'object' && 'name' in nationalityRef && nationalityRef.name) {
-      nationality = nationalityRef.name
-    }
+    const nationality =
+      nationalityRef && typeof nationalityRef === 'object' && 'name' in nationalityRef && nationalityRef.name
+        ? nationalityRef.name
+        : ''
+
     return {
       id: String(driver.id),
       title: `${driver.first_name} ${driver.last_name}`,
       description: driver.basics?.callsign || driver.basics?.catchphrase || '',
-      image: imageUrl,
+      image: getMediaUrl(driver.assets?.avatar),
       stats: [
         { label: 'Number', value: driver.basics?.racing_number?.toString() || '' },
         { label: 'Nationality', value: nationality },
@@ -231,32 +276,32 @@ export default async function HomePage() {
   const hyperspeedRoutes = [
     {
       id: '01',
-      label: 'Series',
+      label: 'SERIES',
       slug: seriesList[0]?.slug || 'active',
-      name: seriesList[0]?.name || 'Competition Series',
-      path: '/competition/series'
+      name: seriesList[0]?.name || 'Racing Series',
+      path: '/competition/series',
     },
     {
       id: '02',
-      label: 'Seasons',
+      label: 'SEASONS',
       slug: 'active',
-      name: 'Championship Seasons',
-      path: '/competition/seasons'
+      name: 'Global Seasons',
+      path: '/competition/seasons',
     },
     {
       id: '03',
-      label: 'Events',
+      label: 'EVENTS',
       slug: 'active',
-      name: 'Global Events',
-      path: '/competition/events'
+      name: 'Circuit Events',
+      path: '/competition/events',
     },
     {
       id: '04',
-      label: 'Sessions',
+      label: 'SESSIONS',
       slug: 'active',
-      name: 'Live Sessions',
-      path: '/competition/sessions'
-    }
+      name: 'Onboard Streams',
+      path: '/competition/sessions',
+    },
   ]
 
   return (
@@ -264,21 +309,21 @@ export default async function HomePage() {
       {videoSlides.length > 0 && (
         <VideoSection
           id="home-videos"
-          title="Latest Media"
-          subtitle="Recent events, sessions & onboardings"
+          title="BROADCAST"
+          subtitle="Recent streams and archives"
           videos={videoSlides}
           labels={{
             channelPrefix: 'CH',
             broadcastStatus: 'LIVE',
             liveFeed: 'FEED',
-            metaTransmission: 'TRANS',
+            metaTransmission: 'DATA',
           }}
         />
       )}
       <HyperspeedSection
         id="home-navigation"
-        title="Quick Navigation"
-        subtitle="Explore competition"
+        title="HYPERSPEED"
+        subtitle="Quick access portal"
         routes={hyperspeedRoutes}
         headerVariant={1}
         footerVariant={1}
@@ -286,42 +331,41 @@ export default async function HomePage() {
       {listEntries.length > 0 && (
         <ListSection
           id="home-competition"
-          title="Competition"
-          subtitle="Active racing series"
+          title="SERIES"
+          subtitle="Sanctioned racing divisions"
           entries={listEntries}
           labels={{
-            statusPrefix: 'STATUS',
-            timePrefix: 'RELEASED',
-            indexPrefix: 'NO',
+            statusPrefix: 'SYSTEM',
+            timePrefix: 'UPDATED',
+            indexPrefix: 'ID',
           }}
           showStatus={true}
           showTimestamp={true}
-          ctaLabel="VIEW ALL SERIES"
+          ctaLabel="VIEW ALL DIVISIONS"
           ctaPath="/competition/series"
-          headerVariant={1}
-          footerVariant={1}
         />
       )}
       {raceFeatures.length > 0 && (
         <FeatureSection
           id="home-races"
-          title="Recent Races"
-          subtitle="Latest completed events"
+          title="CALENDAR"
+          subtitle="Recently concluded results"
           features={raceFeatures}
           labels={{
             specIndex: 'RACE',
-            statsLabel: 'STATS',
+            statsLabel: 'DATA',
             ctaLabel: 'VIEW',
           }}
           columns={3}
+          headerVariant={1}
           ctaPath="/calendar/races"
         />
       )}
       {driverFeatures.length > 0 && (
         <FeatureSection
           id="home-drivers"
-          title="Featured Drivers"
-          subtitle="Top competitors"
+          title="ROSTER"
+          subtitle="Active championship entry list"
           features={driverFeatures}
           labels={{
             specIndex: 'DRV',

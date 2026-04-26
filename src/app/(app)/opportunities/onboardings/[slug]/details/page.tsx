@@ -1,4 +1,3 @@
-// app/(frontend)/opportunities/onboardings/[slug]/details/page.tsx
 import GridSection from '@/components/Section/Blocks/GridSection'
 import HeroSection from '@/components/Section/Blocks/HeroSection'
 import ListSection from '@/components/Section/Blocks/ListSection'
@@ -21,6 +20,36 @@ const getOnboardingDetailsData = unstable_cache(
             collection: 'onboardings',
             where: { slug: { equals: slug } },
             limit: 1,
+            depth: 1,
+            select: {
+                id: true,
+                name: true,
+                basics: {
+                    description: true,
+                    identifiers: { code: true },
+                },
+                assets: {
+                    cover: true,
+                    documents: true,
+                },
+                seo: {
+                    image: true,
+                },
+                details: {
+                    type: true,
+                },
+                traits: {
+                    checklist: {
+                        list: true,
+                    },
+                    modules: {
+                        list: true,
+                    },
+                    quizzes: {
+                        list: true,
+                    },
+                },
+            },
         })
         return result.docs[0] || null
     },
@@ -40,64 +69,49 @@ export default async function OnboardingDetailsPage({ params }: { params: Promis
             ? getMediaUrl(onboarding.seo.image)
             : undefined
 
-    const taskEntries: any[] = []
-    if (onboarding.traits?.checklist?.list) {
-        onboarding.traits.checklist.list.forEach((task) => {
-            if (task.task) {
-                taskEntries.push({
-                    id: task.id || String(Math.random()),
-                    title: task.task,
-                    subtitle: task.due_date ? `Due: ${new Date(task.due_date).toLocaleDateString()}` : undefined,
-                    status: task.completed ? 'Completed' : task.required ? 'Required' : 'Optional',
-                })
-            }
-        })
-    }
+    const taskEntries: any[] = (onboarding.traits?.checklist?.list || [])
+        .filter((task) => task.task)
+        .map((task) => ({
+            id: task.id || String(Math.random()),
+            title: task.task,
+            subtitle: task.due_date ? `Due: ${new Date(task.due_date).toLocaleDateString()}` : undefined,
+            status: task.completed ? 'Completed' : task.required ? 'Required' : 'Optional',
+        }))
 
-    const moduleEntries: any[] = []
-    if (onboarding.traits?.modules?.list) {
-        onboarding.traits.modules.list.forEach((mod) => {
-            if (mod.name) {
-                moduleEntries.push({
-                    id: mod.id || String(Math.random()),
-                    title: mod.name,
-                    subtitle: mod.content || undefined,
-                    status: mod.duration || mod.type || undefined,
-                })
-            }
-        })
-    }
+    const moduleEntries: any[] = (onboarding.traits?.modules?.list || [])
+        .filter((mod) => mod.name)
+        .map((mod) => ({
+            id: mod.id || String(Math.random()),
+            title: mod.name,
+            subtitle: mod.content || undefined,
+            status: mod.duration || mod.type || undefined,
+        }))
 
-    const quizEntries: any[] = []
-    if (onboarding.traits?.quizzes?.list) {
-        onboarding.traits.quizzes.list.forEach((quiz) => {
-            if (quiz.question) {
-                quizEntries.push({
-                    id: quiz.id || String(Math.random()),
-                    title: quiz.question,
-                    subtitle: quiz.answer ? `Answer: ${quiz.answer}` : undefined,
-                    status: quiz.explanation || undefined,
-                })
-            }
-        })
-    }
+    const quizEntries: any[] = (onboarding.traits?.quizzes?.list || [])
+        .filter((quiz) => quiz.question)
+        .map((quiz) => ({
+            id: quiz.id || String(Math.random()),
+            title: quiz.question,
+            subtitle: quiz.answer ? `Answer: ${quiz.answer}` : undefined,
+            status: quiz.explanation || undefined,
+        }))
 
-    const documentItems: any[] = []
-    if (onboarding.assets?.documents) {
-        onboarding.assets.documents.forEach((doc, idx) => {
+    const documentItems: any[] = (onboarding.assets?.documents || [])
+        .map((doc, idx) => {
             const media = typeof doc === 'object' ? doc : null
             const url = media ? getMediaUrl(media) : undefined
             if (url && media) {
-                documentItems.push({
+                return {
                     id: String(media.id),
                     title: media.alt || media.filename || `Document ${idx + 1}`,
                     subtitle: media.mimeType || undefined,
                     image: url,
                     href: url,
-                })
+                }
             }
+            return null
         })
-    }
+        .filter(Boolean)
 
     return (
         <main className="w-full">
@@ -123,8 +137,6 @@ export default async function OnboardingDetailsPage({ params }: { params: Promis
                     }}
                     showStatus={true}
                     showTimestamp={false}
-                    headerVariant={1}
-                    footerVariant={1}
                 />
             )}
             {moduleEntries.length > 0 && (
@@ -140,8 +152,6 @@ export default async function OnboardingDetailsPage({ params }: { params: Promis
                     }}
                     showStatus={true}
                     showTimestamp={false}
-                    headerVariant={2}
-                    footerVariant={1}
                 />
             )}
             {quizEntries.length > 0 && (
@@ -157,8 +167,6 @@ export default async function OnboardingDetailsPage({ params }: { params: Promis
                     }}
                     showStatus={true}
                     showTimestamp={false}
-                    headerVariant={3}
-                    footerVariant={2}
                 />
             )}
             {documentItems.length > 0 && (

@@ -1,4 +1,3 @@
-// app/(frontend)/resources/helmets/[slug]/details/page.tsx
 import HeroSection from '@/components/Section/Blocks/HeroSection'
 import ListSection from '@/components/Section/Blocks/ListSection'
 import { Media } from '@/payload-types'
@@ -20,6 +19,34 @@ const getHelmetDetailsData = unstable_cache(
             collection: 'helmets',
             where: { slug: { equals: slug } },
             limit: 1,
+            depth: 1,
+            select: {
+                id: true,
+                name: true,
+                basics: {
+                    tagline: true,
+                    description: true,
+                },
+                assets: {
+                    avatar: true,
+                    thumbnail: true,
+                },
+                seo: {
+                    image: true,
+                },
+                details: {
+                    usage: true,
+                    style: true,
+                    concept: true,
+                    inspiration: true,
+                    manufacturers: {
+                        list: true,
+                    },
+                    classifications: {
+                        list: true,
+                    },
+                },
+            },
         })
         return result.docs[0] || null
     },
@@ -33,61 +60,45 @@ export default async function HelmetDetailsPage({ params }: { params: Promise<{ 
 
     if (!helmet) notFound()
 
-    const heroBackgroundImage = helmet.assets?.avatar
-        ? getMediaUrl(helmet.assets.avatar)
-        : helmet.assets?.thumbnail
-            ? getMediaUrl(helmet.assets.thumbnail)
-            : helmet.seo?.image
-                ? getMediaUrl(helmet.seo.image)
-                : undefined
+    const heroBackgroundImage = getMediaUrl(helmet.assets?.avatar) ||
+        getMediaUrl(helmet.assets?.thumbnail) ||
+        getMediaUrl(helmet.seo?.image)
 
-    const manufacturerEntries: any[] = []
-    if (helmet.details?.manufacturers?.list) {
-        helmet.details.manufacturers.list.forEach((manufacturer) => {
-            if (manufacturer.name) {
-                manufacturerEntries.push({
-                    id: manufacturer.id || String(Math.random()),
-                    title: manufacturer.name,
-                    subtitle: manufacturer.description || undefined,
-                })
-            }
-        })
-    }
+    const manufacturerEntries = (helmet.details?.manufacturers?.list || [])
+        .filter((m) => m.name)
+        .map((m, idx) => ({
+            id: m.id || String(idx),
+            title: m.name || '',
+            subtitle: m.description || undefined,
+        }))
 
-    const classificationEntries: any[] = []
-    if (helmet.details?.classifications?.list) {
-        helmet.details.classifications.list.forEach((classification) => {
-            if (classification.name) {
-                classificationEntries.push({
-                    id: classification.id || String(Math.random()),
-                    title: classification.name,
-                    subtitle: classification.description || classification.criteria || classification.definition || undefined,
-                })
-            }
-        })
-    }
+    const baseClassifications = (helmet.details?.classifications?.list || [])
+        .filter((c) => c.name)
+        .map((c, idx) => ({
+            id: c.id || String(idx),
+            title: c.name || '',
+            subtitle: c.description || c.criteria || c.definition || undefined,
+        }))
 
-    if (helmet.details?.concept) {
-        classificationEntries.push({
+    const classificationEntries = [
+        ...baseClassifications,
+        ...(helmet.details?.concept ? [{
             id: 'concept',
             title: 'Concept',
             subtitle: helmet.details.concept,
-        })
-    }
-
-    if (helmet.details?.inspiration) {
-        classificationEntries.push({
+        }] : []),
+        ...(helmet.details?.inspiration ? [{
             id: 'inspiration',
             title: 'Inspiration',
             subtitle: helmet.details.inspiration,
-        })
-    }
+        }] : []),
+    ]
 
     return (
         <main className="w-full">
             <HeroSection
                 id="helmet-details-cover"
-                title={helmet.name}
+                title={helmet.name || ''}
                 subtitle={helmet.basics?.tagline || 'Helmet Details'}
                 description={helmet.basics?.description || undefined}
                 backgroundImage={heroBackgroundImage}
@@ -107,8 +118,6 @@ export default async function HelmetDetailsPage({ params }: { params: Promise<{ 
                     }}
                     showStatus={false}
                     showTimestamp={false}
-                    headerVariant={1}
-                    footerVariant={1}
                 />
             )}
             {classificationEntries.length > 0 && (
@@ -124,8 +133,6 @@ export default async function HelmetDetailsPage({ params }: { params: Promise<{ 
                     }}
                     showStatus={false}
                     showTimestamp={false}
-                    headerVariant={2}
-                    footerVariant={1}
                 />
             )}
         </main>

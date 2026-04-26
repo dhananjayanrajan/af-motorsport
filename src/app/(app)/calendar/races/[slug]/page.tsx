@@ -1,4 +1,3 @@
-// app/(frontend)/calendar/races/[slug]/page.tsx
 import MasonrySection from '@/components/Section/Blocks/MasonrySection'
 import ScrollSection from '@/components/Section/Blocks/ScrollSection'
 import StudySection from '@/components/Section/Blocks/StudySection'
@@ -15,6 +14,15 @@ function getMediaUrl(media: number | Media | null | undefined): string | undefin
     return undefined
 }
 
+function resolveAssetUrl(assets: any, ...keys: string[]): string | undefined {
+    if (!assets) return undefined
+    for (const key of keys) {
+        const url = getMediaUrl(assets[key])
+        if (url) return url
+    }
+    return undefined
+}
+
 const getRaceData = unstable_cache(
     async (slug: string) => {
         const payload = await getPayload({ config: configPromise })
@@ -22,6 +30,31 @@ const getRaceData = unstable_cache(
             collection: 'races',
             where: { slug: { equals: slug } },
             limit: 1,
+            depth: 1,
+            select: {
+                id: true,
+                name: true,
+                slug: true,
+                basics: {
+                    description: true,
+                    tagline: true,
+                },
+                assets: {
+                    video: true,
+                    poster: true,
+                    thumbnail: true,
+                    cover: true,
+                    gallery: true,
+                },
+                details: {
+                    type: true,
+                    status: true,
+                    laps: true,
+                    distance_km: true,
+                    history: true,
+                    notes: true,
+                },
+            },
         })
         return result.docs[0] || null
     },
@@ -41,32 +74,26 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
         if (videoUrl) {
             videoItems.push({
                 id: String(race.id),
-                title: race.name,
+                title: race.name.toUpperCase(),
                 description: race.basics?.tagline || undefined,
                 url: videoUrl,
-                poster: race.assets?.poster ? getMediaUrl(race.assets.poster) : race.assets?.thumbnail ? getMediaUrl(race.assets.thumbnail) : undefined,
+                poster: resolveAssetUrl(race.assets, 'poster', 'thumbnail', 'cover'),
             })
         }
     }
 
-    const studyImage = race.assets?.cover
-        ? getMediaUrl(race.assets.cover)
-        : race.assets?.poster
-            ? getMediaUrl(race.assets.poster)
-            : race.assets?.thumbnail
-                ? getMediaUrl(race.assets.thumbnail)
-                : undefined
+    const studyImage = resolveAssetUrl(race.assets, 'cover', 'poster', 'thumbnail')
 
     const study = {
         id: String(race.id),
         title: race.name,
         description: race.basics?.description || race.basics?.tagline || '',
-        image: studyImage || `https://picsum.photos/seed/${race.slug}/800/600`,
+        image: studyImage || '',
         metrics: [
-            { label: 'Type', value: race.details?.type || 'N/A' },
-            { label: 'Status', value: race.details?.status || 'N/A' },
-            { label: 'Laps', value: race.details?.laps ? String(race.details.laps) : 'N/A' },
-            { label: 'Distance', value: race.details?.distance_km ? `${race.details.distance_km} km` : 'N/A' },
+            { label: 'TYPE', value: race.details?.type || 'N/A' },
+            { label: 'STATUS', value: race.details?.status || 'N/A' },
+            { label: 'LAPS', value: race.details?.laps ? String(race.details.laps) : 'N/A' },
+            { label: 'DISTANCE', value: race.details?.distance_km ? `${race.details.distance_km} KM` : 'N/A' },
         ],
     }
 
@@ -74,29 +101,28 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
     if (race.details?.history) {
         scrollItems.push({
             id: 'history',
-            title: 'Race History',
-            description: race.basics?.description || 'A look back at this historic event.',
+            title: 'CHRONOLOGY',
+            description: 'Comprehensive archival data documenting the historical progression of this event.',
             percentage: 100,
         })
     }
     if (race.details?.notes) {
         scrollItems.push({
             id: 'notes',
-            title: 'Race Notes',
+            title: 'INTELLIGENCE',
             description: race.details.notes,
             percentage: 75,
         })
     }
 
     const galleryItems: any[] = []
-    if (race.assets?.gallery) {
+    if (race.assets?.gallery && Array.isArray(race.assets.gallery)) {
         race.assets.gallery.forEach((item, idx) => {
-            const media = typeof item === 'object' ? item : null
-            const url = media ? getMediaUrl(media) : undefined
-            if (url && media) {
+            const url = getMediaUrl(item)
+            if (url) {
                 galleryItems.push({
-                    id: String(media.id),
-                    title: media.alt || race.name,
+                    id: String(typeof item === 'object' ? item.id : idx),
+                    title: (typeof item === 'object' && item.alt) || race.name,
                     image: url,
                     height: idx % 3 === 0 ? 'tall' as const : idx % 2 === 0 ? 'medium' as const : 'short' as const,
                 })
@@ -109,14 +135,14 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
             {videoItems.length > 0 && (
                 <VideoSection
                     id="race-video"
-                    title="Race Highlights"
-                    subtitle={race.name}
+                    title="BROADCAST"
+                    subtitle="Visual telemetry and operational highlight feeds"
                     videos={videoItems}
                     labels={{
                         channelPrefix: 'CH',
-                        broadcastStatus: 'LIVE',
-                        liveFeed: 'FEED',
-                        metaTransmission: 'TRANS',
+                        broadcastStatus: 'REC',
+                        liveFeed: 'LIVE',
+                        metaTransmission: 'ENC',
                     }}
                     autoplay={false}
                     showPlaylist={false}
@@ -126,25 +152,25 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
             )}
             <StudySection
                 id="race-details"
-                title="Race Overview"
-                subtitle="Event information"
+                title="SPECIFICATIONS"
+                subtitle="Technical event data and race-day parameters"
                 studies={[study]}
                 variant="featured"
                 headerVariant={1}
                 footerVariant={1}
-                ctaLabel="View Full Details"
+                ctaLabel="VIEW FULL PARAMETERS"
                 ctaPath={`/calendar/races/${race.slug}/details`}
             />
             {scrollItems.length > 0 && (
                 <ScrollSection
                     id="race-history"
-                    title="History & Notes"
-                    subtitle="Race background"
+                    title="ARCHIVE"
+                    subtitle="Background intelligence and event logs"
                     items={scrollItems}
                     labels={{
-                        indexPrefix: 'SEC',
-                        progressLabel: 'PROG',
-                        statusComplete: 'DONE',
+                        indexPrefix: 'LOG',
+                        progressLabel: 'DATA',
+                        statusComplete: 'SYNC',
                     }}
                     variant="reveal"
                     headerVariant={2}
@@ -154,11 +180,11 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
             {galleryItems.length > 0 && (
                 <MasonrySection
                     id="race-gallery"
-                    title="Gallery"
-                    subtitle="Images from the event"
+                    title="MEDIA"
+                    subtitle="Documented visual intelligence from the circuit"
                     items={galleryItems}
                     labels={{
-                        categoryPrefix: 'CAT',
+                        categoryPrefix: 'TYPE',
                         idPrefix: 'IMG',
                     }}
                     columns={3}

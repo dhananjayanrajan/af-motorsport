@@ -1,4 +1,3 @@
-// app/(frontend)/calendar/timelines/[slug]/page.tsx
 import GridSection from '@/components/Section/Blocks/GridSection'
 import HeroSection from '@/components/Section/Blocks/HeroSection'
 import StudySection from '@/components/Section/Blocks/StudySection'
@@ -15,6 +14,15 @@ function getMediaUrl(media: number | Media | null | undefined): string | undefin
     return undefined
 }
 
+function resolveAssetUrl(assets: any, ...keys: string[]): string | undefined {
+    if (!assets) return undefined
+    for (const key of keys) {
+        const url = getMediaUrl(assets[key])
+        if (url) return url
+    }
+    return undefined
+}
+
 const getTimelineData = unstable_cache(
     async (slug: string) => {
         const payload = await getPayload({ config: configPromise })
@@ -22,6 +30,38 @@ const getTimelineData = unstable_cache(
             collection: 'timelines',
             where: { slug: { equals: slug } },
             limit: 1,
+            depth: 1,
+            select: {
+                id: true,
+                name: true,
+                slug: true,
+                basics: {
+                    description: true,
+                },
+                assets: {
+                    cover: true,
+                    thumbnail: true,
+                    documents: true,
+                },
+                details: {
+                    status: true,
+                    scope: true,
+                    start_date: true,
+                    end_date: true,
+                    orientation: true,
+                },
+                traits: {
+                    milestones: {
+                        list: true,
+                    },
+                    events: {
+                        list: true,
+                    },
+                },
+                seo: {
+                    image: true,
+                },
+            },
         })
         return result.docs[0] || null
     },
@@ -35,28 +75,19 @@ export default async function TimelinePage({ params }: { params: Promise<{ slug:
 
     if (!timeline) notFound()
 
-    const heroBackgroundImage = timeline.assets?.cover
-        ? getMediaUrl(timeline.assets.cover)
-        : timeline.seo?.image
-            ? getMediaUrl(timeline.seo.image)
-            : undefined
-
-    const studyImage = timeline.assets?.cover
-        ? getMediaUrl(timeline.assets.cover)
-        : timeline.assets?.thumbnail
-            ? getMediaUrl(timeline.assets.thumbnail)
-            : undefined
+    const heroBackgroundImage = resolveAssetUrl(timeline.assets, 'cover') || getMediaUrl(timeline.seo?.image)
+    const studyImage = resolveAssetUrl(timeline.assets, 'cover', 'thumbnail')
 
     const study = {
         id: String(timeline.id),
         title: timeline.name,
         description: timeline.basics?.description || '',
-        image: studyImage || `https://picsum.photos/seed/${timeline.slug}/800/600`,
+        image: studyImage || '',
         metrics: [
-            { label: 'Status', value: timeline.details?.status || 'N/A' },
-            { label: 'Scope', value: timeline.details?.scope || 'N/A' },
-            { label: 'Start', value: timeline.details?.start_date ? new Date(timeline.details.start_date).toLocaleDateString() : 'N/A' },
-            { label: 'End', value: timeline.details?.end_date ? new Date(timeline.details.end_date).toLocaleDateString() : 'N/A' },
+            { label: 'STATUS', value: timeline.details?.status || 'N/A' },
+            { label: 'SCOPE', value: timeline.details?.scope || 'N/A' },
+            { label: 'INITIALIZED', value: timeline.details?.start_date ? new Date(timeline.details.start_date).toISOString().split('T')[0] : 'N/A' },
+            { label: 'TERMINATED', value: timeline.details?.end_date ? new Date(timeline.details.end_date).toISOString().split('T')[0] : 'N/A' },
         ],
     }
 
@@ -66,8 +97,8 @@ export default async function TimelinePage({ params }: { params: Promise<{ slug:
             if (milestone.name) {
                 milestoneEvents.push({
                     id: milestone.id || `milestone-${idx}`,
-                    date: milestone.date ? new Date(milestone.date).toLocaleDateString() : 'TBD',
-                    title: milestone.name,
+                    date: milestone.date ? new Date(milestone.date).toISOString().split('T')[0] : 'TBD',
+                    title: milestone.name.toUpperCase(),
                     description: milestone.description || undefined,
                     status: idx === 0 ? 'completed' as const : idx === 1 ? 'active' as const : 'upcoming' as const,
                 })
@@ -81,24 +112,23 @@ export default async function TimelinePage({ params }: { params: Promise<{ slug:
             if (event.name) {
                 eventItems.push({
                     id: event.id || String(Math.random()),
-                    title: event.name,
-                    subtitle: event.date ? new Date(event.date).toLocaleDateString() : undefined,
-                    image: `https://picsum.photos/seed/${event.name}/400/300`,
+                    title: event.name.toUpperCase(),
+                    subtitle: event.date ? new Date(event.date).toISOString().split('T')[0] : undefined,
+                    image: '',
                 })
             }
         })
     }
 
     const documentItems: any[] = []
-    if (timeline.assets?.documents) {
+    if (timeline.assets?.documents && Array.isArray(timeline.assets.documents)) {
         timeline.assets.documents.forEach((doc, idx) => {
-            const media = typeof doc === 'object' ? doc : null
-            const url = media ? getMediaUrl(media) : undefined
-            if (url && media) {
+            const url = getMediaUrl(doc)
+            if (url) {
                 documentItems.push({
-                    id: String(media.id),
-                    title: media.alt || media.filename || `Document ${idx + 1}`,
-                    subtitle: media.mimeType || undefined,
+                    id: (typeof doc === 'object' && doc.id) ? String(doc.id) : `doc-${idx}`,
+                    title: (typeof doc === 'object' && (doc.alt || doc.filename)) || `DOC_${idx + 1}`,
+                    subtitle: (typeof doc === 'object' && doc.mimeType) || 'APPLICATION/PDF',
                     image: url,
                     href: url,
                 })
@@ -111,16 +141,16 @@ export default async function TimelinePage({ params }: { params: Promise<{ slug:
             <HeroSection
                 id="timeline-cover"
                 title={timeline.name}
-                subtitle={timeline.details?.scope || ''}
+                subtitle={timeline.details?.scope || 'CHRONOLOGY_SYSTEM'}
                 description={timeline.basics?.description || undefined}
                 backgroundImage={heroBackgroundImage}
                 alignment="center"
-                badge={timeline.details?.status || undefined}
+                badge={timeline.details?.status || 'ACTIVE'}
             />
             <StudySection
                 id="timeline-details"
-                title="Overview"
-                subtitle="Timeline information"
+                title="SPECIFICATIONS"
+                subtitle="Operational chronology and mapping parameters"
                 studies={[study]}
                 variant="featured"
                 headerVariant={1}
@@ -129,16 +159,16 @@ export default async function TimelinePage({ params }: { params: Promise<{ slug:
             {milestoneEvents.length > 0 && (
                 <TimelineSection
                     id="timeline-milestones"
-                    title="Milestones"
-                    subtitle="Key achievements along the way"
+                    title="CHRONOLOGY"
+                    subtitle="Strategic progress mapping and milestone tracking"
                     events={milestoneEvents}
                     labels={{
                         statusPrefix: 'STAT',
-                        eventIndexLabel: 'EVENT',
+                        eventIndexLabel: 'STEP',
                         deploymentStatus: {
-                            completed: 'DONE',
+                            completed: 'SYNCED',
                             active: 'ACTIVE',
-                            upcoming: 'UPCOMING',
+                            upcoming: 'PENDING',
                         },
                     }}
                     orientation={timeline.details?.orientation === 'vertical' ? 'vertical' : 'horizontal'}
@@ -149,12 +179,12 @@ export default async function TimelinePage({ params }: { params: Promise<{ slug:
             {eventItems.length > 0 && (
                 <GridSection
                     id="timeline-events"
-                    title="Events"
-                    subtitle="Notable moments"
+                    title="OPERATIONS"
+                    subtitle="Documented historical occurrences and notable events"
                     items={eventItems}
                     labels={{
                         unitsCount: 'EVENTS',
-                        viewProject: 'VIEW',
+                        viewProject: 'DATA',
                         sectionIndex: 'EVT',
                         fallbackAlt: 'Event',
                     }}
@@ -164,14 +194,14 @@ export default async function TimelinePage({ params }: { params: Promise<{ slug:
             {documentItems.length > 0 && (
                 <GridSection
                     id="timeline-documents"
-                    title="Documents"
-                    subtitle="Related resources"
+                    title="ARCHIVE"
+                    subtitle="Technical resources and supporting documentation"
                     items={documentItems}
                     labels={{
                         unitsCount: 'DOCS',
-                        viewProject: 'VIEW',
-                        sectionIndex: 'DOC',
-                        fallbackAlt: 'Document',
+                        viewProject: 'FETCH',
+                        sectionIndex: 'DAT',
+                        fallbackAlt: 'File',
                     }}
                     columns={3}
                 />

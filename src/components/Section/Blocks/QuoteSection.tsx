@@ -1,3 +1,4 @@
+// QuoteSection.tsx
 "use client"
 import useEmblaCarousel from 'embla-carousel-react'
 import { Quote } from 'lucide-react'
@@ -63,32 +64,32 @@ const QuoteSection: React.FC<QuoteSectionProps> = ({
   }, [emblaApi])
 
   const QuoteCard = ({ quote, idx }: { quote: QuoteItem; idx: number }) => (
-    <div className="relative p-8 md:p-10 bg-white-pure border border-black-pure group h-full flex flex-col transition-colors hover:bg-neutral-50">
+    <div className="relative p-8 md:p-10 bg-white-pure border border-black-pure group h-full flex flex-col transition-all duration-300 hover:bg-neutral-50 hover:translate-x-1 hover:translate-y-1">
       <div className="flex justify-between items-start mb-10">
-        <div className="bg-black-pure px-2 py-0.5 border border-black-pure shadow-[2px_2px_0px_0px_#00FF41]">
-          <span className="text-[8px] font-mono font-black text-white-pure uppercase tracking-widest">
+        <div className="bg-black-pure px-2 py-0.5 border border-black-pure transition-all duration-300 group-hover:bg-primary-500">
+          <span className="text-base font-bold text-white-pure transition-colors duration-300 group-hover:text-black-pure">
             {labels.commStatus} {String(idx + 1).padStart(2, '0')}
           </span>
         </div>
-        <Quote className="w-5 h-5 text-black-pure group-hover:text-primary transition-colors" />
+        <Quote className="w-5 h-5 text-black-pure transition-all duration-300 group-hover:text-primary-500 group-hover:scale-110" />
       </div>
 
-      <p className="text-lg md:text-xl font-mono font-black text-black-pure uppercase leading-[1.2] tracking-tight mb-12 flex-grow">
+      <p className="text-2xl font-bold text-black-pure mb-12 flex-grow leading-tight">
         "{quote.text}"
       </p>
 
       <div className="mt-auto pt-8 border-t border-black-pure flex items-center justify-between">
         <div className="flex items-center gap-4">
           {quote.avatar && (
-            <div className="w-10 h-10 border border-black-pure bg-neutral-200 shrink-0 shadow-[2px_2px_0px_0px_#000000]">
-              <img src={quote.avatar} alt={quote.author} className="w-full h-full object-cover grayscale" />
+            <div className="w-10 h-10 border border-black-pure bg-neutral-200 shrink-0 overflow-hidden transition-all duration-300 group-hover:border-primary-500">
+              <img src={quote.avatar} alt={quote.author} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" />
             </div>
           )}
           <div>
-            <p className="font-mono font-black text-[11px] text-black-pure uppercase leading-none mb-1">
+            <p className="text-base font-bold text-black-pure mb-1 transition-colors duration-300 group-hover:text-primary-500">
               {quote.author}
             </p>
-            <p className="text-[8px] font-mono font-bold text-neutral-400 uppercase tracking-widest leading-none">
+            <p className="text-base text-black-pure/60">
               {quote.role}{quote.company ? ` / ${quote.company}` : ''}
             </p>
           </div>
@@ -96,17 +97,17 @@ const QuoteSection: React.FC<QuoteSectionProps> = ({
 
         {quote.rating && (
           <div className="hidden sm:flex flex-col items-end">
-            <span className="text-[7px] font-mono font-black text-neutral-400 uppercase mb-1">{labels.ratingLabel}</span>
-            <div className="flex gap-[1px]">
+            <span className="text-base text-black-pure/60 mb-1">{labels.ratingLabel}</span>
+            <div className="flex gap-px">
               {Array.from({ length: 5 }).map((_, i) => (
-                <div key={i} className={`w-2.5 h-2.5 border border-black-pure ${i < (quote.rating || 0) ? 'bg-primary' : 'bg-white-pure'}`} />
+                <div key={i} className={`w-2.5 h-2.5 border border-black-pure transition-all duration-300 ${i < (quote.rating || 0) ? 'bg-primary-500' : 'bg-white-pure group-hover:bg-primary-500/30'}`} />
               ))}
             </div>
           </div>
         )}
       </div>
 
-      <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-primary border border-black-pure opacity-0 group-hover:opacity-100 transition-opacity" />
+      <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-primary-500 border border-black-pure transition-all duration-300 opacity-0 group-hover:opacity-100" />
     </div>
   )
 
@@ -121,9 +122,9 @@ const QuoteSection: React.FC<QuoteSectionProps> = ({
         metadata={String(quotes.length).padStart(2, '0')}
       />
 
-      <div className="w-full border-b border-black-pure bg-black-pure">
+      <div className="w-full border-b border-black-pure bg-white-pure">
         {variant === 'grid' ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 w-full gap-[1px]">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 w-full gap-px">
             {quotes.map((quote, idx) => (
               <div key={quote.id}>
                 <QuoteCard quote={quote} idx={idx} />
@@ -132,8 +133,8 @@ const QuoteSection: React.FC<QuoteSectionProps> = ({
           </div>
         ) : (
           <div className="relative">
-            <div className="overflow-hidden cursor-grab active:cursor-grabbing bg-black-pure" ref={emblaRef}>
-              <div className="flex gap-[1px]">
+            <div className="overflow-hidden cursor-grab active:cursor-grabbing bg-white-pure" ref={emblaRef}>
+              <div className="flex gap-px">
                 {quotes.map((quote, idx) => (
                   <div key={quote.id} className="flex-[0_0_100%] md:flex-[0_0_50%] lg:flex-[0_0_33.333%] min-w-0">
                     <QuoteCard quote={quote} idx={idx} />
@@ -142,18 +143,18 @@ const QuoteSection: React.FC<QuoteSectionProps> = ({
               </div>
             </div>
 
-            <div className="flex items-center h-14 border-t border-black-pure bg-white-pure px-8 gap-4">
+            <div className="flex items-center border-t border-black-pure bg-white-pure px-8 gap-4" style={{ height: '56px' }}>
               <div className="flex gap-1.5">
                 {quotes.map((_, idx) => (
                   <button
                     key={idx}
                     onClick={() => emblaApi?.scrollTo(idx)}
-                    className={`h-2 border border-black-pure transition-all duration-200 ${selectedIndex === idx ? 'w-10 bg-primary' : 'w-2 bg-neutral-200 hover:bg-black-pure'}`}
+                    className={`h-0.5 border border-black-pure transition-all duration-300 ${selectedIndex === idx ? 'w-10 bg-primary-500' : 'w-2 bg-neutral-200 hover:bg-black-pure'}`}
                   />
                 ))}
               </div>
               <div className="flex-grow" />
-              <span className="text-[9px] font-mono font-black text-black-pure uppercase tabular-nums">
+              <span className="text-base font-bold text-black-pure">
                 {String(selectedIndex + 1).padStart(2, '0')} / {String(quotes.length).padStart(2, '0')}
               </span>
             </div>
@@ -162,17 +163,17 @@ const QuoteSection: React.FC<QuoteSectionProps> = ({
       </div>
 
       {ctaLabel && ctaPath && (
-        <div className="p-16 flex justify-center bg-white-pure">
+        <div className="py-16 flex justify-center bg-white-pure">
           <Link
             href={ctaPath}
-            className="flex items-center gap-6 px-10 py-4 bg-white-pure border border-black-pure text-black-pure shadow-[6px_6px_0px_0px_#000000] transition-all hover:shadow-none hover:translate-x-1.5 hover:translate-y-1.5 hover:bg-primary active:bg-black-pure active:text-primary"
+            className="flex items-center gap-6 px-10 py-4 bg-white-pure border border-black-pure text-black-pure transition-all duration-300 hover:translate-x-1.5 hover:translate-y-1.5 hover:bg-primary-500 active:bg-black-pure active:text-primary-500"
           >
-            <span className="text-[10px] font-mono font-black uppercase tracking-[0.3em]">
+            <span className="text-base font-bold">
               {ctaLabel}
             </span>
             <div className="flex gap-1">
               {[...Array(3)].map((_, i) => (
-                <div key={i} className="w-1 h-3 bg-black-pure" />
+                <div key={i} className="w-1 h-3 bg-black-pure transition-all duration-300 group-hover:bg-white-pure" />
               ))}
             </div>
           </Link>

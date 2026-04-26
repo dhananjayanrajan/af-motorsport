@@ -21,6 +21,27 @@ const getMeetupData = unstable_cache(
             collection: 'meetups',
             where: { slug: { equals: slug } },
             limit: 1,
+            depth: 1,
+            select: {
+                id: true,
+                name: true,
+                slug: true,
+                basics: {
+                    description: true,
+                },
+                assets: {
+                    video: true,
+                    thumbnail: true,
+                    cover: true,
+                    gallery: true,
+                },
+                details: {
+                    format: true,
+                    access: true,
+                    start_date: true,
+                    end_date: true,
+                }
+            }
         })
         return result.docs[0] || null
     },
@@ -34,50 +55,48 @@ export default async function MeetupPage({ params }: { params: Promise<{ slug: s
 
     if (!meetup) notFound()
 
-    const videoItems: any[] = []
-    if (meetup.assets?.video) {
-        const videoUrl = getMediaUrl(meetup.assets.video)
-        if (videoUrl) {
-            videoItems.push({
-                id: String(meetup.id),
-                title: meetup.name,
-                description: meetup.basics?.description || undefined,
-                url: videoUrl,
-                poster: meetup.assets?.thumbnail ? getMediaUrl(meetup.assets.thumbnail) : meetup.assets?.cover ? getMediaUrl(meetup.assets.cover) : undefined,
-            })
-        }
-    }
+    // Optimized Asset Resolution
+    const thumbnail = getMediaUrl(meetup.assets?.thumbnail)
+    const cover = getMediaUrl(meetup.assets?.cover)
+    const posterUrl = thumbnail || cover
 
-    const studyImage = meetup.assets?.cover
-        ? getMediaUrl(meetup.assets.cover)
-        : meetup.assets?.thumbnail
-            ? getMediaUrl(meetup.assets.thumbnail)
-            : undefined
+    const videoItems: any[] = []
+    const videoUrl = getMediaUrl(meetup.assets?.video)
+
+    if (videoUrl) {
+        videoItems.push({
+            id: String(meetup.id),
+            title: meetup.name,
+            description: meetup.basics?.description || undefined,
+            url: videoUrl,
+            poster: posterUrl,
+        })
+    }
 
     const study = {
         id: String(meetup.id),
         title: meetup.name,
         description: meetup.basics?.description || '',
-        image: studyImage || `https://picsum.photos/seed/${meetup.slug}/800/600`,
+        image: cover || thumbnail || `https://picsum.photos/seed/${meetup.slug}/800/600`,
         metrics: [
             { label: 'Format', value: meetup.details?.format || 'N/A' },
             { label: 'Access', value: meetup.details?.access || 'N/A' },
-            { label: 'Date', value: new Date(meetup.details.start_date).toLocaleDateString() },
+            { label: 'Date', value: meetup.details?.start_date ? new Date(meetup.details.start_date).toLocaleDateString() : 'N/A' },
             { label: 'End Date', value: meetup.details?.end_date ? new Date(meetup.details.end_date).toLocaleDateString() : 'N/A' },
         ],
     }
 
     const galleryItems: any[] = []
-    if (meetup.assets?.gallery) {
+    if (meetup.assets?.gallery && Array.isArray(meetup.assets.gallery)) {
         meetup.assets.gallery.forEach((item, idx) => {
             const media = typeof item === 'object' ? item : null
             const url = media ? getMediaUrl(media) : undefined
             if (url && media) {
                 galleryItems.push({
                     id: String(media.id),
-                    title: media.alt || meetup.name,
+                    title: (media as Media).alt || meetup.name,
                     image: url,
-                    height: idx % 3 === 0 ? 'tall' as const : idx % 2 === 0 ? 'medium' as const : 'short' as const,
+                    height: idx % 3 === 0 ? 'tall' : idx % 2 === 0 ? 'medium' : 'short',
                 })
             }
         })

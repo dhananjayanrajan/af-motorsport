@@ -1,4 +1,3 @@
-// app/(frontend)/competition/events/[slug]/page.tsx
 import CarouselSection from '@/components/Section/Blocks/CarouselSection'
 import GridSection from '@/components/Section/Blocks/GridSection'
 import HeroSection from '@/components/Section/Blocks/HeroSection'
@@ -17,6 +16,15 @@ function getMediaUrl(media: number | Media | null | undefined): string | undefin
     return undefined
 }
 
+function resolveAssetUrl(assets: any, ...keys: string[]): string | undefined {
+    if (!assets) return undefined
+    for (const key of keys) {
+        const url = getMediaUrl(assets[key])
+        if (url) return url
+    }
+    return undefined
+}
+
 const getEventData = unstable_cache(
     async (slug: string) => {
         const payload = await getPayload({ config: configPromise })
@@ -24,6 +32,36 @@ const getEventData = unstable_cache(
             collection: 'events',
             where: { slug: { equals: slug } },
             limit: 1,
+            depth: 1,
+            select: {
+                id: true,
+                name: true,
+                slug: true,
+                basics: {
+                    tagline: true,
+                    description: true,
+                    identifiers: { code: true }
+                },
+                assets: {
+                    videos: true,
+                    poster: true,
+                    thumbnail: true,
+                    cover: true
+                },
+                details: {
+                    status: true,
+                    access: true,
+                    start_date: true,
+                    end_date: true,
+                    history: true,
+                    notes: true,
+                    location: true,
+                    season: true
+                },
+                seo: {
+                    image: true
+                }
+            }
         })
         return result.docs[0] || null
     },
@@ -38,16 +76,15 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
     if (!event) notFound()
 
     const videoSlides: any[] = []
-    if (event.assets?.videos) {
+    if (event.assets?.videos && Array.isArray(event.assets.videos)) {
         event.assets.videos.forEach((video, idx) => {
-            const media = typeof video === 'object' ? video : null
-            const url = media ? getMediaUrl(media) : undefined
-            if (url && media) {
+            const url = getMediaUrl(video)
+            if (url) {
                 videoSlides.push({
-                    id: String(media.id),
-                    title: media.alt || `Video ${idx + 1}`,
-                    description: event.basics?.tagline || undefined,
-                    image: event.assets?.poster ? getMediaUrl(event.assets.poster) : event.assets?.thumbnail ? getMediaUrl(event.assets.thumbnail) : `https://picsum.photos/seed/${event.slug}-${idx}/800/600`,
+                    id: String(typeof video === 'object' ? video.id : idx),
+                    title: (typeof video === 'object' && video.alt) || 'Race Video',
+                    description: event.basics?.tagline || 'Event Highlight',
+                    image: resolveAssetUrl(event.assets, 'poster', 'thumbnail') || '',
                     ctaLabel: 'Watch',
                     ctaHref: url,
                 })
@@ -55,24 +92,18 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
         })
     }
 
-    const studyImage = event.assets?.cover
-        ? getMediaUrl(event.assets.cover)
-        : event.assets?.poster
-            ? getMediaUrl(event.assets.poster)
-            : event.assets?.thumbnail
-                ? getMediaUrl(event.assets.thumbnail)
-                : undefined
+    const studyImage = resolveAssetUrl(event.assets, 'cover', 'poster', 'thumbnail')
 
     const study = {
         id: String(event.id),
         title: event.name,
         description: event.basics?.description || event.basics?.tagline || '',
-        image: studyImage || `https://picsum.photos/seed/${event.slug}/800/600`,
+        image: studyImage || '',
         metrics: [
-            { label: 'Status', value: event.details?.status || 'N/A' },
-            { label: 'Access', value: event.details?.access || 'N/A' },
-            { label: 'Start', value: event.details?.start_date ? new Date(event.details.start_date).toLocaleDateString() : 'TBD' },
-            { label: 'End', value: event.details?.end_date ? new Date(event.details.end_date).toLocaleDateString() : 'TBD' },
+            { label: 'Status', value: (event.details?.status || 'Pending').toUpperCase() },
+            { label: 'Access', value: (event.details?.access || 'Public').toUpperCase() },
+            { label: 'Starts', value: event.details?.start_date ? new Date(event.details.start_date).toLocaleDateString() : 'TBD' },
+            { label: 'Ends', value: event.details?.end_date ? new Date(event.details.end_date).toLocaleDateString() : 'TBD' },
         ],
     }
 
@@ -81,35 +112,31 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
         scrollItems.push({
             id: 'history',
             title: 'Event History',
-            description: event.basics?.description || 'A premier racing event.',
+            description: 'Background and records for this racing event.',
             percentage: 100,
         })
     }
     if (event.details?.notes) {
         scrollItems.push({
             id: 'notes',
-            title: 'Event Notes',
+            title: 'Staff Notes',
             description: event.details.notes,
             percentage: 75,
         })
     }
 
-    const heroBackgroundImage = event.assets?.cover
-        ? getMediaUrl(event.assets.cover)
-        : event.seo?.image
-            ? getMediaUrl(event.seo.image)
-            : undefined
+    const heroBackgroundImage = resolveAssetUrl(event.assets, 'cover') || getMediaUrl(event.seo?.image)
 
     const specItems: any[] = [
         {
             id: 'status',
-            title: 'Status',
-            subtitle: event.details?.status || 'N/A',
+            title: 'Current Status',
+            subtitle: (event.details?.status || 'N/A').toUpperCase(),
         },
         {
             id: 'access',
-            title: 'Access',
-            subtitle: event.details?.access || 'N/A',
+            title: 'Entry Type',
+            subtitle: (event.details?.access || 'N/A').toUpperCase(),
         },
         {
             id: 'code',
@@ -118,23 +145,21 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
         },
         {
             id: 'location',
-            title: 'Location',
+            title: 'Map Location',
             subtitle: event.details?.location ? `${event.details.location[0]}, ${event.details.location[1]}` : 'N/A',
         },
     ]
 
     const seasonEntries: any[] = []
-    if (event.details.season) {
-        const season = event.details.season
-        if (typeof season === 'object' && 'name' in season) {
-            seasonEntries.push({
-                id: String(season.id),
-                title: season.name,
-                subtitle: season.basics?.tagline || undefined,
-                status: season.basics?.identifiers?.code || undefined,
-                href: `/competition/seasons/${season.slug}`,
-            })
-        }
+    if (event.details?.season && typeof event.details.season === 'object') {
+        const season = event.details.season as any
+        seasonEntries.push({
+            id: String(season.id),
+            title: (season.name || 'Current Season').toUpperCase(),
+            subtitle: season.basics?.tagline || 'Championship details',
+            status: season.basics?.identifiers?.code || 'ID',
+            href: `/competition/seasons/${season.slug}`,
+        })
     }
 
     return (
@@ -147,8 +172,8 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
             )}
             <StudySection
                 id="event-details"
-                title="Event Overview"
-                subtitle="Key information"
+                title="Event Details"
+                subtitle="Overview and key information"
                 studies={[study]}
                 variant="featured"
                 headerVariant={1}
@@ -157,13 +182,13 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
             {scrollItems.length > 0 && (
                 <ScrollSection
                     id="event-history"
-                    title="History & Notes"
-                    subtitle="Event background"
+                    title="Background"
+                    subtitle="History and additional notes"
                     items={scrollItems}
                     labels={{
-                        indexPrefix: 'SEC',
-                        progressLabel: 'PROG',
-                        statusComplete: 'DONE',
+                        indexPrefix: 'Part',
+                        progressLabel: 'Progress',
+                        statusComplete: 'Read',
                     }}
                     variant="reveal"
                     headerVariant={2}
@@ -173,22 +198,22 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
             <HeroSection
                 id="event-cover"
                 title={event.name}
-                subtitle={event.basics?.tagline || ''}
+                subtitle="Race Event"
                 description={event.basics?.description || undefined}
                 backgroundImage={heroBackgroundImage}
                 alignment="center"
-                badge={event.details?.status || undefined}
+                badge={event.details?.status || 'Live'}
             />
             <GridSection
                 id="event-specifications"
-                title="Specifications"
-                subtitle="Event details"
+                title="Information"
+                subtitle="Specific details and locations"
                 items={specItems}
                 labels={{
-                    unitsCount: 'SPECS',
-                    viewProject: 'VIEW',
-                    sectionIndex: 'SPC',
-                    fallbackAlt: 'Spec',
+                    unitsCount: 'Details',
+                    viewProject: 'View',
+                    sectionIndex: 'Ref',
+                    fallbackAlt: 'Item',
                 }}
                 columns={4}
             />
@@ -196,17 +221,15 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
                 <ListSection
                     id="event-season"
                     title="Season"
-                    subtitle="Part of championship season"
+                    subtitle="Related championship season"
                     entries={seasonEntries}
                     labels={{
-                        statusPrefix: 'CODE',
-                        timePrefix: 'TIME',
-                        indexPrefix: 'SEA',
+                        statusPrefix: 'Code',
+                        timePrefix: 'Date',
+                        indexPrefix: 'Sea',
                     }}
                     showStatus={true}
                     showTimestamp={false}
-                    headerVariant={1}
-                    footerVariant={1}
                 />
             )}
         </main>

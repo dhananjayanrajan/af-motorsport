@@ -1,4 +1,3 @@
-// app/(frontend)/resources/garages/[slug]/page.tsx
 import HeroSection from '@/components/Section/Blocks/HeroSection'
 import MasonrySection from '@/components/Section/Blocks/MasonrySection'
 import ScrollSection from '@/components/Section/Blocks/ScrollSection'
@@ -22,6 +21,33 @@ const getGarageData = unstable_cache(
             collection: 'garages',
             where: { slug: { equals: slug } },
             limit: 1,
+            depth: 1,
+            select: {
+                id: true,
+                name: true,
+                slug: true,
+                basics: {
+                    tagline: true,
+                    description: true,
+                    identifiers: { code: true },
+                },
+                assets: {
+                    cover: true,
+                    thumbnail: true,
+                    gallery: true,
+                },
+                seo: {
+                    image: true,
+                },
+                details: {
+                    type: true,
+                    capacity: true,
+                    size_sq_m: true,
+                    accessibility: true,
+                    history: true,
+                    notes: true,
+                },
+            },
         })
         return result.docs[0] || null
     },
@@ -35,27 +61,21 @@ export default async function GaragePage({ params }: { params: Promise<{ slug: s
 
     if (!garage) notFound()
 
-    const heroBackgroundImage = garage.assets?.cover
-        ? getMediaUrl(garage.assets.cover)
-        : garage.seo?.image
-            ? getMediaUrl(garage.seo.image)
-            : undefined
+    const heroBackgroundImage = getMediaUrl(garage.assets?.cover) || getMediaUrl(garage.seo?.image)
 
     const heroActions = [
         { label: 'View Details', href: `/resources/garages/${garage.slug}/details`, variant: 'primary' as const },
     ]
 
-    const studyImage = garage.assets?.cover
-        ? getMediaUrl(garage.assets.cover)
-        : garage.assets?.thumbnail
-            ? getMediaUrl(garage.assets.thumbnail)
-            : undefined
+    const studyImage = getMediaUrl(garage.assets?.cover) ||
+        getMediaUrl(garage.assets?.thumbnail) ||
+        `https://picsum.photos/seed/${garage.slug}/800/600`
 
     const study = {
         id: String(garage.id),
-        title: garage.name,
+        title: garage.name || '',
         description: garage.basics?.description || garage.basics?.tagline || '',
-        image: studyImage || `https://picsum.photos/seed/${garage.slug}/800/600`,
+        image: studyImage,
         metrics: [
             { label: 'Type', value: garage.details?.type || 'N/A' },
             { label: 'Capacity', value: garage.details?.capacity ? String(garage.details.capacity) : 'N/A' },
@@ -64,45 +84,40 @@ export default async function GaragePage({ params }: { params: Promise<{ slug: s
         ],
     }
 
-    const scrollItems: any[] = []
-    if (garage.details?.history) {
-        scrollItems.push({
+    const scrollItems = [
+        ...(garage.details?.history ? [{
             id: 'history',
             title: 'Garage History',
             description: garage.basics?.description || 'A facility with a rich motorsport heritage.',
             percentage: 100,
-        })
-    }
-    if (garage.details?.notes) {
-        scrollItems.push({
+        }] : []),
+        ...(garage.details?.notes ? [{
             id: 'notes',
             title: 'Notes',
             description: garage.details.notes,
             percentage: 75,
-        })
-    }
+        }] : [])
+    ]
 
-    const galleryItems: any[] = []
-    if (garage.assets?.gallery) {
-        garage.assets.gallery.forEach((item, idx) => {
+    const galleryItems = (garage.assets?.gallery || [])
+        .map((item, idx) => {
             const media = typeof item === 'object' ? item : null
-            const url = media ? getMediaUrl(media) : undefined
-            if (url && media) {
-                galleryItems.push({
-                    id: String(media.id),
-                    title: media.alt || garage.name,
-                    image: url,
-                    height: idx % 3 === 0 ? 'tall' as const : idx % 2 === 0 ? 'medium' as const : 'short' as const,
-                })
+            const url = getMediaUrl(media)
+            if (!url || !media) return null
+            return {
+                id: String(media.id),
+                title: media.alt || garage.name || '',
+                image: url,
+                height: (idx % 3 === 0 ? 'tall' : idx % 2 === 0 ? 'medium' : 'short') as 'tall' | 'medium' | 'short',
             }
         })
-    }
+        .filter((item): item is NonNullable<typeof item> => item !== null)
 
     return (
         <main className="w-full">
             <HeroSection
                 id="garage-hero"
-                title={garage.name}
+                title={garage.name || ''}
                 subtitle={garage.basics?.tagline || ''}
                 description={garage.basics?.description || undefined}
                 backgroundImage={heroBackgroundImage}

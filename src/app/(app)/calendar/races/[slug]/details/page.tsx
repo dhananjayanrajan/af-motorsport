@@ -1,4 +1,3 @@
-// app/(frontend)/calendar/races/[slug]/details/page.tsx
 import GridSection from '@/components/Section/Blocks/GridSection'
 import HeroSection from '@/components/Section/Blocks/HeroSection'
 import MasonrySection from '@/components/Section/Blocks/MasonrySection'
@@ -15,6 +14,15 @@ function getMediaUrl(media: number | Media | null | undefined): string | undefin
     return undefined
 }
 
+function resolveAssetUrl(assets: any, ...keys: string[]): string | undefined {
+    if (!assets) return undefined
+    for (const key of keys) {
+        const url = getMediaUrl(assets[key])
+        if (url) return url
+    }
+    return undefined
+}
+
 const getRaceDetailsData = unstable_cache(
     async (slug: string) => {
         const payload = await getPayload({ config: configPromise })
@@ -22,6 +30,42 @@ const getRaceDetailsData = unstable_cache(
             collection: 'races',
             where: { slug: { equals: slug } },
             limit: 1,
+            depth: 1,
+            select: {
+                id: true,
+                name: true,
+                slug: true,
+                basics: {
+                    description: true,
+                    tagline: true,
+                    identifiers: { code: true },
+                },
+                assets: {
+                    cover: true,
+                    poster: true,
+                    highlights: true,
+                    documents: true,
+                },
+                details: {
+                    type: true,
+                    status: true,
+                    laps: true,
+                    distance_km: true,
+                    weather: true,
+                    safety_car_periods: true,
+                    red_flags: true,
+                    fastest_lap_time: true,
+                    start_date: true,
+                    winner: true,
+                    pole_position: true,
+                    circuit: true,
+                    series: true,
+                    notes: true,
+                },
+                seo: {
+                    image: true,
+                },
+            },
         })
         return result.docs[0] || null
     },
@@ -35,89 +79,79 @@ export default async function RaceDetailsPage({ params }: { params: Promise<{ sl
 
     if (!race) notFound()
 
-    const heroBackgroundImage = race.assets?.cover
-        ? getMediaUrl(race.assets.cover)
-        : race.assets?.poster
-            ? getMediaUrl(race.assets.poster)
-            : race.seo?.image
-                ? getMediaUrl(race.seo.image)
-                : undefined
+    const heroBackgroundImage = resolveAssetUrl(race.assets, 'cover', 'poster') || getMediaUrl(race.seo?.image)
 
     const specItems: any[] = [
         {
             id: 'type',
-            title: 'Race Type',
+            title: 'RACE_TYPE',
             subtitle: race.details?.type || 'N/A',
         },
         {
             id: 'status',
-            title: 'Status',
+            title: 'STATUS',
             subtitle: race.details?.status || 'N/A',
         },
         {
             id: 'laps',
-            title: 'Laps',
+            title: 'TOTAL_LAPS',
             subtitle: race.details?.laps ? String(race.details.laps) : 'N/A',
         },
         {
             id: 'distance',
-            title: 'Distance',
-            subtitle: race.details?.distance_km ? `${race.details.distance_km} km` : 'N/A',
+            title: 'DISTANCE_KM',
+            subtitle: race.details?.distance_km ? `${race.details.distance_km} KM` : 'N/A',
         },
         {
             id: 'weather',
-            title: 'Weather',
+            title: 'ATMOSPHERE',
             subtitle: race.details?.weather || 'N/A',
         },
         {
             id: 'safety-car',
-            title: 'Safety Car Periods',
+            title: 'SAFETY_PERIODS',
             subtitle: race.details?.safety_car_periods ? String(race.details.safety_car_periods) : '0',
         },
         {
             id: 'red-flags',
-            title: 'Red Flags',
+            title: 'RED_FLAGS',
             subtitle: race.details?.red_flags ? String(race.details.red_flags) : '0',
         },
         {
             id: 'fastest-lap',
-            title: 'Fastest Lap',
+            title: 'FASTEST_LAP',
             subtitle: race.details?.fastest_lap_time || 'N/A',
         },
     ]
 
-    const competitionStudyImage = race.assets?.cover
-        ? getMediaUrl(race.assets.cover)
-        : race.assets?.poster
-            ? getMediaUrl(race.assets.poster)
-            : undefined
+    const competitionStudyImage = resolveAssetUrl(race.assets, 'cover', 'poster')
 
     const competitionStudy = {
         id: String(race.id),
-        title: 'Competition',
-        description: race.details?.notes || 'Race competition details and results.',
-        image: competitionStudyImage || `https://picsum.photos/seed/${race.slug}-comp/800/600`,
+        title: 'CLASSIFICATION',
+        description: race.details?.notes || 'Event competition intelligence and verified results.',
+        image: competitionStudyImage || '',
         metrics: [
             {
-                label: 'Winner',
+                label: 'WINNER',
                 value: race.details?.winner && typeof race.details.winner === 'object' && 'first_name' in race.details.winner
                     ? `${race.details.winner.first_name} ${race.details.winner.last_name}`
                     : 'N/A'
             },
             {
-                label: 'Pole Position',
+                label: 'POLE',
                 value: race.details?.pole_position && typeof race.details.pole_position === 'object' && 'name' in race.details.pole_position
                     ? race.details.pole_position.name
                     : 'N/A'
             },
             {
-                label: 'Circuit',
+                label: 'CIRCUIT',
                 value: race.details?.circuit && typeof race.details.circuit === 'object' && 'name' in race.details.circuit
                     ? race.details.circuit.name
                     : 'N/A'
             },
             {
-                label: 'Series',
+                label: 'SERIES',
                 value: race.details?.series && typeof race.details.series === 'object' && 'name' in race.details.series
                     ? race.details.series.name
                     : 'N/A'
@@ -127,33 +161,31 @@ export default async function RaceDetailsPage({ params }: { params: Promise<{ sl
 
     const highlightsAndDocsItems: any[] = []
 
-    if (race.assets?.highlights) {
+    if (race.assets?.highlights && Array.isArray(race.assets.highlights)) {
         race.assets.highlights.forEach((item, idx) => {
-            const media = typeof item === 'object' ? item : null
-            const url = media ? getMediaUrl(media) : undefined
-            if (url && media) {
+            const url = getMediaUrl(item)
+            if (url) {
                 highlightsAndDocsItems.push({
-                    id: String(media.id),
-                    title: media.alt || `Highlight ${idx + 1}`,
+                    id: String(typeof item === 'object' ? item.id : idx),
+                    title: (typeof item === 'object' && item.alt) || `HIGHLIGHT_${idx + 1}`,
                     image: url,
-                    category: 'Highlight',
+                    category: 'VISUAL',
                     height: 'medium' as const,
                 })
             }
         })
     }
 
-    if (race.assets?.documents) {
+    if (race.assets?.documents && Array.isArray(race.assets.documents)) {
         race.assets.documents.forEach((doc, idx) => {
-            const media = typeof doc === 'object' ? doc : null
-            const url = media ? getMediaUrl(media) : undefined
-            if (url && media) {
+            const url = getMediaUrl(doc)
+            if (url) {
                 highlightsAndDocsItems.push({
-                    id: String(media.id),
-                    title: media.alt || media.filename || `Document ${idx + 1}`,
-                    description: media.mimeType || undefined,
+                    id: (typeof doc === 'object' && doc.id) ? String(doc.id) : `doc-${idx}`,
+                    title: (typeof doc === 'object' && (doc.alt || doc.filename)) || `DOC_${idx + 1}`,
+                    description: (typeof doc === 'object' && doc.mimeType) || 'APPLICATION/PDF',
                     image: url,
-                    category: 'Document',
+                    category: 'ARCHIVE',
                     height: 'short' as const,
                 })
             }
@@ -165,21 +197,21 @@ export default async function RaceDetailsPage({ params }: { params: Promise<{ sl
             <HeroSection
                 id="race-details-cover"
                 title={race.name}
-                subtitle={race.basics?.tagline || 'Race Specifications'}
+                subtitle="OPERATIONAL_SPECIFICATIONS"
                 description={race.basics?.description || undefined}
                 backgroundImage={heroBackgroundImage}
                 alignment="center"
-                badge={race.basics?.identifiers?.code || race.details?.type || undefined}
-                meta={race.details?.start_date ? `Date: ${new Date(race.details.start_date).toLocaleDateString()}` : undefined}
+                badge={race.basics?.identifiers?.code || 'RACE_SPEC'}
+                meta={race.details?.start_date ? `TIMESTAMP: ${new Date(race.details.start_date).toISOString().split('T')[0]}` : undefined}
             />
             <GridSection
                 id="race-specifications"
-                title="Specifications"
-                subtitle="Race details and statistics"
+                title="PARAMETERS"
+                subtitle="Technical race telemetry and environmental statistics"
                 items={specItems}
                 labels={{
                     unitsCount: 'SPECS',
-                    viewProject: 'VIEW',
+                    viewProject: 'DATA',
                     sectionIndex: 'SPC',
                     fallbackAlt: 'Spec',
                 }}
@@ -187,8 +219,8 @@ export default async function RaceDetailsPage({ params }: { params: Promise<{ sl
             />
             <StudySection
                 id="race-competition"
-                title="Competition Details"
-                subtitle="Results and participants"
+                title="RESULTS"
+                subtitle="Final classification and participant verification"
                 studies={[competitionStudy]}
                 variant="featured"
                 headerVariant={2}
@@ -197,11 +229,11 @@ export default async function RaceDetailsPage({ params }: { params: Promise<{ sl
             {highlightsAndDocsItems.length > 0 && (
                 <MasonrySection
                     id="race-highlights-documents"
-                    title="Highlights & Documents"
-                    subtitle="Media and resources from the race"
+                    title="MEDIA"
+                    subtitle="Visual intelligence and archival resources"
                     items={highlightsAndDocsItems}
                     labels={{
-                        categoryPrefix: 'CAT',
+                        categoryPrefix: 'TYPE',
                         idPrefix: 'IMG',
                     }}
                     columns={3}

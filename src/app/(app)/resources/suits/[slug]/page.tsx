@@ -1,4 +1,3 @@
-// app/(frontend)/resources/suits/[slug]/page.tsx
 import ListSection from '@/components/Section/Blocks/ListSection'
 import MasonrySection from '@/components/Section/Blocks/MasonrySection'
 import StudySection from '@/components/Section/Blocks/StudySection'
@@ -22,6 +21,30 @@ const getSuitData = unstable_cache(
             collection: 'suits',
             where: { slug: { equals: slug } },
             limit: 1,
+            depth: 1,
+            select: {
+                id: true,
+                name: true,
+                slug: true,
+                basics: {
+                    tagline: true,
+                    description: true,
+                },
+                assets: {
+                    video: true,
+                    thumbnail: true,
+                    images: true,
+                },
+                details: {
+                    usage: true,
+                    material: true,
+                    durability: true,
+                    appearance: true,
+                    manufacturers: {
+                        list: true,
+                    },
+                },
+            },
         })
         return result.docs[0] || null
     },
@@ -35,31 +58,27 @@ export default async function SuitPage({ params }: { params: Promise<{ slug: str
 
     if (!suit) notFound()
 
-    const videoItems: any[] = []
-    if (suit.assets?.video) {
-        const videoUrl = getMediaUrl(suit.assets.video)
-        if (videoUrl) {
-            videoItems.push({
-                id: String(suit.id),
-                title: suit.name,
-                description: suit.basics?.tagline || undefined,
-                url: videoUrl,
-                poster: suit.assets?.thumbnail ? getMediaUrl(suit.assets.thumbnail) : undefined,
-            })
-        }
-    }
+    const videoUrl = getMediaUrl(suit.assets?.video)
+    const videoItems = videoUrl
+        ? [{
+            id: String(suit.id),
+            title: suit.name || '',
+            description: suit.basics?.tagline || undefined,
+            url: videoUrl,
+            poster: getMediaUrl(suit.assets?.thumbnail),
+        }]
+        : []
 
-    const studyImage = suit.assets?.thumbnail
-        ? getMediaUrl(suit.assets.thumbnail)
-        : suit.assets?.images && suit.assets.images.length > 0
-            ? getMediaUrl(suit.assets.images[0])
-            : undefined
+    const firstImage = suit.assets?.images?.[0]
+    const studyImage = getMediaUrl(suit.assets?.thumbnail) ||
+        getMediaUrl(typeof firstImage === 'object' ? firstImage : null) ||
+        `https://picsum.photos/seed/${suit.slug}/800/600`
 
     const study = {
         id: String(suit.id),
-        title: suit.name,
+        title: suit.name || '',
         description: suit.basics?.description || suit.basics?.tagline || '',
-        image: studyImage || `https://picsum.photos/seed/${suit.slug}/800/600`,
+        image: studyImage,
         metrics: [
             { label: 'Usage', value: suit.details?.usage || 'N/A' },
             { label: 'Material', value: suit.details?.material || 'N/A' },
@@ -68,34 +87,27 @@ export default async function SuitPage({ params }: { params: Promise<{ slug: str
         ],
     }
 
-    const manufacturerEntries: any[] = []
-    if (suit.details?.manufacturers?.list) {
-        suit.details.manufacturers.list.forEach((manufacturer) => {
-            if (manufacturer.name) {
-                manufacturerEntries.push({
-                    id: manufacturer.id || String(Math.random()),
-                    title: manufacturer.name,
-                    subtitle: manufacturer.description || undefined,
-                })
-            }
-        })
-    }
+    const manufacturerEntries = (suit.details?.manufacturers?.list || [])
+        .filter((m) => m.name)
+        .map((m, idx) => ({
+            id: m.id || String(idx),
+            title: m.name || '',
+            subtitle: m.description || undefined,
+        }))
 
-    const galleryItems: any[] = []
-    if (suit.assets?.images) {
-        suit.assets.images.forEach((item, idx) => {
+    const galleryItems = (suit.assets?.images || [])
+        .map((item, idx) => {
             const media = typeof item === 'object' ? item : null
-            const url = media ? getMediaUrl(media) : undefined
-            if (url && media) {
-                galleryItems.push({
-                    id: String(media.id),
-                    title: media.alt || suit.name,
-                    image: url,
-                    height: idx % 3 === 0 ? 'tall' as const : idx % 2 === 0 ? 'medium' as const : 'short' as const,
-                })
+            const url = getMediaUrl(media)
+            if (!url || !media) return null
+            return {
+                id: String(media.id),
+                title: media.alt || suit.name || '',
+                image: url,
+                height: (idx % 3 === 0 ? 'tall' : idx % 2 === 0 ? 'medium' : 'short') as 'tall' | 'medium' | 'short',
             }
         })
-    }
+        .filter((item): item is NonNullable<typeof item> => item !== null)
 
     return (
         <main className="w-full">
@@ -103,7 +115,7 @@ export default async function SuitPage({ params }: { params: Promise<{ slug: str
                 <VideoSection
                     id="suit-video"
                     title="Suit Video"
-                    subtitle={suit.name}
+                    subtitle={suit.name || ''}
                     videos={videoItems}
                     labels={{
                         channelPrefix: 'CH',
@@ -139,8 +151,6 @@ export default async function SuitPage({ params }: { params: Promise<{ slug: str
                     }}
                     showStatus={false}
                     showTimestamp={false}
-                    headerVariant={2}
-                    footerVariant={1}
                 />
             )}
             {galleryItems.length > 0 && (

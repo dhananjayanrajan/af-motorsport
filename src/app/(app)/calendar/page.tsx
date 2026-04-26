@@ -1,4 +1,3 @@
-// app/(frontend)/calendar/page.tsx
 import GridSection from '@/components/Section/Blocks/GridSection'
 import TimelineSection from '@/components/Section/Blocks/TimelineSection'
 import { Championship, Media, Race } from '@/payload-types'
@@ -9,6 +8,15 @@ import { getPayload } from 'payload'
 function getMediaUrl(media: number | Media | null | undefined): string | undefined {
     if (!media) return undefined
     if (typeof media === 'object' && 'url' in media && media.url) return media.url
+    return undefined
+}
+
+function resolveAssetUrl(assets: any, ...keys: string[]): string | undefined {
+    if (!assets) return undefined
+    for (const key of keys) {
+        const url = getMediaUrl(assets[key])
+        if (url) return url
+    }
     return undefined
 }
 
@@ -26,15 +34,18 @@ const getCalendarData = unstable_cache(
                 },
                 limit: 10,
                 sort: 'details.start_date',
+                depth: 1,
                 select: {
                     id: true,
                     name: true,
                     slug: true,
-                    basics: true,
-                    details: true,
-                    assets: true,
-                    updatedAt: true,
-                    createdAt: true,
+                    basics: {
+                        tagline: true,
+                        description: true,
+                    },
+                    details: {
+                        start_date: true,
+                    },
                 },
             }),
             payload.find({
@@ -44,15 +55,22 @@ const getCalendarData = unstable_cache(
                 },
                 limit: 12,
                 sort: 'details.start_date',
+                depth: 1,
                 select: {
                     id: true,
                     name: true,
                     slug: true,
-                    basics: true,
-                    details: true,
-                    assets: true,
-                    updatedAt: true,
-                    createdAt: true,
+                    basics: {
+                        tagline: true,
+                        identifiers: {
+                            code: true,
+                        },
+                    },
+                    assets: {
+                        thumbnail: true,
+                        poster: true,
+                        cover: true,
+                    },
                 },
             }),
         ])
@@ -72,26 +90,20 @@ export default async function CalendarPage() {
     const championshipEvents: any[] = championships.map((championship: Championship) => ({
         id: String(championship.id),
         date: championship.details?.start_date
-            ? new Date(championship.details.start_date).toLocaleDateString()
+            ? new Date(championship.details.start_date).toISOString().split('T')[0]
             : 'TBD',
-        title: championship.name,
+        title: championship.name.toUpperCase(),
         description: championship.basics?.tagline || championship.basics?.description || undefined,
         status: 'upcoming' as const,
     }))
 
     const raceItems: any[] = races.map((race: Race) => {
-        const imageUrl = race.assets?.thumbnail
-            ? getMediaUrl(race.assets.thumbnail)
-            : race.assets?.poster
-                ? getMediaUrl(race.assets.poster)
-                : race.assets?.cover
-                    ? getMediaUrl(race.assets.cover)
-                    : `https://picsum.photos/seed/${race.slug}/400/300`
+        const imageUrl = resolveAssetUrl(race.assets, 'thumbnail', 'poster', 'cover') || ''
 
         return {
             id: String(race.id),
-            title: race.name,
-            subtitle: race.basics?.tagline || race.basics?.identifiers?.code || undefined,
+            title: race.name.toUpperCase(),
+            subtitle: race.basics?.tagline || race.basics?.identifiers?.code || 'SCHEDULED_EVENT',
             image: imageUrl,
             href: `/calendar/races/${race.slug}`,
         }
@@ -101,16 +113,16 @@ export default async function CalendarPage() {
         <main className="w-full">
             <TimelineSection
                 id="calendar-championships"
-                title="Upcoming Championships"
-                subtitle="Season schedules and series"
+                title="CHAMPIONSHIPS"
+                subtitle="Upcoming season cycles and series initialization dates"
                 events={championshipEvents}
                 labels={{
                     statusPrefix: 'STAT',
-                    eventIndexLabel: 'EVENT',
+                    eventIndexLabel: 'SERIES',
                     deploymentStatus: {
-                        completed: 'DONE',
+                        completed: 'SYNCED',
                         active: 'ACTIVE',
-                        upcoming: 'UPCOMING',
+                        upcoming: 'PENDING',
                     },
                 }}
                 orientation="horizontal"
@@ -120,12 +132,12 @@ export default async function CalendarPage() {
             {raceItems.length > 0 && (
                 <GridSection
                     id="calendar-races"
-                    title="Upcoming Races"
-                    subtitle="Scheduled events"
+                    title="OPERATIONS"
+                    subtitle="Verified schedule of upcoming racing events and qualifications"
                     items={raceItems}
                     labels={{
                         unitsCount: 'RACES',
-                        viewProject: 'VIEW',
+                        viewProject: 'DATA',
                         sectionIndex: 'RCE',
                         fallbackAlt: 'Race',
                     }}

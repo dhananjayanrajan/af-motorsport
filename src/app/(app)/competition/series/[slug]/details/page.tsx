@@ -1,4 +1,3 @@
-// app/(frontend)/competition/series/[slug]/details/page.tsx
 import GridSection from '@/components/Section/Blocks/GridSection'
 import HeroSection from '@/components/Section/Blocks/HeroSection'
 import MapSection from '@/components/Section/Blocks/MapSection'
@@ -15,6 +14,15 @@ function getMediaUrl(media: number | Media | null | undefined): string | undefin
     return undefined
 }
 
+function resolveAssetUrl(assets: any, ...keys: string[]): string | undefined {
+    if (!assets) return undefined
+    for (const key of keys) {
+        const url = getMediaUrl(assets[key])
+        if (url) return url
+    }
+    return undefined
+}
+
 const getSeriesDetailsData = unstable_cache(
     async (slug: string) => {
         const payload = await getPayload({ config: configPromise })
@@ -22,6 +30,29 @@ const getSeriesDetailsData = unstable_cache(
             collection: 'series',
             where: { slug: { equals: slug } },
             limit: 1,
+            depth: 1,
+            select: {
+                id: true,
+                name: true,
+                slug: true,
+                basics: {
+                    tagline: true,
+                    description: true,
+                },
+                assets: {
+                    cover: true,
+                    documents: true,
+                },
+                details: {
+                    status: true,
+                    start_date: true,
+                    end_date: true,
+                    location: true,
+                },
+                seo: {
+                    image: true,
+                },
+            },
         })
         return result.docs[0] || null
     },
@@ -35,28 +66,24 @@ export default async function SeriesDetailsPage({ params }: { params: Promise<{ 
 
     if (!series) notFound()
 
-    const heroBackgroundImage = series.assets?.cover
-        ? getMediaUrl(series.assets.cover)
-        : series.seo?.image
-            ? getMediaUrl(series.seo.image)
-            : undefined
+    const heroBackgroundImage = resolveAssetUrl(series.assets, 'cover') || getMediaUrl(series.seo?.image)
 
     const timelineEvents: any[] = []
     if (series.details?.start_date) {
         timelineEvents.push({
             id: 'start',
-            date: new Date(series.details.start_date).toLocaleDateString(),
+            date: new Date(series.details.start_date).toISOString().split('T')[0],
             title: 'Series Founded',
-            description: 'Series inception and first season',
+            description: 'The official start of the competition series and its inaugural racing season.',
             status: 'completed' as const,
         })
     }
     if (series.details?.end_date) {
         timelineEvents.push({
             id: 'end',
-            date: new Date(series.details.end_date).toLocaleDateString(),
+            date: new Date(series.details.end_date).toISOString().split('T')[0],
             title: 'Series Conclusion',
-            description: 'Final season completed',
+            description: 'The date marking the final events and completion of the series cycle.',
             status: 'completed' as const,
         })
     }
@@ -70,20 +97,19 @@ export default async function SeriesDetailsPage({ params }: { params: Promise<{ 
             name: series.name,
             lat: series.details.location[0],
             lng: series.details.location[1],
-            description: series.basics?.tagline || undefined,
+            description: series.basics?.tagline || 'Official location',
         })
     }
 
     const documentItems: any[] = []
-    if (series.assets?.documents) {
+    if (series.assets?.documents && Array.isArray(series.assets.documents)) {
         series.assets.documents.forEach((doc, idx) => {
-            const media = typeof doc === 'object' ? doc : null
-            const url = media ? getMediaUrl(media) : undefined
-            if (url && media) {
+            const url = getMediaUrl(doc)
+            if (url) {
                 documentItems.push({
-                    id: String(media.id),
-                    title: media.alt || media.filename || `Document ${idx + 1}`,
-                    subtitle: media.mimeType || undefined,
+                    id: String(typeof doc === 'object' ? doc.id : idx),
+                    title: (typeof doc === 'object' && (doc.alt || doc.filename)) || 'Official Document',
+                    subtitle: (typeof doc === 'object' && doc.mimeType) || 'PDF File',
                     image: url,
                     href: url,
                 })
@@ -92,29 +118,29 @@ export default async function SeriesDetailsPage({ params }: { params: Promise<{ 
     }
 
     return (
-        <main className="w-full">
+        <main className="w-full bg-black-pure">
             <HeroSection
                 id="series-details-cover"
                 title={series.name}
-                subtitle="Series Specifications"
+                subtitle="Competition Details"
                 description={series.basics?.description || undefined}
                 backgroundImage={heroBackgroundImage}
                 alignment="center"
-                badge={series.details?.status || undefined}
+                badge={series.details?.status || 'Active'}
             />
             {timelineEvents.length > 0 && (
                 <TimelineSection
                     id="series-timeline"
                     title="Timeline"
-                    subtitle="Key series dates"
+                    subtitle="Major milestones and dates"
                     events={timelineEvents}
                     labels={{
-                        statusPrefix: 'STAT',
-                        eventIndexLabel: 'EVENT',
+                        statusPrefix: 'Status',
+                        eventIndexLabel: 'Event',
                         deploymentStatus: {
-                            completed: 'DONE',
-                            active: 'ACTIVE',
-                            upcoming: 'UPCOMING',
+                            completed: 'Finished',
+                            active: 'In Progress',
+                            upcoming: 'Next',
                         },
                     }}
                     orientation="horizontal"
@@ -126,12 +152,12 @@ export default async function SeriesDetailsPage({ params }: { params: Promise<{ 
                 <GridSection
                     id="series-seasons"
                     title="Seasons"
-                    subtitle="Championship seasons"
+                    subtitle="Championship racing seasons"
                     items={seasonItems}
                     labels={{
-                        unitsCount: 'SEASONS',
-                        viewProject: 'VIEW',
-                        sectionIndex: 'SEA',
+                        unitsCount: 'Seasons',
+                        viewProject: 'Details',
+                        sectionIndex: 'Cycle',
                         fallbackAlt: 'Season',
                     }}
                     columns={3}
@@ -140,21 +166,21 @@ export default async function SeriesDetailsPage({ params }: { params: Promise<{ 
             {mapLocations.length > 0 && (
                 <MapSection
                     id="series-map"
-                    title="Location"
-                    subtitle="Series headquarters"
+                    title="Headquarters"
+                    subtitle="Main operational location"
                     locations={mapLocations}
                     labels={{
-                        hqLabel: 'HQ',
-                        intelLabel: 'INTEL',
-                        routeLabel: 'ROUTE',
-                        timeLabel: 'TIME',
-                        distLabel: 'DIST',
-                        recordLabel: 'VIEW',
+                        hqLabel: 'Office',
+                        intelLabel: 'Info',
+                        routeLabel: 'Directions',
+                        timeLabel: 'Local Time',
+                        distLabel: 'Distance',
+                        recordLabel: 'View Map',
                         filterLabels: {
-                            all: 'ALL',
-                            primary: 'PRIMARY',
-                            satellite: 'SATELLITE',
-                            pathing: 'ROUTES',
+                            all: 'All',
+                            primary: 'Standard',
+                            satellite: 'Satellite',
+                            pathing: 'Routes',
                         },
                     }}
                     zoom={12}
@@ -166,12 +192,12 @@ export default async function SeriesDetailsPage({ params }: { params: Promise<{ 
                 <GridSection
                     id="series-documents"
                     title="Documents"
-                    subtitle="Series documentation"
+                    subtitle="Official files and documentation"
                     items={documentItems}
                     labels={{
-                        unitsCount: 'DOCS',
-                        viewProject: 'VIEW',
-                        sectionIndex: 'DOC',
+                        unitsCount: 'Files',
+                        viewProject: 'Open',
+                        sectionIndex: 'File',
                         fallbackAlt: 'Document',
                     }}
                     columns={3}

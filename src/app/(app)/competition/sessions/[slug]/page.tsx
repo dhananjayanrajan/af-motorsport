@@ -1,4 +1,3 @@
-// app/(frontend)/competition/sessions/[slug]/page.tsx
 import CarouselSection from '@/components/Section/Blocks/CarouselSection'
 import GridSection from '@/components/Section/Blocks/GridSection'
 import HeroSection from '@/components/Section/Blocks/HeroSection'
@@ -16,6 +15,15 @@ function getMediaUrl(media: number | Media | null | undefined): string | undefin
     return undefined
 }
 
+function resolveAssetUrl(assets: any, ...keys: string[]): string | undefined {
+    if (!assets) return undefined
+    for (const key of keys) {
+        const url = getMediaUrl(assets[key])
+        if (url) return url
+    }
+    return undefined
+}
+
 const getSessionData = unstable_cache(
     async (slug: string) => {
         const payload = await getPayload({ config: configPromise })
@@ -23,6 +31,37 @@ const getSessionData = unstable_cache(
             collection: 'sessions',
             where: { slug: { equals: slug } },
             limit: 1,
+            depth: 1,
+            select: {
+                id: true,
+                name: true,
+                slug: true,
+                basics: {
+                    segment: true,
+                    description: true,
+                    identifiers: { code: true }
+                },
+                assets: {
+                    videos: true,
+                    thumbnail: true,
+                    gallery: true
+                },
+                details: {
+                    history: true,
+                    notes: true,
+                    access: true
+                },
+                metrics: {
+                    quantifiers: {
+                        laps: true,
+                        distance: true,
+                        duration: true
+                    }
+                },
+                seo: {
+                    image: true
+                }
+            }
         })
         return result.docs[0] || null
     },
@@ -37,17 +76,16 @@ export default async function SessionPage({ params }: { params: Promise<{ slug: 
     if (!session) notFound()
 
     const videoSlides: any[] = []
-    if (session.assets?.videos) {
+    if (session.assets?.videos && Array.isArray(session.assets.videos)) {
         session.assets.videos.forEach((video, idx) => {
-            const media = typeof video === 'object' ? video : null
-            const url = media ? getMediaUrl(media) : undefined
-            if (url && media) {
+            const url = getMediaUrl(video)
+            if (url) {
                 videoSlides.push({
-                    id: String(media.id),
-                    title: media.alt || `Video ${idx + 1}`,
-                    description: session.basics?.segment || undefined,
-                    image: session.assets?.thumbnail ? getMediaUrl(session.assets.thumbnail) : `https://picsum.photos/seed/${session.slug}-${idx}/800/600`,
-                    ctaLabel: 'Watch',
+                    id: String(typeof video === 'object' ? video.id : idx),
+                    title: (typeof video === 'object' && video.alt) || 'Session Highlight',
+                    description: session.basics?.segment || 'Live track action',
+                    image: resolveAssetUrl(session.assets, 'thumbnail') || '',
+                    ctaLabel: 'Watch Clip',
                     ctaHref: url,
                 })
             }
@@ -58,8 +96,8 @@ export default async function SessionPage({ params }: { params: Promise<{ slug: 
     if (session.details?.history) {
         scrollItems.push({
             id: 'history',
-            title: 'Session History',
-            description: session.basics?.description || 'Session background and context.',
+            title: 'Track History',
+            description: 'Chronological record of the racing session and past performance benchmarks.',
             percentage: 100,
         })
     }
@@ -72,41 +110,37 @@ export default async function SessionPage({ params }: { params: Promise<{ slug: 
         })
     }
 
-    const heroBackgroundImage = session.assets?.thumbnail
-        ? getMediaUrl(session.assets.thumbnail)
-        : session.seo?.image
-            ? getMediaUrl(session.seo.image)
-            : undefined
+    const heroBackgroundImage = resolveAssetUrl(session.assets, 'thumbnail') || getMediaUrl(session.seo?.image)
 
     const specItems: any[] = [
         {
             id: 'segment',
-            title: 'Segment',
+            title: 'Session Type',
             subtitle: session.basics?.segment || 'N/A',
         },
         {
             id: 'access',
-            title: 'Access',
+            title: 'Entry Type',
             subtitle: session.details?.access || 'N/A',
         },
         {
             id: 'code',
-            title: 'Session Code',
+            title: 'Session ID',
             subtitle: session.basics?.identifiers?.code || 'N/A',
         },
         {
             id: 'laps',
-            title: 'Laps',
+            title: 'Lap Count',
             subtitle: session.metrics?.quantifiers?.laps ? String(session.metrics.quantifiers.laps) : 'N/A',
         },
         {
             id: 'distance',
-            title: 'Distance',
+            title: 'Total Distance',
             subtitle: session.metrics?.quantifiers?.distance ? `${session.metrics.quantifiers.distance} km` : 'N/A',
         },
         {
             id: 'duration',
-            title: 'Duration',
+            title: 'Time Duration',
             subtitle: session.metrics?.quantifiers?.duration ? `${session.metrics.quantifiers.duration} min` : 'N/A',
         },
     ]
@@ -114,14 +148,13 @@ export default async function SessionPage({ params }: { params: Promise<{ slug: 
     const entrySlides: any[] = []
 
     const galleryItems: any[] = []
-    if (session.assets?.gallery) {
+    if (session.assets?.gallery && Array.isArray(session.assets.gallery)) {
         session.assets.gallery.forEach((item, idx) => {
-            const media = typeof item === 'object' ? item : null
-            const url = media ? getMediaUrl(media) : undefined
-            if (url && media) {
+            const url = getMediaUrl(item)
+            if (url) {
                 galleryItems.push({
-                    id: String(media.id),
-                    title: media.alt || session.name,
+                    id: String(typeof item === 'object' ? item.id : idx),
+                    title: (typeof item === 'object' && item.alt) || session.name,
                     image: url,
                     height: idx % 3 === 0 ? 'tall' as const : idx % 2 === 0 ? 'medium' as const : 'short' as const,
                 })
@@ -130,7 +163,7 @@ export default async function SessionPage({ params }: { params: Promise<{ slug: 
     }
 
     return (
-        <main className="w-full">
+        <main className="w-full bg-black-pure">
             {videoSlides.length > 0 && (
                 <CarouselSection
                     id="session-videos"
@@ -140,13 +173,13 @@ export default async function SessionPage({ params }: { params: Promise<{ slug: 
             {scrollItems.length > 0 && (
                 <ScrollSection
                     id="session-history"
-                    title="History & Notes"
-                    subtitle="Session background"
+                    title="Archive"
+                    subtitle="Background information and session reports"
                     items={scrollItems}
                     labels={{
-                        indexPrefix: 'SEC',
-                        progressLabel: 'PROG',
-                        statusComplete: 'DONE',
+                        indexPrefix: 'Log',
+                        progressLabel: 'Read',
+                        statusComplete: 'Done',
                     }}
                     variant="reveal"
                     headerVariant={2}
@@ -156,22 +189,22 @@ export default async function SessionPage({ params }: { params: Promise<{ slug: 
             <HeroSection
                 id="session-cover"
                 title={session.name}
-                subtitle={session.basics?.segment || ''}
+                subtitle="Competition Session"
                 description={session.basics?.description || undefined}
                 backgroundImage={heroBackgroundImage}
                 alignment="center"
-                badge={session.details?.access || undefined}
+                badge={session.details?.access || 'Open'}
             />
             <GridSection
                 id="session-specifications"
-                title="Specifications"
-                subtitle="Session details"
+                title="Performance Data"
+                subtitle="Session metrics and official identifiers"
                 items={specItems}
                 labels={{
-                    unitsCount: 'SPECS',
-                    viewProject: 'VIEW',
-                    sectionIndex: 'SPC',
-                    fallbackAlt: 'Spec',
+                    unitsCount: 'Stats',
+                    viewProject: 'Info',
+                    sectionIndex: 'Spec',
+                    fallbackAlt: 'Data',
                 }}
                 columns={3}
             />
@@ -185,11 +218,11 @@ export default async function SessionPage({ params }: { params: Promise<{ slug: 
                 <MasonrySection
                     id="session-gallery"
                     title="Gallery"
-                    subtitle="Session imagery"
+                    subtitle="Trackside photography and session highlights"
                     items={galleryItems}
                     labels={{
-                        categoryPrefix: 'CAT',
-                        idPrefix: 'IMG',
+                        categoryPrefix: 'Type',
+                        idPrefix: 'Photo',
                     }}
                     columns={3}
                     headerVariant={1}

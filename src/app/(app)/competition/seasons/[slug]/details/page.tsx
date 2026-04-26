@@ -1,4 +1,3 @@
-// app/(frontend)/competition/seasons/[slug]/details/page.tsx
 import GridSection from '@/components/Section/Blocks/GridSection'
 import HeroSection from '@/components/Section/Blocks/HeroSection'
 import { Media } from '@/payload-types'
@@ -13,6 +12,15 @@ function getMediaUrl(media: number | Media | null | undefined): string | undefin
     return undefined
 }
 
+function resolveAssetUrl(assets: any, ...keys: string[]): string | undefined {
+    if (!assets) return undefined
+    for (const key of keys) {
+        const url = getMediaUrl(assets[key])
+        if (url) return url
+    }
+    return undefined
+}
+
 const getSeasonDetailsData = unstable_cache(
     async (slug: string) => {
         const payload = await getPayload({ config: configPromise })
@@ -20,6 +28,31 @@ const getSeasonDetailsData = unstable_cache(
             collection: 'seasons',
             where: { slug: { equals: slug } },
             limit: 1,
+            depth: 1,
+            select: {
+                id: true,
+                name: true,
+                slug: true,
+                basics: {
+                    tagline: true,
+                    description: true,
+                    identifiers: {
+                        code: true,
+                        abbreviation: true
+                    }
+                },
+                assets: {
+                    cover: true
+                },
+                details: {
+                    entries: true,
+                    races: true,
+                    series: true
+                },
+                seo: {
+                    image: true
+                }
+            }
         })
         return result.docs[0] || null
     },
@@ -33,11 +66,7 @@ export default async function SeasonDetailsPage({ params }: { params: Promise<{ 
 
     if (!season) notFound()
 
-    const heroBackgroundImage = season.assets?.cover
-        ? getMediaUrl(season.assets.cover)
-        : season.seo?.image
-            ? getMediaUrl(season.seo.image)
-            : undefined
+    const heroBackgroundImage = resolveAssetUrl(season.assets, 'cover') || getMediaUrl(season.seo?.image)
 
     const specItems: any[] = [
         {
@@ -53,36 +82,28 @@ export default async function SeasonDetailsPage({ params }: { params: Promise<{ 
         {
             id: 'code',
             title: 'Season Code',
-            subtitle: season.basics?.identifiers?.code || season.basics?.identifiers?.abbreviation || 'N/A',
+            subtitle: (season.basics?.identifiers?.code || season.basics?.identifiers?.abbreviation || 'N/A').toUpperCase(),
         },
     ]
 
     const seriesItems: any[] = []
-    if (season.details.series) {
-        const series = season.details.series
-        if (typeof series === 'object' && 'name' in series) {
-            const seriesImage = series.assets?.thumbnail
-                ? getMediaUrl(series.assets.thumbnail)
-                : series.assets?.logo
-                    ? getMediaUrl(series.assets.logo)
-                    : series.assets?.cover
-                        ? getMediaUrl(series.assets.cover)
-                        : `https://picsum.photos/seed/${series.slug}/400/300`
+    if (season.details?.series && typeof season.details.series === 'object') {
+        const series = season.details.series as any
+        const seriesImage = resolveAssetUrl(series.assets, 'thumbnail', 'logo', 'cover')
 
-            seriesItems.push({
-                id: String(series.id),
-                title: series.name,
-                subtitle: series.basics?.tagline || undefined,
-                image: seriesImage,
-                href: `/competition/series/${series.slug}`,
-            })
-        }
+        seriesItems.push({
+            id: String(series.id),
+            title: (series.name || 'Unnamed Series').toUpperCase(),
+            subtitle: series.basics?.tagline || 'Primary Series Association',
+            image: seriesImage || '',
+            href: `/competition/series/${series.slug}`,
+        })
     }
 
     const documentItems: any[] = []
 
     return (
-        <main className="w-full">
+        <main className="w-full bg-black-pure">
             <HeroSection
                 id="season-details-cover"
                 title={season.name}
@@ -90,18 +111,18 @@ export default async function SeasonDetailsPage({ params }: { params: Promise<{ 
                 description={season.basics?.description || undefined}
                 backgroundImage={heroBackgroundImage}
                 alignment="center"
-                badge={season.basics?.identifiers?.code || undefined}
+                badge={season.basics?.identifiers?.code || 'SEASON'}
             />
             <GridSection
                 id="season-specifications"
-                title="Specifications"
-                subtitle="Season details"
+                title="Full Details"
+                subtitle="Primary season information and statistics"
                 items={specItems}
                 labels={{
-                    unitsCount: 'SPECS',
-                    viewProject: 'VIEW',
-                    sectionIndex: 'SPC',
-                    fallbackAlt: 'Spec',
+                    unitsCount: 'Items',
+                    viewProject: 'Info',
+                    sectionIndex: 'Detail',
+                    fallbackAlt: 'Specification',
                 }}
                 columns={3}
             />
@@ -109,13 +130,13 @@ export default async function SeasonDetailsPage({ params }: { params: Promise<{ 
                 <GridSection
                     id="season-series"
                     title="Series"
-                    subtitle="Parent championship"
+                    subtitle="Associated championship series"
                     items={seriesItems}
                     labels={{
-                        unitsCount: 'SERIES',
-                        viewProject: 'VIEW',
-                        sectionIndex: 'SRS',
-                        fallbackAlt: 'Series',
+                        unitsCount: 'Series',
+                        viewProject: 'View',
+                        sectionIndex: 'Championship',
+                        fallbackAlt: 'Series Link',
                     }}
                     columns={1}
                 />
@@ -123,14 +144,14 @@ export default async function SeasonDetailsPage({ params }: { params: Promise<{ 
             {documentItems.length > 0 && (
                 <GridSection
                     id="season-documents"
-                    title="Documents"
-                    subtitle="Season documentation"
+                    title="Documentation"
+                    subtitle="Official season files and records"
                     items={documentItems}
                     labels={{
-                        unitsCount: 'DOCS',
-                        viewProject: 'VIEW',
-                        sectionIndex: 'DOC',
-                        fallbackAlt: 'Document',
+                        unitsCount: 'Files',
+                        viewProject: 'Open',
+                        sectionIndex: 'Doc',
+                        fallbackAlt: 'File',
                     }}
                     columns={3}
                 />

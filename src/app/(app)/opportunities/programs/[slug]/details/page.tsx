@@ -1,4 +1,3 @@
-// app/(frontend)/opportunities/programs/[slug]/details/page.tsx
 import GridSection from '@/components/Section/Blocks/GridSection'
 import HeroSection from '@/components/Section/Blocks/HeroSection'
 import ListSection from '@/components/Section/Blocks/ListSection'
@@ -21,6 +20,32 @@ const getProgramDetailsData = unstable_cache(
             collection: 'programs',
             where: { slug: { equals: slug } },
             limit: 1,
+            depth: 1,
+            select: {
+                id: true,
+                name: true,
+                assets: {
+                    cover: true,
+                    documents: true,
+                },
+                seo: {
+                    image: true,
+                },
+                details: {
+                    objective: true,
+                    status: true,
+                    mentors: true,
+                    participants: true,
+                },
+                traits: {
+                    eligibility: {
+                        list: true,
+                    },
+                    curriculum: {
+                        list: true,
+                    },
+                },
+            },
         })
         return result.docs[0] || null
     },
@@ -34,93 +59,59 @@ export default async function ProgramDetailsPage({ params }: { params: Promise<{
 
     if (!program) notFound()
 
-    const heroBackgroundImage = program.assets?.cover
-        ? getMediaUrl(program.assets.cover)
-        : program.seo?.image
-            ? getMediaUrl(program.seo.image)
-            : undefined
+    const heroBackgroundImage = getMediaUrl(program.assets?.cover) || getMediaUrl(program.seo?.image)
 
-    const eligibilityEntries: any[] = []
-    if (program.traits?.eligibility?.list) {
-        program.traits.eligibility.list.forEach((item) => {
-            if (item.criteria) {
-                eligibilityEntries.push({
-                    id: item.id || String(Math.random()),
-                    title: item.criteria,
-                    subtitle: item.value || item.description || undefined,
-                })
-            }
-        })
-    }
+    const eligibilityEntries: any[] = (program.traits?.eligibility?.list || [])
+        .filter((item) => item.criteria)
+        .map((item) => ({
+            id: item.id || String(Math.random()),
+            title: item.criteria,
+            subtitle: item.value || item.description || undefined,
+        }))
 
-    const curriculumEntries: any[] = []
-    if (program.traits?.curriculum?.list) {
-        program.traits.curriculum.list.forEach((item) => {
-            if (item.module_name) {
-                curriculumEntries.push({
-                    id: item.id || String(Math.random()),
-                    title: item.module_name,
-                    subtitle: item.deliverable || undefined,
-                    status: item.duration || undefined,
-                })
-            }
-        })
-    }
+    const curriculumEntries: any[] = (program.traits?.curriculum?.list || [])
+        .filter((item) => item.module_name)
+        .map((item) => ({
+            id: item.id || String(Math.random()),
+            title: item.module_name,
+            subtitle: item.deliverable || undefined,
+            status: item.duration || undefined,
+        }))
 
-    const mentorItems: any[] = []
-    if (program.details?.mentors) {
-        program.details.mentors.forEach((mentorRef) => {
-            const mentor = mentorRef as any
-            if (mentor && typeof mentor === 'object' && 'first_name' in mentor) {
-                const imageUrl = mentor.assets?.avatar
-                    ? getMediaUrl(mentor.assets.avatar)
-                    : `https://picsum.photos/seed/${mentor.id}/400/300`
+    const mentorItems: any[] = (program.details?.mentors || [])
+        .filter((mentor): mentor is any => mentor !== null && typeof mentor === 'object' && 'first_name' in mentor)
+        .map((mentor) => ({
+            id: String(mentor.id),
+            title: `${mentor.first_name} ${mentor.last_name}`,
+            subtitle: mentor.basics?.title || 'Mentor',
+            image: getMediaUrl(mentor.assets?.avatar) || `https://picsum.photos/seed/${mentor.id}/400/300`,
+        }))
 
-                mentorItems.push({
-                    id: String(mentor.id),
-                    title: `${mentor.first_name} ${mentor.last_name}`,
-                    subtitle: mentor.basics?.title || 'Mentor',
-                    image: imageUrl,
-                })
-            }
-        })
-    }
+    const participantItems: any[] = (program.details?.participants || [])
+        .filter((participant): participant is Driver => participant !== null && typeof participant === 'object' && 'first_name' in participant)
+        .map((participant) => ({
+            id: String(participant.id),
+            title: `${participant.first_name} ${participant.last_name}`,
+            subtitle: participant.basics?.racing_number ? `#${participant.basics.racing_number}` : undefined,
+            image: getMediaUrl(participant.assets?.avatar) || `https://picsum.photos/seed/${participant.id}/400/300`,
+        }))
 
-    const participantItems: any[] = []
-    if (program.details?.participants) {
-        program.details.participants.forEach((participantRef) => {
-            const participant = participantRef as Driver
-            if (participant && typeof participant === 'object' && 'first_name' in participant) {
-                const imageUrl = participant.assets?.avatar
-                    ? getMediaUrl(participant.assets.avatar)
-                    : `https://picsum.photos/seed/${participant.id}/400/300`
-
-                participantItems.push({
-                    id: String(participant.id),
-                    title: `${participant.first_name} ${participant.last_name}`,
-                    subtitle: participant.basics?.racing_number ? `#${participant.basics.racing_number}` : undefined,
-                    image: imageUrl,
-                })
-            }
-        })
-    }
-
-    const documentItems: any[] = []
-    if (program.assets?.documents) {
-        program.assets.documents.forEach((doc, idx) => {
+    const documentItems: any[] = (program.assets?.documents || [])
+        .map((doc, idx) => {
             const media = typeof doc === 'object' ? doc : null
             const url = media ? getMediaUrl(media) : undefined
             if (url && media) {
-                documentItems.push({
+                return {
                     id: String(media.id),
                     title: media.alt || media.filename || `Document ${idx + 1}`,
                     subtitle: media.mimeType || undefined,
                     image: url,
                     href: url,
-                })
+                }
             }
+            return null
         })
-    }
+        .filter(Boolean)
 
     return (
         <main className="w-full">
@@ -146,8 +137,6 @@ export default async function ProgramDetailsPage({ params }: { params: Promise<{
                     }}
                     showStatus={false}
                     showTimestamp={false}
-                    headerVariant={1}
-                    footerVariant={1}
                 />
             )}
             {curriculumEntries.length > 0 && (
@@ -163,8 +152,6 @@ export default async function ProgramDetailsPage({ params }: { params: Promise<{
                     }}
                     showStatus={true}
                     showTimestamp={false}
-                    headerVariant={2}
-                    footerVariant={1}
                 />
             )}
             {mentorItems.length > 0 && (

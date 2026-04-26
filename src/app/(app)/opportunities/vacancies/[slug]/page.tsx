@@ -1,4 +1,3 @@
-// app/(frontend)/opportunities/vacancies/[slug]/page.tsx
 import PanelSection from '@/components/Section/Blocks/PanelSection'
 import StudySection from '@/components/Section/Blocks/StudySection'
 import { Media } from '@/payload-types'
@@ -20,6 +19,26 @@ const getVacancyData = unstable_cache(
             collection: 'vacancies',
             where: { slug: { equals: slug } },
             limit: 1,
+            depth: 1, // Keep it shallow for performance
+            select: {
+                id: true,
+                name: true,
+                slug: true,
+                basics: {
+                    title: true,
+                    description: true,
+                },
+                assets: {
+                    thumbnail: true,
+                },
+                seo: {
+                    image: true,
+                },
+                details: {
+                    department: true,
+                    contract: true,
+                }
+            }
         })
         return result.docs[0] || null
     },
@@ -33,17 +52,16 @@ export default async function VacancyPage({ params }: { params: Promise<{ slug: 
 
     if (!vacancy) notFound()
 
-    const studyImage = vacancy.assets?.thumbnail
-        ? getMediaUrl(vacancy.assets.thumbnail)
-        : vacancy.seo?.image
-            ? getMediaUrl(vacancy.seo.image)
-            : undefined
+    // Declarative image resolution
+    const studyImage = getMediaUrl(vacancy.assets?.thumbnail) ||
+        getMediaUrl(vacancy.seo?.image) ||
+        `https://picsum.photos/seed/${vacancy.slug}/800/600`
 
     const study = {
         id: String(vacancy.id),
         title: vacancy.name,
-        description: vacancy.basics?.description || vacancy.basics.title || '',
-        image: studyImage || `https://picsum.photos/seed/${vacancy.slug}/800/600`,
+        description: vacancy.basics?.description || vacancy.basics?.title || '',
+        image: studyImage,
         metrics: [
             { label: 'Department', value: vacancy.details?.department || 'N/A' },
             { label: 'Contract', value: vacancy.details?.contract || 'N/A' },
@@ -57,7 +75,7 @@ export default async function VacancyPage({ params }: { params: Promise<{ slug: 
         content: (
             <div className="space-y-4">
                 <p className="text-muted-foreground">Please send your CV and cover letter to careers@example.com</p>
-                <p className="text-sm text-muted-foreground">Reference: {vacancy.basics.title}</p>
+                <p className="text-sm text-muted-foreground">Reference: {vacancy.basics?.title}</p>
             </div>
         ),
     }

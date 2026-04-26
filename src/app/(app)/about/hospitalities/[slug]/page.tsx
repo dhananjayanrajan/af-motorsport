@@ -1,4 +1,3 @@
-// app/(frontend)/about/hospitalities/[slug]/page.tsx
 import HeroSection from '@/components/Section/Blocks/HeroSection'
 import MasonrySection from '@/components/Section/Blocks/MasonrySection'
 import QuoteSection from '@/components/Section/Blocks/QuoteSection'
@@ -17,6 +16,15 @@ function getMediaUrl(media: number | Media | null | undefined): string | undefin
     return undefined
 }
 
+function resolveAssetUrl(assets: any, ...keys: string[]): string | undefined {
+    if (!assets) return undefined
+    for (const key of keys) {
+        const url = getMediaUrl(assets[key])
+        if (url) return url
+    }
+    return undefined
+}
+
 const getHospitalityData = unstable_cache(
     async (slug: string) => {
         const payload = await getPayload({ config: configPromise })
@@ -24,6 +32,34 @@ const getHospitalityData = unstable_cache(
             collection: 'hospitalities',
             where: { slug: { equals: slug } },
             limit: 1,
+            depth: 1,
+            select: {
+                id: true,
+                name: true,
+                slug: true,
+                basics: {
+                    description: true,
+                    tagline: true,
+                },
+                assets: {
+                    cover: true,
+                    thumbnail: true,
+                    gallery: true,
+                },
+                details: {
+                    status: true,
+                    access: true,
+                    capacity: true,
+                    price_per_guest: true,
+                    type: true,
+                    history: true,
+                    start_date: true,
+                    end_date: true,
+                },
+                seo: {
+                    image: true,
+                },
+            },
         })
         return result.docs[0] || null
     },
@@ -38,31 +74,22 @@ export default async function HospitalityPage({ params }: { params: Promise<{ sl
     if (!hospitality) notFound()
 
     const coverActions = [
-        { label: 'View Details', href: `/about/hospitalities/${hospitality.slug}/details`, variant: 'primary' as const },
+        { label: 'VIEW DETAILS', href: `/about/hospitalities/${hospitality.slug}/details`, variant: 'primary' as const },
     ]
 
-    const heroBackgroundImage = hospitality.assets?.cover
-        ? getMediaUrl(hospitality.assets.cover)
-        : hospitality.seo?.image
-            ? getMediaUrl(hospitality.seo.image)
-            : undefined
-
-    const studyImage = hospitality.assets?.cover
-        ? getMediaUrl(hospitality.assets.cover)
-        : hospitality.assets?.thumbnail
-            ? getMediaUrl(hospitality.assets.thumbnail)
-            : undefined
+    const heroBackgroundImage = resolveAssetUrl(hospitality.assets, 'cover') || getMediaUrl(hospitality.seo?.image)
+    const studyImage = resolveAssetUrl(hospitality.assets, 'cover', 'thumbnail')
 
     const study = {
         id: String(hospitality.id),
         title: hospitality.name,
         description: hospitality.basics?.description || hospitality.basics?.tagline || '',
-        image: studyImage || `https://picsum.photos/seed/${hospitality.slug}/800/600`,
+        image: studyImage || '',
         metrics: [
-            { label: 'Status', value: hospitality.details?.status || 'N/A' },
-            { label: 'Access', value: hospitality.details?.access || 'N/A' },
-            { label: 'Capacity', value: hospitality.details?.capacity ? String(hospitality.details.capacity) : 'N/A' },
-            { label: 'Price', value: hospitality.details?.price_per_guest ? `$${hospitality.details.price_per_guest}` : 'N/A' },
+            { label: 'STATUS', value: hospitality.details?.status || 'N/A' },
+            { label: 'ACCESS', value: hospitality.details?.access || 'N/A' },
+            { label: 'CAPACITY', value: hospitality.details?.capacity ? String(hospitality.details.capacity) : 'N/A' },
+            { label: 'PRICE', value: hospitality.details?.price_per_guest ? `$${hospitality.details.price_per_guest}` : 'N/A' },
         ],
     }
 
@@ -78,8 +105,8 @@ export default async function HospitalityPage({ params }: { params: Promise<{ sl
     if (hospitality.details?.history) {
         scrollItems.push({
             id: 'history',
-            title: 'Our History',
-            description: 'A legacy of premium hospitality experiences in motorsport.',
+            title: 'HERITAGE',
+            description: 'A comprehensive timeline of premium trackside hospitality services.',
             percentage: 100,
         })
     }
@@ -88,47 +115,44 @@ export default async function HospitalityPage({ params }: { params: Promise<{ sl
     if (hospitality.details?.start_date) {
         timelineEvents.push({
             id: 'start',
-            date: new Date(hospitality.details.start_date).toLocaleDateString(),
-            title: 'Experience Begins',
-            description: 'Hospitality opening date',
+            date: new Date(hospitality.details.start_date).toISOString().split('T')[0],
+            title: 'INITIALIZATION',
+            description: 'Official opening of hospitality services.',
             status: 'upcoming' as const,
         })
     }
     if (hospitality.details?.end_date) {
         timelineEvents.push({
             id: 'end',
-            date: new Date(hospitality.details.end_date).toLocaleDateString(),
-            title: 'Experience Concludes',
-            description: 'Final day of hospitality',
+            date: new Date(hospitality.details.end_date).toISOString().split('T')[0],
+            title: 'CONCLUSION',
+            description: 'Final operational window for this experience.',
             status: 'upcoming' as const,
         })
     }
 
     const galleryItems: any[] = []
-    if (hospitality.assets?.gallery) {
+    if (hospitality.assets?.gallery && Array.isArray(hospitality.assets.gallery)) {
         hospitality.assets.gallery.forEach((item, idx) => {
-            const media = typeof item === 'object' ? item : null
-            const url = media ? getMediaUrl(media) : undefined
-            if (url && media) {
+            const url = getMediaUrl(item)
+            if (url) {
                 galleryItems.push({
-                    id: String(media.id),
-                    title: media.alt || hospitality.name,
+                    id: String(typeof item === 'object' ? item.id : idx),
+                    title: (typeof item === 'object' && item.alt) || hospitality.name,
                     image: url,
                     height: idx % 3 === 0 ? 'tall' as const : idx % 2 === 0 ? 'medium' as const : 'short' as const,
                 })
             }
         })
     }
-    if (galleryItems.length === 0 && hospitality.assets?.cover) {
-        const url = getMediaUrl(hospitality.assets.cover)
-        if (url) {
-            galleryItems.push({
-                id: String(hospitality.id),
-                title: hospitality.name,
-                image: url,
-                height: 'medium' as const,
-            })
-        }
+
+    if (galleryItems.length === 0 && heroBackgroundImage) {
+        galleryItems.push({
+            id: String(hospitality.id),
+            title: hospitality.name,
+            image: heroBackgroundImage,
+            height: 'medium' as const,
+        })
     }
 
     return (
@@ -136,17 +160,17 @@ export default async function HospitalityPage({ params }: { params: Promise<{ sl
             <HeroSection
                 id="hospitality-cover"
                 title={hospitality.name}
-                subtitle={hospitality.basics?.tagline || ''}
+                subtitle={hospitality.basics?.tagline || 'EXECUTIVE ACCESS'}
                 description={hospitality.basics?.description || undefined}
                 backgroundImage={heroBackgroundImage}
                 actions={coverActions}
                 alignment="center"
-                badge={hospitality.details?.type || undefined}
+                badge={hospitality.details?.type || 'HOSPITALITY'}
             />
             <StudySection
                 id="hospitality-details"
-                title="Experience Details"
-                subtitle="What to expect"
+                title="SPECIFICATIONS"
+                subtitle="Technical details and accessibility parameters"
                 studies={[study]}
                 variant="featured"
                 headerVariant={1}
@@ -155,47 +179,45 @@ export default async function HospitalityPage({ params }: { params: Promise<{ sl
             {quoteItem && (
                 <QuoteSection
                     id="hospitality-quote"
-                    title="Experience"
-                    subtitle="Premium hospitality"
+                    title="PHILOSOPHY"
+                    subtitle="Strategic hospitality standards"
                     quotes={[quoteItem]}
                     labels={{
-                        commStatus: 'COMM',
-                        ratingLabel: 'RATING',
+                        commStatus: 'SYS',
+                        ratingLabel: 'RANK',
                     }}
                     variant="grid"
                     headerVariant={2}
                     footerVariant={1}
                 />
             )}
-            {scrollItems.length > 0 && (
-                <ScrollSection
-                    id="hospitality-history"
-                    title="Heritage"
-                    subtitle="Our hospitality legacy"
-                    items={scrollItems}
-                    labels={{
-                        indexPrefix: 'SEC',
-                        progressLabel: 'PROG',
-                        statusComplete: 'DONE',
-                    }}
-                    variant="reveal"
-                    headerVariant={1}
-                    footerVariant={1}
-                />
-            )}
+            <ScrollSection
+                id="hospitality-history"
+                title="ARCHIVE"
+                subtitle="Historical operational data"
+                items={scrollItems}
+                labels={{
+                    indexPrefix: 'LOG',
+                    progressLabel: 'DATA',
+                    statusComplete: 'SYNC',
+                }}
+                variant="reveal"
+                headerVariant={1}
+                footerVariant={1}
+            />
             {timelineEvents.length > 0 && (
                 <TimelineSection
                     id="hospitality-timeline"
-                    title="Schedule"
-                    subtitle="Key dates"
+                    title="OPERATIONS"
+                    subtitle="Service timeline schedules"
                     events={timelineEvents}
                     labels={{
                         statusPrefix: 'STAT',
-                        eventIndexLabel: 'EVENT',
+                        eventIndexLabel: 'STEP',
                         deploymentStatus: {
-                            completed: 'DONE',
+                            completed: 'SYNCED',
                             active: 'ACTIVE',
-                            upcoming: 'UPCOMING',
+                            upcoming: 'PENDING',
                         },
                     }}
                     orientation="horizontal"
@@ -206,11 +228,11 @@ export default async function HospitalityPage({ params }: { params: Promise<{ sl
             {galleryItems.length > 0 && (
                 <MasonrySection
                     id="hospitality-gallery"
-                    title="Gallery"
-                    subtitle="Glimpses of the experience"
+                    title="VISUALS"
+                    subtitle="Environmental documentation"
                     items={galleryItems}
                     labels={{
-                        categoryPrefix: 'CAT',
+                        categoryPrefix: 'TYPE',
                         idPrefix: 'IMG',
                     }}
                     columns={3}

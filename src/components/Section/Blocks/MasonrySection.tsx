@@ -1,3 +1,4 @@
+// MasonrySection.tsx
 "use client"
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
@@ -63,11 +64,11 @@ const MasonrySection: React.FC<MasonrySectionProps> = ({
     distributeItems()
   }, [items, columns])
 
-  const heightClass = (height?: string) => {
+  const getItemHeight = (height?: string) => {
     switch (height) {
-      case 'short': return 'aspect-[4/3]'
-      case 'tall': return 'aspect-[3/5]'
-      default: return 'aspect-[3/4]'
+      case 'short': return '320px'
+      case 'tall': return '480px'
+      default: return '400px'
     }
   }
 
@@ -88,41 +89,42 @@ const MasonrySection: React.FC<MasonrySectionProps> = ({
         metadata={String(items.length).padStart(2, '0')}
       />
 
-      <div className="flex flex-wrap w-full border-b border-black-pure bg-black-pure gap-0">
+      <div className="flex flex-wrap w-full border-b border-black-pure bg-white-pure gap-0">
         {columnItems.map((col, colIdx) => (
           <div key={colIdx} className={`${colWidth[columns]} flex flex-col border-r border-black-pure last:border-r-0`}>
             {col.map((item) => (
               <div
                 key={item.id}
-                className={`group relative w-full ${heightClass(item.height)} border-b border-black-pure last:border-b-0 overflow-hidden bg-neutral-100 transition-colors hover:bg-primary`}
+                className="group relative w-full border-b border-black-pure last:border-b-0 overflow-hidden bg-neutral-100"
+                style={{ height: getItemHeight(item.height) }}
               >
                 <img
-                  src={item.image}
+                  src={item.image || `https://picsum.photos/seed/${item.id}/800/1000`}
                   alt={item.title}
-                  className="w-full h-full object-cover grayscale transition-all duration-300 group-hover:scale-105 group-hover:grayscale-0"
+                  className="w-full h-full object-cover transition-all duration-500 group-hover:scale-105"
                 />
 
-                <div className="absolute top-4 left-4 bg-black-pure px-2 py-1 border border-black-pure shadow-[2px_2px_0px_0px_#00FF41]">
-                  <span className="text-[8px] font-mono font-black text-white-pure uppercase tracking-widest">
+                <div className="absolute top-4 left-4 bg-black-pure px-2 py-1 border border-black-pure transition-all duration-300 group-hover:bg-primary-500">
+                  <span className="text-base font-bold text-white-pure transition-colors duration-300 group-hover:text-black-pure">
                     {labels.idPrefix}{item.id}
                   </span>
                 </div>
 
-                <div className="absolute inset-x-0 bottom-0 p-6 bg-white-pure border-t border-black-pure translate-y-[calc(100%-60px)] group-hover:translate-y-0 transition-transform duration-200">
+                <div className="absolute inset-x-0 bottom-0 p-6 bg-white-pure border-t border-black-pure transition-all duration-400 translate-y-[calc(100%-72px)] group-hover:translate-y-0">
                   <div className="mb-4">
                     {item.category && (
-                      <span className="text-[9px] font-mono font-black text-neutral-500 uppercase tracking-widest mb-1 block">
+                      <span className="text-base font-bold text-black-pure/60 mb-1 block transition-all duration-300 group-hover:text-primary-500">
                         {labels.categoryPrefix}{item.category}
                       </span>
                     )}
-                    <h3 className="text-lg font-mono font-black text-black-pure uppercase leading-none tracking-tighter">
+                    <h3 className="text-2xl font-bold text-black-pure">
                       {item.title}
                     </h3>
                   </div>
 
-                  <div className="pt-4 border-t border-black-pure">
+                  <div className="pt-4 border-t border-black-pure transition-all duration-300 delay-75 opacity-0 group-hover:opacity-100">
                     {item.description && (
-                      <p className="text-[9px] font-mono font-bold text-black-pure uppercase leading-tight">
+                      <p className="text-base font-bold text-black-pure">
                         {item.description}
                       </p>
                     )}
@@ -130,8 +132,8 @@ const MasonrySection: React.FC<MasonrySectionProps> = ({
                 </div>
 
                 <div className="absolute top-4 right-4">
-                  <div className="w-8 h-8 bg-white-pure border border-black-pure flex items-center justify-center shadow-[4px_4px_0px_0px_#000000] group-hover:shadow-none group-hover:translate-x-1 group-hover:translate-y-1 transition-all">
-                    <div className="w-1.5 h-1.5 bg-primary" />
+                  <div className="w-8 h-8 bg-white-pure border border-black-pure flex items-center justify-center transition-all duration-300 group-hover:translate-x-1 group-hover:translate-y-1 group-hover:bg-primary-500">
+                    <div className="w-1.5 h-1.5 bg-primary-500 transition-colors duration-300 group-hover:bg-black-pure" />
                   </div>
                 </div>
               </div>
@@ -144,14 +146,14 @@ const MasonrySection: React.FC<MasonrySectionProps> = ({
         <div className="h-32 flex items-center justify-center bg-neutral-100">
           <Link
             href={ctaPath}
-            className="flex items-center gap-8 px-12 py-4 bg-white-pure border border-black-pure text-black-pure shadow-[8px_8px_0px_0px_#000000] transition-all hover:shadow-none hover:translate-x-2 hover:translate-y-2 hover:bg-primary active:bg-black-pure active:text-primary"
+            className="flex items-center gap-8 px-12 py-4 bg-white-pure border border-black-pure text-black-pure transition-all duration-300 hover:translate-x-2 hover:translate-y-2 hover:bg-primary-500 active:bg-black-pure active:text-primary-500"
           >
-            <span className="text-[10px] font-mono font-black uppercase tracking-[0.3em]">
+            <span className="text-base font-bold">
               {ctaLabel}
             </span>
             <div className="flex gap-[2px]">
               {[...Array(3)].map((_, i) => (
-                <div key={i} className="w-1.5 h-3 bg-black-pure" />
+                <div key={i} className="w-1.5 h-3 bg-black-pure transition-all duration-300 group-hover:bg-white-pure" />
               ))}
             </div>
           </Link>
