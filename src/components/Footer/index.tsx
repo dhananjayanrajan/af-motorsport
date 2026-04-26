@@ -10,12 +10,26 @@ export async function Footer() {
   const announcements = await getCachedGlobal('announcements', 1)()
 
   const payload = await getPayload({ config: configPromise })
+
   const organizations = await payload.find({
     collection: 'organizations',
     limit: 10,
+    depth: 1,
     where: {
-      'assets.logo': { exists: true },
+      and: [
+        {
+          'assets.logo': {
+            exists: true,
+          },
+        },
+        {
+          'basics.type': {
+            not_equals: 'Others',
+          },
+        },
+      ],
     },
+    sort: '-updatedAt',
   })
 
   return (

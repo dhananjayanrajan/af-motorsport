@@ -2,7 +2,8 @@
 
 import { FAQAccordionBlock } from '@/components/Custom/layout/questions'
 import { CMSLink } from '@/components/Link'
-import type { Announcement as AnnouncementType, Footer, Organization, Question, Social } from '@/payload-types'
+import type { Announcement as AnnouncementType, Footer, Media, Organization, Question, Social } from '@/payload-types'
+import Image from 'next/image'
 import { AnnouncementsSection } from './announcements'
 import { CTA } from './cta'
 
@@ -16,7 +17,8 @@ interface CustomFooterProps {
 
 export const CustomFooter = ({ footer, socials, organizations = [], questions, announcements }: CustomFooterProps) => {
   if (!footer) return null
-  const { columns, cta, copyright } = footer
+
+  const { columns, cta, copyright, brand, legal } = footer
   const currentYear = new Date().getFullYear()
 
   return (
@@ -41,25 +43,38 @@ export const CustomFooter = ({ footer, socials, organizations = [], questions, a
 
       <footer className="relative w-full bg-white-pure flex flex-col">
         <div className="flex flex-col lg:flex-row border-b-2 border-black-pure divide-y-2 lg:divide-y-0 lg:divide-x-2 divide-black-pure">
-          <div className="w-full lg:w-20 bg-primary-500 py-16 px-6 flex lg:flex-col items-center justify-between shrink-0">
-            <span className="text-xs font-black text-black-pure lg:-rotate-90 lg:whitespace-nowrap tracking-widest uppercase">
-              DIRECTORY
-            </span>
-            <div className="size-3 bg-black-pure rotate-45" />
-          </div>
 
-          <div className="flex-1 grid grid-cols-1 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-6 xl:grid-cols-6 divide-y-2 sm:divide-y-0 sm:divide-x-2 divide-black-pure">
+          {brand?.enable && (
+            <div className="w-full lg:w-32 bg-primary-500 py-16 px-6 flex lg:flex-col items-center justify-between shrink-0">
+              {brand.logo && typeof brand.logo === 'object' && (brand.logo as Media).url ? (
+                <Image
+                  src={(brand.logo as Media).url!}
+                  alt={(brand.logo as Media).alt || ''}
+                  width={40}
+                  height={40}
+                  className="object-contain"
+                />
+              ) : (
+                <div className="size-3 bg-black-pure rotate-45" />
+              )}
+              <span className="w-24 text-xs font-black text-black-pure lg:-rotate-90 lg:whitespace-nowrap tracking-widest uppercase">
+                {brand.tagline}
+              </span>
+            </div>
+          )}
+
+          <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 divide-y-2 sm:divide-y-0 sm:divide-x-2 divide-black-pure">
             {columns?.filter(col => col.visible).map((column, idx) => (
               <div key={idx} className="p-8 flex flex-col gap-6 hover:bg-primary-50 transition-colors">
                 <span className="text-xs font-black text-black-pure tracking-widest border-l-4 border-secondary-500 pl-4 uppercase">
                   {column.label}
                 </span>
                 <ul className="flex flex-col gap-2">
-                  {column.links?.filter(link => link.visible).map((linkData, lIdx) => (
+                  {column.links?.filter(l => l.visible).map((linkData, lIdx) => (
                     <li key={lIdx}>
                       <CMSLink
                         {...linkData.link}
-                        label={linkData.label || linkData.link.label}
+                        label={linkData.label}
                         className="text-xs font-black text-black-pure/60 hover:text-primary-600 uppercase transition-colors"
                       />
                     </li>
@@ -71,18 +86,33 @@ export const CustomFooter = ({ footer, socials, organizations = [], questions, a
 
           <div className="w-full lg:w-[400px] p-8 bg-white-100 flex flex-col justify-between">
             <div className="space-y-6">
-              <span className="text-xs font-black text-black-pure tracking-widest uppercase">SOCIALS</span>
+              <span className="text-xs font-black text-black-pure tracking-widest uppercase">Social Media</span>
               <div className="grid grid-cols-2 gap-2">
                 {socials?.accounts?.filter(acc => acc.visible).map((account) => (
-                  <a key={account.id} href={account.url} className="h-12 border-2 border-black-pure flex items-center justify-center text-[10px] font-black uppercase hover:bg-secondary-500 transition-all">
+                  <a
+                    key={account.id}
+                    href={account.url || '#'}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="h-12 border-2 border-black-pure flex items-center justify-center text-[10px] font-black uppercase hover:bg-secondary-500 transition-all"
+                  >
                     {account.platform}
                   </a>
                 ))}
               </div>
             </div>
-            <div className="mt-10 h-12 flex border-2 border-black-pure">
-              <input type="email" placeholder="EMAIL ADDRESS" className="flex-1 px-4 text-[10px] font-black uppercase bg-transparent outline-none" />
-              <button className="px-6 bg-black-pure text-white-pure text-[10px] font-black hover:bg-primary-500 hover:text-black-pure transition-colors">JOIN</button>
+
+            <div className="mt-10">
+              <div className="h-12 flex border-2 border-black-pure">
+                <input
+                  type="email"
+                  placeholder="EMAIL ADDRESS"
+                  className="flex-1 px-4 text-[10px] font-black uppercase bg-transparent outline-none"
+                />
+                <button className="px-6 bg-black-pure text-white-pure text-[10px] font-black hover:bg-primary-500 hover:text-black-pure transition-colors">
+                  JOIN
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -90,12 +120,21 @@ export const CustomFooter = ({ footer, socials, organizations = [], questions, a
         <div className="flex flex-col md:flex-row divide-y-2 md:divide-y-0 md:divide-x-2 divide-black-pure border-b-2 border-black-pure">
           <div className="flex-1 py-4 px-8 bg-white-pure">
             <span className="text-[10px] font-black text-black-pure opacity-40 tracking-widest uppercase">
-              {copyright || `COPYRIGHT ${currentYear} AF MOTORSPORT`}
+              {copyright ? copyright.replace('{year}', currentYear.toString()) : `© ${currentYear}`}
             </span>
           </div>
-          <div className="w-full md:w-[400px] py-4 px-8 flex items-center justify-between bg-black-pure">
-            <span className="text-white-pure text-[10px] font-black tracking-widest uppercase">ACTIVE SESSION</span>
-            <div className="flex gap-2">
+
+          <div className="w-full md:w-auto py-4 px-8 flex items-center gap-6 bg-black-pure overflow-x-auto">
+            {legal?.filter(l => l.visible).map((legalLink, idx) => (
+              <CMSLink
+                key={idx}
+                {...legalLink.link}
+                label={legalLink.label}
+                className="text-white-pure text-[10px] font-black tracking-widest uppercase hover:text-primary-500 transition-colors whitespace-nowrap"
+              />
+            ))}
+
+            <div className="flex gap-2 ml-auto">
               <div className="size-2 bg-primary-500" />
               <div className="size-2 bg-secondary-500" />
               <div className="size-2 bg-tertiary-500" />
