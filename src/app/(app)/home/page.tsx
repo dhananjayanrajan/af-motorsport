@@ -322,7 +322,7 @@ export default async function HomePage() {
       )}
       <HyperspeedSection
         id="home-navigation"
-        title="HYPERSPEED"
+        title="QUICK ACCESS"
         subtitle="Quick access portal"
         routes={hyperspeedRoutes}
         headerVariant={1}

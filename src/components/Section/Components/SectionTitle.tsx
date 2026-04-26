@@ -1,4 +1,3 @@
-// SectionTitle.tsx
 "use client"
 import React from 'react'
 
@@ -17,56 +16,49 @@ const SectionTitle: React.FC<SectionTitleProps> = ({
     highlight,
     variant = 1
 }) => {
-    const textBase = "font-black leading-none"
+    const textBase = "font-black uppercase tracking-tighter leading-[0.9] text-2xl"
 
     if (variant === 2) {
         return (
-            <div className="flex flex-col w-full border border-black-pure bg-white-pure transition-all duration-300 hover:bg-black-pure group">
-                <div className="flex items-center justify-between p-6 border-b border-black-pure bg-white-pure group-hover:bg-black-pure">
-                    <div className="flex items-center gap-3">
-                        <div className="w-6 h-6 bg-primary-500 border border-black-pure flex items-center justify-center transition-all duration-300 group-hover:bg-white-pure">
-                            <div className="w-1.5 h-1.5 bg-black-pure transition-all duration-300 group-hover:bg-primary-500" />
+            <div className="group grid grid-cols-[1fr_auto] gap-0 border-2 border-black-pure">
+                <div className="p-4 border-r-2 border-black-pure bg-white-pure group-hover:bg-primary-500 transition-colors duration-500">
+                    <h2 className={textBase}>
+                        <div className="flex items-center gap-2 mb-2">
+                            <span className="text-xs tracking-[0.4em] font-bold opacity-30">{label}</span>
                         </div>
-                        <p className="text-base font-bold text-black-pure group-hover:text-white-pure">{label}</p>
-                    </div>
-                    <div className="flex gap-2">
-                        <div className="w-3 h-3 bg-black-pure transition-all duration-300 group-hover:bg-white-pure" />
-                        <div className="w-3 h-3 bg-secondary-500 transition-all duration-300 group-hover:bg-primary-500" />
-                        <div className="w-3 h-3 bg-primary-500 transition-all duration-300 group-hover:bg-secondary-500" />
-                    </div>
-                </div>
-                <div className="p-8 relative overflow-hidden">
-                    <div className="absolute -top-8 -right-8 w-24 h-24 bg-primary-500 rotate-45 transition-all duration-500 group-hover:translate-x-4 group-hover:translate-y-4" />
-                    <h2 className={`${textBase} text-2xl text-black-pure group-hover:text-white-pure relative z-10`}>
-                        <div className="mb-2">{lineOne}</div>
-                        <div className="mb-2 text-primary-500 transition-all duration-300 group-hover:text-secondary-500">{highlight}</div>
+                        <div className="mb-1">{lineOne}</div>
+                        <div className="bg-black-pure text-white-pure px-1 inline-block mb-1 group-hover:bg-secondary-500 group-hover:text-black-pure transition-colors">{highlight}</div>
                         <div>{lineTwo}</div>
                     </h2>
                 </div>
-                <div className="h-0.5 w-full bg-secondary-500 transition-transform duration-500 origin-left scale-x-0 group-hover:scale-x-100" />
+                <div className="w-12 flex items-center justify-center bg-black-pure overflow-hidden">
+                    <div className="flex flex-col gap-1 group-hover:animate-bounce">
+                        {[...Array(3)].map((_, i) => (
+                            <div key={i} className="w-2 h-2 bg-primary-500 rounded-full" />
+                        ))}
+                    </div>
+                </div>
             </div>
         )
     }
 
     if (variant === 3) {
         return (
-            <div className="flex flex-col w-full border border-black-pure overflow-hidden">
-                <div className="flex border-b border-black-pure">
-                    <div className="flex-1 p-8 bg-secondary-500 transition-all duration-300 hover:bg-black-pure group relative overflow-hidden">
-                        <div className="absolute inset-0 bg-primary-500 transition-transform duration-500 -translate-x-full group-hover:translate-x-0" />
-                        <h2 className={`${textBase} text-2xl text-black-pure transition-all duration-300 group-hover:text-white-pure relative z-10`}>
-                            {lineOne}
-                        </h2>
-                    </div>
-                    <div className="w-1/4 bg-black-pure flex items-center justify-center transition-all duration-300 hover:bg-primary-500 group cursor-pointer">
-                        <div className="w-6 h-6 bg-white-pure transition-colors duration-300 group-hover:bg-black-pure rotate-45" />
+            <div className="group relative border-4 border-black-pure p-0 overflow-hidden">
+                <div className="bg-black-pure p-2 flex justify-between items-center">
+                    <span className="text-[10px] font-bold text-white-pure tracking-widest">{label}</span>
+                    <div className="flex gap-1">
+                        <div className="w-2 h-2 bg-primary-500" />
+                        <div className="w-2 h-2 bg-secondary-500" />
                     </div>
                 </div>
-                <div className="p-8 bg-white-pure transition-all duration-300 hover:bg-black-pure group relative">
-                    <div className="absolute bottom-0 left-0 h-0.5 w-full bg-primary-500 transition-transform duration-500 origin-left scale-x-0 group-hover:scale-x-100" />
-                    <h2 className={`${textBase} text-2xl text-black-pure transition-all duration-300 group-hover:text-white-pure`}>
-                        <span className="text-primary-500 transition-colors duration-300 group-hover:text-secondary-500">{highlight}</span> {lineTwo}
+                <div className="p-6 bg-white-pure relative">
+                    <h2 className={`${textBase} text-black-pure relative z-10`}>
+                        <span className="block italic text-primary-500 group-hover:not-italic transition-all">{highlight}</span>
+                        <span className="block group-hover:translate-x-4 transition-transform">{lineOne}</span>
+                        <span className="block opacity-20 group-hover:opacity-100 transition-opacity">{lineTwo}</span>
                     </h2>
+                    <div className="absolute top-0 right-0 w-full h-full bg-neutral-100 translate-x-full group-hover:translate-x-0 transition-transform duration-700" />
                 </div>
             </div>
         )
@@ -74,22 +66,21 @@ const SectionTitle: React.FC<SectionTitleProps> = ({
 
     if (variant === 4) {
         return (
-            <div className="flex w-full border border-black-pure bg-white-pure transition-all duration-300 hover:shadow-lg group">
-                <div className="w-20 bg-primary-500 border-r border-black-pure flex flex-col items-center justify-center transition-all duration-300 group-hover:bg-black-pure">
-                    <span className="text-base font-bold text-black-pure transition-colors duration-300 group-hover:text-white-pure rotate-90">0{variant}</span>
+            <div className="group grid grid-cols-[60px_1fr] border-b-8 border-black-pure">
+                <div className="bg-primary-500 flex items-center justify-center border-r-2 border-black-pure">
+                    <span className="font-black -rotate-90 text-sm">0{variant}</span>
                 </div>
-                <div className="flex-1 p-8 relative overflow-hidden">
-                    <div className="absolute -bottom-4 -right-4 w-20 h-20 bg-secondary-500 rotate-45 transition-all duration-500 group-hover:translate-x-2 group-hover:translate-y-2" />
-                    <div className="flex items-center gap-3 mb-3">
-                        <div className="w-2 h-2 bg-primary-500 transition-all duration-300 group-hover:bg-secondary-500" />
-                        <p className="text-base font-bold text-black-pure/60">{label}</p>
-                    </div>
-                    <h2 className={`${textBase} text-2xl text-black-pure relative z-10`}>
-                        <div className="text-primary-500 mb-2">{highlight}</div>
-                        <div>{lineOne}</div>
-                        <div>{lineTwo}</div>
+                <div className="p-6 bg-white-pure group-hover:bg-neutral-50 transition-colors">
+                    <p className="text-[10px] font-black mb-4 flex items-center gap-2">
+                        <span className="w-2 h-2 bg-black-pure" /> {label}
+                    </p>
+                    <h2 className={textBase}>
+                        <span className="text-secondary-500 underline decoration-black-pure decoration-2 underline-offset-4">{highlight}</span>
+                        <div className="mt-2 flex flex-col">
+                            <span>{lineOne}</span>
+                            <span>{lineTwo}</span>
+                        </div>
                     </h2>
-                    <div className="absolute bottom-0 left-0 h-0.5 w-full bg-primary-500 transition-transform duration-500 origin-left scale-x-0 group-hover:scale-x-100" />
                 </div>
             </div>
         )
@@ -97,60 +88,37 @@ const SectionTitle: React.FC<SectionTitleProps> = ({
 
     if (variant === 5) {
         return (
-            <div className="flex flex-col w-full border border-black-pure bg-white-pure transition-all duration-300 hover:bg-neutral-50 group">
-                <div className="flex items-center p-4 border-b border-black-pure gap-4">
-                    <div className="w-8 h-8 bg-primary-500 border border-black-pure flex items-center justify-center transition-all duration-300 group-hover:bg-black-pure group-hover:border-white-pure">
-                        <span className="text-base font-bold text-black-pure transition-colors duration-300 group-hover:text-white-pure">#</span>
+            <div className="group border-2 border-black-pure p-1 hover:p-2 transition-all duration-300">
+                <div className="border border-black-pure p-6 flex flex-col gap-6">
+                    <div className="flex justify-between items-start">
+                        <div className="h-px flex-1 bg-black-pure/20 mt-2" />
+                        <span className="px-4 text-xs font-black italic">{label}</span>
                     </div>
-                    <p className="text-base font-bold text-black-pure/60">{label}</p>
-                    <div className="flex-1" />
-                    <div className="flex gap-1">
-                        {[1, 2, 3].map((i) => (
-                            <div key={i} className="w-1.5 h-1.5 bg-black-pure/30 transition-all duration-300 group-hover:bg-primary-500" />
-                        ))}
-                    </div>
-                </div>
-                <div className="p-8">
-                    <h2 className={`${textBase} text-2xl text-black-pure`}>
-                        <div>{lineOne}</div>
-                        <div className="text-primary-500 my-2">{highlight}</div>
-                        <div>{lineTwo}</div>
+                    <h2 className={textBase}>
+                        <div className="flex gap-2 items-baseline">
+                            <span className="text-primary-500">{highlight}</span>
+                            <span className="text-sm opacity-40">{lineOne}</span>
+                        </div>
+                        <div className="group-hover:tracking-widest transition-all duration-500">{lineTwo}</div>
                     </h2>
-                </div>
-                <div className="h-1 w-full flex">
-                    <div className="flex-1 bg-primary-500 transition-all duration-300 group-hover:flex-[2]" />
-                    <div className="flex-1 bg-secondary-500 transition-all duration-300 group-hover:flex-[2]" />
-                    <div className="flex-1 bg-black-pure transition-all duration-300 group-hover:flex-[2]" />
                 </div>
             </div>
         )
     }
 
     return (
-        <div className="flex flex-col w-full border border-black-pure bg-white-pure transition-all duration-300 hover:shadow-lg group">
-            <div className="flex items-stretch border-b border-black-pure h-16">
-                <div className="w-16 bg-primary-500 border-r border-black-pure relative overflow-hidden group/bar">
-                    <div className="absolute inset-0 bg-black-pure transition-transform duration-500 -translate-x-full group-hover/bar:translate-x-0" />
-                </div>
-                <div className="w-16 bg-secondary-500 border-r border-black-pure relative overflow-hidden group/bar">
-                    <div className="absolute inset-0 bg-black-pure transition-transform duration-500 -translate-y-full group-hover/bar:translate-y-0" />
-                </div>
-                <div className="flex-1 flex items-center px-6">
-                    <div className="flex items-center gap-3">
-                        <div className="w-2 h-2 bg-primary-500 transition-all duration-300 group-hover:bg-secondary-500" />
-                        <p className="text-base font-bold text-black-pure/60">{label}</p>
-                    </div>
-                </div>
+        <div className="group relative pt-10 px-6 border-2 border-black-pure bg-white-pure hover:shadow-[8px_8px_0px_#000] transition-all">
+            <div className="absolute top-0 left-0 w-full h-8 bg-black-pure flex items-center px-4">
+                <div className="w-2 h-2 bg-red-500 rounded-full mr-1" />
+                <div className="w-2 h-2 bg-yellow-500 rounded-full mr-1" />
+                <div className="w-2 h-2 bg-green-500 rounded-full" />
             </div>
-            <div className="p-8 bg-white-pure transition-colors duration-300 group-hover:bg-black-pure relative">
-                <div className="absolute -bottom-4 -right-4 w-20 h-20 bg-secondary-500 rotate-45 transition-all duration-500 group-hover:translate-x-2 group-hover:translate-y-2" />
-                <h2 className={`${textBase} text-2xl text-black-pure transition-colors duration-300 group-hover:text-white-pure relative z-10`}>
-                    <div className="text-primary-500 transition-colors duration-300 group-hover:text-secondary-500 mb-2">{highlight}</div>
-                    <div>{lineOne}</div>
-                    <div>{lineTwo}</div>
-                </h2>
-                <div className="absolute bottom-0 left-0 h-0.5 w-full bg-primary-500 transition-transform duration-500 origin-left scale-x-0 group-hover:scale-x-100" />
-            </div>
+            <h2 className={`${textBase} py-6`}>
+                <span className="block text-primary-500 group-hover:translate-x-2 transition-transform">{highlight}</span>
+                <span className="block border-b-4 border-secondary-500 w-fit">{lineOne}</span>
+                <span className="block opacity-30">{lineTwo}</span>
+            </h2>
+            <div className="absolute bottom-2 right-2 text-[10px] font-black">{label}</div>
         </div>
     )
 }

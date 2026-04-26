@@ -1,4 +1,3 @@
-// SectionCard.tsx
 "use client"
 import Image from 'next/image'
 import React from 'react'
@@ -23,39 +22,20 @@ const SectionCard: React.FC<SectionCardProps> = ({
     active = false
 }) => {
     const imageUrl = image && image.trim() !== '' ? image : `https://picsum.photos/seed/${title.replace(/\s/g, '')}/800/600`
-
-    const headingBase = "font-black leading-none text-left transition-all duration-300"
-    const monoBase = "font-bold text-base"
+    const textBase = "font-black uppercase tracking-tighter"
 
     if (variant === 2) {
         return (
-            <button
-                onClick={onClick}
-                className={`group relative w-full h-full border-b border-r border-black-pure overflow-hidden bg-white-pure transition-all duration-300 outline-none focus-visible:ring-2 focus-visible:ring-primary-500 active:scale-[0.98] ${active ? 'bg-primary-500' : 'hover:bg-black-pure'}`}
-            >
-                <div className="relative h-48 w-full overflow-hidden border-b border-black-pure">
-                    <Image src={imageUrl} alt={title} fill className="object-cover transition-transform duration-500 group-hover:scale-110" />
-                    <div className="absolute inset-0 bg-black-pure/20 transition-colors duration-300 group-hover:bg-black-pure/0" />
-                    <div className="absolute top-3 right-3 w-6 h-6 bg-black-pure flex items-center justify-center opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                        <span className="text-white-pure font-bold text-base">SEQ</span>
+            <button onClick={onClick} className="w-full group bg-white-pure border-2 border-black-pure overflow-hidden hover:shadow-[12px_12px_0px_#FFD600] transition-all duration-300">
+                <div className="h-64 relative overflow-hidden bg-neutral-200">
+                    <Image src={imageUrl} alt={title} fill className="object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-110" />
+                    <div className="absolute top-4 left-4 bg-black-pure text-white-pure text-[10px] px-3 py-1 font-black">
+                        {label || 'OBJECT_02'}
                     </div>
                 </div>
-                <div className="p-6 flex flex-col items-start relative">
-                    <div className="flex items-center gap-2 mb-2">
-                        <div className="w-1.5 h-1.5 bg-primary-500 transition-colors duration-300 group-hover:bg-white-pure" />
-                        <span className={`${monoBase} transition-colors duration-300 ${active ? 'text-black-pure' : 'text-secondary-500 group-hover:text-white-pure'}`}>
-                            {label || 'CARD'}
-                        </span>
-                    </div>
-                    <h4 className={`text-2xl ${headingBase} ${active ? 'text-black-pure' : 'text-black-pure group-hover:text-white-pure'}`}>
-                        {title}
-                    </h4>
-                    {subtitle && (
-                        <span className="mt-3 text-base font-bold text-black-pure/40 uppercase transition-colors duration-300 group-hover:text-white-pure/40">
-                            {subtitle}
-                        </span>
-                    )}
-                    <div className="absolute bottom-0 left-0 h-0.5 w-full bg-secondary-500 transition-transform duration-500 origin-left scale-x-0 group-hover:scale-x-100" />
+                <div className="p-8 text-left border-t-2 border-black-pure">
+                    <h4 className={`${textBase} text-2xl mb-2`}>{title}</h4>
+                    <p className="text-sm font-bold opacity-40 group-hover:opacity-100 transition-opacity">{subtitle}</p>
                 </div>
             </button>
         )
@@ -63,26 +43,17 @@ const SectionCard: React.FC<SectionCardProps> = ({
 
     if (variant === 3) {
         return (
-            <button
-                onClick={onClick}
-                className="group relative w-full h-full border-b border-r border-black-pure bg-black-pure overflow-hidden outline-none focus-visible:ring-2 focus-visible:ring-primary-500 active:scale-[0.98]"
-            >
-                <Image src={imageUrl} alt={title} fill className="object-cover transition-transform duration-500 group-hover:scale-110 opacity-70 group-hover:opacity-100" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black-pure via-black-pure/50 to-transparent" />
-                <div className="absolute inset-0 p-6 flex flex-col justify-end">
-                    <div className="relative z-10 transition-transform duration-300 translate-y-4 group-hover:translate-y-0">
-                        <div className="flex items-center gap-2 mb-3">
-                            <div className="w-2 h-2 bg-secondary-500 transition-colors duration-300 group-hover:bg-primary-500" />
-                            <span className={`${monoBase} text-white-pure/60 group-hover:text-white-pure`}>{label || 'FEATURED'}</span>
-                        </div>
-                        <h4 className={`text-2xl ${headingBase} text-white-pure transition-colors duration-300 group-hover:text-primary-500`}>
-                            {title}
-                        </h4>
-                        <div className="w-12 h-0.5 bg-secondary-500 mt-4 transition-all duration-500 group-hover:w-24" />
-                    </div>
+            <button onClick={onClick} className="w-full aspect-[4/5] relative group border-4 border-black-pure bg-black-pure overflow-hidden">
+                <Image src={imageUrl} alt={title} fill className="object-cover opacity-70 group-hover:opacity-40 transition-opacity duration-500" />
+                <div className="absolute inset-0 p-8 flex flex-col justify-end text-left z-10">
+                    <span className="text-primary-500 font-black text-xs tracking-widest mb-4 translate-y-10 group-hover:translate-y-0 transition-transform duration-500">
+                        // {label || 'ARCHIVE'}
+                    </span>
+                    <h4 className={`${textBase} text-2xl text-white-pure group-hover:text-primary-500 transition-colors`}>{title}</h4>
+                    <div className="h-1 w-0 bg-white-pure mt-6 group-hover:w-full transition-all duration-700" />
                 </div>
-                <div className="absolute top-3 right-3 w-8 h-8 bg-white-pure flex items-center justify-center transition-transform duration-500 translate-x-full group-hover:translate-x-0">
-                    <div className="w-2 h-2 bg-black-pure" />
+                <div className="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div className="w-8 h-8 border-r-4 border-t-4 border-primary-500" />
                 </div>
             </button>
         )
@@ -90,101 +61,55 @@ const SectionCard: React.FC<SectionCardProps> = ({
 
     if (variant === 4) {
         return (
-            <button
-                onClick={onClick}
-                className="group relative w-full h-full border-b border-r border-black-pure bg-white-pure flex flex-col outline-none focus-visible:ring-2 focus-visible:ring-primary-500 active:scale-[0.98] overflow-hidden"
-            >
-                <div className="flex-1 p-6 flex flex-col justify-between relative z-10">
-                    <div className="flex justify-between items-start">
-                        <span className="text-2xl font-bold text-black-pure/5 absolute top-2 right-2">{label?.slice(0, 3) || 'CRD'}</span>
-                        <div className="flex items-center gap-2">
-                            <div className="w-2 h-2 bg-primary-500 transition-colors duration-300 group-hover:bg-secondary-500" />
-                            <span className={`${monoBase} text-black-pure/40 group-hover:text-black-pure`}>{label || 'MODULE'}</span>
-                        </div>
+            <button onClick={onClick} className="w-full flex flex-col group border-b-8 border-black-pure bg-white-pure hover:bg-neutral-50 transition-colors">
+                <div className="flex items-stretch border-b-2 border-black-pure">
+                    <div className="flex-1 p-6 text-left">
+                        <span className="text-[10px] font-black italic opacity-30 mb-2 block">{label}</span>
+                        <h4 className={`${textBase} text-xl`}>{title}</h4>
                     </div>
-                    <div className="mt-8">
-                        <h4 className={`text-2xl ${headingBase} text-black-pure transition-colors duration-300 group-hover:text-primary-500`}>
-                            {title}
-                        </h4>
-                        {subtitle && (
-                            <p className="mt-2 text-base font-bold text-black-pure/40 transition-colors duration-300 group-hover:text-black-pure/60">
-                                {subtitle}
-                            </p>
-                        )}
-                    </div>
-                    <div className="flex items-center gap-3 mt-6">
-                        <div className="w-8 h-0.5 bg-black-pure transition-colors duration-300 group-hover:bg-secondary-500" />
-                        <div className="w-2 h-2 bg-black-pure transition-transform duration-300 group-hover:translate-x-1" />
+                    <div className="w-24 bg-secondary-500 flex items-center justify-center font-black text-2xl group-hover:bg-primary-500 transition-colors">
+                        +
                     </div>
                 </div>
-                <div className="h-32 w-full relative border-t border-black-pure overflow-hidden">
-                    <Image src={imageUrl} alt={title} fill className="object-cover transition-transform duration-500 group-hover:scale-105" />
-                    <div className="absolute inset-0 bg-black-pure/20 transition-colors duration-300 group-hover:bg-black-pure/0" />
+                <div className="h-40 relative">
+                    <Image src={imageUrl} alt={title} fill className="object-cover grayscale" />
+                    <div className="absolute inset-0 bg-primary-500/10 mix-blend-multiply" />
+                    {subtitle && <div className="absolute bottom-4 left-4 bg-black-pure text-white-pure px-4 py-1 text-xs font-bold">{subtitle}</div>}
                 </div>
-                <div className="absolute bottom-0 left-0 h-0.5 w-full bg-primary-500 transition-transform duration-500 origin-left scale-x-0 group-hover:scale-x-100" />
             </button>
         )
     }
 
     if (variant === 5) {
         return (
-            <button
-                onClick={onClick}
-                className="group relative w-full h-full border-b border-r border-black-pure flex items-stretch bg-white-pure transition-all duration-300 hover:bg-secondary-500 outline-none focus-visible:ring-2 focus-visible:ring-secondary-500 active:scale-[0.98] overflow-hidden"
-            >
-                <div className="w-4 bg-primary-500 border-r border-black-pure transition-colors duration-300 group-hover:bg-black-pure relative overflow-hidden">
-                    <div className="absolute inset-0 bg-secondary-500 transition-transform duration-500 -translate-y-full group-hover:translate-y-0" />
+            <button onClick={onClick} className="w-full group grid grid-cols-[120px_1fr] bg-black-pure p-1 border-2 border-black-pure hover:bg-primary-500 transition-colors duration-500">
+                <div className="h-32 relative bg-neutral-800 border border-white-pure/10">
+                    <Image src={imageUrl} alt={title} fill className="object-cover" />
                 </div>
-                <div className="flex-1 p-6 flex flex-col justify-center text-left relative z-10">
-                    <div className="flex items-center gap-2 mb-1">
-                        <div className="w-1.5 h-1.5 bg-primary-500 transition-colors duration-300 group-hover:bg-black-pure" />
-                        <span className={`${monoBase} text-black-pure/40 group-hover:text-black-pure`}>{label || 'ITEM'}</span>
+                <div className="p-6 text-left flex flex-col justify-between">
+                    <h4 className={`${textBase} text-xl text-white-pure group-hover:text-black-pure transition-colors`}>{title}</h4>
+                    <div className="flex justify-between items-end">
+                        <span className="text-[10px] font-black text-primary-500 group-hover:text-black-pure">{label}</span>
+                        <div className="flex gap-1">
+                            {[...Array(3)].map((_, i) => <div key={i} className="w-1 h-1 bg-white-pure group-hover:bg-black-pure" />)}
+                        </div>
                     </div>
-                    <h4 className={`text-2xl ${headingBase} text-black-pure`}>
-                        {title}
-                    </h4>
-                    {subtitle && (
-                        <p className={`${monoBase} text-black-pure/40 group-hover:text-black-pure/60 mt-1`}>{subtitle}</p>
-                    )}
                 </div>
-                <div className="w-32 relative border-l border-black-pure overflow-hidden">
-                    <Image src={imageUrl} alt={title} fill className="object-cover transition-transform duration-500 group-hover:scale-110" />
-                    <div className="absolute inset-0 bg-black-pure/20 transition-colors duration-300 group-hover:bg-black-pure/0" />
-                </div>
-                <div className="absolute bottom-0 left-0 h-0.5 w-full bg-secondary-500 transition-transform duration-500 origin-left scale-x-0 group-hover:scale-x-100" />
             </button>
         )
     }
 
     return (
-        <button
-            onClick={onClick}
-            className="relative w-full h-full border-b border-r border-black-pure group overflow-hidden bg-primary-500 outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 active:scale-[0.98] transition-all duration-300"
-        >
-            <Image src={imageUrl} alt={title} fill className="object-cover transition-transform duration-500 group-hover:scale-110" />
-            <div className="absolute inset-0 bg-black-pure/40 transition-colors duration-300 group-hover:bg-secondary-500/60" />
-            <div className="absolute inset-0 p-6 flex flex-col justify-between z-10">
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                        <div className="w-8 h-0.5 bg-white-pure border border-black-pure" />
-                        <span className={`${monoBase} text-white-pure/80 group-hover:text-white-pure`}>{label || 'CARD'}</span>
-                    </div>
-                    <div className="w-6 h-6 bg-white-pure flex items-center justify-center opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                        <span className="text-black-pure font-bold text-base">→</span>
-                    </div>
-                </div>
-                <div className="text-left">
-                    <h4 className={`text-2xl ${headingBase} text-white-pure transition-transform duration-300 group-hover:translate-x-2`}>
-                        {title}
-                    </h4>
-                    {subtitle && (
-                        <p className="mt-2 text-base font-bold text-white-pure/60 transition-colors duration-300 group-hover:text-white-pure/80">
-                            {subtitle}
-                        </p>
-                    )}
-                </div>
+        <button onClick={onClick} className="w-full p-10 border-4 border-black-pure bg-white-pure relative group hover:-translate-y-2 transition-transform duration-300">
+            <div className="relative z-10 text-left">
+                <div className="w-12 h-1 bg-black-pure mb-6 group-hover:w-full group-hover:bg-primary-500 transition-all duration-500" />
+                <h4 className={`${textBase} text-2xl mb-4`}>{title}</h4>
+                <p className="text-base font-bold opacity-40 mb-8 max-w-[80%]">{subtitle}</p>
+                <span className="text-xs font-black tracking-widest bg-neutral-100 px-3 py-1">{label || 'MODULE_01'}</span>
             </div>
-            <div className="absolute bottom-0 left-0 h-0.5 w-full bg-secondary-500 transition-transform duration-500 origin-left scale-x-0 group-hover:scale-x-100" />
+            <div className="absolute top-10 right-10 w-20 h-20 opacity-10 grayscale group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500">
+                <Image src={imageUrl} alt={title} fill className="object-cover rounded-full" />
+            </div>
         </button>
     )
 }

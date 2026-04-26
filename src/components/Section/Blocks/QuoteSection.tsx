@@ -1,9 +1,8 @@
-// QuoteSection.tsx
 "use client"
-import useEmblaCarousel from 'embla-carousel-react'
-import { Quote } from 'lucide-react'
+
+import { AnimatePresence, motion, useScroll, useTransform } from 'framer-motion'
 import Link from 'next/link'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import SectionFooter from '../Components/SectionFooter'
 import SectionHeader from '../Components/SectionHeader'
 
@@ -23,17 +22,17 @@ interface QuoteLabels {
 }
 
 interface QuoteSectionProps {
-  id: string
-  title: string
-  subtitle: string
-  quotes: QuoteItem[]
-  labels: QuoteLabels
-  variant?: 'carousel' | 'grid' | 'masonry'
-  ctaLabel?: string
-  ctaPath?: string
-  headerVariant?: 1 | 2 | 3
-  footerVariant?: 1 | 2 | 3
-  background?: React.ReactNode
+  id: string;
+  title: string;
+  subtitle: string;
+  quotes: QuoteItem[];
+  labels: QuoteLabels;
+  variant?: 'carousel' | 'grid' | 'masonry';
+  ctaLabel?: string;
+  ctaPath?: string;
+  headerVariant?: 1 | 2 | 3;
+  footerVariant?: 1 | 2 | 3;
+  background?: React.ReactNode;
 }
 
 const QuoteSection: React.FC<QuoteSectionProps> = ({
@@ -41,146 +40,213 @@ const QuoteSection: React.FC<QuoteSectionProps> = ({
   title,
   subtitle,
   quotes = [],
-  labels = {
-    commStatus: '',
-    ratingLabel: ''
-  },
-  variant = 'carousel',
+  labels,
   ctaLabel,
   ctaPath,
   headerVariant = 1,
   footerVariant = 1,
-  background
+  background,
+  variant = 'carousel'
 }) => {
-  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: 'start' })
-  const [selectedIndex, setSelectedIndex] = useState(0)
+  const [index, setIndex] = useState(0)
+  const [isHovered, setIsHovered] = useState(false)
+  const sectionRef = useRef<HTMLElement>(null)
 
+  // Auto-play logic
   useEffect(() => {
-    if (!emblaApi) return
-    const onSelect = () => setSelectedIndex(emblaApi.selectedScrollSnap())
-    emblaApi.on('select', onSelect)
-    onSelect()
-    return () => { emblaApi.off('select', onSelect) }
-  }, [emblaApi])
+    if (isHovered || variant !== 'carousel') return
+    const timer = setInterval(() => {
+      setIndex((prev) => (prev + 1) % quotes.length)
+    }, 6000)
+    return () => clearInterval(timer)
+  }, [quotes.length, isHovered, variant])
 
-  const QuoteCard = ({ quote, idx }: { quote: QuoteItem; idx: number }) => (
-    <div className="relative p-8 md:p-10 bg-white-pure border border-black-pure group h-full flex flex-col transition-all duration-300 hover:bg-neutral-50 hover:translate-x-1 hover:translate-y-1">
-      <div className="flex justify-between items-start mb-10">
-        <div className="bg-black-pure px-2 py-0.5 border border-black-pure transition-all duration-300 group-hover:bg-primary-500">
-          <span className="text-base font-bold text-white-pure transition-colors duration-300 group-hover:text-black-pure">
-            {labels.commStatus} {String(idx + 1).padStart(2, '0')}
-          </span>
-        </div>
-        <Quote className="w-5 h-5 text-black-pure transition-all duration-300 group-hover:text-primary-500 group-hover:scale-110" />
-      </div>
+  const quote = quotes[index]
 
-      <p className="text-2xl font-bold text-black-pure mb-12 flex-grow leading-tight">
-        "{quote.text}"
-      </p>
-
-      <div className="mt-auto pt-8 border-t border-black-pure flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          {quote.avatar && (
-            <div className="w-10 h-10 border border-black-pure bg-neutral-200 shrink-0 overflow-hidden transition-all duration-300 group-hover:border-primary-500">
-              <img src={quote.avatar} alt={quote.author} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" />
-            </div>
-          )}
-          <div>
-            <p className="text-base font-bold text-black-pure mb-1 transition-colors duration-300 group-hover:text-primary-500">
-              {quote.author}
-            </p>
-            <p className="text-base text-black-pure/60">
-              {quote.role}{quote.company ? ` / ${quote.company}` : ''}
-            </p>
-          </div>
-        </div>
-
-        {quote.rating && (
-          <div className="hidden sm:flex flex-col items-end">
-            <span className="text-base text-black-pure/60 mb-1">{labels.ratingLabel}</span>
-            <div className="flex gap-px">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <div key={i} className={`w-2.5 h-2.5 border border-black-pure transition-all duration-300 ${i < (quote.rating || 0) ? 'bg-primary-500' : 'bg-white-pure group-hover:bg-primary-500/30'}`} />
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
-
-      <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-primary-500 border border-black-pure transition-all duration-300 opacity-0 group-hover:opacity-100" />
-    </div>
-  )
+  // Subtle parallax effect for background
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"]
+  })
+  const y = useTransform(scrollYProgress, [0, 1], ["-10%", "10%"])
 
   return (
-    <section id={id} className="relative w-full bg-white-pure border-t border-black-pure overflow-hidden">
-      {background}
+    <section
+      ref={sectionRef}
+      id={id}
+      className="relative min-h-screen w-full flex flex-col bg-white overflow-hidden group/section"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      {/* Background with Motion Parallax */}
+      <motion.div style={{ y }} className="absolute inset-0 z-0">
+        <AnimatePresence mode="wait">
+          <motion.img
+            key={quote?.id}
+            initial={{ opacity: 0, scale: 1.1 }}
+            animate={{ opacity: 0.08, scale: 1.05 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1.5, ease: "easeInOut" }}
+            src={`https://picsum.photos/seed/${quote?.id}/1920/1080`}
+            alt=""
+            className="w-full h-full object-cover grayscale"
+          />
+        </AnimatePresence>
+        <div className="absolute inset-0 bg-gradient-to-b from-white via-transparent to-white" />
+      </motion.div>
 
-      <SectionHeader
-        title={title}
-        subtitle={subtitle}
-        variant={headerVariant}
-        metadata={String(quotes.length).padStart(2, '0')}
-      />
-
-      <div className="w-full border-b border-black-pure bg-white-pure">
-        {variant === 'grid' ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 w-full gap-px">
-            {quotes.map((quote, idx) => (
-              <div key={quote.id}>
-                <QuoteCard quote={quote} idx={idx} />
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="relative">
-            <div className="overflow-hidden cursor-grab active:cursor-grabbing bg-white-pure" ref={emblaRef}>
-              <div className="flex gap-px">
-                {quotes.map((quote, idx) => (
-                  <div key={quote.id} className="flex-[0_0_100%] md:flex-[0_0_50%] lg:flex-[0_0_33.333%] min-w-0">
-                    <QuoteCard quote={quote} idx={idx} />
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="flex items-center border-t border-black-pure bg-white-pure px-8 gap-4" style={{ height: '56px' }}>
-              <div className="flex gap-1.5">
-                {quotes.map((_, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => emblaApi?.scrollTo(idx)}
-                    className={`h-0.5 border border-black-pure transition-all duration-300 ${selectedIndex === idx ? 'w-10 bg-primary-500' : 'w-2 bg-neutral-200 hover:bg-black-pure'}`}
-                  />
-                ))}
-              </div>
-              <div className="flex-grow" />
-              <span className="text-base font-bold text-black-pure">
-                {String(selectedIndex + 1).padStart(2, '0')} / {String(quotes.length).padStart(2, '0')}
-              </span>
-            </div>
-          </div>
-        )}
+      <div className="relative z-30">
+        <SectionHeader
+          title={title}
+          subtitle={subtitle}
+          variant={headerVariant}
+          metadata={labels.commStatus}
+        />
       </div>
 
+      <main className="relative z-20 flex-grow flex items-center justify-center px-6">
+        <div className="max-w-[85rem] w-full mx-auto">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+              className="flex flex-col items-center text-center space-y-10"
+            >
+              {/* Rating System */}
+              <div className="flex flex-col items-center gap-4">
+                <div className="flex items-center justify-center gap-1.5">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <motion.div
+                      key={i}
+                      initial={{ scaleX: 0 }}
+                      animate={{ scaleX: 1 }}
+                      transition={{ delay: i * 0.1 }}
+                      className={`h-1 origin-left transition-all duration-700 ${i < (quote?.rating || 0) ? 'w-10 bg-black' : 'w-2 bg-black/5'
+                        }`}
+                    />
+                  ))}
+                </div>
+                <p className="text-[10px] font-black uppercase tracking-[0.6em] text-black/30">
+                  {labels.ratingLabel}
+                </p>
+              </div>
+
+              {/* Quote Text */}
+              <div className="relative max-w-5xl">
+                <motion.h2
+                  className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-serif text-black leading-[1.1] tracking-tight"
+                >
+                  “{quote?.text}”
+                </motion.h2>
+              </div>
+
+              {/* Identity */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.3 }}
+                className="flex flex-col items-center gap-4"
+              >
+                {quote?.avatar && (
+                  <div className="relative group/avatar">
+                    <div className="absolute inset-0 bg-black rounded-full scale-0 group-hover/avatar:scale-110 transition-transform duration-500 opacity-5" />
+                    <img
+                      src={quote.avatar}
+                      alt={quote.author}
+                      className="relative w-20 h-20 rounded-full grayscale border border-black/10 p-1 mb-2 transition-all duration-500 group-hover/avatar:grayscale-0"
+                    />
+                  </div>
+                )}
+                <div className="flex flex-col items-center">
+                  <p className="text-2xl font-bold text-black uppercase tracking-tighter">
+                    {quote?.author}
+                  </p>
+                  <div className="flex items-center gap-3 mt-1">
+                    <span className="text-xs font-bold text-black/40 uppercase tracking-widest">{quote?.role}</span>
+                    <span className="h-1 w-1 bg-black/20 rounded-full" />
+                    <span className="text-xs font-bold text-black uppercase tracking-widest">{quote?.company}</span>
+                  </div>
+                </div>
+              </motion.div>
+            </motion.div>
+          </AnimatePresence>
+        </div>
+
+        {/* Navigation Dots with Active Progress */}
+        <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex gap-4">
+          {quotes.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setIndex(i)}
+              className="relative h-4 flex items-center justify-center group/nav"
+              aria-label={`Go to quote ${i + 1}`}
+            >
+              <div className={`h-1 transition-all duration-500 ease-out ${index === i ? 'w-16 bg-black' : 'w-4 bg-black/10 group-hover/nav:bg-black/30'
+                }`} />
+              {index === i && (
+                <motion.div
+                  layoutId="activeNav"
+                  className="absolute bottom-0 h-[2px] bg-black/20 w-full"
+                  initial={{ width: 0 }}
+                  animate={{ width: "100%" }}
+                  transition={{ duration: 6, ease: "linear" }}
+                />
+              )}
+            </button>
+          ))}
+        </div>
+      </main>
+
+      {/* CTA with Reveal Animation */}
       {ctaLabel && ctaPath && (
-        <div className="py-16 flex justify-center bg-white-pure">
+        <div className="relative z-30 w-full bg-white border-y border-black/5 group/cta overflow-hidden">
           <Link
             href={ctaPath}
-            className="flex items-center gap-6 px-10 py-4 bg-white-pure border border-black-pure text-black-pure transition-all duration-300 hover:translate-x-1.5 hover:translate-y-1.5 hover:bg-primary-500 active:bg-black-pure active:text-primary-500"
+            className="flex items-center justify-between px-10 py-12 relative"
           >
-            <span className="text-base font-bold">
-              {ctaLabel}
-            </span>
-            <div className="flex gap-1">
-              {[...Array(3)].map((_, i) => (
-                <div key={i} className="w-1 h-3 bg-black-pure transition-all duration-300 group-hover:bg-white-pure" />
-              ))}
+            <motion.div
+              className="absolute inset-0 bg-black translate-x-[-101%]"
+              whileHover={{ translateX: 0 }}
+              transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            />
+
+            <div className="relative flex items-baseline gap-4 z-10 transition-colors duration-500 group-hover/cta:text-white">
+              <span className="text-3xl font-black uppercase tracking-tighter">
+                {ctaLabel}
+              </span>
+              <span className="text-[10px] font-bold uppercase tracking-widest opacity-20 group-hover/cta:opacity-40">
+                {variant} Mode
+              </span>
+            </div>
+
+            <div className="relative flex items-center gap-6 z-10 transition-colors duration-500 group-hover/cta:text-white">
+              <div className="h-px w-12 bg-current opacity-30" />
+              <motion.svg
+                whileHover={{ x: 10 }}
+                className="w-8 h-8"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </motion.svg>
             </div>
           </Link>
         </div>
       )}
 
-      <SectionFooter variant={footerVariant} />
+      <div className="relative z-30">
+        <SectionFooter variant={footerVariant} />
+      </div>
+
+      {background && (
+        <div className="absolute inset-0 pointer-events-none z-10 opacity-40 mix-blend-multiply">
+          {background}
+        </div>
+      )}
     </section>
   )
 }

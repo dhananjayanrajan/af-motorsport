@@ -67,7 +67,8 @@ export default async function DriverDetailsPage({ params }: { params: Promise<{ 
 
     if (!driver) notFound()
 
-    // 1. Optimized Hero Asset Chain
+    const driverFullName = `${driver.first_name || ''} ${driver.last_name || ''}`.trim() || 'Unnamed Driver'
+
     const heroBackgroundImage = driver.assets?.cover
         ? getMediaUrl(driver.assets.cover)
         : driver.assets?.avatar
@@ -76,16 +77,14 @@ export default async function DriverDetailsPage({ params }: { params: Promise<{ 
                 ? getMediaUrl(driver.seo.image)
                 : undefined
 
-    // 2. Quote Logic Restoration
     const quoteItem = driver.basics?.catchphrase
         ? {
             id: String(driver.id),
             text: driver.basics.catchphrase,
-            author: `${driver.first_name} ${driver.last_name}`,
+            author: driverFullName,
         }
         : null
 
-    // 3. Maximum Specificity Specifications
     const specItems: any[] = [
         {
             id: 'racing-number',
@@ -119,7 +118,6 @@ export default async function DriverDetailsPage({ params }: { params: Promise<{ 
         },
     ]
 
-    // 4. Performance-Focused Imperative Mapping
     const skillItems: any[] = []
     if (driver.details?.skills) {
         driver.details.skills.forEach((skillRef) => {
@@ -155,7 +153,6 @@ export default async function DriverDetailsPage({ params }: { params: Promise<{ 
         })
     }
 
-    // 5. High-Density Table Logic
     const tableColumns = [
         { key: 'event', label: 'Event', sortable: true },
         { key: 'position', label: 'Position', sortable: true },
@@ -206,12 +203,13 @@ export default async function DriverDetailsPage({ params }: { params: Promise<{ 
         <main className="w-full">
             <HeroSection
                 id="driver-details-cover"
-                title={`${driver.first_name} ${driver.last_name}`}
+                title={driverFullName}
                 subtitle={driver.basics?.competition_name || driver.basics?.nickname || ''}
                 description={driver.basics?.callsign || undefined}
                 backgroundImage={heroBackgroundImage}
                 alignment="center"
                 badge={driver.basics?.racing_number ? `#${driver.basics.racing_number}` : undefined}
+                meta={driver.basics?.nationality && typeof driver.basics.nationality === 'object' && 'name' in driver.basics.nationality ? driver.basics.nationality.name : undefined}
             />
             {quoteItem && (
                 <QuoteSection
@@ -240,6 +238,8 @@ export default async function DriverDetailsPage({ params }: { params: Promise<{ 
                     fallbackAlt: 'Spec',
                 }}
                 columns={3}
+                headerVariant={1}
+                footerVariant={1}
             />
             {skillItems.length > 0 && (
                 <GridSection
@@ -254,6 +254,8 @@ export default async function DriverDetailsPage({ params }: { params: Promise<{ 
                         fallbackAlt: 'Skill',
                     }}
                     columns={4}
+                    headerVariant={1}
+                    footerVariant={1}
                 />
             )}
             {awardItems.length > 0 && (
@@ -269,6 +271,8 @@ export default async function DriverDetailsPage({ params }: { params: Promise<{ 
                         fallbackAlt: 'Award',
                     }}
                     columns={3}
+                    headerVariant={1}
+                    footerVariant={1}
                 />
             )}
             {tableRows.length > 0 && (
@@ -299,6 +303,8 @@ export default async function DriverDetailsPage({ params }: { params: Promise<{ 
                         fallbackAlt: 'Social',
                     }}
                     columns={4}
+                    headerVariant={1}
+                    footerVariant={1}
                 />
             )}
         </main>

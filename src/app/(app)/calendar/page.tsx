@@ -1,6 +1,6 @@
-import GridSection from '@/components/Section/Blocks/GridSection'
+import CarouselSection from '@/components/Section/Blocks/CarouselSection'
 import TimelineSection from '@/components/Section/Blocks/TimelineSection'
-import { Championship, Media, Race } from '@/payload-types'
+import { Championship, Media, Race, Timeline } from '@/payload-types'
 import configPromise from '@payload-config'
 import { unstable_cache } from 'next/cache'
 import { getPayload } from 'payload'
@@ -26,7 +26,7 @@ const getCalendarData = unstable_cache(
 
         const now = new Date().toISOString()
 
-        const [championships, races] = await Promise.all([
+        const [championships, races, timelines] = await Promise.all([
             payload.find({
                 collection: 'championships',
                 where: {
@@ -40,11 +40,22 @@ const getCalendarData = unstable_cache(
                     name: true,
                     slug: true,
                     basics: {
+                        identifiers: {
+                            code: true,
+                            abbreviation: true,
+                        },
                         tagline: true,
                         description: true,
                     },
                     details: {
                         start_date: true,
+                        end_date: true,
+                        format: true,
+                        standings_scope: true,
+                    },
+                    assets: {
+                        thumbnail: true,
+                        cover: true,
                     },
                 },
             }),
@@ -62,13 +73,48 @@ const getCalendarData = unstable_cache(
                     slug: true,
                     basics: {
                         tagline: true,
+                        description: true,
                         identifiers: {
                             code: true,
+                            abbreviation: true,
                         },
+                    },
+                    details: {
+                        start_date: true,
+                        type: true,
+                        circuit: true,
+                        weather: true,
                     },
                     assets: {
                         thumbnail: true,
                         poster: true,
+                        cover: true,
+                    },
+                },
+            }),
+            payload.find({
+                collection: 'timelines',
+                where: {
+                    'details.status': { equals: 'active' },
+                },
+                limit: 8,
+                sort: 'details.start_date',
+                depth: 1,
+                select: {
+                    id: true,
+                    name: true,
+                    slug: true,
+                    basics: {
+                        description: true,
+                    },
+                    details: {
+                        start_date: true,
+                        end_date: true,
+                        scope: true,
+                        color_scheme: true,
+                    },
+                    assets: {
+                        thumbnail: true,
                         cover: true,
                     },
                 },
@@ -78,6 +124,7 @@ const getCalendarData = unstable_cache(
         return {
             championships: championships.docs as Championship[],
             races: races.docs as Race[],
+            timelines: timelines.docs as Timeline[],
         }
     },
     ['calendar-page-data'],
@@ -85,63 +132,141 @@ const getCalendarData = unstable_cache(
 )
 
 export default async function CalendarPage() {
-    const { championships, races } = await getCalendarData()
+    const { championships, races, timelines } = await getCalendarData()
 
-    const championshipEvents: any[] = championships.map((championship: Championship) => ({
-        id: String(championship.id),
-        date: championship.details?.start_date
-            ? new Date(championship.details.start_date).toISOString().split('T')[0]
-            : 'TBD',
-        title: championship.name.toUpperCase(),
-        description: championship.basics?.tagline || championship.basics?.description || undefined,
-        status: 'upcoming' as const,
-    }))
+    const championshipEvents = championships.map((championship: Championship) => {
+        const code = championship.basics?.identifiers?.code || championship.basics?.identifiers?.abbreviation
+        const startDate = championship.details?.start_date
 
-    const raceItems: any[] = races.map((race: Race) => {
-        const imageUrl = resolveAssetUrl(race.assets, 'thumbnail', 'poster', 'cover') || ''
+        return {
+            id: String(championship.id),
+            date: startDate
+                ? new Date(startDate).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric',
+                })
+                : 'TBD',
+            title: championship.name,
+            description: championship.basics?.tagline || championship.basics?.description || undefined,
+            status: 'upcoming' as const,
+            slug: championship.slug || undefined,
+            code: code || undefined,
+            format: championship.details?.format || undefined,
+            image: resolveAssetUrl(championship.assets, 'thumbnail', 'cover'),
+        }
+    })
+
+    const raceSlides = races.map((race: Race) => {
+        const circuitRef = race.details?.circuit
+        const circuitName =
+            circuitRef && typeof circuitRef === 'object' && 'name' in circuitRef
+                ? (circuitRef as any).name
+                : undefined
+
+        const code = race.basics?.identifiers?.code || race.basics?.identifiers?.abbreviation
+        const raceType = race.details?.type
+
+        const descriptionParts: string[] = []
+        if (circuitName) descriptionParts.push(circuitName)
+        if (raceType) descriptionParts.push(raceType.replace(/_/g, ' ').toUpperCase())
+        if (race.details?.weather) descriptionParts.push(race.details.weather)
+
+        const tags: string[] = []
+        if (code) tags.push(code)
+        if (raceType) tags.push(raceType.replace(/_/g, ' ').toUpperCase())
+
+        const startDate = race.details?.start_date
+        const meta = startDate
+            ? new Date(startDate).toLocaleDateString('en-US', {
+                month: 'short',
+                day: 'numeric',
+            })
+            : undefined
 
         return {
             id: String(race.id),
-            title: race.name.toUpperCase(),
-            subtitle: race.basics?.tagline || race.basics?.identifiers?.code || 'SCHEDULED_EVENT',
-            image: imageUrl,
-            href: `/calendar/races/${race.slug}`,
+            title: race.name,
+            description: descriptionParts.join(' · ') || race.basics?.tagline || race.basics?.description || undefined,
+            image: resolveAssetUrl(race.assets, 'thumbnail', 'poster', 'cover'),
+            ctaLabel: 'RACE DETAILS',
+            ctaHref: `/calendar/races/${race.slug}`,
+            meta,
+            tags,
+        }
+    })
+
+    const timelineEvents = timelines.map((timeline: Timeline) => {
+        const startDate = timeline.details?.start_date
+        const endDate = timeline.details?.end_date
+        const dateStr = startDate
+            ? new Date(startDate).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+            })
+            : 'TBD'
+
+        return {
+            id: String(timeline.id),
+            date: dateStr,
+            title: timeline.name,
+            description: timeline.basics?.description || timeline.details?.scope || undefined,
+            status: 'active' as const,
+            slug: timeline.slug || undefined,
+            image: resolveAssetUrl(timeline.assets, 'thumbnail', 'cover'),
         }
     })
 
     return (
         <main className="w-full">
-            <TimelineSection
-                id="calendar-championships"
-                title="CHAMPIONSHIPS"
-                subtitle="Upcoming season cycles and series initialization dates"
-                events={championshipEvents}
-                labels={{
-                    statusPrefix: 'STAT',
-                    eventIndexLabel: 'SERIES',
-                    deploymentStatus: {
-                        completed: 'SYNCED',
-                        active: 'ACTIVE',
-                        upcoming: 'PENDING',
-                    },
-                }}
-                orientation="horizontal"
-                headerVariant={1}
-                footerVariant={1}
-            />
-            {raceItems.length > 0 && (
-                <GridSection
-                    id="calendar-races"
-                    title="OPERATIONS"
-                    subtitle="Verified schedule of upcoming racing events and qualifications"
-                    items={raceItems}
+            {championshipEvents.length > 0 && (
+                <TimelineSection
+                    id="calendar-championships"
+                    title="CHAMPIONSHIPS"
+                    subtitle="Upcoming season cycles and championship start dates"
+                    events={championshipEvents}
                     labels={{
-                        unitsCount: 'RACES',
-                        viewProject: 'DATA',
-                        sectionIndex: 'RCE',
-                        fallbackAlt: 'Race',
+                        statusPrefix: 'STATUS',
+                        eventIndexLabel: 'CHAMPIONSHIP',
+                        deploymentStatus: {
+                            completed: 'CONCLUDED',
+                            active: 'IN PROGRESS',
+                            upcoming: 'UPCOMING',
+                        },
                     }}
-                    columns={3}
+                    orientation="horizontal"
+                    headerVariant={1}
+                    footerVariant={1}
+                />
+            )}
+
+            {raceSlides.length > 0 && (
+                <CarouselSection
+                    id="calendar-races"
+                    slides={raceSlides}
+                    ctaLabel="ALL RACES"
+                    ctaPath="/calendar/races"
+                />
+            )}
+
+            {timelineEvents.length > 0 && (
+                <TimelineSection
+                    id="calendar-timelines"
+                    title="TIMELINES"
+                    subtitle="Active event timelines and milestones in progress"
+                    events={timelineEvents}
+                    labels={{
+                        statusPrefix: 'STATUS',
+                        eventIndexLabel: 'TIMELINE',
+                        deploymentStatus: {
+                            completed: 'ARCHIVED',
+                            active: 'ACTIVE',
+                            upcoming: 'PLANNED',
+                        },
+                    }}
+                    orientation="horizontal"
+                    headerVariant={1}
+                    footerVariant={1}
                 />
             )}
         </main>

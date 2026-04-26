@@ -21,7 +21,7 @@ const getLeaderDetailsData = unstable_cache(
             collection: 'leaders',
             where: { slug: { equals: slug } },
             limit: 1,
-            depth: 1, // Depth 1 for essential relationship resolution (Awards/Media)
+            depth: 1,
             select: {
                 id: true,
                 first_name: true,
@@ -57,7 +57,6 @@ export default async function LeaderDetailsPage({ params }: { params: Promise<{ 
 
     const leaderName = `${leader.first_name || ''} ${leader.last_name || ''}`.trim() || 'Leader'
 
-    // 1. Complex Quote Logic with Priority Chain
     const quoteItem = leader.details?.quote
         ? {
             id: String(leader.id),
@@ -78,7 +77,6 @@ export default async function LeaderDetailsPage({ params }: { params: Promise<{ 
                 }
                 : null
 
-    // 2. High-Density Principle Mapping
     const principleEntries: any[] = []
     if (leader.details?.principles?.list) {
         leader.details.principles.list.forEach((principle) => {
@@ -93,7 +91,6 @@ export default async function LeaderDetailsPage({ params }: { params: Promise<{ 
         })
     }
 
-    // 3. Performance-Focused Award Resolution
     const awardItems: any[] = []
     if (leader.details?.awards) {
         leader.details.awards.forEach((awardRef) => {
@@ -115,7 +112,6 @@ export default async function LeaderDetailsPage({ params }: { params: Promise<{ 
         })
     }
 
-    // 4. Combined Connectivity Items (Socials + Websites)
     const socialItems: any[] = []
     if (leader.details?.socials?.list) {
         leader.details.socials.list.forEach((social) => {
@@ -188,6 +184,8 @@ export default async function LeaderDetailsPage({ params }: { params: Promise<{ 
                         fallbackAlt: 'Award',
                     }}
                     columns={3}
+                    headerVariant={1}
+                    footerVariant={1}
                 />
             )}
             {(socialItems.length > 0 || websiteItems.length > 0) && (
@@ -203,6 +201,8 @@ export default async function LeaderDetailsPage({ params }: { params: Promise<{ 
                         fallbackAlt: 'Connect',
                     }}
                     columns={4}
+                    headerVariant={1}
+                    footerVariant={1}
                 />
             )}
         </main>

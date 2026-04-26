@@ -1,7 +1,6 @@
-// MasonrySection.tsx
 "use client"
 import Link from 'next/link'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import SectionFooter from '../Components/SectionFooter'
 import SectionHeader from '../Components/SectionHeader'
 
@@ -51,35 +50,33 @@ const MasonrySection: React.FC<MasonrySectionProps> = ({
 }) => {
   const [columnItems, setColumnItems] = useState<MasonryItem[][]>([])
 
-  useEffect(() => {
-    const distributeItems = () => {
-      const cols = columns === 2 ? 2 : columns === 4 ? 4 : 3
-      const result: MasonryItem[][] = Array.from({ length: cols }, () => [])
-      items.forEach((item, idx) => {
-        const col = idx % cols
-        result[col].push(item)
-      })
-      setColumnItems(result)
-    }
-    distributeItems()
-  }, [items, columns])
+  const activeCols = useMemo(() => Math.min(items.length, columns), [items.length, columns]);
 
-  const getItemHeight = (height?: string) => {
+  useEffect(() => {
+    const result: MasonryItem[][] = Array.from({ length: activeCols }, () => [])
+    items.forEach((item, idx) => {
+      result[idx % activeCols].push(item)
+    })
+    setColumnItems(result)
+  }, [items, activeCols])
+
+  const getItemStyles = (height?: string) => {
     switch (height) {
-      case 'short': return '320px'
-      case 'tall': return '480px'
-      default: return '400px'
+      case 'short': return 'h-[280px] md:h-[320px]'
+      case 'tall': return 'h-[480px] md:h-[580px]'
+      default: return 'h-[380px] md:h-[420px]'
     }
   }
 
-  const colWidth = {
+  const colWidthClass = {
+    1: 'w-full max-w-2xl',
     2: 'w-full md:w-1/2',
     3: 'w-full md:w-1/2 lg:w-1/3',
     4: 'w-full md:w-1/2 lg:w-1/4'
-  }
+  }[activeCols] || 'w-full';
 
   return (
-    <section id={id} className="relative w-full bg-white-pure border-t border-black-pure overflow-hidden">
+    <section id={id} className="relative w-full bg-white border-t border-black flex flex-col">
       {background}
 
       <SectionHeader
@@ -89,71 +86,71 @@ const MasonrySection: React.FC<MasonrySectionProps> = ({
         metadata={String(items.length).padStart(2, '0')}
       />
 
-      <div className="flex flex-wrap w-full border-b border-black-pure bg-white-pure gap-0">
-        {columnItems.map((col, colIdx) => (
-          <div key={colIdx} className={`${colWidth[columns]} flex flex-col border-r border-black-pure last:border-r-0`}>
-            {col.map((item) => (
-              <div
-                key={item.id}
-                className="group relative w-full border-b border-black-pure last:border-b-0 overflow-hidden bg-neutral-100"
-                style={{ height: getItemHeight(item.height) }}
-              >
-                <img
-                  src={item.image || `https://picsum.photos/seed/${item.id}/800/1000`}
-                  alt={item.title}
-                  className="w-full h-full object-cover transition-all duration-500 group-hover:scale-105"
-                />
+      <div className="w-full flex justify-center border-b border-black bg-white">
+        <div className="flex flex-wrap w-full max-w-[1440px] border-x border-black">
+          {columnItems.map((col, colIdx) => (
+            <div
+              key={colIdx}
+              className={`${colWidthClass} flex flex-col border-r border-black last:border-r-0`}
+            >
+              {col.map((item) => (
+                <div
+                  key={item.id}
+                  className={`group relative w-full border-b border-black last:border-b-0 overflow-hidden bg-neutral-50 ${getItemStyles(item.height)}`}
+                >
+                  <img
+                    src={item.image || `https://picsum.photos/seed/${item.id}/800/1000`}
+                    alt={item.title}
+                    className="w-full h-full object-cover transition-transform duration-1000 ease-in-out group-hover:scale-105"
+                  />
 
-                <div className="absolute top-4 left-4 bg-black-pure px-2 py-1 border border-black-pure transition-all duration-300 group-hover:bg-primary-500">
-                  <span className="text-base font-bold text-white-pure transition-colors duration-300 group-hover:text-black-pure">
-                    {labels.idPrefix}{item.id}
-                  </span>
-                </div>
-
-                <div className="absolute inset-x-0 bottom-0 p-6 bg-white-pure border-t border-black-pure transition-all duration-400 translate-y-[calc(100%-72px)] group-hover:translate-y-0">
-                  <div className="mb-4">
-                    {item.category && (
-                      <span className="text-base font-bold text-black-pure/60 mb-1 block transition-all duration-300 group-hover:text-primary-500">
-                        {labels.categoryPrefix}{item.category}
-                      </span>
-                    )}
-                    <h3 className="text-2xl font-bold text-black-pure">
-                      {item.title}
-                    </h3>
+                  <div className="absolute top-0 left-0 bg-black px-3 py-1.5 border-b border-r border-black z-10">
+                    <span className="text-[10px] font-black tracking-widest text-white uppercase">
+                      {labels.idPrefix}{item.id}
+                    </span>
                   </div>
 
-                  <div className="pt-4 border-t border-black-pure transition-all duration-300 delay-75 opacity-0 group-hover:opacity-100">
-                    {item.description && (
-                      <p className="text-base font-bold text-black-pure">
+                  <div className="absolute inset-x-0 bottom-0 p-6 bg-white border-t border-black transition-transform duration-500 ease-[0.2,1,0.3,1] translate-y-[calc(100%-80px)] group-hover:translate-y-0 z-20">
+                    <div className="flex flex-col gap-1 mb-6">
+                      {item.category && (
+                        <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-black/40">
+                          {labels.categoryPrefix}{item.category}
+                        </span>
+                      )}
+                      <h3 className="text-xl md:text-2xl font-bold text-black uppercase tracking-tighter leading-none italic">
+                        {item.title}
+                      </h3>
+                    </div>
+
+                    <div className="pt-4 border-t border-black/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <p className="text-sm font-medium text-black/60 leading-relaxed line-clamp-2">
                         {item.description}
                       </p>
-                    )}
+                    </div>
                   </div>
-                </div>
 
-                <div className="absolute top-4 right-4">
-                  <div className="w-8 h-8 bg-white-pure border border-black-pure flex items-center justify-center transition-all duration-300 group-hover:translate-x-1 group-hover:translate-y-1 group-hover:bg-primary-500">
-                    <div className="w-1.5 h-1.5 bg-primary-500 transition-colors duration-300 group-hover:bg-black-pure" />
+                  <div className="absolute top-4 right-4 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div className="w-8 h-8 bg-white border border-black flex items-center justify-center shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+                      <div className="w-1.5 h-1.5 bg-black" />
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        ))}
+              ))}
+            </div>
+          ))}
+        </div>
       </div>
 
       {ctaLabel && ctaPath && (
-        <div className="h-32 flex items-center justify-center bg-neutral-100">
+        <div className="w-full h-40 flex items-center justify-center bg-white border-b border-black">
           <Link
             href={ctaPath}
-            className="flex items-center gap-8 px-12 py-4 bg-white-pure border border-black-pure text-black-pure transition-all duration-300 hover:translate-x-2 hover:translate-y-2 hover:bg-primary-500 active:bg-black-pure active:text-primary-500"
+            className="group flex items-center gap-8 px-10 py-4 border-2 border-black hover:bg-black hover:text-white transition-all duration-300"
           >
-            <span className="text-base font-bold">
-              {ctaLabel}
-            </span>
-            <div className="flex gap-[2px]">
-              {[...Array(3)].map((_, i) => (
-                <div key={i} className="w-1.5 h-3 bg-black-pure transition-all duration-300 group-hover:bg-white-pure" />
+            <span className="text-base font-black uppercase tracking-widest">{ctaLabel}</span>
+            <div className="flex gap-1">
+              {[0, 1, 2].map((i) => (
+                <div key={i} className="w-1 h-3 bg-current" />
               ))}
             </div>
           </Link>

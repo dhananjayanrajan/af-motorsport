@@ -53,6 +53,11 @@ const getChampionshipData = unstable_cache(
                     start_date: true,
                     end_date: true,
                     history: true,
+                    winner: true,
+                    runner_up: true,
+                    third_place: true,
+                    season: true,
+                    series: true,
                 },
             },
         })
@@ -68,21 +73,71 @@ export default async function ChampionshipPage({ params }: { params: Promise<{ s
 
     if (!championship) notFound()
 
+    const details = championship.details
+
     const videoItems: any[] = []
     if (championship.assets?.video) {
         const videoUrl = getMediaUrl(championship.assets.video)
         if (videoUrl) {
             videoItems.push({
                 id: String(championship.id),
-                title: championship.name.toUpperCase(),
-                description: championship.basics?.tagline || undefined,
+                title: championship.name,
+                description: championship.basics?.tagline || championship.basics?.description || undefined,
                 url: videoUrl,
                 poster: resolveAssetUrl(championship.assets, 'thumbnail', 'cover'),
+                duration: details?.start_date
+                    ? new Date(details.start_date).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'short',
+                    })
+                    : undefined,
             })
         }
     }
 
     const studyImage = resolveAssetUrl(championship.assets, 'cover', 'thumbnail')
+
+    const seasonRef = details?.season
+    const seasonName =
+        seasonRef && typeof seasonRef === 'object' && 'name' in seasonRef
+            ? (seasonRef as any).name
+            : undefined
+
+    const seriesRef = details?.series
+    const seriesName =
+        seriesRef && typeof seriesRef === 'object' && 'name' in seriesRef
+            ? (seriesRef as any).name
+            : undefined
+
+    const formatDisplay = details?.format
+        ? details.format.replace(/_/g, ' ').toUpperCase()
+        : undefined
+
+    const scopeDisplay = details?.standings_scope
+        ? details.standings_scope.replace(/_/g, ' ').toUpperCase()
+        : undefined
+
+    const startDate = details?.start_date
+        ? new Date(details.start_date).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+        })
+        : undefined
+
+    const endDate = details?.end_date
+        ? new Date(details.end_date).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+        })
+        : undefined
+
+    const winnerRef = details?.winner
+    const winnerName =
+        winnerRef && typeof winnerRef === 'object' && 'first_name' in winnerRef && 'last_name' in winnerRef
+            ? `${(winnerRef as any).first_name} ${(winnerRef as any).last_name}`
+            : undefined
 
     const study = {
         id: String(championship.id),
@@ -90,28 +145,54 @@ export default async function ChampionshipPage({ params }: { params: Promise<{ s
         description: championship.basics?.description || championship.basics?.tagline || '',
         image: studyImage || '',
         metrics: [
-            { label: 'FORMAT', value: championship.details?.format || 'N/A' },
-            { label: 'SCOPE', value: championship.details?.standings_scope || 'N/A' },
-            { label: 'INITIALIZED', value: championship.details?.start_date ? new Date(championship.details.start_date).toISOString().split('T')[0] : 'TBD' },
-            { label: 'CONCLUDED', value: championship.details?.end_date ? new Date(championship.details.end_date).toISOString().split('T')[0] : 'TBD' },
+            ...(formatDisplay ? [{ label: 'Format', value: formatDisplay }] : []),
+            ...(scopeDisplay ? [{ label: 'Standings', value: scopeDisplay }] : []),
+            ...(seasonName ? [{ label: 'Season', value: seasonName }] : []),
+            ...(seriesName ? [{ label: 'Series', value: seriesName }] : []),
+            ...(startDate ? [{ label: 'Started', value: startDate }] : []),
+            ...(endDate ? [{ label: 'Ends', value: endDate }] : []),
+            ...(winnerName ? [{ label: 'Champion', value: winnerName }] : []),
         ],
+        tags: [formatDisplay, scopeDisplay].filter((t): t is string => typeof t === 'string'),
+        ctaLabel: 'Full Details',
+        ctaHref: `/calendar/championships/${championship.slug}/details`,
     }
 
     const trophyFeature = championship.assets?.trophy
         ? {
-            id: 'trophy',
-            title: 'TROPHY_SPEC',
-            description: 'The primary achievement credential awarded to the series victor.',
+            id: 'championship-trophy',
+            title: championship.name,
+            description: winnerName
+                ? `Awarded to ${winnerName}`
+                : championship.basics?.tagline || 'Championship trophy',
             image: getMediaUrl(championship.assets.trophy) || '',
+            stats: [] as { label: string; value: string }[],
         }
         : null
 
     const scrollItems: any[] = []
-    if (championship.details?.history) {
+    if (details?.history) {
+        const historyRoot = (details.history as any)?.root
+        const textContent = historyRoot?.children
+            ?.map((child: any) => child?.text || '')
+            .join(' ')
+            .trim()
+
         scrollItems.push({
-            id: 'history',
-            title: 'CHRONOLOGY',
-            description: 'Comprehensive archival data documenting the evolution of this racing series.',
+            id: 'championship-history-overview',
+            title: 'Origins',
+            description: textContent
+                ? textContent.slice(0, 200) + (textContent.length > 200 ? '...' : '')
+                : `The history of the ${championship.name} championship.`,
+            image: resolveAssetUrl(championship.assets, 'cover', 'thumbnail'),
+            percentage: startDate && endDate ? 100 : startDate ? 50 : 0,
+        })
+    }
+    if (details?.start_date && details?.end_date) {
+        scrollItems.push({
+            id: 'championship-duration',
+            title: 'Championship Duration',
+            description: `From ${startDate} to ${endDate}`,
             percentage: 100,
         })
     }
@@ -121,11 +202,15 @@ export default async function ChampionshipPage({ params }: { params: Promise<{ s
         championship.assets.gallery.forEach((item, idx) => {
             const url = getMediaUrl(item)
             if (url) {
+                const alt = typeof item === 'object' && item.alt ? item.alt : undefined
+                const filename = typeof item === 'object' && item.filename ? item.filename : undefined
                 galleryItems.push({
-                    id: String(typeof item === 'object' ? item.id : idx),
-                    title: (typeof item === 'object' && item.alt) || championship.name,
+                    id: String(typeof item === 'object' ? item.id : `gallery-${idx}`),
+                    title: alt || filename || `${championship.name} — Image ${idx + 1}`,
                     image: url,
-                    height: idx % 3 === 0 ? 'tall' as const : idx % 2 === 0 ? 'medium' as const : 'short' as const,
+                    category: alt?.split(' ')[0] || undefined,
+                    description: alt || undefined,
+                    height: (idx % 3 === 0 ? 'tall' : idx % 2 === 0 ? 'medium' : 'short') as 'tall' | 'medium' | 'short',
                 })
             }
         })
@@ -136,14 +221,14 @@ export default async function ChampionshipPage({ params }: { params: Promise<{ s
             {videoItems.length > 0 && (
                 <VideoSection
                     id="championship-video"
-                    title="BROADCAST"
-                    subtitle="Visual telemetry and highlight feeds"
+                    title="Broadcast"
+                    subtitle={`Highlights and coverage for the ${championship.name}`}
                     videos={videoItems}
                     labels={{
                         channelPrefix: 'CH',
-                        broadcastStatus: 'REC',
-                        liveFeed: 'LIVE',
-                        metaTransmission: 'ENC',
+                        broadcastStatus: 'RECORDED',
+                        liveFeed: 'FEED',
+                        metaTransmission: 'TRANSMISSION',
                     }}
                     autoplay={false}
                     showPlaylist={false}
@@ -151,61 +236,65 @@ export default async function ChampionshipPage({ params }: { params: Promise<{ s
                     footerVariant={1}
                 />
             )}
+
             <StudySection
                 id="championship-details"
-                title="SPECIFICATIONS"
-                subtitle="Technical series data and operational parameters"
+                title="Overview"
+                subtitle={`Championship specifications and current standings for ${championship.name}`}
                 studies={[study]}
                 variant="featured"
                 headerVariant={1}
                 footerVariant={1}
             />
+
             {trophyFeature && (
                 <FeatureSection
                     id="championship-trophy"
-                    title="ACHIEVEMENT"
-                    subtitle="Championship accolade specifications"
+                    title="Trophy"
+                    subtitle="Championship award and recognition"
                     features={[trophyFeature]}
                     labels={{
                         specIndex: 'TRP',
-                        statsLabel: 'DATA',
-                        ctaLabel: 'SCAN',
+                        statsLabel: 'AWARD',
+                        ctaLabel: 'VIEW',
                     }}
                     columns={2}
                     headerVariant={2}
                     footerVariant={1}
                 />
             )}
+
             {scrollItems.length > 0 && (
                 <ScrollSection
                     id="championship-history"
-                    title="ARCHIVE"
-                    subtitle="Historical performance documentation"
+                    title="History"
+                    subtitle="Championship legacy and timeline"
                     items={scrollItems}
                     labels={{
-                        indexPrefix: 'LOG',
-                        progressLabel: 'DATA',
-                        statusComplete: 'SYNC',
+                        indexPrefix: 'CHAPTER',
+                        progressLabel: 'Coverage',
+                        statusComplete: 'Complete',
                     }}
                     variant="reveal"
                     headerVariant={1}
                     footerVariant={1}
                 />
             )}
+
             {galleryItems.length > 0 && (
                 <MasonrySection
                     id="championship-gallery"
-                    title="MEDIA"
-                    subtitle="Documented visual intelligence"
+                    title="Gallery"
+                    subtitle={`Photo collection from the ${championship.name}`}
                     items={galleryItems}
                     labels={{
-                        categoryPrefix: 'TYPE',
-                        idPrefix: 'IMG',
+                        categoryPrefix: '',
+                        idPrefix: '',
                     }}
                     columns={3}
                     headerVariant={3}
                     footerVariant={2}
-                    ctaLabel="VIEW FULL PARAMETERS"
+                    ctaLabel="View Full Details"
                     ctaPath={`/calendar/championships/${championship.slug}/details`}
                 />
             )}

@@ -1,4 +1,3 @@
-// SectionScroller.tsx
 "use client"
 import React, { useEffect, useRef, useState } from 'react'
 
@@ -11,7 +10,7 @@ interface SectionScrollerProps {
 
 const SectionScroller: React.FC<SectionScrollerProps> = ({
     items,
-    delimiter = <span className="text-current px-6 opacity-30 font-bold">//</span>,
+    delimiter = <div className="w-12 h-px bg-current opacity-20 mx-4" />,
     velocity = 30,
     variant = 1
 }) => {
@@ -31,29 +30,17 @@ const SectionScroller: React.FC<SectionScrollerProps> = ({
 
         window.addEventListener("scroll", handleScroll, { passive: true })
 
-        const styleId = 'section-scroller-keyframes'
+        const styleId = 'section-scroller-keyframes-overhaul'
         if (!document.getElementById(styleId)) {
             const style = document.createElement('style')
             style.id = styleId
             style.innerHTML = `
-        @keyframes marquee_forward {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
-        }
-        @keyframes marquee_reverse {
-          0% { transform: translateX(-50%); }
-          100% { transform: translateX(0); }
-        }
-        .animate-marquee-forward {
-          animation: marquee_forward linear infinite;
-        }
-        .animate-marquee-backward {
-          animation: marquee_reverse linear infinite;
-        }
-        .scroller-pause {
-          animation-play-state: paused !important;
-        }
-      `
+                @keyframes marquee_forward { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+                @keyframes marquee_reverse { 0% { transform: translateX(-50%); } 100% { transform: translateX(0); } }
+                .animate-marquee-forward { animation: marquee_forward linear infinite; }
+                .animate-marquee-backward { animation: marquee_reverse linear infinite; }
+                .scroller-pause { animation-play-state: paused !important; }
+            `
             document.head.appendChild(style)
         }
 
@@ -61,41 +48,113 @@ const SectionScroller: React.FC<SectionScrollerProps> = ({
     }, [])
 
     const animationClass = isScrollingDown ? "animate-marquee-forward" : "animate-marquee-backward"
+    const textBase = "font-black uppercase tracking-tighter text-base"
 
-    const getVariantStyles = () => {
-        switch (variant) {
-            case 2: return { bg: "bg-black-pure", text: "text-primary-500", h: "h-14", border: "border-white-pure/20" }
-            case 3: return { bg: "bg-secondary-500", text: "text-black-pure", h: "h-16", border: "border-black-pure" }
-            case 4: return { bg: "bg-white-pure", text: "text-black-pure", h: "h-14", border: "border-black-pure" }
-            case 5: return { bg: "bg-primary-500", text: "text-black-pure", h: "h-20", border: "border-black-pure" }
-            default: return { bg: "bg-primary-500", text: "text-black-pure", h: "h-14", border: "border-black-pure" }
-        }
+    if (variant === 2) {
+        return (
+            <div className="w-full bg-black-pure border-y-4 border-black-pure h-16 flex items-center relative overflow-hidden group">
+                <div className={`flex items-center whitespace-nowrap ${animationClass} group-hover:scroller-pause`} style={{ animationDuration: `${velocity}s` }}>
+                    {[...Array(4)].map((_, idx) => (
+                        <div key={idx} className="flex items-center">
+                            {items.map((item, i) => (
+                                <div key={i} className="flex items-center group/item">
+                                    <span className={`${textBase} text-primary-500 px-6 border-x border-white-pure/10 group-hover/item:bg-white-pure group-hover/item:text-black-pure transition-colors cursor-default py-2`}>
+                                        {item}
+                                    </span>
+                                    <div className="flex gap-1 px-4">
+                                        <div className="w-1 h-1 bg-secondary-500 rounded-full" />
+                                        <div className="w-1 h-1 bg-secondary-500 rounded-full opacity-50" />
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    ))}
+                </div>
+            </div>
+        )
     }
 
-    const styles = getVariantStyles()
+    if (variant === 3) {
+        return (
+            <div className="w-full bg-secondary-500 border-y-2 border-black-pure h-20 flex items-center relative overflow-hidden group">
+                <div className="absolute inset-0 opacity-10 bg-[repeating-linear-gradient(45deg,transparent,transparent_10px,#000_10px,#000_20px)]" />
+                <div className={`flex items-center whitespace-nowrap relative z-10 ${animationClass} group-hover:scroller-pause`} style={{ animationDuration: `${velocity}s` }}>
+                    {[...Array(4)].map((_, idx) => (
+                        <div key={idx} className="flex items-center">
+                            {items.map((item, i) => (
+                                <div key={i} className="flex items-center">
+                                    <span className={`${textBase} text-black-pure px-8 italic group-hover:not-italic transition-all`}>
+                                        {item}
+                                    </span>
+                                    <span className="text-2xl font-black text-black-pure opacity-20">/</span>
+                                </div>
+                            ))}
+                        </div>
+                    ))}
+                </div>
+            </div>
+        )
+    }
 
-    const renderGroup = (groupIndex: number) => (
-        <div key={groupIndex} className="flex items-center">
-            {items.map((item, i) => (
-                <React.Fragment key={i}>
-                    <div className="flex items-center gap-3 group/item">
-                        <span className="text-base font-bold opacity-40">{String(i + 1).padStart(2, '0')}</span>
-                        <span className={`text-base font-bold px-4 whitespace-nowrap ${styles.text} transition-transform duration-300 group-hover/item:scale-110 cursor-default`}>
-                            {item}
-                        </span>
-                    </div>
-                    {delimiter}
-                </React.Fragment>
-            ))}
-        </div>
-    )
+    if (variant === 4) {
+        return (
+            <div className="w-full bg-white-pure border-y-8 border-black-pure h-16 flex items-center relative overflow-hidden group">
+                <div className={`flex items-center whitespace-nowrap ${animationClass} group-hover:scroller-pause`} style={{ animationDuration: `${velocity}s` }}>
+                    {[...Array(4)].map((_, idx) => (
+                        <div key={idx} className="flex items-center">
+                            {items.map((item, i) => (
+                                <div key={i} className="flex items-center">
+                                    <div className="w-8 h-8 bg-black-pure flex items-center justify-center mr-4">
+                                        <span className="text-[10px] font-black text-white-pure">{i + 1}</span>
+                                    </div>
+                                    <span className={`${textBase} text-black-pure mr-8`}>{item}</span>
+                                    <div className="w-2 h-2 bg-primary-500 rotate-45 mr-8" />
+                                </div>
+                            ))}
+                        </div>
+                    ))}
+                </div>
+            </div>
+        )
+    }
+
+    if (variant === 5) {
+        return (
+            <div className="w-full bg-black-pure border-y-2 border-primary-500 h-24 flex items-center relative overflow-hidden group">
+                <div className={`flex items-center whitespace-nowrap ${animationClass} group-hover:scroller-pause`} style={{ animationDuration: `${velocity}s` }}>
+                    {[...Array(4)].map((_, idx) => (
+                        <div key={idx} className="flex items-center">
+                            {items.map((item, i) => (
+                                <div key={i} className="flex items-center px-10 group/item">
+                                    <div className="flex flex-col">
+                                        <span className="text-[10px] font-black text-primary-500 mb-1 opacity-0 group-hover/item:opacity-100 transition-opacity">DATA_NODE_{i}</span>
+                                        <span className={`${textBase} text-2xl text-white-pure group-hover/item:text-primary-500 transition-colors`}>{item}</span>
+                                    </div>
+                                    <div className="ml-10 h-12 w-px bg-white-pure/20 rotate-12" />
+                                </div>
+                            ))}
+                        </div>
+                    ))}
+                </div>
+            </div>
+        )
+    }
 
     return (
-        <div className={`w-full ${styles.bg} border-y ${styles.border} overflow-hidden shrink-0 ${styles.h} flex items-center relative group`}>
-            <div className={`absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r ${styles.bg} to-transparent z-10 pointer-events-none`} />
-            <div className={`absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l ${styles.bg} to-transparent z-10 pointer-events-none`} />
-            <div className={`flex whitespace-nowrap ${animationClass} group-hover:scroller-pause`} style={{ animationDuration: `${velocity}s` }}>
-                {[...Array(4)].map((_, i) => renderGroup(i))}
+        <div className="w-full bg-primary-500 border-y-2 border-black-pure h-14 flex items-center relative overflow-hidden group shadow-[inset_0px_4px_0px_rgba(0,0,0,0.1)]">
+            <div className={`flex items-center whitespace-nowrap ${animationClass} group-hover:scroller-pause`} style={{ animationDuration: `${velocity}s` }}>
+                {[...Array(4)].map((_, idx) => (
+                    <div key={idx} className="flex items-center">
+                        {items.map((item, i) => (
+                            <React.Fragment key={i}>
+                                <span className={`${textBase} text-black-pure px-10 hover:bg-black-pure hover:text-white-pure transition-colors py-4 cursor-crosshair`}>
+                                    {item}
+                                </span>
+                                {delimiter}
+                            </React.Fragment>
+                        ))}
+                    </div>
+                ))}
             </div>
         </div>
     )

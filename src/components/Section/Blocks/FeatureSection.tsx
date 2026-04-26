@@ -1,6 +1,7 @@
-// FeatureSection.tsx
 "use client"
-import { ArrowRight, Layers } from 'lucide-react'
+
+import { motion } from 'framer-motion'
+import { ArrowRight, Layers, LayoutGrid } from 'lucide-react'
 import Link from 'next/link'
 import React, { useEffect, useRef, useState } from 'react'
 import SectionFooter from '../Components/SectionFooter'
@@ -19,6 +20,8 @@ interface FeatureLabels {
   specIndex: string
   statsLabel: string
   ctaLabel: string
+  statusLabel?: string
+  indexLabel?: string
 }
 
 interface FeatureSectionProps {
@@ -38,63 +41,35 @@ const FeatureSection: React.FC<FeatureSectionProps> = ({
   title,
   subtitle,
   features = [],
-  labels = {
-    specIndex: '',
-    statsLabel: '',
-    ctaLabel: ''
-  },
+  labels = { specIndex: '', statsLabel: '', ctaLabel: '', statusLabel: '', indexLabel: '' },
   ctaPath,
   headerVariant = 1,
-  footerVariant = 1
+  footerVariant = 1,
 }) => {
   const [scrollProgress, setScrollProgress] = useState(0)
-  const [isInSection, setIsInSection] = useState(false)
   const [activeIndex, setActiveIndex] = useState(0)
   const containerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const handleScroll = () => {
       if (!containerRef.current) return
-
       const rect = containerRef.current.getBoundingClientRect()
       const windowHeight = window.innerHeight
 
-      const visible = rect.top < windowHeight && rect.bottom > 0
-      setIsInSection(visible)
+      const totalHeight = rect.height - windowHeight
+      const currentScroll = Math.max(0, -rect.top)
+      const progress = Math.min(Math.max(currentScroll / totalHeight, 0), 1)
 
-      if (visible) {
-        const totalHeight = rect.height - windowHeight
-        const currentScroll = Math.max(0, -rect.top)
-        const progress = currentScroll / totalHeight
-        setScrollProgress(Math.min(Math.max(progress, 0), 1))
-
-        const calculatedIndex = Math.floor(progress * features.length)
-        setActiveIndex(Math.min(calculatedIndex, features.length - 1))
-      }
+      setScrollProgress(progress)
+      setActiveIndex(Math.min(Math.floor(progress * features.length), features.length - 1))
     }
-
-    window.addEventListener("scroll", handleScroll)
+    window.addEventListener('scroll', handleScroll)
     handleScroll()
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [id, features.length])
-
-  const scrollToNext = () => {
-    const section = document.getElementById(id)
-    if (section) {
-      const nextSibling = section.nextElementSibling
-      if (nextSibling) {
-        nextSibling.scrollIntoView({ behavior: 'smooth' })
-      } else {
-        window.scrollTo({
-          top: section.offsetTop + section.offsetHeight,
-          behavior: 'smooth'
-        })
-      }
-    }
-  }
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [features.length])
 
   return (
-    <section id={id} ref={containerRef} className="relative w-full bg-white-pure border-t border-black-pure">
+    <section id={id} ref={containerRef} className="relative w-full bg-white-pure border-t-2 border-black-pure">
       <SectionHeader
         title={title}
         subtitle={subtitle}
@@ -103,112 +78,126 @@ const FeatureSection: React.FC<FeatureSectionProps> = ({
       />
 
       <div className="relative">
-        <div className="hidden lg:flex fixed left-10 top-1/2 -translate-y-1/2 z-40 flex-col gap-6 pointer-events-none">
-          {features.map((_, i) => (
-            <div
-              key={i}
-              className={`h-10 w-[2px] transition-all duration-700 ${i === activeIndex ? 'bg-primary-500' : 'bg-black-pure/10'}`}
-            />
-          ))}
+        <div className="hidden lg:flex absolute left-0 top-0 h-full w-16 border-r-2 border-black-pure z-40 bg-white-pure flex-col items-center py-24 gap-8">
+          <div className="sticky top-24 flex flex-col items-center gap-8">
+            {features.map((_, i) => (
+              <div key={i} className="flex flex-col items-center gap-2">
+                <span className={`text-[10px] font-mono font-black transition-colors duration-300 ${i === activeIndex ? 'text-black-pure' : 'text-neutral-300'}`}>
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+                <div
+                  className="w-1 transition-all duration-500 ease-in-out"
+                  style={{
+                    height: i === activeIndex ? '48px' : '8px',
+                    background: i === activeIndex ? 'var(--primary-500)' : 'var(--neutral-200)'
+                  }}
+                />
+              </div>
+            ))}
+          </div>
         </div>
 
         {features.map((feature, idx) => (
           <div
             key={feature.id}
-            className="sticky top-0 h-screen w-full flex items-center justify-center border-b border-black-pure overflow-hidden group/item bg-white-pure"
+            className="sticky top-0 h-screen w-full flex items-stretch border-b-2 border-black-pure bg-white-pure overflow-hidden group/item"
           >
-            <div className="relative z-10 w-full max-w-[1400px] px-6 sm:px-10 md:px-16 lg:px-24 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-center">
+            <div className="flex flex-col lg:flex-row w-full pl-0 lg:pl-16">
+              <div className="flex-1 flex flex-col border-r-2 border-black-pure">
+                <div className="flex-1 p-8 sm:p-12 md:p-16 lg:p-20 flex flex-col justify-center">
+                  <div className="flex items-center gap-4 mb-6">
+                    <span className="text-base font-mono font-black bg-black-pure text-white-pure px-3 py-1 uppercase tracking-widest group-hover/item:bg-primary-500 group-hover/item:text-black-pure transition-colors duration-300">
+                      {labels.specIndex}
+                    </span>
+                    <div className="h-[2px] flex-grow bg-black-pure/10">
+                      <motion.div
+                        className="h-full bg-primary-500"
+                        initial={{ width: 0 }}
+                        whileInView={{ width: '100%' }}
+                        transition={{ duration: 1 }}
+                      />
+                    </div>
+                  </div>
 
-              <div className="lg:col-span-6 flex flex-col justify-center space-y-6 md:space-y-8">
-                <div className="flex items-center gap-4">
-                  <span className="text-2xl font-bold text-primary-500">
-                    {String(idx + 1).padStart(2, '0')}
-                  </span>
-                  <div className="h-px w-10 bg-black-pure/20 transition-all duration-500 group-hover/item:w-20" />
-                  <span className="text-base font-bold text-black-pure/60 transition-colors duration-300 group-hover/item:text-primary-500">
-                    {labels.specIndex}
-                  </span>
-                </div>
-
-                <div className="space-y-4">
-                  <h3 className="text-2xl font-bold text-black-pure transition-colors duration-300 group-hover/item:text-primary-500">
+                  <h3 className="text-xl md:text-2xl font-black uppercase text-black-pure leading-tight mb-6 transition-transform duration-500 group-hover/item:translate-x-2">
                     {feature.title}
                   </h3>
-                  <p className="text-base font-medium text-black-pure/60">
+
+                  <p className="text-base font-black uppercase text-black-pure/50 max-w-md leading-relaxed mb-10 tracking-tight">
                     {feature.description}
                   </p>
-                </div>
 
-                {feature.stats && feature.stats.length > 0 && (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-                    {feature.stats.map((stat, statIdx) => (
-                      <div key={statIdx} className="flex flex-col p-5 bg-neutral-50 border-l-2 border-black-pure hover:border-primary-500 transition-all duration-500 hover:translate-x-1">
-                        <span className="text-base font-bold text-black-pure/60 mb-1">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 border-t-2 border-l-2 border-black-pure mb-10">
+                    {feature.stats?.map((stat, sIdx) => (
+                      <div key={sIdx} className="p-6 border-r-2 border-b-2 border-black-pure bg-white-pure hover:bg-primary-500 group/stat transition-all duration-200">
+                        <span className="block text-[10px] font-mono font-black text-black-pure/40 group-hover/stat:text-black-pure uppercase mb-2">
                           {stat.label}
                         </span>
-                        <span className="text-2xl font-bold text-black-pure">
+                        <span className="text-lg font-black text-black-pure tabular-nums">
                           {stat.value}
                         </span>
                       </div>
                     ))}
                   </div>
-                )}
 
-                <div className="pt-4">
                   <Link
                     href={ctaPath ? `${ctaPath}/${feature.id}` : `/${feature.id}`}
-                    className="inline-flex items-center group/link"
+                    className="self-start inline-flex items-center gap-6 bg-white-pure text-black-pure px-10 py-5 text-base font-mono font-black uppercase tracking-widest hover:bg-black-pure hover:text-white-pure transition-all group/btn border-2 border-black-pure shadow-[4px_4px_0px_var(--primary-500)] hover:shadow-none hover:translate-x-1 hover:translate-y-1"
                   >
-                    <div className="relative overflow-hidden bg-black-pure px-8 py-4 flex items-center gap-4 transition-all duration-500 hover:bg-primary-500 hover:translate-x-1">
-                      <span className="relative z-10 text-base font-bold text-white-pure group-hover/link:text-black-pure transition-colors duration-300">
-                        {labels.ctaLabel}
-                      </span>
-                      <ArrowRight className="relative z-10 w-5 h-5 text-white-pure group-hover/link:text-black-pure group-hover/link:translate-x-2 transition-all duration-300" />
-                    </div>
+                    {labels.ctaLabel}
+                    <ArrowRight className="w-5 h-5 transition-transform group-hover/btn:translate-x-2" />
                   </Link>
                 </div>
-              </div>
 
-              <div className="hidden lg:flex lg:col-span-6 relative aspect-[4/3] items-center justify-center overflow-hidden border border-black-pure bg-neutral-100">
-                <img
-                  src={feature.image || `https://picsum.photos/seed/${feature.id}/800/600`}
-                  alt={feature.title}
-                  className="w-full h-full object-cover transition-all duration-700 group-hover/item:scale-105"
-                />
-                <div className="absolute inset-0 bg-black-pure/0 group-hover/item:bg-black-pure/10 transition-colors duration-500" />
-
-                <div className="absolute bottom-0 left-0 bg-white-pure p-6 border-t border-r border-black-pure transition-all duration-500 translate-y-full group-hover/item:translate-y-0">
-                  {feature.icon ? (
-                    <div className="text-black-pure w-8 h-8">
-                      {feature.icon}
+                <div className="h-24 md:h-32 border-t-2 border-black-pure flex bg-white-100">
+                  <div className="w-24 md:w-32 border-r-2 border-black-pure flex items-center justify-center bg-white-pure group-hover/item:bg-primary-500 transition-colors duration-500">
+                    <LayoutGrid className="w-8 h-8 text-black-pure" />
+                  </div>
+                  <div className="flex-grow flex items-center px-8 relative overflow-hidden">
+                    <span className="text-base font-mono font-black text-black-pure uppercase tracking-widest z-10">
+                      {labels.statusLabel}
+                    </span>
+                    <div className="absolute right-8 top-1/2 -translate-y-1/2 flex gap-1">
+                      {[...Array(4)].map((_, i) => (
+                        <div key={i} className="w-2 h-2 bg-black-pure/10 group-hover/item:bg-primary-500 animate-pulse" style={{ animationDelay: `${i * 0.2}s` }} />
+                      ))}
                     </div>
-                  ) : (
-                    <Layers className="w-8 h-8 text-black-pure transition-transform duration-300 group-hover/item:rotate-12" />
-                  )}
+                  </div>
                 </div>
               </div>
 
+              <div className="hidden lg:flex flex-1 relative bg-neutral-200 overflow-hidden">
+                <img
+                  src={`https://picsum.photos/seed/${feature.id}/1200/1600`}
+                  alt={feature.title}
+                  className="w-full h-full object-cover transition-all duration-1000 scale-105 group-hover/item:scale-100"
+                />
+
+                <div className="absolute inset-0 bg-primary-500/0 group-hover/item:bg-primary-500/10 transition-colors duration-500" />
+
+                <div className="absolute top-0 left-0 bg-white-pure border-r-2 border-b-2 border-black-pure px-6 py-4 font-mono font-black text-base italic">
+                  {String(idx + 1).padStart(3, '0')}
+                </div>
+
+                <div className="absolute bottom-12 right-12 bg-black-pure text-white-pure p-8 border-2 border-primary-500 shadow-[12px_12px_0px_var(--white-pure)] group-hover/item:shadow-[-12px_-12px_0px_var(--primary-500)] transition-all duration-700">
+                  <div className="scale-150 text-primary-500">
+                    {feature.icon || <Layers className="w-8 h-8" />}
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         ))}
       </div>
 
-      <div
-        className={`fixed bottom-8 right-8 z-[100] transition-all duration-700 ${isInSection ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0'}`}
-      >
-        <button
-          onClick={scrollToNext}
-          className="w-20 h-20 bg-white-pure border border-black-pure flex flex-col items-center justify-center group hover:bg-black-pure transition-all duration-500 hover:scale-105"
-        >
-          <div className="w-6 h-6 border-t-2 border-r-2 border-black-pure rotate-45 group-hover:border-white-pure transition-all duration-300" />
-          <span className="text-base font-bold text-black-pure group-hover:text-white-pure mt-2 transition-colors duration-300">
+      <div className="absolute bottom-0 right-0 h-24 md:h-32 w-24 md:w-32 z-50">
+        <div className="sticky bottom-0 h-full w-full bg-white-pure border-l-2 border-t-2 border-black-pure flex flex-col items-center justify-center group hover:bg-black-pure transition-colors duration-300">
+          <span className="text-[10px] font-mono font-black text-black-pure/40 group-hover:text-primary-500 uppercase mb-1">{labels.indexLabel}</span>
+          <span className="text-2xl font-mono font-black text-black-pure group-hover:text-white-pure tabular-nums">
             {Math.round(scrollProgress * 100)}%
           </span>
-          <div
-            className="absolute bottom-0 left-0 h-[3px] bg-primary-500 transition-all duration-300"
-            style={{ width: `${scrollProgress * 100}%` }}
-          />
-        </button>
+          <div className="absolute top-0 left-0 w-full h-1 bg-primary-500 transform origin-left transition-transform duration-300" style={{ transform: `scaleX(${scrollProgress})` }} />
+        </div>
       </div>
 
       <SectionFooter variant={footerVariant} />
@@ -216,4 +205,4 @@ const FeatureSection: React.FC<FeatureSectionProps> = ({
   )
 }
 
-export default FeatureSection
+export default FeatureSection;

@@ -1,6 +1,6 @@
-// ListSection.tsx
 "use client"
-import { motion, useInView } from 'framer-motion'
+
+import { AnimatePresence, motion } from 'framer-motion'
 import React, { useRef, useState } from 'react'
 
 export interface ListEntry {
@@ -12,6 +12,7 @@ export interface ListEntry {
   href?: string
   timestamp?: string
   metadata?: Record<string, string>
+  image?: string
 }
 
 interface ListLabels {
@@ -38,174 +39,193 @@ const ListSection: React.FC<ListSectionProps> = ({
   subtitle,
   entries = [],
   labels,
-  showStatus = true,
-  showTimestamp = true,
   ctaLabel,
-  ctaPath
+  ctaPath,
 }) => {
+  const [activeIndex, setActiveIndex] = useState<number>(0)
   const containerRef = useRef(null)
-  const isInView = useInView(containerRef, { once: false, amount: 0.1 })
-  const [activeIndex, setActiveIndex] = useState<number | null>(null)
+
+  const activeEntry = entries[activeIndex] || entries[0]
+
+  const displayImage = activeEntry?.image || `https://picsum.photos/seed/${activeEntry?.id || 'default'}/1200/800`
 
   return (
-    <section
-      id={id}
-      ref={containerRef}
-      className="relative w-full bg-white-pure flex flex-col"
-    >
-      <div className="w-full grid grid-cols-1 lg:grid-cols-12 border-b border-black-pure" style={{ height: '200px' }}>
-        <div className="lg:col-span-8 p-10 md:p-20 flex flex-col justify-end">
-          <motion.div
-            initial={{ x: -50, opacity: 0 }}
-            animate={isInView ? { x: 0, opacity: 1 } : {}}
-            transition={{ duration: 0.8 }}
-          >
-            <h2 className="text-2xl font-bold text-black-pure mb-6">
-              {title}
-            </h2>
-            <div className="h-px w-24 bg-primary-500 mb-8 transition-all duration-500 hover:w-32" />
-            <p className="text-base text-black-pure/80">
-              {subtitle}
-            </p>
-          </motion.div>
-        </div>
-        <div className="lg:col-span-4 bg-neutral-50 p-10 md:p-20 flex items-center justify-center border-l border-black-pure">
-          <div className="relative">
-            <span className="text-2xl font-bold text-black-pure">
-              {String(entries.length).padStart(2, '0')}
-            </span>
+    <section id={id} ref={containerRef} className="relative w-full min-h-screen bg-background flex flex-col border-t-2 border-foreground overflow-hidden">
+      <div className="flex-1 flex flex-col lg:flex-row divide-y-2 lg:divide-y-0 lg:divide-x-2 divide-foreground relative">
+
+        <div className="w-full lg:w-[45%] xl:w-[40%] bg-black p-6 xs:p-8 md:p-12 lg:p-16 flex flex-col justify-between relative overflow-hidden group">
+          <AnimatePresence mode="wait">
             <motion.div
-              animate={{ rotate: 360 }}
-              transition={{ duration: 8, repeat: Infinity }}
-              className="absolute -inset-8 border border-dashed border-primary-500/30"
-            />
+              key={activeIndex}
+              initial={{ x: -30 }}
+              animate={{ x: 0 }}
+              exit={{ x: 30 }}
+              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+              className="absolute inset-0 pointer-events-none"
+            >
+              <img
+                src={displayImage}
+                alt=""
+                className="w-full h-full object-cover brightness-50"
+              />
+            </motion.div>
+          </AnimatePresence>
+
+          <div className="space-y-6 lg:space-y-10 relative z-10">
+            <motion.div
+              initial={{ y: 10 }}
+              whileInView={{ y: 0 }}
+              className="flex items-center gap-3"
+            >
+              <div className="size-12 bg-white flex items-center justify-center text-black">
+                <span className="font-black text-lg">{(activeIndex + 1).toString().padStart(2, '0')}</span>
+              </div>
+              <div className="flex flex-col">
+                <span className="font-mono text-[10px] font-black text-white uppercase tracking-[0.2em]">
+                  {id}
+                </span>
+                <span className="font-mono text-[10px] font-black text-primary uppercase tracking-[0.2em]">
+                  {labels.indexPrefix} {entries.length}
+                </span>
+              </div>
+            </motion.div>
+
+            <div className="space-y-4">
+              <AnimatePresence mode="wait">
+                <motion.h2
+                  key={activeEntry?.id}
+                  initial={{ y: 20 }}
+                  animate={{ y: 0 }}
+                  exit={{ y: -20 }}
+                  transition={{ duration: 0.4, ease: "easeOut" }}
+                  className="text-2xl md:text-3xl font-black text-white uppercase tracking-tighter leading-tight"
+                >
+                  {activeEntry?.title}
+                </motion.h2>
+              </AnimatePresence>
+
+              <div className="flex items-center gap-4">
+                <div className="h-1 w-12 bg-primary" />
+                <p className="text-white text-base font-black uppercase tracking-widest">
+                  {activeEntry?.tag || subtitle}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-12 space-y-4 relative z-10">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-px bg-foreground border-2 border-foreground shadow-[4px_4px_0px_0px_#000000]">
+              <div className="bg-card p-5 flex flex-col group/stat hover:bg-primary transition-colors duration-200">
+                <span className="font-mono text-[10px] text-muted-foreground uppercase font-black group-hover/stat:text-white transition-colors">{labels.statusPrefix}</span>
+                <span className="text-lg font-black text-foreground group-hover/stat:text-white transition-colors uppercase">{activeEntry?.status}</span>
+              </div>
+              <div className="bg-card p-5 flex flex-col group/stat hover:bg-foreground transition-colors duration-200">
+                <span className="font-mono text-[10px] text-muted-foreground uppercase font-black group-hover/stat:text-background transition-colors">{labels.timePrefix}</span>
+                <span className="text-lg font-black text-foreground group-hover/stat:text-background transition-colors uppercase tabular-nums">{activeEntry?.timestamp}</span>
+              </div>
+            </div>
+
+            <motion.a
+              whileHover={{ y: -2, x: -2, boxShadow: "6px 6px 0px 0px #FF0000" }}
+              whileTap={{ y: 0, x: 0, boxShadow: "0px 0px 0px 0px #FF0000" }}
+              href={activeEntry?.href}
+              className="inline-flex w-full items-center justify-between bg-foreground text-background px-6 py-5 font-black uppercase text-base tracking-[0.2em] transition-all duration-200 group/btn"
+            >
+              <span>Explore Module</span>
+              <svg className="w-6 h-6 transition-transform duration-300 group-hover/btn:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M5 12h14M12 5l7 7-7 7" strokeWidth="4" strokeLinecap="square" />
+              </svg>
+            </motion.a>
           </div>
         </div>
-      </div>
 
-      <div className="flex-grow">
-        {entries.map((entry, idx) => (
-          <motion.div
-            key={entry.id}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ delay: idx * 0.05 }}
-            onMouseEnter={() => setActiveIndex(idx)}
-            onMouseLeave={() => setActiveIndex(null)}
-            className="group relative w-full border-b border-black-pure transition-all duration-500 hover:bg-neutral-50"
-            style={{ height: '120px' }}
-          >
-            <a
-              href={entry.href || '#'}
-              className="flex flex-col lg:flex-row lg:items-center p-8 md:px-20 md:py-0 gap-8 relative z-10 h-full"
-            >
-              <div className="flex items-center gap-8 lg:w-1/2">
-                <span className="text-base font-bold text-black-pure/30 transition-all duration-300 group-hover:text-primary-500">
-                  {String(idx + 1).padStart(2, '0')}
-                </span>
-                <div className="flex flex-col gap-2">
-                  {entry.tag && (
-                    <span className="inline-block text-base font-bold text-primary-500 bg-primary-500/10 transition-all duration-300 group-hover:bg-black-pure group-hover:text-white-pure px-2 py-0.5 self-start">
-                      {entry.tag}
+        <div className="flex-1 bg-foreground relative flex flex-col divide-y-2 divide-foreground overflow-hidden">
+          <div className="flex-1 overflow-y-auto no-scrollbar bg-foreground space-y-[2px]">
+            {entries.map((entry, idx) => (
+              <button
+                key={entry.id}
+                onMouseEnter={() => setActiveIndex(idx)}
+                className={`
+                  relative w-full min-h-[100px] xs:min-h-[120px] flex items-center px-6 xs:px-8 md:px-12 transition-all duration-300 group overflow-hidden
+                  ${activeIndex === idx ? 'bg-primary' : 'bg-card hover:bg-white'}
+                `}
+              >
+                <div className="relative z-10 flex items-center justify-between w-full">
+                  <div className="flex items-center gap-4 xs:gap-8">
+                    <span className={`font-mono text-xl font-black transition-colors duration-300 ${activeIndex === idx ? 'text-white' : 'text-muted-foreground group-hover:text-foreground'}`}>
+                      {(idx + 1).toString().padStart(2, '0')}
                     </span>
-                  )}
-                  <h3 className="text-2xl font-bold text-black-pure transition-all duration-300 group-hover:translate-x-4">
-                    {entry.title}
-                  </h3>
-                </div>
-              </div>
 
-              <div className="flex flex-wrap items-center justify-between lg:justify-end gap-12 lg:w-1/2">
-                {showTimestamp && entry.timestamp && (
-                  <div className="flex flex-col lg:items-end">
-                    <span className="text-base text-black-pure/60 mb-1">
-                      {labels.timePrefix}
-                    </span>
-                    <span className="text-base font-bold text-black-pure">
-                      {entry.timestamp}
-                    </span>
-                  </div>
-                )}
-
-                {showStatus && entry.status && (
-                  <div className="flex flex-col lg:items-end">
-                    <span className="text-base text-black-pure/60 mb-1">
-                      {labels.statusPrefix}
-                    </span>
-                    <div className="flex items-center gap-3">
-                      <motion.div
-                        animate={{ scale: [1, 1.2, 1] }}
-                        transition={{ repeat: Infinity, duration: 2 }}
-                        className="w-2 h-2 bg-primary-500"
-                      />
-                      <span className="text-base font-bold text-black-pure">
-                        {entry.status}
+                    <div className="flex flex-col items-start text-left">
+                      <span className={`text-[10px] font-mono font-black uppercase tracking-widest mb-1 transition-colors ${activeIndex === idx ? 'text-white' : 'text-primary'}`}>
+                        {entry.tag || id}
                       </span>
+                      <h3 className={`text-lg md:text-xl font-black uppercase tracking-tight transition-all duration-300 ${activeIndex === idx ? 'text-white translate-x-2' : 'text-foreground'}`}>
+                        {entry.title}
+                      </h3>
                     </div>
                   </div>
-                )}
 
-                <div className="w-12 h-12 border border-black-pure flex items-center justify-center transition-all duration-300 group-hover:rotate-45 group-hover:bg-black-pure">
-                  <svg className="w-6 h-6 text-black-pure transition-colors duration-300 group-hover:text-primary-500" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <path d="M7 17L17 7M17 7H7M17 7V17" strokeWidth="3" strokeLinecap="square" />
-                  </svg>
+                  <div className="flex items-center gap-6">
+                    <div className={`hidden xl:flex flex-col items-end ${activeIndex === idx ? 'block' : 'hidden'}`}>
+                      <span className="text-[10px] font-mono font-black text-white uppercase">Selection</span>
+                      <span className="text-[10px] font-mono font-black text-white uppercase tracking-widest">Active</span>
+                    </div>
+                    <div className={`size-10 border-2 transition-all duration-300 flex items-center justify-center ${activeIndex === idx ? 'border-white bg-white' : 'border-foreground bg-transparent group-hover:border-foreground'}`}>
+                      <svg
+                        className={`w-4 h-4 transition-colors duration-300 ${activeIndex === idx ? 'text-primary' : 'text-muted-foreground group-hover:text-foreground'}`}
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                      >
+                        <path d="M7 17L17 7M17 7H7M17 7V17" strokeWidth="4" strokeLinecap="square" />
+                      </svg>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </a>
-
-            {activeIndex === idx && (
-              <motion.div
-                layoutId="list-hover"
-                className="absolute inset-0 z-0 bg-neutral-50"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-              />
-            )}
-          </motion.div>
-        ))}
-      </div>
-
-      {ctaLabel && ctaPath && (
-        <div className="py-20 flex justify-center bg-white-pure">
-          <motion.a
-            href={ctaPath}
-            whileHover={{ scale: 1.05 }}
-            className="relative px-12 py-6 border border-black-pure group overflow-hidden"
-          >
-            <div className="absolute inset-0 bg-black-pure transition-transform duration-300 translate-y-full group-hover:translate-y-0" />
-            <span className="relative z-10 text-base font-bold text-black-pure transition-colors duration-300 group-hover:text-white-pure">
-              {ctaLabel}
-            </span>
-          </motion.a>
-        </div>
-      )}
-
-      <div className="w-full bg-white-pure border-t border-black-pure p-10 grid grid-cols-1 md:grid-cols-3 gap-8" style={{ height: '120px' }}>
-        <div className="flex items-center gap-4">
-          <div className="w-3 h-3 bg-primary-500 transition-all duration-300 hover:scale-150" />
-          <span className="text-base text-black-pure/80">{id}</span>
-        </div>
-        <div className="flex justify-center">
-          <div className="flex gap-2">
-            {[...Array(8)].map((_, i) => (
-              <motion.div
-                key={i}
-                animate={{ opacity: [0.2, 1, 0.2] }}
-                transition={{ duration: 1.5, repeat: Infinity, delay: i * 0.1 }}
-                className="w-1.5 h-1.5 bg-black-pure/30"
-              />
+                <div className={`absolute right-0 top-0 w-2 h-full bg-foreground transition-transform duration-300 origin-top ${activeIndex === idx ? 'scale-y-100' : 'scale-y-0'}`} />
+              </button>
             ))}
           </div>
+
+          <div className="h-24 bg-card flex flex-col xs:flex-row divide-y-2 xs:divide-y-0 xs:divide-x-2 divide-foreground">
+            <div className="flex-1 p-4 xs:p-6 flex items-center justify-between group/footer">
+              <div className="flex flex-col text-left">
+                <span className="font-mono text-[10px] font-black text-muted-foreground uppercase">System Index</span>
+                <div className="flex items-center gap-2">
+                  <div className="size-2 bg-primary rounded-full" />
+                  <span className="text-base font-black text-foreground uppercase">
+                    {entries.length} Nodes Loaded
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {ctaLabel && (
+              <a
+                href={ctaPath}
+                className="flex-none xs:flex-[0.4] bg-foreground text-background flex items-center justify-center gap-3 group/cta hover:bg-primary hover:text-white transition-colors duration-200 py-4 xs:py-0"
+              >
+                <span className="font-black uppercase text-base tracking-widest">{ctaLabel}</span>
+                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path d="M5 12h14M12 5l7 7-7 7" strokeWidth="4" strokeLinecap="square" />
+                </svg>
+              </a>
+            )}
+          </div>
         </div>
-        <div className="flex md:justify-end">
-          <span className="text-base text-primary-500 font-bold transition-all duration-300 hover:tracking-wider">
-            SECURE_ENCRYPTION_ACTIVE
-          </span>
-        </div>
+      </div>
+
+      <div className="w-full h-2 bg-muted relative">
+        <motion.div
+          className="absolute top-0 left-0 h-full bg-primary"
+          initial={{ width: "0%" }}
+          animate={{ width: `${((activeIndex + 1) / entries.length) * 100}%` }}
+          transition={{ type: "spring", stiffness: 120, damping: 25 }}
+        />
       </div>
     </section>
   )
 }
 
-export default ListSection
+export default ListSection;

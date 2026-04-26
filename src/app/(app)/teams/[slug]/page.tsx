@@ -1,4 +1,6 @@
+import FeatureSection from '@/components/Section/Blocks/FeatureSection'
 import GridSection from '@/components/Section/Blocks/GridSection'
+import HeroSection from '@/components/Section/Blocks/HeroSection'
 import MasonrySection from '@/components/Section/Blocks/MasonrySection'
 import QuoteSection from '@/components/Section/Blocks/QuoteSection'
 import ScrollSection from '@/components/Section/Blocks/ScrollSection'
@@ -39,12 +41,18 @@ const getTeamData = unstable_cache(
                 collection: 'leaders',
                 where: categoryIds.length ? { categories: { in: categoryIds } } : {},
                 limit: 20,
-                select: { id: true, first_name: true, last_name: true, slug: true, basics: true, assets: true },
+                select: { id: true, first_name: true, last_name: true, slug: true, basics: true, assets: true, details: { quote: true, vision: true, mission: true } },
             }),
         ])
 
         const drivers = driversRes.docs as Driver[]
         const leaders = leadersRes.docs as Leader[]
+
+        const heroBackground = team.assets?.cover
+            ? getMediaUrl(team.assets.cover)
+            : team.assets?.logo
+                ? getMediaUrl(team.assets.logo)
+                : undefined
 
         const quoteItem = team.basics?.tagline
             ? {
@@ -70,6 +78,7 @@ const getTeamData = unstable_cache(
                 { label: 'Country', value: team.details?.country && typeof team.details.country === 'object' && 'name' in team.details.country ? team.details.country.name : 'N/A' },
                 { label: 'Website', value: team.details?.website || 'N/A' },
             ],
+            tags: team.tags?.map(tag => typeof tag === 'object' ? tag.name || tag.slug || '' : '').filter(Boolean) || [],
         }
 
         const scrollItems: any[] = []
@@ -82,21 +91,80 @@ const getTeamData = unstable_cache(
             })
         }
 
-        const driverItems = drivers.slice(0, 8).map((driver: Driver) => ({
+        const driverFeatures = drivers.slice(0, 8).map((driver: Driver) => ({
             id: String(driver.id),
             title: `${driver.first_name} ${driver.last_name}`,
-            subtitle: driver.basics?.racing_number ? `#${driver.basics.racing_number}` : driver.basics?.nickname || undefined,
-            image: driver.assets?.avatar ? getMediaUrl(driver.assets.avatar) : `https://picsum.photos/seed/${driver.slug}/400/300`,
-            href: `/teams/${team.slug}/drivers/${driver.slug}`,
+            description: driver.basics?.nickname || driver.basics?.competition_name || '',
+            icon: undefined,
+            image: driver.assets?.avatar ? getMediaUrl(driver.assets.avatar) : undefined,
+            stats: driver.basics?.racing_number
+                ? [
+                    { label: 'Number', value: `#${driver.basics.racing_number}` },
+                    { label: 'Nationality', value: driver.basics?.nationality && typeof driver.basics.nationality === 'object' && 'name' in driver.basics.nationality ? driver.basics.nationality.name : 'N/A' },
+                ]
+                : undefined,
         }))
 
-        const leaderItems = leaders.slice(0, 8).map((leader: Leader) => ({
+        const leaderFeatures = leaders.slice(0, 8).map((leader: Leader) => ({
             id: String(leader.id),
             title: `${leader.first_name} ${leader.last_name}`,
-            subtitle: leader.basics?.title || undefined,
-            image: leader.assets?.avatar ? getMediaUrl(leader.assets.avatar) : `https://picsum.photos/seed/${leader.slug}/400/300`,
-            href: `/teams/${team.slug}/leaders/${leader.slug}`,
+            description: leader.basics?.title || leader.details?.vision || '',
+            icon: undefined,
+            image: leader.assets?.avatar ? getMediaUrl(leader.assets.avatar) : undefined,
+            stats: leader.details?.mission
+                ? [
+                    { label: 'Role', value: leader.basics?.title || 'N/A' },
+                    { label: 'Vision', value: leader.details?.vision || 'N/A' },
+                ]
+                : undefined,
         }))
+
+        const driversTabContent = (
+            <GridSection
+                id="team-drivers-grid"
+                title="Drivers"
+                subtitle="Team drivers"
+                items={drivers.slice(0, 8).map((driver: Driver) => ({
+                    id: String(driver.id),
+                    title: `${driver.first_name} ${driver.last_name}`,
+                    subtitle: driver.basics?.racing_number ? `#${driver.basics.racing_number}` : driver.basics?.nickname || undefined,
+                    image: driver.assets?.avatar ? getMediaUrl(driver.assets.avatar) : `https://picsum.photos/seed/${driver.slug}/400/300`,
+                    href: `/teams/${team.slug}/drivers/${driver.slug}`,
+                }))}
+                labels={{ unitsCount: 'DRV', viewProject: 'VIEW', sectionIndex: 'DRV', fallbackAlt: 'Driver' }}
+                columns={4}
+            />
+        )
+
+        const leadersTabContent = (
+            <GridSection
+                id="team-leaders-grid"
+                title="Leadership"
+                subtitle="Team management"
+                items={leaders.slice(0, 8).map((leader: Leader) => ({
+                    id: String(leader.id),
+                    title: `${leader.first_name} ${leader.last_name}`,
+                    subtitle: leader.basics?.title || undefined,
+                    image: leader.assets?.avatar ? getMediaUrl(leader.assets.avatar) : `https://picsum.photos/seed/${leader.slug}/400/300`,
+                    href: `/teams/${team.slug}/leaders/${leader.slug}`,
+                }))}
+                labels={{ unitsCount: 'LDR', viewProject: 'VIEW', sectionIndex: 'LDR', fallbackAlt: 'Leader' }}
+                columns={4}
+            />
+        )
+
+        const tabs = [
+            {
+                id: 'drivers',
+                label: 'Drivers',
+                content: driversTabContent,
+            },
+            {
+                id: 'leaders',
+                label: 'Leadership',
+                content: leadersTabContent,
+            },
+        ]
 
         const galleryItems: any[] = []
         if (team.assets?.gallery) {
@@ -114,7 +182,7 @@ const getTeamData = unstable_cache(
             })
         }
 
-        return { team, quoteItem, study, scrollItems, driverItems, leaderItems, galleryItems }
+        return { team, heroBackground, quoteItem, study, scrollItems, driverFeatures, leaderFeatures, tabs, galleryItems }
     },
     ['team-detail-composite'],
     { revalidate: 3600, tags: ['team'] }
@@ -126,10 +194,20 @@ export default async function TeamPage({ params }: { params: Promise<{ slug: str
 
     if (!data) notFound()
 
-    const { team, quoteItem, study, scrollItems, driverItems, leaderItems, galleryItems } = data
+    const { team, heroBackground, quoteItem, study, scrollItems, driverFeatures, leaderFeatures, tabs, galleryItems } = data
 
     return (
         <main className="w-full">
+            <HeroSection
+                id="team-hero"
+                title={team.name}
+                subtitle={team.basics?.tagline || ''}
+                description={team.basics?.description || undefined}
+                backgroundImage={heroBackground}
+                badge={team.alias || undefined}
+                meta={team.details?.country && typeof team.details.country === 'object' && 'name' in team.details.country ? team.details.country.name : undefined}
+                alignment="left"
+            />
             {quoteItem && (
                 <QuoteSection
                     id="team-tagline"
@@ -150,7 +228,43 @@ export default async function TeamPage({ params }: { params: Promise<{ slug: str
                 variant="featured"
                 headerVariant={1}
                 footerVariant={1}
+                ctaLabel="VIEW DETAILS"
+                ctaPath={`/teams/${team.slug}/details`}
             />
+            {driverFeatures.length > 0 && (
+                <FeatureSection
+                    id="team-drivers"
+                    title="Team Drivers"
+                    subtitle="Meet the drivers"
+                    features={driverFeatures}
+                    labels={{
+                        specIndex: 'DRV',
+                        statsLabel: 'STATS',
+                        ctaLabel: 'VIEW DRIVER',
+                    }}
+                    columns={2}
+                    ctaPath={`/teams/${team.slug}/drivers`}
+                    headerVariant={2}
+                    footerVariant={1}
+                />
+            )}
+            {leaderFeatures.length > 0 && (
+                <FeatureSection
+                    id="team-leaders"
+                    title="Leadership"
+                    subtitle="Team management"
+                    features={leaderFeatures}
+                    labels={{
+                        specIndex: 'LDR',
+                        statsLabel: 'STATS',
+                        ctaLabel: 'VIEW LEADER',
+                    }}
+                    columns={2}
+                    ctaPath={`/teams/${team.slug}/leaders`}
+                    headerVariant={2}
+                    footerVariant={1}
+                />
+            )}
             {scrollItems.length > 0 && (
                 <ScrollSection
                     id="team-history"
@@ -161,26 +275,6 @@ export default async function TeamPage({ params }: { params: Promise<{ slug: str
                     variant="reveal"
                     headerVariant={2}
                     footerVariant={1}
-                />
-            )}
-            {driverItems.length > 0 && (
-                <GridSection
-                    id="team-drivers"
-                    title="Drivers"
-                    subtitle="Team drivers"
-                    items={driverItems}
-                    labels={{ unitsCount: 'DRV', viewProject: 'VIEW', sectionIndex: 'DRV', fallbackAlt: 'Driver' }}
-                    columns={4}
-                />
-            )}
-            {leaderItems.length > 0 && (
-                <GridSection
-                    id="team-leaders"
-                    title="Leadership"
-                    subtitle="Team management"
-                    items={leaderItems}
-                    labels={{ unitsCount: 'LDR', viewProject: 'VIEW', sectionIndex: 'LDR', fallbackAlt: 'Leader' }}
-                    columns={4}
                 />
             )}
             {galleryItems.length > 0 && (

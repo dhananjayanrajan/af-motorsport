@@ -1,7 +1,9 @@
-import FeatureSection from '@/components/Section/Blocks/FeatureSection'
+// app/(frontend)/teams/[teamSlug]/drivers/[driverSlug]/page.tsx
 import GridSection from '@/components/Section/Blocks/GridSection'
+import HeroSection from '@/components/Section/Blocks/HeroSection'
 import ListSection from '@/components/Section/Blocks/ListSection'
 import MasonrySection from '@/components/Section/Blocks/MasonrySection'
+import QuoteSection from '@/components/Section/Blocks/QuoteSection'
 import ScrollSection from '@/components/Section/Blocks/ScrollSection'
 import StudySection from '@/components/Section/Blocks/StudySection'
 import { Celebration, Incident, Media, Member } from '@/payload-types'
@@ -106,7 +108,6 @@ const getIncidents = unstable_cache(
 export default async function DriverPage({ params }: { params: Promise<{ teamSlug: string; driverSlug: string }> }) {
     const { teamSlug, driverSlug } = await params
 
-    // Fetch all required data in parallel
     const [driver, crewMembers, celebrations, incidents] = await Promise.all([
         getDriverData(driverSlug),
         getCrewMembers(),
@@ -117,6 +118,12 @@ export default async function DriverPage({ params }: { params: Promise<{ teamSlu
     if (!driver) notFound()
 
     const driverFullName = `${driver.first_name || ''} ${driver.last_name || ''}`.trim() || 'Unnamed Driver'
+
+    const heroBackgroundImage = driver.assets?.cover
+        ? getMediaUrl(driver.assets.cover)
+        : driver.assets?.avatar
+            ? getMediaUrl(driver.assets.avatar)
+            : undefined
 
     const studyImage = getMediaUrl(driver.assets?.avatar) ||
         getMediaUrl(driver.assets?.cover) ||
@@ -135,12 +142,13 @@ export default async function DriverPage({ params }: { params: Promise<{ teamSlu
         ],
     }
 
-    const autographFeatures = driver.assets?.autograph ? [{
-        id: 'autograph',
-        title: 'Autograph',
-        description: driverFullName,
-        image: getMediaUrl(driver.assets.autograph) || `https://picsum.photos/seed/autograph-${driver.slug}/400/300`,
-    }] : []
+    const quoteItem = driver.basics?.catchphrase
+        ? {
+            id: String(driver.id),
+            text: driver.basics.catchphrase,
+            author: driverFullName,
+        }
+        : null
 
     const scrollItems = driver.details?.biography ? [{
         id: 'biography',
@@ -187,6 +195,16 @@ export default async function DriverPage({ params }: { params: Promise<{ teamSlu
 
     return (
         <main className="w-full">
+            <HeroSection
+                id="driver-hero"
+                title={driverFullName}
+                subtitle={driver.basics?.callsign || ''}
+                description={driver.basics?.catchphrase || undefined}
+                backgroundImage={heroBackgroundImage}
+                alignment="left"
+                badge={driver.basics?.racing_number ? `#${driver.basics.racing_number}` : undefined}
+                meta={driver.basics?.nationality && typeof driver.basics.nationality === 'object' && 'name' in driver.basics.nationality ? driver.basics.nationality.name : undefined}
+            />
             <StudySection
                 id="driver-details"
                 title="Driver Profile"
@@ -198,18 +216,17 @@ export default async function DriverPage({ params }: { params: Promise<{ teamSlu
                 ctaLabel="View Full Details"
                 ctaPath={`/teams/${teamSlug}/drivers/${driver.slug}/details`}
             />
-            {autographFeatures.length > 0 && (
-                <FeatureSection
-                    id="driver-autograph"
-                    title="Autograph"
-                    subtitle="Official signature"
-                    features={autographFeatures}
+            {quoteItem && (
+                <QuoteSection
+                    id="driver-catchphrase"
+                    title="Catchphrase"
+                    subtitle="In their own words"
+                    quotes={[quoteItem]}
                     labels={{
-                        specIndex: 'AUT',
-                        statsLabel: 'INFO',
-                        ctaLabel: 'VIEW',
+                        commStatus: 'COMM',
+                        ratingLabel: 'RATING',
                     }}
-                    columns={2}
+                    variant="grid"
                     headerVariant={2}
                     footerVariant={1}
                 />

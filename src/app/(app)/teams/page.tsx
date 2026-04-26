@@ -1,4 +1,6 @@
+import CarouselSection from '@/components/Section/Blocks/CarouselSection'
 import GridSection from '@/components/Section/Blocks/GridSection'
+import ListSection from '@/components/Section/Blocks/ListSection'
 import { Individual, Media, Organization, Team } from '@/payload-types'
 import configPromise from '@payload-config'
 import { unstable_cache } from 'next/cache'
@@ -24,7 +26,7 @@ const getTeamsData = unstable_cache(
                     id: true,
                     name: true,
                     slug: true,
-                    basics: { tagline: true },
+                    basics: { tagline: true, description: true },
                     assets: { logo: true, cover: true },
                 },
             }),
@@ -70,23 +72,24 @@ const getTeamsData = unstable_cache(
 export default async function TeamsPage() {
     const { teams, individuals, organizations } = await getTeamsData()
 
-    const teamItems = teams.map((team) => ({
+    const teamSlides = teams.map((team) => ({
         id: String(team.id),
         title: team.name || '',
-        subtitle: team.basics?.tagline || undefined,
+        description: team.basics?.description || undefined,
         image: getMediaUrl(team.assets?.logo) ||
             getMediaUrl(team.assets?.cover) ||
-            `https://picsum.photos/seed/${team.slug}/400/300`,
-        href: `/teams/${team.slug}`,
+            `https://picsum.photos/seed/${team.slug}/1200/1600`,
+        ctaLabel: 'VIEW TEAM',
+        ctaHref: `/teams/${team.slug}`,
+        meta: team.basics?.tagline || undefined,
     }))
 
-    const individualItems = individuals.map((individual) => ({
+    const individualEntries = individuals.map((individual) => ({
         id: String(individual.id),
         title: `${individual.first_name || ''} ${individual.last_name || ''}`.trim() || 'Unnamed',
-        subtitle: individual.basics?.type || individual.basics?.description || undefined,
-        image: getMediaUrl(individual.assets?.avatar) ||
-            getMediaUrl(individual.assets?.thumbnail) ||
-            `https://picsum.photos/seed/${individual.slug}/400/300`,
+        subtitle: individual.basics?.description || undefined,
+        status: individual.basics?.type || undefined,
+        tag: individual.basics?.type || undefined,
         href: `/teams/individuals/${individual.slug}`,
     }))
 
@@ -102,34 +105,30 @@ export default async function TeamsPage() {
 
     return (
         <main className="w-full">
-            {teamItems.length > 0 && (
-                <GridSection
-                    id="teams-list"
-                    title="Teams"
-                    subtitle="Racing teams and organizations"
-                    items={teamItems}
-                    labels={{
-                        unitsCount: 'TEAMS',
-                        viewProject: 'VIEW',
-                        sectionIndex: 'TMS',
-                        fallbackAlt: 'Team',
-                    }}
-                    columns={4}
+            {teamSlides.length > 0 && (
+                <CarouselSection
+                    id="teams-carousel"
+                    slides={teamSlides}
+                    autoplayDelay={5000}
+                    ctaLabel="VIEW ALL TEAMS"
+                    ctaPath="/teams"
                 />
             )}
-            {individualItems.length > 0 && (
-                <GridSection
+            {individualEntries.length > 0 && (
+                <ListSection
                     id="individuals-list"
                     title="Individuals"
                     subtitle="Team personnel and staff"
-                    items={individualItems}
+                    entries={individualEntries}
                     labels={{
-                        unitsCount: 'IND',
-                        viewProject: 'VIEW',
-                        sectionIndex: 'IND',
-                        fallbackAlt: 'Individual',
+                        statusPrefix: 'ROLE',
+                        timePrefix: 'ID',
+                        indexPrefix: 'IND',
                     }}
-                    columns={4}
+                    showStatus={true}
+                    showTimestamp={false}
+                    ctaLabel="VIEW ALL INDIVIDUALS"
+                    ctaPath="/teams/individuals"
                 />
             )}
             {organizationItems.length > 0 && (
@@ -145,6 +144,8 @@ export default async function TeamsPage() {
                         fallbackAlt: 'Organization',
                     }}
                     columns={4}
+                    headerVariant={1}
+                    footerVariant={1}
                 />
             )}
         </main>

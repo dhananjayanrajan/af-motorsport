@@ -31,7 +31,7 @@ const getChampionshipDetailsData = unstable_cache(
             collection: 'championships',
             where: { slug: { equals: slug } },
             limit: 1,
-            depth: 1,
+            depth: 2,
             select: {
                 id: true,
                 name: true,
@@ -40,26 +40,32 @@ const getChampionshipDetailsData = unstable_cache(
                     description: true,
                     identifiers: {
                         code: true,
-                        abbreviation: true
+                        abbreviation: true,
                     },
+                    tagline: true,
                 },
                 assets: {
                     cover: true,
                     documents: true,
+                    thumbnail: true,
                 },
                 details: {
                     format: true,
                     standings_scope: true,
                     season: true,
+                    series: true,
                     start_date: true,
                     end_date: true,
                     winner: true,
                     runner_up: true,
                     third_place: true,
                     regulations: true,
+                    notes: true,
+                    history: true,
                 },
                 seo: {
                     image: true,
+                    description: true,
                 },
             },
         })
@@ -75,84 +81,251 @@ export default async function ChampionshipDetailsPage({ params }: { params: Prom
 
     if (!championship) notFound()
 
+    const details = championship.details
+
     const heroBackgroundImage = resolveAssetUrl(championship.assets, 'cover') || getMediaUrl(championship.seo?.image)
+
+    const heroDescription = championship.basics?.description
+        || championship.seo?.description
+        || championship.basics?.tagline
+        || undefined
+
+    const formatDisplay = details?.format
+        ? details.format.replace(/_/g, ' ').toUpperCase()
+        : undefined
+
+    const scopeDisplay = details?.standings_scope
+        ? details.standings_scope.replace(/_/g, ' ').toUpperCase()
+        : undefined
+
+    const seasonRef = details?.season
+    const seasonName =
+        seasonRef && typeof seasonRef === 'object' && 'name' in seasonRef
+            ? (seasonRef as any).name
+            : undefined
+
+    const seriesRef = details?.series
+    const seriesName =
+        seriesRef && typeof seriesRef === 'object' && 'name' in seriesRef
+            ? (seriesRef as any).name
+            : undefined
+
+    const startDate = details?.start_date
+        ? new Date(details.start_date).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+        })
+        : undefined
+
+    const endDate = details?.end_date
+        ? new Date(details.end_date).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+        })
+        : undefined
 
     const specItems: any[] = [
         {
             id: 'format',
-            title: 'FORMAT',
-            subtitle: championship.details?.format || 'N/A',
+            title: 'Format',
+            subtitle: formatDisplay || 'Not specified',
+            image: undefined,
+            href: undefined,
+            category: 'Competition',
         },
         {
             id: 'standings',
-            title: 'STANDINGS_SCOPE',
-            subtitle: championship.details?.standings_scope || 'N/A',
+            title: 'Standings Scope',
+            subtitle: scopeDisplay || 'Not specified',
+            image: undefined,
+            href: undefined,
+            category: 'Rules',
         },
         {
             id: 'code',
-            title: 'CHAMPIONSHIP_ID',
-            subtitle: championship.basics?.identifiers?.code || championship.basics?.identifiers?.abbreviation || 'N/A',
+            title: 'Championship Code',
+            subtitle: championship.basics?.identifiers?.code
+                || championship.basics?.identifiers?.abbreviation
+                || 'N/A',
+            image: undefined,
+            href: undefined,
+            category: 'Identification',
         },
         {
             id: 'season',
-            title: 'SEASON_CYCLE',
-            subtitle: championship.details?.season && typeof championship.details.season === 'object' && 'name' in championship.details.season ? championship.details.season.name : 'N/A',
+            title: 'Season',
+            subtitle: seasonName || 'N/A',
+            image: undefined,
+            href: undefined,
+            category: 'Schedule',
         },
+        ...(seriesName
+            ? [
+                {
+                    id: 'series',
+                    title: 'Series',
+                    subtitle: seriesName,
+                    image: undefined,
+                    href: undefined,
+                    category: 'Hierarchy',
+                },
+            ]
+            : []),
+        ...(startDate
+            ? [
+                {
+                    id: 'start-date',
+                    title: 'Start Date',
+                    subtitle: startDate,
+                    image: undefined,
+                    href: undefined,
+                    category: 'Timeline',
+                },
+            ]
+            : []),
+        ...(endDate
+            ? [
+                {
+                    id: 'end-date',
+                    title: 'End Date',
+                    subtitle: endDate,
+                    image: undefined,
+                    href: undefined,
+                    category: 'Timeline',
+                },
+            ]
+            : []),
     ]
 
     const podiumFeatures: any[] = []
-    if (championship.details?.winner) {
-        const winner = championship.details.winner
+
+    const winnerRef = details?.winner
+    if (winnerRef && typeof winnerRef === 'object') {
+        const winner = winnerRef as any
+        const winnerName = `${winner.first_name || ''} ${winner.last_name || ''}`.trim()
+        const winnerImage = getMediaUrl(winner.assets?.avatar)
+
         podiumFeatures.push({
-            id: 'winner',
-            title: 'CHAMPION_P1',
-            description: typeof winner === 'object' && 'first_name' in winner && 'last_name' in winner ? `${winner.first_name} ${winner.last_name}` : 'WINNER',
+            id: 'podium-1st',
+            title: winnerName || 'Champion',
+            description: `${championship.name} Winner`,
+            image: winnerImage,
+            stats: [
+                { label: 'Position', value: '1st' },
+                { label: 'Status', value: 'Champion' },
+            ],
         })
     }
-    if (championship.details?.runner_up) {
-        const runnerUp = championship.details.runner_up
+
+    const runnerUpRef = details?.runner_up
+    if (runnerUpRef && typeof runnerUpRef === 'object') {
+        const runnerUp = runnerUpRef as any
+        const runnerUpName = `${runnerUp.first_name || ''} ${runnerUp.last_name || ''}`.trim()
+        const runnerUpImage = getMediaUrl(runnerUp.assets?.avatar)
+
         podiumFeatures.push({
-            id: 'runner-up',
-            title: 'RUNNER_UP_P2',
-            description: typeof runnerUp === 'object' && 'first_name' in runnerUp && 'last_name' in runnerUp ? `${runnerUp.first_name} ${runnerUp.last_name}` : 'RUNNER_UP',
+            id: 'podium-2nd',
+            title: runnerUpName || 'Runner-Up',
+            description: `${championship.name} Second Place`,
+            image: runnerUpImage,
+            stats: [
+                { label: 'Position', value: '2nd' },
+                { label: 'Status', value: 'Runner-Up' },
+            ],
         })
     }
-    if (championship.details?.third_place) {
-        const thirdPlace = championship.details.third_place
+
+    const thirdPlaceRef = details?.third_place
+    if (thirdPlaceRef && typeof thirdPlaceRef === 'object') {
+        const thirdPlace = thirdPlaceRef as any
+        const thirdPlaceName = `${thirdPlace.first_name || ''} ${thirdPlace.last_name || ''}`.trim()
+        const thirdPlaceImage = getMediaUrl(thirdPlace.assets?.avatar)
+
         podiumFeatures.push({
-            id: 'third-place',
-            title: 'THIRD_PLACE_P3',
-            description: typeof thirdPlace === 'object' && 'first_name' in thirdPlace && 'last_name' in thirdPlace ? `${thirdPlace.first_name} ${thirdPlace.last_name}` : 'THIRD_PLACE',
+            id: 'podium-3rd',
+            title: thirdPlaceName || 'Third Place',
+            description: `${championship.name} Third Place`,
+            image: thirdPlaceImage,
+            stats: [
+                { label: 'Position', value: '3rd' },
+                { label: 'Status', value: 'Third Place' },
+            ],
         })
     }
 
     const timelineEvents: any[] = []
-    if (championship.details?.start_date) {
+    if (startDate) {
         timelineEvents.push({
-            id: 'start',
-            date: new Date(championship.details.start_date).toISOString().split('T')[0],
-            title: 'INITIALIZATION',
-            description: 'Season commencement and entry verification.',
+            id: 'season-start',
+            date: details?.start_date
+                ? new Date(details.start_date).toISOString().split('T')[0]
+                : 'TBD',
+            title: 'Season Start',
+            description: `The ${championship.name} season begins${seasonName ? ` — ${seasonName}` : ''}.`,
             status: 'completed' as const,
         })
     }
-    if (championship.details?.end_date) {
+    if (endDate) {
         timelineEvents.push({
-            id: 'end',
-            date: new Date(championship.details.end_date).toISOString().split('T')[0],
-            title: 'TERMINATION',
-            description: 'Season conclusion and final points calculation.',
-            status: 'upcoming' as const,
+            id: 'season-end',
+            date: details?.end_date
+                ? new Date(details.end_date).toISOString().split('T')[0]
+                : 'TBD',
+            title: 'Season Finale',
+            description: `The ${championship.name} season concludes and the champion is crowned.`,
+            status: endDate && new Date(details!.end_date!) > new Date()
+                ? 'upcoming' as const
+                : 'completed' as const,
+        })
+    }
+    if (details?.notes) {
+        timelineEvents.push({
+            id: 'championship-notes',
+            date: details?.start_date
+                ? new Date(details.start_date).toISOString().split('T')[0]
+                : 'TBD',
+            title: 'Key Notes',
+            description: details.notes,
+            status: 'active' as const,
         })
     }
 
     const regulationEntries: any[] = []
-    if (championship.details?.regulations) {
-        const reg = championship.details.regulations
+    if (details?.regulations) {
+        const reg = details.regulations
+        if (typeof reg === 'object') {
+            const regObj = reg as any
+            regulationEntries.push({
+                id: String(regObj.id),
+                title: regObj.name || 'Championship Regulations',
+                subtitle: regObj.basics?.description || regObj.basics?.status || 'Governing rules',
+                tag: regObj.basics?.type || 'Regulation',
+                href: regObj.slug ? `/legal/regulations/${regObj.slug}` : undefined,
+                timestamp: regObj.basics?.effective_date
+                    ? new Date(regObj.basics.effective_date).toISOString().split('T')[0]
+                    : undefined,
+                status: regObj.basics?.status || 'Published',
+            })
+        } else {
+            regulationEntries.push({
+                id: String(reg),
+                title: 'Championship Regulations',
+                subtitle: 'Governing rules and technical specifications',
+                tag: 'Regulation',
+                status: 'Reference',
+            })
+        }
+    }
+
+    if (details?.notes && regulationEntries.length === 0) {
         regulationEntries.push({
-            id: String(typeof reg === 'object' ? reg.id : reg),
-            title: 'CHAMPIONSHIP_REGULATIONS',
-            subtitle: 'Sporting and technical governing rules for the current series cycle.',
+            id: 'championship-rules-context',
+            title: 'Competition Rules',
+            subtitle: details.notes,
+            tag: 'Guidelines',
+            status: 'Active',
         })
     }
 
@@ -161,12 +334,14 @@ export default async function ChampionshipDetailsPage({ params }: { params: Prom
         championship.assets.documents.forEach((doc, idx) => {
             const url = getMediaUrl(doc)
             if (url) {
+                const docObj = typeof doc === 'object' ? doc : null
                 documentItems.push({
-                    id: (typeof doc === 'object' && doc.id) ? String(doc.id) : `doc-${idx}`,
-                    title: (typeof doc === 'object' && (doc.alt || doc.filename)) || `DOC_${idx + 1}`,
-                    subtitle: (typeof doc === 'object' && doc.mimeType) || 'APPLICATION/PDF',
+                    id: docObj?.id ? String(docObj.id) : `doc-${idx}`,
+                    title: docObj?.filename || docObj?.alt || `Document ${idx + 1}`,
+                    subtitle: docObj?.mimeType || 'Document',
                     image: url,
                     href: url,
+                    category: 'Resource',
                 })
             }
         })
@@ -177,54 +352,58 @@ export default async function ChampionshipDetailsPage({ params }: { params: Prom
             <HeroSection
                 id="championship-details-cover"
                 title={championship.name}
-                subtitle="CHAMPIONSHIP_SPECIFICATIONS"
-                description={championship.basics?.description || undefined}
+                subtitle="Championship Specifications"
+                description={heroDescription}
                 backgroundImage={heroBackgroundImage}
                 alignment="center"
-                badge={championship.basics?.identifiers?.code || 'SERIES'}
+                badge={championship.basics?.identifiers?.code || championship.basics?.identifiers?.abbreviation || 'CHAMPIONSHIP'}
             />
+
             <GridSection
                 id="championship-specifications"
-                title="PARAMETERS"
-                subtitle="Technical series specifications and identification codes"
+                title="Parameters"
+                subtitle="Technical championship specifications and identification codes"
                 items={specItems}
                 labels={{
                     unitsCount: 'SPECS',
-                    viewProject: 'DATA',
+                    viewProject: 'VIEW',
                     sectionIndex: 'SPC',
-                    fallbackAlt: 'Spec',
+                    fallbackAlt: 'Specification',
                 }}
                 columns={4}
             />
+
             {podiumFeatures.length > 0 && (
                 <FeatureSection
                     id="championship-podium"
-                    title="CLASSIFICATION"
-                    subtitle="Primary podium rankings"
-                    features={[...podiumFeatures]}
+                    title="Podium"
+                    subtitle={`Top three standings for the ${championship.name}`}
+                    features={podiumFeatures}
                     labels={{
                         specIndex: 'POD',
-                        statsLabel: 'DATA',
-                        ctaLabel: 'SCAN',
+                        statsLabel: 'INFO',
+                        ctaLabel: 'PROFILE',
                     }}
                     columns={3}
                     headerVariant={2}
                     footerVariant={1}
+                    ctaPath="/teams"
                 />
             )}
+
             {timelineEvents.length > 0 && (
                 <TimelineSection
                     id="championship-timeline"
-                    title="CHRONOLOGY"
-                    subtitle="Key series operational dates"
+                    title="Season Timeline"
+                    subtitle={`Key dates for the ${championship.name} season`}
                     events={timelineEvents}
                     labels={{
-                        statusPrefix: 'STAT',
-                        eventIndexLabel: 'STEP',
+                        statusPrefix: 'STATUS',
+                        eventIndexLabel: 'EVENT',
                         deploymentStatus: {
-                            completed: 'SYNCED',
-                            active: 'ACTIVE',
-                            upcoming: 'PENDING',
+                            completed: 'COMPLETED',
+                            active: 'IN PROGRESS',
+                            upcoming: 'UPCOMING',
                         },
                     }}
                     orientation="horizontal"
@@ -232,32 +411,34 @@ export default async function ChampionshipDetailsPage({ params }: { params: Prom
                     footerVariant={2}
                 />
             )}
+
             {regulationEntries.length > 0 && (
                 <ListSection
                     id="championship-regulations"
-                    title="GOVERNANCE"
-                    subtitle="Technical and sporting regulatory frameworks"
+                    title="Regulations"
+                    subtitle="Governing rules and compliance documentation"
                     entries={regulationEntries}
                     labels={{
-                        statusPrefix: 'REQD',
-                        timePrefix: 'SYNC',
+                        statusPrefix: 'STATUS',
+                        timePrefix: 'EFFECTIVE',
                         indexPrefix: 'REG',
                     }}
-                    showStatus={false}
-                    showTimestamp={false}
+                    showStatus={true}
+                    showTimestamp={true}
                 />
             )}
+
             {documentItems.length > 0 && (
                 <GridSection
                     id="championship-documents"
-                    title="ARCHIVE"
-                    subtitle="Official championship documentation and resources"
+                    title="Documents"
+                    subtitle="Official championship resources and downloads"
                     items={documentItems}
                     labels={{
-                        unitsCount: 'DOCS',
-                        viewProject: 'FETCH',
-                        sectionIndex: 'DAT',
-                        fallbackAlt: 'File',
+                        unitsCount: 'FILES',
+                        viewProject: 'DOWNLOAD',
+                        sectionIndex: 'DOC',
+                        fallbackAlt: 'Document',
                     }}
                     columns={3}
                 />

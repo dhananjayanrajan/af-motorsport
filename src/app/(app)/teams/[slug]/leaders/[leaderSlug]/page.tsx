@@ -1,6 +1,7 @@
 // app/(frontend)/teams/[teamSlug]/leaders/[leaderSlug]/page.tsx
 import FeatureSection from '@/components/Section/Blocks/FeatureSection'
 import GridSection from '@/components/Section/Blocks/GridSection'
+import HeroSection from '@/components/Section/Blocks/HeroSection'
 import MasonrySection from '@/components/Section/Blocks/MasonrySection'
 import ScrollSection from '@/components/Section/Blocks/ScrollSection'
 import StudySection from '@/components/Section/Blocks/StudySection'
@@ -108,7 +109,6 @@ const getInterviews = unstable_cache(
 export default async function LeaderPage({ params }: { params: Promise<{ teamSlug: string; leaderSlug: string }> }) {
     const { teamSlug, leaderSlug } = await params
 
-    // CRITICAL PERFORMANCE: Parallelized data fetching
     const [leader, celebrations, interviews] = await Promise.all([
         getLeaderData(leaderSlug),
         getCelebrations(),
@@ -117,9 +117,16 @@ export default async function LeaderPage({ params }: { params: Promise<{ teamSlu
 
     if (!leader) notFound()
 
+    const leaderFullName = `${leader.first_name || ''} ${leader.last_name || ''}`.trim() || 'Unnamed Leader'
+
     const videoItems: any[] = []
 
-    // Study Section Logic Preservation
+    const heroBackgroundImage = leader.assets?.cover
+        ? getMediaUrl(leader.assets.cover)
+        : leader.assets?.avatar
+            ? getMediaUrl(leader.assets.avatar)
+            : undefined
+
     const studyImage = leader.assets?.avatar
         ? getMediaUrl(leader.assets.avatar)
         : leader.assets?.cover
@@ -128,7 +135,7 @@ export default async function LeaderPage({ params }: { params: Promise<{ teamSlu
 
     const study = {
         id: String(leader.id),
-        title: `${leader.first_name} ${leader.last_name}`,
+        title: leaderFullName,
         description: leader.basics?.title || leader.details?.mission || '',
         image: studyImage || `https://picsum.photos/seed/${leader.slug}/800/600`,
         metrics: [
@@ -140,7 +147,6 @@ export default async function LeaderPage({ params }: { params: Promise<{ teamSlu
 
     const autographFeatures: any[] = []
 
-    // Scroll Items High-Density Logic
     const scrollItems: any[] = []
     if (leader.details?.biography) {
         scrollItems.push({
@@ -159,7 +165,6 @@ export default async function LeaderPage({ params }: { params: Promise<{ teamSlu
         })
     }
 
-    // Gallery Masonry Imperative Mapping
     const galleryItems: any[] = []
     if (leader.assets?.gallery) {
         leader.assets.gallery.forEach((item, idx) => {
@@ -168,7 +173,7 @@ export default async function LeaderPage({ params }: { params: Promise<{ teamSlu
             if (url && media) {
                 galleryItems.push({
                     id: String(media.id),
-                    title: media.alt || `${leader.first_name} ${leader.last_name}`,
+                    title: media.alt || leaderFullName,
                     image: url,
                     height: idx % 3 === 0 ? 'tall' as const : idx % 2 === 0 ? 'medium' as const : 'short' as const,
                 })
@@ -180,14 +185,13 @@ export default async function LeaderPage({ params }: { params: Promise<{ teamSlu
         if (url) {
             galleryItems.push({
                 id: String(leader.id),
-                title: `${leader.first_name} ${leader.last_name}`,
+                title: leaderFullName,
                 image: url,
                 height: 'medium' as const,
             })
         }
     }
 
-    // Grid Mapping for Celebrations & Interviews
     const celebrationItems: any[] = celebrations.map((celebration: Celebration) => {
         const imageUrl = celebration.assets?.thumbnail
             ? getMediaUrl(celebration.assets.thumbnail)
@@ -220,11 +224,20 @@ export default async function LeaderPage({ params }: { params: Promise<{ teamSlu
 
     return (
         <main className="w-full">
+            <HeroSection
+                id="leader-hero"
+                title={leaderFullName}
+                subtitle={leader.basics?.title || ''}
+                description={leader.details?.mission || undefined}
+                backgroundImage={heroBackgroundImage}
+                alignment="left"
+                meta={leader.basics?.nationality && typeof leader.basics.nationality === 'object' && 'name' in leader.basics.nationality ? leader.basics.nationality.name : undefined}
+            />
             {videoItems.length > 0 && (
                 <VideoSection
                     id="leader-video"
                     title="Leader Highlights"
-                    subtitle={`${leader.first_name} ${leader.last_name}`}
+                    subtitle={leaderFullName}
                     videos={videoItems}
                     labels={{
                         channelPrefix: 'CH',
