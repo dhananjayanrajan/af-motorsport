@@ -1,4 +1,6 @@
 // app/(frontend)/teams/[teamSlug]/drivers/[driverSlug]/page.tsx
+import CoverSection from '@/components/Section/Blocks/CoverSection'
+import GallerySection from '@/components/Section/Blocks/GallerySection'
 import GridSection from '@/components/Section/Blocks/GridSection'
 import HeroSection from '@/components/Section/Blocks/HeroSection'
 import ListSection from '@/components/Section/Blocks/ListSection'
@@ -119,6 +121,10 @@ export default async function DriverPage({ params }: { params: Promise<{ teamSlu
 
     const driverFullName = `${driver.first_name || ''} ${driver.last_name || ''}`.trim() || 'Unnamed Driver'
 
+    const coverImage = getMediaUrl(driver.assets?.cover) ||
+        getMediaUrl(driver.assets?.avatar) ||
+        `https://picsum.photos/seed/${driver.slug}/1920/1080`
+
     const heroBackgroundImage = driver.assets?.cover
         ? getMediaUrl(driver.assets.cover)
         : driver.assets?.avatar
@@ -181,9 +187,9 @@ export default async function DriverPage({ params }: { params: Promise<{ teamSlu
     const celebrationItems = celebrations.map((celebration) => ({
         id: String(celebration.id),
         title: celebration.name || '',
-        subtitle: celebration.basics?.description || undefined,
-        image: getMediaUrl(celebration.assets?.thumbnail) || `https://picsum.photos/seed/${celebration.id}/400/300`,
-        href: `/celebrations/${celebration.slug}`,
+        description: celebration.basics?.description || undefined,
+        image: getMediaUrl(celebration.assets?.thumbnail) || `https://picsum.photos/seed/${celebration.id}/1200/800`,
+        category: 'CELEBRATION',
     }))
 
     const incidentEntries = incidents.map((incident) => ({
@@ -204,6 +210,10 @@ export default async function DriverPage({ params }: { params: Promise<{ teamSlu
                 alignment="left"
                 badge={driver.basics?.racing_number ? `#${driver.basics.racing_number}` : undefined}
                 meta={driver.basics?.nationality && typeof driver.basics.nationality === 'object' && 'name' in driver.basics.nationality ? driver.basics.nationality.name : undefined}
+            />
+            <CoverSection
+                id="driver-cover"
+                image={coverImage}
             />
             <StudySection
                 id="driver-details"
@@ -278,18 +288,14 @@ export default async function DriverPage({ params }: { params: Promise<{ teamSlu
                 />
             )}
             {celebrationItems.length > 0 && (
-                <GridSection
+                <GallerySection
                     id="driver-celebrations"
                     title="Celebrations"
                     subtitle="Career highlights"
                     items={celebrationItems}
-                    labels={{
-                        unitsCount: 'CEL',
-                        viewProject: 'VIEW',
-                        sectionIndex: 'CEL',
-                        fallbackAlt: 'Celebration',
-                    }}
                     columns={3}
+                    headerVariant={1}
+                    footerVariant={1}
                 />
             )}
             {incidentEntries.length > 0 && (

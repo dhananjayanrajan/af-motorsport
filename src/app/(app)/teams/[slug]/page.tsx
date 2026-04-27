@@ -1,3 +1,4 @@
+// app/(frontend)/teams/[slug]/page.tsx
 import FeatureSection from '@/components/Section/Blocks/FeatureSection'
 import GridSection from '@/components/Section/Blocks/GridSection'
 import HeroSection from '@/components/Section/Blocks/HeroSection'
@@ -97,6 +98,7 @@ const getTeamData = unstable_cache(
             description: driver.basics?.nickname || driver.basics?.competition_name || '',
             icon: undefined,
             image: driver.assets?.avatar ? getMediaUrl(driver.assets.avatar) : undefined,
+            slug: `teams/${team.slug}/drivers/${driver.slug}`,
             stats: driver.basics?.racing_number
                 ? [
                     { label: 'Number', value: `#${driver.basics.racing_number}` },
@@ -111,6 +113,7 @@ const getTeamData = unstable_cache(
             description: leader.basics?.title || leader.details?.vision || '',
             icon: undefined,
             image: leader.assets?.avatar ? getMediaUrl(leader.assets.avatar) : undefined,
+            slug: `teams/${team.slug}/leaders/${leader.slug}`,
             stats: leader.details?.mission
                 ? [
                     { label: 'Role', value: leader.basics?.title || 'N/A' },

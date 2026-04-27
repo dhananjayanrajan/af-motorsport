@@ -1,3 +1,4 @@
+// app/(frontend)/opportunities/onboardings/[slug]/page.tsx
 import CarouselSection from '@/components/Section/Blocks/CarouselSection'
 import FeatureSection from '@/components/Section/Blocks/FeatureSection'
 import MasonrySection from '@/components/Section/Blocks/MasonrySection'
@@ -97,6 +98,7 @@ export default async function OnboardingPage({ params }: { params: Promise<{ slu
             title: 'COMPLETION CERTIFICATE',
             description: 'Official certification issued upon program completion',
             image: certUrl,
+            slug: `opportunities/onboardings/${onboarding.slug}/details`,
         })
     }
 

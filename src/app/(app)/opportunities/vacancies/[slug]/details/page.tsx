@@ -1,3 +1,4 @@
+// app/(frontend)/opportunities/vacancies/[slug]/details/page.tsx
 import GridSection from '@/components/Section/Blocks/GridSection'
 import HeroSection from '@/components/Section/Blocks/HeroSection'
 import ListSection from '@/components/Section/Blocks/ListSection'
@@ -72,6 +73,7 @@ export default async function VacancyDetailsPage({ params }: { params: Promise<{
             title: pos.title || '',
             description: pos.end ? `Until ${new Date(pos.end).toLocaleDateString()}` : undefined,
             status: (idx === 0 ? 'active' : 'upcoming') as 'active' | 'upcoming',
+            slug: `opportunities/vacancies/${slug}`,
         }))
 
     const specItems = (vacancy.details?.specifications?.list || [])

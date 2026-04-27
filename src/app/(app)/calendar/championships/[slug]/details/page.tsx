@@ -1,3 +1,4 @@
+// app/(frontend)/calendar/championships/[slug]/details/page.tsx
 import FeatureSection from '@/components/Section/Blocks/FeatureSection'
 import GridSection from '@/components/Section/Blocks/GridSection'
 import HeroSection from '@/components/Section/Blocks/HeroSection'
@@ -206,12 +207,14 @@ export default async function ChampionshipDetailsPage({ params }: { params: Prom
         const winner = winnerRef as any
         const winnerName = `${winner.first_name || ''} ${winner.last_name || ''}`.trim()
         const winnerImage = getMediaUrl(winner.assets?.avatar)
+        const winnerSlug = winner.slug || ''
 
         podiumFeatures.push({
             id: 'podium-1st',
             title: winnerName || 'Champion',
             description: `${championship.name} Winner`,
             image: winnerImage,
+            slug: winnerSlug ? `teams/${winnerSlug}` : undefined,
             stats: [
                 { label: 'Position', value: '1st' },
                 { label: 'Status', value: 'Champion' },
@@ -224,12 +227,14 @@ export default async function ChampionshipDetailsPage({ params }: { params: Prom
         const runnerUp = runnerUpRef as any
         const runnerUpName = `${runnerUp.first_name || ''} ${runnerUp.last_name || ''}`.trim()
         const runnerUpImage = getMediaUrl(runnerUp.assets?.avatar)
+        const runnerUpSlug = runnerUp.slug || ''
 
         podiumFeatures.push({
             id: 'podium-2nd',
             title: runnerUpName || 'Runner-Up',
             description: `${championship.name} Second Place`,
             image: runnerUpImage,
+            slug: runnerUpSlug ? `teams/${runnerUpSlug}` : undefined,
             stats: [
                 { label: 'Position', value: '2nd' },
                 { label: 'Status', value: 'Runner-Up' },
@@ -242,12 +247,14 @@ export default async function ChampionshipDetailsPage({ params }: { params: Prom
         const thirdPlace = thirdPlaceRef as any
         const thirdPlaceName = `${thirdPlace.first_name || ''} ${thirdPlace.last_name || ''}`.trim()
         const thirdPlaceImage = getMediaUrl(thirdPlace.assets?.avatar)
+        const thirdPlaceSlug = thirdPlace.slug || ''
 
         podiumFeatures.push({
             id: 'podium-3rd',
             title: thirdPlaceName || 'Third Place',
             description: `${championship.name} Third Place`,
             image: thirdPlaceImage,
+            slug: thirdPlaceSlug ? `teams/${thirdPlaceSlug}` : undefined,
             stats: [
                 { label: 'Position', value: '3rd' },
                 { label: 'Status', value: 'Third Place' },
@@ -265,6 +272,7 @@ export default async function ChampionshipDetailsPage({ params }: { params: Prom
             title: 'Season Start',
             description: `The ${championship.name} season begins${seasonName ? ` — ${seasonName}` : ''}.`,
             status: 'completed' as const,
+            slug: `calendar/championships/${championship.slug}`,
         })
     }
     if (endDate) {
@@ -278,6 +286,7 @@ export default async function ChampionshipDetailsPage({ params }: { params: Prom
             status: endDate && new Date(details!.end_date!) > new Date()
                 ? 'upcoming' as const
                 : 'completed' as const,
+            slug: `calendar/championships/${championship.slug}`,
         })
     }
     if (details?.notes) {
@@ -289,6 +298,7 @@ export default async function ChampionshipDetailsPage({ params }: { params: Prom
             title: 'Key Notes',
             description: details.notes,
             status: 'active' as const,
+            slug: `calendar/championships/${championship.slug}`,
         })
     }
 

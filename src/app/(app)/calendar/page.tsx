@@ -1,3 +1,4 @@
+// app/(frontend)/calendar/page.tsx
 import CarouselSection from '@/components/Section/Blocks/CarouselSection'
 import TimelineSection from '@/components/Section/Blocks/TimelineSection'
 import { Championship, Media, Race, Timeline } from '@/payload-types'
@@ -150,7 +151,7 @@ export default async function CalendarPage() {
             title: championship.name,
             description: championship.basics?.tagline || championship.basics?.description || undefined,
             status: 'upcoming' as const,
-            slug: championship.slug || undefined,
+            slug: `calendar/championships/${championship.slug}`,
             code: code || undefined,
             format: championship.details?.format || undefined,
             image: resolveAssetUrl(championship.assets, 'thumbnail', 'cover'),
@@ -212,7 +213,7 @@ export default async function CalendarPage() {
             title: timeline.name,
             description: timeline.basics?.description || timeline.details?.scope || undefined,
             status: 'active' as const,
-            slug: timeline.slug || undefined,
+            slug: `calendar/timelines/${timeline.slug}`,
             image: resolveAssetUrl(timeline.assets, 'thumbnail', 'cover'),
         }
     })

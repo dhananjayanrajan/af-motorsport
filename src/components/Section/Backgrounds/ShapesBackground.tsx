@@ -4,23 +4,30 @@ import React, { useEffect, useRef } from 'react'
 interface ShapesBackgroundProps {
   zIndex?: string
   opacity?: number
-  primaryColor?: string
-  accentColor?: string
 }
 
 const ShapesBackground: React.FC<ShapesBackgroundProps> = ({
   zIndex = 'z-0',
-  opacity = 0.8,
-  primaryColor = '#D62828',
-  accentColor = '#003049'
+  opacity = 1
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const mouse = useRef({ x: 0, y: 0, tx: 0, ty: 0 })
 
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return
     const ctx = canvas.getContext('2d')
     if (!ctx) return
+
+    let animationFrameId: number
+
+    const colors = {
+      bg: '#EBEBE8',
+      primary: '#121212',
+      accent: '#FF3B00',
+      alt: '#0047FF',
+      muted: '#C4C4BC'
+    }
 
     const resize = () => {
       const parent = canvas.parentElement
@@ -31,81 +38,105 @@ const ShapesBackground: React.FC<ShapesBackgroundProps> = ({
       canvas.style.width = `${parent.clientWidth}px`
       canvas.style.height = `${parent.clientHeight}px`
       ctx.scale(dpr, dpr)
-      draw()
     }
 
-    const draw = () => {
+    const handleMouseMove = (e: MouseEvent) => {
+      const rect = canvas.getBoundingClientRect()
+      mouse.current.tx = e.clientX - rect.left
+      mouse.current.ty = e.clientY - rect.top
+    }
+
+    const draw = (time: number) => {
       const w = canvas.width / (window.devicePixelRatio || 1)
       const h = canvas.height / (window.devicePixelRatio || 1)
 
-      ctx.fillStyle = '#F1E9DB'
+      mouse.current.x += (mouse.current.tx - mouse.current.x) * 0.05
+      mouse.current.y += (mouse.current.ty - mouse.current.y) * 0.05
+
+      ctx.fillStyle = colors.bg
       ctx.fillRect(0, 0, w, h)
 
-      const colors = [primaryColor, accentColor, '#FCBF49', '#EAE2B7', '#212121']
-      const gridSize = 120
-      const cols = Math.ceil(w / gridSize)
-      const rows = Math.ceil(h / gridSize)
+      const drawShape = (x: number, y: number, size: number, type: number, color: string, lerp: number) => {
+        ctx.save()
+        ctx.translate(x, y)
 
-      for (let i = 0; i < cols; i++) {
-        for (let j = 0; j < rows; j++) {
-          const x = i * gridSize
-          const y = j * gridSize
-          const seed = (i * 13 + j * 7)
+        const offsetX = (mouse.current.x - x) * lerp
+        const offsetY = (mouse.current.y - y) * lerp
+        ctx.translate(offsetX, offsetY)
 
-          ctx.save()
-          ctx.translate(x, y)
-          ctx.globalAlpha = opacity
-          ctx.fillStyle = colors[seed % colors.length]
+        ctx.fillStyle = color
+        ctx.globalAlpha = opacity
 
-          const type = seed % 6
+        if (type === 0) {
+          ctx.fillRect(-size / 2, -size / 2, size, size)
+        } else if (type === 1) {
+          ctx.beginPath()
+          ctx.arc(0, 0, size / 2, 0, Math.PI * 2)
+          ctx.fill()
+        } else if (type === 2) {
+          ctx.beginPath()
+          ctx.moveTo(-size / 2, size / 2)
+          ctx.lineTo(size / 2, size / 2)
+          ctx.lineTo(0, -size / 2)
+          ctx.closePath()
+          ctx.fill()
+        }
+        ctx.restore()
+      }
 
-          if (type === 0) {
-            ctx.beginPath()
-            ctx.rect(0, 0, gridSize, gridSize)
-            ctx.fill()
-          } else if (type === 1) {
-            ctx.beginPath()
-            ctx.arc(gridSize / 2, gridSize / 2, gridSize / 2, 0, Math.PI * 2)
-            ctx.fill()
-          } else if (type === 2) {
-            ctx.beginPath()
-            ctx.moveTo(0, 0)
-            ctx.arc(0, 0, gridSize, 0, Math.PI / 2)
-            ctx.lineTo(0, 0)
-            ctx.fill()
-          } else if (type === 3) {
-            ctx.beginPath()
-            ctx.arc(gridSize / 2, 0, gridSize / 2, 0, Math.PI)
-            ctx.fill()
-          } else if (type === 4) {
-            ctx.beginPath()
-            ctx.moveTo(0, gridSize)
-            ctx.lineTo(gridSize, gridSize)
-            ctx.lineTo(gridSize, 0)
-            ctx.closePath()
-            ctx.fill()
-          } else if (type === 5) {
-            ctx.fillStyle = '#212121'
-            const thickness = gridSize / 4
-            ctx.fillRect(gridSize / 2 - thickness / 2, 0, thickness, gridSize)
+      const gridX = 5
+      const gridY = 3
+      const stepX = w / gridX
+      const stepY = h / gridY
+
+      for (let i = 0; i <= gridX; i++) {
+        for (let j = 0; j <= gridY; j++) {
+          const px = i * stepX
+          const py = j * stepY
+          const seed = i * 13 + j * 7
+
+          drawShape(px, py, 120, seed % 3, colors.muted, 0.02)
+
+          if ((i + j) % 3 === 0) {
+            drawShape(px, py, 40, (seed + 1) % 3, colors.accent, 0.08)
           }
 
-          ctx.restore()
+          if ((i * j) % 4 === 0) {
+            drawShape(px, py, 80, (seed + 2) % 3, colors.primary, 0.04)
+          }
         }
       }
 
-      ctx.globalAlpha = 0.05
-      for (let n = 0; n < 4000; n++) {
-        ctx.fillStyle = '#000'
-        ctx.fillRect(Math.random() * w, Math.random() * h, 1.5, 1.5)
-      }
+      ctx.strokeStyle = colors.primary
+      ctx.lineWidth = 2
+      ctx.globalAlpha = 0.1
+      ctx.beginPath()
+      ctx.moveTo(mouse.current.x, 0)
+      ctx.lineTo(mouse.current.x, h)
+      ctx.moveTo(0, mouse.current.y)
+      ctx.lineTo(w, mouse.current.y)
+      ctx.stroke()
+
+      ctx.fillStyle = colors.primary
+      ctx.globalAlpha = 1
+      ctx.font = '10px monospace'
+      ctx.fillText(`X: ${Math.round(mouse.current.x)}`, mouse.current.x + 10, 20)
+      ctx.fillText(`Y: ${Math.round(mouse.current.y)}`, 10, mouse.current.y - 10)
+
+      animationFrameId = requestAnimationFrame(draw)
     }
 
     window.addEventListener('resize', resize)
+    window.addEventListener('mousemove', handleMouseMove)
     resize()
+    requestAnimationFrame(draw)
 
-    return () => window.removeEventListener('resize', resize)
-  }, [opacity, primaryColor, accentColor])
+    return () => {
+      window.removeEventListener('resize', resize)
+      window.removeEventListener('mousemove', handleMouseMove)
+      cancelAnimationFrame(animationFrameId)
+    }
+  }, [opacity])
 
   return (
     <canvas

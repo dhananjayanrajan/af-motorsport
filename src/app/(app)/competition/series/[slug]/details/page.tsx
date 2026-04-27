@@ -1,3 +1,4 @@
+// app/(frontend)/competition/series/[slug]/details/page.tsx
 import GridSection from '@/components/Section/Blocks/GridSection'
 import HeroSection from '@/components/Section/Blocks/HeroSection'
 import MapSection from '@/components/Section/Blocks/MapSection'
@@ -76,6 +77,7 @@ export default async function SeriesDetailsPage({ params }: { params: Promise<{ 
             title: 'Series Founded',
             description: 'The official start of the competition series and its inaugural racing season.',
             status: 'completed' as const,
+            slug: `competition/series/${slug}`,
         })
     }
     if (series.details?.end_date) {
@@ -85,6 +87,7 @@ export default async function SeriesDetailsPage({ params }: { params: Promise<{ 
             title: 'Series Conclusion',
             description: 'The date marking the final events and completion of the series cycle.',
             status: 'completed' as const,
+            slug: `competition/series/${slug}`,
         })
     }
 
@@ -98,7 +101,7 @@ export default async function SeriesDetailsPage({ params }: { params: Promise<{ 
             lat: series.details.location[0],
             lng: series.details.location[1],
             description: series.basics?.tagline || 'Official location',
-            slug: series.slug,
+            slug: `competition/series/${slug}`,
         })
     }
 

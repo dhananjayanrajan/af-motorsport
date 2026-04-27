@@ -1,3 +1,4 @@
+// app/(frontend)/calendar/timelines/[slug]/page.tsx
 import GridSection from '@/components/Section/Blocks/GridSection'
 import HeroSection from '@/components/Section/Blocks/HeroSection'
 import StudySection from '@/components/Section/Blocks/StudySection'
@@ -101,6 +102,7 @@ export default async function TimelinePage({ params }: { params: Promise<{ slug:
                     title: milestone.name.toUpperCase(),
                     description: milestone.description || undefined,
                     status: idx === 0 ? 'completed' as const : idx === 1 ? 'active' as const : 'upcoming' as const,
+                    slug: `calendar/timelines/${slug}`,
                 })
             }
         })

@@ -1,7 +1,10 @@
+// StudySection.tsx
 "use client"
 
 import { motion, useInView } from 'framer-motion'
+import Link from 'next/link'
 import React, { useRef } from 'react'
+import DotGridBackground from '../Backgrounds/DotGridBackground'
 import SectionFooter from '../Components/SectionFooter'
 import SectionHeader from '../Components/SectionHeader'
 import SectionScroller from '../Components/SectionScroller'
@@ -44,7 +47,7 @@ const StudySection: React.FC<StudySectionProps> = ({
   const isInView = useInView(sectionRef, { amount: 0.2, once: true })
 
   const study = studies[0]
-  if (!study) return null
+  if (!study || !study.image) return null
 
   const targetHref = study.ctaHref || ctaPath
 
@@ -54,6 +57,9 @@ const StudySection: React.FC<StudySectionProps> = ({
       id={id}
       className="relative w-full bg-white-pure border-t-2 border-black-pure flex flex-col items-center overflow-hidden select-none"
     >
+
+      <DotGridBackground />
+
       <SectionHeader
         title={title}
         subtitle={subtitle}
@@ -171,6 +177,24 @@ const StudySection: React.FC<StudySectionProps> = ({
               ))}
             </div>
           )}
+
+          {targetHref && (ctaLabel || study.ctaLabel) && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ delay: 1.5 }}
+            >
+              <Link
+                href={targetHref}
+                className="inline-flex items-center gap-4 bg-black-pure text-white-pure px-8 py-4 text-sm font-mono font-black uppercase tracking-widest border-2 border-black-pure hover:bg-primary-500 hover:text-black-pure transition-all shadow-[6px_6px_0px_0px_var(--primary-500)] hover:shadow-none"
+              >
+                {study.ctaLabel || ctaLabel}
+                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path d="M5 12h14M12 5l7 7-7 7" strokeWidth="3" strokeLinecap="square" />
+                </svg>
+              </Link>
+            </motion.div>
+          )}
         </motion.div>
       </div>
 
@@ -183,4 +207,4 @@ const StudySection: React.FC<StudySectionProps> = ({
   )
 }
 
-export default StudySection;
+export default StudySection

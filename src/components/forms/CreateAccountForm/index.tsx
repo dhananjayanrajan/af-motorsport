@@ -35,22 +35,27 @@ export const CreateAccountForm: React.FC = () => {
   const onSubmit = useCallback(
     async (data: FormData) => {
       setError(null)
-      const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/users`, {
-        body: JSON.stringify(data),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        method: 'POST',
-      })
-
-      if (!response.ok) {
-        setError('Creation failed.')
-        return
-      }
-
       setLoading(true)
 
       try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/users`, {
+          body: JSON.stringify({
+            email: data.email,
+            password: data.password,
+          }),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          method: 'POST',
+        })
+
+        if (!response.ok) {
+          const json = await response.json()
+          setError(json?.errors?.[0]?.message || 'Creation failed.')
+          setLoading(false)
+          return
+        }
+
         await login({ email: data.email, password: data.password })
         const redirect = searchParams.get('redirect')
         if (redirect) router.push(redirect)
@@ -81,7 +86,13 @@ export const CreateAccountForm: React.FC = () => {
             type="email"
             autoComplete="email"
             error={Boolean(errors.email)}
-            {...register('email', { required: 'Required' })}
+            {...register('email', {
+              required: 'Required',
+              pattern: {
+                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                message: 'Invalid email'
+              }
+            })}
           />
           {errors.email && <FormError message={errors.email.message} className="text-[9px] font-mono font-black text-secondary px-4 mt-1 uppercase" />}
         </FormItem>
@@ -95,9 +106,15 @@ export const CreateAccountForm: React.FC = () => {
               type="password"
               autoComplete="new-password"
               error={Boolean(errors.password)}
-              {...register('password', { required: 'Required', minLength: 8 })}
+              {...register('password', {
+                required: 'Required',
+                minLength: {
+                  value: 8,
+                  message: 'Min 8 characters'
+                }
+              })}
             />
-            {errors.password && <FormError message="Min 8 characters" className="text-[9px] font-mono font-black text-secondary px-4 mt-1 uppercase" />}
+            {errors.password && <FormError message={errors.password.message} className="text-[9px] font-mono font-black text-secondary px-4 mt-1 uppercase" />}
           </FormItem>
 
           <FormItem>

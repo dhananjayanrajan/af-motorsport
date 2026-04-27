@@ -71,7 +71,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
           {backgroundImage ? (
             <motion.div
               initial={{ scale: 1.1, opacity: 0 }}
-              animate={{ scale: 1, opacity: 0.4 }}
+              animate={{ scale: 1, opacity: 0.15 }}
               transition={{ duration: 2.5, ease: "easeOut" }}
               className="relative w-full h-full"
             >
@@ -84,7 +84,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
                   y: (mousePos.y - (typeof window !== 'undefined' ? window.innerHeight / 2 : 0)) * 0.015,
                 }}
               />
-              <div className="absolute inset-0 bg-gradient-to-b from-white-pure/80 via-white-pure/40 to-white-pure/90" />
+              <div className="absolute inset-0 bg-black-pure/30" />
             </motion.div>
           ) : (
             background

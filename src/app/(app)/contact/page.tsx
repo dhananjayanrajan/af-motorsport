@@ -1,3 +1,4 @@
+// app/(frontend)/contact/page.tsx
 import HeroSection from '@/components/Section/Blocks/HeroSection'
 import MapSection from '@/components/Section/Blocks/MapSection'
 import PanelSection, { Panel } from '@/components/Section/Blocks/PanelSection'
@@ -74,6 +75,7 @@ export default function ContactPage() {
       lng: -74.006,
       description: 'Primary administrative and technical operations hub',
       address: '123 Racing Avenue, New York, NY 10001',
+      slug: 'contact',
     },
   ]
 

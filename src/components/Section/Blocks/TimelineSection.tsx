@@ -143,54 +143,71 @@ const TimelineSection: React.FC<TimelineSectionProps> = ({
                     </span>
                   </div>
 
-                  <div className="absolute inset-x-2 bottom-36 md:bottom-48 pointer-events-none flex flex-col justify-end gap-6 md:gap-10">
+                  <div className="absolute inset-x-2 bottom-[140px] md:bottom-[190px] pointer-events-none flex flex-col justify-end items-center">
                     {activeEvents.map((event) => {
                       if (!event.slug) return null;
                       return (
-                        <Link
-                          key={event.id}
-                          href={`/calendar/championships/${event.slug}`}
-                          onMouseEnter={() => setHoveredEvent(event.id)}
-                          onMouseLeave={() => setHoveredEvent(null)}
-                          className="group/card relative pointer-events-auto"
-                          style={{ zIndex: hoveredEvent === event.id ? 50 : 20 }}
-                        >
-                          <div className={`w-48 md:w-72 p-3 md:p-5 transition-all duration-300 border-2 border-black-pure shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] md:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] ${hoveredEvent === event.id ? 'bg-primary-500 -translate-y-2 md:-translate-y-4' : 'bg-white-pure hover:border-primary-500'}`}>
-                            <div className="flex justify-between items-center mb-2 md:mb-4">
-                              <span className="font-mono text-[10px] md:text-xs font-black bg-black-pure text-white-pure px-1.5 md:px-2 py-0.5 md:py-1 uppercase tracking-tighter leading-none">
-                                {event.code || 'EVT'}
-                              </span>
-                              <div className={`size-2 md:size-3 rounded-full ${event.status === 'active' ? 'bg-primary-500' : 'bg-neutral-200'}`} />
-                            </div>
+                        <div key={event.id} className="relative flex flex-col items-center">
+                          <Link
+                            href={event.slug.startsWith('/') ? event.slug : `/${event.slug}`}
+                            onMouseEnter={() => setHoveredEvent(event.id)}
+                            onMouseLeave={() => setHoveredEvent(null)}
+                            className="group/card relative pointer-events-auto"
+                            style={{ zIndex: hoveredEvent === event.id ? 50 : 20 }}
+                          >
+                            <div className={`w-56 md:w-80 p-0 transition-all duration-500 border-2 border-black-pure shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] md:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] overflow-hidden ${hoveredEvent === event.id ? 'bg-primary-500 -translate-y-4 md:-translate-y-8 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] md:shadow-[20px_20px_0px_0px_rgba(0,0,0,1)]' : 'bg-white-pure'}`}>
 
-                            <h3 className="text-xs md:text-sm font-black text-black-pure uppercase tracking-tighter leading-tight mb-2 md:mb-4 line-clamp-2">
-                              {event.title}
-                            </h3>
-
-                            {event.image && (
-                              <div className="relative aspect-video w-full overflow-hidden border-2 border-black-pure mb-2 md:mb-4 bg-neutral-100">
-                                <Image
-                                  src={event.image}
-                                  alt={event.title}
-                                  fill
-                                  className="object-cover"
-                                  sizes="(max-width: 768px) 192px, 288px"
-                                />
+                              <div className="flex justify-between items-center p-3 md:p-4 border-b-2 border-black-pure bg-neutral-50 group-hover/card:bg-primary-600 transition-colors">
+                                <span className="font-mono text-xs font-black text-black-pure px-2 py-0.5 bg-white-pure border border-black-pure shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] uppercase tracking-tighter">
+                                  {event.code || 'EVT'}
+                                </span>
+                                <div className="flex items-center gap-2">
+                                  <span className="font-mono text-[10px] font-bold text-black-pure uppercase opacity-50 group-hover/card:text-white-pure group-hover/card:opacity-100">
+                                    {event.status}
+                                  </span>
+                                  <div className={`size-2.5 md:size-3 rounded-none rotate-45 border border-black-pure ${event.status === 'active' ? 'bg-primary-500 animate-pulse' : 'bg-neutral-300'}`} />
+                                </div>
                               </div>
-                            )}
 
-                            <div className="flex items-center justify-between">
-                              <span className="font-mono text-[8px] md:text-xs font-black text-neutral-600 uppercase tracking-widest leading-none">
-                                {event.format || 'Standard'}
-                              </span>
-                              <div className="size-6 md:size-8 border-2 border-black-pure flex items-center justify-center group-hover/card:bg-black-pure group-hover/card:text-white-pure transition-colors">
-                                <svg className="w-2 md:w-3 h-2 md:h-3" viewBox="0 0 24 24" fill="none">
-                                  <path d="M7 17L17 7M17 7H7M17 7V17" stroke="currentColor" strokeWidth="4" />
-                                </svg>
+                              {event.image && (
+                                <div className="relative aspect-[16/10] w-full overflow-hidden border-b-2 border-black-pure grayscale hover:grayscale-0 transition-all duration-700">
+                                  <Image
+                                    src={event.image}
+                                    alt={event.title}
+                                    fill
+                                    className="object-cover scale-105 group-hover/card:scale-100 transition-transform duration-1000"
+                                    sizes="(max-width: 768px) 224px, 320px"
+                                  />
+                                </div>
+                              )}
+
+                              <div className="p-3 md:p-5">
+                                <h3 className="text-sm md:text-base font-black text-black-pure uppercase tracking-tighter leading-[1.1] mb-3 group-hover/card:text-white-pure">
+                                  {event.title}
+                                </h3>
+
+                                <div className="flex items-center justify-between pt-3 border-t border-black-pure/10 group-hover/card:border-white-pure/20">
+                                  <div className="flex flex-col">
+                                    <span className="font-mono text-[8px] md:text-[10px] font-bold text-neutral-400 uppercase tracking-widest leading-none group-hover/card:text-white-pure/60 mb-1">
+                                      Format
+                                    </span>
+                                    <span className="font-mono text-[10px] md:text-xs font-black text-black-pure uppercase leading-none group-hover/card:text-white-pure">
+                                      {event.format || 'Standard'}
+                                    </span>
+                                  </div>
+                                  <div className="size-8 md:size-10 bg-black-pure text-white-pure flex items-center justify-center group-hover/card:bg-white-pure group-hover/card:text-primary-600 transition-all shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] group-hover/card:shadow-none group-hover/card:translate-x-0.5 group-hover/card:translate-y-0.5">
+                                    <svg className="w-3 h-3 md:w-4 md:h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4">
+                                      <path d="M5 12h14M12 5l7 7-7 7" />
+                                    </svg>
+                                  </div>
+                                </div>
                               </div>
                             </div>
-                          </div>
-                        </Link>
+                          </Link>
+
+                          <div className={`w-0.5 transition-all duration-500 origin-bottom bg-black-pure ${hoveredEvent === event.id ? 'h-12 md:h-20 bg-primary-500' : 'h-6 md:h-10 opacity-30'}`} />
+                          <div className={`size-3 md:size-4 border-2 border-black-pure rotate-45 transition-all duration-500 ${hoveredEvent === event.id ? 'bg-primary-500 scale-125' : 'bg-white-pure'}`} />
+                        </div>
                       )
                     })}
                   </div>

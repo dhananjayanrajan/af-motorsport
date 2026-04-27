@@ -1,3 +1,4 @@
+// app/(frontend)/competition/circuits/[slug]/page.tsx
 import MasonrySection from '@/components/Section/Blocks/MasonrySection'
 import QuoteSection from '@/components/Section/Blocks/QuoteSection'
 import ScrollSection from '@/components/Section/Blocks/ScrollSection'
@@ -87,25 +88,29 @@ export default async function CircuitPage({ params }: { params: Promise<{ slug: 
                 id: String(circuit.id),
                 title: circuit.name,
                 url: videoUrl,
-                poster: posterUrl,
+                poster: posterUrl || undefined,
             },
         ]
         : []
 
-    const study = {
-        id: String(circuit.id),
-        title: circuit.name,
-        description: circuit.basics?.tagline || circuit.basics?.description || '',
-        image: posterUrl || getMediaUrl(circuit.seo?.image) || '',
-        metrics: [
-            { label: 'TYPE', value: circuit.details?.type || 'N/A' },
-            { label: 'LENGTH', value: circuit.details?.length_km ? `${circuit.details.length_km} KM` : 'N/A' },
-            { label: 'TURNS', value: circuit.details?.turns ? String(circuit.details.turns) : 'N/A' },
-            { label: 'FIA GRADE', value: circuit.details?.fia_grade || 'N/A' },
-            { label: 'CAPACITY', value: circuit.details?.capacity ? circuit.details.capacity.toLocaleString() : 'N/A' },
-            { label: 'LAP RECORD', value: circuit.metrics?.record_lap_time || 'N/A' },
-        ],
-    }
+    const studyImage = posterUrl || getMediaUrl(circuit.seo?.image) || ''
+
+    const study = studyImage
+        ? {
+            id: String(circuit.id),
+            title: circuit.name,
+            description: circuit.basics?.tagline || circuit.basics?.description || '',
+            image: studyImage,
+            metrics: [
+                { label: 'TYPE', value: circuit.details?.type || 'N/A' },
+                { label: 'LENGTH', value: circuit.details?.length_km ? `${circuit.details.length_km} KM` : 'N/A' },
+                { label: 'TURNS', value: circuit.details?.turns ? String(circuit.details.turns) : 'N/A' },
+                { label: 'FIA GRADE', value: circuit.details?.fia_grade || 'N/A' },
+                { label: 'CAPACITY', value: circuit.details?.capacity ? circuit.details.capacity.toLocaleString() : 'N/A' },
+                { label: 'LAP RECORD', value: circuit.metrics?.record_lap_time || 'N/A' },
+            ],
+        }
+        : null
 
     const quoteItem = circuit.basics?.tagline
         ? {
@@ -115,12 +120,16 @@ export default async function CircuitPage({ params }: { params: Promise<{ slug: 
         }
         : null
 
+    const historyDescription = typeof circuit.details?.history === 'string'
+        ? circuit.details.history
+        : circuit.basics?.description || ''
+
     const historyItems: any[] = []
-    if (circuit.details?.history || circuit.basics?.description) {
+    if (historyDescription) {
         historyItems.push({
             id: 'circuit-history',
             title: 'ORIGINS',
-            description: circuit.details?.history || circuit.basics?.description || '',
+            description: historyDescription,
             percentage: 100,
         })
     }
@@ -171,15 +180,17 @@ export default async function CircuitPage({ params }: { params: Promise<{ slug: 
                     footerVariant={1}
                 />
             )}
-            <StudySection
-                id="circuit-details"
-                title="SPECIFICATIONS"
-                subtitle="Technical facility telemetry"
-                studies={[study]}
-                variant="featured"
-                headerVariant={1}
-                footerVariant={1}
-            />
+            {study && (
+                <StudySection
+                    id="circuit-details"
+                    title="SPECIFICATIONS"
+                    subtitle="Technical facility telemetry"
+                    studies={[study]}
+                    variant="featured"
+                    headerVariant={1}
+                    footerVariant={1}
+                />
+            )}
             {quoteItem && (
                 <QuoteSection
                     id="circuit-statement"

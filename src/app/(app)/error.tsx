@@ -1,36 +1,51 @@
 'use client'
 
-import { DESIGN_SYSTEM } from '@/lib/constants'
 import { cn } from '@/utilities/cn'
 
 export default function Error({ reset }: { reset: () => void }) {
   return (
-    <div className="mx-auto my-4 flex max-w-xl flex-col border border-zinc-800 bg-black p-8 md:p-12 relative overflow-hidden" style={{ clipPath: 'polygon(5% 0%, 100% 0%, 95% 100%, 0% 100%)' }}>
-      <div className={cn("absolute inset-0 opacity-5 pointer-events-none bg-gradient-to-br", `from-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`)} />
+    <div className="fixed inset-0 flex flex-col items-center justify-center bg-[#F0F0F0] p-6 text-black">
+      {/* Heavy Border Container */}
+      <div className="w-full max-w-2xl border-[6px] border-black bg-white p-10 md:p-20 shadow-[16px_16px_0px_0px_rgba(0,0,0,1)]">
 
-      <div className="flex items-center gap-3 mb-4">
-        <div className={cn("size-2 animate-pulse", `bg-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`)} />
-        <h2 className="text-xl font-black uppercase italic tracking-tighter text-white">System_Failure</h2>
+        {/* Header Section */}
+        <div className="border-b-[6px] border-black pb-6 mb-10">
+          <h2 className="text-5xl md:text-8xl font-black uppercase tracking-tighter leading-none">
+            Error
+          </h2>
+        </div>
+
+        {/* Message Section */}
+        <div className="space-y-8">
+          <p className="text-xl md:text-2xl font-bold uppercase leading-none">
+            Something went wrong on our end.
+          </p>
+
+          <p className="text-lg font-bold border-l-[6px] border-black pl-6">
+            The page failed to load correctly. You can try to refresh the connection using the button below.
+          </p>
+        </div>
+
+        {/* Brutalist Button */}
+        <button
+          className={cn(
+            "mt-12 flex w-full md:w-max px-16 h-20 items-center justify-center transition-all",
+            "bg-black text-white hover:bg-white hover:text-black border-[4px] border-black",
+            "active:translate-x-2 active:translate-y-2 active:shadow-none shadow-[10px_10px_0px_0px_rgba(0,0,0,1)]"
+          )}
+          onClick={() => reset()}
+          type="button"
+        >
+          <span className="text-xl font-black uppercase tracking-widest">
+            Restart
+          </span>
+        </button>
       </div>
 
-      <p className="my-2 text-[10px] font-bold uppercase tracking-widest text-zinc-500 leading-relaxed">
-        There was an issue with the storefront protocol. This could be a temporary synchronization error. Please re-initialize the action.
-      </p>
-
-      <button
-        className={cn(
-          "relative group mt-8 flex w-full items-center justify-center h-14 transition-all active:scale-95 overflow-hidden",
-          "bg-white text-black"
-        )}
-        style={{ clipPath: 'polygon(5% 0%, 100% 0%, 95% 100%, 0% 100%)' }}
-        onClick={() => reset()}
-        type="button"
-      >
-        <div className={cn("absolute inset-0 translate-y-full group-hover:translate-y-0 transition-transform duration-500", `bg-[${DESIGN_SYSTEM.COLORS.PRIMARY}]`)} />
-        <span className={cn("relative z-10 text-[11px] font-black uppercase italic group-hover:text-white transition-colors", DESIGN_SYSTEM.TYPOGRAPHY.TRACKING_XL)}>
-          Re-Initialize_System
-        </span>
-      </button>
+      {/* Background Graphic */}
+      <div className="absolute bottom-10 right-10 opacity-10 select-none pointer-events-none hidden md:block">
+        <span className="text-[200px] font-black italic">!</span>
+      </div>
     </div>
   )
 }

@@ -1,3 +1,4 @@
+// app/(frontend)/about/initiatives/[slug]/page.tsx
 import GridSection from '@/components/Section/Blocks/GridSection'
 import HeroSection from '@/components/Section/Blocks/HeroSection'
 import ListSection from '@/components/Section/Blocks/ListSection'
@@ -102,7 +103,7 @@ export default async function InitiativePage({ params }: { params: Promise<{ slu
             lat: initiative.details.locations[0],
             lng: initiative.details.locations[1],
             description: initiative.basics?.tagline || undefined,
-            slug: initiative.slug,
+            slug: `about/initiatives/${slug}`,
         })
     }
 

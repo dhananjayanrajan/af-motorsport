@@ -1,3 +1,4 @@
+// app/(frontend)/competition/circuits/[slug]/details/page.tsx
 import GridSection from '@/components/Section/Blocks/GridSection'
 import HeroSection from '@/components/Section/Blocks/HeroSection'
 import ListSection from '@/components/Section/Blocks/ListSection'
@@ -89,7 +90,7 @@ export default async function CircuitDetailsPage({ params }: { params: Promise<{
             lng: circuit.details.location[1],
             description: circuit.basics?.tagline || 'FACILITY_COORDINATES',
             address: circuit.details?.address || 'COORDINATES_ONLY',
-            slug: circuit.slug,
+            slug: `competition/circuits/${slug}`,
         })
     }
 

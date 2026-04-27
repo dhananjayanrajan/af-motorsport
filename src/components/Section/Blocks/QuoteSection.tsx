@@ -3,7 +3,7 @@
 import { AnimatePresence, motion, useScroll, useTransform } from 'framer-motion'
 import Link from 'next/link'
 import React, { useEffect, useRef, useState } from 'react'
-import ShapesBackground from '../Backgrounds/ShapesBackground'
+import WeaveBackground from '../Backgrounds/WeaveBackground'
 import SectionFooter from '../Components/SectionFooter'
 import SectionHeader from '../Components/SectionHeader'
 
@@ -106,7 +106,7 @@ const QuoteSection: React.FC<QuoteSectionProps> = ({
       </div>
 
       <main className="relative z-20 flex-grow flex items-center justify-center px-6">
-        <ShapesBackground />
+        <WeaveBackground />
         <div className="max-w-[85rem] w-full mx-auto">
           <AnimatePresence mode="wait">
             <motion.div

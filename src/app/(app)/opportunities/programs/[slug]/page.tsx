@@ -1,5 +1,6 @@
-import CarouselSection from '@/components/Section/Blocks/CarouselSection'
+// app/(frontend)/opportunities/programs/[slug]/page.tsx
 import HeroSection from '@/components/Section/Blocks/HeroSection'
+import LogoSection from '@/components/Section/Blocks/LogoSection'
 import MasonrySection from '@/components/Section/Blocks/MasonrySection'
 import StudySection from '@/components/Section/Blocks/StudySection'
 import { Media, Organization } from '@/payload-types'
@@ -56,38 +57,11 @@ const getProgramData = unstable_cache(
     { revalidate: 3600, tags: ['program'] }
 )
 
-const getOrganizations = unstable_cache(
-    async () => {
-        const payload = await getPayload({ config: configPromise })
-        const result = await payload.find({
-            collection: 'organizations',
-            limit: 20,
-            select: {
-                id: true,
-                name: true,
-                slug: true,
-                basics: {
-                    tagline: true,
-                },
-                assets: {
-                    logo: true,
-                    alt_logo: true,
-                },
-            },
-        })
-        return result.docs as Organization[]
-    },
-    ['organizations-program'],
-    { revalidate: 3600 }
-)
-
 export default async function ProgramPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params
     const program = await getProgramData(slug)
 
     if (!program) notFound()
-
-    await getOrganizations()
 
     const heroActions = [
         { label: 'View Details', href: `/opportunities/programs/${program.slug}/details`, variant: 'primary' as const },
@@ -110,22 +84,13 @@ export default async function ProgramPage({ params }: { params: Promise<{ slug: 
         ],
     }
 
-    const organizationSlides: any[] = []
+    const allOrganizations: Organization[] = []
 
     if (program.details?.partners) {
         program.details.partners.forEach((partnerRef) => {
             const partner = partnerRef as Organization
             if (partner && typeof partner === 'object' && 'name' in partner) {
-                const imageUrl = getMediaUrl(partner.assets?.logo) || getMediaUrl(partner.assets?.alt_logo) || `https://picsum.photos/seed/${partner.slug}/400/300`
-
-                organizationSlides.push({
-                    id: String(partner.id),
-                    title: partner.name,
-                    description: partner.basics?.tagline || 'Partner',
-                    image: imageUrl,
-                    ctaLabel: 'View',
-                    ctaHref: `/organizations/${partner.slug}`,
-                })
+                allOrganizations.push(partner)
             }
         })
     }
@@ -134,19 +99,25 @@ export default async function ProgramPage({ params }: { params: Promise<{ slug: 
         program.details.sponsors.forEach((sponsorRef) => {
             const sponsor = sponsorRef as Organization
             if (sponsor && typeof sponsor === 'object' && 'name' in sponsor) {
-                const imageUrl = getMediaUrl(sponsor.assets?.logo) || getMediaUrl(sponsor.assets?.alt_logo) || `https://picsum.photos/seed/${sponsor.slug}/400/300`
-
-                organizationSlides.push({
-                    id: String(sponsor.id),
-                    title: sponsor.name,
-                    description: sponsor.basics?.tagline || 'Sponsor',
-                    image: imageUrl,
-                    ctaLabel: 'View',
-                    ctaHref: `/organizations/${sponsor.slug}`,
-                })
+                allOrganizations.push(sponsor)
             }
         })
     }
+
+    const logoItems = allOrganizations.map((org) => {
+        const logoUrl = getMediaUrl(org.assets?.logo) || getMediaUrl(org.assets?.alt_logo) || `https://picsum.photos/seed/${org.slug}/400/300`
+
+        return {
+            id: String(org.id),
+            name: org.name,
+            logo: logoUrl,
+            description: org.basics?.tagline || org.basics?.description || undefined,
+            website: org.details?.websites?.list?.[0]?.path || undefined,
+            location: undefined,
+            category: org.basics?.type || 'PARTNER',
+            slug: `organizations/${org.slug}`,
+        }
+    })
 
     const galleryItems: any[] = (program.assets?.gallery || []).map((item, idx) => {
         const media = item as Media
@@ -181,10 +152,14 @@ export default async function ProgramPage({ params }: { params: Promise<{ slug: 
                 headerVariant={1}
                 footerVariant={1}
             />
-            {organizationSlides.length > 0 && (
-                <CarouselSection
+            {logoItems.length > 0 && (
+                <LogoSection
                     id="program-partners-sponsors"
-                    slides={organizationSlides}
+                    title="Partners & Sponsors"
+                    subtitle="Supporting organizations"
+                    items={logoItems}
+                    headerVariant={2}
+                    footerVariant={1}
                 />
             )}
             {galleryItems.length > 0 && (

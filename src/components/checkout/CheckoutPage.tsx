@@ -24,6 +24,7 @@ export const CheckoutPage: React.FC = () => {
   const { addresses } = useAddresses()
   const [email, setEmail] = useState('')
   const [emailEditable, setEmailEditable] = useState(true)
+  const [emailError, setEmailError] = useState<string | null>(null)
   const [paymentData, setPaymentData] = useState<null | Record<string, unknown>>(null)
   const { initiatePayment } = usePayments()
   const [billingAddress, setBillingAddress] = useState<Partial<Address> | undefined>()
@@ -38,7 +39,37 @@ export const CheckoutPage: React.FC = () => {
     }
   }, [user, addresses, billingAddress])
 
+  const validateEmail = (emailToTest: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailToTest) return 'Email is required'
+    if (!emailRegex.test(emailToTest)) return 'Please enter a valid email address'
+    return null
+  }
+
+  const handleSaveEmail = () => {
+    const error = validateEmail(email)
+    if (error) {
+      setEmailError(error)
+      return
+    }
+    setEmailError(null)
+    setEmailEditable(false)
+  }
+
   const initiatePaymentIntent = useCallback(async () => {
+    if (!user) {
+      const error = validateEmail(email)
+      if (error) {
+        setEmailError(error)
+        return
+      }
+    }
+
+    if (!billingAddress?.addressLine1 || !billingAddress?.city || !billingAddress?.country || !billingAddress?.postalCode) {
+      alert('Please select or enter a complete billing address.')
+      return
+    }
+
     setProcessingPayment(true)
     try {
       const data = await initiatePayment('stripe', {
@@ -54,7 +85,7 @@ export const CheckoutPage: React.FC = () => {
     } finally {
       setProcessingPayment(false)
     }
-  }, [billingAddress, email, initiatePayment])
+  }, [billingAddress, email, initiatePayment, user])
 
   if (cartIsEmpty) {
     return (
@@ -82,22 +113,32 @@ export const CheckoutPage: React.FC = () => {
           <div className="p-8 md:p-12">
             {!user ? (
               <div className="max-w-sm space-y-8">
-                <div className="flex gap-4">
-                  <ClippedInput
-                    label="Email"
-                    disabled={!emailEditable}
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    error={false}
-                  />
-                  {emailEditable && (
-                    <button
-                      onClick={() => setEmailEditable(false)}
-                      disabled={!email}
-                      className="h-12 px-6 bg-black-pure text-white-pure text-[10px] font-mono font-black uppercase hover:bg-primary hover:text-black-pure transition-colors disabled:opacity-20"
-                    >
-                      Save
-                    </button>
+                <div className="flex flex-col gap-2">
+                  <div className="flex gap-4">
+                    <ClippedInput
+                      label="Email"
+                      disabled={!emailEditable}
+                      value={email}
+                      onChange={(e) => {
+                        setEmail(e.target.value)
+                        if (emailError) setEmailError(null)
+                      }}
+                      error={Boolean(emailError)}
+                    />
+                    {emailEditable && (
+                      <button
+                        onClick={handleSaveEmail}
+                        disabled={!email}
+                        className="h-12 px-6 bg-black-pure text-white-pure text-[10px] font-mono font-black uppercase hover:bg-primary hover:text-black-pure transition-colors disabled:opacity-20"
+                      >
+                        Save
+                      </button>
+                    )}
+                  </div>
+                  {emailError && (
+                    <span className="text-[10px] font-mono font-black uppercase text-secondary tracking-tighter">
+                      {emailError}
+                    </span>
                   )}
                 </div>
                 <div className="flex items-center gap-4 text-[10px] font-mono font-black uppercase opacity-40">
@@ -133,7 +174,9 @@ export const CheckoutPage: React.FC = () => {
             >
               <div className="flex items-center gap-6">
                 <Lock size={16} className="group-hover:rotate-12 transition-transform" />
-                <span className="text-sm font-mono font-black uppercase tracking-[0.3em]">Pay now</span>
+                <span className="text-sm font-mono font-black uppercase tracking-[0.3em]">
+                  {isProcessingPayment ? 'Initializing...' : 'Pay now'}
+                </span>
               </div>
               <ArrowRight size={20} className="group-hover:translate-x-4 transition-transform" />
             </button>

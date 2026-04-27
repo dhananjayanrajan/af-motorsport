@@ -1,14 +1,11 @@
 'use client'
 
-import type { StaticImageData } from 'next/image'
-
+import { cssVariables } from '@/cssVariables'
 import { cn } from '@/utilities/cn'
+import type { StaticImageData } from 'next/image'
 import NextImage from 'next/image'
 import React from 'react'
-
 import type { Props as MediaProps } from '../types'
-
-import { cssVariables } from '@/cssVariables'
 
 const { breakpoints } = cssVariables
 
@@ -37,7 +34,6 @@ export const Image: React.FC<MediaProps> = (props) => {
   if (!src && resource && typeof resource === 'object') {
     const {
       alt: altFromResource,
-      filename: fullFilename,
       height: fullHeight,
       url,
       width: fullWidth,
@@ -47,17 +43,30 @@ export const Image: React.FC<MediaProps> = (props) => {
     height = heightFromProps ?? fullHeight
     alt = altFromResource
 
-    const filename = fullFilename
+    const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL
 
-    src = `${process.env.NEXT_PUBLIC_SERVER_URL}${url}`
+    if (url) {
+      if (url.startsWith('http') || url.startsWith('data:')) {
+        src = url
+      } else if (serverUrl) {
+        const base = serverUrl.replace(/\/$/, '')
+        const path = url.startsWith('/') ? url : `/${url}`
+        src = `${base}${path}`
+      } else {
+        src = url
+      }
+    }
   }
 
-  // NOTE: this is used by the browser to determine which image to download at different screen sizes
+  if (!src || src === 'undefined') {
+    return null
+  }
+
   const sizes = sizeFromProps
     ? sizeFromProps
     : Object.entries(breakpoints)
-        .map(([, value]) => `(max-width: ${value}px) ${value}px`)
-        .join(', ')
+      .map(([, value]) => `(max-width: ${value}px) ${value}px`)
+      .join(', ')
 
   return (
     <NextImage

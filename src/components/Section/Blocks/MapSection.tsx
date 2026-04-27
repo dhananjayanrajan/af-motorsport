@@ -1,3 +1,4 @@
+// MapSection.tsx
 "use client"
 import {
   Map,
@@ -274,7 +275,7 @@ const MapSection: React.FC<MapSectionProps> = ({
               </div>
 
               <Link
-                href={`/locations/${activeLoc.slug || activeLoc.id}`}
+                href={activeLoc.slug ? (activeLoc.slug.startsWith('/') ? activeLoc.slug : `/${activeLoc.slug}`) : `/${activeLoc.id}`}
                 className="group relative h-16 sm:h-20 bg-black-pure text-white-pure flex items-center justify-between px-6 sm:px-8 overflow-hidden transition-colors hover:bg-primary-500 shrink-0"
               >
                 <div className="flex flex-col relative z-10 truncate pr-4">
@@ -294,4 +295,4 @@ const MapSection: React.FC<MapSectionProps> = ({
   )
 }
 
-export default MapSection;
+export default MapSection

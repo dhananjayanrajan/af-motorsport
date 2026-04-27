@@ -1,3 +1,4 @@
+// app/(frontend)/calendar/championships/[slug]/page.tsx
 import FeatureSection from '@/components/Section/Blocks/FeatureSection'
 import MasonrySection from '@/components/Section/Blocks/MasonrySection'
 import ScrollSection from '@/components/Section/Blocks/ScrollSection'
@@ -166,6 +167,7 @@ export default async function ChampionshipPage({ params }: { params: Promise<{ s
                 ? `Awarded to ${winnerName}`
                 : championship.basics?.tagline || 'Championship trophy',
             image: getMediaUrl(championship.assets.trophy) || '',
+            slug: `calendar/championships/${championship.slug}/details`,
             stats: [] as { label: string; value: string }[],
         }
         : null

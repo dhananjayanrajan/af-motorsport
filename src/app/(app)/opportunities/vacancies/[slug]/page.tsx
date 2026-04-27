@@ -1,6 +1,9 @@
+// app/(frontend)/opportunities/vacancies/[slug]/page.tsx
+import CoverSection from '@/components/Section/Blocks/CoverSection'
 import PanelSection from '@/components/Section/Blocks/PanelSection'
 import StudySection from '@/components/Section/Blocks/StudySection'
-import { Media } from '@/payload-types'
+import { FormRenderer } from '@/components/Section/Components/FormRenderer'
+import { Form, Media } from '@/payload-types'
 import configPromise from '@payload-config'
 import { unstable_cache } from 'next/cache'
 import { notFound } from 'next/navigation'
@@ -19,7 +22,7 @@ const getVacancyData = unstable_cache(
             collection: 'vacancies',
             where: { slug: { equals: slug } },
             limit: 1,
-            depth: 1, // Keep it shallow for performance
+            depth: 1,
             select: {
                 id: true,
                 name: true,
@@ -46,16 +49,38 @@ const getVacancyData = unstable_cache(
     { revalidate: 3600, tags: ['vacancy'] }
 )
 
+const getFormById = unstable_cache(
+    async (id: string | number) => {
+        const payload = await getPayload({ config: configPromise })
+        try {
+            const result = await payload.findByID({
+                collection: 'forms',
+                id: id,
+            })
+            return (result as Form) || null
+        } catch (error) {
+            return null
+        }
+    },
+    ['vacancy-form-id'],
+    { revalidate: 3600, tags: ['forms'] }
+)
+
 export default async function VacancyPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params
-    const vacancy = await getVacancyData(slug)
+
+    const [vacancy, applicationForm] = await Promise.all([
+        getVacancyData(slug),
+        getFormById(1)
+    ])
 
     if (!vacancy) notFound()
 
-    // Declarative image resolution
-    const studyImage = getMediaUrl(vacancy.assets?.thumbnail) ||
+    const coverImage = getMediaUrl(vacancy.assets?.thumbnail) ||
         getMediaUrl(vacancy.seo?.image) ||
-        `https://picsum.photos/seed/${vacancy.slug}/800/600`
+        `https://picsum.photos/seed/${vacancy.slug}/1920/1080`
+
+    const studyImage = coverImage
 
     const study = {
         id: String(vacancy.id),
@@ -71,17 +96,30 @@ export default async function VacancyPage({ params }: { params: Promise<{ slug: 
     const applicationPanel = {
         id: 'apply',
         title: 'Apply for this position',
-        summary: `Submit your application for ${vacancy.name}`,
-        content: (
-            <div className="space-y-4">
-                <p className="text-muted-foreground">Please send your CV and cover letter to careers@example.com</p>
-                <p className="text-sm text-muted-foreground">Reference: {vacancy.basics?.title}</p>
+        summary: `Submit your application for the ${vacancy.name} role.`,
+        content: applicationForm ? (
+            <FormRenderer form={applicationForm} />
+        ) : (
+            <div className="p-6 border-2 border-red-500 bg-red-500/10">
+                <p className="text-red-500 font-bold uppercase italic">
+                    Application form unavailable. Please contact careers@motorsport.com
+                </p>
             </div>
         ),
+        metadata: {
+            "Department": vacancy.details?.department || 'General',
+            "Contract": vacancy.details?.contract || 'TBD',
+            "Ref ID": `#${vacancy.id}`,
+            "Status": "Active"
+        }
     }
 
     return (
         <main className="w-full">
+            <CoverSection
+                id="vacancy-cover"
+                image={coverImage}
+            />
             <StudySection
                 id="vacancy-details"
                 title="Vacancy Overview"
@@ -90,17 +128,17 @@ export default async function VacancyPage({ params }: { params: Promise<{ slug: 
                 variant="featured"
                 headerVariant={1}
                 footerVariant={1}
-                ctaLabel="View Full Details"
+                ctaLabel="View Details"
                 ctaPath={`/opportunities/vacancies/${vacancy.slug}/details`}
             />
             <PanelSection
                 id="vacancy-form"
                 title="Application"
-                subtitle="How to apply"
+                subtitle="Join the Team"
                 panels={[applicationPanel]}
                 labels={{
-                    expansionState: { open: 'OPEN', closed: 'CLOSED' },
-                    metadataTitle: 'DETAILS',
+                    expansionState: { open: 'READY TO RACE', closed: 'APPLY NOW' },
+                    metadataTitle: 'JOB SPECS',
                 }}
                 allowMultiple={false}
                 headerVariant={2}

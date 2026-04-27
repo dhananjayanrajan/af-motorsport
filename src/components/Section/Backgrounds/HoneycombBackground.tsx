@@ -4,17 +4,14 @@ import React, { useEffect, useRef } from 'react'
 interface HoneycombBackgroundProps {
   zIndex?: string
   opacity?: number
-  primaryColor?: string
-  accentColor?: string
 }
 
 const HoneycombBackground: React.FC<HoneycombBackgroundProps> = ({
   zIndex = 'z-0',
-  opacity = 0.08,
-  primaryColor = '#000000',
-  accentColor = '#C0392B'
+  opacity = 1
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const mouse = useRef({ x: 0, y: 0, tx: 0, ty: 0 })
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -23,7 +20,14 @@ const HoneycombBackground: React.FC<HoneycombBackgroundProps> = ({
     if (!ctx) return
 
     let animationFrame: number
-    let traceOffset = 0
+
+    const colors = {
+      base: '#F5F5F3',
+      top: '#FFFFFF',
+      side1: '#E8E8E4',
+      side2: '#DEDEDA',
+      accent: { r: 0, g: 120, b: 255 }
+    }
 
     const resize = () => {
       const parent = canvas.parentElement
@@ -36,60 +40,90 @@ const HoneycombBackground: React.FC<HoneycombBackgroundProps> = ({
       ctx.scale(dpr, dpr)
     }
 
-    const drawHexagon = (x: number, y: number, size: number, weight: number) => {
-      ctx.beginPath()
-      for (let i = 0; i < 6; i++) {
-        const angle = (i * Math.PI) / 3
-        const px = x + size * Math.cos(angle)
-        const py = y + size * Math.sin(angle)
-        if (i === 0) ctx.moveTo(px, py)
-        else ctx.lineTo(px, py)
+    const handleMouseMove = (e: MouseEvent) => {
+      const rect = canvas.getBoundingClientRect()
+      mouse.current.tx = e.clientX - rect.left
+      mouse.current.ty = e.clientY - rect.top
+    }
+
+    const drawHex = (x: number, y: number, size: number, mX: number, mY: number) => {
+      const dx = x - mX
+      const dy = y - mY
+      const dist = Math.sqrt(dx * dx + dy * dy)
+
+      const maxDist = 250
+      const influence = Math.max(0, 1 - dist / maxDist)
+      const easeInfluence = Math.sin(influence * Math.PI / 2)
+
+      const z = easeInfluence * 5
+      const tiltX = (dx / maxDist) * z
+      const tiltY = (dy / maxDist) * z
+
+      const h = (size * Math.sqrt(3)) / 2
+
+      const drawFace = (points: number[][], color: string) => {
+        ctx.fillStyle = color
+        ctx.beginPath()
+        ctx.moveTo(points[0][0], points[0][1])
+        points.slice(1).forEach(p => ctx.lineTo(p[0], p[1]))
+        ctx.closePath()
+        ctx.fill()
       }
-      ctx.closePath()
-      ctx.lineWidth = weight
-      ctx.stroke()
+
+      ctx.save()
+      ctx.globalAlpha = opacity
+
+      const tr = 255, tg = 255, tb = 255
+      const currR = Math.round(tr + (colors.accent.r - tr) * (easeInfluence * 0.4))
+      const currG = Math.round(tg + (colors.accent.g - tg) * (easeInfluence * 0.4))
+      const currB = Math.round(tb + (colors.accent.b - tb) * (easeInfluence * 0.4))
+
+      drawFace([
+        [x + h + tiltX, y - size / 2 + tiltY],
+        [x + h, y - size / 2],
+        [x + h, y + size / 2],
+        [x + h + tiltX, y + size / 2 + tiltY]
+      ], colors.side2)
+
+      drawFace([
+        [x + h + tiltX, y + size / 2 + tiltY],
+        [x + h, y + size / 2],
+        [x, y + size],
+        [x + tiltX, y + size + tiltY]
+      ], colors.side1)
+
+      drawFace([
+        [x + tiltX, y - size + tiltY],
+        [x + h + tiltX, y - size / 2 + tiltY],
+        [x + h + tiltX, y + size / 2 + tiltY],
+        [x + tiltX, y + size + tiltY],
+        [x - h + tiltX, y + size / 2 + tiltY],
+        [x - h + tiltX, y - size / 2 + tiltY]
+      ], `rgb(${currR}, ${currG}, ${currB})`)
+
+      ctx.restore()
     }
 
     const draw = () => {
       const w = canvas.width / (window.devicePixelRatio || 1)
       const h = canvas.height / (window.devicePixelRatio || 1)
-      ctx.clearRect(0, 0, w, h)
 
-      const size = 48 // Multiples of 8
-      const hexWidth = size * Math.sqrt(3)
-      const hexHeight = size * 1.5
+      mouse.current.x += (mouse.current.tx - mouse.current.x) * 0.05
+      mouse.current.y += (mouse.current.ty - mouse.current.y) * 0.05
 
-      traceOffset += 0.8
-      if (traceOffset > hexWidth * 4) traceOffset = 0
+      ctx.fillStyle = colors.base
+      ctx.fillRect(0, 0, w, h)
 
-      const cols = Math.ceil(w / hexWidth) + 1
-      const rows = Math.ceil(h / hexHeight) + 1
+      const size = 32
+      const xDist = size * Math.sqrt(3)
+      const yDist = size * 1.5
 
-      for (let i = 0; i < rows; i++) {
-        for (let j = 0; j < cols; j++) {
-          const x = j * hexWidth + (i % 2 === 0 ? 0 : hexWidth / 2)
-          const y = i * hexHeight
-
-          // Primary Structure (0.5px subtle line)
-          ctx.strokeStyle = primaryColor
-          ctx.globalAlpha = opacity * 0.4
-          drawHexagon(x, y, size, 0.5)
-
-          // Active Trace Effect (Spatial Trigger)
-          const distToTrace = Math.abs((x + y) - traceOffset * 2)
-          if (distToTrace < 128) {
-            const intensity = 1 - distToTrace / 128
-            ctx.strokeStyle = accentColor
-            ctx.globalAlpha = intensity * opacity * 2
-            drawHexagon(x, y, size, 1)
-
-            // Corner Nodes
-            ctx.fillStyle = accentColor
-            for (let k = 0; k < 6; k++) {
-              const angle = (k * Math.PI) / 3
-              ctx.fillRect(x + size * Math.cos(angle) - 1, y + size * Math.sin(angle) - 1, 2, 2)
-            }
-          }
+      for (let j = -1; j < (h / yDist) + 1; j++) {
+        const offset = (j % 2 === 0) ? 0 : xDist / 2
+        for (let i = -1; i < (w / xDist) + 1; i++) {
+          const x = i * xDist + offset
+          const y = j * yDist
+          drawHex(x, y, size - 1.5, mouse.current.x, mouse.current.y)
         }
       }
 
@@ -97,14 +131,16 @@ const HoneycombBackground: React.FC<HoneycombBackgroundProps> = ({
     }
 
     window.addEventListener('resize', resize)
+    window.addEventListener('mousemove', handleMouseMove)
     resize()
     draw()
 
     return () => {
       window.removeEventListener('resize', resize)
+      window.removeEventListener('mousemove', handleMouseMove)
       cancelAnimationFrame(animationFrame)
     }
-  }, [opacity, primaryColor, accentColor])
+  }, [opacity])
 
   return (
     <canvas

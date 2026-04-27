@@ -76,8 +76,12 @@ export const AccountForm: React.FC<Props> = ({
   const onSubmit = useCallback(
     async (data: FormData) => {
       if (user) {
+        const body: Partial<FormData> = activeTab === 'profile'
+          ? { name: data.name, email: data.email }
+          : { password: data.password }
+
         const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/${user.id}`, {
-          body: JSON.stringify(data),
+          body: JSON.stringify(body),
           credentials: 'include',
           headers: {
             'Content-Type': 'application/json',
@@ -89,7 +93,6 @@ export const AccountForm: React.FC<Props> = ({
           const json = await response.json()
           setUser(json.doc)
           toast.success(updateSuccessMessage)
-          setActiveTab('profile')
           reset({
             name: json.doc.name,
             email: json.doc.email,
@@ -101,7 +104,7 @@ export const AccountForm: React.FC<Props> = ({
         }
       }
     },
-    [user, setUser, reset, updateSuccessMessage, updateErrorMessage],
+    [user, setUser, reset, updateSuccessMessage, updateErrorMessage, activeTab],
   )
 
   useEffect(() => {
@@ -156,7 +159,10 @@ export const AccountForm: React.FC<Props> = ({
                 id="name"
                 placeholder={namePlaceholder}
                 className={inputClasses}
-                {...register('name', { required: requiredErrorMessage })}
+                {...register('name', {
+                  required: requiredErrorMessage,
+                  minLength: { value: 2, message: 'TOO SHORT' }
+                })}
               />
               {errors.name && <FormError message={errors.name.message} className="text-[10px] font-black text-error mt-2 uppercase" />}
             </FormItem>
@@ -164,12 +170,18 @@ export const AccountForm: React.FC<Props> = ({
             <FormItem className="space-y-1">
               <label className={labelClasses}>{emailLabel}</label>
               <ClippedInput
-                label={nameLabel}
+                label={emailLabel}
                 id="email"
                 type="email"
                 placeholder={emailPlaceholder}
                 className={inputClasses}
-                {...register('email', { required: requiredErrorMessage })}
+                {...register('email', {
+                  required: requiredErrorMessage,
+                  pattern: {
+                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                    message: 'INVALID EMAIL'
+                  }
+                })}
               />
               {errors.email && <FormError message={errors.email.message} className="text-[10px] font-black text-error mt-2 uppercase" />}
             </FormItem>
@@ -179,12 +191,15 @@ export const AccountForm: React.FC<Props> = ({
             <FormItem className="space-y-1">
               <label className={labelClasses}>{newPasswordLabel}</label>
               <ClippedInput
-                label={nameLabel}
+                label={newPasswordLabel}
                 id="password"
                 type="password"
                 placeholder={passwordPlaceholder}
                 className={inputClasses}
-                {...register('password', { required: requiredErrorMessage })}
+                {...register('password', {
+                  required: requiredErrorMessage,
+                  minLength: { value: 8, message: 'MIN 8 CHARS' }
+                })}
               />
               {errors.password && <FormError message={errors.password.message} className="text-[10px] font-black text-error mt-2 uppercase" />}
             </FormItem>
@@ -192,7 +207,7 @@ export const AccountForm: React.FC<Props> = ({
             <FormItem className="space-y-1">
               <label className={labelClasses}>{confirmPasswordLabel}</label>
               <ClippedInput
-                label={nameLabel}
+                label={confirmPasswordLabel}
                 id="passwordConfirm"
                 type="password"
                 placeholder={passwordPlaceholder}

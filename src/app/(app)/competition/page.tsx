@@ -1,3 +1,4 @@
+// app/(frontend)/competition/page.tsx
 import GridSection from '@/components/Section/Blocks/GridSection'
 import ListSection from '@/components/Section/Blocks/ListSection'
 import MapSection from '@/components/Section/Blocks/MapSection'
@@ -190,7 +191,7 @@ export default async function CompetitionPage() {
             lng: circuit.details?.location?.[1] || 0,
             description: circuit.basics?.tagline || circuit.basics?.identifiers?.abbreviation || 'CIRCUIT_HUB',
             address: circuit.details?.address || 'COORDINATES_ONLY',
-            slug: circuit.slug,
+            slug: `competition/circuits/${circuit.slug}`,
         }))
 
     return (

@@ -17,26 +17,30 @@ export const ForgotPasswordForm: React.FC = () => {
   const [success, setSuccess] = useState(false)
 
   const {
-    formState: { errors, isLoading },
+    formState: { errors, isSubmitting },
     handleSubmit,
     register,
   } = useForm<FormData>()
 
   const onSubmit = useCallback(async (data: FormData) => {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/forgot-password`,
-      {
-        body: JSON.stringify(data),
-        headers: { 'Content-Type': 'application/json' },
-        method: 'POST',
-      },
-    )
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/forgot-password`,
+        {
+          body: JSON.stringify(data),
+          headers: { 'Content-Type': 'application/json' },
+          method: 'POST',
+        },
+      )
 
-    if (response.ok) {
-      setSuccess(true)
-      setError('')
-    } else {
-      setError('Request failed.')
+      if (response.ok) {
+        setSuccess(true)
+        setError('')
+      } else {
+        setError('Request failed. Please check if the email is correct.')
+      }
+    } catch (err) {
+      setError('A system error occurred. Please try again.')
     }
   }, [])
 
@@ -75,18 +79,24 @@ export const ForgotPasswordForm: React.FC = () => {
             type="email"
             autoComplete="email"
             error={Boolean(errors.email)}
-            {...register('email', { required: 'Required' })}
+            {...register('email', {
+              required: 'Required',
+              pattern: {
+                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                message: 'Invalid email address'
+              }
+            })}
           />
           {errors.email && <FormError message={errors.email.message} className="text-[9px] font-mono font-black text-secondary px-4 mt-1 uppercase" />}
         </FormItem>
 
         <button
           type="submit"
-          disabled={isLoading}
+          disabled={isSubmitting}
           className="w-full h-14 bg-black-pure text-white-pure flex items-center justify-between px-8 hover:bg-primary hover:text-black-pure transition-all duration-300 group disabled:opacity-20"
         >
           <span className="text-xs font-mono font-black uppercase tracking-[0.2em]">
-            {isLoading ? 'Processing' : 'Issue Link'}
+            {isSubmitting ? 'Processing' : 'Issue Link'}
           </span>
           <ArrowRight className="h-4 w-4 group-hover:translate-x-2 transition-transform" />
         </button>

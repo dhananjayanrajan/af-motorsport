@@ -1,6 +1,8 @@
+// ListSection.tsx
 "use client"
 
 import { AnimatePresence, motion } from 'framer-motion'
+import Link from 'next/link'
 import React, { useRef, useState } from 'react'
 import TactileBackground from '../Backgrounds/TactileBackground'
 import SectionFooter from '../Components/SectionFooter'
@@ -116,7 +118,7 @@ const ListSection: React.FC<ListSectionProps> = ({
                     exit={{ x: 10, opacity: 0 }}
                     className="space-y-4"
                   >
-                    <h3 className="text-xl md:text-2xl font-black text-white-pure uppercase tracking-widest leading-none">
+                    <h3 className="text-xl md:text-3xl font-black text-white-pure uppercase tracking-widest leading-none">
                       {activeEntry?.title}
                     </h3>
                     <div className="inline-block px-3 py-1 bg-primary-500 border-2 border-black-pure shadow-[4px_4px_0px_0px_#ffffff]">
@@ -133,7 +135,7 @@ const ListSection: React.FC<ListSectionProps> = ({
                   <span className="font-mono text-xs text-black-pure uppercase font-black tracking-widest leading-none mb-2">
                     {labels.statusPrefix}
                   </span>
-                  <span className="text-base font-black text-black-pure uppercase tracking-widest leading-none truncate">
+                  <span className="text-sm font-black text-black-pure uppercase tracking-widest leading-none truncate">
                     {activeEntry?.status}
                   </span>
                 </div>
@@ -141,7 +143,7 @@ const ListSection: React.FC<ListSectionProps> = ({
                   <span className="font-mono text-xs text-black-pure uppercase font-black tracking-widest leading-none mb-2">
                     {labels.timePrefix}
                   </span>
-                  <span className="text-base font-black text-black-pure uppercase tracking-widest leading-none tabular-nums truncate">
+                  <span className="text-sm font-black text-black-pure uppercase tracking-widest leading-none tabular-nums truncate">
                     {activeEntry?.timestamp}
                   </span>
                 </div>
@@ -161,7 +163,7 @@ const ListSection: React.FC<ListSectionProps> = ({
                   >
                     <div className="relative z-10 flex items-center justify-between w-full gap-4">
                       <div className="flex items-center gap-6 min-w-0">
-                        <span className={`font-mono text-2xl font-black flex-none transition-colors tracking-widest leading-none ${activeIndex === idx ? 'text-primary-500' : 'text-black-pure'}`}>
+                        <span className={`font-mono text-xl font-black flex-none transition-colors tracking-widest leading-none ${activeIndex === idx ? 'text-primary-500' : 'text-black-pure'}`}>
                           {(idx + 1).toString().padStart(2, '0')}
                         </span>
 
@@ -169,20 +171,21 @@ const ListSection: React.FC<ListSectionProps> = ({
                           <span className="text-xs font-mono font-black uppercase tracking-widest leading-none text-black-pure mb-2">
                             {entry.tag || id}
                           </span>
-                          <h4 className={`text-base md:text-xl font-black uppercase tracking-widest leading-none transition-colors line-clamp-1 ${activeIndex === idx ? 'text-primary-500' : 'text-black-pure'}`}>
+                          <h4 className={`text-base md:text-md font-black uppercase tracking-widest leading-none transition-colors line-clamp-1 ${activeIndex === idx ? 'text-primary-500' : 'text-black-pure'}`}>
                             {entry.title}
                           </h4>
                         </div>
                       </div>
 
                       {entry.href && (
-                        <div
+                        <Link
+                          href={entry.href}
                           className={`h-12 w-12 flex-none flex items-center justify-center border-2 border-black-pure transition-all shadow-[4px_4px_0px_0px_#000000] ${activeIndex === idx ? 'bg-primary-500 shadow-none translate-x-1 translate-y-1' : 'bg-white-pure'}`}
                         >
                           <svg className="w-5 h-5 text-black-pure" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                             <path d="M7 17L17 7M17 7H7M17 7V17" strokeWidth="4" strokeLinecap="square" />
                           </svg>
-                        </div>
+                        </Link>
                       )}
                     </div>
                     <div className={`absolute left-0 top-0 w-2 h-full bg-primary-500 transition-transform duration-300 origin-bottom ${activeIndex === idx ? 'scale-y-100' : 'scale-y-0'}`} />
@@ -210,4 +213,4 @@ const ListSection: React.FC<ListSectionProps> = ({
   )
 }
 
-export default ListSection;
+export default ListSection

@@ -1,4 +1,4 @@
-import CarouselSection from '@/components/Section/Blocks/CarouselSection'
+// app/(frontend)/about/page.tsx
 import FeatureSection from '@/components/Section/Blocks/FeatureSection'
 import GridSection from '@/components/Section/Blocks/GridSection'
 import ListSection from '@/components/Section/Blocks/ListSection'
@@ -136,23 +136,24 @@ export default async function AboutPage() {
       id: 'identity-mission',
       title: 'MISSION',
       description: identity.mission || 'Advancing the standards of professional competition through technical precision.',
+      slug: 'about',
       stats: [
         { label: 'VISION', value: identity.vision || 'Global leadership in motorsport infrastructure.' },
       ],
     },
   ]
 
-  const statementSlides = statements.map((statement: Statement) => {
+  const statementFeatures = statements.map((statement: Statement) => {
     const imageUrl = getMediaUrl(statement.seo?.image)
     return {
       id: String(statement.id),
       title: statement.name,
-      description: statement.basics?.description || undefined,
+      description: statement.basics?.description || '',
       image: imageUrl || '',
-      meta: statement.basics?.status || undefined,
-      tags: statement.tags ? statement.tags.map((tag: any) => typeof tag === 'object' ? tag.name : String(tag)) : undefined,
-      ctaLabel: 'READ STATEMENT',
-      ctaHref: `/about/statements/${statement.slug}`,
+      slug: `about/statements/${statement.slug}`,
+      stats: [
+        { label: 'Status', value: statement.basics?.status || 'Active' },
+      ],
     }
   })
 
@@ -205,12 +206,20 @@ export default async function AboutPage() {
           footerVariant={1}
         />
       )}
-      {statementSlides.length > 0 && (
-        <CarouselSection
+      {statementFeatures.length > 0 && (
+        <FeatureSection
           id="about-statements"
-          slides={statementSlides}
-          autoplayDelay={5000}
-          ctaLabel="VIEW ALL STATEMENTS"
+          title="STATEMENTS"
+          subtitle="Official communications and declarations"
+          features={statementFeatures}
+          labels={{
+            specIndex: 'STMT',
+            statsLabel: 'DATA',
+            ctaLabel: 'READ',
+          }}
+          columns={3}
+          headerVariant={2}
+          footerVariant={1}
         />
       )}
       {planEntries.length > 0 && (

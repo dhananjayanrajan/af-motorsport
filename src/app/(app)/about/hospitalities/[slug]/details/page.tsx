@@ -1,3 +1,4 @@
+// app/(frontend)/about/hospitalities/[slug]/details/page.tsx
 import GridSection from '@/components/Section/Blocks/GridSection'
 import ListSection from '@/components/Section/Blocks/ListSection'
 import MapSection from '@/components/Section/Blocks/MapSection'
@@ -65,7 +66,7 @@ export default async function HospitalityDetailsPage({ params }: { params: Promi
             lat: hospitality.details.location[0],
             lng: hospitality.details.location[1],
             description: hospitality.basics?.tagline || undefined,
-            slug: hospitality.slug,
+            slug: `about/hospitalities/${slug}`,
         })
     }
 

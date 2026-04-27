@@ -1,3 +1,5 @@
+// app/(frontend)/resources/cars/[slug]/page.tsx
+import CoverSection from '@/components/Section/Blocks/CoverSection'
 import MasonrySection from '@/components/Section/Blocks/MasonrySection'
 import ScrollSection from '@/components/Section/Blocks/ScrollSection'
 import StudySection from '@/components/Section/Blocks/StudySection'
@@ -57,6 +59,11 @@ export default async function CarPage({ params }: { params: Promise<{ slug: stri
 
     if (!car) notFound()
 
+    const coverImage = getMediaUrl(car.assets?.cover) ||
+        getMediaUrl(car.assets?.avatar) ||
+        getMediaUrl(car.assets?.thumbnail) ||
+        `https://picsum.photos/seed/${car.slug}/1920/1080`
+
     const videoUrl = getMediaUrl(car.assets?.video)
     const videoItems = videoUrl
         ? [{
@@ -68,10 +75,7 @@ export default async function CarPage({ params }: { params: Promise<{ slug: stri
         }]
         : []
 
-    const studyImage = getMediaUrl(car.assets?.cover) ||
-        getMediaUrl(car.assets?.avatar) ||
-        getMediaUrl(car.assets?.thumbnail) ||
-        `https://picsum.photos/seed/${car.slug}/800/600`
+    const studyImage = coverImage
 
     const study = {
         id: String(car.id),
@@ -123,6 +127,10 @@ export default async function CarPage({ params }: { params: Promise<{ slug: stri
 
     return (
         <main className="w-full">
+            <CoverSection
+                id="car-cover"
+                image={coverImage}
+            />
             {videoItems.length > 0 && (
                 <VideoSection
                     id="car-video"

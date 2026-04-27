@@ -26,23 +26,32 @@ const SectionCTA: React.FC<SectionCTAProps> = ({
     directoryLabel = "",
     proceedLabel = ""
 }) => {
-    const textBase = "font-black uppercase tracking-tighter leading-none"
+    const textBase = "font-black uppercase tracking-tighter"
 
     if (variant === 2) {
         return (
-            <div className="w-full mt-20 group">
-                <div className="flex items-center gap-4 mb-4">
-                    <div className="h-px flex-1 bg-black-pure" />
-                    <span className="text-xs font-bold opacity-30">{directoryLabel} // {path}</span>
-                </div>
-                <button onClick={onClick} className="w-full grid grid-cols-[1fr_auto] items-stretch border-4 border-black-pure overflow-hidden">
-                    <div className="bg-white-pure p-8 group-hover:bg-primary-500 transition-colors duration-500 text-left">
-                        <h2 className={`${textBase} text-2xl`}>{label}</h2>
-                        {description && <p className="mt-4 text-base font-bold opacity-60 leading-tight max-w-xl">{description}</p>}
+            <div className="w-full mt-20 group relative">
+                <div className="flex items-center justify-between mb-2">
+                    <span className="text-[10px] font-black text-black-pure/40 px-2 py-1 border-l-2 border-black-pure bg-zinc-100">
+                        {directoryLabel} {path}
+                    </span>
+                    <div className="flex gap-1">
+                        <div className="w-2 h-2 bg-primary-500" />
+                        <div className="w-2 h-2 bg-secondary-500" />
+                        <div className="w-2 h-2 bg-tertiary-500" />
                     </div>
-                    <div className="bg-black-pure w-24 flex items-center justify-center text-primary-500 group-hover:bg-secondary-500 group-hover:text-black-pure transition-all duration-500">
-                        <svg className="w-10 h-10 group-hover:translate-x-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeWidth={4} d="M13 5l7 7m0 0l-7 7m7-7H3" />
+                </div>
+                <button
+                    onClick={onClick}
+                    className="w-full grid grid-cols-1 md:grid-cols-[1fr_120px] items-stretch border-2 border-black-pure shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[12px_12px_0px_0px_var(--primary-500)] transition-all duration-300 active:translate-x-1 active:translate-y-1 active:shadow-none"
+                >
+                    <div className="bg-white-pure p-6 md:p-8 text-left border-b-2 md:border-b-0 md:border-r-2 border-black-pure">
+                        <h2 className={`${textBase} text-xl text-black-pure mb-3 break-words`}>{label}</h2>
+                        {description && <p className="text-sm font-bold text-neutral-600 leading-none max-w-2xl break-words">{description}</p>}
+                    </div>
+                    <div className="bg-black-pure flex items-center justify-center group-hover:bg-primary-500 transition-colors duration-300 py-6 md:py-0">
+                        <svg className="w-12 h-12 text-white-pure group-hover:text-black-pure group-hover:rotate-45 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeWidth={3} d="M7 17L17 7M17 7H7M17 7V17" />
                         </svg>
                     </div>
                 </button>
@@ -52,16 +61,22 @@ const SectionCTA: React.FC<SectionCTAProps> = ({
 
     if (variant === 3) {
         return (
-            <div className="mt-20 bg-black-pure p-10 relative overflow-hidden group">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-white-pure/5 -translate-y-16 translate-x-16 rotate-45 group-hover:translate-x-0 group-hover:translate-y-0 transition-transform duration-700" />
-                <div className="relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-10">
-                    <div className="space-y-6">
-                        <span className="inline-block bg-primary-500 text-black-pure px-3 py-1 font-black text-xs">{proceedLabel}</span>
-                        <p className="text-white-pure text-lg font-bold max-w-md leading-relaxed">{description}</p>
+            <div className="mt-20 border-t-4 border-black-pure pt-12 relative group overflow-hidden">
+                <div className="absolute top-0 right-0 h-full w-1/3 bg-tertiary-500/10 -skew-x-12 translate-x-full group-hover:translate-x-1/2 transition-transform duration-1000" />
+                <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-8 relative z-10">
+                    <div className="max-w-xl">
+                        <div className="inline-flex items-center gap-2 mb-4">
+                            <div className="w-4 h-4 bg-black-pure animate-pulse" />
+                            <span className="text-xs font-black text-tertiary-700 underline decoration-2">{proceedLabel}</span>
+                        </div>
+                        <p className="text-lg font-black text-black-pure leading-none mb-6 break-words">{description}</p>
                     </div>
-                    <button onClick={onClick} className={`${textBase} text-2xl text-primary-500 hover:text-white-pure flex items-center gap-4 group/btn transition-colors`}>
+                    <button
+                        onClick={onClick}
+                        className={`${textBase} text-xl bg-black-pure text-white-pure px-8 py-6 hover:bg-tertiary-500 hover:text-black-pure transition-all flex items-center gap-6 self-start md:self-end`}
+                    >
                         {label}
-                        <div className="w-12 h-2 bg-secondary-500 group-hover/btn:w-20 transition-all" />
+                        <span className="block w-8 h-[2px] bg-white-pure group-hover:w-16 group-hover:bg-black-pure transition-all duration-500" />
                     </button>
                 </div>
             </div>
@@ -70,17 +85,32 @@ const SectionCTA: React.FC<SectionCTAProps> = ({
 
     if (variant === 4) {
         return (
-            <div className="mt-20 grid grid-cols-1 md:grid-cols-[1.5fr_1fr] gap-0 border-4 border-black-pure group">
-                <div className="p-10 bg-white-pure border-b-4 md:border-b-0 md:border-r-4 border-black-pure">
-                    <div className="flex items-center gap-3 mb-6">
-                        <div className="w-3 h-3 bg-secondary-500 rounded-full" />
-                        <span className="text-xs font-black tracking-widest">{infoLabel}</span>
+            <div className="mt-20 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[1fr_350px] border-4 border-black-pure bg-black-pure gap-1">
+                <div className="bg-white-pure p-8 flex flex-col justify-between">
+                    <div className="mb-10">
+                        <div className="flex items-center gap-1 mb-6">
+                            {[...Array(4)].map((_, i) => <div key={i} className="w-1.5 h-6 bg-secondary-500" />)}
+                            <span className="ml-2 text-xs font-black text-black-pure">{infoLabel}</span>
+                        </div>
+                        <p className="text-xl font-black text-black-pure leading-none uppercase break-words">{description}</p>
                     </div>
-                    <p className="text-xl font-bold text-black-pure leading-tight">{description}</p>
+                    <div className="h-2 w-full bg-zinc-100 relative overflow-hidden">
+                        <div className="absolute inset-y-0 left-0 bg-secondary-500 w-1/4 group-hover:w-full transition-all duration-700" />
+                    </div>
                 </div>
-                <button onClick={onClick} className="bg-primary-500 p-10 flex flex-col justify-between hover:bg-black-pure transition-colors duration-500 text-left">
-                    <span className="text-black-pure group-hover:text-white-pure text-xs font-black underline underline-offset-8">{path}</span>
-                    <h2 className={`${textBase} text-2xl text-black-pure group-hover:text-primary-500 mt-12`}>{label}</h2>
+                <button
+                    onClick={onClick}
+                    className="bg-secondary-500 p-8 flex flex-col items-start justify-between group/btn hover:bg-primary-500 transition-colors duration-300 min-h-[250px]"
+                >
+                    <span className="text-[10px] font-black bg-black-pure text-white-pure px-2 py-0.5 mb-8">{path}</span>
+                    <div className="w-full">
+                        <h2 className={`${textBase} text-xl text-black-pure mb-4 break-words`}>{label}</h2>
+                        <div className="flex gap-2">
+                            <div className="flex-1 h-10 border-2 border-black-pure flex items-center justify-center group-hover/btn:bg-black-pure group-hover/btn:text-primary-500 transition-colors text-xs font-black">
+                                {label}
+                            </div>
+                        </div>
+                    </div>
                 </button>
             </div>
         )
@@ -88,29 +118,49 @@ const SectionCTA: React.FC<SectionCTAProps> = ({
 
     if (variant === 5) {
         return (
-            <div className="mt-20 flex flex-col items-center group">
-                <div className="w-1 h-20 bg-black-pure mb-4 group-hover:h-32 transition-all duration-700" />
-                <div className="text-center mb-8">
-                    <span className="text-xs font-black opacity-30 block mb-2">{path}</span>
-                    <h2 className={`${textBase} text-2xl mb-4`}>{label}</h2>
-                    <p className="text-sm font-bold max-w-sm mx-auto opacity-60">{description}</p>
+            <div className="mt-20 flex flex-col items-center">
+                <div className="grid grid-cols-3 gap-1 w-12 mb-6">
+                    {[...Array(9)].map((_, i) => (
+                        <div key={i} className="w-3 h-3 bg-black-pure group-hover:bg-primary-500 transition-colors" />
+                    ))}
                 </div>
-                <button onClick={onClick} className={`${textBase} text-base border-2 border-black-pure px-10 py-4 bg-white-pure hover:bg-black-pure hover:text-white-pure shadow-[8px_8px_0px_#000] active:shadow-none active:translate-x-1 active:translate-y-1 transition-all`}>
-                    Confirm Action
+                <div className="text-center max-w-lg px-4">
+                    <span className="text-[10px] font-black text-primary-700 mb-2 block tracking-[0.2em]">{path}</span>
+                    <h2 className={`${textBase} text-xl mb-4 text-black-pure border-b-4 border-black-pure inline-block`}>{label}</h2>
+                    <p className="text-sm font-bold text-neutral-500 mb-10 leading-none break-words">{description}</p>
+                </div>
+                <button
+                    onClick={onClick}
+                    className={`${textBase} text-sm relative px-12 py-5 bg-white-pure border-2 border-black-pure overflow-hidden group/btn shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all`}
+                >
+                    <span className="relative z-10 mix-blend-difference text-white-pure group-hover/btn:text-black-pure transition-colors">
+                        {label}
+                    </span>
+                    <div className="absolute inset-0 bg-black-pure translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300" />
                 </button>
             </div>
         )
     }
 
     return (
-        <div className="mt-20 border-8 border-black-pure p-2 group">
-            <div className="border-2 border-black-pure p-10 flex flex-col md:flex-row items-center gap-10">
-                <div className="flex-1">
-                    <h2 className={`${textBase} text-2xl mb-4 underline decoration-primary-500 decoration-8 underline-offset-4`}>{label}</h2>
-                    <p className="text-base font-bold opacity-60">{description}</p>
+        <div className="mt-20 border-[12px] border-black-pure bg-white-pure group">
+            <div className="p-6 md:p-12 flex flex-col md:flex-row items-stretch md:items-center gap-12 border-2 border-black-pure m-2">
+                <div className="flex-1 space-y-4">
+                    <div className="flex gap-2">
+                        <div className="w-12 h-2 bg-primary-500" />
+                        <div className="w-4 h-2 bg-black-pure" />
+                    </div>
+                    <h2 className={`${textBase} text-xl md:text-xl text-black-pure leading-none break-words`}>{label}</h2>
+                    <p className="text-sm font-bold text-neutral-600 max-w-xl break-words uppercase">{description}</p>
                 </div>
-                <button onClick={onClick} className="shrink-0 w-24 h-24 bg-black-pure rounded-full flex items-center justify-center group-hover:rotate-90 transition-transform duration-500">
-                    <span className="text-white-pure text-2xl">→</span>
+                <button
+                    onClick={onClick}
+                    className="shrink-0 aspect-square w-24 md:w-32 bg-primary-500 border-4 border-black-pure flex items-center justify-center hover:bg-black-pure transition-all duration-300 group/icon"
+                >
+                    <div className="relative w-10 h-10">
+                        <span className="absolute inset-0 border-t-4 border-r-4 border-black-pure group-hover/icon:border-primary-500 transition-colors" />
+                        <span className="absolute bottom-0 left-0 w-full h-1 bg-black-pure group-hover/icon:bg-primary-500 group-hover/icon:translate-y-[-18px] transition-all" />
+                    </div>
                 </button>
             </div>
         </div>

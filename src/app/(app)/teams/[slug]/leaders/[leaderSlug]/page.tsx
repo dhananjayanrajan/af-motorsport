@@ -1,9 +1,11 @@
 // app/(frontend)/teams/[teamSlug]/leaders/[leaderSlug]/page.tsx
+import CoverSection from '@/components/Section/Blocks/CoverSection'
 import FeatureSection from '@/components/Section/Blocks/FeatureSection'
-import GridSection from '@/components/Section/Blocks/GridSection'
+import GallerySection from '@/components/Section/Blocks/GallerySection'
 import HeroSection from '@/components/Section/Blocks/HeroSection'
 import MasonrySection from '@/components/Section/Blocks/MasonrySection'
 import ScrollSection from '@/components/Section/Blocks/ScrollSection'
+import ShortsSection from '@/components/Section/Blocks/ShortsSection'
 import StudySection from '@/components/Section/Blocks/StudySection'
 import VideoSection from '@/components/Section/Blocks/VideoSection'
 import { Celebration, Interview, Media } from '@/payload-types'
@@ -119,6 +121,10 @@ export default async function LeaderPage({ params }: { params: Promise<{ teamSlu
 
     const leaderFullName = `${leader.first_name || ''} ${leader.last_name || ''}`.trim() || 'Unnamed Leader'
 
+    const coverImage = getMediaUrl(leader.assets?.cover) ||
+        getMediaUrl(leader.assets?.avatar) ||
+        `https://picsum.photos/seed/${leader.slug}/1920/1080`
+
     const videoItems: any[] = []
 
     const heroBackgroundImage = leader.assets?.cover
@@ -195,32 +201,32 @@ export default async function LeaderPage({ params }: { params: Promise<{ teamSlu
     const celebrationItems: any[] = celebrations.map((celebration: Celebration) => {
         const imageUrl = celebration.assets?.thumbnail
             ? getMediaUrl(celebration.assets.thumbnail)
-            : `https://picsum.photos/seed/${celebration.id}/400/300`
+            : `https://picsum.photos/seed/${celebration.id}/1200/800`
 
         return {
             id: String(celebration.id),
             title: celebration.name,
-            subtitle: celebration.basics?.description || undefined,
+            description: celebration.basics?.description || undefined,
             image: imageUrl,
-            href: `/celebrations/${celebration.slug}`,
+            category: 'CELEBRATION',
         }
     })
 
     const interviewItems: any[] = interviews.map((interview: Interview) => {
-        const imageUrl = interview.assets?.thumbnail
+        const posterUrl = interview.assets?.thumbnail
             ? getMediaUrl(interview.assets.thumbnail)
             : interview.assets?.cover
                 ? getMediaUrl(interview.assets.cover)
-                : `https://picsum.photos/seed/${interview.id}/400/300`
+                : undefined
 
         return {
             id: String(interview.id),
             title: interview.name,
-            subtitle: interview.basics?.summary || interview.basics?.tagline || undefined,
-            image: imageUrl,
-            href: `/interviews/${interview.slug}`,
+            videoUrl: '',
+            poster: posterUrl,
+            category: 'INTERVIEW',
         }
-    })
+    }).filter(item => item.videoUrl)
 
     return (
         <main className="w-full">
@@ -232,6 +238,10 @@ export default async function LeaderPage({ params }: { params: Promise<{ teamSlu
                 backgroundImage={heroBackgroundImage}
                 alignment="left"
                 meta={leader.basics?.nationality && typeof leader.basics.nationality === 'object' && 'name' in leader.basics.nationality ? leader.basics.nationality.name : undefined}
+            />
+            <CoverSection
+                id="leader-cover"
+                image={coverImage}
             />
             {videoItems.length > 0 && (
                 <VideoSection
@@ -310,35 +320,24 @@ export default async function LeaderPage({ params }: { params: Promise<{ teamSlu
                 />
             )}
             {celebrationItems.length > 0 && (
-                <GridSection
+                <GallerySection
                     id="leader-celebrations"
                     title="Celebrations"
                     subtitle="Career highlights"
                     items={celebrationItems}
-                    labels={{
-                        unitsCount: 'CEL',
-                        viewProject: 'VIEW',
-                        sectionIndex: 'CEL',
-                        fallbackAlt: 'Celebration',
-                    }}
                     columns={3}
+                    headerVariant={1}
+                    footerVariant={1}
                 />
             )}
-            {interviewItems.length > 0 && (
-                <GridSection
-                    id="leader-interviews"
-                    title="Interviews"
-                    subtitle="Media appearances"
-                    items={interviewItems}
-                    labels={{
-                        unitsCount: 'INT',
-                        viewProject: 'VIEW',
-                        sectionIndex: 'INT',
-                        fallbackAlt: 'Interview',
-                    }}
-                    columns={3}
-                />
-            )}
+            <ShortsSection
+                id="leader-interviews"
+                title="Interviews"
+                subtitle="Media appearances"
+                items={interviewItems}
+                headerVariant={1}
+                footerVariant={1}
+            />
         </main>
     )
 }

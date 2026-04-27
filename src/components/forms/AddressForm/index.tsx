@@ -11,6 +11,7 @@ import {
 import { FormError } from '@/components/forms/FormError'
 import { FormItem } from '@/components/forms/FormItem'
 import { Address, Config } from '@/payload-types'
+import { useAuth } from '@/providers/Auth'
 import {
   defaultCountries as supportedCountries,
   useAddresses,
@@ -48,6 +49,7 @@ export const AddressForm: React.FC<Props> = ({
   callback,
   skipSubmission,
 }) => {
+  const { user } = useAuth()
   const {
     register,
     handleSubmit,
@@ -62,18 +64,20 @@ export const AddressForm: React.FC<Props> = ({
   const onSubmit = useCallback(
     async (data: AddressFormValues) => {
       const newData = deepMergeSimple(initialData || {}, data)
-      if (!skipSubmission) {
+
+      if (!skipSubmission && user) {
         if (addressID) {
           await updateAddress(addressID, newData)
         } else {
           await createAddress(newData)
         }
       }
+
       if (callback) {
         callback(newData)
       }
     },
-    [initialData, skipSubmission, callback, addressID, updateAddress, createAddress],
+    [initialData, skipSubmission, callback, addressID, updateAddress, createAddress, user],
   )
 
   const inputClasses = "bg-white-pure border-2 border-black-pure h-14 px-5 text-black-pure placeholder:text-black-pure/30 focus:bg-white-pure transition-colors duration-300 rounded-none w-full font-black uppercase text-[11px] tracking-tight"
@@ -86,6 +90,7 @@ export const AddressForm: React.FC<Props> = ({
           <ClippedSelect
             onValueChange={(value) => setValue('title', value, { shouldDirty: true, shouldValidate: true })}
             defaultValue={initialData?.title || ''}
+            {...register('title', { required: 'REQUIRED' })}
           >
             <ClippedSelectTrigger
               label="Title"
@@ -112,7 +117,10 @@ export const AddressForm: React.FC<Props> = ({
             autoComplete="given-name"
             placeholder="FIRST"
             className={inputClasses}
-            {...register('firstName', { required: 'REQUIRED' })}
+            {...register('firstName', {
+              required: 'REQUIRED',
+              minLength: { value: 2, message: 'TOO SHORT' }
+            })}
           />
           {errors.firstName && <FormError message={errors.firstName.message} className="text-[10px] font-black text-black-pure mt-2 uppercase tracking-tighter" />}
         </FormItem>
@@ -124,7 +132,10 @@ export const AddressForm: React.FC<Props> = ({
             autoComplete="family-name"
             placeholder="LAST"
             className={inputClasses}
-            {...register('lastName', { required: 'REQUIRED' })}
+            {...register('lastName', {
+              required: 'REQUIRED',
+              minLength: { value: 2, message: 'TOO SHORT' }
+            })}
           />
           {errors.lastName && <FormError message={errors.lastName.message} className="text-[10px] font-black text-black-pure mt-2 uppercase tracking-tighter" />}
         </FormItem>
@@ -137,8 +148,15 @@ export const AddressForm: React.FC<Props> = ({
             autoComplete="tel"
             placeholder="NUMBER"
             className={inputClasses}
-            {...register('phone')}
+            {...register('phone', {
+              required: 'REQUIRED',
+              pattern: {
+                value: /^\+?[0-9\s-]{7,15}$/,
+                message: 'INVALID PHONE'
+              }
+            })}
           />
+          {errors.phone && <FormError message={errors.phone.message} className="text-[10px] font-black text-black-pure mt-2 uppercase tracking-tighter" />}
         </FormItem>
 
         <FormItem className="md:col-span-6 space-y-1">
@@ -194,8 +212,9 @@ export const AddressForm: React.FC<Props> = ({
             autoComplete="address-level1"
             placeholder="STATE"
             className={inputClasses}
-            {...register('state')}
+            {...register('state', { required: 'REQUIRED' })}
           />
+          {errors.state && <FormError message={errors.state.message} className="text-[10px] font-black text-black-pure mt-2 uppercase tracking-tighter" />}
         </FormItem>
 
         <FormItem className="md:col-span-4 space-y-1">
@@ -204,7 +223,13 @@ export const AddressForm: React.FC<Props> = ({
             id="postalCode"
             placeholder="ZIP"
             className={inputClasses}
-            {...register('postalCode', { required: 'REQUIRED' })}
+            {...register('postalCode', {
+              required: 'REQUIRED',
+              pattern: {
+                value: /^[A-Z0-9\s-]{3,10}$/i,
+                message: 'INVALID ZIP'
+              }
+            })}
           />
           {errors.postalCode && <FormError message={errors.postalCode.message} className="text-[10px] font-black text-black-pure mt-2 uppercase tracking-tighter" />}
         </FormItem>
@@ -213,6 +238,7 @@ export const AddressForm: React.FC<Props> = ({
           <ClippedSelect
             onValueChange={(value) => setValue('country', value, { shouldDirty: true, shouldValidate: true })}
             defaultValue={initialData?.country || ''}
+            {...register('country', { required: 'REQUIRED' })}
           >
             <ClippedSelectTrigger
               label="Country"
@@ -251,7 +277,7 @@ export const AddressForm: React.FC<Props> = ({
             className="absolute inset-0 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-in-out bg-white-pure"
           />
           <span className="relative z-10 text-[11px] font-black uppercase tracking-widest flex items-center justify-center gap-3 group-hover:text-black-pure transition-colors duration-500">
-            {isSubmitting ? 'SAVING' : 'SAVE ADDRESS'} <ChevronRight className="h-4 w-4" />
+            {isSubmitting ? 'SAVING' : (user ? 'SAVE ADDRESS' : 'CONFIRM ADDRESS')} <ChevronRight className="h-4 w-4" />
           </span>
         </button>
       </div>

@@ -1,3 +1,5 @@
+// app/(frontend)/page.tsx
+import CarouselSection from '@/components/Section/Blocks/CarouselSection'
 import FeatureSection from '@/components/Section/Blocks/FeatureSection'
 import ListSection from '@/components/Section/Blocks/ListSection'
 import VideoSection from '@/components/Section/Blocks/VideoSection'
@@ -186,7 +188,7 @@ const getHomeData = unstable_cache(
 )
 
 export default async function HomePage() {
-  const { events, sessions, onboardings, seriesList, races, drivers } = await getHomeData()
+  const { events, sessions, onboardings, slidesDocs, seriesList, races, drivers } = await getHomeData()
 
   const videoItems = [...events, ...sessions, ...onboardings].slice(0, 8)
 
@@ -223,7 +225,20 @@ export default async function HomePage() {
     }
   })
 
-  const listEntries = seriesList.map((series) => {
+  const slideSlides = slidesDocs.map((slide) => {
+    const imageUrl = resolveAssetUrl(slide.assets, 'background', 'thumbnail')
+    return {
+      id: String(slide.id),
+      title: slide.name,
+      description: slide.basics?.description || undefined,
+      image: imageUrl || '',
+      meta: slide.details?.type || undefined,
+      ctaLabel: 'VIEW',
+      ctaHref: `/slides/${slide.slug}`,
+    }
+  })
+
+  const seriesEntries = seriesList.map((series) => {
     let timestamp = ''
     if (series.createdAt) {
       try {
@@ -248,6 +263,7 @@ export default async function HomePage() {
     title: race.name,
     description: race.basics?.description || '',
     image: resolveAssetUrl(race.assets, 'thumbnail', 'cover'),
+    slug: `calendar/races/${race.slug}`,
     stats: [
       { label: 'Distance', value: race.details?.distance_km ? `${race.details.distance_km} km` : '' },
       { label: 'Status', value: race.details?.status || '' },
@@ -266,6 +282,7 @@ export default async function HomePage() {
       title: `${driver.first_name} ${driver.last_name}`,
       description: driver.basics?.callsign || driver.basics?.catchphrase || '',
       image: getMediaUrl(driver.assets?.avatar),
+      slug: `teams/${driver.slug}`,
       stats: [
         { label: 'Number', value: driver.basics?.racing_number?.toString() || '' },
         { label: 'Nationality', value: nationality },
@@ -328,12 +345,20 @@ export default async function HomePage() {
         headerVariant={1}
         footerVariant={1}
       />
-      {listEntries.length > 0 && (
+      {slideSlides.length > 0 && (
+        <CarouselSection
+          id="home-slides"
+          slides={slideSlides}
+          autoplayDelay={4000}
+          ctaLabel="VIEW ALL SLIDES"
+        />
+      )}
+      {seriesEntries.length > 0 && (
         <ListSection
-          id="home-competition"
+          id="home-series"
           title="SERIES"
           subtitle="Sanctioned racing divisions"
-          entries={listEntries}
+          entries={seriesEntries}
           labels={{
             statusPrefix: 'SYSTEM',
             timePrefix: 'UPDATED',

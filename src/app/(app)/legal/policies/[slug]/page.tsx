@@ -1,3 +1,4 @@
+// app/(frontend)/legal/policies/[slug]/page.tsx
 import FeatureSection from '@/components/Section/Blocks/FeatureSection'
 import GridSection from '@/components/Section/Blocks/GridSection'
 import { Media } from '@/payload-types'
@@ -50,6 +51,7 @@ export default async function PolicyPage({ params }: { params: Promise<{ slug: s
         title: policy.name.toUpperCase(),
         description: policy.basics?.description || 'Official corporate policy and procedural documentation.',
         image: getMediaUrl(policy.basics?.document) || '',
+        slug: `legal/policies/${policy.slug}`,
         stats: [
             { label: 'Release Version', value: (policy.basics?.version || '1.0.0').toUpperCase() },
             { label: 'Effective Cycle', value: policy.basics?.effective_date ? new Date(policy.basics.effective_date).toISOString().split('T')[0] : 'TBD' },

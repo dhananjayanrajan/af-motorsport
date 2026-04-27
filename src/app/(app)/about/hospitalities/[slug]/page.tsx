@@ -1,3 +1,4 @@
+// app/(frontend)/about/hospitalities/[slug]/page.tsx
 import HeroSection from '@/components/Section/Blocks/HeroSection'
 import MasonrySection from '@/components/Section/Blocks/MasonrySection'
 import QuoteSection from '@/components/Section/Blocks/QuoteSection'
@@ -119,6 +120,7 @@ export default async function HospitalityPage({ params }: { params: Promise<{ sl
             title: 'INITIALIZATION',
             description: 'Official opening of hospitality services.',
             status: 'upcoming' as const,
+            slug: `about/hospitalities/${hospitality.slug}`,
         })
     }
     if (hospitality.details?.end_date) {
@@ -128,6 +130,7 @@ export default async function HospitalityPage({ params }: { params: Promise<{ sl
             title: 'CONCLUSION',
             description: 'Final operational window for this experience.',
             status: 'upcoming' as const,
+            slug: `about/hospitalities/${hospitality.slug}`,
         })
     }
 

@@ -25,7 +25,31 @@ export const CheckoutForm: React.FC<Props> = ({ customerEmail, billingAddress, s
 
   const handleSubmit = useCallback(async (e: FormEvent) => {
     e.preventDefault()
+    setError(null)
+
     if (!stripe || !elements) return
+
+    if (!customerEmail) {
+      setError('Email is required')
+      return
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(customerEmail)) {
+      setError('Please provide a valid email address')
+      return
+    }
+
+    if (!billingAddress?.addressLine1 || !billingAddress?.city || !billingAddress?.postalCode || !billingAddress?.country) {
+      setError('Please complete all billing address fields')
+      return
+    }
+
+    const { error: submitError } = await elements.submit()
+    if (submitError) {
+      setError(submitError.message || 'Validation error')
+      return
+    }
 
     setIsLoading(true)
     setProcessingPayment(true)
@@ -62,7 +86,10 @@ export const CheckoutForm: React.FC<Props> = ({ customerEmail, billingAddress, s
           router.push(`/orders/${result.orderID}${customerEmail ? `?email=${customerEmail}` : ''}`)
         }
       }
-      if (stripeError) setError(stripeError.message || 'Payment error')
+
+      if (stripeError) {
+        setError(stripeError.message || 'Payment error')
+      }
     } catch (e) {
       setError('Transaction failed')
     } finally {
@@ -88,7 +115,9 @@ export const CheckoutForm: React.FC<Props> = ({ customerEmail, billingAddress, s
       >
         <div className="flex items-center gap-4">
           <Lock size={14} />
-          <span className="text-xs font-mono font-black uppercase tracking-widest">Confirm purchase</span>
+          <span className="text-xs font-mono font-black uppercase tracking-widest">
+            {isLoading ? 'Processing...' : 'Confirm purchase'}
+          </span>
         </div>
         <ArrowRight size={16} className="group-hover:translate-x-2 transition-transform" />
       </button>

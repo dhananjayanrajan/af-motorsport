@@ -68,7 +68,13 @@ export const FindOrderForm: React.FC<Props> = ({ initialEmail }) => {
             placeholder="MAIL"
             autoComplete="email"
             className={inputClasses}
-            {...register('email', { required: 'REQUIRED' })}
+            {...register('email', {
+              required: 'REQUIRED',
+              pattern: {
+                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                message: 'INVALID EMAIL'
+              }
+            })}
           />
           {errors.email && <FormError message={errors.email.message} className="text-xs font-black text-black-pure mt-2 uppercase tracking-tighter" />}
         </FormItem>
@@ -82,6 +88,10 @@ export const FindOrderForm: React.FC<Props> = ({ initialEmail }) => {
             className={inputClasses}
             {...register('orderID', {
               required: 'REQUIRED',
+              minLength: {
+                value: 5,
+                message: 'INVALID NUMBER'
+              }
             })}
           />
           {errors.orderID && <FormError message={errors.orderID.message} className="text-xs font-black text-black-pure mt-2 uppercase tracking-tighter" />}

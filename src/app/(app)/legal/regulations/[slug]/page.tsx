@@ -1,3 +1,4 @@
+// app/(frontend)/legal/regulations/[slug]/page.tsx
 import FeatureSection from '@/components/Section/Blocks/FeatureSection'
 import GridSection from '@/components/Section/Blocks/GridSection'
 import { Media } from '@/payload-types'
@@ -51,6 +52,7 @@ export default async function RegulationPage({ params }: { params: Promise<{ slu
         title: regulation.name.toUpperCase(),
         description: regulation.basics?.description || 'Governing sporting and technical directives defining the parameters of competition.',
         image: getMediaUrl(regulation.basics?.document) || '',
+        slug: `legal/regulations/${regulation.slug}`,
         stats: [
             { label: 'Current Status', value: (regulation.basics?.status || 'Active').toUpperCase() },
             { label: 'Regulatory Type', value: (regulation.basics?.type || 'Standard').toUpperCase() },

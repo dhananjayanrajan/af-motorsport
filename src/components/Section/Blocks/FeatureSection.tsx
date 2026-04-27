@@ -1,3 +1,4 @@
+// FeatureSection.tsx
 "use client"
 
 import { motion } from 'framer-motion'
@@ -14,6 +15,7 @@ export interface Feature {
   description: string
   icon?: React.ReactNode
   image?: string
+  slug?: string
   stats?: { label: string; value: string }[]
 }
 
@@ -152,7 +154,7 @@ const FeatureSection: React.FC<FeatureSectionProps> = ({
 
                       <div className="mt-auto shrink-0 py-4 lg:py-0">
                         <Link
-                          href={ctaPath ? `${ctaPath}/${feature.id}` : `/${feature.id}`}
+                          href={feature.slug ? `/${feature.slug}` : ctaPath ? `${ctaPath}/${feature.id}` : `/${feature.id}`}
                           className="inline-flex items-center gap-4 bg-white-pure text-black-pure px-6 py-3 text-[10px] font-mono font-black uppercase tracking-widest border-2 border-black-pure hover:bg-black-pure hover:text-white-pure transition-all shadow-[4px_4px_0px_var(--primary-500)] hover:shadow-none"
                         >
                           {labels.ctaLabel}
@@ -217,4 +219,4 @@ const FeatureSection: React.FC<FeatureSectionProps> = ({
   )
 }
 
-export default FeatureSection;
+export default FeatureSection

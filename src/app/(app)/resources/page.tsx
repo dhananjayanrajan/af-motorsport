@@ -1,4 +1,8 @@
+// app/(frontend)/resources/page.tsx
+import CarouselSection from '@/components/Section/Blocks/CarouselSection'
+import FeatureSection from '@/components/Section/Blocks/FeatureSection'
 import GridSection from '@/components/Section/Blocks/GridSection'
+import LogoSection from '@/components/Section/Blocks/LogoSection'
 import { Car, Garage, Helmet, Media, Suit } from '@/payload-types'
 import configPromise from '@payload-config'
 import { unstable_cache } from 'next/cache'
@@ -84,38 +88,42 @@ const getResourcesData = unstable_cache(
 export default async function ResourcesPage() {
     const { cars, garages, helmets, suits } = await getResourcesData()
 
-    const carItems = cars.map((car) => ({
+    const carSlides = cars.map((car) => ({
         id: String(car.id),
         title: car.name || '',
-        subtitle: car.basics?.identifiers?.model || car.basics?.tagline || undefined,
+        description: car.basics?.tagline || undefined,
         image: getMediaUrl(car.assets?.thumbnail) ||
             getMediaUrl(car.assets?.avatar) ||
             getMediaUrl(car.assets?.cover) ||
             `https://picsum.photos/seed/${car.slug}/400/300`,
-        href: `/resources/cars/${car.slug}`,
+        ctaLabel: 'VIEW',
+        ctaHref: `/resources/cars/${car.slug}`,
+        meta: car.basics?.identifiers?.model || undefined,
     }))
 
-    const garageItems = garages.map((garage) => ({
+    const garageFeatures = garages.map((garage) => ({
         id: String(garage.id),
         title: garage.name || '',
-        subtitle: garage.basics?.tagline || garage.basics?.identifiers?.code || undefined,
+        description: garage.basics?.tagline || garage.basics?.identifiers?.code || '',
         image: getMediaUrl(garage.assets?.thumbnail) ||
             getMediaUrl(garage.assets?.cover) ||
             `https://picsum.photos/seed/${garage.slug}/400/300`,
-        href: `/resources/garages/${garage.slug}`,
+        slug: `resources/garages/${garage.slug}`,
+        stats: [],
     }))
 
-    const helmetItems = helmets.map((helmet) => {
+    const helmetLogoItems = helmets.map((helmet) => {
         const firstImage = helmet.assets?.images?.[0]
         return {
             id: String(helmet.id),
-            title: helmet.name || '',
-            subtitle: helmet.basics?.tagline || helmet.details?.designer || undefined,
-            image: getMediaUrl(helmet.assets?.thumbnail) ||
+            name: helmet.name || '',
+            logo: getMediaUrl(helmet.assets?.thumbnail) ||
                 getMediaUrl(helmet.assets?.avatar) ||
                 getMediaUrl(typeof firstImage === 'object' ? firstImage : null) ||
                 `https://picsum.photos/seed/${helmet.slug}/400/300`,
-            href: `/resources/helmets/${helmet.slug}`,
+            description: helmet.basics?.tagline || undefined,
+            category: helmet.details?.designer || 'HELMET',
+            slug: `resources/helmets/${helmet.slug}`,
         }
     })
 
@@ -134,49 +142,38 @@ export default async function ResourcesPage() {
 
     return (
         <main className="w-full">
-            {carItems.length > 0 && (
-                <GridSection
+            {carSlides.length > 0 && (
+                <CarouselSection
                     id="resources-cars"
-                    title="Cars"
-                    subtitle="Racing vehicles and machinery"
-                    items={carItems}
-                    labels={{
-                        unitsCount: 'CARS',
-                        viewProject: 'VIEW',
-                        sectionIndex: 'CAR',
-                        fallbackAlt: 'Car',
-                    }}
-                    columns={4}
+                    slides={carSlides}
+                    autoplayDelay={4000}
+                    ctaLabel="VIEW ALL CARS"
                 />
             )}
-            {garageItems.length > 0 && (
-                <GridSection
+            {garageFeatures.length > 0 && (
+                <FeatureSection
                     id="resources-garages"
                     title="Garages"
                     subtitle="Team facilities and workspaces"
-                    items={garageItems}
+                    features={garageFeatures}
                     labels={{
-                        unitsCount: 'GAR',
-                        viewProject: 'VIEW',
-                        sectionIndex: 'GRG',
-                        fallbackAlt: 'Garage',
+                        specIndex: 'GRG',
+                        statsLabel: 'DATA',
+                        ctaLabel: 'VIEW',
                     }}
-                    columns={4}
+                    columns={3}
+                    headerVariant={1}
+                    footerVariant={1}
                 />
             )}
-            {helmetItems.length > 0 && (
-                <GridSection
+            {helmetLogoItems.length > 0 && (
+                <LogoSection
                     id="resources-helmets"
                     title="Helmets"
                     subtitle="Driver head protection"
-                    items={helmetItems}
-                    labels={{
-                        unitsCount: 'HELM',
-                        viewProject: 'VIEW',
-                        sectionIndex: 'HLM',
-                        fallbackAlt: 'Helmet',
-                    }}
-                    columns={4}
+                    items={helmetLogoItems}
+                    headerVariant={2}
+                    footerVariant={1}
                 />
             )}
             {suitItems.length > 0 && (

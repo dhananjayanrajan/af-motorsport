@@ -25,7 +25,7 @@ export const LoginForm: React.FC = () => {
   const [error, setError] = React.useState<null | string>(null)
 
   const {
-    formState: { errors, isLoading },
+    formState: { errors, isSubmitting },
     handleSubmit,
     register,
   } = useForm<FormData>()
@@ -64,7 +64,13 @@ export const LoginForm: React.FC = () => {
             type="email"
             autoComplete="email"
             error={Boolean(errors.email)}
-            {...register('email', { required: 'Required' })}
+            {...register('email', {
+              required: 'Required',
+              pattern: {
+                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                message: 'Invalid email format'
+              }
+            })}
           />
           {errors.email && (
             <FormError
@@ -90,7 +96,13 @@ export const LoginForm: React.FC = () => {
             type="password"
             autoComplete="current-password"
             error={Boolean(errors.password)}
-            {...register('password', { required: 'Required' })}
+            {...register('password', {
+              required: 'Required',
+              minLength: {
+                value: 8,
+                message: 'Min 8 characters'
+              }
+            })}
           />
           {errors.password && (
             <FormError
@@ -102,11 +114,11 @@ export const LoginForm: React.FC = () => {
 
         <button
           type="submit"
-          disabled={isLoading}
+          disabled={isSubmitting}
           className="w-full h-14 bg-black-pure text-white-pure flex items-center justify-between px-8 hover:bg-primary hover:text-black-pure transition-all duration-300 group disabled:opacity-20"
         >
           <span className="text-xs font-mono font-black uppercase tracking-[0.2em]">
-            {isLoading ? 'Processing' : 'Authenticate'}
+            {isSubmitting ? 'Processing' : 'Authenticate'}
           </span>
           <ArrowRight className="h-4 w-4 group-hover:translate-x-2 transition-transform" />
         </button>

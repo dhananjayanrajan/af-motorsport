@@ -1,3 +1,4 @@
+// app/(frontend)/about/plans/[slug]/details/page.tsx
 import GridSection from '@/components/Section/Blocks/GridSection'
 import ListSection from '@/components/Section/Blocks/ListSection'
 import TimelineSection from '@/components/Section/Blocks/TimelineSection'
@@ -64,6 +65,7 @@ export default async function PlanDetailsPage({ params }: { params: Promise<{ sl
                     title: milestone.name.toUpperCase(),
                     description: milestone.description || undefined,
                     status: idx === 0 ? 'completed' as const : idx === 1 ? 'active' as const : 'upcoming' as const,
+                    slug: `about/plans/${slug}`,
                 })
             }
         })

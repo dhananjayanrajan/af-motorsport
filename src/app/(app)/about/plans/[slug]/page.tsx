@@ -1,3 +1,4 @@
+// app/(frontend)/about/plans/[slug]/page.tsx
 import HeroSection from '@/components/Section/Blocks/HeroSection'
 import QuoteSection from '@/components/Section/Blocks/QuoteSection'
 import StudySection from '@/components/Section/Blocks/StudySection'
@@ -119,6 +120,7 @@ export default async function PlanPage({ params }: { params: Promise<{ slug: str
             title: 'INITIATION',
             description: plan.basics?.tagline || 'Strategic plan commencement',
             status: 'completed' as const,
+            slug: `about/plans/${plan.slug}`,
         })
     }
 
@@ -131,6 +133,7 @@ export default async function PlanPage({ params }: { params: Promise<{ slug: str
                     title: milestone.name.toUpperCase(),
                     description: milestone.description || undefined,
                     status: idx === 0 ? 'active' as const : 'upcoming' as const,
+                    slug: `about/plans/${plan.slug}`,
                 })
             }
         })
@@ -143,6 +146,7 @@ export default async function PlanPage({ params }: { params: Promise<{ slug: str
             title: 'COMPLETION',
             description: 'Targeted conclusion of strategic objectives',
             status: 'upcoming' as const,
+            slug: `about/plans/${plan.slug}`,
         })
     }
 
