@@ -124,7 +124,11 @@ const globals = [
 
 export default buildConfig({
   serverURL: PAYLOAD_URL,
-  cors: [PAYLOAD_URL],
+  cors: [
+    process.env.NEXT_PUBLIC_SERVER_URL || '',
+    'https://af-motorsport.onrender.com',
+    'https://afm.onrender.com'
+  ].filter(Boolean),
   csrf: [PAYLOAD_URL],
   admin: {
     user: Users.slug,
