@@ -3,6 +3,7 @@ import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
 import SectionFooter from '../Components/SectionFooter'
 import SectionHeader from '../Components/SectionHeader'
+import SectionModal from '../Components/SectionModal'
 
 export interface MasonryItem {
   id: string
@@ -47,6 +48,7 @@ const MasonrySection: React.FC<MasonrySectionProps> = ({
   background
 }) => {
   const [columnItems, setColumnItems] = useState<MasonryItem[][]>([])
+  const [selectedItem, setSelectedItem] = useState<MasonryItem | null>(null)
 
   useEffect(() => {
     const result: MasonryItem[][] = Array.from({ length: columns }, () => [])
@@ -57,107 +59,128 @@ const MasonrySection: React.FC<MasonrySectionProps> = ({
   }, [items, columns])
 
   return (
-    <section id={id} className="relative w-full bg-white-pure border-t-2 border-black-pure flex flex-col">
+    <section id={id} className="relative w-full bg-background-default py-12 md:py-20 lg:py-24 flex flex-col items-center">
       {background}
 
-      <SectionHeader
-        title={title}
-        subtitle={subtitle}
-        variant={headerVariant}
-        metadata={String(items.length).padStart(2, '0')}
-      />
+      <div className="container relative z-10">
+        <div className="w-full bg-white-pure border-2 border-black-pure shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] overflow-hidden flex flex-col">
+          <SectionHeader
+            title={title}
+            subtitle={subtitle}
+            variant={headerVariant}
+            metadata={String(items.length).padStart(2, '0')}
+          />
 
-      <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 border-b-2 border-black-pure">
-        {columnItems.map((col, colIdx) => (
-          <div
-            key={colIdx}
-            className="flex flex-col border-r-2 border-black-pure last:border-r-0 min-h-[200px]"
-          >
-            {col.length > 0 ? (
-              col.map((item) => (
-                <Link
-                  key={item.id}
-                  href={item.slug || '#'}
-                  className="group relative w-full border-b-2 border-black-pure last:border-b-0 bg-white-pure block"
-                >
-                  <div className="p-6 sm:p-8 flex flex-col gap-6">
-                    {/* Header: ID & Category */}
-                    <div className="flex justify-between items-start">
-                      <div className="flex flex-col">
-                        <span className="text-[10px] font-mono font-black uppercase tracking-tighter text-neutral-400">
-                          {labels.idPrefix}{item.id}
-                        </span>
-                        <span className="text-[11px] font-mono font-black uppercase text-black-pure">
-                          {item.category}
-                        </span>
+          <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 border-y-2 border-black-pure">
+            {columnItems.map((col, colIdx) => (
+              <div
+                key={colIdx}
+                className="flex flex-col border-r-2 border-black-pure last:border-r-0 min-h-[200px]"
+              >
+                {col.length > 0 ? (
+                  col.map((item) => (
+                    <div
+                      key={item.id}
+                      className="group relative w-full border-b-2 border-black-pure last:border-b-0 bg-white-pure flex flex-col"
+                    >
+                      <div className="p-6 sm:p-8 flex flex-col gap-6">
+                        <div className="flex justify-between items-start">
+                          <div className="flex flex-col">
+                            <span className="text-[10px] font-mono font-black uppercase tracking-tighter text-neutral-400">
+                              {labels.idPrefix}{item.id}
+                            </span>
+                            <span className="text-[11px] font-mono font-black uppercase text-secondary-700">
+                              {item.category}
+                            </span>
+                          </div>
+                          <div className="size-2 bg-black-pure group-hover:bg-primary-500 group-hover:rotate-45 transition-all duration-300" />
+                        </div>
+
+                        <button
+                          onClick={() => setSelectedItem(item)}
+                          className="relative aspect-[4/3] overflow-hidden border border-black-pure/10 cursor-zoom-in"
+                        >
+                          <img
+                            src={item.image}
+                            alt={item.title}
+                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                          />
+                          <div className="absolute inset-0 bg-primary-glow opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <div className="w-10 h-10 bg-white-pure border border-black-pure flex items-center justify-center scale-0 group-hover:scale-100 transition-transform duration-500">
+                              <div className="w-4 h-4 border-2 border-black-pure" />
+                            </div>
+                          </div>
+                        </button>
+
+                        <div className="space-y-3">
+                          <h3 className="text-xl font-black uppercase tracking-tighter leading-none text-black-pure group-hover:text-tertiary-600 transition-colors">
+                            {item.title}
+                          </h3>
+                          <p className="text-[11px] font-bold text-black-pure/50 leading-tight uppercase line-clamp-2 group-hover:text-black-pure transition-colors">
+                            {item.description}
+                          </p>
+                        </div>
+
+                        {item.slug && (
+                          <div className="pt-4 border-t border-black-pure/5 flex justify-end">
+                            <Link href={item.slug} className="flex items-center gap-2 group-hover:gap-4 transition-all duration-300">
+                              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" className="text-black-pure group-hover:text-primary-600">
+                                <path d="M3 10H17M17 10L12 5M17 10L12 15" stroke="currentColor" strokeWidth="2" strokeLinecap="square" />
+                              </svg>
+                            </Link>
+                          </div>
+                        )}
                       </div>
-                      <div className="size-2 bg-black-pure group-hover:bg-primary-500 group-hover:rotate-45 transition-all duration-300" />
                     </div>
-
-                    {/* Image: Fixed Aspect Ratio */}
-                    <div className="relative aspect-[4/3] overflow-hidden border border-black-pure/10">
-                      <img
-                        src={item.image}
-                        alt={item.title}
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                      />
-                      <div className="absolute inset-0 bg-black-pure/0 group-hover:bg-black-pure/5 transition-colors" />
-                    </div>
-
-                    {/* Content: Title & Brief */}
-                    <div className="space-y-3">
-                      <h3 className="text-xl font-black uppercase tracking-tighter leading-none text-black-pure">
-                        {item.title}
-                      </h3>
-                      <p className="text-[11px] font-bold text-black-pure/50 leading-tight uppercase line-clamp-2 group-hover:text-black-pure transition-colors">
-                        {item.description}
-                      </p>
-                    </div>
-
-                    {/* Action Arrow */}
-                    <div className="pt-4 border-t border-black-pure/5 flex justify-end">
-                      <div className="flex items-center gap-2 group-hover:gap-4 transition-all duration-300">
-                        <span className="text-[9px] font-mono font-black uppercase tracking-widest opacity-0 group-hover:opacity-100">Details</span>
-                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" className="text-black-pure">
-                          <path d="M3 10H17M17 10L12 5M17 10L12 15" stroke="currentColor" strokeWidth="2" strokeLinecap="square" />
-                        </svg>
-                      </div>
-                    </div>
+                  ))
+                ) : (
+                  <div className="flex-1 bg-neutral-100/50 flex items-center justify-center p-12 opacity-20 grayscale">
+                    <div className="w-full border-t border-black-pure border-dashed" />
                   </div>
-                </Link>
-              ))
-            ) : (
-              /* Intentional Structural Empty State */
-              <div className="flex-1 bg-neutral-50/30 flex items-center justify-center p-12 opacity-10 grayscale">
-                <div className="w-full border-t border-black-pure/20 border-dashed" />
+                )}
               </div>
-            )}
+            ))}
           </div>
-        ))}
+
+          {ctaLabel && ctaPath && (
+            <div className="w-full py-12 md:py-16 flex items-center justify-center bg-white-pure px-6">
+              <Link
+                href={ctaPath}
+                className="group flex flex-col items-center gap-4"
+              >
+                <div className="flex items-center gap-6 md:gap-12">
+                  <div className="h-0.5 w-8 md:w-16 bg-primary-500 group-hover:w-24 transition-all duration-500" />
+                  <span className="text-2xl md:text-4xl lg:text-5xl font-black uppercase tracking-tighter text-black-pure group-hover:text-primary-600 transition-colors">
+                    {ctaLabel}
+                  </span>
+                  <div className="h-0.5 w-8 md:w-16 bg-primary-500 group-hover:w-24 transition-all duration-500" />
+                </div>
+              </Link>
+            </div>
+          )}
+
+          <SectionFooter variant={footerVariant} />
+        </div>
       </div>
 
-      {/* Footer CTA */}
-      {ctaLabel && ctaPath && (
-        <div className="w-full py-20 flex items-center justify-center bg-white-pure border-b-2 border-black-pure px-6">
-          <Link
-            href={ctaPath}
-            className="group flex flex-col items-center gap-4"
-          >
-            <div className="flex items-center gap-8">
-              <div className="h-px w-12 bg-black-pure/20 group-hover:w-20 transition-all" />
-              <span className="text-3xl md:text-5xl font-black uppercase tracking-tighter text-black-pure group-hover:text-primary-500 transition-colors">
-                {ctaLabel}
-              </span>
-              <div className="h-px w-12 bg-black-pure/20 group-hover:w-20 transition-all" />
-            </div>
-            <span className="text-[10px] font-mono font-black uppercase tracking-[0.5em] text-neutral-400">
-              Explore Complete Archive
-            </span>
-          </Link>
-        </div>
-      )}
-
-      <SectionFooter variant={footerVariant} />
+      <SectionModal
+        isOpen={!!selectedItem}
+        onClose={() => setSelectedItem(null)}
+        title={selectedItem?.title || ''}
+        description={selectedItem?.description || ''}
+        imageUrl={selectedItem?.image || ''}
+        idCode={`${labels.idPrefix}${selectedItem?.id || ''}`}
+        infoLabel={selectedItem?.category}
+        buttonLabel={selectedItem?.slug ? "VIEW DETAILS" : "CLOSE"}
+        onAction={() => {
+          if (selectedItem?.slug) window.location.href = selectedItem.slug;
+          setSelectedItem(null);
+        }}
+        stats={[
+          { label: "INDEX", val: selectedItem?.id || '00', color: "bg-primary-500" },
+          { label: "CLASS", val: selectedItem?.category || 'NONE', color: "bg-secondary-500" }
+        ]}
+      />
     </section>
   )
 }

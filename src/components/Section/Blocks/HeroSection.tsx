@@ -2,6 +2,7 @@
 
 import { AnimatePresence, motion } from 'framer-motion'
 import React, { useEffect, useState } from 'react'
+import WeaveBackground from '../Backgrounds/WeaveBackground'
 import SectionButton from '../Components/SectionButton'
 import SectionScroller from '../Components/SectionScroller'
 
@@ -61,8 +62,10 @@ const HeroSection: React.FC<HeroSectionProps> = ({
   return (
     <section
       id={id}
-      className="relative w-full min-h-screen bg-background overflow-hidden flex flex-col"
+      className="relative w-full min-h-screen bg-background overflow-hidden flex flex-col border-b-2 border-black-pure"
     >
+      <WeaveBackground />
+
       <div className="absolute inset-0 z-0 overflow-hidden">
         <AnimatePresence>
           {backgroundImage ? (
@@ -183,7 +186,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
       >
         <div className="container h-full grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 divide-x-2 divide-black-pure min-h-[80px]">
 
-          <div className="flex flex-col justify-center px-4 md:px-8 group cursor-default relative overflow-hidden py-4">
+          <div className="flex flex-col justify-center px-4 md:px-8 group cursor-default relative overflow-hidden py-4 border-b-2 border-black-pure lg:border-b-0">
             <span className="text-[9px] md:text-[10px] font-black text-black-pure/40 mb-1 uppercase tracking-[0.2em] truncate">
               {uiLabels.id}
             </span>
@@ -192,7 +195,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
             </span>
           </div>
 
-          <div className="hidden md:flex flex-col justify-center lg:col-span-2 group overflow-hidden py-4">
+          <div className="hidden md:flex flex-col justify-center lg:col-span-2 group overflow-hidden py-4 border-b-2 border-black-pure lg:border-b-0">
             <SectionScroller
               items={[meta || '', 'NODE_STABLE', 'SYS_2026', id]}
               variant={4}

@@ -10,11 +10,12 @@ interface TactileBackgroundProps {
 
 const TactileBackground: React.FC<TactileBackgroundProps> = ({
   zIndex = 'z-0',
-  opacity = 0.08,
-  primaryColor = '#000000',
-  accentColor = '#C0392B'
+  opacity = 0.1,
+  primaryColor = '#1A1A1A',
+  accentColor = '#00FF41'
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const mouseRef = useRef({ x: -1000, y: -1000 })
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -23,7 +24,14 @@ const TactileBackground: React.FC<TactileBackgroundProps> = ({
     if (!ctx) return
 
     let animationFrame: number
-    let lightSweep = 0
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const rect = canvas.getBoundingClientRect()
+      mouseRef.current = {
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top
+      }
+    }
 
     const resize = () => {
       const parent = canvas.parentElement
@@ -36,24 +44,34 @@ const TactileBackground: React.FC<TactileBackgroundProps> = ({
       ctx.scale(dpr, dpr)
     }
 
-    const drawKnurl = (x: number, y: number, size: number, intensity: number) => {
-      ctx.beginPath()
-      // Diamond knurl pattern (Tactile Grip)
-      ctx.moveTo(x, y - size)
-      ctx.lineTo(x + size, y)
-      ctx.lineTo(x, y + size)
-      ctx.lineTo(x - size, y)
-      ctx.closePath()
+    const drawModule = (x: number, y: number, size: number, influence: number) => {
+      const dx = mouseRef.current.x - x
+      const dy = mouseRef.current.y - y
+      const dist = Math.sqrt(dx * dx + dy * dy)
+      const active = Math.max(0, 1 - dist / influence)
 
-      ctx.strokeStyle = intensity > 0.8 ? accentColor : primaryColor
-      ctx.lineWidth = intensity > 0.8 ? 1 : 0.5
-      ctx.globalAlpha = intensity * opacity * 2.5
-      ctx.stroke()
+      const offset = active * 6
 
-      if (intensity > 0.9) {
-        ctx.fillStyle = accentColor
-        ctx.fillRect(x - 1, y - 1, 2, 2)
+      // Shadow / Depth Layer (Hard edge)
+      ctx.fillStyle = '#000000'
+      ctx.fillRect(x - size / 2 + 4, y - size / 2 + 4, size, size)
+
+      // Main Block
+      ctx.fillStyle = active > 0.5 ? '#252525' : primaryColor
+      ctx.fillRect(x - size / 2 - offset, y - size / 2 - offset, size, size)
+
+      // Technical Detail (Accent)
+      if (active > 0.1) {
+        ctx.strokeStyle = accentColor
+        ctx.lineWidth = 1
+        ctx.globalAlpha = active * opacity * 2
+        ctx.strokeRect(x - size / 2 - offset + 4, y - size / 2 - offset + 4, size - 8, size - 8)
+        ctx.globalAlpha = opacity
       }
+
+      // Small "Bolt" or Corner Mark
+      ctx.fillStyle = active > 0.8 ? accentColor : '#333'
+      ctx.fillRect(x - size / 2 - offset + 2, y - size / 2 - offset + 2, 2, 2)
     }
 
     const draw = () => {
@@ -61,45 +79,29 @@ const TactileBackground: React.FC<TactileBackgroundProps> = ({
       const h = canvas.height / (window.devicePixelRatio || 1)
       ctx.clearRect(0, 0, w, h)
 
-      const spacing = 24 // 8px * 3
-      const size = 8    // 8px * 1
+      const size = 60
+      const gap = 20
+      const step = size + gap
+      const influence = 250
 
-      lightSweep += 0.02
-      const sweepX = (Math.sin(lightSweep) * 0.5 + 0.5) * w
-      const sweepY = (Math.cos(lightSweep * 0.7) * 0.5 + 0.5) * h
+      ctx.globalAlpha = opacity
 
-      for (let x = spacing; x < w; x += spacing) {
-        for (let y = spacing; y < h; y += spacing) {
-          // Calculate distance from the light sweep "hotspot"
-          const dx = x - sweepX
-          const dy = y - sweepY
-          const dist = Math.sqrt(dx * dx + dy * dy)
-          const range = 256
-
-          let intensity = 0.2
-          if (dist < range) {
-            intensity = 0.2 + (1 - dist / range) * 0.8
-          }
-
-          drawKnurl(x, y, size, intensity)
+      for (let x = gap; x < w; x += step) {
+        for (let y = gap; y < h; y += step) {
+          drawModule(x + size / 2, y + size / 2, size, influence)
         }
       }
-
-      // Technical boundary marks
-      ctx.globalAlpha = opacity
-      ctx.strokeStyle = primaryColor
-      ctx.setLineDash([4, 12])
-      ctx.strokeRect(16, 16, w - 32, h - 32)
-      ctx.setLineDash([])
 
       animationFrame = requestAnimationFrame(draw)
     }
 
+    window.addEventListener('mousemove', handleMouseMove)
     window.addEventListener('resize', resize)
     resize()
     draw()
 
     return () => {
+      window.removeEventListener('mousemove', handleMouseMove)
       window.removeEventListener('resize', resize)
       cancelAnimationFrame(animationFrame)
     }
@@ -108,7 +110,7 @@ const TactileBackground: React.FC<TactileBackgroundProps> = ({
   return (
     <canvas
       ref={canvasRef}
-      className={`absolute inset-0 ${zIndex} pointer-events-none`}
+      className={`absolute inset-0 ${zIndex} pointer-events-none block`}
     />
   )
 }

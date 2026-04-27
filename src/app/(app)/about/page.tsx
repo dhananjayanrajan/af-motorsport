@@ -205,11 +205,14 @@ export default async function AboutPage() {
           footerVariant={1}
         />
       )}
-      <CarouselSection
-        id="about-statements"
-        slides={statementSlides}
-        autoplayDelay={5000}
-      />
+      {statementSlides.length > 0 && (
+        <CarouselSection
+          id="about-statements"
+          slides={statementSlides}
+          autoplayDelay={5000}
+          ctaLabel="VIEW ALL STATEMENTS"
+        />
+      )}
       {planEntries.length > 0 && (
         <ListSection
           id="about-plans"

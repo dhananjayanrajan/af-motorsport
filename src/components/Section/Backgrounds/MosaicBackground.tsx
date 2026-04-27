@@ -10,11 +10,12 @@ interface MosaicBackgroundProps {
 
 const MosaicBackground: React.FC<MosaicBackgroundProps> = ({
   zIndex = 'z-0',
-  opacity = 0.08,
+  opacity = 0.5,
   primaryColor = '#000000',
-  accentColor = '#C0392B'
+  accentColor = '#00FF41'
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const mouseRef = useRef({ x: -1000, y: -1000 })
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -23,70 +24,95 @@ const MosaicBackground: React.FC<MosaicBackgroundProps> = ({
     if (!ctx) return
 
     let animationFrame: number
-    let frameCount = 0
+    const tileSize = 80
+    let grid: { alpha: number; targetAlpha: number; isAccent: boolean }[] = []
+    let cols = 0
+    let rows = 0
 
     const resize = () => {
       const parent = canvas.parentElement
       if (!parent) return
       const dpr = window.devicePixelRatio || 1
-      canvas.width = parent.clientWidth * dpr
-      canvas.height = parent.clientHeight * dpr
-      canvas.style.width = `${parent.clientWidth}px`
-      canvas.style.height = `${parent.clientHeight}px`
+      const w = parent.clientWidth
+      const h = parent.clientHeight
+
+      canvas.width = w * dpr
+      canvas.height = h * dpr
+      canvas.style.width = `${w}px`
+      canvas.style.height = `${h}px`
       ctx.scale(dpr, dpr)
+
+      cols = Math.ceil(w / tileSize)
+      rows = Math.ceil(h / tileSize)
+
+      grid = Array.from({ length: cols * rows }, () => ({
+        alpha: 0,
+        targetAlpha: 0,
+        isAccent: Math.random() > 0.85
+      }))
+    }
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const rect = canvas.getBoundingClientRect()
+      mouseRef.current = {
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top
+      }
     }
 
     const draw = () => {
-      const w = canvas.width / (window.devicePixelRatio || 1)
-      const h = canvas.height / (window.devicePixelRatio || 1)
+      const dpr = window.devicePixelRatio || 1
+      const w = canvas.width / dpr
+      const h = canvas.height / dpr
       ctx.clearRect(0, 0, w, h)
-
-      const tileSize = 64 // 8 * 8
-      const cols = Math.ceil(w / tileSize)
-      const rows = Math.ceil(h / tileSize)
-
-      frameCount++
 
       for (let r = 0; r < rows; r++) {
         for (let c = 0; c < cols; c++) {
+          const i = r * cols + c
+          const cell = grid[i]
           const x = c * tileSize
           const y = r * tileSize
 
-          // Generate deterministic but "random" feel based on coordinates
-          const noise = Math.sin(r * 0.5 + c * 0.8 + frameCount * 0.02)
-          const isActive = noise > 0.6
-          const isAccent = noise > 0.92
-
-          if (isActive) {
-            ctx.save()
-
-            // Fragmented Tile logic - vary size by 8px multiples
-            const fragmentWidth = tileSize - 16
-            const fragmentHeight = tileSize - (isAccent ? 32 : 16)
-
-            ctx.globalAlpha = isAccent ? opacity * 2 : opacity
-            ctx.fillStyle = isAccent ? accentColor : primaryColor
-
-            // Draw the main fragment
-            ctx.fillRect(x + 8, y + 8, fragmentWidth, fragmentHeight)
-
-            // Add technical "bit" marker for accent tiles
-            if (isAccent) {
-              ctx.globalAlpha = 1
-              ctx.fillRect(x + 8, y + 8, 4, 4)
-
-              ctx.strokeStyle = accentColor
-              ctx.lineWidth = 1
-              ctx.strokeRect(x + 4, y + 4, tileSize - 8, tileSize - 8)
-            }
-
-            ctx.restore()
-          } else {
-            // Static grid intersection points (1px dots)
-            ctx.globalAlpha = opacity * 0.3
-            ctx.fillStyle = primaryColor
-            ctx.fillRect(x, y, 1, 1)
+          if (Math.random() > 0.995) {
+            cell.targetAlpha = Math.random() * opacity
           }
+
+          const dx = x + tileSize / 2 - mouseRef.current.x
+          const dy = y + tileSize / 2 - mouseRef.current.y
+          const dist = Math.sqrt(dx * dx + dy * dy)
+
+          let currentTarget = cell.targetAlpha
+          if (dist < 150) {
+            currentTarget = opacity * 1.5
+          }
+
+          cell.alpha += (currentTarget - cell.alpha) * 0.05
+          cell.targetAlpha *= 0.96
+
+          if (cell.alpha > 0.01) {
+            ctx.save()
+            ctx.globalAlpha = cell.alpha
+            ctx.fillStyle = cell.isAccent ? accentColor : primaryColor
+
+            const padding = 4
+            ctx.fillRect(
+              x + padding,
+              y + padding,
+              tileSize - padding * 2,
+              tileSize - padding * 2
+            )
+
+            if (cell.isAccent) {
+              ctx.strokeStyle = accentColor
+              ctx.lineWidth = 0.5
+              ctx.strokeRect(x + 2, y + 2, tileSize - 4, tileSize - 4)
+            }
+            ctx.restore()
+          }
+
+          ctx.globalAlpha = opacity * 0.2
+          ctx.fillStyle = primaryColor
+          ctx.fillRect(x, y, 1, 1)
         }
       }
 
@@ -94,11 +120,13 @@ const MosaicBackground: React.FC<MosaicBackgroundProps> = ({
     }
 
     window.addEventListener('resize', resize)
+    window.addEventListener('mousemove', handleMouseMove)
     resize()
     draw()
 
     return () => {
       window.removeEventListener('resize', resize)
+      window.removeEventListener('mousemove', handleMouseMove)
       cancelAnimationFrame(animationFrame)
     }
   }, [opacity, primaryColor, accentColor])

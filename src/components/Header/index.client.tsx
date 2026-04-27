@@ -33,7 +33,7 @@ const socialIcons: Record<string, LucideIcon> = {
   other: Link2,
 }
 
-const NavItem = ({ item, index }: { item: any; index: number }) => {
+const NavItem = ({ item }: { item: any; index: number }) => {
   const pathname = usePathname()
   const isActive = item.link && (item.link === '/' ? pathname === '/' : pathname.startsWith(item.link))
 
@@ -64,19 +64,23 @@ export function HeaderClient({ header, socials }: { header: Header; socials: Soc
   const socialAccounts = useMemo(() => socials?.accounts?.filter((a: any) => a.visible !== false) || [], [socials?.accounts])
 
   return (
-    <header className="sticky top-0 left-0 w-full z-[110] bg-white-pure border-b border-black-pure h-12 flex items-stretch">
+    <header className="sticky top-0 left-0 w-full z-[110] bg-white-pure border-b border-black-pure h-12 flex items-stretch overflow-hidden">
       <div className="w-16 md:w-24 flex items-center justify-center border-r border-black-pure bg-black-pure shrink-0 group transition-colors duration-100 hover:bg-primary-500">
         <Link href="/" className="flex items-center justify-center w-full h-full outline-none">
           <LogoIcon className="h-6 w-auto text-white-pure group-hover:text-black-pure transition-transform duration-100 group-hover:scale-110" />
         </Link>
       </div>
 
-      <div className="flex md:hidden flex-1 items-center justify-between px-6">
-        <Suspense fallback={null}>
-          <MobileMenu menu={navItems} socials={socialAccounts} />
-        </Suspense>
-        <div className="h-full border-l border-black-pure flex items-center pl-6">
-          <Cart />
+      <div className="flex md:hidden flex-1 items-stretch">
+        <div className="flex flex-1 items-center px-4">
+          <Suspense fallback={null}>
+            <MobileMenu menu={navItems} socials={socialAccounts} />
+          </Suspense>
+        </div>
+        <div className="h-full border-l border-black-pure flex items-center px-6">
+          <Suspense fallback={null}>
+            <Cart />
+          </Suspense>
         </div>
       </div>
 
@@ -87,7 +91,7 @@ export function HeaderClient({ header, socials }: { header: Header; socials: Soc
           ))}
         </nav>
 
-        <div className="flex-1 bg-white-pure border-r border-black-pure relative overflow-hidden" />
+        <div className="flex-1 bg-white-pure border-r border-black-pure relative" />
 
         <div className="flex items-stretch">
           <div className="hidden lg:flex items-center gap-8 px-10 border-r border-black-pure bg-white-pure">
@@ -108,7 +112,7 @@ export function HeaderClient({ header, socials }: { header: Header; socials: Soc
           </div>
 
           <div className="flex items-stretch">
-            <div className="flex items-center border-r border-black-pure bg-white-pure hover:bg-primary-500 transition-colors duration-100 cursor-pointer">
+            <div className="flex items-center border-r border-black-pure bg-white-pure hover:bg-primary-500 transition-colors duration-100 cursor-pointer px-6">
               <Suspense fallback={null}>
                 <Cart />
               </Suspense>

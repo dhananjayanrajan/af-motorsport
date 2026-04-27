@@ -12,35 +12,64 @@ const IsometricBackground: React.FC<IsometricBackgroundProps> = ({
   zIndex = 'z-0',
   opacity = 0.1,
   gridColor = '#000000',
-  accentColor = '#C0392B'
+  accentColor = '#00ff41'
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const mouseRef = useRef({ x: -1000, y: -1000 })
+  const ticking = useRef(false)
 
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return
-    const ctx = canvas.getContext('2d')
+    const ctx = canvas.getContext('2d', { alpha: true, desynchronized: true })
     if (!ctx) return
-
-    let animationFrame: number
-    let scanOffset = 0
 
     const resize = () => {
       const parent = canvas.parentElement
       if (!parent) return
       const dpr = window.devicePixelRatio || 1
-      canvas.width = parent.clientWidth * dpr
-      canvas.height = parent.clientHeight * dpr
-      canvas.style.width = `${parent.clientWidth}px`
-      canvas.style.height = `${parent.clientHeight}px`
+      const fullHeight = parent.scrollHeight
+      const fullWidth = parent.clientWidth
+
+      canvas.width = fullWidth * dpr
+      canvas.height = fullHeight * dpr
+      canvas.style.width = `${fullWidth}px`
+      canvas.style.height = `${fullHeight}px`
       ctx.scale(dpr, dpr)
+      draw()
     }
 
-    const project = (x: number, y: number, z: number) => {
-      const scale = 32 // 8px * 4
-      return {
-        px: (x - y) * Math.cos(Math.PI / 6) * scale,
-        py: (x + y) * Math.sin(Math.PI / 6) * scale - z
+    const isoX = (x: number, y: number) => (x - y) * 0.866
+    const isoY = (x: number, y: number) => (x + y) * 0.5
+
+    const drawBlock = (x: number, y: number, size: number, h: number, color: string, currentOpacity: number) => {
+      const tx = isoX(x, y) * size
+      const ty = isoY(x, y) * size - h
+
+      ctx.globalAlpha = currentOpacity
+      ctx.strokeStyle = gridColor
+      ctx.lineWidth = 1
+
+      ctx.beginPath()
+      ctx.moveTo(tx, ty)
+      ctx.lineTo(tx + 0.866 * size, ty + 0.5 * size)
+      ctx.lineTo(tx, ty + size)
+      ctx.lineTo(tx - 0.866 * size, ty + 0.5 * size)
+      ctx.closePath()
+      ctx.fillStyle = color
+      ctx.fill()
+      ctx.stroke()
+
+      if (h > 1) {
+        ctx.beginPath()
+        ctx.moveTo(tx + 0.866 * size, ty + 0.5 * size)
+        ctx.lineTo(tx + 0.866 * size, ty + 0.5 * size + h)
+        ctx.lineTo(tx, ty + size + h)
+        ctx.lineTo(tx, ty + size)
+        ctx.closePath()
+        ctx.fillStyle = 'rgba(0,0,0,0.2)'
+        ctx.fill()
+        ctx.stroke()
       }
     }
 
@@ -49,54 +78,63 @@ const IsometricBackground: React.FC<IsometricBackgroundProps> = ({
       const h = canvas.height / (window.devicePixelRatio || 1)
       ctx.clearRect(0, 0, w, h)
 
-      const gridSize = 24
-      scanOffset += 0.05
+      const size = 60
+      const xCount = Math.ceil(w / size) + 10
+      const yCount = Math.ceil(h / size) + 10
 
       ctx.save()
-      ctx.translate(w / 2, h / 4)
+      ctx.translate(w / 2, size * 2)
 
-      for (let x = 0; x < gridSize; x++) {
-        for (let y = 0; y < gridSize; y++) {
-          const wave = Math.sin(x * 0.3 + y * 0.3 + scanOffset * 5)
-          const z = wave * 8
+      for (let x = -Math.floor(xCount / 2); x < xCount; x++) {
+        for (let y = 0; y < yCount; y++) {
+          const screenX = (w / 2) + isoX(x, y) * size
+          const screenY = (size * 2) + isoY(x, y) * size
 
-          const p1 = project(x, y, z)
-          const p2 = project(x + 1, y, z)
-          const p3 = project(x, y + 1, z)
+          const dx = mouseRef.current.x - screenX
+          const dy = mouseRef.current.y - screenY
+          const distSq = dx * dx + dy * dy
 
-          // Grid Lines
-          ctx.beginPath()
-          ctx.moveTo(p1.px, p1.py)
-          ctx.lineTo(p2.px, p2.py)
-          ctx.moveTo(p1.px, p1.py)
-          ctx.lineTo(p3.px, p3.py)
+          let blockHeight = 0
+          let isActive = false
 
-          const isActive = Math.abs(wave) > 0.8
-          ctx.strokeStyle = isActive ? accentColor : gridColor
-          ctx.lineWidth = isActive ? 1 : 0.5
-          ctx.globalAlpha = isActive ? opacity * 2 : opacity * 0.4
-          ctx.stroke()
-
-          // Intersection Nodes
-          if (isActive && x % 2 === 0 && y % 2 === 0) {
-            ctx.fillStyle = accentColor
-            ctx.globalAlpha = opacity * 3
-            ctx.fillRect(p1.px - 1, p1.py - 1, 2, 2)
+          if (distSq < 90000) {
+            const dist = Math.sqrt(distSq)
+            const influence = Math.max(0, 1 - dist / 300)
+            blockHeight = influence * 100
+            isActive = influence > 0.4
           }
+
+          const color = isActive ? accentColor : 'rgba(0,0,0,0.02)'
+          const finalOpacity = isActive ? opacity * 3 : opacity
+
+          drawBlock(x, y, size, blockHeight, color, finalOpacity)
         }
       }
-
       ctx.restore()
-      animationFrame = requestAnimationFrame(draw)
+      ticking.current = false
+    }
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const rect = canvas.getBoundingClientRect()
+      mouseRef.current = {
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top
+      }
+
+      if (!ticking.current) {
+        requestAnimationFrame(draw)
+        ticking.current = true
+      }
     }
 
     window.addEventListener('resize', resize)
+    window.addEventListener('mousemove', handleMouseMove, { passive: true })
+
     resize()
-    draw()
 
     return () => {
       window.removeEventListener('resize', resize)
-      cancelAnimationFrame(animationFrame)
+      window.removeEventListener('mousemove', handleMouseMove)
     }
   }, [opacity, gridColor, accentColor])
 

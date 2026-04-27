@@ -9,12 +9,13 @@ interface DotGridBackgroundProps {
 }
 
 const DotGridBackground: React.FC<DotGridBackgroundProps> = ({
-  zIndex = 'z-0',
-  opacity = 0.1,
-  primaryColor = '#000000',
+  zIndex = 'z-1',
+  opacity = 1,
+  primaryColor = '#444444',
   secondaryColor = '#00FF41'
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const mouseRef = useRef({ x: -1000, y: -1000 })
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -23,75 +24,79 @@ const DotGridBackground: React.FC<DotGridBackgroundProps> = ({
     if (!ctx) return
 
     let animationFrame: number
-    let scanLine = 0
+    let time = 0
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const rect = canvas.getBoundingClientRect()
+      mouseRef.current = {
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top
+      }
+    }
 
     const resize = () => {
       const parent = canvas.parentElement
-      if (!parent) return
+      const width = parent?.clientWidth || window.innerWidth
+      const height = parent?.clientHeight || window.innerHeight
+
       const dpr = window.devicePixelRatio || 1
-      canvas.width = parent.clientWidth * dpr
-      canvas.height = parent.clientHeight * dpr
-      canvas.style.width = `${parent.clientWidth}px`
-      canvas.style.height = `${parent.clientHeight}px`
+      canvas.width = width * dpr
+      canvas.height = height * dpr
+      canvas.style.width = `${width}px`
+      canvas.style.height = `${height}px`
       ctx.scale(dpr, dpr)
     }
 
     const draw = () => {
       const w = canvas.width / (window.devicePixelRatio || 1)
       const h = canvas.height / (window.devicePixelRatio || 1)
+
       ctx.clearRect(0, 0, w, h)
 
-      const spacing = 16 // 8px * 2
-      const activeRange = 128 // 8px * 16
-
-      scanLine += 4
-      if (scanLine > h + activeRange) scanLine = -activeRange
+      const spacing = 30
+      const repelRadius = 250
+      time += 0.01
 
       for (let x = spacing; x < w; x += spacing) {
         for (let y = spacing; y < h; y += spacing) {
-          const dist = Math.abs(y - scanLine)
-          const isActive = dist < activeRange
+          const dx = mouseRef.current.x - x
+          const dy = mouseRef.current.y - y
+          const dist = Math.sqrt(dx * dx + dy * dy)
+          const strength = Math.max(0, 1 - dist / repelRadius)
+          const noise = Math.sin(x * 0.01 + y * 0.01 + time) * 0.3
 
-          if (isActive) {
-            const intensity = 1 - dist / activeRange
-
-            // Active Square Marker
-            ctx.globalAlpha = intensity * opacity * 2
+          if (strength > 0) {
+            ctx.globalAlpha = Math.min(1, (opacity * 0.6) + strength)
             ctx.fillStyle = secondaryColor
-            ctx.fillRect(x - 1, y - 1, 2, 2)
 
-            // Optical Trace Line
-            if (intensity > 0.8) {
-              ctx.beginPath()
-              ctx.moveTo(x - 4, y)
-              ctx.lineTo(x + 4, y)
-              ctx.strokeStyle = secondaryColor
-              ctx.lineWidth = 0.5
-              ctx.stroke()
-            }
+            const moveX = (dx / (dist + 0.1)) * strength * -30
+            const moveY = (dy / (dist + 0.1)) * strength * -30
+
+            ctx.beginPath()
+            ctx.arc(x + moveX, y + moveY, 1.5 + strength * 2.5, 0, Math.PI * 2)
+            ctx.fill()
           } else {
-            // Standard Passive Point
-            ctx.globalAlpha = opacity * 0.4
+            ctx.globalAlpha = opacity * (0.4 + noise)
             ctx.fillStyle = primaryColor
-            ctx.fillRect(x - 0.5, y - 0.5, 1, 1)
+
+            ctx.beginPath()
+            ctx.arc(x, y, 1.5, 0, Math.PI * 2)
+            ctx.fill()
           }
         }
       }
 
-      // Metadata Coordinates
-      ctx.globalAlpha = opacity
-      ctx.font = '8px monospace'
-      ctx.fillStyle = primaryColor
-      ctx.fillText(`SEQ_${Math.floor(scanLine)}`, 16, h - 16)
-
       animationFrame = requestAnimationFrame(draw)
     }
 
+    window.addEventListener('mousemove', handleMouseMove)
     window.addEventListener('resize', resize)
+
     resize()
     draw()
 
     return () => {
+      window.removeEventListener('mousemove', handleMouseMove)
       window.removeEventListener('resize', resize)
       cancelAnimationFrame(animationFrame)
     }
@@ -100,7 +105,7 @@ const DotGridBackground: React.FC<DotGridBackgroundProps> = ({
   return (
     <canvas
       ref={canvasRef}
-      className={`absolute inset-0 ${zIndex} pointer-events-none`}
+      className={`absolute inset-0 ${zIndex} pointer-events-none block`}
     />
   )
 }
