@@ -233,8 +233,6 @@ export default async function HomePage() {
       description: slide.basics?.description || undefined,
       image: imageUrl || '',
       meta: slide.details?.type || undefined,
-      ctaLabel: 'VIEW',
-      ctaHref: `/slides/${slide.slug}`,
     }
   })
 
@@ -350,7 +348,6 @@ export default async function HomePage() {
           id="home-slides"
           slides={slideSlides}
           autoplayDelay={4000}
-          ctaLabel="VIEW ALL SLIDES"
         />
       )}
       {seriesEntries.length > 0 && (
@@ -398,6 +395,7 @@ export default async function HomePage() {
             ctaLabel: 'PROFILE',
           }}
           columns={3}
+          headerVariant={1}
           ctaPath="/teams"
         />
       )}
