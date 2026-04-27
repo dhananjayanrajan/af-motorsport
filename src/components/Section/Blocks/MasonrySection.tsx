@@ -1,6 +1,7 @@
 "use client"
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
+import DotGridBackground from '../Backgrounds/DotGridBackground'
 import SectionFooter from '../Components/SectionFooter'
 import SectionHeader from '../Components/SectionHeader'
 import SectionModal from '../Components/SectionModal'
@@ -62,8 +63,10 @@ const MasonrySection: React.FC<MasonrySectionProps> = ({
     <section id={id} className="relative w-full bg-background-default py-12 md:py-20 lg:py-24 flex flex-col items-center">
       {background}
 
+      <DotGridBackground />
+
       <div className="container relative z-10">
-        <div className="w-full bg-white-pure border-2 border-black-pure shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] overflow-hidden flex flex-col">
+        <div className="w-full bg-white-pure border-2 border-white-pure z-1 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] overflow-hidden flex flex-col">
           <SectionHeader
             title={title}
             subtitle={subtitle}
