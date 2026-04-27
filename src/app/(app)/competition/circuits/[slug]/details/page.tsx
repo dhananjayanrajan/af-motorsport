@@ -89,6 +89,7 @@ export default async function CircuitDetailsPage({ params }: { params: Promise<{
             lng: circuit.details.location[1],
             description: circuit.basics?.tagline || 'FACILITY_COORDINATES',
             address: circuit.details?.address || 'COORDINATES_ONLY',
+            slug: circuit.slug,
         })
     }
 

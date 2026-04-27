@@ -234,7 +234,6 @@ export default async function CalendarPage() {
                             upcoming: 'UPCOMING',
                         },
                     }}
-                    orientation="horizontal"
                     headerVariant={1}
                     footerVariant={1}
                 />
@@ -264,7 +263,6 @@ export default async function CalendarPage() {
                             upcoming: 'PLANNED',
                         },
                     }}
-                    orientation="horizontal"
                     headerVariant={1}
                     footerVariant={1}
                 />

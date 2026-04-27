@@ -65,6 +65,7 @@ export default async function HospitalityDetailsPage({ params }: { params: Promi
             lat: hospitality.details.location[0],
             lng: hospitality.details.location[1],
             description: hospitality.basics?.tagline || undefined,
+            slug: hospitality.slug,
         })
     }
 

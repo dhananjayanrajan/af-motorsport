@@ -220,7 +220,6 @@ export default async function HospitalityPage({ params }: { params: Promise<{ sl
                             upcoming: 'PENDING',
                         },
                     }}
-                    orientation="horizontal"
                     headerVariant={3}
                     footerVariant={2}
                 />

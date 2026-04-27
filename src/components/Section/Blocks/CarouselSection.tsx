@@ -38,7 +38,16 @@ const CarouselSection: React.FC<CarouselSectionProps> = ({
   const [mounted, setMounted] = useState(false)
 
   const [emblaRef, emblaApi] = useEmblaCarousel(
-    { loop: true, align: 'start', skipSnaps: false, containScroll: 'trimSnaps', dragFree: false, duration: 40 },
+    {
+      loop: true,
+      align: 'start',
+      skipSnaps: false,
+      containScroll: false,
+      dragFree: false,
+      duration: 60,
+      dragThreshold: 1,
+      inViewThreshold: 0.1
+    },
     [Autoplay({ delay: autoplayDelay, stopOnInteraction: false, stopOnMouseEnter: true })]
   )
 
@@ -102,17 +111,17 @@ const CarouselSection: React.FC<CarouselSectionProps> = ({
   return (
     <section id={id} className="relative w-full bg-white-pure border-t-2 border-black-pure overflow-hidden" style={{ height: '100vh' }}>
       <div className="flex flex-col h-full">
-        <div className="flex-grow overflow-hidden" ref={emblaRef}>
+        <div className="flex-grow overflow-hidden cursor-grab active:cursor-grabbing" ref={emblaRef}>
           <div className="flex h-full touch-pan-y">
             {slides.map((slide, idx) => (
               <div
-                key={slide.id}
+                key={`${slide.id}-${idx}`}
                 style={{ flex: `0 0 ${100 / itemsPerPage}%` }}
-                className="group relative h-full border-r border-black-pure last:border-r-0 flex flex-col bg-white-pure transition-colors duration-500 hover:bg-black-pure"
+                className="group relative h-full border-r border-black-pure last:border-r-0 flex flex-col bg-white-pure transition-colors duration-500 hover:bg-black-pure select-none"
               >
                 <Link href={slide.ctaHref || '#'} className="absolute inset-0 z-40" aria-label={slide.title} />
 
-                <div className="relative h-2/3 border-b border-black-pure overflow-hidden">
+                <div className="relative h-2/3 border-b border-black-pure overflow-hidden pointer-events-none">
                   <div className="absolute top-6 left-6 z-20 flex flex-col gap-1">
                     {slide.meta && (
                       <span className="text-[10px] font-mono font-black bg-primary-500 text-black-pure px-2 py-1 self-start whitespace-nowrap uppercase tracking-widest">
@@ -120,7 +129,7 @@ const CarouselSection: React.FC<CarouselSectionProps> = ({
                       </span>
                     )}
                     <span className="text-[10px] font-mono font-black bg-black-pure text-white-pure px-2 py-1 self-start group-hover:bg-white-pure group-hover:text-black-pure whitespace-nowrap uppercase tracking-widest transition-colors duration-500">
-                      {String(idx + 1).padStart(2, '0')}
+                      {String((idx % slides.length) + 1).padStart(2, '0')}
                     </span>
                   </div>
 
@@ -128,16 +137,17 @@ const CarouselSection: React.FC<CarouselSectionProps> = ({
                     src={getImageUrl(slide.image, idx)}
                     alt={slide.title}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    draggable="false"
                   />
 
                   <div className="absolute bottom-0 right-0 bg-white-pure border-l border-t border-black-pure px-5 py-3 group-hover:bg-secondary-500 transition-colors duration-300">
                     <span className="text-4xl font-black italic tabular-nums">
-                      {String(idx + 1).padStart(2, '0')}
+                      {String((idx % slides.length) + 1).padStart(2, '0')}
                     </span>
                   </div>
                 </div>
 
-                <div className="flex-1 p-6 flex flex-col justify-between">
+                <div className="flex-1 p-6 flex flex-col justify-between pointer-events-none">
                   <div className="overflow-hidden">
                     {slide.tags && slide.tags.length > 0 && (
                       <p className="text-[10px] font-mono font-black text-black-pure/40 group-hover:text-primary-500 transition-colors duration-500 uppercase tracking-widest mb-1 truncate">
@@ -175,7 +185,7 @@ const CarouselSection: React.FC<CarouselSectionProps> = ({
         <div className="relative z-50 w-full bg-white-pure border-t-2 border-black-pure h-24 md:h-32 flex items-stretch shrink-0">
           <div className="hidden sm:flex items-stretch border-r-2 border-black-pure bg-white-100 px-8 md:px-12">
             <div className="flex flex-col justify-center">
-              <span className="text-[9px] font-mono font-black text-black-pure/40 uppercase tracking-widest">CURRENT</span>
+              <span className="text-[9px] font-mono font-black text-black-pure/40 uppercase tracking-widest">POSITION</span>
               <span className="text-xl md:text-2xl font-mono font-black text-black-pure tabular-nums">
                 {String(selectedIndex + 1).padStart(2, '0')}
               </span>
@@ -195,7 +205,7 @@ const CarouselSection: React.FC<CarouselSectionProps> = ({
               {slides.map((_, i) => (
                 <div
                   key={i}
-                  className="h-1 w-8 transition-colors duration-300"
+                  className="h-1 w-6 md:w-8 transition-colors duration-300"
                   style={{ background: i === selectedIndex ? 'var(--black-pure)' : 'rgba(0,0,0,0.1)' }}
                 />
               ))}

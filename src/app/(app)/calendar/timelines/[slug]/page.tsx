@@ -171,7 +171,6 @@ export default async function TimelinePage({ params }: { params: Promise<{ slug:
                             upcoming: 'PENDING',
                         },
                     }}
-                    orientation={timeline.details?.orientation === 'vertical' ? 'vertical' : 'horizontal'}
                     headerVariant={2}
                     footerVariant={1}
                 />

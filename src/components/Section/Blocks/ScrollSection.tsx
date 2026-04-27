@@ -1,7 +1,6 @@
-// ScrollSection.tsx
 "use client"
 
-import { motion, useInView, useMotionValueEvent, useScroll, useTransform } from 'motion/react'
+import { motion, useInView, useMotionValueEvent, useScroll, useSpring, useTransform } from 'motion/react'
 import React, { useRef, useState } from 'react'
 import SectionButton from '../Components/SectionButton'
 import SectionFooter from '../Components/SectionFooter'
@@ -56,7 +55,13 @@ const ScrollSection: React.FC<ScrollSectionProps> = ({
     offset: ['start start', 'end end']
   })
 
-  const x = useTransform(scrollYProgress, [0, 1], ['0%', '-75%'])
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001
+  })
+
+  const x = useTransform(smoothProgress, [0, 1], ['0%', '-75%'])
   const [progress, setProgress] = useState(0)
 
   useMotionValueEvent(scrollYProgress, 'change', (latest) => {
@@ -82,23 +87,23 @@ const ScrollSection: React.FC<ScrollSectionProps> = ({
 
       <div ref={containerRef} className="relative" style={{ height: '300vh' }}>
         <div className="sticky top-0 h-screen w-full flex items-center overflow-hidden border-b-2 border-black-pure">
-          <motion.div style={{ x }} className="flex items-center gap-12 md:gap-24 px-8 md:px-20">
+          <motion.div style={{ x }} className="flex items-center gap-12 md:gap-24 px-6 xs:px-10 md:px-20">
+
             <div className="flex-shrink-0 w-[85vw] md:w-[30vw] flex flex-col gap-6 group">
               <div className="flex items-center gap-4">
-                <div className="w-12 h-1 bg-primary-500 transition-all duration-300 group-hover:w-20" />
-                <span className="font-mono text-base font-black uppercase tracking-widest text-zinc-500">
+                <div className="w-12 h-1 bg-primary-500 transition-all duration-300 group-hover:w-20 shrink-0" />
+                <span className="font-mono text-sm md:text-base font-black uppercase tracking-widest text-zinc-500 truncate">
                   {labels.indexPrefix}
                 </span>
               </div>
-              <h2 className="text-2xl font-black uppercase tracking-tighter text-black-pure transition-colors duration-300 group-hover:text-primary-500">
+              <h2 className="text-2xl md:text-4xl font-black uppercase tracking-tighter text-black-pure transition-colors duration-300 group-hover:text-primary-500 break-words">
                 {title}
               </h2>
-              <div className="h-1 w-full bg-black-pure" />
             </div>
 
             {itemsWithImages.map((item) => (
               <React.Fragment key={item.id}>
-                <div className="flex-shrink-0 w-[75vw] md:w-[25vw]">
+                <div className="flex-shrink-0 w-[70vw] md:w-[25vw]">
                   <div className="relative aspect-[3/4] overflow-hidden border-2 border-black-pure bg-zinc-100 transition-all duration-300 hover:border-primary-500 group">
                     <img
                       src={item.image}
@@ -106,88 +111,67 @@ const ScrollSection: React.FC<ScrollSectionProps> = ({
                       className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110"
                     />
                     <div className="absolute bottom-4 left-4 px-3 py-1 border-2 border-black-pure bg-white-pure transition-colors duration-300 group-hover:bg-primary-500">
-                      <span className="font-mono text-base font-black uppercase tracking-widest text-black-pure transition-colors duration-300 group-hover:text-white-pure">
-                        IMAGE_{String(item.index).padStart(2, '0')}
+                      <span className="font-mono text-xs md:text-base font-black uppercase tracking-widest text-black-pure transition-colors duration-300 group-hover:text-white-pure">
+                        ENTRY_{String(item.index).padStart(2, '0')}
                       </span>
                     </div>
                   </div>
                 </div>
 
-                <div className="flex-shrink-0 w-[85vw] md:w-[45vw] flex flex-col gap-8 group">
+                <div className="flex-shrink-0 w-[85vw] md:w-[45vw] flex flex-col gap-6 md:gap-8 group">
                   <div className="flex items-center gap-4">
-                    <span className="font-mono text-base font-black uppercase tracking-widest text-primary-500 transition-colors duration-300 group-hover:text-secondary-500">
+                    <span className="font-mono text-base font-black uppercase tracking-widest text-primary-500 transition-colors duration-300 group-hover:text-secondary-500 shrink-0">
                       {String(item.index).padStart(2, '0')}
                     </span>
                     <div className="flex-1 h-px bg-zinc-200" />
                   </div>
-                  <h3 className="text-2xl font-black uppercase tracking-tighter text-black-pure transition-colors duration-300 group-hover:text-primary-500">
+                  <h3 className="text-2xl md:text-4xl lg:text-5xl font-black uppercase tracking-tighter text-black-pure transition-colors duration-300 group-hover:text-primary-500 break-words">
                     {item.title}
                   </h3>
-                  <p className="text-base font-sans font-bold uppercase text-black-pure/60 transition-colors duration-300 group-hover:text-black-pure">
+                  <p className="text-sm md:text-base font-sans font-bold uppercase text-black-pure/60 transition-colors duration-300 group-hover:text-black-pure max-w-[600px] break-words">
                     {item.description}
                   </p>
-                  {item.percentage && (
-                    <div className="mt-4">
-                      <div className="flex justify-between items-end mb-3">
-                        <span className="font-mono text-base font-black uppercase tracking-widest text-black-pure/60">
-                          {labels.progressLabel}
-                        </span>
-                        <span className="font-mono text-base font-black uppercase tracking-widest text-black-pure">
-                          {item.percentage}%
-                        </span>
-                      </div>
-                      <div className="h-3 border-2 border-black-pure p-0.5 flex gap-0.5 bg-white-pure">
-                        {[...Array(20)].map((_, i) => (
-                          <div
-                            key={i}
-                            className={`h-full flex-grow transition-all duration-300 ${(i / 20) * 100 < item.percentage! ? 'bg-primary-500' : 'bg-white-100'}`}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                  )}
                 </div>
               </React.Fragment>
             ))}
 
-            <div className="flex-shrink-0 w-[85vw] md:w-[30vw] border-l-4 border-black-pure pl-12 flex flex-col gap-6 group">
-              <span className="font-mono text-base font-black uppercase tracking-widest text-zinc-500 transition-colors duration-300 group-hover:text-primary-500">
+            <div className="flex-shrink-0 w-[85vw] md:w-[30vw] border-l-4 border-black-pure pl-8 md:pl-12 flex flex-col gap-6 group">
+              <span className="font-mono text-sm md:text-base font-black uppercase tracking-widest text-zinc-500 transition-colors duration-300 group-hover:text-primary-500 truncate">
                 {labels.statusComplete}
               </span>
               <div className="flex flex-col">
-                <span className="text-2xl font-black uppercase tracking-tighter text-black-pure transition-colors duration-300 group-hover:text-primary-500">
+                <span className="text-3xl md:text-5xl font-black uppercase tracking-tighter text-black-pure transition-colors duration-300 group-hover:text-primary-500">
                   {String(items.length).padStart(2, '0')}
                 </span>
-                <span className="text-2xl font-black uppercase tracking-tighter text-primary-500 transition-colors duration-300 group-hover:text-secondary-500">
+                <span className="text-2xl md:text-4xl font-black uppercase tracking-tighter text-primary-500 transition-colors duration-300 group-hover:text-secondary-500 break-words">
                   {subtitle}
                 </span>
               </div>
-              <div className="h-2 w-full bg-black-pure mt-4" />
             </div>
           </motion.div>
         </div>
       </div>
 
       {ctaLabel && ctaPath && (
-        <div className="py-16 flex justify-center bg-white-pure border-b-2 border-black-pure">
-          <SectionButton label={ctaLabel} href={ctaPath} variant="primary" size="lg" />
+        <div className="py-12 md:py-16 flex justify-center bg-white-pure border-b-2 border-black-pure">
+          <SectionButton label={ctaLabel} href={ctaPath} variant="primary" size="lg" className="whitespace-nowrap" />
         </div>
       )}
 
       {isInView && (
-        <div className="fixed bottom-10 left-1/2 -translate-x-1/2 w-full max-w-sm px-8 z-50 pointer-events-auto">
-          <div className="flex flex-col gap-2 p-4 border-2 border-black-pure bg-white-pure transition-all duration-300 hover:border-primary-500">
+        <div className="fixed bottom-6 md:bottom-10 left-1/2 -translate-x-1/2 w-full max-w-[280px] xs:max-w-xs md:max-w-sm px-4 z-50 pointer-events-auto">
+          <div className="flex flex-col gap-2 p-3 md:p-4 border-2 border-black-pure bg-white-pure shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all duration-300 hover:border-primary-500">
             <div className="flex justify-between items-end">
-              <span className="font-mono text-base font-black uppercase tracking-widest text-black-pure">
+              <span className="font-mono text-[10px] md:text-base font-black uppercase tracking-widest text-black-pure">
                 {labels.progressLabel}
               </span>
-              <span className="font-mono text-base font-black uppercase tracking-widest text-black-pure tabular-nums">
+              <span className="font-mono text-[10px] md:text-base font-black uppercase tracking-widest text-black-pure tabular-nums">
                 {progress}%
               </span>
             </div>
-            <div className="h-2 w-full bg-white-100">
+            <div className="h-1.5 md:h-2 w-full bg-zinc-100 overflow-hidden">
               <motion.div
-                style={{ scaleX: scrollYProgress }}
+                style={{ scaleX: smoothProgress }}
                 className="h-full w-full origin-left bg-primary-500"
               />
             </div>

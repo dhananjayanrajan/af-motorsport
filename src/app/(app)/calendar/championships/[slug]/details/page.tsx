@@ -406,7 +406,6 @@ export default async function ChampionshipDetailsPage({ params }: { params: Prom
                             upcoming: 'UPCOMING',
                         },
                     }}
-                    orientation="horizontal"
                     headerVariant={3}
                     footerVariant={2}
                 />

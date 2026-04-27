@@ -1,20 +1,17 @@
-// TimelineSection.tsx
 "use client"
-import useEmblaCarousel from 'embla-carousel-react'
+
 import Image from 'next/image'
 import Link from 'next/link'
-import React, { useEffect, useState } from 'react'
-import SectionButton from '../Components/SectionButton'
+import React, { useMemo, useRef, useState } from 'react'
 import SectionFooter from '../Components/SectionFooter'
 import SectionHeader from '../Components/SectionHeader'
 
 export interface TimelineEvent {
   id: string
-  date: string
+  date: string // Expected format: YYYY-MM-DD
   title: string
   description?: string
   status?: 'completed' | 'active' | 'upcoming'
-  icon?: React.ReactNode
   image?: string
   slug?: string
   code?: string
@@ -37,12 +34,8 @@ interface TimelineSectionProps {
   subtitle: string
   events: TimelineEvent[]
   labels: TimelineLabels
-  orientation?: 'horizontal' | 'vertical'
-  ctaLabel?: string
-  ctaPath?: string
   headerVariant?: 1 | 2 | 3
   footerVariant?: 1 | 2 | 3
-  background?: React.ReactNode
 }
 
 const TimelineSection: React.FC<TimelineSectionProps> = ({
@@ -50,208 +43,201 @@ const TimelineSection: React.FC<TimelineSectionProps> = ({
   title,
   subtitle,
   events = [],
-  labels = {
-    statusPrefix: '',
-    eventIndexLabel: '',
-    deploymentStatus: { completed: '', active: '', upcoming: '' }
-  },
-  orientation = 'horizontal',
-  ctaLabel,
-  ctaPath,
+  labels,
   headerVariant = 1,
   footerVariant = 1,
-  background
 }) => {
+  const scrollRef = useRef<HTMLDivElement>(null)
+  const [isDragging, setIsDragging] = useState(false)
+  const [startX, setStartX] = useState(0)
+  const [scrollLeft, setScrollLeft] = useState(0)
   const [hoveredEvent, setHoveredEvent] = useState<string | null>(null)
-  const [progress, setProgress] = useState(0)
-  const [emblaRef, emblaApi] = useEmblaCarousel({ align: 'start', containScroll: 'trimSnaps', loop: false })
 
-  useEffect(() => {
-    if (!emblaApi) return
-    const onScroll = () => setProgress(emblaApi.scrollProgress() * 100)
-    emblaApi.on('scroll', onScroll)
-    onScroll()
-    return () => { emblaApi.off('scroll', onScroll) }
-  }, [emblaApi])
+  // Generate date range based on events
+  const timelineDays = useMemo(() => {
+    if (events.length === 0) return []
+    const dates = events.map((e) => new Date(e.date))
+    const minDate = new Date(Math.min(...dates.map((d) => d.getTime())))
+    const maxDate = new Date(Math.max(...dates.map((d) => d.getTime())))
 
-  const getStatusMeta = (status?: string) => {
-    switch (status) {
-      case 'active': return { color: 'text-primary-500', label: labels.deploymentStatus.active, bar: 'bg-primary-500' }
-      case 'completed': return { color: 'text-black-pure', label: labels.deploymentStatus.completed, bar: 'bg-black-pure' }
-      default: return { color: 'text-black-pure/30', label: labels.deploymentStatus.upcoming, bar: 'bg-black-pure/10' }
+    // Add padding days
+    minDate.setDate(minDate.getDate() - 5)
+    maxDate.setDate(maxDate.getDate() + 10)
+
+    const days = []
+    const current = new Date(minDate)
+    while (current <= maxDate) {
+      days.push(new Date(current))
+      current.setDate(current.getDate() + 1)
+    }
+    return days
+  }, [events])
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    setIsDragging(true)
+    if (scrollRef.current) {
+      setStartX(e.pageX - scrollRef.current.offsetLeft)
+      setScrollLeft(scrollRef.current.scrollLeft)
     }
   }
 
-  const VerticalEvent = ({ event, idx }: { event: TimelineEvent; idx: number }) => {
-    const meta = getStatusMeta(event.status)
-    return (
-      <div className="relative pl-20 group">
-        <div className="absolute left-0 top-0 h-full flex flex-col items-center shrink-0">
-          <div className={`w-10 h-10 border border-black-pure flex items-center justify-center transition-all duration-300 ${event.status === 'active' ? 'bg-primary-500 border-primary-500' : 'bg-white-pure group-hover:bg-primary-500'}`}>
-            {event.icon || <span className="text-base font-bold transition-colors duration-300 group-hover:text-white-pure">{String(idx + 1).padStart(2, '0')}</span>}
-          </div>
-          <div className="w-px flex-grow bg-black-pure/10 transition-all duration-300 group-hover:bg-primary-500" />
-        </div>
-
-        <div className="pb-16">
-          <div className="flex flex-col mb-4">
-            <div className="flex items-center gap-4 mb-2">
-              <span className={`text-base font-bold transition-all duration-300 ${meta.color}`}>
-                {meta.label}
-              </span>
-              <div className={`h-px w-12 transition-all duration-300 ${meta.bar}`} />
-            </div>
-            <span className="text-base text-black-pure/60">{event.date}</span>
-          </div>
-
-          <div className="p-8 md:p-12 border border-black-pure bg-white-pure transition-all duration-300 hover:bg-neutral-50 hover:translate-x-1 relative">
-            <h3 className="text-2xl font-bold text-black-pure mb-4 transition-colors duration-300 hover:text-primary-500">
-              {event.title}
-            </h3>
-            {event.description && (
-              <p className="text-base text-black-pure/60">
-                {event.description}
-              </p>
-            )}
-            <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-black-pure/20" />
-          </div>
-        </div>
-      </div>
-    )
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging) return
+    e.preventDefault()
+    if (scrollRef.current) {
+      const x = e.pageX - scrollRef.current.offsetLeft
+      const walk = (x - startX) * 2
+      scrollRef.current.scrollLeft = scrollLeft - walk
+    }
   }
 
-  if (orientation === 'vertical') {
-    return (
-      <section id={id} className="relative w-full bg-white-pure border-t border-black-pure overflow-hidden">
-        {background}
-        <SectionHeader title={title} subtitle={subtitle} variant={headerVariant} metadata={String(events.length).padStart(2, '0')} />
-        <div className="relative z-10 w-full p-8 md:p-24 border-b border-black-pure">
-          <div className="flex flex-col max-w-4xl mx-auto">
-            {events.map((event, idx) => (
-              <VerticalEvent key={event.id} event={event} idx={idx} />
-            ))}
-          </div>
-        </div>
-        {ctaLabel && ctaPath && (
-          <div className="py-16 flex justify-center bg-white-pure">
-            <SectionButton label={ctaLabel} href={ctaPath} variant="primary" size="lg" />
-          </div>
-        )}
-        <SectionFooter variant={footerVariant} />
-      </section>
-    )
-  }
+  const stopDragging = () => setIsDragging(false)
 
   return (
-    <section id={id} className="relative w-full bg-white-pure border-t border-black-pure overflow-hidden">
-      {background}
-      <SectionHeader title={title} subtitle={subtitle} variant={headerVariant} metadata={String(events.length).padStart(2, '0')} />
+    <section id={id} className="relative w-full h-screen bg-white-pure flex flex-col border-b border-black-pure overflow-hidden">
+      <style dangerouslySetInnerHTML={{
+        __html: `
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      `}} />
 
-      <div className="relative w-full border-b border-black-pure">
-        <div className="overflow-hidden cursor-grab active:cursor-grabbing" ref={emblaRef}>
-          <div className="flex">
-            {events.map((event, idx) => {
-              const meta = getStatusMeta(event.status)
-              const isHovered = hoveredEvent === event.id
+      <SectionHeader
+        title={title}
+        subtitle={subtitle}
+        variant={headerVariant}
+        metadata={String(events.length).padStart(2, '0')}
+      />
+
+      <div className="flex-1 relative bg-white-pure overflow-hidden group/container">
+        {/* Background Grid Decoration */}
+        <div className="absolute inset-0 pointer-events-none opacity-[0.03] bg-[url('/grid.svg')] bg-[length:40px_40px]" />
+
+        {/* Horizontal Timeline Line */}
+        <div className="absolute left-0 right-0 bottom-32 h-px bg-black-pure z-0" />
+
+        <div
+          ref={scrollRef}
+          onMouseDown={handleMouseDown}
+          onMouseMove={handleMouseMove}
+          onMouseUp={stopDragging}
+          onMouseLeave={stopDragging}
+          className={`h-full w-full overflow-x-auto overflow-y-hidden no-scrollbar select-none ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
+        >
+          <div className="flex h-full min-w-max relative pt-20">
+            {timelineDays.map((day, idx) => {
+              const dateStr = day.toISOString().split('T')[0]
+              const activeEvents = events.filter((e) => e.date === dateStr)
+              const isFirstOfMonth = day.getDate() === 1
 
               return (
-                <div
-                  key={event.id}
-                  className="flex-[0_0_100%] md:flex-[0_0_50%] lg:flex-[0_0_33.333%] min-w-0 border-r border-black-pure group"
-                  onMouseEnter={() => setHoveredEvent(event.id)}
-                  onMouseLeave={() => setHoveredEvent(null)}
-                >
-                  <Link href={event.slug ? `/competition/championships/${event.slug}` : '#'} className="block h-full">
-                    <div className="relative p-8 md:p-12 h-full flex flex-col bg-white-pure transition-all duration-500 hover:bg-black-pure">
-                      <div className="flex justify-between items-start mb-8">
-                        <div className="flex flex-col">
-                          <span className="text-base text-black-pure/30 mb-1 transition-colors duration-500 group-hover:text-white-pure/30">
-                            {labels.eventIndexLabel}_0{idx + 1}
-                          </span>
-                          <span className={`text-base font-bold transition-all duration-500 ${meta.color} group-hover:text-primary-500`}>
-                            {meta.label}
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-3">
-                          {event.code && (
-                            <div className="px-2 py-1 bg-black-pure text-white-pure transition-all duration-500 group-hover:bg-white-pure group-hover:text-black-pure">
-                              <span className="text-base font-bold">{event.code}</span>
+                <div key={idx} className="relative w-24 md:w-32 h-full flex flex-col border-r border-black-pure/5">
+                  {/* Month Label */}
+                  {isFirstOfMonth && (
+                    <div className="absolute -top-10 left-2 z-0">
+                      <span className="text-5xl font-black text-black-pure uppercase opacity-10 italic">
+                        {day.toLocaleString('default', { month: 'short' })}
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Day Label & Marker */}
+                  <div className="absolute bottom-24 left-1/2 -translate-x-1/2 flex flex-col items-center z-10">
+                    <div className="w-px h-8 bg-black-pure mb-2" />
+                    <span className="font-mono text-xs font-black text-black-pure">
+                      {day.getDate().toString().padStart(2, '0')}
+                    </span>
+                    <span className="font-mono text-[8px] text-black-pure/40 uppercase font-bold">
+                      {day.toLocaleString('default', { weekday: 'short' })}
+                    </span>
+                  </div>
+
+                  {/* Event Cards Projection */}
+                  <div className="absolute inset-x-1 bottom-44 pointer-events-none flex flex-col justify-end gap-6">
+                    {activeEvents.map((event) => (
+                      <Link
+                        key={event.id}
+                        href={event.slug ? `/competition/championships/${event.slug}` : '#'}
+                        onMouseEnter={() => setHoveredEvent(event.id)}
+                        onMouseLeave={() => setHoveredEvent(null)}
+                        className="group/card relative pointer-events-auto"
+                        style={{ zIndex: hoveredEvent === event.id ? 50 : 20 }}
+                      >
+                        <div className={`w-52 md:w-64 p-4 transition-all duration-300 border-2 border-black-pure shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] ${hoveredEvent === event.id ? 'bg-primary-500 -translate-y-4' : 'bg-white-pure hover:border-primary-500'}`}>
+                          <div className="flex justify-between items-center mb-3">
+                            <span className="font-mono text-[10px] font-black bg-black-pure text-white-pure px-2 py-0.5 uppercase tracking-tighter">
+                              {event.code || 'EVT'}
+                            </span>
+                            <div className={`size-2 rounded-full ${event.status === 'active' ? 'bg-primary-500' : 'bg-black-pure/20'}`} />
+                          </div>
+
+                          <h3 className="text-sm font-black text-black-pure uppercase tracking-tighter leading-tight mb-3 line-clamp-1">
+                            {event.title}
+                          </h3>
+
+                          {event.image && (
+                            <div className="relative aspect-video w-full overflow-hidden border border-black-pure mb-3 transition-all duration-500 group-hover/card:grayscale-0">
+                              <Image
+                                src={event.image}
+                                alt={event.title}
+                                fill
+                                className="object-cover transition-transform duration-700 group-hover/card:scale-110"
+                                sizes="250px"
+                              />
                             </div>
                           )}
-                          <span className="text-base font-bold text-black-pure transition-all duration-500 group-hover:text-white-pure">
-                            {event.date}
-                          </span>
+
+                          <div className="flex items-center justify-between">
+                            <span className="font-mono text-[9px] font-black text-black-pure uppercase opacity-60">
+                              {event.format || 'Standard'}
+                            </span>
+                            <div className="size-6 border border-black-pure flex items-center justify-center group-hover/card:bg-black-pure group-hover/card:text-white-pure transition-colors">
+                              <svg width="10" height="10" viewBox="0 0 24 24" fill="none">
+                                <path d="M7 17L17 7M17 7H7M17 7V17" stroke="currentColor" strokeWidth="4" />
+                              </svg>
+                            </div>
+                          </div>
                         </div>
-                      </div>
-
-                      {event.image && (
-                        <div className="relative aspect-video w-full overflow-hidden border border-black-pure mb-6 transition-all duration-500 group-hover:border-primary-500">
-                          <Image
-                            src={event.image}
-                            alt={event.title}
-                            fill
-                            className="object-cover transition-all duration-700 group-hover:scale-110"
-                            sizes="(max-width: 768px) 100vw, 33vw"
-                          />
-                          <div className="absolute inset-0 bg-black-pure/0 transition-colors duration-500 group-hover:bg-black-pure/20" />
-                        </div>
-                      )}
-
-                      <h3 className={`text-2xl font-bold mb-4 transition-all duration-500 ${isHovered ? 'text-primary-500' : 'text-black-pure group-hover:text-white-pure'}`}>
-                        {event.title}
-                      </h3>
-
-                      {event.description && (
-                        <p className="text-base text-black-pure/60 mb-8 flex-grow transition-colors duration-500 group-hover:text-white-pure/60">
-                          {event.description}
-                        </p>
-                      )}
-
-                      {event.format && (
-                        <div className="mb-6">
-                          <span className="text-base text-black-pure/40 transition-colors duration-500 group-hover:text-white-pure/40">
-                            {event.format}
-                          </span>
-                        </div>
-                      )}
-
-                      <div className="w-full h-px bg-black-pure/10 relative overflow-hidden">
-                        <div className={`absolute top-0 left-0 h-full transition-all duration-700 ${isHovered ? 'w-full' : 'w-0 group-hover:w-full'} ${meta.bar}`} />
-                      </div>
-
-                      <div className="absolute bottom-6 right-6 w-8 h-8 border-2 border-black-pure flex items-center justify-center transition-all duration-500 group-hover:border-primary-500 group-hover:bg-primary-500 group-hover:scale-110">
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" className="text-black-pure transition-all duration-500 group-hover:text-black-pure group-hover:rotate-45">
-                          <path d="M7 17L17 7M17 7H7M17 7V17" stroke="currentColor" strokeWidth="3" strokeLinecap="square" />
-                        </svg>
-                      </div>
-                    </div>
-                  </Link>
+                      </Link>
+                    ))}
+                  </div>
                 </div>
               )
             })}
           </div>
         </div>
+      </div>
 
-        <div className="flex items-center bg-neutral-50 px-8 border-t border-black-pure" style={{ height: '64px' }}>
-          <div className="w-full bg-black-pure/5 h-1 relative overflow-hidden flex gap-1">
-            {[...Array(50)].map((_, i) => (
-              <div
-                key={i}
-                className={`h-full flex-grow transition-all duration-300 ${(i / 50) * 100 < progress ? 'bg-primary-500' : 'bg-transparent'}`}
-              />
-            ))}
+      {/* Control Bar Footer */}
+      <div className="h-24 bg-white-pure border-t border-black-pure flex divide-x divide-black-pure shrink-0">
+        <div className="w-48 md:w-64 p-4 flex flex-col justify-center bg-white-pure">
+          <span className="font-mono text-[9px] font-black text-black-pure uppercase opacity-40">System Status</span>
+          <p className="text-xs font-black text-black-pure uppercase tracking-tighter leading-none">
+            {isDragging ? 'Translating Timeline...' : 'Timeline Ready'}
+          </p>
+        </div>
+
+        <div className="flex-1 p-4 flex items-center justify-between bg-black-pure overflow-hidden">
+          <div className="flex flex-col min-w-0 mr-8">
+            <span className="font-mono text-[9px] font-black text-primary-500 uppercase tracking-widest">
+              {hoveredEvent ? 'Focus Entry' : 'Timeline Overview'}
+            </span>
+            <span className="text-sm md:text-base font-black text-white-pure uppercase truncate tracking-tighter">
+              {hoveredEvent ? events.find((e) => e.id === hoveredEvent)?.title : subtitle}
+            </span>
+          </div>
+
+          <div className="flex items-center gap-4 shrink-0">
+            <div className="flex flex-col items-end">
+              <span className="font-mono text-[9px] font-black text-white-pure/40 uppercase">Total Events</span>
+              <span className="text-2xl font-black text-primary-500 leading-none">{events.length}</span>
+            </div>
           </div>
         </div>
       </div>
 
-      {ctaLabel && ctaPath && (
-        <div className="py-16 flex justify-center bg-white-pure">
-          <SectionButton label={ctaLabel} href={ctaPath} variant="primary" size="lg" />
-        </div>
-      )}
       <SectionFooter variant={footerVariant} />
     </section>
   )
 }
 
-export default TimelineSection
+export default TimelineSection;

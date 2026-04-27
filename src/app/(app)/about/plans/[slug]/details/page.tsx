@@ -144,7 +144,6 @@ export default async function PlanDetailsPage({ params }: { params: Promise<{ sl
                             upcoming: 'PENDING',
                         },
                     }}
-                    orientation="vertical"
                     headerVariant={1}
                     footerVariant={1}
                 />

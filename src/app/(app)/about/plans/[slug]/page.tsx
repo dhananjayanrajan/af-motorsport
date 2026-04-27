@@ -198,11 +198,8 @@ export default async function PlanPage({ params }: { params: Promise<{ slug: str
                             upcoming: 'PENDING',
                         },
                     }}
-                    orientation="horizontal"
                     headerVariant={1}
                     footerVariant={1}
-                    ctaLabel="VIEW FULL PARAMETERS"
-                    ctaPath={`/about/plans/${plan.slug}/details`}
                 />
             )}
         </main>

@@ -190,6 +190,7 @@ export default async function CompetitionPage() {
             lng: circuit.details?.location?.[1] || 0,
             description: circuit.basics?.tagline || circuit.basics?.identifiers?.abbreviation || 'CIRCUIT_HUB',
             address: circuit.details?.address || 'COORDINATES_ONLY',
+            slug: circuit.slug,
         }))
 
     return (

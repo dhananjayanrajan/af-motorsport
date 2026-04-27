@@ -117,7 +117,6 @@ export default async function VacancyDetailsPage({ params }: { params: Promise<{
                             upcoming: 'UPCOMING',
                         },
                     }}
-                    orientation="horizontal"
                     headerVariant={1}
                     footerVariant={1}
                 />

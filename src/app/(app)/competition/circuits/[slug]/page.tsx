@@ -1,7 +1,8 @@
-import GridSection from '@/components/Section/Blocks/GridSection'
-import HeroSection from '@/components/Section/Blocks/HeroSection'
-import ListSection from '@/components/Section/Blocks/ListSection'
-import MapSection from '@/components/Section/Blocks/MapSection'
+import MasonrySection from '@/components/Section/Blocks/MasonrySection'
+import QuoteSection from '@/components/Section/Blocks/QuoteSection'
+import ScrollSection from '@/components/Section/Blocks/ScrollSection'
+import StudySection from '@/components/Section/Blocks/StudySection'
+import VideoSection from '@/components/Section/Blocks/VideoSection'
 import { Media } from '@/payload-types'
 import configPromise from '@payload-config'
 import { unstable_cache } from 'next/cache'
@@ -23,7 +24,7 @@ function resolveAssetUrl(assets: any, ...keys: string[]): string | undefined {
     return undefined
 }
 
-const getCircuitDetailsData = unstable_cache(
+const getCircuitData = unstable_cache(
     async (slug: string) => {
         const payload = await getPayload({ config: configPromise })
         const result = await payload.find({
@@ -38,16 +39,14 @@ const getCircuitDetailsData = unstable_cache(
                 basics: {
                     tagline: true,
                     description: true,
-                    identifiers: { abbreviation: true, code: true }
                 },
                 assets: {
+                    video: true,
                     cover: true,
-                    documents: true,
-                    circuit_map: true
+                    thumbnail: true,
+                    gallery: true,
                 },
                 details: {
-                    location: true,
-                    address: true,
                     type: true,
                     length_km: true,
                     length_miles: true,
@@ -57,215 +56,174 @@ const getCircuitDetailsData = unstable_cache(
                     elevation_change: true,
                     capacity: true,
                     opened: true,
-                    renovated: true
+                    history: true,
                 },
                 metrics: {
                     record_lap_time: true,
-                    record_lap_year: true
+                    record_lap_year: true,
                 },
                 seo: {
-                    image: true
-                }
-            }
+                    image: true,
+                },
+            },
         })
         return result.docs[0] || null
     },
-    ['circuit-details'],
-    { revalidate: 3600, tags: ['circuit-details'] }
+    ['circuit-page'],
+    { revalidate: 3600, tags: ['circuit'] }
 )
 
-export default async function CircuitDetailsPage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function CircuitPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params
-    const circuit = await getCircuitDetailsData(slug)
+    const circuit = await getCircuitData(slug)
 
     if (!circuit) notFound()
 
-    const mapLocations: any[] = []
-    if (circuit.details?.location) {
-        mapLocations.push({
+    const videoUrl = getMediaUrl(circuit.assets?.video)
+    const posterUrl = resolveAssetUrl(circuit.assets, 'thumbnail', 'cover')
+    const videos = videoUrl
+        ? [
+            {
+                id: String(circuit.id),
+                title: circuit.name,
+                url: videoUrl,
+                poster: posterUrl,
+            },
+        ]
+        : []
+
+    const study = {
+        id: String(circuit.id),
+        title: circuit.name,
+        description: circuit.basics?.tagline || circuit.basics?.description || '',
+        image: posterUrl || getMediaUrl(circuit.seo?.image) || '',
+        metrics: [
+            { label: 'TYPE', value: circuit.details?.type || 'N/A' },
+            { label: 'LENGTH', value: circuit.details?.length_km ? `${circuit.details.length_km} KM` : 'N/A' },
+            { label: 'TURNS', value: circuit.details?.turns ? String(circuit.details.turns) : 'N/A' },
+            { label: 'FIA GRADE', value: circuit.details?.fia_grade || 'N/A' },
+            { label: 'CAPACITY', value: circuit.details?.capacity ? circuit.details.capacity.toLocaleString() : 'N/A' },
+            { label: 'LAP RECORD', value: circuit.metrics?.record_lap_time || 'N/A' },
+        ],
+    }
+
+    const quoteItem = circuit.basics?.tagline
+        ? {
             id: String(circuit.id),
-            name: circuit.name.toUpperCase(),
-            lat: circuit.details.location[0],
-            lng: circuit.details.location[1],
-            description: circuit.basics?.tagline || 'FACILITY_COORDINATES',
-            address: circuit.details?.address || 'COORDINATES_ONLY',
+            text: circuit.basics.tagline,
+            author: circuit.name,
+        }
+        : null
+
+    const historyItems: any[] = []
+    if (circuit.details?.history || circuit.basics?.description) {
+        historyItems.push({
+            id: 'circuit-history',
+            title: 'ORIGINS',
+            description: circuit.details?.history || circuit.basics?.description || '',
+            percentage: 100,
         })
     }
 
-    const heroBackgroundImage = resolveAssetUrl(circuit.assets, 'cover') || getMediaUrl(circuit.seo?.image)
-
-    const specItems: any[] = [
-        {
-            id: 'length-km',
-            title: 'LENGTH_KM',
-            subtitle: circuit.details?.length_km ? `${circuit.details.length_km} KM` : 'N/A',
-        },
-        {
-            id: 'length-miles',
-            title: 'LENGTH_MI',
-            subtitle: circuit.details?.length_miles ? `${circuit.details.length_miles} MI` : 'N/A',
-        },
-        {
-            id: 'turns',
-            title: 'TURNS',
-            subtitle: circuit.details?.turns ? String(circuit.details.turns) : 'N/A',
-        },
-        {
-            id: 'drs-zones',
-            title: 'DRS_ZONES',
-            subtitle: circuit.details?.drs_zones ? String(circuit.details.drs_zones) : 'N/A',
-        },
-        {
-            id: 'fia-grade',
-            title: 'FIA_GRADE',
-            subtitle: circuit.details?.fia_grade || 'N/A',
-        },
-        {
-            id: 'elevation',
-            title: 'ELEVATION_DELTA',
-            subtitle: circuit.details?.elevation_change ? `${circuit.details.elevation_change} M` : 'N/A',
-        },
-        {
-            id: 'capacity',
-            title: 'MAX_CAPACITY',
-            subtitle: circuit.details?.capacity ? circuit.details.capacity.toLocaleString() : 'N/A',
-        },
-        {
-            id: 'opened',
-            title: 'INITIALIZED',
-            subtitle: circuit.details?.opened || 'N/A',
-        },
-        {
-            id: 'record-lap',
-            title: 'LAP_RECORD',
-            subtitle: circuit.metrics?.record_lap_time || 'N/A',
-        },
-        {
-            id: 'record-year',
-            title: 'RECORD_YEAR',
-            subtitle: circuit.metrics?.record_lap_year || 'N/A',
-        },
-    ]
-
-    const renovationEntries: any[] = []
-    if (circuit.details?.renovated?.list) {
-        circuit.details.renovated.list.forEach((reno: any) => {
-            if (reno.year) {
-                renovationEntries.push({
-                    id: reno.id || String(Math.random()),
-                    title: String(reno.year),
-                    subtitle: reno.description || 'STRUCTURAL_MODIFICATION',
-                })
-            }
-        })
-    }
-
-    const documentItems: any[] = []
-    if (circuit.assets?.documents && Array.isArray(circuit.assets.documents)) {
-        circuit.assets.documents.forEach((doc, idx) => {
-            const url = getMediaUrl(doc)
+    const galleryItems: any[] = []
+    if (circuit.assets?.gallery && Array.isArray(circuit.assets.gallery)) {
+        circuit.assets.gallery.forEach((item, idx) => {
+            const url = getMediaUrl(item)
             if (url) {
-                documentItems.push({
-                    id: (typeof doc === 'object' && doc.id) ? String(doc.id) : `doc-${idx}`,
-                    title: (typeof doc === 'object' && (doc.alt || doc.filename)) || `DOC_${idx + 1}`,
-                    subtitle: (typeof doc === 'object' && doc.mimeType) || 'APPLICATION/PDF',
+                galleryItems.push({
+                    id: String(typeof item === 'object' ? item.id : idx),
+                    title: (typeof item === 'object' && item.alt) || circuit.name,
                     image: url,
-                    href: url,
+                    height: idx % 3 === 0 ? 'tall' as const : idx % 2 === 0 ? 'medium' as const : 'short' as const,
                 })
             }
         })
     }
 
-    if (circuit.assets?.circuit_map) {
-        const url = getMediaUrl(circuit.assets.circuit_map)
-        if (url) {
-            documentItems.push({
-                id: 'circuit-map-doc',
-                title: 'TRACK_LAYOUT',
-                subtitle: 'VECTOR_MAPPING',
-                image: url,
-                href: url,
+    if (galleryItems.length === 0) {
+        const fallback = posterUrl || getMediaUrl(circuit.seo?.image)
+        if (fallback) {
+            galleryItems.push({
+                id: String(circuit.id),
+                title: circuit.name,
+                image: fallback,
+                height: 'medium' as const,
             })
         }
     }
 
     return (
         <main className="w-full">
-            {mapLocations.length > 0 && (
-                <MapSection
-                    id="circuit-map"
-                    title="GEOLOCATION"
-                    subtitle="Global positioning coordinates and facility perimeter"
-                    locations={mapLocations}
+            {videos.length > 0 && (
+                <VideoSection
+                    id="circuit-video"
+                    title="ONBOARD"
+                    subtitle="High‑speed reconnaissance"
+                    videos={videos}
                     labels={{
-                        hqLabel: 'HUB',
-                        intelLabel: 'DATA',
-                        routeLabel: 'SCAN',
-                        timeLabel: 'TIME',
-                        distLabel: 'KM',
-                        recordLabel: 'VIEW',
-                        filterLabels: {
-                            all: 'GLOBAL',
-                            primary: 'PRIMARY',
-                            satellite: 'EXT',
-                            pathing: 'GPS',
-                        },
+                        channelPrefix: 'CIRCUIT',
+                        broadcastStatus: 'LIVE FEED',
+                        liveFeed: 'ACTIVE',
+                        metaTransmission: 'CLOSE',
                     }}
-                    zoom={14}
+                    showPlaylist={false}
                     headerVariant={1}
                     footerVariant={1}
                 />
             )}
-            <HeroSection
-                id="circuit-details-cover"
-                title={circuit.name}
-                subtitle="OPERATIONAL_SPECIFICATIONS"
-                description={circuit.basics?.description || undefined}
-                backgroundImage={heroBackgroundImage}
-                alignment="center"
-                badge={circuit.basics?.identifiers?.abbreviation || circuit.basics?.identifiers?.code || 'CRT_ID'}
+            <StudySection
+                id="circuit-details"
+                title="SPECIFICATIONS"
+                subtitle="Technical facility telemetry"
+                studies={[study]}
+                variant="featured"
+                headerVariant={1}
+                footerVariant={1}
             />
-            <GridSection
-                id="circuit-specifications"
-                title="PARAMETERS"
-                subtitle="Technical facility telemetry and architectural statistics"
-                items={specItems}
-                labels={{
-                    unitsCount: 'SPECS',
-                    viewProject: 'DATA',
-                    sectionIndex: 'SPC',
-                    fallbackAlt: 'Spec',
-                }}
-                columns={4}
-            />
-            {renovationEntries.length > 0 && (
-                <ListSection
-                    id="circuit-renovations"
-                    title="MODIFICATIONS"
-                    subtitle="Documented structural updates and circuit renovations"
-                    entries={renovationEntries}
+            {quoteItem && (
+                <QuoteSection
+                    id="circuit-statement"
+                    title="IDENTITY"
+                    subtitle="Circuit character statement"
+                    quotes={[quoteItem]}
                     labels={{
-                        statusPrefix: 'TYPE',
-                        timePrefix: 'YEAR',
-                        indexPrefix: 'MOD',
+                        commStatus: 'SYS',
+                        ratingLabel: 'RANK',
                     }}
-                    showStatus={false}
-                    showTimestamp={false}
+                    variant="grid"
+                    headerVariant={2}
+                    footerVariant={1}
                 />
             )}
-            {documentItems.length > 0 && (
-                <GridSection
-                    id="circuit-documents"
+            {historyItems.length > 0 && (
+                <ScrollSection
+                    id="circuit-history"
                     title="ARCHIVE"
-                    subtitle="Technical documentation and layout vector resources"
-                    items={documentItems}
+                    subtitle="Documented heritage and evolution"
+                    items={historyItems}
                     labels={{
-                        unitsCount: 'DOCS',
-                        viewProject: 'FETCH',
-                        sectionIndex: 'DAT',
-                        fallbackAlt: 'File',
+                        indexPrefix: 'LOG',
+                        progressLabel: 'DATA',
+                        statusComplete: 'SYNC',
+                    }}
+                    variant="reveal"
+                    headerVariant={1}
+                    footerVariant={1}
+                />
+            )}
+            {galleryItems.length > 0 && (
+                <MasonrySection
+                    id="circuit-gallery"
+                    title="VISUALS"
+                    subtitle="Environmental documentation"
+                    items={galleryItems}
+                    labels={{
+                        categoryPrefix: 'TYPE',
+                        idPrefix: 'IMG',
                     }}
                     columns={3}
+                    headerVariant={1}
+                    footerVariant={1}
                 />
             )}
         </main>

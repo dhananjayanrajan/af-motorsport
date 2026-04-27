@@ -98,6 +98,7 @@ export default async function SeriesDetailsPage({ params }: { params: Promise<{ 
             lat: series.details.location[0],
             lng: series.details.location[1],
             description: series.basics?.tagline || 'Official location',
+            slug: series.slug,
         })
     }
 
@@ -143,7 +144,6 @@ export default async function SeriesDetailsPage({ params }: { params: Promise<{ 
                             upcoming: 'Next',
                         },
                     }}
-                    orientation="horizontal"
                     headerVariant={1}
                     footerVariant={1}
                 />

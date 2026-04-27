@@ -102,6 +102,7 @@ export default async function InitiativePage({ params }: { params: Promise<{ slu
             lat: initiative.details.locations[0],
             lng: initiative.details.locations[1],
             description: initiative.basics?.tagline || undefined,
+            slug: initiative.slug,
         })
     }
 
