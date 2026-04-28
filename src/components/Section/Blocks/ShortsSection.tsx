@@ -1,4 +1,3 @@
-// ShortsSection.tsx
 "use client"
 
 import Autoplay from 'embla-carousel-autoplay'
@@ -133,7 +132,7 @@ const ShortsSection: React.FC<ShortsSectionProps> = ({
     return (
         <section
             id={id}
-            className="relative w-full bg-black-pure border-t-2 border-black-pure overflow-hidden"
+            className="relative w-full bg-black-pure border-t-[3px] border-black-pure overflow-hidden"
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >
@@ -146,12 +145,12 @@ const ShortsSection: React.FC<ShortsSectionProps> = ({
                 />
             </div>
 
-            <div className="relative w-full overflow-hidden cursor-grab active:cursor-grabbing" ref={emblaRef}>
+            <div className="relative w-full overflow-hidden cursor-grab active:cursor-grabbing border-b-[3px] border-black-pure" ref={emblaRef}>
                 <div className="flex touch-pan-y" style={{ marginLeft: '-1px' }}>
                     {items.map((item, idx) => (
                         <div
                             key={item.id}
-                            className="relative flex-[0_0_85vw] sm:flex-[0_0_55vw] md:flex-[0_0_40vw] lg:flex-[0_0_30vw] xl:flex-[0_0_24vw] min-w-0 border-r border-white-pure/10"
+                            className="relative flex-[0_0_85vw] sm:flex-[0_0_55vw] md:flex-[0_0_40vw] lg:flex-[0_0_30vw] xl:flex-[0_0_24vw] min-w-0 border-r-[3px] border-black-pure"
                         >
                             <button
                                 onClick={() => openModal(idx)}
@@ -168,13 +167,13 @@ const ShortsSection: React.FC<ShortsSectionProps> = ({
                                 />
                                 <div className="absolute inset-0 bg-black-pure/20 group-hover:bg-black-pure/10 transition-colors duration-300" />
                                 <div className="absolute top-4 left-4 z-10">
-                                    <span className="text-xs font-mono font-black bg-black-pure text-white-pure px-2 py-1 uppercase tracking-widest">
+                                    <span className="text-xs font-mono font-black bg-black-pure text-white-pure px-2 py-1 uppercase tracking-widest border-[3px] border-black-pure shadow-[4px_4px_0px_0px_#000000]">
                                         {String(idx + 1).padStart(2, '0')}
                                     </span>
                                 </div>
                                 {item.category && (
                                     <div className="absolute top-4 right-4 z-10">
-                                        <span className="text-[10px] font-mono font-black bg-primary-500 text-black-pure px-2 py-1 uppercase tracking-widest">
+                                        <span className="text-[10px] font-mono font-black bg-primary-500 text-black-pure px-2 py-1 uppercase tracking-widest border-[3px] border-black-pure shadow-[4px_4px_0px_0px_#000000]">
                                             {item.category}
                                         </span>
                                     </div>
@@ -185,8 +184,8 @@ const ShortsSection: React.FC<ShortsSectionProps> = ({
                                     </h3>
                                 </div>
                                 <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                    <div className="w-16 h-16 border-2 border-white-pure bg-white-pure/10 backdrop-blur-sm flex items-center justify-center">
-                                        <Play className="w-8 h-8 text-white-pure fill-current" />
+                                    <div className="w-16 h-16 border-[3px] border-black-pure bg-white-pure flex items-center justify-center shadow-[4px_4px_0px_0px_#000000]">
+                                        <Play className="w-8 h-8 text-black-pure fill-current" />
                                     </div>
                                 </div>
                             </button>
@@ -207,15 +206,15 @@ const ShortsSection: React.FC<ShortsSectionProps> = ({
                         className="fixed inset-0 z-[200] bg-black-pure flex items-center justify-center"
                     >
                         <div className="absolute top-4 right-4 z-50 flex items-center gap-2">
-                            <button onClick={toggleMute} className="w-12 h-12 border border-white-pure/20 flex items-center justify-center text-white-pure hover:bg-white-pure/10 transition-colors">
+                            <button onClick={toggleMute} className="w-12 h-12 border-[3px] border-black-pure bg-white-pure flex items-center justify-center text-black-pure hover:bg-primary-500 transition-colors shadow-[4px_4px_0px_0px_#000000]">
                                 {isMuted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
                             </button>
-                            <button onClick={closeModal} className="w-12 h-12 border border-white-pure/20 flex items-center justify-center text-white-pure hover:bg-white-pure/10 transition-colors">
+                            <button onClick={closeModal} className="w-12 h-12 border-[3px] border-black-pure bg-white-pure flex items-center justify-center text-black-pure hover:bg-primary-500 transition-colors shadow-[4px_4px_0px_0px_#000000]">
                                 <X className="w-5 h-5" />
                             </button>
                         </div>
                         <div className="absolute top-4 left-4 z-50 flex items-center gap-4">
-                            <span className="text-xs font-mono font-black text-primary-500 uppercase tracking-widest">
+                            <span className="text-xs font-mono font-black text-primary-500 uppercase tracking-widest bg-black-pure px-2 py-1 border-[3px] border-primary-500 shadow-[4px_4px_0px_0px_#000000]">
                                 {String(selectedIndex + 1).padStart(2, '0')} / {String(items.length).padStart(2, '0')}
                             </span>
                             <h3 className="text-sm font-black text-white-pure uppercase tracking-tighter">
@@ -227,7 +226,7 @@ const ShortsSection: React.FC<ShortsSectionProps> = ({
                                 ref={modalVideoRef}
                                 src={activeItem.videoUrl}
                                 poster={activeItem.poster}
-                                className="max-w-full max-h-full object-contain"
+                                className="max-w-full max-h-full object-contain border-[3px] border-black-pure shadow-[12px_12px_0px_0px_#000000]"
                                 autoPlay
                                 playsInline
                                 muted={isMuted}
@@ -237,14 +236,14 @@ const ShortsSection: React.FC<ShortsSectionProps> = ({
                             />
                             {!isPlaying && (
                                 <button onClick={togglePlay} className="absolute inset-0 flex items-center justify-center z-30 bg-black-pure/40 group">
-                                    <div className="w-24 h-24 border-2 border-white-pure bg-white-pure/10 backdrop-blur-sm group-hover:bg-primary-500 group-hover:scale-110 transition-all duration-500 flex items-center justify-center">
-                                        <Play className="w-10 h-10 text-white-pure fill-current group-hover:text-black-pure transition-colors" />
+                                    <div className="w-24 h-24 border-[3px] border-black-pure bg-primary-500 shadow-[8px_8px_0px_0px_#000000] group-hover:scale-110 transition-all duration-500 flex items-center justify-center">
+                                        <Play className="w-10 h-10 text-black-pure fill-current" />
                                     </div>
                                 </button>
                             )}
                             {isPlaying && (
-                                <button onClick={togglePlay} className="absolute bottom-8 left-1/2 -translate-x-1/2 z-30 w-16 h-16 border-2 border-white-pure/40 bg-black-pure/40 backdrop-blur-sm flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300">
-                                    <Pause className="w-8 h-8 text-white-pure" />
+                                <button onClick={togglePlay} className="absolute bottom-8 left-1/2 -translate-x-1/2 z-30 w-16 h-16 border-[3px] border-black-pure bg-white-pure flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300 shadow-[4px_4px_0px_0px_#000000]">
+                                    <Pause className="w-8 h-8 text-black-pure" />
                                 </button>
                             )}
                         </div>
@@ -255,4 +254,4 @@ const ShortsSection: React.FC<ShortsSectionProps> = ({
     )
 }
 
-export default ShortsSection
+export default ShortsSection;

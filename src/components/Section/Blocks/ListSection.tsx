@@ -63,7 +63,8 @@ const ListSection: React.FC<ListSectionProps> = ({
     <section id={id} ref={containerRef} className="relative w-full py-12 md:py-20 lg:py-24 bg-background">
       <TactileBackground />
       <div className="container">
-        <div className="border-4 border-black-pure shadow-[16px_16px_0px_0px_#000000] relative z-10 transition-all duration-300">
+        {/* Main Section Shadow Adjusted to 4px */}
+        <div className="border-4 border-black-pure shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] relative z-10 transition-all duration-300 bg-white-pure">
           <SectionHeader
             title={title}
             subtitle={subtitle}
@@ -98,7 +99,8 @@ const ListSection: React.FC<ListSectionProps> = ({
 
               <div className="space-y-6 relative z-10">
                 <div className="flex items-center gap-3">
-                  <div className="h-12 w-12 bg-primary-500 border-2 border-black-pure flex-none flex items-center justify-center text-black-pure shadow-[4px_4px_0px_0px_#ffffff]">
+                  {/* Standardized Shadow to 4px White */}
+                  <div className="h-12 w-12 bg-primary-500 border-2 border-black-pure flex-none flex items-center justify-center text-black-pure shadow-[4px_4px_0px_0px_rgba(255,255,255,1)]">
                     <span className="font-black text-xl tracking-widest leading-none">
                       {(activeIndex + 1).toString().padStart(2, '0')}
                     </span>
@@ -121,7 +123,7 @@ const ListSection: React.FC<ListSectionProps> = ({
                     <h3 className="text-xl md:text-3xl font-black text-white-pure uppercase tracking-widest leading-none">
                       {activeEntry?.title}
                     </h3>
-                    <div className="inline-block px-3 py-1 bg-primary-500 border-2 border-black-pure shadow-[4px_4px_0px_0px_#ffffff]">
+                    <div className="inline-block px-3 py-1 bg-primary-500 border-2 border-black-pure shadow-[4px_4px_0px_0px_rgba(255,255,255,1)]">
                       <p className="text-black-pure text-xs font-black uppercase tracking-widest leading-none">
                         {activeEntry?.tag || id}
                       </p>
@@ -131,7 +133,8 @@ const ListSection: React.FC<ListSectionProps> = ({
               </div>
 
               <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 gap-4 relative z-10">
-                <div className="bg-white-pure p-4 flex flex-col border-2 border-black-pure shadow-[4px_4px_0px_0px_#00FF41]">
+                {/* Standardized Shadow to 4px with custom color */}
+                <div className="bg-white-pure p-4 flex flex-col border-2 border-black-pure shadow-[4px_4px_0px_0px_var(--primary-500)]">
                   <span className="font-mono text-xs text-black-pure uppercase font-black tracking-widest leading-none mb-2">
                     {labels.statusPrefix}
                   </span>
@@ -139,7 +142,8 @@ const ListSection: React.FC<ListSectionProps> = ({
                     {activeEntry?.status}
                   </span>
                 </div>
-                <div className="bg-primary-500 p-4 flex flex-col border-2 border-black-pure shadow-[4px_4px_0px_0px_#ffffff]">
+                {/* Standardized Shadow to 4px White */}
+                <div className="bg-primary-500 p-4 flex flex-col border-2 border-black-pure shadow-[4px_4px_0px_0px_rgba(255,255,255,1)]">
                   <span className="font-mono text-xs text-black-pure uppercase font-black tracking-widest leading-none mb-2">
                     {labels.timePrefix}
                   </span>
@@ -180,7 +184,7 @@ const ListSection: React.FC<ListSectionProps> = ({
                       {entry.href && (
                         <Link
                           href={entry.href}
-                          className={`h-12 w-12 flex-none flex items-center justify-center border-2 border-black-pure transition-all shadow-[4px_4px_0px_0px_#000000] ${activeIndex === idx ? 'bg-primary-500 shadow-none translate-x-1 translate-y-1' : 'bg-white-pure'}`}
+                          className={`h-12 w-12 flex-none flex items-center justify-center border-2 border-black-pure transition-all shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] ${activeIndex === idx ? 'bg-primary-500 shadow-none translate-x-1 translate-y-1' : 'bg-white-pure'}`}
                         >
                           <svg className="w-5 h-5 text-black-pure" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                             <path d="M7 17L17 7M17 7H7M17 7V17" strokeWidth="4" strokeLinecap="square" />

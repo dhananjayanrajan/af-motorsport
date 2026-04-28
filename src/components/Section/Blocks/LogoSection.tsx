@@ -1,3 +1,4 @@
+// LogoSection.tsx
 "use client"
 
 import useEmblaCarousel from 'embla-carousel-react'
@@ -60,7 +61,8 @@ const LogoSection: React.FC<LogoSectionProps> = ({
 
     return (
         <section id={id} className="w-full bg-white-pure py-12 md:py-20 lg:py-24 px-4 sm:px-6 lg:px-8">
-            <div className="max-w-7xl mx-auto border-2 border-black-pure shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] bg-white-pure overflow-hidden">
+            {/* Standardized Shadow to 4px */}
+            <div className="max-w-7xl mx-auto border-2 border-black-pure shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] bg-white-pure overflow-hidden">
                 <SectionHeader
                     title={title}
                     subtitle={subtitle}
@@ -84,6 +86,7 @@ const LogoSection: React.FC<LogoSectionProps> = ({
                                     />
 
                                     <div className="absolute -bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                        {/* Standardized Shadow to 2px for mini UI element */}
                                         <div className="w-6 h-6 border-2 border-black-pure flex items-center justify-center bg-primary-500 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
                                             <ArrowRight className="w-3 h-3 text-black-pure" />
                                         </div>
@@ -104,7 +107,7 @@ const LogoSection: React.FC<LogoSectionProps> = ({
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.95, y: 10 }}
                         transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                        className="fixed inset-4 sm:inset-8 md:inset-16 lg:inset-24 z-[210] bg-white-pure border-2 border-black-pure shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] flex flex-col overflow-hidden"
+                        className="fixed inset-4 sm:inset-8 md:inset-16 lg:inset-24 z-[210] bg-white-pure border-2 border-black-pure shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] flex flex-col overflow-hidden"
                     >
                         <div className="flex items-center justify-between p-4 md:p-6 border-b-2 border-black-pure bg-black-pure shrink-0">
                             <div className="flex items-center gap-3">
@@ -174,7 +177,7 @@ const LogoSection: React.FC<LogoSectionProps> = ({
                                     {selectedItem.slug && (
                                         <Link
                                             href={`/${selectedItem.slug}`}
-                                            className="inline-flex items-center gap-4 bg-black-pure text-white-pure px-6 py-4 text-sm font-mono font-black uppercase tracking-widest border-2 border-black-pure hover:bg-primary-500 hover:text-black-pure transition-all shadow-[6px_6px_0px_0px_var(--primary-500)] hover:shadow-none group/link"
+                                            className="inline-flex items-center gap-4 bg-black-pure text-white-pure px-6 py-4 text-sm font-mono font-black uppercase tracking-widest border-2 border-black-pure hover:bg-primary-500 hover:text-black-pure transition-all shadow-[4px_4px_0px_0px_var(--primary-500)] hover:shadow-none group/link"
                                         >
                                             <span>View Profile</span>
                                             <ExternalLink className="w-4 h-4 group-hover/link:translate-x-1 transition-transform" />

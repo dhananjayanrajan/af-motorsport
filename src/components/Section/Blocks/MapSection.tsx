@@ -176,7 +176,7 @@ const MapSection: React.FC<MapSectionProps> = ({
         <AnimatePresence>
           {showRoutes && route && (
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }} className="absolute bottom-4 left-4 sm:bottom-10 sm:left-10 z-20">
-              <div className="bg-black-pure text-white-pure px-4 py-3 sm:px-6 sm:py-4 flex items-center gap-4 sm:gap-8 border-2 border-black-pure">
+              <div className="bg-black-pure text-white-pure px-4 py-3 sm:px-6 sm:py-4 flex items-center gap-4 sm:gap-8 border-2 border-black-pure shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
                 <div className="flex flex-col">
                   <span className="text-[7px] sm:text-[8px] font-mono text-white-pure/40 uppercase">Total Distance</span>
                   <span className="text-xs sm:text-sm font-black italic">{(route.distance / 1000).toFixed(1)} KM</span>
@@ -210,7 +210,7 @@ const MapSection: React.FC<MapSectionProps> = ({
             <button
               key={btn.id}
               onClick={() => btn.id === 'routes' ? setShowRoutes(!showRoutes) : setFilter(btn.id as any)}
-              className={`flex items-center gap-3 sm:gap-4 px-4 py-4 sm:px-8 sm:py-6 transition-all ${isActive ? 'bg-black-pure text-white-pure' : 'bg-white-pure hover:bg-neutral-50'}`}
+              className={`flex items-center gap-3 sm:gap-4 px-4 py-4 sm:px-8 sm:py-6 transition-all ${isActive ? 'bg-black-pure text-white-pure shadow-[inset_4px_4px_0px_0px_rgba(0,0,0,0.5)]' : 'bg-white-pure hover:bg-neutral-50'}`}
             >
               <btn.icon className="size-3.5 sm:size-4 shrink-0" />
               <span className="text-[9px] sm:text-[11px] font-mono font-black uppercase tracking-widest truncate">{btn.label}</span>
@@ -228,7 +228,7 @@ const MapSection: React.FC<MapSectionProps> = ({
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="fixed right-0 top-0 h-full w-full sm:max-w-sm md:max-w-md lg:max-w-md xl:max-w-lg 2xl:max-w-xl z-[999] bg-white-pure border-l-2 border-black-pure flex flex-col"
+              className="fixed right-0 top-0 h-full w-full sm:max-w-sm md:max-w-md lg:max-w-md xl:max-w-lg 2xl:max-w-xl z-[999] bg-white-pure border-l-2 border-black-pure flex flex-col shadow-[-4px_0px_0px_0px_rgba(0,0,0,1)]"
             >
               <div className="p-5 sm:p-6 border-b border-black-pure/10 flex justify-between items-center bg-neutral-50 shrink-0">
                 <div className="flex items-center gap-2 truncate">
@@ -242,7 +242,7 @@ const MapSection: React.FC<MapSectionProps> = ({
 
               <div className="flex-1 overflow-y-auto p-6 sm:p-8 space-y-6 sm:space-y-10 no-scrollbar">
                 <div className="space-y-2">
-                  <div className="inline-flex items-center gap-2 px-1.5 py-0.5 bg-primary-500 border border-black-pure">
+                  <div className="inline-flex items-center gap-2 px-1.5 py-0.5 bg-primary-500 border border-black-pure shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
                     <span className="text-[7px] sm:text-[8px] font-mono font-black uppercase text-black-pure">Ref: {activeLoc.id}</span>
                   </div>
                   <h3 className="text-xl sm:text-2xl md:text-3xl font-black uppercase tracking-tighter leading-[0.95] text-black-pure break-words">

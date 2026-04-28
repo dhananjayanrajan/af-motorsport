@@ -105,7 +105,7 @@ const ScrollSection: React.FC<ScrollSectionProps> = ({
             {itemsWithImages.map((item) => (
               <React.Fragment key={item.id}>
                 <div className="flex-shrink-0 w-[70vw] md:w-[28vw]">
-                  <div className="relative aspect-[3/4] overflow-hidden border-2 border-black-pure bg-neutral-100 group transition-transform duration-700 hover:-rotate-1">
+                  <div className="relative aspect-[3/4] overflow-hidden border-2 border-black-pure bg-neutral-100 group transition-transform duration-700 hover:-rotate-1 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
                     <img
                       src={item.image}
                       alt={item.title}
@@ -114,7 +114,7 @@ const ScrollSection: React.FC<ScrollSectionProps> = ({
                     <div className="absolute inset-0 bg-primary-500/10 mix-blend-multiply opacity-0 group-hover:opacity-100 transition-opacity" />
 
                     <div className="absolute top-0 right-0 p-4">
-                      <span className="font-mono text-xs font-black text-white-pure mix-blend-difference uppercase tracking-widest">
+                      <span className="font-mono text-xs font-black text-white-pure mix-blend-difference uppercase tracking-widest bg-black-pure px-2 py-1 shadow-[2px_2px_0px_0px_rgba(255,255,255,1)]">
                         {String(item.index).padStart(2, '0')}
                       </span>
                     </div>
@@ -133,11 +133,11 @@ const ScrollSection: React.FC<ScrollSectionProps> = ({
                     {item.title}
                   </h3>
 
-                  <p className="text-sm md:text-base font-sans font-medium text-neutral-600 leading-relaxed max-w-md">
+                  <p className="text-sm md:text-base font-sans font-medium text-neutral-600 leading-relaxed max-w-md uppercase italic">
                     {item.description}
                   </p>
 
-                  <div className="mt-12 h-px w-full bg-neutral-100 relative overflow-hidden">
+                  <div className="mt-12 h-1 w-full bg-neutral-100 relative overflow-hidden border border-black-pure/10">
                     <div className="absolute inset-0 bg-black-pure w-0 group-hover:w-full transition-all duration-1000 ease-in-out" />
                   </div>
                 </div>
@@ -169,7 +169,7 @@ const ScrollSection: React.FC<ScrollSectionProps> = ({
 
       {isInView && (
         <div className="fixed bottom-10 left-10 z-50 pointer-events-none">
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-4 p-6 bg-white-pure border-2 border-black-pure shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
             <div className="flex flex-col">
               <span className="font-mono text-[10px] font-black uppercase tracking-[0.3em] text-neutral-400 mb-1">
                 {labels.progressLabel}
@@ -178,7 +178,7 @@ const ScrollSection: React.FC<ScrollSectionProps> = ({
                 {progress}%
               </span>
             </div>
-            <div className="w-32 md:w-48 h-1 bg-neutral-100 relative overflow-hidden border border-black-pure/5">
+            <div className="w-32 md:w-48 h-2 bg-neutral-100 relative overflow-hidden border border-black-pure">
               <motion.div
                 style={{ scaleX: smoothProgress }}
                 className="absolute inset-0 origin-left bg-primary-500"

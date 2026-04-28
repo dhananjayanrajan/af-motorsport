@@ -68,7 +68,7 @@ const PanelSection: React.FC<PanelSectionProps> = ({
       {background}
 
       <div className="container relative z-10">
-        <div className="border-[3px] border-black-pure bg-white-pure shadow-[12px_12px_0px_0px_#000000]">
+        <div className="border-[3px] border-black-pure bg-white-pure shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
           <SectionHeader
             title={title}
             subtitle={subtitle}
@@ -85,7 +85,6 @@ const PanelSection: React.FC<PanelSectionProps> = ({
                   key={panel.id}
                   className={`relative flex flex-col transition-colors duration-500 border-b-[3px] border-black-pure last:border-b-0 ${isOpen ? 'bg-black-950' : 'bg-white-pure'}`}
                 >
-                  {/* Header/Trigger */}
                   <button
                     onClick={() => togglePanel(panel.id)}
                     className="w-full flex items-stretch text-left outline-none group cursor-pointer"
@@ -117,31 +116,27 @@ const PanelSection: React.FC<PanelSectionProps> = ({
                         <p className={`hidden xl:block text-sm font-bold max-w-[280px] text-right leading-tight transition-all duration-500 ${isOpen ? 'text-neutral-300' : 'text-neutral-500'}`}>
                           {panel.summary}
                         </p>
-                        <div className={`w-12 h-12 border-[3px] border-black-pure flex items-center justify-center transition-all duration-500 ${isOpen ? 'bg-primary-500 shadow-[4px_4px_0px_0px_#ffffff] -translate-y-1' : 'bg-white-pure group-hover:bg-primary-500 group-hover:shadow-[4px_4px_0px_0px_#000000]'}`}>
+                        <div className={`w-12 h-12 border-[3px] border-black-pure flex items-center justify-center transition-all duration-500 ${isOpen ? 'bg-primary-500 shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] -translate-y-1' : 'bg-white-pure group-hover:bg-primary-500 group-hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]'}`}>
                           <ChevronRight className={`w-6 h-6 stroke-[3px] transition-all duration-500 ${isOpen ? 'rotate-90 text-black-pure' : 'text-black-pure'}`} />
                         </div>
                       </div>
                     </div>
                   </button>
 
-                  {/* Content Body - Pure CSS Collapse */}
                   <div
                     className={`transition-all duration-700 ease-[cubic-bezier(0.19,1,0.22,1)] overflow-hidden ${isOpen ? 'max-h-[1500px] opacity-100' : 'max-h-0 opacity-0 pointer-events-none'}`}
                   >
                     <div className="p-8 md:p-16 lg:pl-32 bg-black-950 border-t-[3px] border-black-pure">
                       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20">
-
-                        {/* Text Content */}
                         <div className={`lg:col-span-7 transition-all duration-700 delay-200 ${isOpen ? 'translate-y-0' : 'translate-y-10'}`}>
                           <div className="text-neutral-100 text-lg md:text-xl font-medium space-y-8 leading-relaxed border-l-4 border-primary-500 pl-8">
                             {panel.content}
                           </div>
                         </div>
 
-                        {/* Metadata Card */}
                         {panel.metadata && (
                           <div className={`lg:col-span-5 transition-all duration-700 delay-400 ${isOpen ? 'translate-x-0' : 'translate-x-12'}`}>
-                            <div className="border-[3px] border-primary-500 bg-black-900 shadow-[8px_8px_0px_0px_#00FF41]">
+                            <div className="border-[3px] border-primary-500 bg-black-900 shadow-[4px_4px_0px_0px_var(--primary-500)]">
                               <div className="px-6 py-4 border-b-[3px] border-primary-500 bg-primary-500 flex items-center justify-between">
                                 <span className="text-sm md:text-base font-black text-black-pure uppercase tracking-tighter">
                                   {labels.metadataTitle}

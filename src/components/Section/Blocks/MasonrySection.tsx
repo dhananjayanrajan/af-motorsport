@@ -66,7 +66,7 @@ const MasonrySection: React.FC<MasonrySectionProps> = ({
       <DotGridBackground />
 
       <div className="container relative z-10">
-        <div className="w-full bg-white-pure border-2 border-white-pure z-1 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] overflow-hidden flex flex-col">
+        <div className="w-full bg-white-pure border-2 border-black-pure z-1 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] overflow-hidden flex flex-col">
           <SectionHeader
             title={title}
             subtitle={subtitle}
@@ -109,7 +109,7 @@ const MasonrySection: React.FC<MasonrySectionProps> = ({
                             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                           />
                           <div className="absolute inset-0 bg-primary-glow opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                            <div className="w-10 h-10 bg-white-pure border border-black-pure flex items-center justify-center scale-0 group-hover:scale-100 transition-transform duration-500">
+                            <div className="w-10 h-10 bg-white-pure border border-black-pure flex items-center justify-center scale-0 group-hover:scale-100 transition-transform duration-500 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
                               <div className="w-4 h-4 border-2 border-black-pure" />
                             </div>
                           </div>

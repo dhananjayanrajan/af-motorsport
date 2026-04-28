@@ -91,7 +91,7 @@ const CoverSection: React.FC<CoverSectionProps> = ({
                 </div>
                 <div className="w-full flex justify-between items-end">
                     <div className="w-16 h-16 border-b-4 border-l-4 border-white-pure" />
-                    <div className="w-32 h-4 bg-white-pure" />
+                    <div className="w-32 h-4 bg-white-pure shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]" />
                 </div>
             </div>
 

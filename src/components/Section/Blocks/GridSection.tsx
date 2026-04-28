@@ -66,7 +66,7 @@ const GridSection: React.FC<GridSectionProps> = ({
       <DotGridBackground />
 
       <div className="container py-8 sm:py-12 lg:py-16">
-        <div className="relative border-2 border-black-pure bg-white-pure z-1 shadow-[8px_8px_0px_rgba(0,0,0,1)] mb-12 sm:mb-16 lg:mb-20">
+        <div className="relative border-2 border-black-pure bg-white-pure z-1 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] mb-12 sm:mb-16 lg:mb-20">
           <div className="p-6 sm:p-10 lg:p-12 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-12">
             <motion.div
               initial={{ x: -20, opacity: 0 }}
@@ -84,7 +84,7 @@ const GridSection: React.FC<GridSectionProps> = ({
               </h2>
             </motion.div>
 
-            <div className="flex items-stretch border-2 border-black-pure bg-white-pure shadow-[8px_8px_0px_rgba(0,0,0,1)] hover:shadow-[8px_8px_0px_var(--primary-500)] transition-all duration-300">
+            <div className="flex items-stretch border-2 border-black-pure bg-white-pure shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_var(--primary-500)] transition-all duration-300">
               <div className="p-6 border-r-2 border-black-pure flex flex-col justify-center bg-white-100">
                 <span className="text-base font-mono font-black text-black-pure/40 uppercase mb-1 tracking-widest">
                   {labels.unitsCount}
@@ -113,7 +113,7 @@ const GridSection: React.FC<GridSectionProps> = ({
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: idx * 0.05 }}
-              className="group relative flex flex-col bg-white-pure z-1 border-2 border-black-pure shadow-[8px_8px_0px_rgba(0,0,0,1)] hover:shadow-[8px_8px_0px_var(--tertiary-500)] transition-all duration-300 overflow-hidden"
+              className="group relative flex flex-col bg-white-pure z-1 border-2 border-black-pure shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_var(--tertiary-500)] transition-all duration-300 overflow-hidden"
             >
               {item.href && (
                 <Link
@@ -184,7 +184,7 @@ const GridSection: React.FC<GridSectionProps> = ({
           ))}
         </div>
 
-        <div className="mt-16 sm:mt-24 w-full h-32 bg-white-pure border-2 border-black-pure shadow-[8px_8px_0px_rgba(0,0,0,1)] flex items-center justify-center relative overflow-hidden group/footer">
+        <div className="mt-16 sm:mt-24 w-full h-32 bg-white-pure border-2 border-black-pure shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] flex items-center justify-center relative overflow-hidden group/footer">
           <div className="absolute inset-0 flex items-center justify-around opacity-[0.05] pointer-events-none">
             {[...Array(6)].map((_, i) => (
               <span key={i} className="text-xl font-black font-mono uppercase italic tracking-widest text-secondary-500">

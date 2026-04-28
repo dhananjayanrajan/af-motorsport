@@ -53,7 +53,6 @@ const QuoteSection: React.FC<QuoteSectionProps> = ({
   const [isHovered, setIsHovered] = useState(false)
   const sectionRef = useRef<HTMLElement>(null)
 
-  // Auto-play logic
   useEffect(() => {
     if (isHovered || variant !== 'carousel') return
     const timer = setInterval(() => {
@@ -64,7 +63,6 @@ const QuoteSection: React.FC<QuoteSectionProps> = ({
 
   const quote = quotes[index]
 
-  // Subtle parallax effect for background
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ["start end", "end start"]
@@ -79,7 +77,6 @@ const QuoteSection: React.FC<QuoteSectionProps> = ({
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-
       <motion.div style={{ y }} className="absolute inset-0 z-0">
         <AnimatePresence mode="wait">
           <motion.img
@@ -117,7 +114,6 @@ const QuoteSection: React.FC<QuoteSectionProps> = ({
               transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
               className="flex flex-col items-center text-center space-y-10"
             >
-              {/* Rating System */}
               <div className="flex flex-col items-center gap-4">
                 <div className="flex items-center justify-center gap-1.5">
                   {Array.from({ length: 5 }).map((_, i) => (
@@ -136,7 +132,6 @@ const QuoteSection: React.FC<QuoteSectionProps> = ({
                 </p>
               </div>
 
-              {/* Quote Text */}
               <div className="relative max-w-5xl">
                 <motion.h2
                   className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-serif text-black leading-[1.1] tracking-tight"
@@ -145,7 +140,6 @@ const QuoteSection: React.FC<QuoteSectionProps> = ({
                 </motion.h2>
               </div>
 
-              {/* Identity */}
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -154,11 +148,11 @@ const QuoteSection: React.FC<QuoteSectionProps> = ({
               >
                 {quote?.avatar && (
                   <div className="relative group/avatar">
-                    <div className="absolute inset-0 bg-black rounded-full scale-0 group-hover/avatar:scale-110 transition-transform duration-500 opacity-5" />
+                    <div className="absolute inset-0 bg-black rounded-full scale-0 group-hover/avatar:scale-110 transition-transform duration-500 opacity-5 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]" />
                     <img
                       src={quote.avatar}
                       alt={quote.author}
-                      className="relative w-20 h-20 rounded-full grayscale border border-black/10 p-1 mb-2 transition-all duration-500 group-hover/avatar:grayscale-0"
+                      className="relative w-20 h-20 rounded-full grayscale border-2 border-black-pure p-1 mb-2 transition-all duration-500 group-hover/avatar:grayscale-0"
                     />
                   </div>
                 )}
@@ -177,7 +171,6 @@ const QuoteSection: React.FC<QuoteSectionProps> = ({
           </AnimatePresence>
         </div>
 
-        {/* Navigation Dots with Active Progress */}
         <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex gap-4">
           {quotes.map((_, i) => (
             <button
@@ -186,7 +179,7 @@ const QuoteSection: React.FC<QuoteSectionProps> = ({
               className="relative h-4 flex items-center justify-center group/nav"
               aria-label={`Go to quote ${i + 1}`}
             >
-              <div className={`h-1 transition-all duration-500 ease-out ${index === i ? 'w-16 bg-black' : 'w-4 bg-black/10 group-hover/nav:bg-black/30'
+              <div className={`h-1 transition-all duration-500 ease-out border-black-pure border ${index === i ? 'w-16 bg-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]' : 'w-4 bg-black/10 group-hover/nav:bg-black/30'
                 }`} />
               {index === i && (
                 <motion.div
@@ -202,9 +195,8 @@ const QuoteSection: React.FC<QuoteSectionProps> = ({
         </div>
       </main>
 
-      {/* CTA with Reveal Animation */}
       {ctaLabel && ctaPath && (
-        <div className="relative z-30 w-full bg-white border-y border-black/5 group/cta overflow-hidden">
+        <div className="relative z-30 w-full bg-white border-y-2 border-black-pure group/cta overflow-hidden">
           <Link
             href={ctaPath}
             className="flex items-center justify-between px-10 py-12 relative"
@@ -226,15 +218,19 @@ const QuoteSection: React.FC<QuoteSectionProps> = ({
 
             <div className="relative flex items-center gap-6 z-10 transition-colors duration-500 group-hover/cta:text-white">
               <div className="h-px w-12 bg-current opacity-30" />
-              <motion.svg
+              <motion.div
                 whileHover={{ x: 10 }}
-                className="w-8 h-8"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
+                className="w-12 h-12 border-2 border-current flex items-center justify-center shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] group-hover/cta:shadow-[4px_4px_0px_0px_rgba(255,255,255,1)]"
               >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-              </motion.svg>
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+              </motion.div>
             </div>
           </Link>
         </div>
@@ -253,4 +249,4 @@ const QuoteSection: React.FC<QuoteSectionProps> = ({
   )
 }
 
-export default QuoteSection
+export default QuoteSection;

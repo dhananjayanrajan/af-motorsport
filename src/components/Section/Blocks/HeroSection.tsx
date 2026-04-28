@@ -105,7 +105,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
             <motion.div
               initial={{ x: -20, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
-              className="mb-6 md:mb-10 flex items-center bg-black-pure text-white-pure px-4 py-1.5 md:px-6 md:py-2 relative overflow-hidden group/badge shrink-0"
+              className="mb-6 md:mb-10 flex items-center bg-black-pure text-white-pure px-4 py-1.5 md:px-6 md:py-2 relative overflow-hidden group/badge shrink-0 border-2 border-black-pure shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
             >
               <motion.div
                 className="absolute inset-0 bg-primary-500 translate-x-[-101%]"
@@ -167,7 +167,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
                     label={action.label}
                     href={action.href}
                     variant={action.variant || 'primary'}
-                    className="!text-sm md:!text-base !py-3 md:!py-5 !px-6 md:!px-10 font-bold transition-all duration-300 group-hover:-translate-y-1 whitespace-nowrap"
+                    className="!text-sm md:!text-base !py-3 md:!py-5 !px-6 md:!px-10 font-bold transition-all duration-300 group-hover:-translate-y-1 whitespace-nowrap shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
                   />
                   <div className="absolute inset-0 border-2 border-primary-500 opacity-0 transition-all duration-300 group-hover:opacity-100 -z-10 translate-x-2 translate-y-2" />
                 </motion.div>

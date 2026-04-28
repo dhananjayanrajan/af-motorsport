@@ -108,7 +108,7 @@ const CarouselSection: React.FC<CarouselSectionProps> = ({
     <section id={id} className="relative w-full py-12 md:py-20 lg:py-24 bg-background overflow-hidden">
       <MosaicBackground />
       <div className="container">
-        <div className="flex flex-col border-2 border-black-pure shadow-[8px_8px_0px_0px_var(--black-pure)]">
+        <div className="flex flex-col border-2 border-black-pure shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
           <div className="overflow-hidden cursor-grab active:cursor-grabbing" ref={emblaRef}>
             <div className="flex touch-pan-y">
               {slides.map((slide, idx) => (

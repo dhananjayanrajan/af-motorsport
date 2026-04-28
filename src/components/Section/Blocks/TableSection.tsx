@@ -1,4 +1,3 @@
-// TableSection.tsx
 "use client"
 import { ArrowUpDown } from 'lucide-react'
 import React, { useState } from 'react'
@@ -78,7 +77,7 @@ const TableSection: React.FC<TableSectionProps> = ({
   }
 
   return (
-    <section id={id} className="relative w-full bg-white-pure border-t border-black-pure overflow-hidden">
+    <section id={id} className="relative w-full bg-white-pure border-t-[3px] border-black-pure overflow-hidden">
       {background}
 
       <SectionHeader
@@ -88,28 +87,29 @@ const TableSection: React.FC<TableSectionProps> = ({
         metadata={String(rows.length).padStart(2, '0')}
       />
 
-      <div className="w-full border-b border-black-pure overflow-x-auto bg-white-pure">
-        <div className="min-w-[900px] w-full flex flex-col gap-px">
-          <div className="flex items-stretch bg-neutral-100" style={{ height: '56px' }}>
-            <div className="w-14 border-r border-black-pure flex items-center justify-center shrink-0 bg-white-pure">
-              <div className="w-1.5 h-1.5 bg-primary-500 transition-all duration-300 animate-pulse" />
+      <div className="w-full border-b-[3px] border-black-pure overflow-x-auto bg-white-pure">
+        <div className="min-w-[900px] w-full flex flex-col">
+          {/* Header Row */}
+          <div className="flex items-stretch border-b-[3px] border-black-pure" style={{ height: '64px' }}>
+            <div className="w-14 border-r-[3px] border-black-pure flex items-center justify-center shrink-0 bg-white-pure">
+              <div className="w-2 h-2 bg-primary-500 animate-pulse" />
             </div>
             {columns.map((col) => (
               <button
                 key={col.key}
                 disabled={!col.sortable}
                 onClick={() => col.sortable && handleSort(col.key)}
-                className={`flex items-center px-6 border-r border-black-pure last:border-r-0 transition-all duration-300 group text-left bg-white-pure ${col.sortable ? 'hover:bg-primary-500' : ''}`}
+                className={`flex items-center px-6 border-r-[3px] border-black-pure last:border-r-0 transition-all duration-300 group text-left bg-white-pure ${col.sortable ? 'hover:bg-primary-500' : ''}`}
                 style={{ flex: col.width ? `0 0 ${col.width}` : '1 1 0%' }}
               >
                 <div className="flex flex-col">
                   {sortKey === col.key && (
-                    <span className="text-base font-bold text-black-pure mb-0.5 transition-all duration-300">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-black-pure mb-0.5">
                       {labels.sortActive}
                     </span>
                   )}
                   <div className="flex items-center gap-2">
-                    <span className="text-base font-bold text-black-pure transition-colors duration-300 group-hover:text-white-pure">
+                    <span className="text-base font-black uppercase tracking-tight text-black-pure transition-colors duration-300 group-hover:text-white-pure">
                       {col.label}
                     </span>
                     {col.sortable && (
@@ -121,7 +121,8 @@ const TableSection: React.FC<TableSectionProps> = ({
             ))}
           </div>
 
-          <div className="flex flex-col gap-px">
+          {/* Table Body */}
+          <div className="flex flex-col">
             {sortedRows.map((row, idx) => {
               const isHovered = hoveredRow === row.id
               const isLink = !!row.href
@@ -133,11 +134,11 @@ const TableSection: React.FC<TableSectionProps> = ({
                   href={row.href}
                   onMouseEnter={() => setHoveredRow(row.id)}
                   onMouseLeave={() => setHoveredRow(null)}
-                  className={`flex items-stretch transition-all duration-300 group ${isLink ? 'cursor-pointer' : ''} ${isHovered ? 'bg-black-pure' : 'bg-white-pure'}`}
-                  style={{ minHeight: '64px' }}
+                  className={`flex items-stretch border-b-[3px] border-black-pure last:border-b-0 transition-all duration-300 group ${isLink ? 'cursor-pointer' : ''} ${isHovered ? 'bg-black-pure' : 'bg-white-pure'}`}
+                  style={{ minHeight: '72px' }}
                 >
-                  <div className={`w-14 border-r border-black-pure flex flex-col items-center justify-center shrink-0 transition-all duration-300 ${isHovered ? 'bg-primary-500 text-black-pure' : 'bg-white-pure text-black-pure/30'}`}>
-                    <span className="text-base font-bold transition-all duration-300">
+                  <div className={`w-14 border-r-[3px] border-black-pure flex flex-col items-center justify-center shrink-0 transition-all duration-300 ${isHovered ? 'bg-primary-500 text-black-pure shadow-[4px_0px_0px_0px_#000000]' : 'bg-white-pure text-black-pure/30'}`}>
+                    <span className="text-base font-black italic">
                       {String(idx + 1).padStart(2, '0')}
                     </span>
                   </div>
@@ -145,10 +146,10 @@ const TableSection: React.FC<TableSectionProps> = ({
                   {columns.map((col) => (
                     <div
                       key={col.key}
-                      className="px-6 py-4 border-r border-black-pure last:border-r-0 flex items-center"
+                      className="px-6 py-4 border-r-[3px] border-black-pure last:border-r-0 flex items-center"
                       style={{ flex: col.width ? `0 0 ${col.width}` : '1 1 0%' }}
                     >
-                      <div className={`text-base font-bold transition-all duration-300 ${isHovered ? 'text-primary-500' : 'text-black-pure'}`}>
+                      <div className={`text-base font-black uppercase tracking-tight transition-all duration-300 ${isHovered ? 'text-primary-500' : 'text-black-pure'}`}>
                         {row.cells[col.key]}
                       </div>
                     </div>
@@ -161,7 +162,7 @@ const TableSection: React.FC<TableSectionProps> = ({
       </div>
 
       {ctaLabel && ctaPath && (
-        <div className="py-16 flex justify-center bg-white-pure border-b border-black-pure">
+        <div className="py-24 flex justify-center bg-white-pure border-b-[3px] border-black-pure">
           <SectionButton label={ctaLabel} href={ctaPath} variant="primary" size="lg" />
         </div>
       )}

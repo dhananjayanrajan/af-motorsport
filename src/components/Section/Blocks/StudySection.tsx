@@ -1,4 +1,3 @@
-// StudySection.tsx
 "use client"
 
 import { motion, useInView } from 'framer-motion'
@@ -55,7 +54,7 @@ const StudySection: React.FC<StudySectionProps> = ({
     <section
       ref={sectionRef}
       id={id}
-      className="relative w-full bg-white-pure border-t-2 border-black-pure flex flex-col items-center overflow-hidden select-none"
+      className="relative w-full bg-white-pure border-t-[3px] border-black-pure flex flex-col items-center overflow-hidden select-none"
     >
 
       <DotGridBackground />
@@ -74,14 +73,7 @@ const StudySection: React.FC<StudySectionProps> = ({
             initial={{ opacity: 0, scale: 0.95, y: 40 }}
             animate={isInView ? { opacity: 1, scale: 1, y: 0 } : {}}
             transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1] }}
-            className="relative w-[280px] xs:w-[300px] sm:w-[340px] md:w-[400px] lg:w-[440px] xl:w-[520px] 2xl:w-[640px] aspect-[2/3] bg-black-pure overflow-hidden"
-            style={{
-              boxShadow: `
-                0 30px 60px -12px #000000,
-                0 18px 36px -18px #000000,
-                0 0 0 1px #171717
-              `
-            }}
+            className="relative w-[280px] xs:w-[300px] sm:w-[340px] md:w-[400px] lg:w-[440px] xl:w-[520px] 2xl:w-[640px] aspect-[2/3] bg-black-pure overflow-hidden border-[3px] border-black-pure shadow-[12px_12px_0px_0px_#000000]"
           >
             <motion.div
               className="absolute inset-0 z-0"
@@ -139,7 +131,7 @@ const StudySection: React.FC<StudySectionProps> = ({
             </div>
           </motion.div>
 
-          <div className="absolute -inset-6 xs:-inset-8 md:-inset-12 border border-neutral-100 -z-10 pointer-events-none" />
+          <div className="absolute -inset-6 xs:-inset-8 md:-inset-12 border-[3px] border-black-pure -z-10 pointer-events-none" />
         </div>
 
         <motion.div
@@ -160,11 +152,11 @@ const StudySection: React.FC<StudySectionProps> = ({
           </div>
 
           {study.metrics && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 w-full border-2 border-black-pure">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 w-full border-[3px] border-black-pure shadow-[8px_8px_0px_0px_#000000]">
               {study.metrics.map((metric, i) => (
                 <motion.div
                   key={i}
-                  className="flex flex-col items-center justify-center py-8 px-4 border-b sm:border-b-0 sm:border-r border-black-pure last:border-b-0 last:border-r-0 group/metric bg-white-pure"
+                  className="flex flex-col items-center justify-center py-8 px-4 border-b-[3px] sm:border-b-0 sm:border-r-[3px] border-black-pure last:border-b-0 last:border-r-0 group/metric bg-white-pure"
                   transition={{ duration: 0.3 }}
                 >
                   <span className="text-base xs:text-lg md:text-xl font-black italic tracking-tighter text-black-pure group-hover/metric:text-primary-500 leading-none transition-colors duration-300">
@@ -186,7 +178,7 @@ const StudySection: React.FC<StudySectionProps> = ({
             >
               <Link
                 href={targetHref}
-                className="inline-flex items-center gap-4 bg-black-pure text-white-pure px-8 py-4 text-sm font-mono font-black uppercase tracking-widest border-2 border-black-pure hover:bg-primary-500 hover:text-black-pure transition-all shadow-[6px_6px_0px_0px_var(--primary-500)] hover:shadow-none"
+                className="inline-flex items-center gap-4 bg-black-pure text-white-pure px-8 py-4 text-sm font-mono font-black uppercase tracking-widest border-[3px] border-black-pure hover:bg-primary-500 hover:text-black-pure transition-all shadow-[6px_6px_0px_0px_#000000] hover:shadow-none"
               >
                 {study.ctaLabel || ctaLabel}
                 <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -198,7 +190,7 @@ const StudySection: React.FC<StudySectionProps> = ({
         </motion.div>
       </div>
 
-      <div className="w-full border-t-2 border-black-pure bg-white-pure">
+      <div className="w-full border-t-[3px] border-black-pure bg-white-pure">
         <SectionScroller items={studies.map(s => s.title)} variant={1} velocity={10} />
       </div>
 
@@ -207,4 +199,4 @@ const StudySection: React.FC<StudySectionProps> = ({
   )
 }
 
-export default StudySection
+export default StudySection;

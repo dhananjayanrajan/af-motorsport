@@ -78,7 +78,7 @@ const FeatureSection: React.FC<FeatureSectionProps> = ({
     <section id={id} ref={containerRef} className="relative w-full py-12 md:py-20 lg:py-24 bg-background">
       <IsometricBackground />
       <div className="container px-0 md:px-4">
-        <div className="relative border-2 border-black-pure bg-white-pure shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] mx-4 md:mx-0 bg-white-pure z-1">
+        <div className="relative border-2 border-black-pure bg-white-pure shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] mx-4 md:mx-0 bg-white-pure z-1">
           <SectionHeader
             title={title}
             subtitle={subtitle}
@@ -155,7 +155,7 @@ const FeatureSection: React.FC<FeatureSectionProps> = ({
                       <div className="mt-auto shrink-0 py-4 lg:py-0">
                         <Link
                           href={feature.slug ? `/${feature.slug}` : ctaPath ? `${ctaPath}/${feature.id}` : `/${feature.id}`}
-                          className="inline-flex items-center gap-4 bg-white-pure text-black-pure px-6 py-3 text-[10px] font-mono font-black uppercase tracking-widest border-2 border-black-pure hover:bg-black-pure hover:text-white-pure transition-all shadow-[4px_4px_0px_var(--primary-500)] hover:shadow-none"
+                          className="inline-flex items-center gap-4 bg-white-pure text-black-pure px-6 py-3 text-[10px] font-mono font-black uppercase tracking-widest border-2 border-black-pure hover:bg-black-pure hover:text-white-pure transition-all shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-none"
                         >
                           {labels.ctaLabel}
                           <ArrowRight className="w-4 h-4" />
@@ -184,7 +184,7 @@ const FeatureSection: React.FC<FeatureSectionProps> = ({
                     <div className="absolute top-0 left-0 bg-white-pure border-r-2 border-b-2 border-black-pure px-4 py-2 font-mono font-black text-sm italic">
                       {String(idx + 1).padStart(3, '0')}
                     </div>
-                    <div className="absolute bottom-6 right-6 bg-black-pure text-white-pure p-4 border-2 border-primary-500 shadow-[8px_8px_0px_var(--white-pure)]">
+                    <div className="absolute bottom-6 right-6 bg-black-pure text-white-pure p-4 border-2 border-primary-500 shadow-[4px_4px_0px_0px_rgba(255,255,255,1)]">
                       <div className="text-primary-500">
                         {feature.icon || <Layers className="w-6 h-6" />}
                       </div>

@@ -119,7 +119,7 @@ const GallerySection: React.FC<GallerySectionProps> = ({
                             initial={{ opacity: 0, y: 20 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.4, delay: idx * 0.05 }}
-                            className="group relative aspect-[4/3] overflow-hidden border-2 border-black-pure bg-neutral-100 focus-visible:ring-2 focus-visible:ring-primary-500 outline-none"
+                            className="group relative aspect-[4/3] overflow-hidden border-2 border-black-pure bg-neutral-100 focus-visible:ring-2 focus-visible:ring-primary-500 outline-none shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
                         >
                             <img
                                 src={item.image}
@@ -141,7 +141,7 @@ const GallerySection: React.FC<GallerySectionProps> = ({
 
                             {item.category && (
                                 <div className="absolute bottom-3 right-3 z-10 translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
-                                    <span className="text-[10px] font-mono font-black bg-white-pure text-black-pure border-2 border-black-pure px-3 py-1 uppercase tracking-widest">
+                                    <span className="text-[10px] font-mono font-black bg-white-pure text-black-pure border-2 border-black-pure px-3 py-1 uppercase tracking-widest shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
                                         {item.category}
                                     </span>
                                 </div>
