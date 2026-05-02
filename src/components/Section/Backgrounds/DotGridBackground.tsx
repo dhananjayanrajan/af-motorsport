@@ -9,7 +9,7 @@ interface DotGridBackgroundProps {
 }
 
 const DotGridBackground: React.FC<DotGridBackgroundProps> = ({
-  zIndex = 'z-1',
+  zIndex = 'z-0',
   opacity = 1,
   primaryColor = '#444444',
   secondaryColor = '#00FF41'

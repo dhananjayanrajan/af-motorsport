@@ -1,4 +1,3 @@
-// app/(frontend)/calendar/page.tsx
 import CarouselSection from '@/components/Section/Blocks/CarouselSection'
 import TimelineSection from '@/components/Section/Blocks/TimelineSection'
 import { Championship, Media, Race, Timeline } from '@/payload-types'
@@ -140,13 +139,9 @@ export default async function CalendarPage() {
         const startDate = championship.details?.start_date
 
         return {
-            id: String(championship.id),
+            id: `champ-${championship.id}`,
             date: startDate
-                ? new Date(startDate).toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'short',
-                    day: 'numeric',
-                })
+                ? new Date(startDate).toISOString().split('T')[0]
                 : 'TBD',
             title: championship.name,
             description: championship.basics?.tagline || championship.basics?.description || undefined,
@@ -179,14 +174,11 @@ export default async function CalendarPage() {
 
         const startDate = race.details?.start_date
         const meta = startDate
-            ? new Date(startDate).toLocaleDateString('en-US', {
-                month: 'short',
-                day: 'numeric',
-            })
+            ? new Date(startDate).toISOString().split('T')[0]
             : undefined
 
         return {
-            id: String(race.id),
+            id: `race-${race.id}`,
             title: race.name,
             description: descriptionParts.join(' · ') || race.basics?.tagline || race.basics?.description || undefined,
             image: resolveAssetUrl(race.assets, 'thumbnail', 'poster', 'cover'),
@@ -199,16 +191,12 @@ export default async function CalendarPage() {
 
     const timelineEvents = timelines.map((timeline: Timeline) => {
         const startDate = timeline.details?.start_date
-        const endDate = timeline.details?.end_date
         const dateStr = startDate
-            ? new Date(startDate).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'short',
-            })
+            ? new Date(startDate).toISOString().split('T')[0]
             : 'TBD'
 
         return {
-            id: String(timeline.id),
+            id: `timeline-${timeline.id}`,
             date: dateStr,
             title: timeline.name,
             description: timeline.basics?.description || timeline.details?.scope || undefined,

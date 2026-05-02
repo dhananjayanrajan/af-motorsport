@@ -90,7 +90,7 @@ export default async function TeamsPage() {
         subtitle: individual.basics?.description || undefined,
         status: individual.basics?.type || undefined,
         tag: individual.basics?.type || undefined,
-        href: `/teams/individuals/${individual.slug}`,
+        href: `/individuals/${individual.slug}`,
     }))
 
     const organizationItems = organizations.map((org) => ({
@@ -100,7 +100,7 @@ export default async function TeamsPage() {
         image: getMediaUrl(org.assets?.logo) ||
             getMediaUrl(org.assets?.alt_logo) ||
             `https://picsum.photos/seed/${org.slug}/400/300`,
-        href: `/teams/organizations/${org.slug}`,
+        href: `/organizations/${org.slug}`,
     }))
 
     return (
@@ -128,7 +128,7 @@ export default async function TeamsPage() {
                     showStatus={true}
                     showTimestamp={false}
                     ctaLabel="VIEW ALL INDIVIDUALS"
-                    ctaPath="/teams/individuals"
+                    ctaPath="/individuals"
                 />
             )}
             {organizationItems.length > 0 && (

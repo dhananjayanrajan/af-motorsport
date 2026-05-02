@@ -1,7 +1,7 @@
 "use client"
 
 import { motion } from 'framer-motion'
-import { ArrowRight, Layers, LayoutGrid } from 'lucide-react'
+import { ArrowRight, LayoutGrid } from 'lucide-react'
 import Link from 'next/link'
 import React, { useState } from 'react'
 import DotGridBackground from '../Backgrounds/DotGridBackground'
@@ -56,6 +56,8 @@ const GridSection: React.FC<GridSectionProps> = ({
 
   return (
     <section id={id} className="relative w-full bg-white-pure border-t-2 border-black-pure overflow-hidden">
+      <DotGridBackground />
+
       <SectionHeader
         title={title}
         subtitle={subtitle}
@@ -63,47 +65,7 @@ const GridSection: React.FC<GridSectionProps> = ({
         metadata={String(items.length).padStart(2, '0')}
       />
 
-      <DotGridBackground />
-
       <div className="container py-8 sm:py-12 lg:py-16">
-        <div className="relative border-2 border-black-pure bg-white-pure z-1 shadow-[8px_8px_0px_rgba(0,0,0,1)] mb-12 sm:mb-16 lg:mb-20">
-          <div className="p-6 sm:p-10 lg:p-12 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-12">
-            <motion.div
-              initial={{ x: -20, opacity: 0 }}
-              whileInView={{ x: 0, opacity: 1 }}
-              className="flex flex-col gap-6"
-            >
-              <div className="flex items-center gap-4">
-                <span className="text-base font-mono font-black bg-black-pure text-white-pure px-4 py-1 uppercase tracking-widest">
-                  {labels.sectionIndex}
-                </span>
-                <div className="h-[2px] w-24 bg-primary-500" />
-              </div>
-              <h2 className="text-2xl font-black uppercase text-black-pure leading-none tracking-tighter max-w-xl">
-                {subtitle}
-              </h2>
-            </motion.div>
-
-            <div className="flex items-stretch border-2 border-black-pure bg-white-pure shadow-[8px_8px_0px_rgba(0,0,0,1)] hover:shadow-[8px_8px_0px_var(--primary-500)] transition-all duration-300">
-              <div className="p-6 border-r-2 border-black-pure flex flex-col justify-center bg-white-100">
-                <span className="text-base font-mono font-black text-black-pure/40 uppercase mb-1 tracking-widest">
-                  {labels.unitsCount}
-                </span>
-                <div className="flex items-baseline gap-2">
-                  <span className="text-2xl font-black text-black-pure tabular-nums">
-                    {String(items.length).padStart(2, '0')}
-                  </span>
-                  <span className="text-base font-black text-primary-500">/</span>
-                  <span className="text-base font-black text-black-pure/20">99</span>
-                </div>
-              </div>
-              <div className="w-24 bg-black-pure flex items-center justify-center group cursor-pointer transition-colors hover:bg-primary-500">
-                <Layers className="w-8 h-8 text-primary-500 group-hover:text-black-pure transition-colors" />
-              </div>
-            </div>
-          </div>
-        </div>
-
         <div className={`grid ${gridCols[columns]} gap-6 sm:gap-8 lg:gap-10`}>
           {items.map((item, idx) => (
             <motion.div
@@ -182,27 +144,6 @@ const GridSection: React.FC<GridSectionProps> = ({
               </div>
             </motion.div>
           ))}
-        </div>
-
-        <div className="mt-16 sm:mt-24 w-full h-32 bg-white-pure border-2 border-black-pure shadow-[8px_8px_0px_rgba(0,0,0,1)] flex items-center justify-center relative overflow-hidden group/footer">
-          <div className="absolute inset-0 flex items-center justify-around opacity-[0.05] pointer-events-none">
-            {[...Array(6)].map((_, i) => (
-              <span key={i} className="text-xl font-black font-mono uppercase italic tracking-widest text-secondary-500">
-                {id}
-              </span>
-            ))}
-          </div>
-          <div className="flex items-center gap-3 relative z-10">
-            <div className="w-2 h-2 bg-secondary-500 rounded-full animate-pulse" />
-            <div className="w-12 h-1 bg-black-pure/10 overflow-hidden">
-              <motion.div
-                animate={{ x: [-48, 48] }}
-                transition={{ repeat: Infinity, duration: 1.5, ease: "linear" }}
-                className="w-full h-full bg-secondary-500"
-              />
-            </div>
-            <div className="w-2 h-2 bg-secondary-500 rounded-full animate-pulse" />
-          </div>
         </div>
       </div>
 

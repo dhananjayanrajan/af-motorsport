@@ -1,4 +1,3 @@
-// app/(frontend)/page.tsx
 import CarouselSection from '@/components/Section/Blocks/CarouselSection'
 import FeatureSection from '@/components/Section/Blocks/FeatureSection'
 import ListSection from '@/components/Section/Blocks/ListSection'
@@ -28,7 +27,7 @@ const getHomeData = unstable_cache(
   async () => {
     const payload = await getPayload({ config: configPromise })
 
-    const [events, sessions, onboardings, slidesDocs, seriesList, races, drivers] = await Promise.all([
+    const [events, sessions, onboardings, slidesDocs, seriesList, races, allTeams, allDrivers] = await Promise.all([
       payload.find({
         collection: 'events',
         limit: 5,
@@ -151,27 +150,21 @@ const getHomeData = unstable_cache(
         },
       }),
       payload.find({
+        collection: 'teams',
+        limit: 100,
+        depth: 0,
+      }),
+      payload.find({
         collection: 'drivers',
         limit: 3,
         depth: 1,
         sort: '-createdAt',
-        select: {
-          id: true,
-          first_name: true,
-          last_name: true,
-          slug: true,
-          basics: {
-            racing_number: true,
-            callsign: true,
-            catchphrase: true,
-            tagline: true,
-            description: true,
-            nationality: true,
-          },
-          assets: { avatar: true },
-        },
       }),
     ])
+
+    const randomTeam = allTeams.docs.length > 0
+      ? allTeams.docs[Math.floor(Math.random() * allTeams.docs.length)]
+      : null;
 
     return {
       events: events.docs,
@@ -180,7 +173,8 @@ const getHomeData = unstable_cache(
       slidesDocs: slidesDocs.docs,
       seriesList: seriesList.docs,
       races: races.docs,
-      drivers: drivers.docs,
+      featuredTeam: randomTeam,
+      drivers: allDrivers.docs,
     }
   },
   ['home-page-data'],
@@ -188,7 +182,7 @@ const getHomeData = unstable_cache(
 )
 
 export default async function HomePage() {
-  const { events, sessions, onboardings, slidesDocs, seriesList, races, drivers } = await getHomeData()
+  const { events, sessions, onboardings, slidesDocs, seriesList, races, featuredTeam, drivers } = await getHomeData()
 
   const videoItems = [...events, ...sessions, ...onboardings].slice(0, 8)
 
@@ -275,12 +269,14 @@ export default async function HomePage() {
         ? nationalityRef.name
         : ''
 
+    const teamSlug = featuredTeam?.slug || 'independent'
+
     return {
       id: String(driver.id),
       title: `${driver.first_name} ${driver.last_name}`,
       description: driver.basics?.callsign || driver.basics?.catchphrase || '',
       image: getMediaUrl(driver.assets?.avatar),
-      slug: `teams/${driver.slug}`,
+      slug: `teams/${teamSlug}/drivers/${driver.slug}`,
       stats: [
         { label: 'Number', value: driver.basics?.racing_number?.toString() || '' },
         { label: 'Nationality', value: nationality },
@@ -292,8 +288,8 @@ export default async function HomePage() {
     {
       id: '01',
       label: 'SERIES',
-      slug: seriesList[0]?.slug || 'active',
-      name: seriesList[0]?.name || 'Racing Series',
+      slug: 'active',
+      name: 'All Series',
       path: '/competition/series',
     },
     {
@@ -386,7 +382,7 @@ export default async function HomePage() {
       {driverFeatures.length > 0 && (
         <FeatureSection
           id="home-drivers"
-          title="ROSTER"
+          title={featuredTeam?.name ? featuredTeam.name.toUpperCase() : "ROSTER"}
           subtitle="Active championship entry list"
           features={driverFeatures}
           labels={{

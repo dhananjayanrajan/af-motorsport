@@ -22,7 +22,7 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({
 
     if (variant === 2) {
         return (
-            <header className="group w-full grid grid-cols-[1fr_100px] border-4 border-black-pure bg-white-pure z-1">
+            <header className="group w-full grid grid-cols-[1fr_100px] border-4 border-black-pure bg-white-pure z-2">
                 <div className="p-8 border-r-4 border-black-pure">
                     <div className="flex items-center gap-2 mb-4">
                         <div className="w-4 h-1 bg-primary-500" />
@@ -39,7 +39,7 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({
 
     if (variant === 3) {
         return (
-            <header className="group w-full flex flex-col border-2 border-black-pure overflow-hidden">
+            <header className="group w-full flex flex-col border-2 border-black-pure bg-white-pure z-2 overflow-hidden">
                 <div className="bg-primary-500 p-2 border-b-2 border-black-pure flex justify-between px-6">
                     <span className={baseStyles.subheading}>{subtitle}</span>
                     {metadata && <span className="font-black text-xs">{metadata}</span>}
@@ -56,7 +56,7 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({
 
     if (variant === 4) {
         return (
-            <header className="group flex items-stretch gap-0 border-2 border-black-pure bg-white-pure">
+            <header className="group flex items-stretch gap-0 border-2 border-black-pure bg-white-pure z-2">
                 <div className="w-16 bg-black-pure flex items-center justify-center">
                     <span className="text-white-pure font-black -rotate-90 whitespace-nowrap text-xs uppercase">{metadata}</span>
                 </div>

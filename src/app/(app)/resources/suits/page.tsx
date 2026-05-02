@@ -1,5 +1,4 @@
 // app/(frontend)/resources/suits/page.tsx
-import CarouselSection from '@/components/Section/Blocks/CarouselSection'
 import GridSection from '@/components/Section/Blocks/GridSection'
 import HeroSection from '@/components/Section/Blocks/HeroSection'
 import { Media } from '@/payload-types'
@@ -49,23 +48,6 @@ const getSuitsData = unstable_cache(
 export default async function SuitsPage() {
     const suits = await getSuitsData()
 
-    const featured = suits.slice(0, 8)
-
-    const featuredSlides = featured.map((s) => ({
-        id: String(s.id),
-        title: s.name,
-        description:
-            s.basics?.tagline ||
-            s.details?.material ||
-            s.details?.appearance ||
-            '',
-        image: getMediaUrl(s.assets?.thumbnail),
-        ctaLabel: 'DETAILS',
-        ctaHref: `/resources/suits/${s.slug}`,
-        meta: s.details?.usage || undefined,
-        tags: [s.details?.durability, s.details?.appearance].filter(Boolean) as string[],
-    }))
-
     const allGrid = suits.map((s) => ({
         id: String(s.id),
         title: s.name,
@@ -89,15 +71,6 @@ export default async function SuitsPage() {
                 badge="RACEWEAR"
                 meta="SUI_IDX"
             />
-            {featuredSlides.length > 0 && (
-                <CarouselSection
-                    id="suits-featured"
-                    slides={featuredSlides}
-                    autoplayDelay={4000}
-                    ctaLabel="VIEW ALL"
-                    ctaPath="/resources/suits"
-                />
-            )}
             {allGrid.length > 0 && (
                 <GridSection
                     id="suits-all"
@@ -111,6 +84,7 @@ export default async function SuitsPage() {
                         fallbackAlt: 'Suit',
                     }}
                     columns={4}
+                    headerVariant={2}
                 />
             )}
         </main>
