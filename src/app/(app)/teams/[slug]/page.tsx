@@ -1,11 +1,10 @@
 // app/(frontend)/teams/[slug]/page.tsx
 import FeatureSection from '@/components/Section/Blocks/FeatureSection'
-import GridSection from '@/components/Section/Blocks/GridSection'
 import HeroSection from '@/components/Section/Blocks/HeroSection'
 import MasonrySection from '@/components/Section/Blocks/MasonrySection'
 import QuoteSection from '@/components/Section/Blocks/QuoteSection'
-import ScrollSection from '@/components/Section/Blocks/ScrollSection'
 import StudySection from '@/components/Section/Blocks/StudySection'
+import TextRevealSection from '@/components/Section/Blocks/TextRevealSection'
 import { Driver, Leader, Media, Team } from '@/payload-types'
 import configPromise from '@payload-config'
 import { unstable_cache } from 'next/cache'
@@ -49,143 +48,7 @@ const getTeamData = unstable_cache(
         const drivers = driversRes.docs as Driver[]
         const leaders = leadersRes.docs as Leader[]
 
-        const heroBackground = team.assets?.cover
-            ? getMediaUrl(team.assets.cover)
-            : team.assets?.logo
-                ? getMediaUrl(team.assets.logo)
-                : undefined
-
-        const quoteItem = team.basics?.tagline
-            ? {
-                id: String(team.id),
-                text: team.basics.tagline,
-                author: team.name,
-            }
-            : null
-
-        const studyImage = team.assets?.cover
-            ? getMediaUrl(team.assets.cover)
-            : team.assets?.logo
-                ? getMediaUrl(team.assets.logo)
-                : undefined
-
-        const study = {
-            id: String(team.id),
-            title: team.name,
-            description: team.basics?.description || '',
-            image: studyImage || `https://picsum.photos/seed/${team.slug}/800/600`,
-            metrics: [
-                { label: 'Founded', value: team.details?.start_date || 'N/A' },
-                { label: 'Country', value: team.details?.country && typeof team.details.country === 'object' && 'name' in team.details.country ? team.details.country.name : 'N/A' },
-                { label: 'Website', value: team.details?.website || 'N/A' },
-            ],
-            tags: team.tags?.map(tag => typeof tag === 'object' ? tag.name || tag.slug || '' : '').filter(Boolean) || [],
-        }
-
-        const scrollItems: any[] = []
-        if (team.details?.history) {
-            scrollItems.push({
-                id: 'history',
-                title: 'Team History',
-                description: team.basics?.description || 'A legacy of racing excellence.',
-                percentage: 100,
-            })
-        }
-
-        const driverFeatures = drivers.slice(0, 8).map((driver: Driver) => ({
-            id: String(driver.id),
-            title: `${driver.first_name} ${driver.last_name}`,
-            description: driver.basics?.nickname || driver.basics?.competition_name || '',
-            icon: undefined,
-            image: driver.assets?.avatar ? getMediaUrl(driver.assets.avatar) : undefined,
-            slug: `teams/${team.slug}/drivers/${driver.slug}`,
-            stats: driver.basics?.racing_number
-                ? [
-                    { label: 'Number', value: `#${driver.basics.racing_number}` },
-                    { label: 'Nationality', value: driver.basics?.nationality && typeof driver.basics.nationality === 'object' && 'name' in driver.basics.nationality ? driver.basics.nationality.name : 'N/A' },
-                ]
-                : undefined,
-        }))
-
-        const leaderFeatures = leaders.slice(0, 8).map((leader: Leader) => ({
-            id: String(leader.id),
-            title: `${leader.first_name} ${leader.last_name}`,
-            description: leader.basics?.title || leader.details?.vision || '',
-            icon: undefined,
-            image: leader.assets?.avatar ? getMediaUrl(leader.assets.avatar) : undefined,
-            slug: `teams/${team.slug}/leaders/${leader.slug}`,
-            stats: leader.details?.mission
-                ? [
-                    { label: 'Role', value: leader.basics?.title || 'N/A' },
-                    { label: 'Vision', value: leader.details?.vision || 'N/A' },
-                ]
-                : undefined,
-        }))
-
-        const driversTabContent = (
-            <GridSection
-                id="team-drivers-grid"
-                title="Drivers"
-                subtitle="Team drivers"
-                items={drivers.slice(0, 8).map((driver: Driver) => ({
-                    id: String(driver.id),
-                    title: `${driver.first_name} ${driver.last_name}`,
-                    subtitle: driver.basics?.racing_number ? `#${driver.basics.racing_number}` : driver.basics?.nickname || undefined,
-                    image: driver.assets?.avatar ? getMediaUrl(driver.assets.avatar) : `https://picsum.photos/seed/${driver.slug}/400/300`,
-                    href: `/teams/${team.slug}/drivers/${driver.slug}`,
-                }))}
-                labels={{ unitsCount: 'DRV', viewProject: 'VIEW', sectionIndex: 'DRV', fallbackAlt: 'Driver' }}
-                columns={4}
-            />
-        )
-
-        const leadersTabContent = (
-            <GridSection
-                id="team-leaders-grid"
-                title="Leadership"
-                subtitle="Team management"
-                items={leaders.slice(0, 8).map((leader: Leader) => ({
-                    id: String(leader.id),
-                    title: `${leader.first_name} ${leader.last_name}`,
-                    subtitle: leader.basics?.title || undefined,
-                    image: leader.assets?.avatar ? getMediaUrl(leader.assets.avatar) : `https://picsum.photos/seed/${leader.slug}/400/300`,
-                    href: `/teams/${team.slug}/leaders/${leader.slug}`,
-                }))}
-                labels={{ unitsCount: 'LDR', viewProject: 'VIEW', sectionIndex: 'LDR', fallbackAlt: 'Leader' }}
-                columns={4}
-            />
-        )
-
-        const tabs = [
-            {
-                id: 'drivers',
-                label: 'Drivers',
-                content: driversTabContent,
-            },
-            {
-                id: 'leaders',
-                label: 'Leadership',
-                content: leadersTabContent,
-            },
-        ]
-
-        const galleryItems: any[] = []
-        if (team.assets?.gallery) {
-            team.assets.gallery.forEach((item, idx) => {
-                const media = typeof item === 'object' ? item : null
-                const url = media ? getMediaUrl(media) : undefined
-                if (url && media) {
-                    galleryItems.push({
-                        id: String(media.id),
-                        title: media.alt || team.name,
-                        image: url,
-                        height: idx % 3 === 0 ? 'tall' as const : idx % 2 === 0 ? 'medium' as const : 'short' as const,
-                    })
-                }
-            })
-        }
-
-        return { team, heroBackground, quoteItem, study, scrollItems, driverFeatures, leaderFeatures, tabs, galleryItems }
+        return { team, drivers, leaders }
     },
     ['team-detail-composite'],
     { revalidate: 3600, tags: ['team'] }
@@ -197,7 +60,86 @@ export default async function TeamPage({ params }: { params: Promise<{ slug: str
 
     if (!data) notFound()
 
-    const { team, heroBackground, quoteItem, study, scrollItems, driverFeatures, leaderFeatures, tabs, galleryItems } = data
+    const { team, drivers, leaders } = data
+
+    const heroBackground = team.assets?.cover
+        ? getMediaUrl(team.assets.cover)
+        : team.assets?.logo
+            ? getMediaUrl(team.assets.logo)
+            : undefined
+
+    const quoteItem = team.basics?.tagline
+        ? {
+            id: String(team.id),
+            text: team.basics.tagline,
+            author: team.name,
+        }
+        : null
+
+    const studyImage = team.assets?.cover
+        ? getMediaUrl(team.assets.cover)
+        : team.assets?.logo
+            ? getMediaUrl(team.assets.logo)
+            : undefined
+
+    const study = {
+        id: String(team.id),
+        title: team.name,
+        description: team.basics?.description || '',
+        image: studyImage || `https://picsum.photos/seed/${team.slug}/800/600`,
+        metrics: [
+            { label: 'Founded', value: team.details?.start_date || 'N/A' },
+            { label: 'Country', value: team.details?.country && typeof team.details.country === 'object' && 'name' in team.details.country ? team.details.country.name : 'N/A' },
+            { label: 'Website', value: team.details?.website || 'N/A' },
+        ],
+        tags: team.tags?.map(tag => typeof tag === 'object' ? tag.name || tag.slug || '' : '').filter(Boolean) || [],
+    }
+
+    const driverFeatures = drivers.slice(0, 8).map((driver: Driver) => ({
+        id: String(driver.id),
+        title: `${driver.first_name} ${driver.last_name}`,
+        description: driver.basics?.nickname || driver.basics?.competition_name || '',
+        icon: undefined,
+        image: driver.assets?.avatar ? getMediaUrl(driver.assets.avatar) : undefined,
+        slug: `teams/${team.slug}/drivers/${driver.slug}`,
+        stats: driver.basics?.racing_number
+            ? [
+                { label: 'Number', value: `#${driver.basics.racing_number}` },
+                { label: 'Nationality', value: driver.basics?.nationality && typeof driver.basics.nationality === 'object' && 'name' in driver.basics.nationality ? driver.basics.nationality.name : 'N/A' },
+            ]
+            : undefined,
+    }))
+
+    const leaderFeatures = leaders.slice(0, 8).map((leader: Leader) => ({
+        id: String(leader.id),
+        title: `${leader.first_name} ${leader.last_name}`,
+        description: leader.basics?.title || leader.details?.vision || '',
+        icon: undefined,
+        image: leader.assets?.avatar ? getMediaUrl(leader.assets.avatar) : undefined,
+        slug: `teams/${team.slug}/leaders/${leader.slug}`,
+        stats: leader.details?.mission
+            ? [
+                { label: 'Role', value: leader.basics?.title || 'N/A' },
+                { label: 'Vision', value: leader.details?.vision || 'N/A' },
+            ]
+            : undefined,
+    }))
+
+    const galleryItems: any[] = []
+    if (team.assets?.gallery) {
+        team.assets.gallery.forEach((item, idx) => {
+            const media = typeof item === 'object' ? item : null
+            const url = media ? getMediaUrl(media) : undefined
+            if (url && media) {
+                galleryItems.push({
+                    id: String(media.id),
+                    title: media.alt || team.name,
+                    image: url,
+                    height: idx % 3 === 0 ? 'tall' as const : idx % 2 === 0 ? 'medium' as const : 'short' as const,
+                })
+            }
+        })
+    }
 
     return (
         <main className="w-full">
@@ -234,6 +176,14 @@ export default async function TeamPage({ params }: { params: Promise<{ slug: str
                 ctaLabel="VIEW DETAILS"
                 ctaPath={`/teams/${team.slug}/details`}
             />
+            {team.details?.history && (
+                <TextRevealSection
+                    id="team-history-text"
+                    title={team.name}
+                    subtitle="History"
+                    content={team.details.history}
+                />
+            )}
             {driverFeatures.length > 0 && (
                 <FeatureSection
                     id="team-drivers"
@@ -264,18 +214,6 @@ export default async function TeamPage({ params }: { params: Promise<{ slug: str
                     }}
                     columns={2}
                     ctaPath={`/teams/${team.slug}/leaders`}
-                    headerVariant={2}
-                    footerVariant={1}
-                />
-            )}
-            {scrollItems.length > 0 && (
-                <ScrollSection
-                    id="team-history"
-                    title="History"
-                    subtitle="Team background"
-                    items={scrollItems}
-                    labels={{ indexPrefix: 'SEC', progressLabel: 'PROG', statusComplete: 'DONE' }}
-                    variant="reveal"
                     headerVariant={2}
                     footerVariant={1}
                 />

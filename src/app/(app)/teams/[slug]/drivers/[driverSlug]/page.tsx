@@ -6,8 +6,8 @@ import HeroSection from '@/components/Section/Blocks/HeroSection'
 import ListSection from '@/components/Section/Blocks/ListSection'
 import MasonrySection from '@/components/Section/Blocks/MasonrySection'
 import QuoteSection from '@/components/Section/Blocks/QuoteSection'
-import ScrollSection from '@/components/Section/Blocks/ScrollSection'
 import StudySection from '@/components/Section/Blocks/StudySection'
+import TextRevealSection from '@/components/Section/Blocks/TextRevealSection'
 import { Celebration, Incident, Media, Member } from '@/payload-types'
 import configPromise from '@payload-config'
 import { unstable_cache } from 'next/cache'
@@ -35,7 +35,7 @@ const getDriverData = unstable_cache(
                 slug: true,
                 basics: { racing_number: true, nationality: true, birth_date: true, debut_date: true, callsign: true, catchphrase: true },
                 assets: { avatar: true, cover: true, autograph: true, gallery: true },
-                details: { biography: true },
+                details: { biography: true, story: true },
             },
         })
         return result.docs[0] || null
@@ -156,13 +156,6 @@ export default async function DriverPage({ params }: { params: Promise<{ teamSlu
         }
         : null
 
-    const scrollItems = driver.details?.biography ? [{
-        id: 'biography',
-        title: 'Biography',
-        description: 'Driver background and career highlights.',
-        percentage: 100,
-    }] : []
-
     const crewMemberItems = crewMembers.map((member) => ({
         id: String(member.id),
         title: `${member.first_name || ''} ${member.last_name || ''}`.trim() || 'Crew Member',
@@ -241,20 +234,20 @@ export default async function DriverPage({ params }: { params: Promise<{ teamSlu
                     footerVariant={1}
                 />
             )}
-            {scrollItems.length > 0 && (
-                <ScrollSection
-                    id="driver-history"
-                    title="History"
-                    subtitle="Career background"
-                    items={scrollItems}
-                    labels={{
-                        indexPrefix: 'SEC',
-                        progressLabel: 'PROG',
-                        statusComplete: 'DONE',
-                    }}
-                    variant="reveal"
-                    headerVariant={1}
-                    footerVariant={1}
+            {driver.details?.biography && (
+                <TextRevealSection
+                    id="driver-biography"
+                    title={driverFullName}
+                    subtitle="Biography"
+                    content={driver.details.biography}
+                />
+            )}
+            {driver.details?.story && (
+                <TextRevealSection
+                    id="driver-story"
+                    title={driverFullName}
+                    subtitle="Story"
+                    content={driver.details.story}
                 />
             )}
             {crewMemberItems.length > 0 && (

@@ -4,9 +4,9 @@ import FeatureSection from '@/components/Section/Blocks/FeatureSection'
 import GallerySection from '@/components/Section/Blocks/GallerySection'
 import HeroSection from '@/components/Section/Blocks/HeroSection'
 import MasonrySection from '@/components/Section/Blocks/MasonrySection'
-import ScrollSection from '@/components/Section/Blocks/ScrollSection'
 import ShortsSection from '@/components/Section/Blocks/ShortsSection'
 import StudySection from '@/components/Section/Blocks/StudySection'
+import TextRevealSection from '@/components/Section/Blocks/TextRevealSection'
 import VideoSection from '@/components/Section/Blocks/VideoSection'
 import { Celebration, Interview, Media } from '@/payload-types'
 import configPromise from '@payload-config'
@@ -153,24 +153,6 @@ export default async function LeaderPage({ params }: { params: Promise<{ teamSlu
 
     const autographFeatures: any[] = []
 
-    const scrollItems: any[] = []
-    if (leader.details?.biography) {
-        scrollItems.push({
-            id: 'biography',
-            title: 'Biography',
-            description: 'Leadership background and career highlights.',
-            percentage: 100,
-        })
-    }
-    if (leader.details?.history) {
-        scrollItems.push({
-            id: 'history',
-            title: 'History',
-            description: leader.details.history,
-            percentage: 75,
-        })
-    }
-
     const galleryItems: any[] = []
     if (leader.assets?.gallery) {
         leader.assets.gallery.forEach((item, idx) => {
@@ -288,20 +270,20 @@ export default async function LeaderPage({ params }: { params: Promise<{ teamSlu
                     footerVariant={1}
                 />
             )}
-            {scrollItems.length > 0 && (
-                <ScrollSection
+            {leader.details?.biography && (
+                <TextRevealSection
+                    id="leader-biography"
+                    title={leaderFullName}
+                    subtitle="Biography"
+                    content={leader.details.biography}
+                />
+            )}
+            {leader.details?.history && (
+                <TextRevealSection
                     id="leader-history"
-                    title="History"
-                    subtitle="Career background"
-                    items={scrollItems}
-                    labels={{
-                        indexPrefix: 'SEC',
-                        progressLabel: 'PROG',
-                        statusComplete: 'DONE',
-                    }}
-                    variant="reveal"
-                    headerVariant={1}
-                    footerVariant={1}
+                    title={leaderFullName}
+                    subtitle="History"
+                    content={leader.details.history}
                 />
             )}
             {galleryItems.length > 0 && (

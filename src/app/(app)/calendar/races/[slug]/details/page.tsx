@@ -1,7 +1,9 @@
+// app/(frontend)/calendar/races/[slug]/details/page.tsx
+import DocumentsSection from '@/components/Section/Blocks/DocumentsSection'
 import GridSection from '@/components/Section/Blocks/GridSection'
 import HeroSection from '@/components/Section/Blocks/HeroSection'
+import LeaderboardSection from '@/components/Section/Blocks/LeaderboardSection'
 import MasonrySection from '@/components/Section/Blocks/MasonrySection'
-import StudySection from '@/components/Section/Blocks/StudySection'
 import { Media } from '@/payload-types'
 import configPromise from '@payload-config'
 import { unstable_cache } from 'next/cache'
@@ -58,6 +60,7 @@ const getRaceDetailsData = unstable_cache(
                     start_date: true,
                     winner: true,
                     pole_position: true,
+                    fastest_lap: true,
                     circuit: true,
                     series: true,
                     notes: true,
@@ -124,69 +127,68 @@ export default async function RaceDetailsPage({ params }: { params: Promise<{ sl
         },
     ]
 
-    const competitionStudyImage = resolveAssetUrl(race.assets, 'cover', 'poster')
+    const leaderboardEntries: any[] = []
 
-    const competitionStudy = {
-        id: String(race.id),
-        title: 'CLASSIFICATION',
-        description: race.details?.notes || 'Event competition intelligence and verified results.',
-        image: competitionStudyImage || '',
-        metrics: [
-            {
-                label: 'WINNER',
-                value: race.details?.winner && typeof race.details.winner === 'object' && 'first_name' in race.details.winner
-                    ? `${race.details.winner.first_name} ${race.details.winner.last_name}`
-                    : 'N/A'
-            },
-            {
-                label: 'POLE',
-                value: race.details?.pole_position && typeof race.details.pole_position === 'object' && 'name' in race.details.pole_position
-                    ? race.details.pole_position.name
-                    : 'N/A'
-            },
-            {
-                label: 'CIRCUIT',
-                value: race.details?.circuit && typeof race.details.circuit === 'object' && 'name' in race.details.circuit
-                    ? race.details.circuit.name
-                    : 'N/A'
-            },
-            {
-                label: 'SERIES',
-                value: race.details?.series && typeof race.details.series === 'object' && 'name' in race.details.series
-                    ? race.details.series.name
-                    : 'N/A'
-            },
-        ],
+    const winnerRef = race.details?.winner
+    if (winnerRef && typeof winnerRef === 'object') {
+        const winner = winnerRef as any
+        const winnerName = `${winner.first_name || ''} ${winner.last_name || ''}`.trim()
+        const winnerCar = winner.details?.cars?.[0] && typeof winner.details.cars[0] === 'object'
+            ? (winner.details.cars[0] as any).name
+            : undefined
+
+        leaderboardEntries.push({
+            id: `winner-${winner.id}`,
+            position: 1,
+            name: winnerName || 'Winner',
+            team: winnerCar || undefined,
+            image: getMediaUrl(winner.assets?.avatar),
+            slug: winner.slug ? `teams/${winner.slug}` : undefined,
+        })
     }
 
-    const highlightsAndDocsItems: any[] = []
+    const poleRef = race.details?.pole_position
+    if (poleRef && typeof poleRef === 'object') {
+        const pole = poleRef as any
+        const poleName = pole.name || 'Pole Position'
+        leaderboardEntries.push({
+            id: `pole-${pole.id}`,
+            position: 0,
+            name: poleName,
+            team: undefined,
+            points: 'POLE',
+            image: undefined,
+            slug: undefined,
+        })
+    }
+
+    const fastestLapRef = race.details?.fastest_lap
+    if (fastestLapRef && typeof fastestLapRef === 'object') {
+        const fastestLap = fastestLapRef as any
+        const fastestLapName = fastestLap.name || 'Fastest Lap'
+        leaderboardEntries.push({
+            id: `fastest-lap-${fastestLap.id}`,
+            position: 0,
+            name: fastestLapName,
+            team: undefined,
+            points: race.details?.fastest_lap_time || 'FASTEST',
+            image: undefined,
+            slug: undefined,
+        })
+    }
+
+    const highlightItems: any[] = []
 
     if (race.assets?.highlights && Array.isArray(race.assets.highlights)) {
         race.assets.highlights.forEach((item, idx) => {
             const url = getMediaUrl(item)
             if (url) {
-                highlightsAndDocsItems.push({
+                highlightItems.push({
                     id: String(typeof item === 'object' ? item.id : idx),
                     title: (typeof item === 'object' && item.alt) || `HIGHLIGHT_${idx + 1}`,
                     image: url,
                     category: 'VISUAL',
                     height: 'medium' as const,
-                })
-            }
-        })
-    }
-
-    if (race.assets?.documents && Array.isArray(race.assets.documents)) {
-        race.assets.documents.forEach((doc, idx) => {
-            const url = getMediaUrl(doc)
-            if (url) {
-                highlightsAndDocsItems.push({
-                    id: (typeof doc === 'object' && doc.id) ? String(doc.id) : `doc-${idx}`,
-                    title: (typeof doc === 'object' && (doc.alt || doc.filename)) || `DOC_${idx + 1}`,
-                    description: (typeof doc === 'object' && doc.mimeType) || 'APPLICATION/PDF',
-                    image: url,
-                    category: 'ARCHIVE',
-                    height: 'short' as const,
                 })
             }
         })
@@ -217,21 +219,22 @@ export default async function RaceDetailsPage({ params }: { params: Promise<{ sl
                 }}
                 columns={4}
             />
-            <StudySection
-                id="race-competition"
-                title="RESULTS"
-                subtitle="Final classification and participant verification"
-                studies={[competitionStudy]}
-                variant="featured"
-                headerVariant={2}
-                footerVariant={1}
-            />
-            {highlightsAndDocsItems.length > 0 && (
+            {leaderboardEntries.length > 0 && (
+                <LeaderboardSection
+                    id="race-leaderboard"
+                    title="CLASSIFICATION"
+                    subtitle="Race results"
+                    entries={leaderboardEntries}
+                    headerVariant={2}
+                    footerVariant={1}
+                />
+            )}
+            {highlightItems.length > 0 && (
                 <MasonrySection
-                    id="race-highlights-documents"
-                    title="MEDIA"
-                    subtitle="Visual intelligence and archival resources"
-                    items={highlightsAndDocsItems}
+                    id="race-highlights"
+                    title="HIGHLIGHTS"
+                    subtitle="Visual race media"
+                    items={highlightItems}
                     labels={{
                         categoryPrefix: 'TYPE',
                         idPrefix: 'IMG',
@@ -241,6 +244,15 @@ export default async function RaceDetailsPage({ params }: { params: Promise<{ sl
                     footerVariant={2}
                 />
             )}
+            <DocumentsSection
+                id="race-documents"
+                title="DOCUMENTS"
+                subtitle="Official race documentation"
+                documents={race.assets?.documents}
+                referenceCode={race.basics?.identifiers?.code || race.slug || 'RACE'}
+                headerVariant={1}
+                footerVariant={1}
+            />
         </main>
     )
 }

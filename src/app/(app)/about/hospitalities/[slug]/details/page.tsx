@@ -1,4 +1,5 @@
 // app/(frontend)/about/hospitalities/[slug]/details/page.tsx
+import DocumentsSection from '@/components/Section/Blocks/DocumentsSection'
 import GridSection from '@/components/Section/Blocks/GridSection'
 import ListSection from '@/components/Section/Blocks/ListSection'
 import MapSection from '@/components/Section/Blocks/MapSection'
@@ -109,22 +110,6 @@ export default async function HospitalityDetailsPage({ params }: { params: Promi
         })
     }
 
-    const documentItems: any[] = []
-    if (hospitality.assets?.documents && Array.isArray(hospitality.assets.documents)) {
-        hospitality.assets.documents.forEach((doc, idx) => {
-            const url = getMediaUrl(doc)
-            if (url) {
-                documentItems.push({
-                    id: String(typeof doc === 'object' ? doc.id : idx),
-                    title: (typeof doc === 'object' && (doc.alt || doc.filename)) || `DOC_${idx + 1}`,
-                    subtitle: (typeof doc === 'object' && doc.mimeType) || 'APPLICATION/PDF',
-                    image: url,
-                    href: url,
-                })
-            }
-        })
-    }
-
     return (
         <main className="w-full">
             {mapLocations.length > 0 && (
@@ -197,21 +182,15 @@ export default async function HospitalityDetailsPage({ params }: { params: Promi
                     showTimestamp={false}
                 />
             )}
-            {documentItems.length > 0 && (
-                <GridSection
-                    id="hospitality-documents"
-                    title="ARCHIVE"
-                    subtitle="Technical documentation and media assets"
-                    items={documentItems}
-                    labels={{
-                        unitsCount: 'DOCS',
-                        viewProject: 'FETCH',
-                        sectionIndex: 'DAT',
-                        fallbackAlt: 'File',
-                    }}
-                    columns={3}
-                />
-            )}
+            <DocumentsSection
+                id="hospitality-documents"
+                title="DOCUMENTS"
+                subtitle="Technical documentation and media assets"
+                documents={hospitality.assets?.documents}
+                referenceCode={hospitality.slug || 'HSP'}
+                headerVariant={1}
+                footerVariant={1}
+            />
         </main>
     )
 }

@@ -1,4 +1,5 @@
-import GridSection from '@/components/Section/Blocks/GridSection'
+// app/(frontend)/opportunities/onboardings/[slug]/details/page.tsx
+import DocumentsSection from '@/components/Section/Blocks/DocumentsSection'
 import HeroSection from '@/components/Section/Blocks/HeroSection'
 import ListSection from '@/components/Section/Blocks/ListSection'
 import { Media } from '@/payload-types'
@@ -24,6 +25,7 @@ const getOnboardingDetailsData = unstable_cache(
             select: {
                 id: true,
                 name: true,
+                slug: true,
                 basics: {
                     description: true,
                     identifiers: { code: true },
@@ -96,23 +98,6 @@ export default async function OnboardingDetailsPage({ params }: { params: Promis
             status: quiz.explanation || undefined,
         }))
 
-    const documentItems: any[] = (onboarding.assets?.documents || [])
-        .map((doc, idx) => {
-            const media = typeof doc === 'object' ? doc : null
-            const url = media ? getMediaUrl(media) : undefined
-            if (url && media) {
-                return {
-                    id: String(media.id),
-                    title: media.alt || media.filename || `Document ${idx + 1}`,
-                    subtitle: media.mimeType || undefined,
-                    image: url,
-                    href: url,
-                }
-            }
-            return null
-        })
-        .filter(Boolean)
-
     return (
         <main className="w-full">
             <HeroSection
@@ -169,21 +154,15 @@ export default async function OnboardingDetailsPage({ params }: { params: Promis
                     showTimestamp={false}
                 />
             )}
-            {documentItems.length > 0 && (
-                <GridSection
-                    id="onboarding-documents"
-                    title="Documents"
-                    subtitle="Onboarding resources"
-                    items={documentItems}
-                    labels={{
-                        unitsCount: 'DOCS',
-                        viewProject: 'VIEW',
-                        sectionIndex: 'DOC',
-                        fallbackAlt: 'Document',
-                    }}
-                    columns={3}
-                />
-            )}
+            <DocumentsSection
+                id="onboarding-documents"
+                title="Documents"
+                subtitle="Onboarding resources"
+                documents={onboarding.assets?.documents}
+                referenceCode={onboarding.basics?.identifiers?.code || onboarding.slug || 'ONB'}
+                headerVariant={1}
+                footerVariant={1}
+            />
         </main>
     )
 }

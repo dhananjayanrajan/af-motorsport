@@ -1,4 +1,5 @@
 // app/(frontend)/calendar/timelines/[slug]/page.tsx
+import DocumentsSection from '@/components/Section/Blocks/DocumentsSection'
 import GridSection from '@/components/Section/Blocks/GridSection'
 import HeroSection from '@/components/Section/Blocks/HeroSection'
 import StudySection from '@/components/Section/Blocks/StudySection'
@@ -122,22 +123,6 @@ export default async function TimelinePage({ params }: { params: Promise<{ slug:
         })
     }
 
-    const documentItems: any[] = []
-    if (timeline.assets?.documents && Array.isArray(timeline.assets.documents)) {
-        timeline.assets.documents.forEach((doc, idx) => {
-            const url = getMediaUrl(doc)
-            if (url) {
-                documentItems.push({
-                    id: (typeof doc === 'object' && doc.id) ? String(doc.id) : `doc-${idx}`,
-                    title: (typeof doc === 'object' && (doc.alt || doc.filename)) || `DOC_${idx + 1}`,
-                    subtitle: (typeof doc === 'object' && doc.mimeType) || 'APPLICATION/PDF',
-                    image: url,
-                    href: url,
-                })
-            }
-        })
-    }
-
     return (
         <main className="w-full">
             <HeroSection
@@ -192,21 +177,15 @@ export default async function TimelinePage({ params }: { params: Promise<{ slug:
                     columns={3}
                 />
             )}
-            {documentItems.length > 0 && (
-                <GridSection
-                    id="timeline-documents"
-                    title="ARCHIVE"
-                    subtitle="Technical resources and supporting documentation"
-                    items={documentItems}
-                    labels={{
-                        unitsCount: 'DOCS',
-                        viewProject: 'FETCH',
-                        sectionIndex: 'DAT',
-                        fallbackAlt: 'File',
-                    }}
-                    columns={3}
-                />
-            )}
+            <DocumentsSection
+                id="timeline-documents"
+                title="DOCUMENTS"
+                subtitle="Technical resources and supporting documentation"
+                documents={timeline.assets?.documents}
+                referenceCode={timeline.slug || 'TML'}
+                headerVariant={1}
+                footerVariant={1}
+            />
         </main>
     )
 }

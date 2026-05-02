@@ -1,3 +1,5 @@
+// app/(frontend)/opportunities/programs/[slug]/details/page.tsx
+import DocumentsSection from '@/components/Section/Blocks/DocumentsSection'
 import GridSection from '@/components/Section/Blocks/GridSection'
 import HeroSection from '@/components/Section/Blocks/HeroSection'
 import ListSection from '@/components/Section/Blocks/ListSection'
@@ -24,6 +26,7 @@ const getProgramDetailsData = unstable_cache(
             select: {
                 id: true,
                 name: true,
+                slug: true,
                 assets: {
                     cover: true,
                     documents: true,
@@ -96,23 +99,6 @@ export default async function ProgramDetailsPage({ params }: { params: Promise<{
             image: getMediaUrl(participant.assets?.avatar) || `https://picsum.photos/seed/${participant.id}/400/300`,
         }))
 
-    const documentItems: any[] = (program.assets?.documents || [])
-        .map((doc, idx) => {
-            const media = typeof doc === 'object' ? doc : null
-            const url = media ? getMediaUrl(media) : undefined
-            if (url && media) {
-                return {
-                    id: String(media.id),
-                    title: media.alt || media.filename || `Document ${idx + 1}`,
-                    subtitle: media.mimeType || undefined,
-                    image: url,
-                    href: url,
-                }
-            }
-            return null
-        })
-        .filter(Boolean)
-
     return (
         <main className="w-full">
             <HeroSection
@@ -184,21 +170,15 @@ export default async function ProgramDetailsPage({ params }: { params: Promise<{
                     columns={4}
                 />
             )}
-            {documentItems.length > 0 && (
-                <GridSection
-                    id="program-documents"
-                    title="Documents"
-                    subtitle="Program resources"
-                    items={documentItems}
-                    labels={{
-                        unitsCount: 'DOCS',
-                        viewProject: 'VIEW',
-                        sectionIndex: 'DOC',
-                        fallbackAlt: 'Document',
-                    }}
-                    columns={3}
-                />
-            )}
+            <DocumentsSection
+                id="program-documents"
+                title="Documents"
+                subtitle="Program resources"
+                documents={program.assets?.documents}
+                referenceCode={program.slug || 'PRG'}
+                headerVariant={1}
+                footerVariant={1}
+            />
         </main>
     )
 }

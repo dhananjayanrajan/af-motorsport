@@ -1,5 +1,5 @@
 // app/(frontend)/about/initiatives/[slug]/page.tsx
-import GridSection from '@/components/Section/Blocks/GridSection'
+import DocumentsSection from '@/components/Section/Blocks/DocumentsSection'
 import HeroSection from '@/components/Section/Blocks/HeroSection'
 import ListSection from '@/components/Section/Blocks/ListSection'
 import MapSection from '@/components/Section/Blocks/MapSection'
@@ -121,22 +121,6 @@ export default async function InitiativePage({ params }: { params: Promise<{ slu
         })
     }
 
-    const documentItems: any[] = []
-    if (initiative.assets?.documents && Array.isArray(initiative.assets.documents)) {
-        initiative.assets.documents.forEach((doc, idx) => {
-            const url = getMediaUrl(doc)
-            if (url) {
-                documentItems.push({
-                    id: String(typeof doc === 'object' ? doc.id : idx),
-                    title: (typeof doc === 'object' && (doc.alt || doc.filename)) || `DOC_${idx + 1}`,
-                    subtitle: (typeof doc === 'object' && doc.mimeType) || 'APPLICATION/PDF',
-                    image: url,
-                    href: url,
-                })
-            }
-        })
-    }
-
     return (
         <main className="w-full">
             <HeroSection
@@ -211,21 +195,15 @@ export default async function InitiativePage({ params }: { params: Promise<{ slu
                     showTimestamp={false}
                 />
             )}
-            {documentItems.length > 0 && (
-                <GridSection
-                    id="initiative-documents"
-                    title="ARCHIVE"
-                    subtitle="Technical resources and documentation"
-                    items={documentItems}
-                    labels={{
-                        unitsCount: 'DOCS',
-                        viewProject: 'FETCH',
-                        sectionIndex: 'DAT',
-                        fallbackAlt: 'File',
-                    }}
-                    columns={3}
-                />
-            )}
+            <DocumentsSection
+                id="initiative-documents"
+                title="DOCUMENTS"
+                subtitle="Technical resources and documentation"
+                documents={initiative.assets?.documents}
+                referenceCode={initiative.slug || 'INI'}
+                headerVariant={1}
+                footerVariant={1}
+            />
         </main>
     )
 }

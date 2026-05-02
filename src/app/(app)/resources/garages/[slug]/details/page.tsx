@@ -1,3 +1,5 @@
+// app/(frontend)/resources/garages/[slug]/details/page.tsx
+import DocumentsSection from '@/components/Section/Blocks/DocumentsSection'
 import GridSection from '@/components/Section/Blocks/GridSection'
 import HeroSection from '@/components/Section/Blocks/HeroSection'
 import ListSection from '@/components/Section/Blocks/ListSection'
@@ -24,6 +26,7 @@ const getGarageDetailsData = unstable_cache(
             select: {
                 id: true,
                 name: true,
+                slug: true,
                 basics: {
                     description: true,
                 },
@@ -74,21 +77,6 @@ export default async function GarageDetailsPage({ params }: { params: Promise<{ 
             href: `/organizations/${op.slug}`,
         }))
 
-    const documentItems = (garage.assets?.documents || [])
-        .map((doc, idx) => {
-            const media = typeof doc === 'object' ? doc : null
-            const url = getMediaUrl(media)
-            if (!url || !media) return null
-            return {
-                id: String(media.id),
-                title: media.alt || media.filename || `Document ${idx + 1}`,
-                subtitle: media.mimeType || undefined,
-                image: url,
-                href: url,
-            }
-        })
-        .filter((doc): doc is NonNullable<typeof doc> => doc !== null)
-
     return (
         <main className="w-full">
             <HeroSection
@@ -130,21 +118,15 @@ export default async function GarageDetailsPage({ params }: { params: Promise<{ 
                     showTimestamp={false}
                 />
             )}
-            {documentItems.length > 0 && (
-                <GridSection
-                    id="garage-documents"
-                    title="Documents"
-                    subtitle="Facility documentation"
-                    items={documentItems}
-                    labels={{
-                        unitsCount: 'DOCS',
-                        viewProject: 'VIEW',
-                        sectionIndex: 'DOC',
-                        fallbackAlt: 'Document',
-                    }}
-                    columns={3}
-                />
-            )}
+            <DocumentsSection
+                id="garage-documents"
+                title="Documents"
+                subtitle="Facility documentation"
+                documents={garage.assets?.documents}
+                referenceCode={garage.slug || 'GAR'}
+                headerVariant={1}
+                footerVariant={1}
+            />
         </main>
     )
 }

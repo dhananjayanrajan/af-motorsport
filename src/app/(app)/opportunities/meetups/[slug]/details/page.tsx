@@ -1,3 +1,5 @@
+// app/(frontend)/opportunities/meetups/[slug]/details/page.tsx
+import DocumentsSection from '@/components/Section/Blocks/DocumentsSection'
 import GridSection from '@/components/Section/Blocks/GridSection'
 import HeroSection from '@/components/Section/Blocks/HeroSection'
 import TabSection from '@/components/Section/Blocks/TabSection'
@@ -24,32 +26,16 @@ const getMeetupDetailsData = unstable_cache(
             select: {
                 id: true,
                 name: true,
-                basics: {
-                    description: true,
-                },
-                assets: {
-                    cover: true,
-                    documents: true,
-                },
-                seo: {
-                    image: true,
-                },
+                slug: true,
+                basics: { description: true },
+                assets: { cover: true, documents: true },
+                seo: { image: true },
                 details: {
                     format: true,
                     access: true,
                     start_date: true,
-                    hosts: {
-                        leaders: true,
-                        individuals: true,
-                        organizations: true,
-                    },
-                    attendees: {
-                        drivers: true,
-                        members: true,
-                        leaders: true,
-                        individuals: true,
-                        organizations: true,
-                    },
+                    hosts: { leaders: true, individuals: true, organizations: true },
+                    attendees: { drivers: true, members: true, leaders: true, individuals: true, organizations: true },
                 },
             },
         })
@@ -311,23 +297,6 @@ export default async function MeetupDetailsPage({ params }: { params: Promise<{ 
         })
     }
 
-    const documentItems: any[] = []
-    if (meetup.assets?.documents) {
-        meetup.assets.documents.forEach((doc, idx) => {
-            const media = typeof doc === 'object' ? doc : null
-            const url = media ? getMediaUrl(media) : undefined
-            if (url && media) {
-                documentItems.push({
-                    id: String(media.id),
-                    title: media.alt || media.filename || `Document ${idx + 1}`,
-                    subtitle: media.mimeType || undefined,
-                    image: url,
-                    href: url,
-                })
-            }
-        })
-    }
-
     return (
         <main className="w-full">
             <HeroSection
@@ -370,21 +339,15 @@ export default async function MeetupDetailsPage({ params }: { params: Promise<{ 
                     footerVariant={1}
                 />
             )}
-            {documentItems.length > 0 && (
-                <GridSection
-                    id="meetup-documents"
-                    title="RESOURCES"
-                    subtitle="Event resources"
-                    items={documentItems}
-                    labels={{
-                        unitsCount: 'DOCS',
-                        viewProject: 'VIEW',
-                        sectionIndex: 'DOC',
-                        fallbackAlt: 'Document',
-                    }}
-                    columns={3}
-                />
-            )}
+            <DocumentsSection
+                id="meetup-documents"
+                title="DOCUMENTS"
+                subtitle="Event resources"
+                documents={meetup.assets?.documents}
+                referenceCode={meetup.slug || 'MTU'}
+                headerVariant={1}
+                footerVariant={1}
+            />
         </main>
     )
 }

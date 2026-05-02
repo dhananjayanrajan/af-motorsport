@@ -1,3 +1,5 @@
+// app/(frontend)/resources/cars/[slug]/details/page.tsx
+import DocumentsSection from '@/components/Section/Blocks/DocumentsSection'
 import GridSection from '@/components/Section/Blocks/GridSection'
 import HeroSection from '@/components/Section/Blocks/HeroSection'
 import ListSection from '@/components/Section/Blocks/ListSection'
@@ -24,10 +26,11 @@ const getCarDetailsData = unstable_cache(
             select: {
                 id: true,
                 name: true,
+                slug: true,
                 basics: {
                     tagline: true,
                     description: true,
-                    identifiers: { chassis: true },
+                    identifiers: { chassis: true, model: true },
                 },
                 assets: {
                     cover: true,
@@ -87,21 +90,6 @@ export default async function CarDetailsPage({ params }: { params: Promise<{ slu
             subtitle: s.value || s.description || undefined,
         }))
 
-    const documentItems = (car.assets?.documents || [])
-        .map((doc, idx) => {
-            const media = typeof doc === 'object' ? doc : null
-            const url = getMediaUrl(media)
-            if (!url || !media) return null
-            return {
-                id: String(media.id),
-                title: media.alt || media.filename || `Document ${idx + 1}`,
-                subtitle: media.mimeType || undefined,
-                image: url,
-                href: url,
-            }
-        })
-        .filter((d): d is NonNullable<typeof d> => d !== null)
-
     return (
         <main className="w-full">
             <HeroSection
@@ -111,7 +99,7 @@ export default async function CarDetailsPage({ params }: { params: Promise<{ slu
                 description={car.basics?.description || undefined}
                 backgroundImage={heroBackgroundImage}
                 alignment="center"
-                badge={car.basics?.identifiers?.chassis || car.details?.status || undefined}
+                badge={car.basics?.identifiers?.chassis || car.basics?.identifiers?.model || car.details?.status || undefined}
             />
             {manufacturerEntries.length > 0 && (
                 <ListSection
@@ -158,21 +146,15 @@ export default async function CarDetailsPage({ params }: { params: Promise<{ slu
                     columns={3}
                 />
             )}
-            {documentItems.length > 0 && (
-                <GridSection
-                    id="car-documents"
-                    title="Documents"
-                    subtitle="Technical documentation"
-                    items={documentItems}
-                    labels={{
-                        unitsCount: 'DOCS',
-                        viewProject: 'VIEW',
-                        sectionIndex: 'DOC',
-                        fallbackAlt: 'Document',
-                    }}
-                    columns={3}
-                />
-            )}
+            <DocumentsSection
+                id="car-documents"
+                title="Documents"
+                subtitle="Technical documentation"
+                documents={car.assets?.documents}
+                referenceCode={car.basics?.identifiers?.chassis || car.basics?.identifiers?.model || car.slug || 'CAR'}
+                headerVariant={1}
+                footerVariant={1}
+            />
         </main>
     )
 }

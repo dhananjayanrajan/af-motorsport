@@ -1,10 +1,13 @@
+// app/(frontend)/competition/sessions/[slug]/page.tsx
 import CarouselSection from '@/components/Section/Blocks/CarouselSection'
-import GridSection from '@/components/Section/Blocks/GridSection'
 import HeroSection from '@/components/Section/Blocks/HeroSection'
+import InfoSection from '@/components/Section/Blocks/InfoSection'
 import MasonrySection from '@/components/Section/Blocks/MasonrySection'
 import ScrollSection from '@/components/Section/Blocks/ScrollSection'
+import TextRevealSection from '@/components/Section/Blocks/TextRevealSection'
 import { Media } from '@/payload-types'
 import configPromise from '@payload-config'
+import { Activity, Clock, Flag, Gauge, Hash, Shield } from 'lucide-react'
 import { unstable_cache } from 'next/cache'
 import { notFound } from 'next/navigation'
 import { getPayload } from 'payload'
@@ -49,13 +52,16 @@ const getSessionData = unstable_cache(
                 details: {
                     history: true,
                     notes: true,
-                    access: true
+                    access: true,
+                    specification: true,
                 },
                 metrics: {
                     quantifiers: {
                         laps: true,
                         distance: true,
-                        duration: true
+                        duration: true,
+                        interval: true,
+                        specification: true,
                     }
                 },
                 seo: {
@@ -75,6 +81,73 @@ export default async function SessionPage({ params }: { params: Promise<{ slug: 
 
     if (!session) notFound()
 
+    const heroBackgroundImage = resolveAssetUrl(session.assets, 'thumbnail') || getMediaUrl(session.seo?.image)
+
+    const infoCards: any[] = [
+        {
+            id: 'segment',
+            label: 'Session Type',
+            value: session.basics?.segment || 'N/A',
+            icon: <Flag size={16} />,
+            emphasis: 'high' as const,
+        },
+        {
+            id: 'access',
+            label: 'Access Level',
+            value: session.details?.access || 'N/A',
+            icon: <Shield size={16} />,
+            emphasis: 'medium' as const,
+        },
+        {
+            id: 'code',
+            label: 'Session Code',
+            value: session.basics?.identifiers?.code || 'N/A',
+            icon: <Hash size={16} />,
+            emphasis: 'low' as const,
+        },
+        {
+            id: 'laps',
+            label: 'Total Laps',
+            value: session.metrics?.quantifiers?.laps ? String(session.metrics.quantifiers.laps) : 'N/A',
+            icon: <Activity size={16} />,
+            emphasis: 'high' as const,
+        },
+        {
+            id: 'distance',
+            label: 'Distance',
+            value: session.metrics?.quantifiers?.distance ? `${session.metrics.quantifiers.distance} KM` : 'N/A',
+            icon: <Gauge size={16} />,
+            emphasis: 'medium' as const,
+        },
+        {
+            id: 'duration',
+            label: 'Duration',
+            value: session.metrics?.quantifiers?.duration ? `${session.metrics.quantifiers.duration} MIN` : 'N/A',
+            icon: <Clock size={16} />,
+            emphasis: 'high' as const,
+        },
+    ]
+
+    if (session.metrics?.quantifiers?.interval) {
+        infoCards.push({
+            id: 'interval',
+            label: 'Timing Interval',
+            value: session.metrics.quantifiers.interval.toString(),
+            icon: <Activity size={16} />,
+            emphasis: 'low' as const,
+        })
+    }
+
+    if (session.metrics?.quantifiers?.specification) {
+        infoCards.push({
+            id: 'metric-spec',
+            label: 'Metric Spec',
+            value: session.metrics.quantifiers.specification,
+            icon: <Gauge size={16} />,
+            emphasis: 'low' as const,
+        })
+    }
+
     const videoSlides: any[] = []
     if (session.assets?.videos && Array.isArray(session.assets.videos)) {
         session.assets.videos.forEach((video, idx) => {
@@ -82,11 +155,11 @@ export default async function SessionPage({ params }: { params: Promise<{ slug: 
             if (url) {
                 videoSlides.push({
                     id: String(typeof video === 'object' ? video.id : idx),
-                    title: (typeof video === 'object' && video.alt) || 'Session Highlight',
-                    description: session.basics?.segment || 'Live track action',
+                    title: (typeof video === 'object' && video.alt) || session.name,
+                    description: session.basics?.segment || undefined,
                     image: resolveAssetUrl(session.assets, 'thumbnail') || '',
-                    ctaLabel: 'Watch Clip',
-                    ctaHref: url,
+                    ctaLabel: undefined,
+                    ctaHref: undefined,
                 })
             }
         })
@@ -96,8 +169,10 @@ export default async function SessionPage({ params }: { params: Promise<{ slug: 
     if (session.details?.history) {
         scrollItems.push({
             id: 'history',
-            title: 'Track History',
-            description: 'Chronological record of the racing session and past performance benchmarks.',
+            title: session.name,
+            description: typeof session.details.history === 'object' && 'root' in session.details.history
+                ? 'Session history archive available in details view.'
+                : 'Chronological record of the racing session and past performance benchmarks.',
             percentage: 100,
         })
     }
@@ -109,43 +184,6 @@ export default async function SessionPage({ params }: { params: Promise<{ slug: 
             percentage: 75,
         })
     }
-
-    const heroBackgroundImage = resolveAssetUrl(session.assets, 'thumbnail') || getMediaUrl(session.seo?.image)
-
-    const specItems: any[] = [
-        {
-            id: 'segment',
-            title: 'Session Type',
-            subtitle: session.basics?.segment || 'N/A',
-        },
-        {
-            id: 'access',
-            title: 'Entry Type',
-            subtitle: session.details?.access || 'N/A',
-        },
-        {
-            id: 'code',
-            title: 'Session ID',
-            subtitle: session.basics?.identifiers?.code || 'N/A',
-        },
-        {
-            id: 'laps',
-            title: 'Lap Count',
-            subtitle: session.metrics?.quantifiers?.laps ? String(session.metrics.quantifiers.laps) : 'N/A',
-        },
-        {
-            id: 'distance',
-            title: 'Total Distance',
-            subtitle: session.metrics?.quantifiers?.distance ? `${session.metrics.quantifiers.distance} km` : 'N/A',
-        },
-        {
-            id: 'duration',
-            title: 'Time Duration',
-            subtitle: session.metrics?.quantifiers?.duration ? `${session.metrics.quantifiers.duration} min` : 'N/A',
-        },
-    ]
-
-    const entrySlides: any[] = []
 
     const galleryItems: any[] = []
     if (session.assets?.gallery && Array.isArray(session.assets.gallery)) {
@@ -163,17 +201,62 @@ export default async function SessionPage({ params }: { params: Promise<{ slug: 
     }
 
     return (
-        <main className="w-full bg-black-pure">
+        <main className="w-full">
+            <HeroSection
+                id="session-cover"
+                title={session.name}
+                subtitle={session.basics?.segment || 'Competition Session'}
+                backgroundImage={heroBackgroundImage}
+                alignment="center"
+                badge={session.details?.access || undefined}
+                actions={[
+                    {
+                        label: 'VIEW DETAILS',
+                        href: `/competition/sessions/${session.slug}/details`,
+                        variant: 'primary' as const,
+                    },
+                ]}
+            />
+            <InfoSection
+                id="session-metrics"
+                title="METRICS"
+                subtitle="Session statistics and parameters"
+                cards={infoCards}
+                columns={4}
+                headerVariant={1}
+                footerVariant={1}
+            />
+            {session.basics?.description && (
+                <TextRevealSection
+                    id="session-description"
+                    title="OVERVIEW"
+                    subtitle={session.name}
+                    content={session.basics.description}
+                    headerVariant={1}
+                    footerVariant={1}
+                />
+            )}
+            {session.details?.specification && (
+                <TextRevealSection
+                    id="session-specification"
+                    title="SPECIFICATION"
+                    subtitle={session.name}
+                    content={session.details.specification}
+                    headerVariant={1}
+                    footerVariant={1}
+                />
+            )}
             {videoSlides.length > 0 && (
                 <CarouselSection
                     id="session-videos"
                     slides={videoSlides}
+                    autoplayDelay={5000}
                 />
             )}
             {scrollItems.length > 0 && (
                 <ScrollSection
                     id="session-history"
-                    title="Archive"
+                    title="ARCHIVE"
                     subtitle="Background information and session reports"
                     items={scrollItems}
                     labels={{
@@ -186,38 +269,10 @@ export default async function SessionPage({ params }: { params: Promise<{ slug: 
                     footerVariant={1}
                 />
             )}
-            <HeroSection
-                id="session-cover"
-                title={session.name}
-                subtitle="Competition Session"
-                description={session.basics?.description || undefined}
-                backgroundImage={heroBackgroundImage}
-                alignment="center"
-                badge={session.details?.access || 'Open'}
-            />
-            <GridSection
-                id="session-specifications"
-                title="Performance Data"
-                subtitle="Session metrics and official identifiers"
-                items={specItems}
-                labels={{
-                    unitsCount: 'Stats',
-                    viewProject: 'Info',
-                    sectionIndex: 'Spec',
-                    fallbackAlt: 'Data',
-                }}
-                columns={3}
-            />
-            {entrySlides.length > 0 && (
-                <CarouselSection
-                    id="session-entries"
-                    slides={entrySlides}
-                />
-            )}
             {galleryItems.length > 0 && (
                 <MasonrySection
                     id="session-gallery"
-                    title="Gallery"
+                    title="GALLERY"
                     subtitle="Trackside photography and session highlights"
                     items={galleryItems}
                     labels={{

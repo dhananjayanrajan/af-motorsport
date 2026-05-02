@@ -1,11 +1,10 @@
 "use client"
 
-import { motion, useInView, useScroll, useSpring, useTransform } from 'framer-motion'
+import { motion, useInView, useScroll, useTransform } from 'framer-motion'
 import Link from 'next/link'
 import React, { useRef } from 'react'
 import SectionFooter from '../Components/SectionFooter'
 import SectionHeader from '../Components/SectionHeader'
-import SectionScroller from '../Components/SectionScroller'
 
 export interface Study {
   id: string
@@ -48,7 +47,6 @@ const StudySection: React.FC<StudySectionProps> = ({
     offset: ["start end", "end start"]
   })
 
-  const scaleProgress = useSpring(scrollYProgress, { stiffness: 100, damping: 30 })
   const yEffect = useTransform(scrollYProgress, [0, 0.5, 1], [40, 0, -40])
 
   const study = studies[0]
@@ -61,7 +59,6 @@ const StudySection: React.FC<StudySectionProps> = ({
       id={id}
       className="relative w-full bg-white-pure border-t-2 border-black-pure flex flex-col items-center overflow-hidden select-none"
     >
-
       <SectionHeader
         title={title}
         subtitle={subtitle}
@@ -69,17 +66,16 @@ const StudySection: React.FC<StudySectionProps> = ({
         metadata={String(studies.length).padStart(2, '0')}
       />
 
-      <div className="z-10 flex flex-col items-center">
-
+      <div className="container z-10 flex flex-col items-center py-16 md:py-24 lg:py-32 px-4">
         <motion.div
           style={{ y: yEffect }}
-          className="relative group"
+          className="relative group w-full flex justify-center"
         >
           <motion.div
             initial={{ opacity: 0, scale: 0.98 }}
             animate={isInView ? { opacity: 1, scale: 1 } : {}}
             transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-            className="relative w-[280px] xs:w-[320px] md:w-[480px] lg:w-[580px] aspect-[4/5] bg-white-pure p-3 md:p-5 border-2 border-black-pure shadow-[15px_15px_0px_0px_rgba(0,0,0,1)] transition-shadow duration-500"
+            className="relative w-full max-w-[280px] xs:max-w-[320px] sm:max-w-[400px] md:max-w-[480px] lg:max-w-[580px] aspect-[4/5] bg-white-pure p-3 md:p-5 border-2 border-black-pure shadow-[15px_15px_0px_0px_rgba(0,0,0,1)] transition-shadow duration-500"
           >
             <div className="relative w-full h-full overflow-hidden border-2 border-black-pure bg-neutral-100">
               <motion.img
@@ -90,18 +86,10 @@ const StudySection: React.FC<StudySectionProps> = ({
                 alt={study.title}
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
               />
-
               <div className="absolute inset-0 bg-primary-500/5 mix-blend-multiply opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-
-              <div className="absolute top-0 left-0 bg-black-pure text-white-pure px-3 py-1 font-mono font-black text-xs italic">
+              <div className="absolute top-0 left-0 bg-black-pure text-white-pure px-3 py-1 font-mono font-black text-xs">
                 {String(study.id).padStart(2, '0')}
               </div>
-            </div>
-
-            <div className="absolute -right-2 -bottom-2 md:-right-4 md:-bottom-4 bg-primary-500 border-2 border-black-pure px-4 py-2 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hidden md:block">
-              <span className="text-black-pure font-mono font-black text-[10px] uppercase tracking-tighter">
-                HALL_OF_FAME // 2026
-              </span>
             </div>
           </motion.div>
         </motion.div>
@@ -109,32 +97,34 @@ const StudySection: React.FC<StudySectionProps> = ({
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
-          className="mt-20 w-full max-w-4xl flex flex-col items-center text-center"
+          className="mt-16 md:mt-24 w-full max-w-4xl flex flex-col items-center text-center px-4"
         >
-          <div className="flex flex-wrap justify-center gap-2 mb-6">
-            {study.tags?.map((tag, idx) => (
-              <span key={idx} className="text-[10px] font-mono font-black uppercase tracking-widest px-2 py-0.5 border-2 border-black-pure bg-white-pure shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
-                {tag}
-              </span>
-            ))}
-          </div>
+          {study.tags && study.tags.length > 0 && (
+            <div className="flex flex-wrap justify-center gap-2 mb-8">
+              {study.tags.map((tag, idx) => (
+                <span key={idx} className="text-xs font-mono font-black uppercase tracking-widest px-3 py-1 border-2 border-black-pure bg-white-pure shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] break-words max-w-[200px]">
+                  {tag}
+                </span>
+              ))}
+            </div>
+          )}
 
-          <h3 className="text-xl md:text-2xl font-black uppercase italic tracking-tighter text-black-pure leading-none mb-4">
+          <h3 className="text-xl md:text-2xl font-black uppercase italic tracking-tighter text-black-pure leading-tight mb-6 break-words">
             {study.title}
           </h3>
 
-          <p className="max-w-lg text-xs font-bold uppercase text-black-pure/60 leading-relaxed mb-10 tracking-tight">
+          <p className="w-full max-w-2xl text-sm md:text-base font-medium text-black-pure/70 leading-relaxed mb-12 break-words whitespace-pre-wrap">
             {study.description}
           </p>
 
-          {study.metrics && (
+          {study.metrics && study.metrics.length > 0 && (
             <div className="grid grid-cols-2 md:grid-cols-4 w-full border-t-2 border-l-2 border-black-pure mb-12">
               {study.metrics.slice(0, 4).map((metric, i) => (
-                <div key={i} className="p-5 border-r-2 border-b-2 border-black-pure bg-white-pure hover:bg-neutral-50 transition-colors">
-                  <div className="text-lg md:text-xl font-black italic text-black-pure leading-none mb-1 tabular-nums">
+                <div key={i} className="p-4 md:p-5 border-r-2 border-b-2 border-black-pure bg-white-pure hover:bg-neutral-50 transition-colors min-w-0">
+                  <div className="text-lg md:text-xl font-black text-black-pure leading-none mb-1 tabular-nums break-words">
                     {metric.value}
                   </div>
-                  <div className="text-[10px] font-mono font-black text-black-pure/40 uppercase tracking-widest">
+                  <div className="text-xs font-mono font-black text-black-pure/40 uppercase tracking-widest break-words">
                     {metric.label}
                   </div>
                 </div>
@@ -142,14 +132,14 @@ const StudySection: React.FC<StudySectionProps> = ({
             </div>
           )}
 
-          {targetHref && (
+          {targetHref && (study.ctaLabel || ctaLabel) && (
             <motion.div whileHover={{ y: -2 }} whileTap={{ y: 0 }}>
               <Link
                 href={targetHref}
                 className="group relative inline-flex items-center gap-4 bg-black-pure text-white-pure px-8 py-4 text-xs font-mono font-black uppercase tracking-[0.2em] border-2 border-black-pure transition-all shadow-[6px_6px_0px_0px_rgba(34,197,94,1)] hover:shadow-none"
               >
-                {study.ctaLabel || ctaLabel || 'OPEN_RECORD'}
-                <motion.div animate={{ x: [0, 4, 0] }} transition={{ repeat: Infinity, duration: 2 }}>
+                <span className="break-words">{study.ctaLabel || ctaLabel}</span>
+                <motion.div animate={{ x: [0, 4, 0] }} transition={{ repeat: Infinity, duration: 2 }} className="shrink-0">
                   <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4">
                     <path d="M5 12h14M12 5l7 7-7 7" />
                   </svg>
@@ -158,14 +148,6 @@ const StudySection: React.FC<StudySectionProps> = ({
             </motion.div>
           )}
         </motion.div>
-      </div>
-
-      <div className="w-full border-t-2 border-black-pure bg-white-pure relative">
-        <motion.div
-          className="absolute top-0 left-0 h-1 bg-primary-500 z-20"
-          style={{ scaleX: scaleProgress, originX: 0 }}
-        />
-        <SectionScroller items={studies.map(s => s.title)} variant={1} velocity={10} />
       </div>
 
       <SectionFooter variant={footerVariant} />

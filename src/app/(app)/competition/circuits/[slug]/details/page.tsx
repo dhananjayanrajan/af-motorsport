@@ -1,4 +1,5 @@
 // app/(frontend)/competition/circuits/[slug]/details/page.tsx
+import DocumentsSection from '@/components/Section/Blocks/DocumentsSection'
 import GridSection from '@/components/Section/Blocks/GridSection'
 import HeroSection from '@/components/Section/Blocks/HeroSection'
 import ListSection from '@/components/Section/Blocks/ListSection'
@@ -162,33 +163,12 @@ export default async function CircuitDetailsPage({ params }: { params: Promise<{
         })
     }
 
-    const documentItems: any[] = []
+    const allDocuments: (number | Media)[] = []
     if (circuit.assets?.documents && Array.isArray(circuit.assets.documents)) {
-        circuit.assets.documents.forEach((doc, idx) => {
-            const url = getMediaUrl(doc)
-            if (url) {
-                documentItems.push({
-                    id: (typeof doc === 'object' && doc.id) ? String(doc.id) : `doc-${idx}`,
-                    title: (typeof doc === 'object' && (doc.alt || doc.filename)) || `DOC_${idx + 1}`,
-                    subtitle: (typeof doc === 'object' && doc.mimeType) || 'APPLICATION/PDF',
-                    image: url,
-                    href: url,
-                })
-            }
-        })
+        allDocuments.push(...circuit.assets.documents)
     }
-
     if (circuit.assets?.circuit_map) {
-        const url = getMediaUrl(circuit.assets.circuit_map)
-        if (url) {
-            documentItems.push({
-                id: 'circuit-map-doc',
-                title: 'TRACK_LAYOUT',
-                subtitle: 'VECTOR_MAPPING',
-                image: url,
-                href: url,
-            })
-        }
+        allDocuments.push(circuit.assets.circuit_map)
     }
 
     return (
@@ -255,21 +235,15 @@ export default async function CircuitDetailsPage({ params }: { params: Promise<{
                     showTimestamp={false}
                 />
             )}
-            {documentItems.length > 0 && (
-                <GridSection
-                    id="circuit-documents"
-                    title="ARCHIVE"
-                    subtitle="Technical documentation and layout vector resources"
-                    items={documentItems}
-                    labels={{
-                        unitsCount: 'DOCS',
-                        viewProject: 'FETCH',
-                        sectionIndex: 'DAT',
-                        fallbackAlt: 'File',
-                    }}
-                    columns={3}
-                />
-            )}
+            <DocumentsSection
+                id="circuit-documents"
+                title="ARCHIVE"
+                subtitle="Technical documentation and layout vector resources"
+                documents={allDocuments}
+                referenceCode={circuit.basics?.identifiers?.code || circuit.basics?.identifiers?.abbreviation || circuit.slug || 'CIR'}
+                headerVariant={1}
+                footerVariant={1}
+            />
         </main>
     )
 }

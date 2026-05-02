@@ -1,9 +1,9 @@
 // app/(frontend)/teams/[teamSlug]/drivers/[driverSlug]/details/page.tsx
 import GridSection from '@/components/Section/Blocks/GridSection'
 import HeroSection from '@/components/Section/Blocks/HeroSection'
+import LeaderboardSection from '@/components/Section/Blocks/LeaderboardSection'
 import QuoteSection from '@/components/Section/Blocks/QuoteSection'
-import TableSection from '@/components/Section/Blocks/TableSection'
-import { Award, Media, Point, Result, Skill } from '@/payload-types'
+import { Award, Media, Result, Skill } from '@/payload-types'
 import configPromise from '@payload-config'
 import { unstable_cache } from 'next/cache'
 import { notFound } from 'next/navigation'
@@ -27,6 +27,7 @@ const getDriverDetailsData = unstable_cache(
                 id: true,
                 first_name: true,
                 last_name: true,
+                slug: true,
                 basics: {
                     competition_name: true,
                     nickname: true,
@@ -86,31 +87,11 @@ export default async function DriverDetailsPage({ params }: { params: Promise<{ 
         : null
 
     const specItems: any[] = [
-        {
-            id: 'racing-number',
-            title: 'Racing Number',
-            subtitle: driver.basics?.racing_number ? `#${driver.basics.racing_number}` : 'N/A',
-        },
-        {
-            id: 'nickname',
-            title: 'Nickname',
-            subtitle: driver.basics?.nickname || 'N/A',
-        },
-        {
-            id: 'callsign',
-            title: 'Callsign',
-            subtitle: driver.basics?.callsign || 'N/A',
-        },
-        {
-            id: 'birth-date',
-            title: 'Birth Date',
-            subtitle: driver.basics?.birth_date || 'N/A',
-        },
-        {
-            id: 'debut-date',
-            title: 'Debut Date',
-            subtitle: driver.basics?.debut_date || 'N/A',
-        },
+        { id: 'racing-number', title: 'Racing Number', subtitle: driver.basics?.racing_number ? `#${driver.basics.racing_number}` : 'N/A' },
+        { id: 'nickname', title: 'Nickname', subtitle: driver.basics?.nickname || 'N/A' },
+        { id: 'callsign', title: 'Callsign', subtitle: driver.basics?.callsign || 'N/A' },
+        { id: 'birth-date', title: 'Birth Date', subtitle: driver.basics?.birth_date || 'N/A' },
+        { id: 'debut-date', title: 'Debut Date', subtitle: driver.basics?.debut_date || 'N/A' },
         {
             id: 'nationality',
             title: 'Nationality',
@@ -153,34 +134,27 @@ export default async function DriverDetailsPage({ params }: { params: Promise<{ 
         })
     }
 
-    const tableColumns = [
-        { key: 'event', label: 'Event', sortable: true },
-        { key: 'position', label: 'Position', sortable: true },
-        { key: 'points', label: 'Points', sortable: true },
-        { key: 'status', label: 'Status', sortable: true },
-    ]
-
-    const tableRows: any[] = []
+    const leaderboardEntries: any[] = []
     if (driver.details?.results) {
-        driver.details.results.slice(0, 10).forEach((resultRef) => {
+        driver.details.results.forEach((resultRef, idx) => {
             const result = resultRef as Result
             if (result && typeof result === 'object' && 'name' in result) {
-                let pointsValue = 'N/A'
+                let pointsValue: string | number | undefined = undefined
                 if (driver.details?.points) {
-                    const pointRef = driver.details.points[0] as Point
+                    const pointRef = driver.details.points[idx] as any
                     if (pointRef && typeof pointRef === 'object' && 'details' in pointRef) {
-                        pointsValue = pointRef.details?.value ? String(pointRef.details.value) : 'N/A'
+                        pointsValue = pointRef.details?.value ?? undefined
                     }
                 }
 
-                tableRows.push({
+                leaderboardEntries.push({
                     id: String(result.id),
-                    cells: {
-                        event: result.name,
-                        position: result.details?.overall ? String(result.details.overall) : 'N/A',
-                        points: pointsValue,
-                        status: result.details?.status || 'N/A',
-                    },
+                    position: result.details?.overall || idx + 1,
+                    name: result.name,
+                    team: result.details?.status || undefined,
+                    points: pointsValue ?? undefined,
+                    image: undefined,
+                    slug: undefined,
                 })
             }
         })
@@ -275,17 +249,12 @@ export default async function DriverDetailsPage({ params }: { params: Promise<{ 
                     footerVariant={1}
                 />
             )}
-            {tableRows.length > 0 && (
-                <TableSection
+            {leaderboardEntries.length > 0 && (
+                <LeaderboardSection
                     id="driver-results"
-                    title="Points & Results"
+                    title="RESULTS"
                     subtitle="Performance history"
-                    columns={tableColumns}
-                    rows={tableRows}
-                    labels={{
-                        sortActive: 'SORT',
-                        rowIndicator: 'ROW',
-                    }}
+                    entries={leaderboardEntries}
                     headerVariant={2}
                     footerVariant={1}
                 />

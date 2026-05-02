@@ -1,18 +1,12 @@
 // app/(frontend)/about/plans/[slug]/details/page.tsx
+import DocumentsSection from '@/components/Section/Blocks/DocumentsSection'
 import GridSection from '@/components/Section/Blocks/GridSection'
 import ListSection from '@/components/Section/Blocks/ListSection'
 import TimelineSection from '@/components/Section/Blocks/TimelineSection'
-import { Media } from '@/payload-types'
 import configPromise from '@payload-config'
 import { unstable_cache } from 'next/cache'
 import { notFound } from 'next/navigation'
 import { getPayload } from 'payload'
-
-function getMediaUrl(media: number | Media | null | undefined): string | undefined {
-    if (!media) return undefined
-    if (typeof media === 'object' && 'url' in media && media.url) return media.url
-    return undefined
-}
 
 const getPlanDetailsData = unstable_cache(
     async (slug: string) => {
@@ -24,6 +18,7 @@ const getPlanDetailsData = unstable_cache(
             depth: 1,
             select: {
                 id: true,
+                slug: true,
                 assets: {
                     documents: true,
                 },
@@ -113,22 +108,6 @@ export default async function PlanDetailsPage({ params }: { params: Promise<{ sl
         })
     }
 
-    const documentItems: any[] = []
-    if (plan.assets?.documents && Array.isArray(plan.assets.documents)) {
-        plan.assets.documents.forEach((doc, idx) => {
-            const url = getMediaUrl(doc)
-            if (url) {
-                documentItems.push({
-                    id: (typeof doc === 'object' && doc.id) ? String(doc.id) : `doc-${idx}`,
-                    title: (typeof doc === 'object' && (doc.alt || doc.filename)) || `DOC_${idx + 1}`,
-                    subtitle: (typeof doc === 'object' && doc.mimeType) || 'APPLICATION/PDF',
-                    image: url,
-                    href: url,
-                })
-            }
-        })
-    }
-
     return (
         <main className="w-full">
             {milestoneEvents.length > 0 && (
@@ -195,21 +174,15 @@ export default async function PlanDetailsPage({ params }: { params: Promise<{ sl
                     columns={4}
                 />
             )}
-            {documentItems.length > 0 && (
-                <GridSection
-                    id="plan-documents"
-                    title="ARCHIVE"
-                    subtitle="Technical documentation and supporting resources"
-                    items={documentItems}
-                    labels={{
-                        unitsCount: 'DOCS',
-                        viewProject: 'FETCH',
-                        sectionIndex: 'DAT',
-                        fallbackAlt: 'File',
-                    }}
-                    columns={3}
-                />
-            )}
+            <DocumentsSection
+                id="plan-documents"
+                title="DOCUMENTS"
+                subtitle="Technical documentation and supporting resources"
+                documents={plan.assets?.documents}
+                referenceCode={plan.slug || 'PLN'}
+                headerVariant={1}
+                footerVariant={1}
+            />
         </main>
     )
 }

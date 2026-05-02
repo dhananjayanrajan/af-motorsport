@@ -1,5 +1,5 @@
 // app/(frontend)/competition/series/[slug]/details/page.tsx
-import GridSection from '@/components/Section/Blocks/GridSection'
+import DocumentsSection from '@/components/Section/Blocks/DocumentsSection'
 import HeroSection from '@/components/Section/Blocks/HeroSection'
 import MapSection from '@/components/Section/Blocks/MapSection'
 import TimelineSection from '@/components/Section/Blocks/TimelineSection'
@@ -39,6 +39,7 @@ const getSeriesDetailsData = unstable_cache(
                 basics: {
                     tagline: true,
                     description: true,
+                    identifiers: { code: true },
                 },
                 assets: {
                     cover: true,
@@ -91,8 +92,6 @@ export default async function SeriesDetailsPage({ params }: { params: Promise<{ 
         })
     }
 
-    const seasonItems: any[] = []
-
     const mapLocations: any[] = []
     if (series.details?.location) {
         mapLocations.push({
@@ -102,22 +101,6 @@ export default async function SeriesDetailsPage({ params }: { params: Promise<{ 
             lng: series.details.location[1],
             description: series.basics?.tagline || 'Official location',
             slug: `competition/series/${slug}`,
-        })
-    }
-
-    const documentItems: any[] = []
-    if (series.assets?.documents && Array.isArray(series.assets.documents)) {
-        series.assets.documents.forEach((doc, idx) => {
-            const url = getMediaUrl(doc)
-            if (url) {
-                documentItems.push({
-                    id: String(typeof doc === 'object' ? doc.id : idx),
-                    title: (typeof doc === 'object' && (doc.alt || doc.filename)) || 'Official Document',
-                    subtitle: (typeof doc === 'object' && doc.mimeType) || 'PDF File',
-                    image: url,
-                    href: url,
-                })
-            }
         })
     }
 
@@ -151,21 +134,6 @@ export default async function SeriesDetailsPage({ params }: { params: Promise<{ 
                     footerVariant={1}
                 />
             )}
-            {seasonItems.length > 0 && (
-                <GridSection
-                    id="series-seasons"
-                    title="Seasons"
-                    subtitle="Championship racing seasons"
-                    items={seasonItems}
-                    labels={{
-                        unitsCount: 'Seasons',
-                        viewProject: 'Details',
-                        sectionIndex: 'Cycle',
-                        fallbackAlt: 'Season',
-                    }}
-                    columns={3}
-                />
-            )}
             {mapLocations.length > 0 && (
                 <MapSection
                     id="series-map"
@@ -191,21 +159,15 @@ export default async function SeriesDetailsPage({ params }: { params: Promise<{ 
                     footerVariant={1}
                 />
             )}
-            {documentItems.length > 0 && (
-                <GridSection
-                    id="series-documents"
-                    title="Documents"
-                    subtitle="Official files and documentation"
-                    items={documentItems}
-                    labels={{
-                        unitsCount: 'Files',
-                        viewProject: 'Open',
-                        sectionIndex: 'File',
-                        fallbackAlt: 'Document',
-                    }}
-                    columns={3}
-                />
-            )}
+            <DocumentsSection
+                id="series-documents"
+                title="Documents"
+                subtitle="Official files and documentation"
+                documents={series.assets?.documents}
+                referenceCode={series.basics?.identifiers?.code || series.slug || 'SER'}
+                headerVariant={1}
+                footerVariant={1}
+            />
         </main>
     )
 }
