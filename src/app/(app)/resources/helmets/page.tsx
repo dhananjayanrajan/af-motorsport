@@ -1,8 +1,8 @@
-// app/(frontend)/resources/helmets/page.tsx
-import CarouselSection from '@/components/Section/Blocks/CarouselSection'
+// app/(app)/resources/helmets/page.tsx
 import GridSection from '@/components/Section/Blocks/GridSection'
 import HeroSection from '@/components/Section/Blocks/HeroSection'
-import { Media } from '@/payload-types'
+import MarqueeSection from '@/components/Section/Blocks/MarqueeSection'
+import { Helmet, Media } from '@/payload-types'
 import configPromise from '@payload-config'
 import { unstable_cache } from 'next/cache'
 import { getPayload } from 'payload'
@@ -18,106 +18,61 @@ const getHelmetsData = unstable_cache(
         const payload = await getPayload({ config: configPromise })
         const result = await payload.find({
             collection: 'helmets',
-            limit: 24,
+            limit: 50,
             depth: 1,
-            sort: '-createdAt',
+            sort: 'name',
             select: {
                 id: true,
                 name: true,
                 slug: true,
-                basics: {
-                    tagline: true,
-                    description: true,
-                },
-                details: {
-                    designer: true,
-                    style: true,
-                    material: true,
-                    year: true,
-                    usage: true,
-                },
-                assets: {
-                    avatar: true,
-                    thumbnail: true,
-                },
+                details: { year: true, designer: true, style: true },
+                assets: { avatar: true },
             },
         })
-        return result.docs
+        return result.docs as Helmet[]
     },
     ['helmets-page-data'],
-    { revalidate: 300, tags: ['helmets'] }
+    { revalidate: 3600, tags: ['helmets'] }
 )
 
 export default async function HelmetsPage() {
     const helmets = await getHelmetsData()
 
-    const featured = helmets.slice(0, 8)
-
-    const featuredSlides = featured.map((h) => ({
+    const gridItems = helmets.map((h) => ({
         id: String(h.id),
         title: h.name,
-        description:
-            h.basics?.tagline ||
-            h.details?.designer ||
-            h.details?.style ||
-            '',
-        image:
-            getMediaUrl(h.assets?.avatar) ||
-            getMediaUrl(h.assets?.thumbnail),
-        ctaLabel: 'DETAILS',
-        ctaHref: `/resources/helmets/${h.slug}`,
-        meta: h.details?.year || undefined,
-        tags: [h.details?.style, h.details?.material].filter(Boolean) as string[],
-    }))
-
-    const allGrid = helmets.map((h) => ({
-        id: String(h.id),
-        title: h.name,
-        subtitle:
-            h.details?.designer ||
-            h.details?.style ||
-            h.basics?.tagline ||
-            '',
-        image:
-            getMediaUrl(h.assets?.avatar) ||
-            getMediaUrl(h.assets?.thumbnail),
+        subtitle: h.details?.year || undefined,
+        image: getMediaUrl(h.assets?.avatar) || `https://picsum.photos/seed/${h.slug}/400/300`,
         href: `/resources/helmets/${h.slug}`,
-        category: h.details?.usage || h.details?.material || undefined,
+        category: h.details?.style || undefined,
     }))
+
+    const designerNames = [...new Set(helmets.map(h => h.details?.designer).filter(Boolean))] as string[]
+    const styleNames = [...new Set(helmets.map(h => h.details?.style).filter(Boolean))] as string[]
+    const allNames = [...designerNames, ...styleNames]
+    const marqueeItems = allNames.length > 0
+        ? allNames.map((name, idx) => ({
+            id: String(idx),
+            name,
+            logo: `https://picsum.photos/seed/helmet-marquee-${idx}/200/200`,
+        }))
+        : []
 
     return (
         <main className="w-full">
             <HeroSection
                 id="helmets-hero"
                 title="HELMETS"
-                subtitle="Lid Designs & Safety Art"
-                description="Track, street, show, and performance helmets — every design documented."
-                badge="LIDS"
+                subtitle="Design & Safety"
+                description="Explore the complete collection of driver helmets, showcasing unique designs and cutting-edge safety technology."
+                badge="SAFETY"
                 meta="HEL_IDX"
             />
-            {featuredSlides.length > 0 && (
-                <CarouselSection
-                    id="helmets-featured"
-                    slides={featuredSlides}
-                    autoplayDelay={4000}
-                    ctaLabel="VIEW ALL"
-                    ctaPath="/resources/helmets"
-                />
+            {marqueeItems.length > 0 && (
+                <MarqueeSection id="helmets-marquee" title="DESIGNERS & STYLES" subtitle="Creative directory" items={marqueeItems} headerVariant={1} footerVariant={1} />
             )}
-            {allGrid.length > 0 && (
-                <GridSection
-                    id="helmets-all"
-                    title="ALL HELMETS"
-                    subtitle="Complete collection"
-                    items={allGrid}
-                    labels={{
-                        unitsCount: 'HELMETS',
-                        viewProject: 'DETAILS',
-                        sectionIndex: 'COLLECTION',
-                        fallbackAlt: 'Helmet',
-                    }}
-                    columns={4}
-                />
+            {gridItems.length > 0 && (
+                <GridSection id="helmets-grid" title="VISUAL ROSTER" subtitle="All helmet designs" items={gridItems} labels={{ unitsCount: 'HELMETS', viewProject: 'PROFILE', sectionIndex: 'HEL', fallbackAlt: 'Helmet' }} columns={4} headerVariant={1} footerVariant={1} />
             )}
         </main>
     )

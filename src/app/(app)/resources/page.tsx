@@ -2,7 +2,7 @@
 import CarouselSection from '@/components/Section/Blocks/CarouselSection'
 import FeatureSection from '@/components/Section/Blocks/FeatureSection'
 import GridSection from '@/components/Section/Blocks/GridSection'
-import LogoSection from '@/components/Section/Blocks/LogoSection'
+import MarqueeSection from '@/components/Section/Blocks/MarqueeSection'
 import { Car, Garage, Helmet, Media, Suit } from '@/payload-types'
 import configPromise from '@payload-config'
 import { unstable_cache } from 'next/cache'
@@ -167,7 +167,7 @@ export default async function ResourcesPage() {
                 />
             )}
             {helmetLogoItems.length > 0 && (
-                <LogoSection
+                <MarqueeSection
                     id="resources-helmets"
                     title="Helmets"
                     subtitle="Driver head protection"

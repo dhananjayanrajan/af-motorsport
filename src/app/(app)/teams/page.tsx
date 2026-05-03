@@ -1,6 +1,8 @@
-import CarouselSection from '@/components/Section/Blocks/CarouselSection'
+import FeatureSection from '@/components/Section/Blocks/FeatureSection'
 import GridSection from '@/components/Section/Blocks/GridSection'
-import ListSection from '@/components/Section/Blocks/ListSection'
+import HeroSection from '@/components/Section/Blocks/HeroSection'
+import MarqueeSection from '@/components/Section/Blocks/MarqueeSection'
+import StudySection from '@/components/Section/Blocks/StudySection'
 import { Individual, Media, Organization, Team } from '@/payload-types'
 import configPromise from '@payload-config'
 import { unstable_cache } from 'next/cache'
@@ -19,7 +21,7 @@ const getTeamsData = unstable_cache(
         const [teams, individuals, organizations] = await Promise.all([
             payload.find({
                 collection: 'teams',
-                limit: 12,
+                limit: 20,
                 sort: 'name',
                 depth: 1,
                 select: {
@@ -28,11 +30,12 @@ const getTeamsData = unstable_cache(
                     slug: true,
                     basics: { tagline: true, description: true },
                     assets: { logo: true, cover: true },
+                    details: { country: true, start_date: true, website: true },
                 },
             }),
             payload.find({
                 collection: 'individuals',
-                limit: 12,
+                limit: 20,
                 sort: 'last_name',
                 depth: 1,
                 select: {
@@ -40,20 +43,20 @@ const getTeamsData = unstable_cache(
                     first_name: true,
                     last_name: true,
                     slug: true,
-                    basics: { type: true, description: true },
+                    basics: { type: true, description: true, gender: true },
                     assets: { avatar: true, thumbnail: true },
                 },
             }),
             payload.find({
                 collection: 'organizations',
-                limit: 12,
+                limit: 20,
                 sort: 'name',
                 depth: 1,
                 select: {
                     id: true,
                     name: true,
                     slug: true,
-                    basics: { tagline: true, type: true },
+                    basics: { tagline: true, type: true, description: true },
                     assets: { logo: true, alt_logo: true },
                 },
             }),
@@ -72,78 +75,132 @@ const getTeamsData = unstable_cache(
 export default async function TeamsPage() {
     const { teams, individuals, organizations } = await getTeamsData()
 
-    const teamSlides = teams.map((team) => ({
+    const featuredTeam = teams.length > 0 ? teams[0] : null
+
+    const gridItems = teams.map((team) => ({
         id: String(team.id),
         title: team.name || '',
-        description: team.basics?.description || undefined,
+        subtitle: team.basics?.tagline || undefined,
         image: getMediaUrl(team.assets?.logo) ||
             getMediaUrl(team.assets?.cover) ||
-            `https://picsum.photos/seed/${team.slug}/1200/1600`,
-        ctaLabel: 'VIEW TEAM',
-        ctaHref: `/teams/${team.slug}`,
-        meta: team.basics?.tagline || undefined,
+            `https://picsum.photos/seed/${team.slug}/400/300`,
+        href: `/teams/${team.slug}`,
     }))
 
-    const individualEntries = individuals.map((individual) => ({
+    const featuredIndividual = individuals.length > 0 ? individuals[0] : null
+
+    const study = featuredIndividual
+        ? {
+            id: String(featuredIndividual.id),
+            title: `${featuredIndividual.first_name || ''} ${featuredIndividual.last_name || ''}`.trim() || 'Unnamed',
+            description: featuredIndividual.basics?.description || '',
+            image: getMediaUrl(featuredIndividual.assets?.avatar) ||
+                getMediaUrl(featuredIndividual.assets?.thumbnail) ||
+                `https://picsum.photos/seed/${featuredIndividual.slug}/800/600`,
+            metrics: [
+                { label: 'Type', value: featuredIndividual.basics?.type || 'N/A' },
+                { label: 'Gender', value: featuredIndividual.basics?.gender || 'N/A' },
+            ],
+        }
+        : null
+
+    const individualFeatures = individuals.slice(1).map((individual) => ({
         id: String(individual.id),
         title: `${individual.first_name || ''} ${individual.last_name || ''}`.trim() || 'Unnamed',
-        subtitle: individual.basics?.description || undefined,
-        status: individual.basics?.type || undefined,
-        tag: individual.basics?.type || undefined,
-        href: `/individuals/${individual.slug}`,
+        description: individual.basics?.description || '',
+        image: getMediaUrl(individual.assets?.avatar) ||
+            getMediaUrl(individual.assets?.thumbnail),
+        slug: `individuals/${individual.slug}`,
+        stats: [
+            { label: 'Type', value: individual.basics?.type || 'N/A' },
+            { label: 'Gender', value: individual.basics?.gender || 'N/A' },
+        ],
     }))
 
-    const organizationItems = organizations.map((org) => ({
+    const logoItems = organizations.map((org) => ({
         id: String(org.id),
-        title: org.name || '',
-        subtitle: org.basics?.tagline || org.basics?.type || undefined,
-        image: getMediaUrl(org.assets?.logo) ||
+        name: org.name || '',
+        logo: getMediaUrl(org.assets?.logo) ||
             getMediaUrl(org.assets?.alt_logo) ||
-            `https://picsum.photos/seed/${org.slug}/400/300`,
-        href: `/organizations/${org.slug}`,
+            `https://picsum.photos/seed/${org.slug}/200/200`,
+        description: org.basics?.description || undefined,
+        website: undefined,
+        location: undefined,
+        category: org.basics?.type || undefined,
+        slug: `organizations/${org.slug}`,
     }))
 
     return (
         <main className="w-full">
-            {teamSlides.length > 0 && (
-                <CarouselSection
-                    id="teams-carousel"
-                    slides={teamSlides}
-                    autoplayDelay={5000}
-                    ctaLabel="VIEW ALL TEAMS"
-                    ctaPath="/teams"
+            {featuredTeam && (
+                <HeroSection
+                    id="teams-hero"
+                    title={featuredTeam.name || ''}
+                    subtitle={featuredTeam.basics?.tagline || ''}
+                    description={featuredTeam.basics?.description || undefined}
+                    backgroundImage={getMediaUrl(featuredTeam.assets?.cover) ||
+                        getMediaUrl(featuredTeam.assets?.logo)}
+                    badge={featuredTeam.details?.country && typeof featuredTeam.details.country === 'object' && 'name' in featuredTeam.details.country
+                        ? featuredTeam.details.country.name
+                        : undefined}
+                    meta="FEATURED TEAM"
+                    actions={[
+                        { label: 'VIEW TEAM', href: `/teams/${featuredTeam.slug}`, variant: 'primary' },
+                    ]}
                 />
             )}
-            {individualEntries.length > 0 && (
-                <ListSection
-                    id="individuals-list"
-                    title="Individuals"
-                    subtitle="Team personnel and staff"
-                    entries={individualEntries}
+            {gridItems.length > 1 && (
+                <GridSection
+                    id="teams-grid"
+                    title="ALL TEAMS"
+                    subtitle="Complete constructor directory"
+                    items={gridItems.slice(1)}
                     labels={{
-                        statusPrefix: 'ROLE',
-                        timePrefix: 'ID',
-                        indexPrefix: 'IND',
+                        unitsCount: 'TEAMS',
+                        viewProject: 'PROFILE',
+                        sectionIndex: 'TMS',
+                        fallbackAlt: 'Team',
                     }}
-                    showStatus={true}
-                    showTimestamp={false}
-                    ctaLabel="VIEW ALL INDIVIDUALS"
+                    columns={4}
+                    headerVariant={1}
+                    footerVariant={1}
+                />
+            )}
+            {study && (
+                <StudySection
+                    id="featured-individual"
+                    title="FEATURED INDIVIDUAL"
+                    subtitle="Team personnel highlight"
+                    studies={[study]}
+                    variant="featured"
+                    headerVariant={1}
+                    footerVariant={1}
+                    ctaLabel="VIEW PROFILE"
+                    ctaPath={`/individuals/${featuredIndividual?.slug}`}
+                />
+            )}
+            {individualFeatures.length > 0 && (
+                <FeatureSection
+                    id="individuals-features"
+                    title="ALL INDIVIDUALS"
+                    subtitle="Team personnel and staff"
+                    features={individualFeatures}
+                    labels={{
+                        specIndex: 'IND',
+                        statsLabel: 'INFO',
+                        ctaLabel: 'VIEW',
+                    }}
+                    headerVariant={2}
+                    footerVariant={1}
                     ctaPath="/individuals"
                 />
             )}
-            {organizationItems.length > 0 && (
-                <GridSection
-                    id="organizations-list"
-                    title="Organizations"
+            {logoItems.length > 0 && (
+                <MarqueeSection
+                    id="organizations-logos"
+                    title="ORGANIZATIONS"
                     subtitle="Partners and affiliates"
-                    items={organizationItems}
-                    labels={{
-                        unitsCount: 'ORG',
-                        viewProject: 'VIEW',
-                        sectionIndex: 'ORG',
-                        fallbackAlt: 'Organization',
-                    }}
-                    columns={4}
+                    items={logoItems}
                     headerVariant={1}
                     footerVariant={1}
                 />

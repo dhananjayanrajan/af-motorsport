@@ -50,8 +50,7 @@ const TableSection: React.FC<TableSectionProps> = ({
   ctaLabel,
   ctaPath,
   headerVariant = 1,
-  footerVariant = 1,
-  background
+  footerVariant = 1
 }) => {
   const [sortKey, setSortKey] = useState<string | null>(null)
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc')
@@ -77,97 +76,99 @@ const TableSection: React.FC<TableSectionProps> = ({
   }
 
   return (
-    <section id={id} className="relative w-full bg-white-pure border-t-[3px] border-black-pure overflow-hidden">
-      {background}
+    <section id={id} className="container py-8 md:py-16">
+      <div className="relative w-full bg-white-pure border-[4px] border-black-pure shadow-[8px_8px_0px_0px_#B39900] transition-all duration-500 hover:shadow-[12px_12px_0px_0px_#00FF41]">
+        <SectionHeader
+          title={title}
+          subtitle={subtitle}
+          variant={headerVariant}
+          metadata={String(rows.length).padStart(2, '0')}
+        />
 
-      <SectionHeader
-        title={title}
-        subtitle={subtitle}
-        variant={headerVariant}
-        metadata={String(rows.length).padStart(2, '0')}
-      />
-
-      <div className="w-full border-b-[3px] border-black-pure overflow-x-auto bg-white-pure">
-        <div className="min-w-[900px] w-full flex flex-col">
-          {/* Header Row */}
-          <div className="flex items-stretch border-b-[3px] border-black-pure" style={{ height: '64px' }}>
-            <div className="w-14 border-r-[3px] border-black-pure flex items-center justify-center shrink-0 bg-white-pure">
-              <div className="w-2 h-2 bg-primary-500 animate-pulse" />
-            </div>
-            {columns.map((col) => (
-              <button
-                key={col.key}
-                disabled={!col.sortable}
-                onClick={() => col.sortable && handleSort(col.key)}
-                className={`flex items-center px-6 border-r-[3px] border-black-pure last:border-r-0 transition-all duration-300 group text-left bg-white-pure ${col.sortable ? 'hover:bg-primary-500' : ''}`}
-                style={{ flex: col.width ? `0 0 ${col.width}` : '1 1 0%' }}
-              >
-                <div className="flex flex-col">
-                  {sortKey === col.key && (
-                    <span className="text-[10px] font-black uppercase tracking-widest text-black-pure mb-0.5">
-                      {labels.sortActive}
-                    </span>
-                  )}
-                  <div className="flex items-center gap-2">
-                    <span className="text-base font-black uppercase tracking-tight text-black-pure transition-colors duration-300 group-hover:text-white-pure">
-                      {col.label}
-                    </span>
-                    {col.sortable && (
-                      <ArrowUpDown className={`w-3 h-3 transition-all duration-300 ${sortKey === col.key ? 'text-black-pure' : 'text-black-pure/30 group-hover:text-white-pure'}`} />
-                    )}
-                  </div>
-                </div>
-              </button>
-            ))}
-          </div>
-
-          {/* Table Body */}
-          <div className="flex flex-col">
-            {sortedRows.map((row, idx) => {
-              const isHovered = hoveredRow === row.id
-              const isLink = !!row.href
-              const Tag = isLink ? 'a' : 'div'
-
-              return (
-                <Tag
-                  key={row.id}
-                  href={row.href}
-                  onMouseEnter={() => setHoveredRow(row.id)}
-                  onMouseLeave={() => setHoveredRow(null)}
-                  className={`flex items-stretch border-b-[3px] border-black-pure last:border-b-0 transition-all duration-300 group ${isLink ? 'cursor-pointer' : ''} ${isHovered ? 'bg-black-pure' : 'bg-white-pure'}`}
-                  style={{ minHeight: '72px' }}
+        <div className="w-full border-t-[4px] border-b-[4px] border-black-pure bg-white-pure overflow-hidden">
+          <div className="w-full flex flex-col">
+            <div className="hidden md:flex items-stretch border-b-[4px] border-black-pure bg-white-pure" style={{ height: '72px' }}>
+              <div className="w-16 border-r-[4px] border-black-pure flex items-center justify-center shrink-0 bg-black-pure">
+                <div className="w-4 h-4 bg-primary-500 animate-ping" />
+              </div>
+              {columns.map((col) => (
+                <button
+                  key={col.key}
+                  disabled={!col.sortable}
+                  onClick={() => col.sortable && handleSort(col.key)}
+                  className={`flex items-center px-6 border-r-[4px] border-black-pure last:border-r-0 transition-all duration-300 group text-left ${col.sortable ? 'hover:bg-secondary-800 cursor-pointer' : 'cursor-default'}`}
+                  style={{ flex: col.width ? `0 0 ${col.width}` : '1 1 0%' }}
                 >
-                  <div className={`w-14 border-r-[3px] border-black-pure flex flex-col items-center justify-center shrink-0 transition-all duration-300 ${isHovered ? 'bg-primary-500 text-black-pure shadow-[4px_0px_0px_0px_#000000]' : 'bg-white-pure text-black-pure/30'}`}>
-                    <span className="text-base font-black italic">
-                      {String(idx + 1).padStart(2, '0')}
+                  <div className="flex flex-col">
+                    <span className={`text-xs font-black uppercase tracking-widest transition-colors duration-300 ${sortKey === col.key ? 'text-primary-500' : 'text-neutral-400 group-hover:text-white-pure'}`}>
+                      {sortKey === col.key ? labels.sortActive : col.key}
                     </span>
-                  </div>
-
-                  {columns.map((col) => (
-                    <div
-                      key={col.key}
-                      className="px-6 py-4 border-r-[3px] border-black-pure last:border-r-0 flex items-center"
-                      style={{ flex: col.width ? `0 0 ${col.width}` : '1 1 0%' }}
-                    >
-                      <div className={`text-base font-black uppercase tracking-tight transition-all duration-300 ${isHovered ? 'text-primary-500' : 'text-black-pure'}`}>
-                        {row.cells[col.key]}
-                      </div>
+                    <div className="flex items-center gap-2">
+                      <span className={`text-base font-black uppercase tracking-tight transition-colors duration-300 ${col.sortable ? 'group-hover:text-white-pure' : 'text-black-pure'}`}>
+                        {col.label}
+                      </span>
+                      {col.sortable && (
+                        <ArrowUpDown className={`w-4 h-4 transition-all duration-300 ${sortKey === col.key ? 'text-primary-500 scale-125' : 'text-black-pure opacity-30 group-hover:opacity-100 group-hover:text-white-pure'}`} />
+                      )}
                     </div>
-                  ))}
-                </Tag>
-              )
-            })}
+                  </div>
+                </button>
+              ))}
+            </div>
+
+            <div className="flex flex-col">
+              {sortedRows.map((row, idx) => {
+                const isHovered = hoveredRow === row.id
+                const isLink = !!row.href
+                const Tag = isLink ? 'a' : 'div'
+
+                return (
+                  <Tag
+                    key={row.id}
+                    href={row.href}
+                    onMouseEnter={() => setHoveredRow(row.id)}
+                    onMouseLeave={() => setHoveredRow(null)}
+                    className={`flex flex-col md:flex-row items-stretch border-b-[4px] border-black-pure last:border-b-0 transition-all duration-300 group relative ${isLink ? 'cursor-pointer' : ''} ${isHovered ? 'bg-black-pure translate-x-2' : 'bg-white-pure'}`}
+                  >
+                    <div className={`hidden md:flex w-16 border-r-[4px] border-black-pure flex-col items-center justify-center shrink-0 transition-colors duration-300 ${isHovered ? 'bg-primary-500 text-black-pure' : 'bg-white-pure text-neutral-300'}`}>
+                      <span className="text-xl font-black italic">
+                        {String(idx + 1).padStart(2, '0')}
+                      </span>
+                    </div>
+
+                    <div className="flex flex-wrap md:flex-nowrap w-full">
+                      {columns.map((col) => (
+                        <div
+                          key={col.key}
+                          className="w-full sm:w-1/2 md:w-auto px-6 py-4 border-b-[4px] border-black-pure last:border-b-0 sm:even:border-l-[4px] md:border-b-0 md:even:border-l-0 md:border-r-[4px] md:last:border-r-0 flex flex-col justify-center transition-transform duration-500 group-hover:translate-x-1"
+                          style={{ flex: col.width ? `0 0 ${col.width}` : '1 1 0%' }}
+                        >
+                          <span className={`text-xs font-black uppercase tracking-widest mb-1 transition-colors duration-300 ${isHovered ? 'text-primary-500' : 'text-neutral-400'}`}>
+                            {col.label}
+                          </span>
+                          <div className={`text-lg md:text-xl font-black uppercase tracking-tight transition-all duration-300 ${isHovered ? 'text-white-pure' : 'text-black-pure'}`}>
+                            {row.cells[col.key]}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </Tag>
+                )
+              })}
+            </div>
           </div>
         </div>
+
+        {ctaLabel && ctaPath && (
+          <div className="py-12 flex justify-center bg-white-pure">
+            <div className="transform transition-all duration-300 hover:scale-110 active:scale-95">
+              <SectionButton label={ctaLabel} href={ctaPath} variant="primary" size="lg" />
+            </div>
+          </div>
+        )}
+
+        <SectionFooter variant={footerVariant} />
       </div>
-
-      {ctaLabel && ctaPath && (
-        <div className="py-24 flex justify-center bg-white-pure border-b-[3px] border-black-pure">
-          <SectionButton label={ctaLabel} href={ctaPath} variant="primary" size="lg" />
-        </div>
-      )}
-
-      <SectionFooter variant={footerVariant} />
     </section>
   )
 }

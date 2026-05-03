@@ -1,7 +1,10 @@
+// app/(app)/resources/suits/[slug]/page.tsx
+import FeatureSection from '@/components/Section/Blocks/FeatureSection'
+import GallerySection from '@/components/Section/Blocks/GallerySection'
+import HeroSection from '@/components/Section/Blocks/HeroSection'
 import ListSection from '@/components/Section/Blocks/ListSection'
-import MasonrySection from '@/components/Section/Blocks/MasonrySection'
-import StudySection from '@/components/Section/Blocks/StudySection'
-import VideoSection from '@/components/Section/Blocks/VideoSection'
+import ShortsSection from '@/components/Section/Blocks/ShortsSection'
+import TabSection from '@/components/Section/Blocks/TabSection'
 import { Media } from '@/payload-types'
 import configPromise from '@payload-config'
 import { unstable_cache } from 'next/cache'
@@ -21,34 +24,19 @@ const getSuitData = unstable_cache(
             collection: 'suits',
             where: { slug: { equals: slug } },
             limit: 1,
-            depth: 1,
+            depth: 2,
             select: {
                 id: true,
                 name: true,
                 slug: true,
-                basics: {
-                    tagline: true,
-                    description: true,
-                },
-                assets: {
-                    video: true,
-                    thumbnail: true,
-                    images: true,
-                },
-                details: {
-                    usage: true,
-                    material: true,
-                    durability: true,
-                    appearance: true,
-                    manufacturers: {
-                        list: true,
-                    },
-                },
+                basics: { tagline: true },
+                details: { material: true, usage: true, durability: true, manufacturers: { list: true } },
+                assets: { thumbnail: true, images: true, video: true },
             },
         })
         return result.docs[0] || null
     },
-    ['suit-detail'],
+    ['suit-profile'],
     { revalidate: 3600, tags: ['suit'] }
 )
 
@@ -58,115 +46,84 @@ export default async function SuitPage({ params }: { params: Promise<{ slug: str
 
     if (!suit) notFound()
 
-    const videoUrl = getMediaUrl(suit.assets?.video)
-    const videoItems = videoUrl
-        ? [{
-            id: String(suit.id),
-            title: suit.name || '',
-            description: suit.basics?.tagline || undefined,
-            url: videoUrl,
-            poster: getMediaUrl(suit.assets?.thumbnail),
-        }]
-        : []
+    const heroBackgroundImage = getMediaUrl(suit.assets?.thumbnail)
 
-    const firstImage = suit.assets?.images?.[0]
-    const studyImage = getMediaUrl(suit.assets?.thumbnail) ||
-        getMediaUrl(typeof firstImage === 'object' ? firstImage : null) ||
-        `https://picsum.photos/seed/${suit.slug}/800/600`
-
-    const study = {
+    const featureData = [{
         id: String(suit.id),
-        title: suit.name || '',
-        description: suit.basics?.description || suit.basics?.tagline || '',
-        image: studyImage,
-        metrics: [
-            { label: 'Usage', value: suit.details?.usage || 'N/A' },
+        title: suit.name,
+        description: suit.details?.durability || '',
+        image: getMediaUrl(suit.assets?.thumbnail) || `https://picsum.photos/seed/${suit.slug}/800/600`,
+        slug: undefined,
+        stats: [
             { label: 'Material', value: suit.details?.material || 'N/A' },
-            { label: 'Durability', value: suit.details?.durability || 'N/A' },
-            { label: 'Appearance', value: suit.details?.appearance || 'N/A' },
         ],
-    }
+    }]
 
-    const manufacturerEntries = (suit.details?.manufacturers?.list || [])
-        .filter((m) => m.name)
-        .map((m, idx) => ({
-            id: m.id || String(idx),
-            title: m.name || '',
-            subtitle: m.description || undefined,
-        }))
+    const manufacturerEntries = (suit.details?.manufacturers?.list || []).map((mfr) => ({
+        id: mfr.id || `mfr-${Math.random()}`,
+        title: mfr.name || 'Manufacturer',
+        subtitle: mfr.description || undefined,
+        tag: 'MFR',
+    }))
 
-    const galleryItems = (suit.assets?.images || [])
-        .map((item, idx) => {
+    const galleryItems: any[] = []
+    if (suit.assets?.images) {
+        const images = Array.isArray(suit.assets.images) ? suit.assets.images : []
+        images.forEach((item, idx) => {
             const media = typeof item === 'object' ? item : null
-            const url = getMediaUrl(media)
-            if (!url || !media) return null
-            return {
-                id: String(media.id),
-                title: media.alt || suit.name || '',
-                image: url,
-                height: (idx % 3 === 0 ? 'tall' : idx % 2 === 0 ? 'medium' : 'short') as 'tall' | 'medium' | 'short',
+            const url = media ? getMediaUrl(media) : undefined
+            if (url && media) {
+                galleryItems.push({
+                    id: `img-${media.id}`,
+                    title: media.alt || suit.name,
+                    image: url,
+                    category: `IMG_${String(idx + 1).padStart(2, '0')}`,
+                    description: undefined,
+                })
             }
         })
-        .filter((item): item is NonNullable<typeof item> => item !== null)
+    }
+
+    const shortItems: any[] = []
+    if (suit.assets?.video) {
+        const videoMedia = typeof suit.assets.video === 'object' ? suit.assets.video : null
+        if (videoMedia?.url) {
+            shortItems.push({
+                id: `suit-video-${suit.id}`,
+                title: suit.name,
+                videoUrl: videoMedia.url,
+                poster: getMediaUrl(suit.assets?.thumbnail),
+                category: 'DEMO',
+            })
+        }
+    }
+
+    const tabItems: any[] = []
 
     return (
         <main className="w-full">
-            {videoItems.length > 0 && (
-                <VideoSection
-                    id="suit-video"
-                    title="Suit Video"
-                    subtitle={suit.name || ''}
-                    videos={videoItems}
-                    labels={{
-                        channelPrefix: 'CH',
-                        broadcastStatus: 'LIVE',
-                        liveFeed: 'FEED',
-                        metaTransmission: 'TRANS',
-                    }}
-                    autoplay={false}
-                    showPlaylist={false}
-                    headerVariant={1}
-                    footerVariant={1}
-                />
-            )}
-            <StudySection
-                id="suit-details"
-                title="Suit Overview"
-                subtitle="Design and specifications"
-                studies={[study]}
-                variant="featured"
-                headerVariant={1}
-                footerVariant={1}
+            <HeroSection
+                id="suit-hero"
+                title={suit.name}
+                subtitle={suit.details?.material || ''}
+                description={suit.details?.usage || undefined}
+                backgroundImage={heroBackgroundImage}
+                alignment="left"
+                badge="SUIT"
+                meta={suit.details?.durability || undefined}
             />
+            <FeatureSection id="suit-feature" title="Durability" subtitle="Material science" features={featureData} labels={{ specIndex: 'SUI', statsLabel: 'INFO', ctaLabel: 'VIEW' }} headerVariant={2} footerVariant={1} />
             {manufacturerEntries.length > 0 && (
-                <ListSection
-                    id="suit-manufacturers"
-                    title="Manufacturers"
-                    subtitle="Suit makers"
-                    entries={manufacturerEntries}
-                    labels={{
-                        statusPrefix: 'STAT',
-                        timePrefix: 'TIME',
-                        indexPrefix: 'MFR',
-                    }}
-                    showStatus={false}
-                    showTimestamp={false}
-                />
+                <ListSection id="suit-manufacturers" title="Manufacturers" subtitle="Suppliers and tailors" entries={manufacturerEntries} labels={{ statusPrefix: 'TYPE', timePrefix: 'ID', indexPrefix: 'MFR' }} showStatus={true} showTimestamp={false} />
             )}
             {galleryItems.length > 0 && (
-                <MasonrySection
-                    id="suit-gallery"
-                    title="Gallery"
-                    subtitle="Suit imagery"
-                    items={galleryItems}
-                    labels={{
-                        categoryPrefix: 'CAT',
-                        idPrefix: 'IMG',
-                    }}
-                    columns={3}
-                    headerVariant={3}
-                    footerVariant={2}
-                />
+                <GallerySection id="suit-gallery" title="Gallery" subtitle="Texture and branding close-ups" items={galleryItems} columns={3} headerVariant={1} footerVariant={1} />
+            )}
+            {shortItems.length > 0 && (
+                <ShortsSection id="suit-videos" title="Media" subtitle="Stress tests and demonstrations" items={shortItems} headerVariant={1} footerVariant={1} />
+            )}
+            {tabItems.length > 0 && (
+                <TabSection id="suit-drivers" title="Drivers" subtitle="Who wears this suit" tabs={tabItems} labels={{ channelPrefix: 'DRV', statusActive: 'ACTIVE' }} variant="underline" headerVariant={1} footerVariant={1} />
             )}
         </main>
     )

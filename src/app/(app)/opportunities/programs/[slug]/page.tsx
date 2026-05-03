@@ -1,6 +1,6 @@
 // app/(frontend)/opportunities/programs/[slug]/page.tsx
 import HeroSection from '@/components/Section/Blocks/HeroSection'
-import LogoSection from '@/components/Section/Blocks/LogoSection'
+import MarqueeSection from '@/components/Section/Blocks/MarqueeSection'
 import MasonrySection from '@/components/Section/Blocks/MasonrySection'
 import StudySection from '@/components/Section/Blocks/StudySection'
 import { Media, Organization } from '@/payload-types'
@@ -153,7 +153,7 @@ export default async function ProgramPage({ params }: { params: Promise<{ slug: 
                 footerVariant={1}
             />
             {logoItems.length > 0 && (
-                <LogoSection
+                <MarqueeSection
                     id="program-partners-sponsors"
                     title="Partners & Sponsors"
                     subtitle="Supporting organizations"

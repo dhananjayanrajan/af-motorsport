@@ -1,14 +1,13 @@
-// app/(frontend)/teams/[teamSlug]/leaders/[leaderSlug]/page.tsx
+// app/(app)/teams/[slug]/leaders/[leaderSlug]/page.tsx
 import CoverSection from '@/components/Section/Blocks/CoverSection'
 import FeatureSection from '@/components/Section/Blocks/FeatureSection'
 import GallerySection from '@/components/Section/Blocks/GallerySection'
-import HeroSection from '@/components/Section/Blocks/HeroSection'
-import MasonrySection from '@/components/Section/Blocks/MasonrySection'
+import InfoSection from '@/components/Section/Blocks/InfoSection'
+import ListSection from '@/components/Section/Blocks/ListSection'
+import PanelSection from '@/components/Section/Blocks/PanelSection'
+import QuoteSection from '@/components/Section/Blocks/QuoteSection'
 import ShortsSection from '@/components/Section/Blocks/ShortsSection'
-import StudySection from '@/components/Section/Blocks/StudySection'
-import TextRevealSection from '@/components/Section/Blocks/TextRevealSection'
-import VideoSection from '@/components/Section/Blocks/VideoSection'
-import { Celebration, Interview, Media } from '@/payload-types'
+import { Award, Celebration, Designation, Media } from '@/payload-types'
 import configPromise from '@payload-config'
 import { unstable_cache } from 'next/cache'
 import { notFound } from 'next/navigation'
@@ -27,7 +26,7 @@ const getLeaderData = unstable_cache(
             collection: 'leaders',
             where: { slug: { equals: slug } },
             limit: 1,
-            depth: 1,
+            depth: 2,
             select: {
                 id: true,
                 first_name: true,
@@ -36,12 +35,16 @@ const getLeaderData = unstable_cache(
                 basics: {
                     title: true,
                     nationality: true,
-                    debut_date: true,
+                    nickname: true,
                 },
                 details: {
                     mission: true,
-                    biography: true,
-                    history: true,
+                    vision: true,
+                    quote: true,
+                    awards: true,
+                    designations: true,
+                    socials: { list: true },
+                    websites: { list: true },
                 },
                 assets: {
                     avatar: true,
@@ -52,274 +55,262 @@ const getLeaderData = unstable_cache(
         })
         return result.docs[0] || null
     },
-    ['leader-detail'],
+    ['leader-profile'],
     { revalidate: 3600, tags: ['leader'] }
 )
 
-const getCelebrations = unstable_cache(
-    async () => {
+const getLeaderCelebrations = unstable_cache(
+    async (leaderId: number) => {
         const payload = await getPayload({ config: configPromise })
         const result = await payload.find({
             collection: 'celebrations',
+            where: { 'details.leaders': { in: [leaderId] } },
             limit: 8,
             depth: 1,
             select: {
                 id: true,
                 name: true,
                 slug: true,
-                basics: {
-                    description: true,
-                },
-                assets: {
-                    thumbnail: true,
-                },
+                assets: { video: true, thumbnail: true },
             },
         })
         return result.docs as Celebration[]
     },
-    ['celebrations-leader'],
+    ['leader-celebrations'],
     { revalidate: 3600 }
 )
 
-const getInterviews = unstable_cache(
-    async () => {
-        const payload = await getPayload({ config: configPromise })
-        const result = await payload.find({
-            collection: 'interviews',
-            limit: 8,
-            depth: 1,
-            select: {
-                id: true,
-                name: true,
-                slug: true,
-                basics: {
-                    summary: true,
-                    tagline: true,
-                },
-                assets: {
-                    thumbnail: true,
-                    cover: true,
-                },
-            },
-        })
-        return result.docs as Interview[]
-    },
-    ['interviews-leader'],
-    { revalidate: 3600 }
-)
-
-export default async function LeaderPage({ params }: { params: Promise<{ teamSlug: string; leaderSlug: string }> }) {
-    const { teamSlug, leaderSlug } = await params
-
-    const [leader, celebrations, interviews] = await Promise.all([
-        getLeaderData(leaderSlug),
-        getCelebrations(),
-        getInterviews(),
-    ])
+export default async function LeaderPage({ params }: { params: Promise<{ slug: string; leaderSlug: string }> }) {
+    const { slug: teamSlug, leaderSlug } = await params
+    const leader = await getLeaderData(leaderSlug)
 
     if (!leader) notFound()
 
     const leaderFullName = `${leader.first_name || ''} ${leader.last_name || ''}`.trim() || 'Unnamed Leader'
 
-    const coverImage = getMediaUrl(leader.assets?.cover) ||
-        getMediaUrl(leader.assets?.avatar) ||
-        `https://picsum.photos/seed/${leader.slug}/1920/1080`
+    const celebrations = await getLeaderCelebrations(leader.id)
 
-    const videoItems: any[] = []
+    const coverImage = getMediaUrl(leader.assets?.cover) || getMediaUrl(leader.assets?.avatar) || `https://picsum.photos/seed/${leader.slug}/1920/1080`
 
-    const heroBackgroundImage = leader.assets?.cover
-        ? getMediaUrl(leader.assets.cover)
-        : leader.assets?.avatar
-            ? getMediaUrl(leader.assets.avatar)
-            : undefined
+    const quoteItem = leader.details?.quote
+        ? {
+            id: String(leader.id),
+            text: leader.details.quote,
+            author: leaderFullName,
+        }
+        : null
 
-    const studyImage = leader.assets?.avatar
-        ? getMediaUrl(leader.assets.avatar)
-        : leader.assets?.cover
-            ? getMediaUrl(leader.assets.cover)
-            : undefined
+    const missionVisionFeatures = [
+        {
+            id: `mission-${leader.id}`,
+            title: 'Mission',
+            description: leader.details?.mission || '',
+            image: getMediaUrl(leader.assets?.avatar) || `https://picsum.photos/seed/${leader.slug}-mission/800/600`,
+            slug: undefined,
+            stats: [
+                { label: 'Vision', value: leader.details?.vision || 'N/A' },
+            ],
+        },
+        {
+            id: `vision-${leader.id}`,
+            title: 'Vision',
+            description: leader.details?.vision || '',
+            image: getMediaUrl(leader.assets?.cover) || `https://picsum.photos/seed/${leader.slug}-vision/800/600`,
+            slug: `/teams/${teamSlug}/leaders/${leader.slug}/details`,
+            stats: [
+                { label: 'Title', value: leader.basics?.title || 'N/A' },
+            ],
+        },
+    ]
 
-    const study = {
-        id: String(leader.id),
-        title: leaderFullName,
-        description: leader.basics?.title || leader.details?.mission || '',
-        image: studyImage || `https://picsum.photos/seed/${leader.slug}/800/600`,
-        metrics: [
-            { label: 'Title', value: leader.basics?.title || 'N/A' },
-            { label: 'Nationality', value: leader.basics?.nationality && typeof leader.basics.nationality === 'object' && 'name' in leader.basics.nationality ? leader.basics.nationality.name : 'N/A' },
-            { label: 'Joined', value: leader.basics?.debut_date || 'N/A' },
-        ],
-    }
-
-    const autographFeatures: any[] = []
-
-    const galleryItems: any[] = []
-    if (leader.assets?.gallery) {
-        leader.assets.gallery.forEach((item, idx) => {
-            const media = typeof item === 'object' ? item : null
-            const url = media ? getMediaUrl(media) : undefined
-            if (url && media) {
-                galleryItems.push({
-                    id: String(media.id),
-                    title: media.alt || leaderFullName,
-                    image: url,
-                    height: idx % 3 === 0 ? 'tall' as const : idx % 2 === 0 ? 'medium' as const : 'short' as const,
+    const awardEntries: any[] = []
+    if (leader.details?.awards) {
+        leader.details.awards.forEach((awardRef) => {
+            const award = awardRef as Award
+            if (award && typeof award === 'object' && 'name' in award) {
+                awardEntries.push({
+                    id: `awd-${award.id}`,
+                    title: award.name,
+                    subtitle: award.details?.awarded_date || award.basics?.description || undefined,
+                    tag: 'AWD',
                 })
             }
         })
     }
-    if (galleryItems.length === 0 && leader.assets?.cover) {
-        const url = getMediaUrl(leader.assets.cover)
-        if (url) {
-            galleryItems.push({
-                id: String(leader.id),
-                title: leaderFullName,
-                image: url,
-                height: 'medium' as const,
-            })
-        }
+
+    const designationInfoCards: any[] = []
+    if (leader.details?.designations) {
+        leader.details.designations.forEach((designationRef, idx) => {
+            const designation = designationRef as Designation
+            if (designation && typeof designation === 'object' && 'name' in designation) {
+                designationInfoCards.push({
+                    id: `des-${designation.id || idx}`,
+                    label: designation.name,
+                    value: designation.basics?.description || '',
+                    emphasis: idx === 0 ? 'high' as const : 'medium' as const,
+                })
+            }
+        })
     }
 
-    const celebrationItems: any[] = celebrations.map((celebration: Celebration) => {
-        const imageUrl = celebration.assets?.thumbnail
-            ? getMediaUrl(celebration.assets.thumbnail)
-            : `https://picsum.photos/seed/${celebration.id}/1200/800`
+    const galleryItems: any[] = []
+    if (leader.assets?.gallery) {
+        const gallery = Array.isArray(leader.assets.gallery) ? leader.assets.gallery : []
+        gallery.forEach((item, idx) => {
+            const media = typeof item === 'object' ? item : null
+            const url = media ? getMediaUrl(media) : undefined
+            if (url && media) {
+                galleryItems.push({
+                    id: `gal-${media.id}`,
+                    title: media.alt || leaderFullName,
+                    image: url,
+                    category: `IMG_${String(idx + 1).padStart(2, '0')}`,
+                    description: undefined,
+                })
+            }
+        })
+    }
 
-        return {
-            id: String(celebration.id),
-            title: celebration.name,
-            description: celebration.basics?.description || undefined,
-            image: imageUrl,
-            category: 'CELEBRATION',
+    const panelData: any[] = []
+    if (leader.details?.socials?.list) {
+        leader.details.socials.list.forEach((social) => {
+            if (social.platform && social.username) {
+                panelData.push({
+                    id: social.id || `social-${social.platform}-${social.username}`,
+                    title: social.platform,
+                    summary: `@${social.username}`,
+                    content: social.description || `Follow ${leaderFullName} on ${social.platform}`,
+                    metadata: { platform: social.platform, username: social.username },
+                })
+            }
+        })
+    }
+    if (leader.details?.websites?.list) {
+        leader.details.websites.list.forEach((website) => {
+            if (website.name && website.path) {
+                panelData.push({
+                    id: website.id || `website-${website.name}`,
+                    title: website.name,
+                    summary: website.path,
+                    content: website.description || `Visit ${leaderFullName}'s ${website.name}`,
+                    metadata: { name: website.name, path: website.path },
+                })
+            }
+        })
+    }
+
+    const shortItems: any[] = []
+    celebrations.forEach((celebration) => {
+        if (celebration.assets?.video) {
+            const videoMedia = typeof celebration.assets.video === 'object' ? celebration.assets.video : null
+            const posterUrl = celebration.assets?.thumbnail
+                ? getMediaUrl(celebration.assets.thumbnail)
+                : undefined
+            if (videoMedia?.url) {
+                shortItems.push({
+                    id: `cel-video-${celebration.id}`,
+                    title: celebration.name || '',
+                    videoUrl: videoMedia.url,
+                    poster: posterUrl,
+                    category: 'CELEBRATION',
+                })
+            }
         }
     })
 
-    const interviewItems: any[] = interviews.map((interview: Interview) => {
-        const posterUrl = interview.assets?.thumbnail
-            ? getMediaUrl(interview.assets.thumbnail)
-            : interview.assets?.cover
-                ? getMediaUrl(interview.assets.cover)
-                : undefined
-
-        return {
-            id: String(interview.id),
-            title: interview.name,
-            videoUrl: '',
-            poster: posterUrl,
-            category: 'INTERVIEW',
-        }
-    }).filter(item => item.videoUrl)
-
     return (
         <main className="w-full">
-            <HeroSection
-                id="leader-hero"
-                title={leaderFullName}
-                subtitle={leader.basics?.title || ''}
-                description={leader.details?.mission || undefined}
-                backgroundImage={heroBackgroundImage}
-                alignment="left"
-                meta={leader.basics?.nationality && typeof leader.basics.nationality === 'object' && 'name' in leader.basics.nationality ? leader.basics.nationality.name : undefined}
-            />
             <CoverSection
                 id="leader-cover"
                 image={coverImage}
             />
-            {videoItems.length > 0 && (
-                <VideoSection
-                    id="leader-video"
-                    title="Leader Highlights"
-                    subtitle={leaderFullName}
-                    videos={videoItems}
-                    labels={{
-                        channelPrefix: 'CH',
-                        broadcastStatus: 'LIVE',
-                        liveFeed: 'FEED',
-                        metaTransmission: 'TRANS',
-                    }}
-                    autoplay={false}
-                    showPlaylist={false}
-                    headerVariant={1}
-                    footerVariant={1}
-                />
-            )}
-            <StudySection
-                id="leader-details"
-                title="Leader Profile"
-                subtitle="Key information"
-                studies={[study]}
-                variant="featured"
-                headerVariant={1}
-                footerVariant={1}
-                ctaLabel="View Full Details"
-                ctaPath={`/teams/${teamSlug}/leaders/${leader.slug}/details`}
-            />
-            {autographFeatures.length > 0 && (
-                <FeatureSection
-                    id="leader-autograph"
-                    title="Autograph"
-                    subtitle="Official signature"
-                    features={autographFeatures}
-                    labels={{
-                        specIndex: 'AUT',
-                        statsLabel: 'INFO',
-                        ctaLabel: 'VIEW',
-                    }}
-                    columns={2}
+            {quoteItem && (
+                <QuoteSection
+                    id="leader-quote"
+                    title={leaderFullName}
+                    subtitle={leader.basics?.title || ''}
+                    quotes={[quoteItem]}
+                    labels={{ commStatus: 'COMM', ratingLabel: 'RATING' }}
+                    variant="carousel"
                     headerVariant={2}
                     footerVariant={1}
                 />
             )}
-            {leader.details?.biography && (
-                <TextRevealSection
-                    id="leader-biography"
-                    title={leaderFullName}
-                    subtitle="Biography"
-                    content={leader.details.biography}
+            <FeatureSection
+                id="leader-mission-vision"
+                title="Mission & Vision"
+                subtitle="Core objectives"
+                features={missionVisionFeatures}
+                labels={{
+                    specIndex: 'LDR',
+                    statsLabel: 'INFO',
+                    ctaLabel: 'VIEW FULL DETAILS',
+                }}
+                ctaPath={`/teams/${teamSlug}/leaders/${leader.slug}/details`}
+                headerVariant={2}
+                footerVariant={1}
+            />
+            {awardEntries.length > 0 && (
+                <ListSection
+                    id="leader-awards"
+                    title="Awards"
+                    subtitle="Career honors"
+                    entries={awardEntries}
+                    labels={{
+                        statusPrefix: 'TYPE',
+                        timePrefix: 'ID',
+                        indexPrefix: 'AWD',
+                    }}
+                    showStatus={true}
+                    showTimestamp={false}
                 />
             )}
-            {leader.details?.history && (
-                <TextRevealSection
-                    id="leader-history"
-                    title={leaderFullName}
-                    subtitle="History"
-                    content={leader.details.history}
+            {designationInfoCards.length > 0 && (
+                <InfoSection
+                    id="leader-designations"
+                    title="Designations"
+                    subtitle="Formal titles and roles"
+                    cards={designationInfoCards}
+                    columns={3}
+                    headerVariant={1}
+                    footerVariant={1}
                 />
             )}
             {galleryItems.length > 0 && (
-                <MasonrySection
+                <GallerySection
                     id="leader-gallery"
                     title="Gallery"
-                    subtitle="Leader imagery"
+                    subtitle="Professional imagery"
                     items={galleryItems}
+                    columns={3}
+                    headerVariant={1}
+                    footerVariant={1}
+                />
+            )}
+            {panelData.length > 0 && (
+                <PanelSection
+                    id="leader-connect"
+                    title="Connect"
+                    subtitle="Social media and websites"
+                    panels={panelData}
                     labels={{
-                        categoryPrefix: 'CAT',
-                        idPrefix: 'IMG',
+                        expansionState: { open: 'ACTIVE', closed: 'CLOSED' },
+                        metadataTitle: 'DETAILS',
                     }}
-                    columns={3}
                     headerVariant={1}
                     footerVariant={1}
                 />
             )}
-            {celebrationItems.length > 0 && (
-                <GallerySection
-                    id="leader-celebrations"
-                    title="Celebrations"
-                    subtitle="Career highlights"
-                    items={celebrationItems}
-                    columns={3}
+            {shortItems.length > 0 && (
+                <ShortsSection
+                    id="leader-shorts"
+                    title="Highlights"
+                    subtitle="Speeches and milestones"
+                    items={shortItems}
                     headerVariant={1}
                     footerVariant={1}
                 />
             )}
-            <ShortsSection
-                id="leader-interviews"
-                title="Interviews"
-                subtitle="Media appearances"
-                items={interviewItems}
-                headerVariant={1}
-                footerVariant={1}
-            />
         </main>
     )
 }

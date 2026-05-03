@@ -1,7 +1,7 @@
 // app/(frontend)/organizations/page.tsx
 import GridSection from '@/components/Section/Blocks/GridSection'
 import HeroSection from '@/components/Section/Blocks/HeroSection'
-import LogoSection from '@/components/Section/Blocks/LogoSection'
+import MarqueeSection from '@/components/Section/Blocks/MarqueeSection'
 import { Media } from '@/payload-types'
 import configPromise from '@payload-config'
 import { unstable_cache } from 'next/cache'
@@ -97,7 +97,7 @@ export default async function OrganizationsPage() {
                 meta="ORG_IDX"
             />
             {logoItems.length > 0 && (
-                <LogoSection
+                <MarqueeSection
                     id="organizations-logos"
                     title="PARTNER WALL"
                     subtitle="Logo cloud"

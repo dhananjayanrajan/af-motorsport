@@ -1,6 +1,10 @@
-import MasonrySection from '@/components/Section/Blocks/MasonrySection'
-import StudySection from '@/components/Section/Blocks/StudySection'
-import VideoSection from '@/components/Section/Blocks/VideoSection'
+// app/(app)/resources/helmets/[slug]/page.tsx
+import FeatureSection from '@/components/Section/Blocks/FeatureSection'
+import GallerySection from '@/components/Section/Blocks/GallerySection'
+import HeroSection from '@/components/Section/Blocks/HeroSection'
+import InfoSection from '@/components/Section/Blocks/InfoSection'
+import QuoteSection from '@/components/Section/Blocks/QuoteSection'
+import ShortsSection from '@/components/Section/Blocks/ShortsSection'
 import { Media } from '@/payload-types'
 import configPromise from '@payload-config'
 import { unstable_cache } from 'next/cache'
@@ -20,32 +24,19 @@ const getHelmetData = unstable_cache(
             collection: 'helmets',
             where: { slug: { equals: slug } },
             limit: 1,
-            depth: 1,
+            depth: 2,
             select: {
                 id: true,
                 name: true,
                 slug: true,
-                basics: {
-                    tagline: true,
-                    description: true,
-                },
-                assets: {
-                    video: true,
-                    thumbnail: true,
-                    avatar: true,
-                    images: true,
-                },
-                details: {
-                    usage: true,
-                    designer: true,
-                    style: true,
-                    year: true,
-                },
+                basics: { tagline: true },
+                details: { year: true, usage: true, designer: true, inspiration: true, color: true, material: true, branding: true, style: true },
+                assets: { avatar: true, thumbnail: true, images: true, video: true },
             },
         })
         return result.docs[0] || null
     },
-    ['helmet-detail'],
+    ['helmet-profile'],
     { revalidate: 3600, tags: ['helmet'] }
 )
 
@@ -55,95 +46,87 @@ export default async function HelmetPage({ params }: { params: Promise<{ slug: s
 
     if (!helmet) notFound()
 
-    const videoUrl = getMediaUrl(helmet.assets?.video)
-    const videoItems = videoUrl
-        ? [{
-            id: String(helmet.id),
-            title: helmet.name || '',
-            description: helmet.basics?.tagline || undefined,
-            url: videoUrl,
-            poster: getMediaUrl(helmet.assets?.thumbnail) || getMediaUrl(helmet.assets?.avatar),
-        }]
-        : []
+    const heroBackgroundImage = getMediaUrl(helmet.assets?.avatar)
 
-    const firstGalleryImage = helmet.assets?.images?.[0]
-    const studyImage = getMediaUrl(helmet.assets?.avatar) ||
-        getMediaUrl(helmet.assets?.thumbnail) ||
-        getMediaUrl(typeof firstGalleryImage === 'object' ? firstGalleryImage : null) ||
-        `https://picsum.photos/seed/${helmet.slug}/800/600`
+    const quoteItem = helmet.basics?.tagline
+        ? { id: String(helmet.id), text: helmet.basics.tagline, author: helmet.name }
+        : null
 
-    const study = {
+    const featureData = [{
         id: String(helmet.id),
-        title: helmet.name || '',
-        description: helmet.basics?.description || helmet.basics?.tagline || '',
-        image: studyImage,
-        metrics: [
-            { label: 'Usage', value: helmet.details?.usage || 'N/A' },
+        title: helmet.name,
+        description: helmet.details?.inspiration || '',
+        image: getMediaUrl(helmet.assets?.thumbnail) || getMediaUrl(helmet.assets?.avatar) || `https://picsum.photos/seed/${helmet.slug}/800/600`,
+        slug: `resources/helmets/${helmet.slug}/details`,
+        stats: [
             { label: 'Designer', value: helmet.details?.designer || 'N/A' },
-            { label: 'Style', value: helmet.details?.style || 'N/A' },
-            { label: 'Year', value: helmet.details?.year || 'N/A' },
         ],
-    }
+    }]
 
-    const galleryItems = (helmet.assets?.images || [])
-        .map((item, idx) => {
+    const infoCards = [
+        { id: 'color', label: 'Color', value: helmet.details?.color || 'N/A', emphasis: 'high' as const },
+        { id: 'material', label: 'Material', value: helmet.details?.material || 'N/A', emphasis: 'medium' as const },
+        { id: 'branding', label: 'Branding', value: helmet.details?.branding || 'N/A', emphasis: 'medium' as const },
+        { id: 'style', label: 'Style', value: helmet.details?.style || 'N/A', emphasis: 'low' as const },
+    ]
+
+    const galleryItems: any[] = []
+    if (helmet.assets?.images) {
+        const images = Array.isArray(helmet.assets.images) ? helmet.assets.images : []
+        images.forEach((item, idx) => {
             const media = typeof item === 'object' ? item : null
-            const url = getMediaUrl(media)
-            if (!url || !media) return null
-            return {
-                id: String(media.id),
-                title: media.alt || helmet.name || '',
-                image: url,
-                height: (idx % 3 === 0 ? 'tall' : idx % 2 === 0 ? 'medium' : 'short') as 'tall' | 'medium' | 'short',
+            const url = media ? getMediaUrl(media) : undefined
+            if (url && media) {
+                galleryItems.push({
+                    id: `img-${media.id}`,
+                    title: media.alt || helmet.name,
+                    image: url,
+                    category: `IMG_${String(idx + 1).padStart(2, '0')}`,
+                    description: undefined,
+                })
             }
         })
-        .filter((item): item is NonNullable<typeof item> => item !== null)
+    }
+
+    const shortItems: any[] = []
+    if (helmet.assets?.video) {
+        const videoMedia = typeof helmet.assets.video === 'object' ? helmet.assets.video : null
+        if (videoMedia?.url) {
+            shortItems.push({
+                id: `helmet-video-${helmet.id}`,
+                title: helmet.name,
+                videoUrl: videoMedia.url,
+                poster: getMediaUrl(helmet.assets?.thumbnail),
+                category: '360 SPIN',
+            })
+        }
+    }
 
     return (
         <main className="w-full">
-            {videoItems.length > 0 && (
-                <VideoSection
-                    id="helmet-video"
-                    title="Helmet Video"
-                    subtitle={helmet.name || ''}
-                    videos={videoItems}
-                    labels={{
-                        channelPrefix: 'CH',
-                        broadcastStatus: 'LIVE',
-                        liveFeed: 'FEED',
-                        metaTransmission: 'TRANS',
-                    }}
-                    autoplay={false}
-                    showPlaylist={false}
-                    headerVariant={1}
-                    footerVariant={1}
-                />
-            )}
-            <StudySection
-                id="helmet-details"
-                title="Helmet Overview"
-                subtitle="Design information"
-                studies={[study]}
-                variant="featured"
-                headerVariant={1}
-                footerVariant={1}
-                ctaLabel="View Full Details"
-                ctaPath={`/resources/helmets/${helmet.slug}/details`}
+            <HeroSection
+                id="helmet-hero"
+                title={helmet.name}
+                subtitle={helmet.details?.year || ''}
+                description={helmet.details?.usage || undefined}
+                backgroundImage={heroBackgroundImage}
+                alignment="left"
+                badge="HELMET"
+                meta={helmet.details?.style || undefined}
+                actions={[{ label: 'FULL DETAILS', href: `/resources/helmets/${helmet.slug}/details`, variant: 'primary' }]}
             />
+            {quoteItem && (
+                <QuoteSection id="helmet-quote" title={helmet.name} subtitle="Design Concept" quotes={[quoteItem]} labels={{ commStatus: 'COMM', ratingLabel: 'RATING' }} variant="carousel" headerVariant={2} footerVariant={1} />
+            )}
+            <FeatureSection id="helmet-feature" title="Design" subtitle="Inspiration and creator" features={featureData} labels={{ specIndex: 'HEL', statsLabel: 'INFO', ctaLabel: 'VIEW FULL DETAILS' }} ctaPath={`/resources/helmets/${helmet.slug}/details`} headerVariant={2} footerVariant={1} />
+            {infoCards.length > 0 && (
+                <InfoSection id="helmet-style" title="Style Profile" subtitle="Visual characteristics" cards={infoCards} columns={4} headerVariant={1} footerVariant={1} />
+            )}
             {galleryItems.length > 0 && (
-                <MasonrySection
-                    id="helmet-gallery"
-                    title="Gallery"
-                    subtitle="Helmet imagery"
-                    items={galleryItems}
-                    labels={{
-                        categoryPrefix: 'CAT',
-                        idPrefix: 'IMG',
-                    }}
-                    columns={3}
-                    headerVariant={2}
-                    footerVariant={1}
-                />
+                <GallerySection id="helmet-gallery" title="Gallery" subtitle="Detail shots" items={galleryItems} columns={3} headerVariant={1} footerVariant={1} />
+            )}
+            {shortItems.length > 0 && (
+                <ShortsSection id="helmet-videos" title="Media" subtitle="360 spins and interviews" items={shortItems} headerVariant={1} footerVariant={1} />
             )}
         </main>
     )

@@ -1,7 +1,7 @@
-// app/(frontend)/resources/suits/page.tsx
+// app/(app)/resources/suits/page.tsx
 import GridSection from '@/components/Section/Blocks/GridSection'
 import HeroSection from '@/components/Section/Blocks/HeroSection'
-import { Media } from '@/payload-types'
+import { Media, Suit } from '@/payload-types'
 import configPromise from '@payload-config'
 import { unstable_cache } from 'next/cache'
 import { getPayload } from 'payload'
@@ -17,48 +17,33 @@ const getSuitsData = unstable_cache(
         const payload = await getPayload({ config: configPromise })
         const result = await payload.find({
             collection: 'suits',
-            limit: 24,
+            limit: 50,
             depth: 1,
-            sort: '-createdAt',
+            sort: 'name',
             select: {
                 id: true,
                 name: true,
                 slug: true,
-                basics: {
-                    tagline: true,
-                    description: true,
-                },
-                details: {
-                    usage: true,
-                    durability: true,
-                    material: true,
-                    appearance: true,
-                },
-                assets: {
-                    thumbnail: true,
-                },
+                details: { appearance: true },
+                assets: { thumbnail: true },
             },
         })
-        return result.docs
+        return result.docs as Suit[]
     },
     ['suits-page-data'],
-    { revalidate: 300, tags: ['suits'] }
+    { revalidate: 3600, tags: ['suits'] }
 )
 
 export default async function SuitsPage() {
     const suits = await getSuitsData()
 
-    const allGrid = suits.map((s) => ({
+    const gridItems = suits.map((s) => ({
         id: String(s.id),
         title: s.name,
-        subtitle:
-            s.details?.material ||
-            s.details?.appearance ||
-            s.basics?.tagline ||
-            '',
-        image: getMediaUrl(s.assets?.thumbnail),
+        subtitle: s.details?.appearance || undefined,
+        image: getMediaUrl(s.assets?.thumbnail) || `https://picsum.photos/seed/${s.slug}/400/300`,
         href: `/resources/suits/${s.slug}`,
-        category: s.details?.usage || s.details?.durability || undefined,
+        category: 'SUIT',
     }))
 
     return (
@@ -66,26 +51,13 @@ export default async function SuitsPage() {
             <HeroSection
                 id="suits-hero"
                 title="SUITS"
-                subtitle="Racewear & Driver Kits"
-                description="Track, street, show, and performance suits — materials, durability, and design."
-                badge="RACEWEAR"
+                subtitle="Durability & Aesthetics"
+                description="Browse the collection of racing suits engineered for protection, performance, and distinctive style."
+                badge="APPAREL"
                 meta="SUI_IDX"
             />
-            {allGrid.length > 0 && (
-                <GridSection
-                    id="suits-all"
-                    title="ALL SUITS"
-                    subtitle="Complete collection"
-                    items={allGrid}
-                    labels={{
-                        unitsCount: 'SUITS',
-                        viewProject: 'DETAILS',
-                        sectionIndex: 'COLLECTION',
-                        fallbackAlt: 'Suit',
-                    }}
-                    columns={4}
-                    headerVariant={2}
-                />
+            {gridItems.length > 0 && (
+                <GridSection id="suits-grid" title="VISUAL ROSTER" subtitle="All suit designs" items={gridItems} labels={{ unitsCount: 'SUITS', viewProject: 'PROFILE', sectionIndex: 'SUI', fallbackAlt: 'Suit' }} columns={4} headerVariant={1} footerVariant={1} />
             )}
         </main>
     )

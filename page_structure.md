@@ -66,6 +66,12 @@
 /teams/[slug]/leaders/[slug]
 /teams/[slug]/leaders/[slug]/details
 
+/individuals
+/individuals/[slug]
+
+/organizations
+/organizations/[slug]
+
 /opportunities
 
 /opportunities/programs

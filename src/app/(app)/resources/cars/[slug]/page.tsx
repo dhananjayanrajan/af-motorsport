@@ -1,10 +1,11 @@
-// app/(frontend)/resources/cars/[slug]/page.tsx
-import CoverSection from '@/components/Section/Blocks/CoverSection'
-import MasonrySection from '@/components/Section/Blocks/MasonrySection'
-import ScrollSection from '@/components/Section/Blocks/ScrollSection'
-import StudySection from '@/components/Section/Blocks/StudySection'
-import VideoSection from '@/components/Section/Blocks/VideoSection'
-import { Media } from '@/payload-types'
+// app/(app)/resources/cars/[slug]/page.tsx
+import FeatureSection from '@/components/Section/Blocks/FeatureSection'
+import GallerySection from '@/components/Section/Blocks/GallerySection'
+import HeroSection from '@/components/Section/Blocks/HeroSection'
+import PanelSection from '@/components/Section/Blocks/PanelSection'
+import QuoteSection from '@/components/Section/Blocks/QuoteSection'
+import ShortsSection from '@/components/Section/Blocks/ShortsSection'
+import { Media, Organization } from '@/payload-types'
 import configPromise from '@payload-config'
 import { unstable_cache } from 'next/cache'
 import { notFound } from 'next/navigation'
@@ -23,33 +24,20 @@ const getCarData = unstable_cache(
             collection: 'cars',
             where: { slug: { equals: slug } },
             limit: 1,
-            depth: 1,
+            depth: 2,
             select: {
                 id: true,
                 name: true,
+                alias: true,
                 slug: true,
-                basics: {
-                    tagline: true,
-                    description: true,
-                    identifiers: { chassis: true, model: true },
-                },
-                assets: {
-                    video: true,
-                    thumbnail: true,
-                    cover: true,
-                    avatar: true,
-                    gallery: true,
-                },
-                details: {
-                    status: true,
-                    technicalCategories: true,
-                    history: true,
-                },
+                basics: { identifiers: { chassis: true, model: true, version: true }, tagline: true, description: true },
+                details: { status: true, manufacturers: true },
+                assets: { avatar: true, cover: true, gallery: true, video: true },
             },
         })
         return result.docs[0] || null
     },
-    ['car-detail'],
+    ['car-profile'],
     { revalidate: 3600, tags: ['car'] }
 )
 
@@ -59,136 +47,137 @@ export default async function CarPage({ params }: { params: Promise<{ slug: stri
 
     if (!car) notFound()
 
-    const coverImage = getMediaUrl(car.assets?.cover) ||
-        getMediaUrl(car.assets?.avatar) ||
-        getMediaUrl(car.assets?.thumbnail) ||
-        `https://picsum.photos/seed/${car.slug}/1920/1080`
+    const heroBackgroundImage = getMediaUrl(car.assets?.avatar) || getMediaUrl(car.assets?.cover)
 
-    const videoUrl = getMediaUrl(car.assets?.video)
-    const videoItems = videoUrl
-        ? [{
-            id: String(car.id),
-            title: car.name || '',
-            description: car.basics?.tagline || undefined,
-            url: videoUrl,
-            poster: getMediaUrl(car.assets?.thumbnail) || getMediaUrl(car.assets?.cover),
-        }]
-        : []
+    const quoteItem = car.basics?.tagline
+        ? { id: String(car.id), text: car.basics.tagline, author: car.name }
+        : null
 
-    const studyImage = coverImage
-
-    const study = {
+    const featureData = [{
         id: String(car.id),
-        title: car.name || '',
-        description: car.basics?.description || car.basics?.tagline || '',
-        image: studyImage,
-        metrics: [
+        title: car.name,
+        description: car.basics?.identifiers?.version || '',
+        image: getMediaUrl(car.assets?.cover) || getMediaUrl(car.assets?.avatar) || `https://picsum.photos/seed/${car.slug}/800/600`,
+        slug: `resources/cars/${car.slug}/details`,
+        stats: [
             { label: 'Chassis', value: car.basics?.identifiers?.chassis || 'N/A' },
-            { label: 'Model', value: car.basics?.identifiers?.model || 'N/A' },
             { label: 'Status', value: car.details?.status || 'N/A' },
-            { label: 'Category', value: car.details?.technicalCategories || 'N/A' },
         ],
-    }
+    }]
 
-    const scrollItems = car.details?.history
-        ? [{
-            id: 'history',
-            title: 'Car History',
-            description: car.basics?.description || 'A remarkable racing machine with a storied past.',
-            percentage: 100,
-        }]
-        : []
-
-    let galleryItems = (car.assets?.gallery || [])
-        .map((item, idx) => {
+    const galleryItems: any[] = []
+    if (car.assets?.gallery) {
+        const gallery = Array.isArray(car.assets.gallery) ? car.assets.gallery : []
+        gallery.forEach((item, idx) => {
             const media = typeof item === 'object' ? item : null
-            const url = getMediaUrl(media)
-            if (!url || !media) return null
-            return {
-                id: String(media.id),
-                title: media.alt || car.name || '',
-                image: url,
-                height: (idx % 3 === 0 ? 'tall' : idx % 2 === 0 ? 'medium' : 'short') as 'tall' | 'medium' | 'short',
+            const url = media ? getMediaUrl(media) : undefined
+            if (url && media) {
+                galleryItems.push({
+                    id: `gal-${media.id}`,
+                    title: media.alt || car.name,
+                    image: url,
+                    category: `IMG_${String(idx + 1).padStart(2, '0')}`,
+                    description: undefined,
+                })
             }
         })
-        .filter((item): item is NonNullable<typeof item> => item !== null)
+    }
 
-    if (galleryItems.length === 0 && car.assets?.cover) {
-        const coverUrl = getMediaUrl(car.assets.cover)
-        if (coverUrl) {
-            galleryItems.push({
-                id: String(car.id),
-                title: car.name || '',
-                image: coverUrl,
-                height: 'medium',
+    const panelData: any[] = []
+    if (car.details?.manufacturers) {
+        car.details.manufacturers.forEach((orgRef) => {
+            const org = orgRef as Organization
+            if (org && typeof org === 'object' && 'name' in org) {
+                panelData.push({
+                    id: `org-${org.id}`,
+                    title: org.name,
+                    summary: org.basics?.type || 'Manufacturer',
+                    content: org.basics?.description || '',
+                    metadata: { type: org.basics?.type || 'N/A', industry: org.basics?.industry || 'N/A' },
+                })
+            }
+        })
+    }
+
+    const shortItems: any[] = []
+    if (car.assets?.video) {
+        const videoMedia = typeof car.assets.video === 'object' ? car.assets.video : null
+        if (videoMedia?.url) {
+            shortItems.push({
+                id: `car-video-${car.id}`,
+                title: car.name,
+                videoUrl: videoMedia.url,
+                poster: getMediaUrl(car.assets?.cover),
+                category: 'CINEMATIC',
             })
         }
     }
 
     return (
         <main className="w-full">
-            <CoverSection
-                id="car-cover"
-                image={coverImage}
+            <HeroSection
+                id="car-hero"
+                title={car.name}
+                subtitle={car.basics?.identifiers?.chassis || ''}
+                description={car.alias || undefined}
+                backgroundImage={heroBackgroundImage}
+                alignment="left"
+                badge={car.details?.status || undefined}
+                meta={car.basics?.identifiers?.model || undefined}
+                actions={[{ label: 'FULL DETAILS', href: `/resources/cars/${car.slug}/details`, variant: 'primary' }]}
             />
-            {videoItems.length > 0 && (
-                <VideoSection
-                    id="car-video"
-                    title="Car Video"
-                    subtitle={car.name}
-                    videos={videoItems}
-                    labels={{
-                        channelPrefix: 'CH',
-                        broadcastStatus: 'LIVE',
-                        liveFeed: 'FEED',
-                        metaTransmission: 'TRANS',
-                    }}
-                    autoplay={false}
-                    showPlaylist={false}
-                    headerVariant={1}
-                    footerVariant={1}
-                />
-            )}
-            <StudySection
-                id="car-details"
-                title="Car Overview"
-                subtitle="Technical information"
-                studies={[study]}
-                variant="featured"
-                headerVariant={1}
-                footerVariant={1}
-                ctaLabel="View Full Details"
-                ctaPath={`/resources/cars/${car.slug}/details`}
-            />
-            {scrollItems.length > 0 && (
-                <ScrollSection
-                    id="car-history"
-                    title="History"
-                    subtitle="Development and legacy"
-                    items={scrollItems}
-                    labels={{
-                        indexPrefix: 'SEC',
-                        progressLabel: 'PROG',
-                        statusComplete: 'DONE',
-                    }}
-                    variant="reveal"
+            {quoteItem && (
+                <QuoteSection
+                    id="car-quote"
+                    title={car.name}
+                    subtitle="Vehicle Identity"
+                    quotes={[quoteItem]}
+                    labels={{ commStatus: 'COMM', ratingLabel: 'RATING' }}
+                    variant="carousel"
                     headerVariant={2}
                     footerVariant={1}
                 />
             )}
+            <FeatureSection
+                id="car-feature"
+                title="Overview"
+                subtitle="Key specifications"
+                features={featureData}
+                labels={{ specIndex: 'CAR', statsLabel: 'INFO', ctaLabel: 'VIEW FULL DETAILS' }}
+                ctaPath={`/resources/cars/${car.slug}/details`}
+                headerVariant={2}
+                footerVariant={1}
+            />
             {galleryItems.length > 0 && (
-                <MasonrySection
+                <GallerySection
                     id="car-gallery"
                     title="Gallery"
-                    subtitle="Car imagery"
+                    subtitle="High-resolution photography"
                     items={galleryItems}
-                    labels={{
-                        categoryPrefix: 'CAT',
-                        idPrefix: 'IMG',
-                    }}
                     columns={3}
-                    headerVariant={3}
-                    footerVariant={2}
+                    headerVariant={1}
+                    footerVariant={1}
+                />
+            )}
+            {panelData.length > 0 && (
+                <PanelSection
+                    id="car-manufacturers"
+                    title="Manufacturers"
+                    subtitle="Production partners"
+                    panels={panelData}
+                    labels={{ expansionState: { open: 'ACTIVE', closed: 'CLOSED' }, metadataTitle: 'DETAILS' }}
+                    headerVariant={1}
+                    footerVariant={1}
+                />
+            )}
+            {shortItems.length > 0 && (
+                <ShortsSection
+                    id="car-videos"
+                    title="Media"
+                    subtitle="Cinematic clips"
+                    items={shortItems}
+                    headerVariant={1}
+                    footerVariant={1}
                 />
             )}
         </main>
