@@ -65,7 +65,7 @@ const TableSection: React.FC<TableSectionProps> = ({
     }
   }
 
-  const sortedRows = [...rows]
+  const sortedRows = [...rows].slice(0, 10)
   if (sortKey) {
     sortedRows.sort((a, b) => {
       const aVal = String(a.cells[sortKey] ?? '')
@@ -77,7 +77,7 @@ const TableSection: React.FC<TableSectionProps> = ({
 
   return (
     <section id={id} className="container py-8 md:py-16">
-      <div className="relative w-full bg-white-pure border-[4px] border-black-pure shadow-[8px_8px_0px_0px_#B39900] transition-all duration-500 hover:shadow-[12px_12px_0px_0px_#00FF41]">
+      <div className="relative w-full bg-white-pure border-4 border-black-pure transition-all duration-500">
         <SectionHeader
           title={title}
           subtitle={subtitle}
@@ -85,22 +85,22 @@ const TableSection: React.FC<TableSectionProps> = ({
           metadata={String(rows.length).padStart(2, '0')}
         />
 
-        <div className="w-full border-t-[4px] border-b-[4px] border-black-pure bg-white-pure overflow-hidden">
+        <div className="w-full border-t-4 border-b-4 border-black-pure bg-white-pure overflow-hidden">
           <div className="w-full flex flex-col">
-            <div className="hidden md:flex items-stretch border-b-[4px] border-black-pure bg-white-pure" style={{ height: '72px' }}>
-              <div className="w-16 border-r-[4px] border-black-pure flex items-center justify-center shrink-0 bg-black-pure">
-                <div className="w-4 h-4 bg-primary-500 animate-ping" />
+            <div className="hidden md:flex items-stretch border-b-4 border-black-pure bg-white-pure" style={{ height: '72px' }}>
+              <div className="w-16 border-r-4 border-black-pure flex items-center justify-center shrink-0 bg-black-pure">
+                <div className="w-4 h-4 bg-primary-500" />
               </div>
               {columns.map((col) => (
                 <button
                   key={col.key}
                   disabled={!col.sortable}
                   onClick={() => col.sortable && handleSort(col.key)}
-                  className={`flex items-center px-6 border-r-[4px] border-black-pure last:border-r-0 transition-all duration-300 group text-left ${col.sortable ? 'hover:bg-secondary-800 cursor-pointer' : 'cursor-default'}`}
+                  className={`flex items-center px-6 border-r-4 border-black-pure last:border-r-0 transition-all duration-300 group text-left ${col.sortable ? 'hover:bg-black-pure hover:text-white-pure cursor-pointer' : 'cursor-default'}`}
                   style={{ flex: col.width ? `0 0 ${col.width}` : '1 1 0%' }}
                 >
                   <div className="flex flex-col">
-                    <span className={`text-xs font-black uppercase tracking-widest transition-colors duration-300 ${sortKey === col.key ? 'text-primary-500' : 'text-neutral-400 group-hover:text-white-pure'}`}>
+                    <span className={`text-xs font-black uppercase tracking-widest transition-colors duration-300 ${sortKey === col.key ? 'text-primary-500' : 'text-black-pure'}`}>
                       {sortKey === col.key ? labels.sortActive : col.key}
                     </span>
                     <div className="flex items-center gap-2">
@@ -108,7 +108,7 @@ const TableSection: React.FC<TableSectionProps> = ({
                         {col.label}
                       </span>
                       {col.sortable && (
-                        <ArrowUpDown className={`w-4 h-4 transition-all duration-300 ${sortKey === col.key ? 'text-primary-500 scale-125' : 'text-black-pure opacity-30 group-hover:opacity-100 group-hover:text-white-pure'}`} />
+                        <ArrowUpDown className={`w-4 h-4 transition-all duration-300 ${sortKey === col.key ? 'text-primary-500 scale-125' : 'text-black-pure'}`} />
                       )}
                     </div>
                   </div>
@@ -128,10 +128,10 @@ const TableSection: React.FC<TableSectionProps> = ({
                     href={row.href}
                     onMouseEnter={() => setHoveredRow(row.id)}
                     onMouseLeave={() => setHoveredRow(null)}
-                    className={`flex flex-col md:flex-row items-stretch border-b-[4px] border-black-pure last:border-b-0 transition-all duration-300 group relative ${isLink ? 'cursor-pointer' : ''} ${isHovered ? 'bg-black-pure translate-x-2' : 'bg-white-pure'}`}
+                    className={`flex flex-col md:flex-row items-stretch border-b-4 border-black-pure last:border-b-0 transition-all duration-300 group relative ${isLink ? 'cursor-pointer' : ''} ${isHovered ? 'bg-black-pure translate-x-2' : 'bg-white-pure'}`}
                   >
-                    <div className={`hidden md:flex w-16 border-r-[4px] border-black-pure flex-col items-center justify-center shrink-0 transition-colors duration-300 ${isHovered ? 'bg-primary-500 text-black-pure' : 'bg-white-pure text-neutral-300'}`}>
-                      <span className="text-xl font-black italic">
+                    <div className={`hidden md:flex w-16 border-r-4 border-black-pure flex-col items-center justify-center shrink-0 transition-colors duration-300 ${isHovered ? 'bg-primary-500 text-black-pure' : 'bg-white-pure text-black-pure'}`}>
+                      <span className="text-xl font-black">
                         {String(idx + 1).padStart(2, '0')}
                       </span>
                     </div>
@@ -140,10 +140,10 @@ const TableSection: React.FC<TableSectionProps> = ({
                       {columns.map((col) => (
                         <div
                           key={col.key}
-                          className="w-full sm:w-1/2 md:w-auto px-6 py-4 border-b-[4px] border-black-pure last:border-b-0 sm:even:border-l-[4px] md:border-b-0 md:even:border-l-0 md:border-r-[4px] md:last:border-r-0 flex flex-col justify-center transition-transform duration-500 group-hover:translate-x-1"
+                          className="w-full sm:w-1/2 md:w-auto px-6 py-4 border-b-4 border-black-pure last:border-b-0 sm:even:border-l-4 md:border-b-0 md:even:border-l-0 md:border-r-4 md:last:border-r-0 flex flex-col justify-center transition-transform duration-500 group-hover:translate-x-1"
                           style={{ flex: col.width ? `0 0 ${col.width}` : '1 1 0%' }}
                         >
-                          <span className={`text-xs font-black uppercase tracking-widest mb-1 transition-colors duration-300 ${isHovered ? 'text-primary-500' : 'text-neutral-400'}`}>
+                          <span className={`text-xs font-black uppercase tracking-widest mb-1 transition-colors duration-300 ${isHovered ? 'text-primary-500' : 'text-black-pure'}`}>
                             {col.label}
                           </span>
                           <div className={`text-lg md:text-xl font-black uppercase tracking-tight transition-all duration-300 ${isHovered ? 'text-white-pure' : 'text-black-pure'}`}>
@@ -155,6 +155,21 @@ const TableSection: React.FC<TableSectionProps> = ({
                   </Tag>
                 )
               })}
+              {rows.length > 10 && (
+                <a
+                  href={ctaPath || '#'}
+                  className="flex flex-col md:flex-row items-stretch border-b-4 border-black-pure last:border-b-0 transition-all duration-300 group bg-primary-500 hover:bg-black-pure cursor-pointer"
+                >
+                  <div className="hidden md:flex w-16 border-r-4 border-black-pure flex-col items-center justify-center shrink-0 bg-primary-500 group-hover:bg-black-pure">
+                    <span className="text-xl font-black text-black-pure group-hover:text-white-pure">+</span>
+                  </div>
+                  <div className="flex-1 flex items-center justify-center px-6 py-8">
+                    <span className="text-xl font-black uppercase tracking-tight text-black-pure group-hover:text-white-pure">
+                      View All Entries ({rows.length - 10} more)
+                    </span>
+                  </div>
+                </a>
+              )}
             </div>
           </div>
         </div>

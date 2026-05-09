@@ -1,4 +1,3 @@
-// components/Section/Blocks/LeaderboardSection.tsx
 "use client"
 
 import { ShieldCheck, Trophy, Zap } from 'lucide-react'
@@ -7,6 +6,7 @@ import Link from 'next/link'
 import React, { useState } from 'react'
 import SectionFooter from '../Components/SectionFooter'
 import SectionHeader from '../Components/SectionHeader'
+import SectionSidebar from '../Components/SectionSidebar'
 
 export interface LeaderboardEntry {
     id: number | string
@@ -37,33 +37,30 @@ function getPodiumOrder(total: number): ('first' | 'second' | 'third')[] {
 const podiumConfig = {
     first: {
         rank: 'P01',
-        label: 'Champion',
+        label: 'First',
         height: 'h-[550px] md:h-[720px]',
         clip: 'polygon(0 12%, 100% 0, 100% 100%, 0 100%)',
         accent: 'bg-primary-500',
         textColor: 'text-primary-500',
         order: 'order-1 md:order-2',
-        isWinner: true,
     },
     second: {
         rank: 'P02',
-        label: 'Runner Up',
+        label: 'Second',
         height: 'h-[500px] md:h-[600px]',
         clip: 'polygon(0 0, 100% 12%, 100% 100%, 0 100%)',
-        accent: 'bg-secondary-500',
-        textColor: 'text-secondary-500',
+        accent: 'bg-black-pure',
+        textColor: 'text-black-pure',
         order: 'order-2 md:order-1',
-        isWinner: false,
     },
     third: {
         rank: 'P03',
-        label: 'Third Place',
+        label: 'Third',
         height: 'h-[450px] md:h-[500px]',
         clip: 'polygon(0 15%, 100% 0, 100% 100%, 0 100%)',
-        accent: 'bg-tertiary-500',
-        textColor: 'text-tertiary-500',
+        accent: 'bg-black-pure',
+        textColor: 'text-black-pure',
         order: 'order-3',
-        isWinner: false,
     },
 } as const
 
@@ -77,11 +74,13 @@ const LeaderboardSection: React.FC<LeaderboardSectionProps> = ({
     background,
 }) => {
     const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
+    const [sidebarOpen, setSidebarOpen] = useState(false)
+    const [activeEntry, setActiveEntry] = useState<LeaderboardEntry | null>(null)
 
     if (entries.length === 0) return null
 
     const podiumEntries = entries.slice(0, 3)
-    const remainingEntries = entries.slice(3)
+    const remainingEntries = entries.slice(3, 10)
     const podiumOrder = getPodiumOrder(podiumEntries.length)
 
     const fallbackImage = (entry: LeaderboardEntry) =>
@@ -102,7 +101,7 @@ const LeaderboardSection: React.FC<LeaderboardSectionProps> = ({
                 <div className="p-10 lg:p-20 border-r border-black-pure flex flex-col justify-center">
                     <div className="flex flex-col gap-4">
                         <span className="text-xs font-mono font-black bg-black-pure text-white-pure px-3 py-1 uppercase tracking-widest self-start">
-                            Official Results
+                            Results
                         </span>
                         <h2 className="text-4xl md:text-5xl font-black text-black-pure uppercase leading-none tracking-tighter">
                             Final
@@ -115,7 +114,7 @@ const LeaderboardSection: React.FC<LeaderboardSectionProps> = ({
                     </div>
                 </div>
                 <div className="p-10 lg:p-20 flex flex-col justify-center">
-                    <p className="text-sm font-bold text-black-pure/60 uppercase leading-relaxed">
+                    <p className="text-sm font-bold text-black-pure uppercase leading-relaxed">
                         The official classification representing the top ranked competitors. All points and team associations are verified via the technical registry.
                     </p>
                 </div>
@@ -132,15 +131,19 @@ const LeaderboardSection: React.FC<LeaderboardSectionProps> = ({
                         return (
                             <div
                                 key={entry.id}
-                                className={`relative flex flex-col w-full md:w-1/3 ${config.order} group`}
+                                className={`relative flex flex-col w-full md:w-1/3 ${config.order} group cursor-pointer`}
                                 onMouseEnter={() => setHoveredIndex(entryIndex)}
                                 onMouseLeave={() => setHoveredIndex(null)}
+                                onClick={() => {
+                                    setActiveEntry(entry)
+                                    setSidebarOpen(true)
+                                }}
                             >
                                 <motion.div
                                     initial={{ opacity: 0, y: 40 }}
                                     whileInView={{ opacity: 1, y: 0 }}
                                     transition={{ duration: 0.8, delay: entryIndex * 0.1 }}
-                                    className={`relative w-full ${config.height} overflow-hidden bg-white-100 border-x border-t border-black-pure transition-colors duration-300`}
+                                    className={`relative w-full ${config.height} overflow-hidden bg-white-pure border-x border-t border-black-pure transition-colors duration-300`}
                                     style={{ clipPath: config.clip }}
                                 >
                                     <img
@@ -152,10 +155,10 @@ const LeaderboardSection: React.FC<LeaderboardSectionProps> = ({
 
                                     <div className="absolute bottom-0 left-0 right-0 p-8 flex flex-col">
                                         <div className="flex items-end justify-between">
-                                            <span className={`text-6xl md:text-8xl font-black italic leading-none ${config.textColor}`}>
+                                            <span className={`text-6xl md:text-8xl font-black leading-none ${config.textColor}`}>
                                                 {config.rank}
                                             </span>
-                                            {config.isWinner && (
+                                            {pos === 'first' && (
                                                 <div className="bg-primary-500 p-3 mb-2">
                                                     <Trophy size={24} className="text-black-pure" />
                                                 </div>
@@ -176,28 +179,28 @@ const LeaderboardSection: React.FC<LeaderboardSectionProps> = ({
 
                                     <div className="flex flex-col gap-4">
                                         <div className="flex flex-col">
-                                            <span className="text-[10px] font-black uppercase tracking-widest text-black-pure/40 group-hover:text-white-pure/40 mb-1">
+                                            <span className="text-xs font-black uppercase tracking-widest text-black-pure group-hover:text-white-pure mb-1">
                                                 {config.label}
                                             </span>
-                                            <h3 className={`text-2xl font-black uppercase italic leading-none tracking-tighter ${hoveredIndex === entryIndex ? config.textColor : 'text-black-pure group-hover:text-white-pure'}`}>
+                                            <h3 className={`text-2xl font-black uppercase leading-none tracking-tighter ${hoveredIndex === entryIndex ? config.textColor : 'text-black-pure group-hover:text-white-pure'}`}>
                                                 {entry.name}
                                             </h3>
                                         </div>
 
-                                        <div className="flex items-center gap-6 pt-4 border-t border-black-pure group-hover:border-white-pure/20">
+                                        <div className="flex items-center gap-6 pt-4 border-t border-black-pure group-hover:border-white-pure">
                                             <div className="flex flex-col">
-                                                <span className="text-[8px] font-black uppercase text-black-pure/40 group-hover:text-white-pure/40 tracking-widest">
+                                                <span className="text-xs font-black uppercase text-black-pure group-hover:text-white-pure tracking-widest">
                                                     Team
                                                 </span>
-                                                <span className="text-xs font-black text-black-pure group-hover:text-white-pure uppercase italic">
+                                                <span className="text-xs font-black text-black-pure group-hover:text-white-pure uppercase">
                                                     {entry.team || 'TBA'}
                                                 </span>
                                             </div>
                                             <div className="flex flex-col">
-                                                <span className="text-[8px] font-black uppercase text-black-pure/40 group-hover:text-white-pure/40 tracking-widest">
+                                                <span className="text-xs font-black uppercase text-black-pure group-hover:text-white-pure tracking-widest">
                                                     Points
                                                 </span>
-                                                <span className={`text-xs font-black uppercase italic ${hoveredIndex === entryIndex ? config.textColor : 'text-black-pure group-hover:text-white-pure'}`}>
+                                                <span className={`text-xs font-black uppercase ${hoveredIndex === entryIndex ? config.textColor : 'text-black-pure group-hover:text-white-pure'}`}>
                                                     {entry.points ?? '000'}
                                                 </span>
                                             </div>
@@ -213,18 +216,18 @@ const LeaderboardSection: React.FC<LeaderboardSectionProps> = ({
             {remainingEntries.length > 0 && (
                 <div className="w-full border-t-2 border-black-pure overflow-x-auto bg-white-pure">
                     <div className="min-w-[600px] w-full">
-                        <div className="flex items-stretch bg-neutral-100 border-b-2 border-black-pure" style={{ height: '56px' }}>
-                            <div className="w-14 border-r-2 border-black-pure flex items-center justify-center shrink-0 bg-white-pure">
-                                <span className="text-xs font-mono font-black text-black-pure/40 uppercase">POS</span>
+                        <div className="flex items-stretch bg-white-pure border-b-2 border-black-pure" style={{ height: '56px' }}>
+                            <div className="w-14 border-r-2 border-black-pure flex items-center justify-center shrink-0 bg-black-pure">
+                                <span className="text-xs font-mono font-black text-white-pure uppercase">Pos</span>
                             </div>
                             <div className="flex-1 flex items-center px-6 border-r-2 border-black-pure">
-                                <span className="text-xs font-bold text-black-pure uppercase">Driver</span>
+                                <span className="text-xs font-bold text-black-pure uppercase">Name</span>
                             </div>
                             <div className="flex-1 flex items-center px-6 border-r-2 border-black-pure">
                                 <span className="text-xs font-bold text-black-pure uppercase">Team</span>
                             </div>
                             <div className="w-24 flex items-center justify-center px-4">
-                                <span className="text-xs font-bold text-black-pure uppercase">PTS</span>
+                                <span className="text-xs font-bold text-black-pure uppercase">Pts</span>
                             </div>
                         </div>
 
@@ -232,11 +235,15 @@ const LeaderboardSection: React.FC<LeaderboardSectionProps> = ({
                             {remainingEntries.map((entry) => (
                                 <div
                                     key={entry.id}
-                                    className="flex items-stretch border-b border-black-pure/10 hover:bg-black-pure transition-colors duration-300 group/row"
+                                    className="flex items-stretch border-b border-black-pure hover:bg-black-pure transition-colors duration-300 group/row cursor-pointer"
                                     style={{ minHeight: '64px' }}
+                                    onClick={() => {
+                                        setActiveEntry(entry)
+                                        setSidebarOpen(true)
+                                    }}
                                 >
-                                    <div className="w-14 border-r border-black-pure/10 flex items-center justify-center shrink-0">
-                                        <span className="text-sm font-mono font-black text-black-pure/40 group-hover/row:text-white-pure tabular-nums">
+                                    <div className="w-14 border-r border-black-pure flex items-center justify-center shrink-0">
+                                        <span className="text-sm font-mono font-black text-black-pure group-hover/row:text-white-pure tabular-nums">
                                             {String(entry.position).padStart(2, '0')}
                                         </span>
                                     </div>
@@ -255,7 +262,7 @@ const LeaderboardSection: React.FC<LeaderboardSectionProps> = ({
                                         )}
                                     </div>
                                     <div className="flex-1 flex items-center px-6 min-w-0">
-                                        <span className="text-xs font-bold text-black-pure/60 group-hover/row:text-white-pure/60 uppercase truncate">
+                                        <span className="text-xs font-bold text-black-pure group-hover/row:text-white-pure uppercase truncate">
                                             {entry.team || '—'}
                                         </span>
                                     </div>
@@ -271,19 +278,38 @@ const LeaderboardSection: React.FC<LeaderboardSectionProps> = ({
                 </div>
             )}
 
-            {entries.length <= 3 && (
+            {entries.length > 10 && (
                 <div className="w-full bg-white-pure border-t-2 border-black-pure flex items-center justify-center py-20">
                     <div className="flex items-center gap-4">
-                        <ShieldCheck size={20} className="text-black-pure/20" />
-                        <span className="text-xs font-mono font-black text-black-pure/30 uppercase tracking-widest">
-                            All entries displayed
+                        <ShieldCheck size={20} className="text-black-pure" />
+                        <span className="text-xs font-mono font-black text-black-pure uppercase tracking-widest">
+                            {entries.length - 10} more entries available
                         </span>
-                        <ShieldCheck size={20} className="text-black-pure/20" />
+                        <ShieldCheck size={20} className="text-black-pure" />
                     </div>
                 </div>
             )}
 
             <SectionFooter variant={footerVariant} />
+
+            <SectionSidebar
+                isOpen={sidebarOpen}
+                onClose={() => setSidebarOpen(false)}
+                title={activeEntry?.name || ''}
+                description={`Team: ${activeEntry?.team || 'N/A'}\nPoints: ${activeEntry?.points || 'N/A'}\nPosition: ${activeEntry?.position || 'N/A'}`}
+                imageUrl={activeEntry ? fallbackImage(activeEntry) : ''}
+                idCode={`P${String(activeEntry?.position || 0).padStart(2, '0')}`}
+                stats={[
+                    { label: 'Position', val: String(activeEntry?.position || 0), color: 'bg-primary-500' },
+                    { label: 'Points', val: String(activeEntry?.points || 0), color: 'bg-black-pure' },
+                    { label: 'Team', val: activeEntry?.team || 'N/A', color: 'bg-black-pure' }
+                ]}
+                buttonLabel="View Profile"
+                onAction={() => {
+                    if (activeEntry?.slug) window.location.href = activeEntry.slug.startsWith('/') ? activeEntry.slug : `/${activeEntry.slug}`
+                    setSidebarOpen(false)
+                }}
+            />
         </section>
     )
 }

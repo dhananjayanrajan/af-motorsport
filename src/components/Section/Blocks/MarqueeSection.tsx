@@ -1,7 +1,7 @@
 "use client"
 
 import { AnimatePresence, motion } from 'framer-motion'
-import { ArrowRight, ExternalLink, Globe, MapPin, X } from 'lucide-react'
+import { ArrowRight, Globe, MapPin, X } from 'lucide-react'
 import Link from 'next/link'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import SectionFooter from '../Components/SectionFooter'
@@ -81,10 +81,11 @@ const MarqueeSection: React.FC<MarqueeSectionProps> = ({
     }, [])
 
     const tripledItems = [...items, ...items, ...items]
+    const displayCount = Math.min(items.length, 12)
 
     return (
         <section id={id} className="w-full bg-white-pure py-12 md:py-20 lg:py-24">
-            <div className="max-w-7xl mx-auto border-2 border-black-pure shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] bg-white-pure overflow-hidden">
+            <div className="max-w-7xl mx-auto border-2 border-black-pure bg-white-pure overflow-hidden">
                 <SectionHeader
                     title={title}
                     subtitle={subtitle}
@@ -102,7 +103,7 @@ const MarqueeSection: React.FC<MarqueeSectionProps> = ({
                         className="flex will-change-transform"
                         style={{ width: 'fit-content' }}
                     >
-                        {tripledItems.map((item, idx) => (
+                        {tripledItems.slice(0, displayCount * 3).map((item, idx) => (
                             <button
                                 key={`${item.id}-${idx}`}
                                 onClick={() => openModal(item)}
@@ -115,7 +116,7 @@ const MarqueeSection: React.FC<MarqueeSectionProps> = ({
                                         className="max-w-full max-h-full object-contain grayscale group-hover:grayscale-0 transition-all duration-500"
                                     />
                                     <div className="absolute bottom-0 right-2 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
-                                        <div className="w-6 h-6 border-2 border-black-pure flex items-center justify-center bg-primary-500 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+                                        <div className="w-6 h-6 border-2 border-black-pure flex items-center justify-center bg-primary-500">
                                             <ArrowRight className="w-3 h-3 text-black-pure" />
                                         </div>
                                     </div>
@@ -138,7 +139,7 @@ const MarqueeSection: React.FC<MarqueeSectionProps> = ({
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.2 }}
-                        className="fixed inset-0 z-[210] flex items-center justify-center p-4 bg-black-pure/40 backdrop-blur-sm"
+                        className="fixed inset-0 z-[210] flex items-center justify-center p-4 bg-black-pure/60"
                         onClick={closeModal}
                     >
                         <motion.div
@@ -147,7 +148,7 @@ const MarqueeSection: React.FC<MarqueeSectionProps> = ({
                             exit={{ opacity: 0, scale: 0.95, y: 20 }}
                             transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
                             onClick={(e) => e.stopPropagation()}
-                            className="w-full max-w-2xl bg-white-pure border-2 border-black-pure shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] flex flex-col overflow-hidden max-h-[90vh]"
+                            className="w-full max-w-2xl bg-white-pure border-2 border-black-pure flex flex-col overflow-hidden max-h-[90vh]"
                         >
                             <div className="flex items-center justify-between p-4 border-b-2 border-black-pure bg-black-pure shrink-0">
                                 <div className="flex items-center gap-3 min-w-0">
@@ -156,14 +157,14 @@ const MarqueeSection: React.FC<MarqueeSectionProps> = ({
                                             {selectedItem.category}
                                         </span>
                                     )}
-                                    <div className="w-px h-4 bg-white-pure/20 shrink-0" />
-                                    <span className="text-xs font-mono font-black text-white-pure/40 uppercase tracking-widest truncate">
+                                    <div className="w-px h-4 bg-white-pure shrink-0" />
+                                    <span className="text-xs font-mono font-black text-white-pure uppercase tracking-widest truncate">
                                         {selectedItem.id}
                                     </span>
                                 </div>
                                 <button
                                     onClick={closeModal}
-                                    className="w-10 h-10 border border-white-pure/20 flex items-center justify-center text-white-pure hover:bg-primary-500 hover:text-black-pure hover:border-primary-500 transition-colors shrink-0 ml-4"
+                                    className="w-10 h-10 border border-white-pure flex items-center justify-center text-white-pure hover:bg-primary-500 hover:text-black-pure hover:border-primary-500 transition-colors shrink-0 ml-4"
                                 >
                                     <X className="w-4 h-4" />
                                 </button>
@@ -187,17 +188,17 @@ const MarqueeSection: React.FC<MarqueeSectionProps> = ({
                                         </h3>
 
                                         {selectedItem.description && (
-                                            <p className="text-sm font-medium text-black-pure/70 leading-relaxed break-words">
+                                            <p className="text-sm font-medium text-black-pure leading-relaxed break-words">
                                                 {selectedItem.description}
                                             </p>
                                         )}
 
                                         <div className="grid grid-cols-1 gap-3">
                                             {selectedItem.website && (
-                                                <div className="flex items-center gap-3 p-3 border-2 border-black-pure bg-neutral-50 min-w-0">
+                                                <div className="flex items-center gap-3 p-3 border-2 border-black-pure bg-white-pure min-w-0">
                                                     <Globe className="w-4 h-4 text-black-pure shrink-0" />
                                                     <div className="flex flex-col min-w-0">
-                                                        <span className="text-xs font-mono font-black text-black-pure/30 uppercase tracking-widest">
+                                                        <span className="text-xs font-mono font-black text-black-pure uppercase tracking-widest">
                                                             Website
                                                         </span>
                                                         <span className="text-sm font-bold text-black-pure truncate">
@@ -208,10 +209,10 @@ const MarqueeSection: React.FC<MarqueeSectionProps> = ({
                                             )}
 
                                             {selectedItem.location && (
-                                                <div className="flex items-center gap-3 p-3 border-2 border-black-pure bg-neutral-50 min-w-0">
+                                                <div className="flex items-center gap-3 p-3 border-2 border-black-pure bg-white-pure min-w-0">
                                                     <MapPin className="w-4 h-4 text-black-pure shrink-0" />
                                                     <div className="flex flex-col min-w-0">
-                                                        <span className="text-xs font-mono font-black text-black-pure/30 uppercase tracking-widest">
+                                                        <span className="text-xs font-mono font-black text-black-pure uppercase tracking-widest">
                                                             Location
                                                         </span>
                                                         <span className="text-sm font-bold text-black-pure truncate">
@@ -225,10 +226,10 @@ const MarqueeSection: React.FC<MarqueeSectionProps> = ({
                                         {selectedItem.slug && (
                                             <Link
                                                 href={`/${selectedItem.slug}`}
-                                                className="inline-flex items-center gap-3 bg-black-pure text-white-pure px-6 py-3 text-xs font-mono font-black uppercase tracking-widest border-2 border-black-pure hover:bg-primary-500 hover:text-black-pure transition-all shadow-[4px_4px_0px_0px_var(--primary-500)] hover:shadow-none group/link w-fit"
+                                                className="inline-flex items-center gap-3 bg-black-pure text-white-pure px-6 py-3 text-xs font-mono font-black uppercase tracking-widest border-2 border-black-pure hover:bg-primary-500 hover:text-black-pure transition-all group/link w-fit"
                                             >
                                                 <span>View Profile</span>
-                                                <ExternalLink className="w-3.5 h-3.5 group-hover/link:translate-x-1 transition-transform" />
+                                                <ArrowRight className="w-3.5 h-3.5 group-hover/link:translate-x-1 transition-transform" />
                                             </Link>
                                         )}
                                     </div>

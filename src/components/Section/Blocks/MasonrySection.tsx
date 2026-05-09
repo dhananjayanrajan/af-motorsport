@@ -50,23 +50,30 @@ const MasonrySection: React.FC<MasonrySectionProps> = ({
 }) => {
   const [columnItems, setColumnItems] = useState<MasonryItem[][]>([])
   const [selectedItem, setSelectedItem] = useState<MasonryItem | null>(null)
+  const [modalOpen, setModalOpen] = useState(false)
 
   useEffect(() => {
+    const displayItems = items.slice(0, 9)
     const result: MasonryItem[][] = Array.from({ length: columns }, () => [])
-    items.forEach((item, idx) => {
+    displayItems.forEach((item, idx) => {
       result[idx % columns].push(item)
     })
     setColumnItems(result)
   }, [items, columns])
 
+  const openModal = (item: MasonryItem) => {
+    setSelectedItem(item)
+    setModalOpen(true)
+  }
+
   return (
-    <section id={id} className="relative w-full bg-background-default py-12 md:py-20 lg:py-24 flex flex-col items-center">
+    <section id={id} className="relative w-full bg-white-pure py-12 md:py-20 lg:py-24 flex flex-col items-center">
       {background}
 
       <DotGridBackground />
 
       <div className="container relative z-10">
-        <div className="w-full bg-white-pure border-2 border-black-pure z-1 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] overflow-hidden flex flex-col">
+        <div className="w-full bg-white-pure border-2 border-black-pure z-1 overflow-hidden flex flex-col">
           <SectionHeader
             title={title}
             subtitle={subtitle}
@@ -89,10 +96,10 @@ const MasonrySection: React.FC<MasonrySectionProps> = ({
                       <div className="p-6 sm:p-8 flex flex-col gap-6">
                         <div className="flex justify-between items-start">
                           <div className="flex flex-col">
-                            <span className="text-[10px] font-mono font-black uppercase tracking-tighter text-neutral-400">
+                            <span className="text-xs font-mono font-black uppercase tracking-tighter text-black-pure">
                               {labels.idPrefix}{item.id}
                             </span>
-                            <span className="text-[11px] font-mono font-black uppercase text-secondary-700">
+                            <span className="text-xs font-mono font-black uppercase text-primary-500">
                               {item.category}
                             </span>
                           </div>
@@ -100,34 +107,34 @@ const MasonrySection: React.FC<MasonrySectionProps> = ({
                         </div>
 
                         <button
-                          onClick={() => setSelectedItem(item)}
-                          className="relative aspect-[4/3] overflow-hidden border border-black-pure/10 cursor-zoom-in"
+                          onClick={() => openModal(item)}
+                          className="relative aspect-[4/3] overflow-hidden border-2 border-black-pure cursor-pointer"
                         >
                           <img
                             src={item.image}
                             alt={item.title}
                             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                           />
-                          <div className="absolute inset-0 bg-primary-glow opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                            <div className="w-10 h-10 bg-white-pure border border-black-pure flex items-center justify-center scale-0 group-hover:scale-100 transition-transform duration-500 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+                          <div className="absolute inset-0 bg-primary-500/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <div className="w-10 h-10 bg-white-pure border-2 border-black-pure flex items-center justify-center scale-0 group-hover:scale-100 transition-transform duration-500">
                               <div className="w-4 h-4 border-2 border-black-pure" />
                             </div>
                           </div>
                         </button>
 
                         <div className="space-y-3">
-                          <h3 className="text-xl font-black uppercase tracking-tighter leading-none text-black-pure group-hover:text-tertiary-600 transition-colors">
+                          <h3 className="text-xl font-black uppercase tracking-tighter leading-none text-black-pure group-hover:text-primary-500 transition-colors">
                             {item.title}
                           </h3>
-                          <p className="text-[11px] font-bold text-black-pure/50 leading-tight uppercase line-clamp-2 group-hover:text-black-pure transition-colors">
+                          <p className="text-xs font-bold text-black-pure leading-tight uppercase line-clamp-2">
                             {item.description}
                           </p>
                         </div>
 
                         {item.slug && (
-                          <div className="pt-4 border-t border-black-pure/5 flex justify-end">
+                          <div className="pt-4 border-t-2 border-black-pure flex justify-end">
                             <Link href={item.slug} className="flex items-center gap-2 group-hover:gap-4 transition-all duration-300">
-                              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" className="text-black-pure group-hover:text-primary-600">
+                              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" className="text-black-pure group-hover:text-primary-500">
                                 <path d="M3 10H17M17 10L12 5M17 10L12 15" stroke="currentColor" strokeWidth="2" strokeLinecap="square" />
                               </svg>
                             </Link>
@@ -137,26 +144,26 @@ const MasonrySection: React.FC<MasonrySectionProps> = ({
                     </div>
                   ))
                 ) : (
-                  <div className="flex-1 bg-neutral-100/50 flex items-center justify-center p-12 opacity-20 grayscale">
-                    <div className="w-full border-t border-black-pure border-dashed" />
+                  <div className="flex-1 bg-white-pure flex items-center justify-center p-12">
+                    <div className="w-full border-t-2 border-black-pure border-dashed" />
                   </div>
                 )}
               </div>
             ))}
           </div>
 
-          {ctaLabel && ctaPath && (
-            <div className="w-full py-12 md:py-16 flex items-center justify-center bg-white-pure px-6">
+          {items.length > 9 && (
+            <div className="w-full py-12 md:py-16 flex items-center justify-center bg-white-pure px-6 border-y-2 border-black-pure">
               <Link
-                href={ctaPath}
+                href={ctaPath || '#'}
                 className="group flex flex-col items-center gap-4"
               >
                 <div className="flex items-center gap-6 md:gap-12">
-                  <div className="h-0.5 w-8 md:w-16 bg-primary-500 group-hover:w-24 transition-all duration-500" />
-                  <span className="text-2xl md:text-4xl lg:text-5xl font-black uppercase tracking-tighter text-black-pure group-hover:text-primary-600 transition-colors">
-                    {ctaLabel}
+                  <div className="h-1 w-8 md:w-16 bg-primary-500 group-hover:w-24 transition-all duration-500" />
+                  <span className="text-2xl md:text-4xl lg:text-5xl font-black uppercase tracking-tighter text-black-pure group-hover:text-primary-500 transition-colors">
+                    View All
                   </span>
-                  <div className="h-0.5 w-8 md:w-16 bg-primary-500 group-hover:w-24 transition-all duration-500" />
+                  <div className="h-1 w-8 md:w-16 bg-primary-500 group-hover:w-24 transition-all duration-500" />
                 </div>
               </Link>
             </div>
@@ -167,25 +174,25 @@ const MasonrySection: React.FC<MasonrySectionProps> = ({
       </div>
 
       <SectionModal
-        isOpen={!!selectedItem}
-        onClose={() => setSelectedItem(null)}
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
         title={selectedItem?.title || ''}
         description={selectedItem?.description || ''}
         imageUrl={selectedItem?.image || ''}
         idCode={`${labels.idPrefix}${selectedItem?.id || ''}`}
         infoLabel={selectedItem?.category}
-        buttonLabel={selectedItem?.slug ? "VIEW DETAILS" : "CLOSE"}
+        buttonLabel={selectedItem?.slug ? "View Details" : "Close"}
         onAction={() => {
           if (selectedItem?.slug) window.location.href = selectedItem.slug;
-          setSelectedItem(null);
+          setModalOpen(false);
         }}
         stats={[
-          { label: "INDEX", val: selectedItem?.id || '00', color: "bg-primary-500" },
-          { label: "CLASS", val: selectedItem?.category || 'NONE', color: "bg-secondary-500" }
+          { label: "ID", val: selectedItem?.id || '00', color: "bg-primary-500" },
+          { label: "Category", val: selectedItem?.category || 'None', color: "bg-black-pure" }
         ]}
       />
     </section>
   )
 }
 
-export default MasonrySection;
+export default MasonrySection

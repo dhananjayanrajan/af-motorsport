@@ -1,4 +1,3 @@
-// components/Section/Blocks/InfoSection.tsx
 "use client"
 
 import { motion, useInView } from 'motion/react'
@@ -28,14 +27,13 @@ interface InfoSectionProps {
 
 const emphasisColors = {
     low: {
-        border: 'border-black-pure/10',
+        border: 'border-black-pure',
         bg: 'bg-white-pure',
-        text: 'text-black-pure/60',
-        accent: 'bg-black-pure/10',
-        accentLine: 'bg-black-pure/20',
-        glow: 'shadow-none',
-        labelText: 'text-black-pure/30',
-        iconColor: 'text-black-pure/15',
+        text: 'text-black-pure',
+        accent: 'bg-black-pure',
+        accentLine: 'bg-black-pure',
+        labelText: 'text-black-pure',
+        iconColor: 'text-black-pure',
     },
     medium: {
         border: 'border-black-pure',
@@ -43,9 +41,8 @@ const emphasisColors = {
         text: 'text-black-pure',
         accent: 'bg-primary-500',
         accentLine: 'bg-primary-500',
-        glow: 'shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]',
-        labelText: 'text-black-pure/40',
-        iconColor: 'text-black-pure/20',
+        labelText: 'text-black-pure',
+        iconColor: 'text-black-pure',
     },
     high: {
         border: 'border-black-pure',
@@ -53,8 +50,7 @@ const emphasisColors = {
         text: 'text-white-pure',
         accent: 'bg-primary-500',
         accentLine: 'bg-primary-500',
-        glow: 'shadow-[8px_8px_0px_0px_var(--primary-500)]',
-        labelText: 'text-white-pure/40',
+        labelText: 'text-white-pure',
         iconColor: 'text-primary-500',
     },
 }
@@ -125,21 +121,17 @@ const CardItem: React.FC<{ card: InfoCard; index: number }> = ({ card, index }) 
             onMouseMove={handleMouseMove}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={handleMouseLeave}
-            className={`relative flex flex-col p-4 xs:p-5 sm:p-6 md:p-7 lg:p-8 border-2 ${colors.border} ${colors.bg} transition-all duration-500 ${colors.glow} overflow-hidden cursor-default`}
+            className={`relative flex flex-col p-6 md:p-8 border-2 ${colors.border} ${colors.bg} transition-all duration-500 overflow-hidden cursor-default`}
             style={{
                 transform: isHovered
                     ? `perspective(1000px) rotateX(${mousePos.y * -6}deg) rotateY(${mousePos.x * 6}deg) translateY(-4px)`
                     : 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0px)',
-                transition: 'transform 0.5s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.5s cubic-bezier(0.23, 1, 0.32, 1)',
+                transition: 'transform 0.5s cubic-bezier(0.23, 1, 0.32, 1)',
             }}
         >
-            <div className="absolute top-0 right-0 w-16 xs:w-20 h-16 xs:h-20 pointer-events-none overflow-hidden">
-                <div className={`absolute top-0 right-0 w-0 h-0 border-l-[20px] border-b-[20px] border-l-transparent ${colors.border} opacity-20`} />
-            </div>
-
-            <div className="relative z-10 flex flex-col gap-3 xs:gap-4 sm:gap-5">
-                <div className="flex items-start justify-between gap-2 xs:gap-3">
-                    <div className="flex flex-col gap-0.5 xs:gap-1">
+            <div className="relative z-10 flex flex-col gap-4">
+                <div className="flex items-start justify-between gap-3">
+                    <div className="flex flex-col gap-1">
                         <span className={`text-xs font-mono font-black uppercase tracking-widest leading-none ${colors.labelText}`}>
                             {String(index + 1).padStart(2, '0')}
                         </span>
@@ -152,7 +144,6 @@ const CardItem: React.FC<{ card: InfoCard; index: number }> = ({ card, index }) 
                             animate={isHovered ? { rotate: 15, scale: 1.1 } : { rotate: 0, scale: 1 }}
                             transition={{ duration: 0.5, ease: 'easeOut' }}
                             className={`shrink-0 ${colors.iconColor} transition-colors duration-300`}
-                            style={{ color: isHovered && card.emphasis === 'high' ? 'var(--primary-500)' : undefined }}
                         >
                             {card.icon}
                         </motion.div>
@@ -161,7 +152,7 @@ const CardItem: React.FC<{ card: InfoCard; index: number }> = ({ card, index }) 
 
                 <div className="flex items-baseline gap-1">
                     <motion.span
-                        className={`text-xl xs:text-2xl sm:text-2xl md:text-2xl lg:text-2xl font-black tabular-nums leading-none tracking-tight ${colors.text} transition-colors duration-300`}
+                        className={`text-2xl md:text-3xl font-black tabular-nums leading-none tracking-tight ${colors.text} transition-colors duration-300`}
                         animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -10 }}
                         transition={{ duration: 0.6, delay: index * 0.06 + 0.3 }}
                     >
@@ -169,22 +160,22 @@ const CardItem: React.FC<{ card: InfoCard; index: number }> = ({ card, index }) 
                     </motion.span>
                 </div>
 
-                <div className="flex items-center gap-1 xs:gap-1.5 mt-0.5 xs:mt-1">
+                <div className="flex items-center gap-1.5 mt-1">
                     <motion.div
-                        className={`h-[3px] rounded-full ${colors.accentLine}`}
+                        className={`h-[3px] ${colors.accentLine}`}
                         initial={{ width: 16 }}
                         animate={isHovered ? { width: 40 } : { width: 16 }}
                         transition={{ duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
                     />
                     <motion.div
-                        className={`h-[3px] rounded-full ${colors.accentLine}`}
+                        className={`h-[3px] ${colors.accentLine}`}
                         initial={{ width: 6 }}
                         animate={isHovered ? { width: 12 } : { width: 6 }}
                         transition={{ duration: 0.5, ease: [0.23, 1, 0.32, 1], delay: 0.08 }}
                         style={{ opacity: 0.5 }}
                     />
                     <motion.div
-                        className={`h-[3px] rounded-full ${colors.accentLine}`}
+                        className={`h-[3px] ${colors.accentLine}`}
                         initial={{ width: 3 }}
                         animate={isHovered ? { width: 6 } : { width: 3 }}
                         transition={{ duration: 0.5, ease: [0.23, 1, 0.32, 1], delay: 0.14 }}
@@ -200,8 +191,8 @@ const CardItem: React.FC<{ card: InfoCard; index: number }> = ({ card, index }) 
                 transition={{ duration: 1.4, delay: index * 0.08 + 0.5, ease: [0.23, 1, 0.32, 1] }}
             />
 
-            <div className="absolute bottom-2 xs:bottom-3 right-2 xs:right-3 pointer-events-none">
-                <span className={`text-xl xs:text-2xl font-black italic leading-none tracking-tighter ${card.emphasis === 'high' ? 'text-white-pure' : 'text-black-pure'}`} style={{ opacity: 0.02 }}>
+            <div className="absolute bottom-3 right-3 pointer-events-none">
+                <span className={`text-2xl font-black leading-none tracking-tighter ${card.emphasis === 'high' ? 'text-white-pure' : 'text-black-pure'}`} style={{ opacity: 0.02 }}>
                     {String(index + 1).padStart(2, '0')}
                 </span>
             </div>
@@ -237,6 +228,8 @@ const InfoSection: React.FC<InfoSectionProps> = ({
 
     if (cards.length === 0) return null
 
+    const displayCards = cards.slice(0, 8)
+
     return (
         <section id={id} className="relative w-full bg-white-pure border-t-2 border-black-pure overflow-hidden">
             {background}
@@ -250,9 +243,24 @@ const InfoSection: React.FC<InfoSectionProps> = ({
 
             <div className="container py-12 md:py-20 lg:py-24">
                 <div className={`grid ${gridCols[columns]} gap-4 md:gap-6`}>
-                    {cards.map((card, idx) => (
+                    {displayCards.map((card, idx) => (
                         <CardItem key={card.id} card={card} index={idx} />
                     ))}
+                    {cards.length > 8 && (
+                        <motion.div
+                            initial={{ opacity: 0, y: 30 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            className="relative flex flex-col p-8 border-2 border-black-pure bg-primary-500 transition-all duration-500 overflow-hidden cursor-pointer items-center justify-center min-h-[200px]"
+                        >
+                            <div className="w-16 h-16 border-4 border-black-pure bg-white-pure mx-auto mb-4 flex items-center justify-center hover:bg-black-pure transition-colors duration-500">
+                                <svg className="w-8 h-8 text-black-pure" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeWidth={3} d="M12 4v16m8-8H4" />
+                                </svg>
+                            </div>
+                            <span className="text-lg font-black text-black-pure uppercase">View All</span>
+                            <span className="text-sm font-mono font-black text-black-pure mt-2">{cards.length - 8} more</span>
+                        </motion.div>
+                    )}
                 </div>
             </div>
 

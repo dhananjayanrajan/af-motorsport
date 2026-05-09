@@ -10,6 +10,7 @@ import MosaicBackground from '../Backgrounds/MosaicBackground'
 import SectionCTA from '../Components/SectionCTA'
 import SectionHeader from '../Components/SectionHeader'
 import SectionScroller from '../Components/SectionScroller'
+import SectionSidebar from '../Components/SectionSidebar'
 
 export interface CarouselSlide {
   id: string
@@ -42,6 +43,8 @@ const CarouselSection: React.FC<CarouselSectionProps> = ({
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [itemsPerPage, setItemsPerPage] = useState(1)
   const [mounted, setMounted] = useState(false)
+  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [activeSlide, setActiveSlide] = useState<CarouselSlide | null>(null)
 
   const [emblaRef, emblaApi] = useEmblaCarousel(
     {
@@ -100,9 +103,12 @@ const CarouselSection: React.FC<CarouselSectionProps> = ({
     return `https://picsum.photos/seed/${index + 50}/1200/1600`
   }
 
+  const displayedSlides = slides.slice(0, 8)
+  const currentSlide = slides[selectedIndex]
+
   if (!mounted) {
     return (
-      <section id={id} className="w-full py-12 md:py-24 bg-background">
+      <section id={id} className="w-full py-12 md:py-24 bg-white-pure">
         <div className="container">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {[1, 2, 3].map((i) => (
@@ -115,25 +121,25 @@ const CarouselSection: React.FC<CarouselSectionProps> = ({
   }
 
   return (
-    <section id={id} className="relative w-full py-12 md:py-20 lg:py-24 bg-background overflow-hidden">
+    <section id={id} className="relative w-full py-12 md:py-20 lg:py-24 bg-white-pure overflow-hidden">
       <MosaicBackground />
       <div className="container flex flex-col">
         <SectionHeader
-          title={slides[selectedIndex]?.title || "Collection"}
-          subtitle={slides[selectedIndex]?.meta || "Featured"}
+          title={currentSlide?.title || "Collection"}
+          subtitle={currentSlide?.meta || "Featured"}
           variant={1}
           metadata={`${selectedIndex + 1} / ${slides.length}`}
         />
 
         <SectionScroller
-          items={slides.map(s => s.title)}
+          items={displayedSlides.map(s => s.title)}
           variant={1}
         />
 
-        <div className="flex flex-col gap-8 border-2 border-black-pure shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+        <div className="flex flex-col gap-8 border-2 border-black-pure bg-white-pure">
           <div className="overflow-hidden cursor-grab active:cursor-grabbing" ref={emblaRef}>
             <div className="flex touch-pan-y">
-              {slides.map((slide, idx) => (
+              {displayedSlides.map((slide, idx) => (
                 <div
                   key={`${slide.id}-${idx}`}
                   style={{ flex: `0 0 ${100 / itemsPerPage}%` }}
@@ -161,18 +167,12 @@ const CarouselSection: React.FC<CarouselSectionProps> = ({
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                       draggable="false"
                     />
-
-                    <div className="absolute bottom-0 right-0 bg-white-pure border-l border-t border-black-pure px-4 py-2 group-hover:bg-secondary-800 transition-colors duration-300">
-                      <span className="text-2xl font-black italic tabular-nums text-black-pure">
-                        {String((idx % slides.length) + 1).padStart(2, '0')}
-                      </span>
-                    </div>
                   </div>
 
                   <div className="grid grid-rows-[auto_1fr_auto] p-6 flex-grow pointer-events-none gap-6">
-                    <div>
+                    <div className="min-h-[48px]">
                       {slide.tags && slide.tags.length > 0 && (
-                        <p className="text-xs font-mono font-black text-neutral-400 group-hover:text-primary-500 transition-colors duration-500 uppercase tracking-widest mb-1 truncate">
+                        <p className="text-xs font-mono font-black text-black-pure group-hover:text-primary-500 transition-colors duration-500 uppercase tracking-widest mb-1 truncate">
                           {slide.tags.join(' · ')}
                         </p>
                       )}
@@ -181,50 +181,80 @@ const CarouselSection: React.FC<CarouselSectionProps> = ({
                       </h3>
                     </div>
 
-                    <div className="border-t border-black-pure group-hover:border-neutral-800 transition-colors duration-500 pt-4">
-                      {slide.description && (
-                        <p className="text-xs font-black uppercase text-neutral-400 group-hover:text-neutral-500 transition-colors duration-500 line-clamp-3 tracking-wide">
-                          {slide.description}
-                        </p>
-                      )}
-                    </div>
-
                     <div className="h-6 flex items-center">
-                      {slide.ctaLabel && (
-                        <div className="flex items-center gap-2 opacity-100 translate-y-0 group-hover:translate-x-1 transition-all duration-300">
-                          <span className="text-xs font-mono font-black uppercase tracking-widest text-transparent group-hover:text-white-pure border-b border-transparent group-hover:border-primary-500 pb-0.5">
-                            {slide.ctaLabel}
-                          </span>
-                          <ArrowRight className="h-3 w-3 text-transparent group-hover:text-primary-500" />
-                        </div>
-                      )}
+                      <button
+                        onClick={(e) => {
+                          e.preventDefault()
+                          e.stopPropagation()
+                          setActiveSlide(slide)
+                          setSidebarOpen(true)
+                        }}
+                        className="flex items-center gap-2 opacity-100 translate-y-0 group-hover:translate-x-1 transition-all duration-300 pointer-events-auto"
+                      >
+                        <span className="text-xs font-mono font-black uppercase tracking-widest text-black-pure group-hover:text-white-pure">
+                          Details
+                        </span>
+                        <ArrowRight className="h-3 w-3 text-black-pure group-hover:text-white-pure" />
+                      </button>
                     </div>
                   </div>
 
                   <div className="h-1.5 w-full bg-black-pure group-hover:bg-primary-500 transition-colors duration-500" />
                 </div>
               ))}
+
+              {slides.length > 8 && (
+                <div
+                  style={{ flex: `0 0 ${100 / itemsPerPage}%` }}
+                  className="group relative flex flex-col border-r border-black-pure bg-white-pure transition-colors duration-500 hover:bg-primary-500 select-none"
+                >
+                  <Link href={ctaPath || '#'} className="absolute inset-0 z-40" aria-label="View all" />
+                  <div className="relative h-[450px] border-b border-black-pure overflow-hidden bg-white-pure flex items-center justify-center">
+                    <div className="text-center p-8">
+                      <div className="w-20 h-20 border-4 border-black-pure bg-white-pure mx-auto mb-6 flex items-center justify-center group-hover:bg-black-pure transition-colors duration-500">
+                        <ArrowRight className="w-10 h-10 text-black-pure group-hover:text-white-pure transition-colors duration-500" />
+                      </div>
+                      <span className="text-lg font-black text-black-pure group-hover:text-white-pure uppercase transition-colors duration-500">
+                        View All
+                      </span>
+                    </div>
+                  </div>
+                  <div className="grid grid-rows-[auto_1fr_auto] p-6 flex-grow gap-6">
+                    <div>
+                      <h3 className="text-xl font-black uppercase text-black-pure group-hover:text-white-pure transition-colors duration-500 leading-tight">
+                        More {slides.length - 8} Items
+                      </h3>
+                    </div>
+                    <div className="h-6 flex items-center">
+                      <span className="text-xs font-mono font-black uppercase tracking-widest text-black-pure group-hover:text-white-pure">
+                        Browse All
+                      </span>
+                    </div>
+                  </div>
+                  <div className="h-1.5 w-full bg-black-pure group-hover:bg-white-pure transition-colors duration-500" />
+                </div>
+              )}
             </div>
           </div>
 
           <div className="relative z-50 w-full bg-white-pure border-t-2 border-black-pure h-20 flex items-stretch shrink-0">
-            <div className="hidden sm:flex items-stretch border-r-2 border-black-pure bg-neutral-50 px-6">
+            <div className="hidden sm:flex items-stretch border-r-2 border-black-pure bg-white-pure px-6">
               <div className="flex flex-col justify-center">
-                <span className="text-xs font-mono font-black text-neutral-400 uppercase tracking-widest">POS</span>
+                <span className="text-xs font-mono font-black text-black-pure uppercase tracking-widest">Position</span>
                 <span className="text-lg font-mono font-black text-black-pure tabular-nums">
                   {String(selectedIndex + 1).padStart(2, '0')}
-                  <span className="text-neutral-400 mx-1">/</span>
-                  <span className="text-neutral-400">{String(slides.length).padStart(2, '0')}</span>
+                  <span className="text-black-pure mx-1">/</span>
+                  <span className="text-black-pure">{String(displayedSlides.length).padStart(2, '0')}</span>
                 </span>
               </div>
             </div>
 
             <div className="flex-grow flex items-center px-4 md:px-8 gap-4 md:gap-8">
-              <div className="flex-grow h-[2px] bg-neutral-200 relative">
+              <div className="flex-grow h-[4px] bg-black-pure relative">
                 <motion.div
-                  className="absolute inset-y-0 left-0 bg-black-pure"
+                  className="absolute inset-y-0 left-0 bg-primary-500"
                   initial={{ width: '0%' }}
-                  animate={{ width: `${((selectedIndex + 1) / slides.length) * 100}%` }}
+                  animate={{ width: `${((selectedIndex + 1) / displayedSlides.length) * 100}%` }}
                   transition={{ type: 'spring', stiffness: 300, damping: 30 }}
                 />
               </div>
@@ -250,12 +280,30 @@ const CarouselSection: React.FC<CarouselSectionProps> = ({
         </div>
 
         <SectionCTA
-          label={slides[selectedIndex]?.ctaLabel || ctaLabel || "Discover More"}
-          path={slides[selectedIndex]?.ctaHref || ctaPath || "#"}
-          description={slides[selectedIndex]?.description}
+          label={currentSlide?.ctaLabel || ctaLabel || "Discover More"}
+          path={currentSlide?.ctaHref || ctaPath || "#"}
+          description={currentSlide?.description}
           variant={1}
         />
       </div>
+
+      <SectionSidebar
+        isOpen={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+        title={activeSlide?.title || ''}
+        description={activeSlide?.description || ''}
+        imageUrl={getImageUrl(activeSlide?.image, selectedIndex)}
+        idCode={activeSlide?.id || ''}
+        stats={[
+          { label: 'Position', val: String(selectedIndex + 1).padStart(2, '0'), color: 'bg-primary-500' },
+          { label: 'Tags', val: activeSlide?.tags?.join(', ') || 'None', color: 'bg-black-pure' }
+        ]}
+        buttonLabel={activeSlide?.ctaLabel || 'View Details'}
+        onAction={() => {
+          if (activeSlide?.ctaHref) window.location.href = activeSlide.ctaHref
+          setSidebarOpen(false)
+        }}
+      />
     </section>
   )
 }

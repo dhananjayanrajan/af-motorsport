@@ -31,7 +31,7 @@ const SectionSidebar: React.FC<SectionSidebarProps> = ({
     stats,
     buttonLabel,
     onAction,
-    infoLabel = "SYSTEM LOG"
+    infoLabel = "Details"
 }) => {
     useEffect(() => {
         if (isOpen) {
@@ -52,14 +52,13 @@ const SectionSidebar: React.FC<SectionSidebarProps> = ({
     return (
         <>
             <div
-                className={`fixed inset-0 z-[110] bg-black-pure/80 transition-opacity duration-300 ${isOpen ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'}`}
+                className={`fixed inset-0 z-[110] bg-black-pure transition-opacity duration-300 ${isOpen ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'}`}
                 onClick={onClose}
             />
             <aside
-                className={`fixed top-0 right-0 z-[120] w-full md:w-[480px] h-full bg-white-pure transition-transform duration-500 transform ${isOpen ? 'translate-x-0' : 'translate-x-full'} border-l border-black-pure flex flex-col shadow-none ring-0 outline-none`}
+                className={`fixed top-0 right-0 z-[120] w-full md:w-[480px] h-full bg-white-pure transition-transform duration-500 transform ${isOpen ? 'translate-x-0' : 'translate-x-full'} border-l border-black-pure flex flex-col`}
                 style={{
                     visibility: isOpen ? 'visible' : 'hidden',
-                    boxShadow: 'none'
                 }}
             >
                 <div className="relative h-72 shrink-0 overflow-hidden bg-black-pure group">
@@ -88,7 +87,7 @@ const SectionSidebar: React.FC<SectionSidebarProps> = ({
                         </div>
                     </div>
                 </div>
-                <div className="flex-1 overflow-y-auto p-8">
+                <div className="flex-1 overflow-y-auto p-8 bg-white-pure">
                     <div className="mb-8">
                         <div className="flex items-center gap-2 mb-3">
                             <div className="w-8 h-0.5 bg-primary-500" />
@@ -100,17 +99,17 @@ const SectionSidebar: React.FC<SectionSidebarProps> = ({
                             {title}
                         </h3>
                     </div>
-                    <div className="mb-8 p-4 bg-neutral-50 border border-black-pure">
-                        <p className="text-base font-bold text-black-pure/70">
+                    <div className="mb-8 p-4 bg-white-pure border border-black-pure">
+                        <p className="text-base font-bold text-black-pure">
                             {description}
                         </p>
                     </div>
                     <div className="space-y-4">
                         {stats.map((stat, i) => (
-                            <div key={i} className="flex items-center justify-between border-b border-black-pure pb-4 transition-all duration-300 hover:bg-black-pure hover:pl-3 px-2 group">
+                            <div key={i} className="flex items-center justify-between border-b border-black-pure pb-4 transition-all duration-300 hover:bg-black-pure hover:pl-3 px-2 group bg-white-pure">
                                 <div className="flex items-center gap-4">
                                     <div className={`w-1.5 h-6 ${stat.color} border border-black-pure transition-colors duration-300 group-hover:border-white-pure`} />
-                                    <span className="text-base font-bold text-black-pure/40 transition-colors duration-300 group-hover:text-white-pure">
+                                    <span className="text-base font-bold text-black-pure transition-colors duration-300 group-hover:text-white-pure">
                                         {stat.label}
                                     </span>
                                 </div>
@@ -124,7 +123,7 @@ const SectionSidebar: React.FC<SectionSidebarProps> = ({
                 <div className="p-8 bg-white-pure border-t border-black-pure shrink-0">
                     <button
                         onClick={onAction}
-                        className={`${buttonBase} w-full h-16 bg-black-pure text-white-pure hover:bg-primary-500 hover:text-black-pure relative overflow-hidden group shadow-none`}
+                        className={`${buttonBase} w-full h-16 bg-black-pure text-white-pure hover:bg-primary-500 hover:text-black-pure relative overflow-hidden group`}
                     >
                         <span className="relative z-10">{buttonLabel}</span>
                         <div className="absolute bottom-0 left-0 h-0.5 w-full bg-secondary-500 transition-transform duration-500 origin-left scale-x-0 group-hover:scale-x-100" />

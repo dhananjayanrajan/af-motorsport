@@ -42,9 +42,11 @@ const ShortsSection: React.FC<ShortsSectionProps> = ({
     const modalVideoRef = useRef<HTMLVideoElement>(null)
     const autoplayRef = useRef<ReturnType<typeof Autoplay> | null>(null)
 
+    const displayItems = items.slice(0, 8)
+
     const [emblaRef, emblaApi] = useEmblaCarousel(
         {
-            loop: true,
+            loop: false,
             align: 'start',
             skipSnaps: false,
             dragFree: true,
@@ -127,12 +129,12 @@ const ShortsSection: React.FC<ShortsSectionProps> = ({
         setIsMuted(!isMuted)
     }, [isMuted])
 
-    const activeItem = items[selectedIndex]
+    const activeItem = displayItems[selectedIndex]
 
     return (
         <section
             id={id}
-            className="relative w-full bg-black-pure border-t-[3px] border-black-pure overflow-hidden"
+            className="relative w-full bg-black-pure border-t-2 border-black-pure overflow-hidden"
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >
@@ -145,12 +147,12 @@ const ShortsSection: React.FC<ShortsSectionProps> = ({
                 />
             </div>
 
-            <div className="relative w-full overflow-hidden cursor-grab active:cursor-grabbing border-b-[3px] border-black-pure" ref={emblaRef}>
+            <div className="relative w-full overflow-hidden cursor-grab active:cursor-grabbing border-b-2 border-black-pure" ref={emblaRef}>
                 <div className="flex touch-pan-y" style={{ marginLeft: '-1px' }}>
-                    {items.map((item, idx) => (
+                    {displayItems.map((item, idx) => (
                         <div
                             key={item.id}
-                            className="relative flex-[0_0_85vw] sm:flex-[0_0_55vw] md:flex-[0_0_40vw] lg:flex-[0_0_30vw] xl:flex-[0_0_24vw] min-w-0 border-r-[3px] border-black-pure"
+                            className="relative flex-[0_0_85vw] sm:flex-[0_0_55vw] md:flex-[0_0_40vw] lg:flex-[0_0_30vw] xl:flex-[0_0_24vw] min-w-0 border-r-2 border-black-pure"
                         >
                             <button
                                 onClick={() => openModal(idx)}
@@ -165,32 +167,43 @@ const ShortsSection: React.FC<ShortsSectionProps> = ({
                                     playsInline
                                     autoPlay
                                 />
-                                <div className="absolute inset-0 bg-black-pure/20 group-hover:bg-black-pure/10 transition-colors duration-300" />
+                                <div className="absolute inset-0 bg-black-pure/40 group-hover:bg-black-pure/10 transition-colors duration-300" />
                                 <div className="absolute top-4 left-4 z-10">
-                                    <span className="text-xs font-mono font-black bg-black-pure text-white-pure px-2 py-1 uppercase tracking-widest border-[3px] border-black-pure shadow-[4px_4px_0px_0px_#000000]">
+                                    <span className="text-xs font-mono font-black bg-black-pure text-white-pure px-2 py-1 uppercase tracking-widest border-2 border-black-pure">
                                         {String(idx + 1).padStart(2, '0')}
                                     </span>
                                 </div>
                                 {item.category && (
                                     <div className="absolute top-4 right-4 z-10">
-                                        <span className="text-[10px] font-mono font-black bg-primary-500 text-black-pure px-2 py-1 uppercase tracking-widest border-[3px] border-black-pure shadow-[4px_4px_0px_0px_#000000]">
+                                        <span className="text-xs font-mono font-black bg-primary-500 text-black-pure px-2 py-1 uppercase tracking-widest border-2 border-black-pure">
                                             {item.category}
                                         </span>
                                     </div>
                                 )}
-                                <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black-pure/80 to-transparent">
+                                <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black-pure to-transparent">
                                     <h3 className="text-sm font-black text-white-pure uppercase tracking-tighter line-clamp-1">
                                         {item.title}
                                     </h3>
                                 </div>
                                 <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                    <div className="w-16 h-16 border-[3px] border-black-pure bg-white-pure flex items-center justify-center shadow-[4px_4px_0px_0px_#000000]">
+                                    <div className="w-16 h-16 border-2 border-black-pure bg-white-pure flex items-center justify-center">
                                         <Play className="w-8 h-8 text-black-pure fill-current" />
                                     </div>
                                 </div>
                             </button>
                         </div>
                     ))}
+                    {items.length > 8 && (
+                        <div className="relative flex-[0_0_85vw] sm:flex-[0_0_55vw] md:flex-[0_0_40vw] lg:flex-[0_0_30vw] xl:flex-[0_0_24vw] min-w-0 border-r-2 border-black-pure bg-primary-500 flex items-center justify-center">
+                            <div className="text-center">
+                                <div className="w-16 h-16 border-4 border-black-pure bg-white-pure mx-auto mb-4 flex items-center justify-center">
+                                    <Play className="w-8 h-8 text-black-pure" />
+                                </div>
+                                <span className="text-lg font-black text-black-pure uppercase">View All</span>
+                                <span className="text-sm font-mono font-black text-black-pure block mt-2">{items.length - 8} more</span>
+                            </div>
+                        </div>
+                    )}
                 </div>
             </div>
 
@@ -206,16 +219,16 @@ const ShortsSection: React.FC<ShortsSectionProps> = ({
                         className="fixed inset-0 z-[200] bg-black-pure flex items-center justify-center"
                     >
                         <div className="absolute top-4 right-4 z-50 flex items-center gap-2">
-                            <button onClick={toggleMute} className="w-12 h-12 border-[3px] border-black-pure bg-white-pure flex items-center justify-center text-black-pure hover:bg-primary-500 transition-colors shadow-[4px_4px_0px_0px_#000000]">
+                            <button onClick={toggleMute} className="w-12 h-12 border-2 border-black-pure bg-white-pure flex items-center justify-center text-black-pure hover:bg-primary-500 transition-colors">
                                 {isMuted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
                             </button>
-                            <button onClick={closeModal} className="w-12 h-12 border-[3px] border-black-pure bg-white-pure flex items-center justify-center text-black-pure hover:bg-primary-500 transition-colors shadow-[4px_4px_0px_0px_#000000]">
+                            <button onClick={closeModal} className="w-12 h-12 border-2 border-black-pure bg-white-pure flex items-center justify-center text-black-pure hover:bg-primary-500 transition-colors">
                                 <X className="w-5 h-5" />
                             </button>
                         </div>
                         <div className="absolute top-4 left-4 z-50 flex items-center gap-4">
-                            <span className="text-xs font-mono font-black text-primary-500 uppercase tracking-widest bg-black-pure px-2 py-1 border-[3px] border-primary-500 shadow-[4px_4px_0px_0px_#000000]">
-                                {String(selectedIndex + 1).padStart(2, '0')} / {String(items.length).padStart(2, '0')}
+                            <span className="text-xs font-mono font-black text-primary-500 uppercase tracking-widest bg-black-pure px-2 py-1 border-2 border-primary-500">
+                                {String(selectedIndex + 1).padStart(2, '0')} / {String(displayItems.length).padStart(2, '0')}
                             </span>
                             <h3 className="text-sm font-black text-white-pure uppercase tracking-tighter">
                                 {activeItem.title}
@@ -226,7 +239,7 @@ const ShortsSection: React.FC<ShortsSectionProps> = ({
                                 ref={modalVideoRef}
                                 src={activeItem.videoUrl}
                                 poster={activeItem.poster}
-                                className="max-w-full max-h-full object-contain border-[3px] border-black-pure shadow-[12px_12px_0px_0px_#000000]"
+                                className="max-w-full max-h-full object-contain border-2 border-black-pure"
                                 autoPlay
                                 playsInline
                                 muted={isMuted}
@@ -236,13 +249,13 @@ const ShortsSection: React.FC<ShortsSectionProps> = ({
                             />
                             {!isPlaying && (
                                 <button onClick={togglePlay} className="absolute inset-0 flex items-center justify-center z-30 bg-black-pure/40 group">
-                                    <div className="w-24 h-24 border-[3px] border-black-pure bg-primary-500 shadow-[8px_8px_0px_0px_#000000] group-hover:scale-110 transition-all duration-500 flex items-center justify-center">
+                                    <div className="w-24 h-24 border-2 border-black-pure bg-primary-500 group-hover:scale-110 transition-all duration-500 flex items-center justify-center">
                                         <Play className="w-10 h-10 text-black-pure fill-current" />
                                     </div>
                                 </button>
                             )}
                             {isPlaying && (
-                                <button onClick={togglePlay} className="absolute bottom-8 left-1/2 -translate-x-1/2 z-30 w-16 h-16 border-[3px] border-black-pure bg-white-pure flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300 shadow-[4px_4px_0px_0px_#000000]">
+                                <button onClick={togglePlay} className="absolute bottom-8 left-1/2 -translate-x-1/2 z-30 w-16 h-16 border-2 border-black-pure bg-white-pure flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300">
                                     <Pause className="w-8 h-8 text-black-pure" />
                                 </button>
                             )}
@@ -254,4 +267,4 @@ const ShortsSection: React.FC<ShortsSectionProps> = ({
     )
 }
 
-export default ShortsSection;
+export default ShortsSection

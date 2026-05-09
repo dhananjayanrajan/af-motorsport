@@ -149,17 +149,17 @@ const TextRevealSection: React.FC<TextRevealSectionProps> = ({
             </div>
 
             <div className="relative z-10 w-full">
-                {paragraphs.map((paragraph, pIndex) => {
+                {paragraphs.slice(0, 5).map((paragraph, pIndex) => {
                     const words = paragraph.split(/(\s+)/)
                     return (
                         <div key={pIndex} className="min-h-screen flex items-center px-6 md:px-12 lg:px-24 py-24 md:py-32">
                             <div className="w-full max-w-6xl mx-auto">
                                 <div className="flex items-start gap-4 md:gap-10">
                                     <div className="hidden md:flex flex-col items-center gap-6 shrink-0 pt-3">
-                                        <span className="text-sm font-mono font-black text-black-pure/15 tabular-nums leading-none">
+                                        <span className="text-sm font-mono font-black text-black-pure tabular-nums leading-none">
                                             {String(pIndex + 1).padStart(2, '0')}
                                         </span>
-                                        <div className="w-px h-24 bg-black-pure/5" />
+                                        <div className="w-px h-24 bg-black-pure" />
                                     </div>
                                     <div className="flex-1">
                                         <ParagraphReveal words={words} paragraphIndex={pIndex} />

@@ -1,8 +1,7 @@
-// GallerySection.tsx
 "use client"
 
 import { AnimatePresence, motion } from 'framer-motion'
-import { ChevronLeft, ChevronRight, Download, X, ZoomIn, ZoomOut } from 'lucide-react'
+import { ArrowRight, ChevronLeft, ChevronRight, Download, X, ZoomIn, ZoomOut } from 'lucide-react'
 import React, { useCallback, useEffect, useState } from 'react'
 import DotGridBackground from '../Backgrounds/DotGridBackground'
 import SectionFooter from '../Components/SectionFooter'
@@ -52,6 +51,8 @@ const GallerySection: React.FC<GallerySectionProps> = ({
         4: 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4',
     }
 
+    const displayItems = items.slice(0, 9)
+
     const openLightbox = (index: number) => {
         setActiveIndex(index)
         setZoomLevel(1)
@@ -67,12 +68,12 @@ const GallerySection: React.FC<GallerySectionProps> = ({
     const navigate = useCallback((direction: 'prev' | 'next') => {
         setActiveIndex((prev) => {
             if (direction === 'prev') {
-                return prev === 0 ? items.length - 1 : prev - 1
+                return prev === 0 ? displayItems.length - 1 : prev - 1
             }
-            return prev === items.length - 1 ? 0 : prev + 1
+            return prev === displayItems.length - 1 ? 0 : prev + 1
         })
         setZoomLevel(1)
-    }, [items.length])
+    }, [displayItems.length])
 
     const handleKeyDown = useCallback((e: KeyboardEvent) => {
         if (!lightboxOpen) return
@@ -86,7 +87,7 @@ const GallerySection: React.FC<GallerySectionProps> = ({
         return () => window.removeEventListener('keydown', handleKeyDown)
     }, [handleKeyDown])
 
-    const activeItem = items[activeIndex]
+    const activeItem = displayItems[activeIndex]
 
     const handleDownload = () => {
         if (!activeItem) return
@@ -110,7 +111,7 @@ const GallerySection: React.FC<GallerySectionProps> = ({
 
             <div className="container py-8 sm:py-12 lg:py-16 z-1">
                 <div className={`grid ${gridCols[columns]} gap-4 sm:gap-6 lg:gap-8`}>
-                    {items.map((item, idx) => (
+                    {displayItems.map((item, idx) => (
                         <motion.button
                             key={item.id}
                             onClick={() => openLightbox(idx)}
@@ -119,7 +120,7 @@ const GallerySection: React.FC<GallerySectionProps> = ({
                             initial={{ opacity: 0, y: 20 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.4, delay: idx * 0.05 }}
-                            className="group relative aspect-[4/3] overflow-hidden border-2 border-black-pure bg-neutral-100 focus-visible:ring-2 focus-visible:ring-primary-500 outline-none shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
+                            className="group relative aspect-[4/3] overflow-hidden border-2 border-black-pure bg-white-pure focus-visible:ring-2 focus-visible:ring-primary-500 outline-none"
                         >
                             <img
                                 src={item.image}
@@ -141,13 +142,28 @@ const GallerySection: React.FC<GallerySectionProps> = ({
 
                             {item.category && (
                                 <div className="absolute bottom-3 right-3 z-10 translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
-                                    <span className="text-[10px] font-mono font-black bg-white-pure text-black-pure border-2 border-black-pure px-3 py-1 uppercase tracking-widest shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                                    <span className="text-xs font-mono font-black bg-white-pure text-black-pure border-2 border-black-pure px-3 py-1 uppercase tracking-widest">
                                         {item.category}
                                     </span>
                                 </div>
                             )}
                         </motion.button>
                     ))}
+                    {items.length > 9 && (
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            className="group relative aspect-[4/3] overflow-hidden border-2 border-black-pure bg-primary-500 flex items-center justify-center cursor-pointer"
+                        >
+                            <div className="text-center">
+                                <div className="w-16 h-16 border-4 border-black-pure bg-white-pure mx-auto mb-4 flex items-center justify-center group-hover:bg-black-pure transition-colors duration-500">
+                                    <ArrowRight className="w-8 h-8 text-black-pure group-hover:text-white-pure transition-colors duration-500" />
+                                </div>
+                                <span className="text-lg font-black text-black-pure uppercase">View All</span>
+                                <span className="text-sm font-mono font-black text-black-pure block mt-2">{items.length - 9} more</span>
+                            </div>
+                        </motion.div>
+                    )}
                 </div>
             </div>
 
@@ -160,45 +176,40 @@ const GallerySection: React.FC<GallerySectionProps> = ({
                         transition={{ duration: 0.3 }}
                         className="fixed inset-0 z-[200] bg-black-pure flex flex-col"
                     >
-                        <div className="flex items-center justify-between p-4 md:p-6 border-b border-white-pure/10 shrink-0">
+                        <div className="flex items-center justify-between p-4 md:p-6 border-b border-white-pure shrink-0">
                             <div className="flex items-center gap-4 min-w-0">
                                 <span className="text-xs font-mono font-black text-primary-500 uppercase tracking-widest">
-                                    {String(activeIndex + 1).padStart(2, '0')} / {String(items.length).padStart(2, '0')}
+                                    {String(activeIndex + 1).padStart(2, '0')} / {String(displayItems.length).padStart(2, '0')}
                                 </span>
                                 <div className="hidden sm:flex flex-col min-w-0">
                                     <h3 className="text-sm font-black text-white-pure uppercase tracking-tighter truncate">
                                         {activeItem.title}
                                     </h3>
-                                    {activeItem.description && (
-                                        <p className="text-xs font-bold text-white-pure/40 uppercase tracking-widest truncate">
-                                            {activeItem.description}
-                                        </p>
-                                    )}
                                 </div>
                             </div>
 
                             <div className="flex items-center gap-2">
                                 <button
                                     onClick={() => setZoomLevel(prev => Math.max(1, prev - 0.5))}
-                                    className="w-10 h-10 border border-white-pure/20 flex items-center justify-center text-white-pure hover:bg-white-pure/10 transition-colors"
+                                    className="w-10 h-10 border border-white-pure flex items-center justify-center text-white-pure hover:bg-white-pure hover:text-black-pure transition-colors"
                                 >
                                     <ZoomOut className="w-4 h-4" />
                                 </button>
                                 <button
                                     onClick={() => setZoomLevel(prev => Math.min(3, prev + 0.5))}
-                                    className="w-10 h-10 border border-white-pure/20 flex items-center justify-center text-white-pure hover:bg-white-pure/10 transition-colors"
+                                    className="w-10 h-10 border border-white-pure flex items-center justify-center text-white-pure hover:bg-white-pure hover:text-black-pure transition-colors"
                                 >
                                     <ZoomIn className="w-4 h-4" />
                                 </button>
                                 <button
                                     onClick={handleDownload}
-                                    className="w-10 h-10 border border-white-pure/20 flex items-center justify-center text-white-pure hover:bg-white-pure/10 transition-colors"
+                                    className="w-10 h-10 border border-white-pure flex items-center justify-center text-white-pure hover:bg-white-pure hover:text-black-pure transition-colors"
                                 >
                                     <Download className="w-4 h-4" />
                                 </button>
                                 <button
                                     onClick={closeLightbox}
-                                    className="w-10 h-10 border border-white-pure/20 flex items-center justify-center text-white-pure hover:bg-white-pure/10 transition-colors"
+                                    className="w-10 h-10 border border-white-pure flex items-center justify-center text-white-pure hover:bg-white-pure hover:text-black-pure transition-colors"
                                 >
                                     <X className="w-4 h-4" />
                                 </button>
@@ -208,7 +219,7 @@ const GallerySection: React.FC<GallerySectionProps> = ({
                         <div className="flex-1 flex items-center justify-center relative overflow-hidden">
                             <button
                                 onClick={() => navigate('prev')}
-                                className="absolute left-4 z-30 w-12 h-12 border border-white-pure/20 flex items-center justify-center text-white-pure hover:bg-white-pure/10 transition-colors"
+                                className="absolute left-4 z-30 w-12 h-12 border border-white-pure flex items-center justify-center text-white-pure hover:bg-white-pure hover:text-black-pure transition-colors"
                             >
                                 <ChevronLeft className="w-6 h-6" />
                             </button>
@@ -244,18 +255,18 @@ const GallerySection: React.FC<GallerySectionProps> = ({
 
                             <button
                                 onClick={() => navigate('next')}
-                                className="absolute right-4 z-30 w-12 h-12 border border-white-pure/20 flex items-center justify-center text-white-pure hover:bg-white-pure/10 transition-colors"
+                                className="absolute right-4 z-30 w-12 h-12 border border-white-pure flex items-center justify-center text-white-pure hover:bg-white-pure hover:text-black-pure transition-colors"
                             >
                                 <ChevronRight className="w-6 h-6" />
                             </button>
                         </div>
 
-                        <div className="flex items-center justify-center gap-1.5 p-4 border-t border-white-pure/10 shrink-0">
-                            {items.map((_, idx) => (
+                        <div className="flex items-center justify-center gap-1.5 p-4 border-t border-white-pure shrink-0">
+                            {displayItems.map((_, idx) => (
                                 <button
                                     key={idx}
                                     onClick={() => { setActiveIndex(idx); setZoomLevel(1) }}
-                                    className={`h-1.5 transition-all duration-300 ${idx === activeIndex ? 'w-8 bg-primary-500' : 'w-4 bg-white-pure/20 hover:bg-white-pure/40'
+                                    className={`h-2 transition-all duration-300 ${idx === activeIndex ? 'w-8 bg-primary-500' : 'w-4 bg-white-pure hover:bg-white-pure/60'
                                         }`}
                                 />
                             ))}

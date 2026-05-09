@@ -15,7 +15,7 @@ const InputWrapper = ({ label, error, isFocused, children, containerClassName }:
     <div className={cn('relative w-full flex flex-col', containerClassName)}>
         <div className={cn(
             "h-6 px-4 inline-flex items-center self-start transition-colors duration-300",
-            error ? "bg-secondary text-white-pure" : isFocused ? "bg-primary text-black-pure" : "bg-black-pure text-white-pure"
+            error ? "bg-secondary-500 text-white-pure" : isFocused ? "bg-primary-500 text-black-pure" : "bg-black-pure text-white-pure"
         )}>
             <span className="text-[9px] font-mono font-black uppercase tracking-[0.3em]">
                 {label}
@@ -23,10 +23,10 @@ const InputWrapper = ({ label, error, isFocused, children, containerClassName }:
         </div>
         <div className={cn(
             "relative flex items-stretch border-l-8 transition-all duration-300",
-            error ? "border-secondary bg-secondary/5" : isFocused ? "border-primary bg-primary/5" : "border-black-pure bg-white-pure"
+            error ? "border-secondary-500 bg-white-pure" : isFocused ? "border-primary-500 bg-white-pure" : "border-black-pure bg-white-pure"
         )}>
             {children}
-            {isFocused && <div className="w-2 bg-black-pure border-y border-r border-black-pure animate-pulse" />}
+            {isFocused && <div className="w-2 bg-black-pure border-y border-r border-black-pure" />}
         </div>
     </div>
 )
@@ -41,7 +41,7 @@ const FormInput = forwardRef<HTMLInputElement, React.InputHTMLAttributes<HTMLInp
                     onFocus={(e) => { setIsFocused(true); onFocus?.(e) }}
                     onBlur={(e) => { setIsFocused(false); onBlur?.(e) }}
                     className={cn(
-                        "flex-1 h-14 bg-transparent px-6 text-[11px] font-mono font-black uppercase tracking-[0.25em] outline-none border-y border-r border-black-pure text-black-pure placeholder:text-black-pure/20",
+                        "flex-1 h-14 bg-white-pure px-6 text-[11px] font-mono font-black uppercase tracking-[0.25em] outline-none border-y border-r border-black-pure text-black-pure placeholder:text-black-pure",
                         className
                     )}
                     {...props}
@@ -62,7 +62,7 @@ const FormTextArea = forwardRef<HTMLTextAreaElement, React.TextareaHTMLAttribute
                     onFocus={(e) => { setIsFocused(true); onFocus?.(e) }}
                     onBlur={(e) => { setIsFocused(false); onBlur?.(e) }}
                     className={cn(
-                        "flex-1 min-h-[120px] bg-transparent p-6 text-[11px] font-mono font-black uppercase tracking-[0.25em] outline-none border-y border-r border-black-pure text-black-pure placeholder:text-black-pure/20 resize-none",
+                        "flex-1 min-h-[120px] bg-white-pure p-6 text-[11px] font-mono font-black uppercase tracking-[0.25em] outline-none border-y border-r border-black-pure text-black-pure placeholder:text-black-pure resize-none",
                         className
                     )}
                     {...props}
@@ -78,16 +78,16 @@ const FormCheckbox = forwardRef<HTMLInputElement, React.InputHTMLAttributes<HTML
         const [isFocused, setIsFocused] = useState(false)
         return (
             <InputWrapper label={label} error={error} isFocused={isFocused} containerClassName={containerClassName}>
-                <div className="flex-1 h-14 bg-transparent px-6 flex items-center border-y border-r border-black-pure">
+                <div className="flex-1 h-14 bg-white-pure px-6 flex items-center border-y border-r border-black-pure">
                     <input
                         ref={ref}
                         type="checkbox"
                         onFocus={() => setIsFocused(true)}
                         onBlur={() => setIsFocused(false)}
-                        className="w-5 h-5 accent-primary border-2 border-black-pure cursor-pointer"
+                        className="w-5 h-5 accent-primary-500 border-2 border-black-pure cursor-pointer"
                         {...props}
                     />
-                    <span className="ml-4 text-[10px] font-mono font-black uppercase text-black-pure/60 italic">Confirm selection</span>
+                    <span className="ml-4 text-[10px] font-mono font-black uppercase text-black-pure">Confirm selection</span>
                 </div>
             </InputWrapper>
         )
@@ -128,10 +128,10 @@ export const FormRenderer: React.FC<{ form: FormType }> = ({ form }) => {
 
     if (status === 'success') {
         return (
-            <div className="border-l-8 border-primary bg-primary/5 p-10">
-                <h3 className="text-2xl font-mono font-black text-primary tracking-tighter italic uppercase underline decoration-4">Confirmed</h3>
-                <p className="text-white-pure font-mono text-[10px] tracking-[0.2em] mt-4 leading-loose">
-                    WE HAVE YOUR INFORMATION. THE TEAM WILL BE IN TOUCH.
+            <div className="border-l-8 border-primary-500 bg-white-pure p-10">
+                <h3 className="text-2xl font-mono font-black text-primary-500 tracking-tighter uppercase underline decoration-4">Confirmed</h3>
+                <p className="text-black-pure font-mono text-[10px] tracking-[0.2em] mt-4 leading-loose">
+                    Your information has been received. The team will be in touch.
                 </p>
             </div>
         )
@@ -163,7 +163,7 @@ export const FormRenderer: React.FC<{ form: FormType }> = ({ form }) => {
 
             <div className="mt-4 self-start">
                 <ClippedButton
-                    label={status === 'loading' ? 'SENDING' : (form.submitButtonLabel?.toUpperCase().replace(' ', '_') || 'APPLY_NOW')}
+                    label={status === 'loading' ? 'Sending' : (form.submitButtonLabel?.toUpperCase() || 'Submit')}
                     variant="primary"
                     size="lg"
                     onClick={() => { }}
@@ -171,9 +171,9 @@ export const FormRenderer: React.FC<{ form: FormType }> = ({ form }) => {
             </div>
 
             {status === 'error' && (
-                <div className="bg-secondary/10 border-l-4 border-secondary p-4">
-                    <span className="text-secondary font-mono text-[10px] font-black uppercase tracking-widest animate-pulse">
-                        SOMETHING WENT WRONG. PLEASE TRY AGAIN.
+                <div className="bg-secondary-500 border-l-4 border-black-pure p-4">
+                    <span className="text-black-pure font-mono text-[10px] font-black uppercase tracking-widest">
+                        Something went wrong. Please try again.
                     </span>
                 </div>
             )}

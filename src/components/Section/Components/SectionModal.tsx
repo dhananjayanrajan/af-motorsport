@@ -1,4 +1,3 @@
-// SectionModal.tsx
 "use client"
 import Image from 'next/image'
 import React, { useEffect } from 'react'
@@ -32,7 +31,7 @@ const SectionModal: React.FC<SectionModalProps> = ({
     stats,
     buttonLabel,
     onAction,
-    infoLabel = "CORE DATA"
+    infoLabel = "Details"
 }) => {
     useEffect(() => {
         if (isOpen) {
@@ -51,13 +50,13 @@ const SectionModal: React.FC<SectionModalProps> = ({
     }
 
     return (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center p-0 sm:p-4 md:p-8 animate-in fade-in duration-500 backdrop-blur-md">
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-0 sm:p-4 md:p-8 animate-in fade-in duration-500">
             <div
-                className="absolute inset-0 bg-black-pure transition-opacity duration-500 cursor-none"
+                className="absolute inset-0 bg-black-pure transition-opacity duration-500 cursor-pointer"
                 onClick={onClose}
             />
 
-            <div className="relative w-full max-w-6xl h-full max-h-full sm:max-h-[85vh] bg-white-pure flex flex-col md:flex-row overflow-hidden border-4 border-black-pure shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] animate-in zoom-in-95 slide-in-from-bottom-10 duration-500">
+            <div className="relative w-full max-w-6xl h-full max-h-full sm:max-h-[85vh] bg-white-pure flex flex-col md:flex-row overflow-hidden border-4 border-black-pure animate-in zoom-in-95 slide-in-from-bottom-10 duration-500">
 
                 <div className="relative w-full md:w-1/2 h-64 md:h-auto bg-black-pure overflow-hidden shrink-0 group border-b-4 md:border-b-0 md:border-r-4 border-black-pure">
                     <Image
@@ -83,7 +82,7 @@ const SectionModal: React.FC<SectionModalProps> = ({
                     <div className="flex items-stretch border-b-4 border-black-pure h-20 shrink-0">
                         <div className="flex-1 flex items-center px-6 sm:px-10 bg-white-pure">
                             <div className="flex items-center gap-4">
-                                <div className="w-4 h-4 bg-black-pure animate-pulse" />
+                                <div className="w-4 h-4 bg-black-pure" />
                                 <span className="text-sm font-black text-black-pure tracking-tighter uppercase">
                                     {infoLabel}
                                 </span>
@@ -97,13 +96,13 @@ const SectionModal: React.FC<SectionModalProps> = ({
                         </button>
                     </div>
 
-                    <div className="flex-1 p-6 sm:p-10 md:p-14 flex flex-col overflow-y-auto custom-scrollbar">
+                    <div className="flex-1 p-6 sm:p-10 md:p-14 flex flex-col overflow-y-auto">
                         <header className="mb-10">
                             <div className="flex items-center gap-4 mb-4">
-                                <span className="text-xs font-black bg-primary-500 text-black-pure px-2 py-1 border-2 border-black-pure">DATASET_01</span>
+                                <span className="text-xs font-black bg-primary-500 text-black-pure px-2 py-1 border-2 border-black-pure">Details</span>
                                 <div className="h-1 flex-1 bg-black-pure" />
                             </div>
-                            <h3 className="text-2xl sm:text-3xl font-black text-black-pure leading-none uppercase mb-6 tracking-tighter italic">
+                            <h3 className="text-2xl sm:text-3xl font-black text-black-pure leading-none uppercase mb-6 tracking-tighter">
                                 {title}
                             </h3>
                             <div className="border-l-8 border-black-pure pl-6">
@@ -117,13 +116,13 @@ const SectionModal: React.FC<SectionModalProps> = ({
                             {stats.map((stat, i) => (
                                 <div
                                     key={i}
-                                    className="p-6 flex flex-col gap-4 transition-all duration-200 hover:bg-primary-500 border-black-pure group even:sm:border-l-4 odd:sm:border-r-0 border-b-4 last:border-b-0 sm:[&:nth-last-child(-n+2)]:border-b-0"
+                                    className="p-6 flex flex-col gap-4 transition-all duration-200 hover:bg-primary-500 border-black-pure group even:sm:border-l-4 odd:sm:border-r-0 border-b-4 last:border-b-0 sm:[&:nth-last-child(-n+2)]:border-b-0 bg-white-pure"
                                 >
-                                    <span className="text-xs font-black text-black-pure uppercase tracking-widest opacity-60 group-hover:opacity-100">
+                                    <span className="text-xs font-black text-black-pure uppercase tracking-widest group-hover:text-black-pure">
                                         {stat.label}
                                     </span>
                                     <div className="flex items-baseline gap-2">
-                                        <div className={`w-3 h-3 ${stat.color} border-2 border-black-pure shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]`} />
+                                        <div className={`w-3 h-3 ${stat.color} border-2 border-black-pure`} />
                                         <p className="text-xl sm:text-2xl font-black text-black-pure tracking-tighter">
                                             {stat.val}
                                         </p>
@@ -137,7 +136,7 @@ const SectionModal: React.FC<SectionModalProps> = ({
                                 {onAction && buttonLabel && (
                                     <button
                                         onClick={onAction}
-                                        className="relative flex-1 h-20 bg-black-pure text-white-pure font-black text-lg sm:text-xl uppercase tracking-tighter border-4 border-black-pure transition-all duration-200 hover:-translate-x-1 hover:-translate-y-1 hover:shadow-[8px_8px_0px_0px_#FFDE00] active:translate-x-0 active:translate-y-0 active:shadow-none group overflow-hidden"
+                                        className="relative flex-1 h-20 bg-black-pure text-white-pure font-black text-lg sm:text-xl uppercase tracking-tighter border-4 border-black-pure transition-all duration-200 hover:-translate-x-1 hover:-translate-y-1 hover:shadow-[8px_8px_0px_0px_#000000] active:translate-x-0 active:translate-y-0 active:shadow-none group overflow-hidden"
                                     >
                                         <span className="relative z-10">{buttonLabel}</span>
                                         <div className="absolute inset-0 bg-primary-500 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />

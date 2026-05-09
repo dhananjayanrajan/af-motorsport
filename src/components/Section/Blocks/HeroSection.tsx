@@ -45,12 +45,6 @@ const HeroSection: React.FC<HeroSectionProps> = ({
     right: 'text-right items-end'
   }
 
-  const uiLabels = {
-    scroll: "VIEW MORE",
-    metadata: "CONTEXT",
-    id: "LOCATION"
-  }
-
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       setMousePos({ x: e.clientX, y: e.clientY })
@@ -62,7 +56,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
   return (
     <section
       id={id}
-      className="relative w-full min-h-screen bg-background overflow-hidden flex flex-col border-b-2 border-black-pure"
+      className="relative w-full min-h-screen bg-white-pure overflow-hidden flex flex-col border-b-2 border-black-pure"
     >
       <WeaveBackground />
 
@@ -84,7 +78,6 @@ const HeroSection: React.FC<HeroSectionProps> = ({
                   y: (mousePos.y - (typeof window !== 'undefined' ? window.innerHeight / 2 : 0)) * 0.015,
                 }}
               />
-              <div className="absolute inset-0 bg-black-pure/30" />
             </motion.div>
           ) : (
             background
@@ -92,9 +85,9 @@ const HeroSection: React.FC<HeroSectionProps> = ({
         </AnimatePresence>
       </div>
 
-      <div className="absolute inset-0 z-10 pointer-events-none container grid grid-cols-6 md:grid-cols-12 h-full border-x border-black-pure/5">
+      <div className="absolute inset-0 z-10 pointer-events-none container grid grid-cols-6 md:grid-cols-12 h-full border-x border-black-pure">
         {[...Array(12)].map((_, i) => (
-          <div key={i} className="col-span-1 border-r border-black-pure/[0.03] h-full last:border-r-0" />
+          <div key={i} className="col-span-1 border-r border-black-pure h-full last:border-r-0" />
         ))}
       </div>
 
@@ -105,7 +98,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
             <motion.div
               initial={{ x: -20, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
-              className="mb-6 md:mb-10 flex items-center bg-black-pure text-white-pure px-4 py-1.5 md:px-6 md:py-2 relative overflow-hidden group/badge shrink-0 border-2 border-black-pure shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
+              className="mb-6 md:mb-10 flex items-center bg-black-pure text-white-pure px-4 py-1.5 md:px-6 md:py-2 relative overflow-hidden group/badge shrink-0 border-2 border-black-pure"
             >
               <motion.div
                 className="absolute inset-0 bg-primary-500 translate-x-[-101%]"
@@ -135,7 +128,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
             className="flex items-center gap-4 md:gap-6 mb-6 md:mb-10 overflow-hidden max-w-full"
           >
             <div className="w-8 md:w-12 h-px bg-primary-500 shrink-0" />
-            <span className="text-lg sm:text-xl md:text-2xl font-medium text-black-pure/80 uppercase italic break-words line-clamp-1">
+            <span className="text-lg sm:text-xl md:text-2xl font-medium text-black-pure uppercase break-words line-clamp-1">
               {subtitle}
             </span>
           </motion.div>
@@ -147,7 +140,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
               transition={{ delay: 0.4 }}
               className="mb-8 md:mb-12 group w-full"
             >
-              <p className="text-sm sm:text-base text-black-pure/70 leading-relaxed transition-colors duration-300 group-hover:text-black-pure max-w-[700px] break-words">
+              <p className="text-sm sm:text-base text-black-pure leading-relaxed transition-colors duration-300 max-w-[700px] break-words">
                 {description}
               </p>
             </motion.div>
@@ -167,7 +160,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
                     label={action.label}
                     href={action.href}
                     variant={action.variant || 'primary'}
-                    className="!text-sm md:!text-base !py-3 md:!py-5 !px-6 md:!px-10 font-bold transition-all duration-300 group-hover:-translate-y-1 whitespace-nowrap shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
+                    className="!text-sm md:!text-base !py-3 md:!py-5 !px-6 md:!px-10 font-bold transition-all duration-300 group-hover:-translate-y-1 whitespace-nowrap"
                   />
                   <div className="absolute inset-0 border-2 border-primary-500 opacity-0 transition-all duration-300 group-hover:opacity-100 -z-10 translate-x-2 translate-y-2" />
                 </motion.div>
@@ -187,8 +180,8 @@ const HeroSection: React.FC<HeroSectionProps> = ({
         <div className="container h-full grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 divide-x-2 divide-black-pure min-h-[80px]">
 
           <div className="flex flex-col justify-center px-4 md:px-8 group cursor-default relative overflow-hidden py-4 border-b-2 border-black-pure lg:border-b-0">
-            <span className="text-[9px] md:text-[10px] font-black text-black-pure/40 mb-1 uppercase tracking-[0.2em] truncate">
-              {uiLabels.id}
+            <span className="text-xs font-mono font-black text-black-pure mb-1 uppercase tracking-widest truncate">
+              Location
             </span>
             <span className="text-sm md:text-base font-bold text-black-pure uppercase truncate">
               {id}
@@ -197,7 +190,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
 
           <div className="hidden md:flex flex-col justify-center lg:col-span-2 group overflow-hidden py-4 border-b-2 border-black-pure lg:border-b-0">
             <SectionScroller
-              items={[meta || '', 'NODE_STABLE', 'SYS_2026', id]}
+              items={[meta || '', 'Information', 'SYS_2026', id]}
               variant={4}
               velocity={40}
             />
@@ -224,9 +217,9 @@ const HeroSection: React.FC<HeroSectionProps> = ({
             className="col-span-1 md:col-span-1 lg:col-span-2 flex items-center justify-between px-6 md:px-10 bg-black-pure text-white-pure transition-colors duration-500 hover:bg-primary-500 group/scroll relative overflow-hidden py-4"
           >
             <span className="relative z-10 text-xs md:text-base font-bold tracking-widest uppercase whitespace-nowrap">
-              {uiLabels.scroll}
+              Scroll
             </span>
-            <div className="relative z-10 w-8 h-8 md:w-12 md:h-12 border-2 border-white-pure/20 flex items-center justify-center transition-all duration-500 group-hover/scroll:rotate-90 shrink-0 ml-2">
+            <div className="relative z-10 w-8 h-8 md:w-12 md:h-12 border-2 border-white-pure flex items-center justify-center transition-all duration-500 group-hover/scroll:rotate-90 shrink-0 ml-2">
               <svg className="w-4 h-4 md:w-5 md:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                 <path d="M5 12h14M12 5l7 7-7 7" strokeWidth="3" strokeLinecap="square" />
               </svg>

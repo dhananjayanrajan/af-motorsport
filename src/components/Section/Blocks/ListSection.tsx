@@ -1,4 +1,3 @@
-// ListSection.tsx
 "use client"
 
 import { AnimatePresence, motion } from 'framer-motion'
@@ -7,6 +6,7 @@ import React, { useRef, useState } from 'react'
 import TactileBackground from '../Backgrounds/TactileBackground'
 import SectionFooter from '../Components/SectionFooter'
 import SectionHeader from '../Components/SectionHeader'
+import SectionModal from '../Components/SectionModal'
 import SectionScroller from '../Components/SectionScroller'
 
 export interface ListEntry {
@@ -53,18 +53,20 @@ const ListSection: React.FC<ListSectionProps> = ({
   scrollerVariant = 1,
 }) => {
   const [activeIndex, setActiveIndex] = useState<number>(0)
+  const [modalOpen, setModalOpen] = useState(false)
+  const [activeEntry, setActiveEntry] = useState<ListEntry | null>(null)
   const containerRef = useRef(null)
 
-  const activeEntry = entries[activeIndex] || entries[0]
-  const displayImage = activeEntry?.image || `https://picsum.photos/seed/${activeEntry?.id || 'default'}/1200/800`
-  const scrollerItems = entries.map(e => e.title)
+  const displayEntries = entries.slice(0, 8)
+  const activeEntryData = displayEntries[activeIndex] || displayEntries[0]
+  const displayImage = activeEntryData?.image || `https://picsum.photos/seed/${activeEntryData?.id || 'default'}/1200/800`
+  const scrollerItems = displayEntries.map(e => e.title)
 
   return (
-    <section id={id} ref={containerRef} className="relative w-full py-12 md:py-20 lg:py-24 bg-background">
+    <section id={id} ref={containerRef} className="relative w-full py-12 md:py-20 lg:py-24 bg-white-pure">
       <TactileBackground />
       <div className="container">
-        {/* Main Section Shadow Adjusted to 4px */}
-        <div className="border-4 border-black-pure shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] relative z-10 transition-all duration-300 bg-white-pure">
+        <div className="border-4 border-black-pure relative z-10 transition-all duration-300 bg-white-pure">
           <SectionHeader
             title={title}
             subtitle={subtitle}
@@ -99,8 +101,7 @@ const ListSection: React.FC<ListSectionProps> = ({
 
               <div className="space-y-6 relative z-10">
                 <div className="flex items-center gap-3">
-                  {/* Standardized Shadow to 4px White */}
-                  <div className="h-12 w-12 bg-primary-500 border-2 border-black-pure flex-none flex items-center justify-center text-black-pure shadow-[4px_4px_0px_0px_rgba(255,255,255,1)]">
+                  <div className="h-12 w-12 bg-primary-500 border-2 border-black-pure flex-none flex items-center justify-center text-black-pure">
                     <span className="font-black text-xl tracking-widest leading-none">
                       {(activeIndex + 1).toString().padStart(2, '0')}
                     </span>
@@ -114,18 +115,18 @@ const ListSection: React.FC<ListSectionProps> = ({
 
                 <AnimatePresence mode="wait">
                   <motion.div
-                    key={activeEntry?.id}
+                    key={activeEntryData?.id}
                     initial={{ x: -10, opacity: 0 }}
                     animate={{ x: 0, opacity: 1 }}
                     exit={{ x: 10, opacity: 0 }}
                     className="space-y-4"
                   >
                     <h3 className="text-xl md:text-3xl font-black text-white-pure uppercase tracking-widest leading-none">
-                      {activeEntry?.title}
+                      {activeEntryData?.title}
                     </h3>
-                    <div className="inline-block px-3 py-1 bg-primary-500 border-2 border-black-pure shadow-[4px_4px_0px_0px_rgba(255,255,255,1)]">
+                    <div className="inline-block px-3 py-1 bg-primary-500 border-2 border-black-pure">
                       <p className="text-black-pure text-xs font-black uppercase tracking-widest leading-none">
-                        {activeEntry?.tag || id}
+                        {activeEntryData?.tag || id}
                       </p>
                     </div>
                   </motion.div>
@@ -133,22 +134,20 @@ const ListSection: React.FC<ListSectionProps> = ({
               </div>
 
               <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 gap-4 relative z-10">
-                {/* Standardized Shadow to 4px with custom color */}
-                <div className="bg-white-pure p-4 flex flex-col border-2 border-black-pure shadow-[4px_4px_0px_0px_var(--primary-500)]">
+                <div className="bg-white-pure p-4 flex flex-col border-2 border-black-pure">
                   <span className="font-mono text-xs text-black-pure uppercase font-black tracking-widest leading-none mb-2">
                     {labels.statusPrefix}
                   </span>
                   <span className="text-sm font-black text-black-pure uppercase tracking-widest leading-none truncate">
-                    {activeEntry?.status}
+                    {activeEntryData?.status}
                   </span>
                 </div>
-                {/* Standardized Shadow to 4px White */}
-                <div className="bg-primary-500 p-4 flex flex-col border-2 border-black-pure shadow-[4px_4px_0px_0px_rgba(255,255,255,1)]">
+                <div className="bg-primary-500 p-4 flex flex-col border-2 border-black-pure">
                   <span className="font-mono text-xs text-black-pure uppercase font-black tracking-widest leading-none mb-2">
                     {labels.timePrefix}
                   </span>
                   <span className="text-sm font-black text-black-pure uppercase tracking-widest leading-none tabular-nums truncate">
-                    {activeEntry?.timestamp}
+                    {activeEntryData?.timestamp}
                   </span>
                 </div>
               </div>
@@ -156,13 +155,17 @@ const ListSection: React.FC<ListSectionProps> = ({
 
             <div className="lg:col-span-7 xl:col-span-8 bg-white-pure flex flex-col min-h-0">
               <div className="flex-1 overflow-y-auto max-h-[600px] no-scrollbar">
-                {entries.map((entry, idx) => (
+                {displayEntries.map((entry, idx) => (
                   <button
                     key={entry.id}
                     onMouseEnter={() => setActiveIndex(idx)}
+                    onClick={() => {
+                      setActiveEntry(entry)
+                      setModalOpen(true)
+                    }}
                     className={`
                       relative w-full flex items-center p-6 md:px-10 transition-colors duration-200 group border-b-2 border-black-pure
-                      ${activeIndex === idx ? 'bg-neutral-100' : 'bg-white-pure'}
+                      ${activeIndex === idx ? 'bg-black-pure' : 'bg-white-pure'}
                     `}
                   >
                     <div className="relative z-10 flex items-center justify-between w-full gap-4">
@@ -172,7 +175,7 @@ const ListSection: React.FC<ListSectionProps> = ({
                         </span>
 
                         <div className="flex flex-col items-start text-left min-w-0">
-                          <span className="text-xs font-mono font-black uppercase tracking-widest leading-none text-black-pure mb-2">
+                          <span className={`text-xs font-mono font-black uppercase tracking-widest leading-none mb-2 ${activeIndex === idx ? 'text-white-pure' : 'text-black-pure'}`}>
                             {entry.tag || id}
                           </span>
                           <h4 className={`text-base md:text-md font-black uppercase tracking-widest leading-none transition-colors line-clamp-1 ${activeIndex === idx ? 'text-primary-500' : 'text-black-pure'}`}>
@@ -184,7 +187,7 @@ const ListSection: React.FC<ListSectionProps> = ({
                       {entry.href && (
                         <Link
                           href={entry.href}
-                          className={`h-12 w-12 flex-none flex items-center justify-center border-2 border-black-pure transition-all shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] ${activeIndex === idx ? 'bg-primary-500 shadow-none translate-x-1 translate-y-1' : 'bg-white-pure'}`}
+                          className={`h-12 w-12 flex-none flex items-center justify-center border-2 border-black-pure transition-all ${activeIndex === idx ? 'bg-primary-500 translate-x-1 translate-y-1' : 'bg-white-pure'}`}
                         >
                           <svg className="w-5 h-5 text-black-pure" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                             <path d="M7 17L17 7M17 7H7M17 7V17" strokeWidth="4" strokeLinecap="square" />
@@ -195,16 +198,35 @@ const ListSection: React.FC<ListSectionProps> = ({
                     <div className={`absolute left-0 top-0 w-2 h-full bg-primary-500 transition-transform duration-300 origin-bottom ${activeIndex === idx ? 'scale-y-100' : 'scale-y-0'}`} />
                   </button>
                 ))}
+                {entries.length > 8 && (
+                  <button className="relative w-full flex items-center p-6 md:px-10 transition-colors duration-200 group border-b-2 border-black-pure bg-primary-500 hover:bg-black-pure">
+                    <div className="relative z-10 flex items-center justify-between w-full gap-4">
+                      <div className="flex items-center gap-6 min-w-0">
+                        <span className="font-mono text-xl font-black flex-none text-black-pure group-hover:text-white-pure">+</span>
+                        <div className="flex flex-col items-start text-left min-w-0">
+                          <span className="text-base font-black uppercase tracking-widest leading-none text-black-pure group-hover:text-white-pure">
+                            View All Entries
+                          </span>
+                        </div>
+                      </div>
+                      <div className="h-12 w-12 flex-none flex items-center justify-center border-2 border-black-pure bg-white-pure group-hover:bg-black-pure transition-all">
+                        <svg className="w-5 h-5 text-black-pure group-hover:text-white-pure" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                          <path d="M7 17L17 7M17 7H7M17 7V17" strokeWidth="4" strokeLinecap="square" />
+                        </svg>
+                      </div>
+                    </div>
+                  </button>
+                )}
               </div>
 
               <div className="flex-none p-6 bg-white-pure border-t-2 border-black-pure flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div className="flex flex-col w-full sm:w-auto">
-                  <span className="font-mono text-xs font-black text-black-pure uppercase tracking-widest leading-none text-center sm:text-left mb-2">Total Capacity</span>
-                  <span className="text-base font-black text-black-pure uppercase tracking-widest leading-none text-center sm:text-left">{entries.length} Units</span>
+                  <span className="font-mono text-xs font-black text-black-pure uppercase tracking-widest leading-none text-center sm:text-left mb-2">Total</span>
+                  <span className="text-base font-black text-black-pure uppercase tracking-widest leading-none text-center sm:text-left">{entries.length} Entries</span>
                 </div>
                 <div className="flex gap-2">
                   {Array.from({ length: 5 }).map((_, i) => (
-                    <div key={i} className={`h-2 w-8 border-2 border-black-pure ${i <= activeIndex ? 'bg-primary-500' : 'bg-white-pure'}`} />
+                    <div key={i} className={`h-2 w-8 border-2 border-black-pure ${i <= (activeIndex / (displayEntries.length - 1)) * 4 ? 'bg-primary-500' : 'bg-white-pure'}`} />
                   ))}
                 </div>
               </div>
@@ -213,6 +235,25 @@ const ListSection: React.FC<ListSectionProps> = ({
           <SectionFooter variant={footerVariant} />
         </div>
       </div>
+
+      <SectionModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        title={activeEntry?.title || ''}
+        description={activeEntry?.subtitle || activeEntry?.status || ''}
+        imageUrl={activeEntry?.image || displayImage}
+        idCode={activeEntry?.id || ''}
+        stats={[
+          { label: 'Status', val: activeEntry?.status || 'N/A', color: 'bg-primary-500' },
+          { label: 'Time', val: activeEntry?.timestamp || 'N/A', color: 'bg-black-pure' }
+        ]}
+        buttonLabel="View Details"
+        onAction={() => {
+          if (activeEntry?.href) window.location.href = activeEntry.href
+          setModalOpen(false)
+        }}
+        infoLabel={activeEntry?.tag || id}
+      />
     </section>
   )
 }

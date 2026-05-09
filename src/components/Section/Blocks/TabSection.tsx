@@ -50,14 +50,16 @@ const TabSection: React.FC<TabSectionProps> = ({
 }) => {
   const [activeTab, setActiveTab] = useState(defaultTab || tabs[0]?.id)
 
+  const displayTabs = tabs.slice(0, 6)
+
   const tabButtonStyles = {
-    underline: 'border-b-[3px] border-black-pure data-[active=true]:border-b-[6px] data-[active=true]:border-primary-500 hover:bg-neutral-50 transition-all duration-300',
-    pill: 'border-[3px] border-black-pure m-1 transition-all duration-300 data-[active=true]:bg-black-pure data-[active=true]:text-white-pure hover:bg-primary-500 hover:border-primary-500 shadow-[4px_4px_0px_0px_#000000] data-[active=true]:shadow-none data-[active=true]:translate-x-[2px] data-[active=true]:translate-y-[2px]',
-    block: 'flex-1 border-r-[3px] border-black-pure last:border-r-0 transition-all duration-300 hover:bg-neutral-50 data-[active=true]:bg-primary-500 data-[active=true]:text-black-pure'
+    underline: 'border-b-2 border-black-pure data-[active=true]:border-b-4 data-[active=true]:border-primary-500 hover:bg-black-pure hover:text-white-pure transition-all duration-300',
+    pill: 'border-2 border-black-pure m-1 transition-all duration-300 data-[active=true]:bg-black-pure data-[active=true]:text-white-pure hover:bg-primary-500 hover:border-primary-500 data-[active=true]:shadow-none data-[active=true]:translate-x-1 data-[active=true]:translate-y-1',
+    block: 'flex-1 border-r-2 border-black-pure last:border-r-0 transition-all duration-300 hover:bg-black-pure hover:text-white-pure data-[active=true]:bg-primary-500 data-[active=true]:text-black-pure'
   }
 
   return (
-    <section id={id} className="relative w-full bg-white-pure border-t-[3px] border-black-pure overflow-hidden">
+    <section id={id} className="relative w-full bg-white-pure border-t-2 border-black-pure overflow-hidden">
       {background}
 
       <SectionHeader
@@ -68,9 +70,9 @@ const TabSection: React.FC<TabSectionProps> = ({
       />
 
       <div className="relative z-10 w-full flex flex-col">
-        <div className="w-full bg-white-pure border-b-[3px] border-black-pure">
+        <div className="w-full bg-white-pure border-b-2 border-black-pure">
           <div className={`flex flex-wrap ${variant === 'block' ? 'flex-col md:flex-row bg-white-pure' : 'bg-white-pure'}`}>
-            {tabs.map((tab, idx) => {
+            {displayTabs.map((tab, idx) => {
               const isActive = activeTab === tab.id
               return (
                 <button
@@ -81,12 +83,12 @@ const TabSection: React.FC<TabSectionProps> = ({
                 >
                   <div className="flex flex-col items-start gap-1">
                     <div className="flex items-center gap-3">
-                      <span className={`text-base font-black italic transition-all duration-300 ${isActive ? (variant === 'block' ? 'text-black-pure' : 'text-primary-500') : 'text-black-pure/30'}`}>
+                      <span className={`text-base font-black transition-all duration-300 ${isActive ? (variant === 'block' ? 'text-black-pure' : 'text-primary-500') : 'text-black-pure'}`}>
                         {labels.channelPrefix}{String(idx + 1).padStart(2, '0')}
                       </span>
                       {isActive && (
                         <div className="flex items-center gap-1">
-                          <div className="w-2 h-2 bg-primary-500 animate-pulse" />
+                          <div className="w-2 h-2 bg-primary-500" />
                           <span className={`text-xs font-black uppercase tracking-widest transition-all duration-300 ${variant === 'block' ? 'text-black-pure' : 'text-primary-500'}`}>
                             {labels.statusActive}
                           </span>
@@ -95,11 +97,11 @@ const TabSection: React.FC<TabSectionProps> = ({
                     </div>
                     <div className="flex items-center gap-3">
                       {tab.icon && (
-                        <span className={`w-4 h-4 transition-all duration-300 ${isActive ? (variant === 'block' ? 'text-black-pure' : 'text-primary-500') : 'text-black-pure/40 group-hover:text-black-pure'}`}>
+                        <span className={`w-4 h-4 transition-all duration-300 ${isActive ? (variant === 'block' ? 'text-black-pure' : 'text-primary-500') : 'text-black-pure group-hover:text-white-pure'}`}>
                           {tab.icon}
                         </span>
                       )}
-                      <span className={`text-base font-black transition-all duration-300 ${isActive ? 'text-black-pure' : 'text-black-pure/40 group-hover:text-black-pure'}`}>
+                      <span className={`text-base font-black transition-all duration-300 ${isActive ? 'text-black-pure' : 'text-black-pure group-hover:text-white-pure'}`}>
                         {tab.label}
                       </span>
                     </div>
@@ -107,22 +109,38 @@ const TabSection: React.FC<TabSectionProps> = ({
                 </button>
               )
             })}
+            {tabs.length > 6 && (
+              <button className={`relative px-8 py-6 bg-white-pure font-black uppercase tracking-tight transition-all duration-300 focus:outline-none group ${variant === 'underline' ? 'border-b-2 border-black-pure hover:bg-black-pure hover:text-white-pure' : variant === 'pill' ? 'border-2 border-black-pure m-1 hover:bg-black-pure hover:text-white-pure' : 'flex-1 border-r-2 border-black-pure last:border-r-0 hover:bg-black-pure hover:text-white-pure'}`}>
+                <div className="flex flex-col items-start gap-1">
+                  <div className="flex items-center gap-3">
+                    <span className="text-base font-black text-black-pure group-hover:text-white-pure">
+                      +{tabs.length - 6}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className="text-base font-black text-black-pure group-hover:text-white-pure">
+                      More
+                    </span>
+                  </div>
+                </div>
+              </button>
+            )}
           </div>
         </div>
 
-        <div className="w-full p-8 md:p-16 min-h-[400px] border-b-[3px] border-black-pure bg-neutral-100 flex flex-col items-center justify-center">
-          <div className="relative w-full max-w-5xl bg-white-pure border-[3px] border-black-pure p-8 md:p-12 transition-all duration-300 shadow-[12px_12px_0px_0px_#000000]">
-            <div className="absolute top-0 left-0 w-5 h-5 border-t-[3px] border-l-[3px] border-black-pure bg-primary-500 transition-all duration-300 -translate-x-[6px] -translate-y-[6px]" />
+        <div className="w-full p-8 md:p-16 min-h-[400px] border-b-2 border-black-pure bg-white-pure flex flex-col items-center justify-center">
+          <div className="relative w-full max-w-5xl bg-white-pure border-2 border-black-pure p-8 md:p-12 transition-all duration-300">
+            <div className="absolute top-0 left-0 w-5 h-5 border-t-2 border-l-2 border-black-pure bg-primary-500 transition-all duration-300 -translate-x-1 -translate-y-1" />
             <div className="text-black-pure font-bold text-base">
               {tabs.find(t => t.id === activeTab)?.content}
             </div>
-            <div className="absolute bottom-0 right-0 w-8 h-2 bg-primary-500 transition-all duration-300 translate-x-[6px] translate-y-[6px]" />
+            <div className="absolute bottom-0 right-0 w-8 h-2 bg-primary-500 transition-all duration-300 translate-x-1 translate-y-1" />
           </div>
         </div>
       </div>
 
       {ctaLabel && ctaPath && (
-        <div className="py-24 flex justify-center bg-white-pure border-b-[3px] border-black-pure">
+        <div className="py-24 flex justify-center bg-white-pure border-b-2 border-black-pure">
           <SectionButton label={ctaLabel} href={ctaPath} variant="primary" size="lg" />
         </div>
       )}
@@ -132,4 +150,4 @@ const TabSection: React.FC<TabSectionProps> = ({
   )
 }
 
-export default TabSection;
+export default TabSection

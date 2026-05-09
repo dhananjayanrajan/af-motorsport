@@ -105,7 +105,6 @@
 
 /resources/suits
 /resources/suits/[slug]
-/resources/suits/[slug]/details
 
 ## Page Format with Sections:
 

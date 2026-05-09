@@ -25,11 +25,6 @@ const CoverSection: React.FC<CoverSectionProps> = ({
     })
 
     const imageScale = useTransform(scrollYProgress, [0, 1], [1, 1.15])
-    const imageFilter = useTransform(
-        scrollYProgress,
-        [0, 0.5],
-        ['grayscale(100%) contrast(120%)', 'grayscale(100%) contrast(150%) brightness(0.5)']
-    )
 
     useEffect(() => {
         setIsLoaded(true)
@@ -52,8 +47,7 @@ const CoverSection: React.FC<CoverSectionProps> = ({
             <motion.div
                 className="absolute inset-0 z-0"
                 style={{
-                    scale: imageScale,
-                    filter: imageFilter
+                    scale: imageScale
                 }}
             >
                 <motion.img
@@ -78,8 +72,8 @@ const CoverSection: React.FC<CoverSectionProps> = ({
 
             <div className="absolute inset-0 z-[2] grid grid-cols-4 md:grid-cols-12 h-full w-full pointer-events-none">
                 {[...Array(12)].map((_, i) => (
-                    <div key={i} className="border-r border-white-pure/20 h-full w-full relative">
-                        <div className="absolute top-0 left-0 w-2 h-2 bg-white-pure opacity-40" />
+                    <div key={i} className="border-r border-white-pure h-full w-full relative">
+                        <div className="absolute top-0 left-0 w-2 h-2 bg-white-pure" />
                     </div>
                 ))}
             </div>
@@ -91,12 +85,12 @@ const CoverSection: React.FC<CoverSectionProps> = ({
                 </div>
                 <div className="w-full flex justify-between items-end">
                     <div className="w-16 h-16 border-b-4 border-l-4 border-white-pure" />
-                    <div className="w-32 h-4 bg-white-pure shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]" />
+                    <div className="w-32 h-4 bg-white-pure" />
                 </div>
             </div>
 
             <motion.div
-                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] h-[80vh] border-2 border-white-pure/30 z-[4] pointer-events-none"
+                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] h-[80vh] border-2 border-white-pure z-[4] pointer-events-none"
                 style={{
                     x: mousePos.x,
                     y: mousePos.y,

@@ -10,7 +10,7 @@ interface SectionScrollerProps {
 
 const SectionScroller: React.FC<SectionScrollerProps> = ({
     items,
-    delimiter = <div className="w-12 h-px bg-current opacity-20 mx-4" />,
+    delimiter = <div className="w-12 h-px bg-black-pure mx-4" />,
     velocity = 30,
     variant = 1
 }) => {
@@ -58,12 +58,12 @@ const SectionScroller: React.FC<SectionScrollerProps> = ({
                         <div key={idx} className="flex items-center">
                             {items.map((item, i) => (
                                 <div key={i} className="flex items-center group/item">
-                                    <span className={`${textBase} text-primary-500 px-6 border-x border-white-pure/10 group-hover/item:bg-white-pure group-hover/item:text-black-pure transition-colors cursor-default py-2`}>
+                                    <span className={`${textBase} text-primary-500 px-6 border-x border-white-pure group-hover/item:bg-white-pure group-hover/item:text-black-pure transition-colors cursor-default py-2`}>
                                         {item}
                                     </span>
                                     <div className="flex gap-1 px-4">
-                                        <div className="w-1 h-1 bg-secondary-500 rounded-full" />
-                                        <div className="w-1 h-1 bg-secondary-500 rounded-full opacity-50" />
+                                        <div className="w-1 h-1 bg-secondary-500" />
+                                        <div className="w-1 h-1 bg-secondary-500" />
                                     </div>
                                 </div>
                             ))}
@@ -77,16 +77,15 @@ const SectionScroller: React.FC<SectionScrollerProps> = ({
     if (variant === 3) {
         return (
             <div className="w-full bg-secondary-500 border-y-2 border-black-pure h-20 flex items-center relative overflow-hidden group">
-                <div className="absolute inset-0 opacity-10 bg-[repeating-linear-gradient(45deg,transparent,transparent_10px,#000_10px,#000_20px)]" />
                 <div className={`flex items-center whitespace-nowrap relative z-10 ${animationClass} group-hover:scroller-pause`} style={{ animationDuration: `${velocity}s` }}>
                     {[...Array(4)].map((_, idx) => (
                         <div key={idx} className="flex items-center">
                             {items.map((item, i) => (
                                 <div key={i} className="flex items-center">
-                                    <span className={`${textBase} text-black-pure px-8 italic group-hover:not-italic transition-all`}>
+                                    <span className={`${textBase} text-black-pure px-8 group-hover:not-italic transition-all`}>
                                         {item}
                                     </span>
-                                    <span className="text-2xl font-black text-black-pure opacity-20">/</span>
+                                    <span className="text-2xl font-black text-black-pure">/</span>
                                 </div>
                             ))}
                         </div>
@@ -127,10 +126,10 @@ const SectionScroller: React.FC<SectionScrollerProps> = ({
                             {items.map((item, i) => (
                                 <div key={i} className="flex items-center px-10 group/item">
                                     <div className="flex flex-col">
-                                        <span className="text-[10px] font-black text-primary-500 mb-1 opacity-0 group-hover/item:opacity-100 transition-opacity">DATA_NODE_{i}</span>
+                                        <span className="text-[10px] font-black text-primary-500 mb-1 group-hover/item:opacity-100 transition-opacity">{item}</span>
                                         <span className={`${textBase} text-2xl text-white-pure group-hover/item:text-primary-500 transition-colors`}>{item}</span>
                                     </div>
-                                    <div className="ml-10 h-12 w-px bg-white-pure/20 rotate-12" />
+                                    <div className="ml-10 h-12 w-px bg-white-pure rotate-12" />
                                 </div>
                             ))}
                         </div>
@@ -141,7 +140,7 @@ const SectionScroller: React.FC<SectionScrollerProps> = ({
     }
 
     return (
-        <div className="w-full bg-primary-500 border-y-2 border-black-pure h-14 flex items-center relative overflow-hidden group shadow-[inset_0px_4px_0px_rgba(0,0,0,0.1)]">
+        <div className="w-full bg-primary-500 border-y-2 border-black-pure h-14 flex items-center relative overflow-hidden group">
             <div className={`flex items-center whitespace-nowrap ${animationClass} group-hover:scroller-pause`} style={{ animationDuration: `${velocity}s` }}>
                 {[...Array(4)].map((_, idx) => (
                     <div key={idx} className="flex items-center">
