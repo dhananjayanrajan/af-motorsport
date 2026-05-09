@@ -151,7 +151,7 @@ const VideoSection: React.FC<VideoSectionProps> = ({
                     onClick={togglePlay}
                     className="absolute inset-0 flex items-center justify-center group z-10 transition-all duration-500"
                   >
-                    <div className="w-24 h-24 border-[3px] border-white-pure bg-black-pure/20 backdrop-blur-sm group-hover:bg-primary-500 group-hover:scale-110 group-hover:border-black-pure transition-all duration-500 flex items-center justify-center shadow-[12px_12px_0px_0px_rgba(0,0,0,0.5)]">
+                    <div className="w-24 h-24 border-[3px] border-white-pure bg-black-pure/20 backdrop-blur-sm group-hover:bg-primary-500 group-hover:scale-110 group-hover:border-black-pure transition-all duration-500 flex items-center justify-center">
                       <Play className="w-10 h-10 text-white-pure fill-current group-hover:text-black-pure transition-colors" />
                     </div>
                   </button>
@@ -223,15 +223,17 @@ const VideoSection: React.FC<VideoSectionProps> = ({
         </div>
       )}
 
-      {/* Overlay */}
       <div
-        className={`fixed inset-0 z-[110] bg-black-pure/60 backdrop-blur-xl transition-opacity duration-700 ${isPlaylistOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+        className={`fixed inset-0 z-[110] bg-black-pure/60 backdrop-blur-xl transition-opacity duration-700 ${isPlaylistOpen ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'}`}
         onClick={() => setIsPlaylistOpen(false)}
       />
 
-      {/* Sidebar */}
       <aside
-        className={`fixed top-0 right-0 z-[120] h-full w-full sm:w-[450px] bg-white-pure border-l-[3px] border-black-pure transition-transform duration-700 cubic-bezier(0.16, 1, 0.3, 1) ${isPlaylistOpen ? 'translate-x-0' : 'translate-x-full'} flex flex-col shadow-[-20px_0px_0px_0px_#000000]`}
+        className={`fixed top-0 right-0 z-[120] h-full w-full sm:w-[450px] bg-white-pure border-l-[3px] border-black-pure transition-transform duration-700 cubic-bezier(0.16, 1, 0.3, 1) ${isPlaylistOpen ? 'translate-x-0' : 'translate-x-full'} flex flex-col shadow-none outline-none ring-0`}
+        style={{
+          visibility: isPlaylistOpen ? 'visible' : 'hidden',
+          boxShadow: 'none'
+        }}
       >
         <div className="p-8 border-b-[3px] border-black-pure bg-white-pure flex items-center justify-between">
           <div className="flex flex-col gap-1">
@@ -260,7 +262,7 @@ const VideoSection: React.FC<VideoSectionProps> = ({
                 className={`w-full flex items-stretch border-b-[3px] border-black-pure last:border-b-0 transition-all duration-300 group relative overflow-hidden ${isActive ? 'bg-primary-500' : 'bg-white-pure hover:bg-black-pure hover:text-white-pure'}`}
               >
                 <div
-                  className={`w-16 flex items-center justify-center border-r-[3px] border-black-pure shrink-0 transition-colors ${isActive ? 'bg-black-pure text-primary-500 shadow-[4px_0px_0px_0px_#000000]' : 'text-black-pure group-hover:text-white-pure'}`}
+                  className={`w-16 flex items-center justify-center border-r-[3px] border-black-pure shrink-0 transition-colors ${isActive ? 'bg-black-pure text-primary-500' : 'text-black-pure group-hover:text-white-pure'}`}
                 >
                   <span className="text-sm font-black italic">
                     {String(idx + 1).padStart(2, '0')}

@@ -1,12 +1,9 @@
 import CarouselSection from '@/components/Section/Blocks/CarouselSection'
-import FeatureSection from '@/components/Section/Blocks/FeatureSection'
-import ListSection from '@/components/Section/Blocks/ListSection'
 import VideoSection from '@/components/Section/Blocks/VideoSection'
-import { Media } from '@/payload-types'
+import { Media, Session, Slide } from '@/payload-types'
 import configPromise from '@payload-config'
 import { unstable_cache } from 'next/cache'
 import { getPayload } from 'payload'
-import HyperspeedSection from './sections/Hyperspeed'
 
 function getMediaUrl(media: number | Media | null | undefined): string | undefined {
   if (!media) return undefined
@@ -27,293 +24,49 @@ const getHomeData = unstable_cache(
   async () => {
     const payload = await getPayload({ config: configPromise })
 
-    const [events, sessions, onboardings, slidesDocs, seriesList, races, allTeams, allDrivers] = await Promise.all([
-      payload.find({
-        collection: 'events',
-        limit: 5,
-        depth: 1,
-        sort: '-details.start_date',
-        select: {
-          id: true,
-          name: true,
-          slug: true,
-          basics: {
-            description: true,
-            tagline: true,
-            identifiers: { code: true },
-          },
-          assets: {
-            thumbnail: true,
-            cover: true,
-            poster: true,
-          },
-          details: {
-            start_date: true,
-            type: true,
-          },
-        },
-      }),
+    const [sessionsData, slidesData] = await Promise.all([
       payload.find({
         collection: 'sessions',
-        limit: 5,
+        limit: 10,
         depth: 1,
-        sort: '-createdAt',
-        select: {
-          id: true,
-          name: true,
-          slug: true,
-          basics: {
-            description: true,
-            identifiers: { code: true },
-          },
-          assets: {
-            thumbnail: true,
-            cover: true,
-          },
-        },
-      }),
-      payload.find({
-        collection: 'onboardings',
-        limit: 5,
-        depth: 1,
-        sort: '-createdAt',
-        select: {
-          id: true,
-          name: true,
-          slug: true,
-          basics: { description: true },
-          assets: {
-            thumbnail: true,
-            cover: true,
-          },
-        },
+        sort: '-details.start_time',
       }),
       payload.find({
         collection: 'slides',
-        limit: 10,
-        depth: 1,
-        sort: '-createdAt',
-        select: {
-          id: true,
-          name: true,
-          slug: true,
-          basics: { description: true },
-          assets: {
-            background: true,
-            thumbnail: true,
-          },
-          details: { type: true },
-        },
-      }),
-      payload.find({
-        collection: 'series',
-        limit: 6,
-        depth: 1,
-        sort: '-createdAt',
-        select: {
-          id: true,
-          name: true,
-          slug: true,
-          createdAt: true,
-          basics: {
-            description: true,
-            tagline: true,
-            identifiers: { code: true },
-          },
-          assets: {
-            thumbnail: true,
-            cover: true,
-          },
-        },
-      }),
-      payload.find({
-        collection: 'races',
-        where: {
-          'details.status': { equals: 'completed' },
-        },
-        limit: 3,
-        depth: 1,
-        sort: '-details.start_date',
-        select: {
-          id: true,
-          name: true,
-          slug: true,
-          basics: { description: true },
-          assets: {
-            thumbnail: true,
-            cover: true,
-          },
-          details: {
-            distance_km: true,
-            status: true,
-          },
-        },
-      }),
-      payload.find({
-        collection: 'teams',
-        limit: 100,
-        depth: 0,
-      }),
-      payload.find({
-        collection: 'drivers',
-        limit: 3,
+        limit: 5,
         depth: 1,
         sort: '-createdAt',
       }),
     ])
 
-    const randomTeam = allTeams.docs.length > 0
-      ? allTeams.docs[Math.floor(Math.random() * allTeams.docs.length)]
-      : null;
-
     return {
-      events: events.docs,
-      sessions: sessions.docs,
-      onboardings: onboardings.docs,
-      slidesDocs: slidesDocs.docs,
-      seriesList: seriesList.docs,
-      races: races.docs,
-      featuredTeam: randomTeam,
-      drivers: allDrivers.docs,
+      sessions: sessionsData.docs as Session[],
+      slides: slidesData.docs as Slide[],
     }
   },
   ['home-page-data'],
-  { revalidate: 60, tags: ['home'] }
+  { revalidate: 3600, tags: ['sessions', 'slides'] }
 )
 
 export default async function HomePage() {
-  const { events, sessions, onboardings, slidesDocs, seriesList, races, featuredTeam, drivers } = await getHomeData()
+  const { sessions, slides } = await getHomeData()
 
-  const videoItems = [...events, ...sessions, ...onboardings].slice(0, 8)
-
-  const videoSlides = videoItems.map((item) => {
-    let title = ''
-    let description = ''
-    let posterUrl: string | undefined = undefined
-    let duration = ''
-
-    if ('name' in item && item.name) {
-      title = item.name
-    } else if ('first_name' in item && 'last_name' in item) {
-      title = `${item.first_name} ${item.last_name}`
-    }
-
-    if ('basics' in item && item.basics?.description) {
-      description = item.basics.description
-    }
-
-    const assets = (item as any).assets
-    posterUrl = resolveAssetUrl(assets, 'thumbnail', 'cover', 'poster')
-
-    if ('details' in item && (item as any).details?.start_date) {
-      duration = new Date((item as any).details.start_date).toISOString().split('T')[0]
-    }
-
-    return {
-      id: String(item.id),
-      title,
-      description,
-      url: posterUrl || '',
-      poster: posterUrl,
-      duration,
-    }
-  })
-
-  const slideSlides = slidesDocs.map((slide) => {
-    const imageUrl = resolveAssetUrl(slide.assets, 'background', 'thumbnail')
-    return {
-      id: String(slide.id),
-      title: slide.name,
-      description: slide.basics?.description || undefined,
-      image: imageUrl || '',
-      meta: slide.details?.type || undefined,
-    }
-  })
-
-  const seriesEntries = seriesList.map((series) => {
-    let timestamp = ''
-    if (series.createdAt) {
-      try {
-        timestamp = new Date(series.createdAt).toISOString().split('T')[0]
-      } catch {
-        timestamp = ''
-      }
-    }
-    return {
-      id: String(series.id),
-      title: series.name,
-      subtitle: series.basics?.identifiers?.code || series.basics?.tagline || '',
-      tag: series.basics?.identifiers?.code || 'SERIES',
-      href: `/competition/series/${series.slug}`,
-      timestamp,
-      status: 'ACTIVE',
-    }
-  })
-
-  const raceFeatures = races.map((race) => ({
-    id: String(race.id),
-    title: race.name,
-    description: race.basics?.description || '',
-    image: resolveAssetUrl(race.assets, 'thumbnail', 'cover'),
-    slug: `calendar/races/${race.slug}`,
-    stats: [
-      { label: 'Distance', value: race.details?.distance_km ? `${race.details.distance_km} km` : '' },
-      { label: 'Status', value: race.details?.status || '' },
-    ],
+  const videoSlides = sessions.map((session) => ({
+    id: String(session.id),
+    title: session.name,
+    description: session.basics?.description || undefined,
+    url: `/competition/sessions/${session.slug}`,
+    poster: resolveAssetUrl(session.assets, 'thumbnail', 'cover', 'poster') || '',
+    duration: '00:00',
   }))
 
-  const driverFeatures = drivers.map((driver) => {
-    const nationalityRef = driver.basics?.nationality
-    const nationality =
-      nationalityRef && typeof nationalityRef === 'object' && 'name' in nationalityRef && nationalityRef.name
-        ? nationalityRef.name
-        : ''
-
-    const teamSlug = featuredTeam?.slug || 'independent'
-
-    return {
-      id: String(driver.id),
-      title: `${driver.first_name} ${driver.last_name}`,
-      description: driver.basics?.callsign || driver.basics?.catchphrase || '',
-      image: getMediaUrl(driver.assets?.avatar),
-      slug: `teams/${teamSlug}/drivers/${driver.slug}`,
-      stats: [
-        { label: 'Number', value: driver.basics?.racing_number?.toString() || '' },
-        { label: 'Nationality', value: nationality },
-      ],
-    }
-  })
-
-  const hyperspeedRoutes = [
-    {
-      id: '01',
-      label: 'SERIES',
-      slug: 'active',
-      name: 'All Series',
-      path: '/competition/series',
-    },
-    {
-      id: '02',
-      label: 'SEASONS',
-      slug: 'active',
-      name: 'Global Seasons',
-      path: '/competition/seasons',
-    },
-    {
-      id: '03',
-      label: 'EVENTS',
-      slug: 'active',
-      name: 'Circuit Events',
-      path: '/competition/events',
-    },
-    {
-      id: '04',
-      label: 'SESSIONS',
-      slug: 'active',
-      name: 'Onboard Streams',
-      path: '/competition/sessions',
-    },
-  ]
+  const carouselSlides = slides.map((slide) => ({
+    id: String(slide.id),
+    title: slide.name,
+    description: slide.basics?.description || undefined,
+    image: resolveAssetUrl(slide.assets, 'thumbnail', 'cover', 'poster') || '',
+    meta: slide.basics?.identifiers?.code || undefined,
+  }))
 
   return (
     <main className="w-full">
@@ -331,68 +84,15 @@ export default async function HomePage() {
           }}
         />
       )}
-      <HyperspeedSection
-        id="home-navigation"
-        title="QUICK ACCESS"
-        subtitle="Quick access portal"
-        routes={hyperspeedRoutes}
-        headerVariant={1}
-        footerVariant={1}
-      />
-      {slideSlides.length > 0 && (
+
+      {carouselSlides.length > 0 && (
         <CarouselSection
           id="home-slides"
-          slides={slideSlides}
-          autoplayDelay={4000}
-        />
-      )}
-      {seriesEntries.length > 0 && (
-        <ListSection
-          id="home-series"
-          title="SERIES"
-          subtitle="Sanctioned racing divisions"
-          entries={seriesEntries}
-          labels={{
-            statusPrefix: 'SYSTEM',
-            timePrefix: 'UPDATED',
-            indexPrefix: 'ID',
-          }}
-          showStatus={true}
-          showTimestamp={true}
-          ctaLabel="VIEW ALL DIVISIONS"
-          ctaPath="/competition/series"
-        />
-      )}
-      {raceFeatures.length > 0 && (
-        <FeatureSection
-          id="home-races"
-          title="CALENDAR"
-          subtitle="Recently concluded results"
-          features={raceFeatures}
-          labels={{
-            specIndex: 'RACE',
-            statsLabel: 'DATA',
-            ctaLabel: 'VIEW',
-          }}
-          columns={3}
-          headerVariant={1}
-          ctaPath="/calendar/races"
-        />
-      )}
-      {driverFeatures.length > 0 && (
-        <FeatureSection
-          id="home-drivers"
-          title={featuredTeam?.name ? featuredTeam.name.toUpperCase() : "ROSTER"}
-          subtitle="Active championship entry list"
-          features={driverFeatures}
-          labels={{
-            specIndex: 'DRV',
-            statsLabel: 'INFO',
-            ctaLabel: 'PROFILE',
-          }}
-          columns={3}
-          headerVariant={1}
-          ctaPath="/teams"
+          slides={carouselSlides}
+          autoplayDelay={5000}
+          ctaLabel="EXPLORE RACE SESSIONS"
+          ctaPath="/competition/sessions"
+          itemsToScroll={1}
         />
       )}
     </main>

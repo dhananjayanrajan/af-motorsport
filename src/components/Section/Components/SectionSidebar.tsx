@@ -1,4 +1,3 @@
-// SectionSidebar.tsx
 "use client"
 import Image from 'next/image'
 import React, { useEffect } from 'react'
@@ -53,10 +52,16 @@ const SectionSidebar: React.FC<SectionSidebarProps> = ({
     return (
         <>
             <div
-                className={`fixed inset-0 z-[110] bg-black-pure/80 transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+                className={`fixed inset-0 z-[110] bg-black-pure/80 transition-opacity duration-300 ${isOpen ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'}`}
                 onClick={onClose}
             />
-            <aside className={`fixed top-0 right-0 z-[120] w-full md:w-[480px] h-full bg-white-pure transition-transform duration-500 transform ${isOpen ? 'translate-x-0' : 'translate-x-full'} border-l border-black-pure flex flex-col`}>
+            <aside
+                className={`fixed top-0 right-0 z-[120] w-full md:w-[480px] h-full bg-white-pure transition-transform duration-500 transform ${isOpen ? 'translate-x-0' : 'translate-x-full'} border-l border-black-pure flex flex-col shadow-none ring-0 outline-none`}
+                style={{
+                    visibility: isOpen ? 'visible' : 'hidden',
+                    boxShadow: 'none'
+                }}
+            >
                 <div className="relative h-72 shrink-0 overflow-hidden bg-black-pure group">
                     <Image
                         src={getImageSrc()}
@@ -119,7 +124,7 @@ const SectionSidebar: React.FC<SectionSidebarProps> = ({
                 <div className="p-8 bg-white-pure border-t border-black-pure shrink-0">
                     <button
                         onClick={onAction}
-                        className={`${buttonBase} w-full h-16 bg-black-pure text-white-pure hover:bg-primary-500 hover:text-black-pure relative overflow-hidden group`}
+                        className={`${buttonBase} w-full h-16 bg-black-pure text-white-pure hover:bg-primary-500 hover:text-black-pure relative overflow-hidden group shadow-none`}
                     >
                         <span className="relative z-10">{buttonLabel}</span>
                         <div className="absolute bottom-0 left-0 h-0.5 w-full bg-secondary-500 transition-transform duration-500 origin-left scale-x-0 group-hover:scale-x-100" />

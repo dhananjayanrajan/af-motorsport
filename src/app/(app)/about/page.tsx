@@ -1,11 +1,12 @@
 // app/(frontend)/about/page.tsx
-import FeatureSection from '@/components/Section/Blocks/FeatureSection'
-import GridSection from '@/components/Section/Blocks/GridSection'
-import ListSection from '@/components/Section/Blocks/ListSection'
-import { Hospitality, Identity, Initiative, Media, Plan, Statement } from '@/payload-types'
-import configPromise from '@payload-config'
-import { unstable_cache } from 'next/cache'
-import { getPayload } from 'payload'
+import FeatureSection from '@/components/Section/Blocks/FeatureSection';
+import GridSection from '@/components/Section/Blocks/GridSection';
+import ListSection from '@/components/Section/Blocks/ListSection';
+import TimelineSection from '@/components/Section/Blocks/TimelineSection'; // Added Import
+import { Hospitality, Identity, Initiative, Media, Plan, Statement, Timeline } from '@/payload-types'; // Added Timeline type
+import configPromise from '@payload-config';
+import { unstable_cache } from 'next/cache';
+import { getPayload } from 'payload';
 
 function getMediaUrl(media: number | Media | null | undefined): string | undefined {
   if (!media) return undefined
@@ -26,7 +27,7 @@ const getAboutData = unstable_cache(
   async () => {
     const payload = await getPayload({ config: configPromise })
 
-    const [identityGlobal, statements, plans, initiatives, hospitalities] = await Promise.all([
+    const [identityGlobal, statements, plans, initiatives, hospitalities, timelines] = await Promise.all([
       payload.findGlobal({
         slug: 'identity',
         select: {
@@ -114,6 +115,33 @@ const getAboutData = unstable_cache(
           },
         },
       }),
+      payload.find({
+        collection: 'timelines',
+        where: {
+          'details.status': { equals: 'active' },
+        },
+        limit: 8,
+        sort: 'details.start_date',
+        depth: 1,
+        select: {
+          id: true,
+          name: true,
+          slug: true,
+          basics: {
+            description: true,
+          },
+          details: {
+            start_date: true,
+            end_date: true,
+            scope: true,
+            color_scheme: true,
+          },
+          assets: {
+            thumbnail: true,
+            cover: true,
+          },
+        },
+      }),
     ])
 
     return {
@@ -122,6 +150,7 @@ const getAboutData = unstable_cache(
       plans: plans.docs as Plan[],
       initiatives: initiatives.docs as Initiative[],
       hospitalities: hospitalities.docs as Hospitality[],
+      timelines: timelines.docs as Timeline[], // Added to return
     }
   },
   ['about-page-data'],
@@ -129,7 +158,7 @@ const getAboutData = unstable_cache(
 )
 
 export default async function AboutPage() {
-  const { identity, statements, plans, initiatives, hospitalities } = await getAboutData()
+  const { identity, statements, plans, initiatives, hospitalities, timelines } = await getAboutData()
 
   const identityFeatures = [
     {
@@ -187,6 +216,21 @@ export default async function AboutPage() {
     href: `/about/hospitalities/${hospitality.slug}`,
     timestamp: hospitality.details?.start_date ? new Date(hospitality.details.start_date).toISOString().split('T')[0] : undefined,
   }))
+
+  const timelineEvents = timelines.map((timeline: Timeline) => {
+    const startDate = timeline.details?.start_date
+    const dateStr = startDate ? new Date(startDate).toISOString().split('T')[0] : 'TBD'
+
+    return {
+      id: `timeline-${timeline.id}`,
+      date: dateStr,
+      title: timeline.name,
+      description: timeline.basics?.description || timeline.details?.scope || undefined,
+      status: 'active' as const,
+      slug: `calendar/timelines/${timeline.slug}`,
+      image: resolveAssetUrl(timeline.assets, 'thumbnail', 'cover'),
+    }
+  })
 
   return (
     <main className="w-full">
@@ -269,6 +313,25 @@ export default async function AboutPage() {
           showTimestamp={true}
           ctaLabel="EXPLORE ACCESS"
           ctaPath="/about/hospitalities"
+        />
+      )}
+      {timelineEvents.length > 0 && (
+        <TimelineSection
+          id="about-timelines"
+          title="TIMELINES"
+          subtitle="Active event timelines and milestones in progress"
+          events={timelineEvents}
+          labels={{
+            statusPrefix: 'STATUS',
+            eventIndexLabel: 'TIMELINE',
+            deploymentStatus: {
+              completed: 'ARCHIVED',
+              active: 'ACTIVE',
+              upcoming: 'PLANNED',
+            },
+          }}
+          headerVariant={1}
+          footerVariant={1}
         />
       )}
     </main>

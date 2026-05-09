@@ -7,6 +7,9 @@ import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react'
 import Link from 'next/link'
 import React, { useCallback, useEffect, useState } from 'react'
 import MosaicBackground from '../Backgrounds/MosaicBackground'
+import SectionCTA from '../Components/SectionCTA'
+import SectionHeader from '../Components/SectionHeader'
+import SectionScroller from '../Components/SectionScroller'
 
 export interface CarouselSlide {
   id: string
@@ -25,6 +28,7 @@ interface CarouselSectionProps {
   autoplayDelay?: number
   ctaLabel?: string
   ctaPath?: string
+  itemsToScroll?: number
 }
 
 const CarouselSection: React.FC<CarouselSectionProps> = ({
@@ -33,6 +37,7 @@ const CarouselSection: React.FC<CarouselSectionProps> = ({
   autoplayDelay = 5000,
   ctaLabel,
   ctaPath,
+  itemsToScroll,
 }) => {
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [itemsPerPage, setItemsPerPage] = useState(1)
@@ -47,7 +52,8 @@ const CarouselSection: React.FC<CarouselSectionProps> = ({
       dragFree: false,
       duration: 60,
       dragThreshold: 1,
-      inViewThreshold: 0.1
+      inViewThreshold: 0.1,
+      slidesToScroll: itemsToScroll || 'auto'
     },
     [Autoplay({ delay: autoplayDelay, stopOnInteraction: false, stopOnMouseEnter: true })]
   )
@@ -57,12 +63,16 @@ const CarouselSection: React.FC<CarouselSectionProps> = ({
   }, [])
 
   const updateItemsPerPage = useCallback(() => {
+    if (itemsToScroll) {
+      setItemsPerPage(itemsToScroll)
+      return
+    }
     const width = window.innerWidth
     if (width >= 1376) setItemsPerPage(4)
     else if (width >= 1024) setItemsPerPage(3)
     else if (width >= 768) setItemsPerPage(2)
     else setItemsPerPage(1)
-  }, [])
+  }, [itemsToScroll])
 
   useEffect(() => {
     updateItemsPerPage()
@@ -107,8 +117,20 @@ const CarouselSection: React.FC<CarouselSectionProps> = ({
   return (
     <section id={id} className="relative w-full py-12 md:py-20 lg:py-24 bg-background overflow-hidden">
       <MosaicBackground />
-      <div className="container">
-        <div className="flex flex-col border-2 border-black-pure shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+      <div className="container flex flex-col">
+        <SectionHeader
+          title={slides[selectedIndex]?.title || "Collection"}
+          subtitle={slides[selectedIndex]?.meta || "Featured"}
+          variant={1}
+          metadata={`${selectedIndex + 1} / ${slides.length}`}
+        />
+
+        <SectionScroller
+          items={slides.map(s => s.title)}
+          variant={1}
+        />
+
+        <div className="flex flex-col gap-8 border-2 border-black-pure shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
           <div className="overflow-hidden cursor-grab active:cursor-grabbing" ref={emblaRef}>
             <div className="flex touch-pan-y">
               {slides.map((slide, idx) => (
@@ -121,7 +143,7 @@ const CarouselSection: React.FC<CarouselSectionProps> = ({
                     <Link href={slide.ctaHref} className="absolute inset-0 z-40" aria-label={slide.title} />
                   )}
 
-                  <div className="relative aspect-[4/5] border-b border-black-pure overflow-hidden pointer-events-none">
+                  <div className="relative h-[450px] border-b border-black-pure overflow-hidden pointer-events-none">
                     <div className="absolute top-4 left-4 z-20 flex flex-col gap-1">
                       {slide.meta && (
                         <span className="text-xs font-mono font-black bg-primary-500 text-black-pure px-2 py-1 self-start uppercase tracking-widest">
@@ -191,46 +213,48 @@ const CarouselSection: React.FC<CarouselSectionProps> = ({
                 <span className="text-xs font-mono font-black text-neutral-400 uppercase tracking-widest">POS</span>
                 <span className="text-lg font-mono font-black text-black-pure tabular-nums">
                   {String(selectedIndex + 1).padStart(2, '0')}
+                  <span className="text-neutral-400 mx-1">/</span>
+                  <span className="text-neutral-400">{String(slides.length).padStart(2, '0')}</span>
                 </span>
               </div>
             </div>
 
             <div className="flex-grow flex items-center px-4 md:px-8 gap-4 md:gap-8">
-              <div className="flex-grow h-[2px] bg-neutral-100 relative">
+              <div className="flex-grow h-[2px] bg-neutral-200 relative">
                 <motion.div
-                  className="absolute h-full bg-black-pure left-0"
+                  className="absolute inset-y-0 left-0 bg-black-pure"
+                  initial={{ width: '0%' }}
                   animate={{ width: `${((selectedIndex + 1) / slides.length) * 100}%` }}
-                  transition={{ duration: 0.5, ease: 'easeInOut' }}
+                  transition={{ type: 'spring', stiffness: 300, damping: 30 }}
                 />
-              </div>
-
-              <div className="flex items-stretch h-full py-4">
-                <button
-                  onClick={scrollPrev}
-                  className="w-10 h-full flex items-center justify-center border-2 border-black-pure text-black-pure bg-white-pure hover:bg-black-pure hover:text-white-pure transition-colors focus-visible:ring-2 focus-visible:ring-primary-500 outline-none"
-                >
-                  <ChevronLeft className="h-4 w-4" />
-                </button>
-                <button
-                  onClick={scrollNext}
-                  className="w-10 h-full flex items-center justify-center border-y-2 border-r-2 border-black-pure text-black-pure bg-white-pure hover:bg-black-pure hover:text-white-pure transition-colors focus-visible:ring-2 focus-visible:ring-primary-500 outline-none"
-                >
-                  <ChevronRight className="h-4 w-4" />
-                </button>
               </div>
             </div>
 
-            {ctaLabel && ctaPath && (
-              <Link
-                href={ctaPath}
-                className="hidden lg:flex items-center gap-3 px-8 bg-black-pure text-white-pure text-xs font-mono font-black uppercase tracking-widest hover:bg-primary-500 hover:text-black-pure transition-colors border-l-2 border-black-pure focus-visible:ring-2 focus-visible:ring-primary-500 outline-none group"
+            <div className="flex items-stretch border-l-2 border-black-pure">
+              <button
+                onClick={scrollPrev}
+                className="w-16 md:w-20 flex items-center justify-center bg-white-pure hover:bg-black-pure hover:text-white-pure transition-colors border-r-2 border-black-pure active:bg-primary-500 active:text-black-pure"
+                aria-label="Previous slide"
               >
-                {ctaLabel}
-                <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-1" />
-              </Link>
-            )}
+                <ChevronLeft className="h-6 w-6 stroke-[3]" />
+              </button>
+              <button
+                onClick={scrollNext}
+                className="w-16 md:w-20 flex items-center justify-center bg-white-pure hover:bg-black-pure hover:text-white-pure transition-colors active:bg-primary-500 active:text-black-pure"
+                aria-label="Next slide"
+              >
+                <ChevronRight className="h-6 w-6 stroke-[3]" />
+              </button>
+            </div>
           </div>
         </div>
+
+        <SectionCTA
+          label={slides[selectedIndex]?.ctaLabel || ctaLabel || "Discover More"}
+          path={slides[selectedIndex]?.ctaHref || ctaPath || "#"}
+          description={slides[selectedIndex]?.description}
+          variant={1}
+        />
       </div>
     </section>
   )

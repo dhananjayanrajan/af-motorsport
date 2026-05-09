@@ -15,40 +15,42 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({
     metadata
 }) => {
     const baseStyles = {
-        heading: "font-black tracking-tighter uppercase leading-none text-2xl",
-        subheading: "font-bold text-[10px] uppercase tracking-[0.3em]",
-        metadata: "font-black text-xl"
+        heading: "font-black tracking-tight uppercase leading-[0.9] text-xl sm:text-2xl md:text-3xl break-words",
+        subheading: "font-bold text-[10px] uppercase tracking-[0.2em] text-primary-600",
     }
 
     if (variant === 2) {
         return (
-            <header className="group w-full grid grid-cols-[1fr_100px] border-4 border-black-pure bg-white-pure z-2">
-                <div className="p-8 border-r-4 border-black-pure">
-                    <div className="flex items-center gap-2 mb-4">
-                        <div className="w-4 h-1 bg-primary-500" />
-                        <span className={baseStyles.subheading}>{subtitle}</span>
+            <header className="w-full flex flex-col items-center bg-slate-100 p-8 border-l-[12px] border-primary-500">
+                <div className="flex items-center gap-4 mb-4">
+                    <div className="h-[2px] w-8 bg-primary-500" />
+                    <span className={baseStyles.subheading}>{subtitle}</span>
+                    <div className="h-[2px] w-8 bg-primary-500" />
+                </div>
+                <h2 className={`${baseStyles.heading} text-slate-900 text-center`}>{title}</h2>
+                {metadata && (
+                    <div className="mt-6 bg-slate-900 text-white px-4 py-1">
+                        <span className="text-[10px] font-bold uppercase tracking-widest">{metadata}</span>
                     </div>
-                    <h1 className={baseStyles.heading}>{title}</h1>
-                </div>
-                <div className="bg-black-pure flex flex-col items-center justify-center text-white-pure group-hover:bg-secondary-500 group-hover:text-black-pure transition-colors">
-                    <span className={baseStyles.metadata}>{metadata}</span>
-                </div>
+                )}
             </header>
         )
     }
 
     if (variant === 3) {
         return (
-            <header className="group w-full flex flex-col border-2 border-black-pure bg-white-pure z-2 overflow-hidden">
-                <div className="bg-primary-500 p-2 border-b-2 border-black-pure flex justify-between px-6">
-                    <span className={baseStyles.subheading}>{subtitle}</span>
-                    {metadata && <span className="font-black text-xs">{metadata}</span>}
+            <header className="w-full flex flex-col bg-slate-950 border-b-4 border-secondary-500 overflow-hidden">
+                <div className="bg-secondary-500 px-6 py-2 flex justify-between items-center gap-4">
+                    <span className="font-bold text-[10px] uppercase text-slate-900">{subtitle}</span>
+                    {metadata && (
+                        <span className="bg-slate-900 text-secondary-500 text-[9px] px-2 py-0.5 font-black uppercase">
+                            {metadata}
+                        </span>
+                    )}
                 </div>
-                <div className="p-8 bg-white-pure group-hover:bg-neutral-50 transition-colors">
-                    <h1 className={baseStyles.heading}>
-                        {title}
-                        <div className="h-2 w-12 bg-secondary-500 mt-2 group-hover:w-full transition-all duration-700" />
-                    </h1>
+                <div className="p-8">
+                    <h2 className={`${baseStyles.heading} text-white`}>{title}</h2>
+                    <div className="mt-4 h-2 w-24 bg-secondary-500" />
                 </div>
             </header>
         )
@@ -56,15 +58,16 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({
 
     if (variant === 4) {
         return (
-            <header className="group flex items-stretch gap-0 border-2 border-black-pure bg-white-pure z-2">
-                <div className="w-16 bg-black-pure flex items-center justify-center">
-                    <span className="text-white-pure font-black -rotate-90 whitespace-nowrap text-xs uppercase">{metadata}</span>
-                </div>
-                <div className="flex-1 p-8">
-                    <div className="flex justify-between items-end mb-4">
-                        <span className={baseStyles.subheading}>{subtitle}</span>
-                    </div>
-                    <h1 className={baseStyles.heading}>{title}</h1>
+            <header className="flex flex-col items-center bg-white p-10 border-2 border-slate-200 text-center">
+                <div className="w-16 h-1 bg-primary-500 mb-6" />
+                {metadata && (
+                    <span className="mb-2 text-slate-400 text-[10px] font-bold uppercase tracking-[0.3em]">
+                        {metadata}
+                    </span>
+                )}
+                <h2 className={`${baseStyles.heading} text-slate-900 mb-4`}>{title}</h2>
+                <div className="px-4 py-1 border border-slate-900">
+                    <span className="text-[9px] font-bold uppercase text-slate-900">{subtitle}</span>
                 </div>
             </header>
         )
@@ -72,32 +75,35 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({
 
     if (variant === 5) {
         return (
-            <header className="group w-full border-t-8 border-black-pure pt-6 bg-white-pure">
-                <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-                    <div className="max-w-md">
-                        <h1 className={baseStyles.heading}>
-                            {metadata && <span className="text-primary-500">{metadata} / </span>}
-                            {title}
-                        </h1>
-                        <p className={`${baseStyles.subheading} mt-2 text-black-pure/40 group-hover:text-black-pure transition-colors`}>{subtitle}</p>
-                    </div>
-                    <div className="h-px flex-1 bg-black-pure/10 mb-2 hidden md:block" />
+            <header className="w-full py-10 px-6 flex flex-col items-center text-center bg-slate-50 border-y-2 border-slate-900">
+                <p className={`${baseStyles.subheading} mb-3 text-primary-700`}>{subtitle}</p>
+                <h2 className={`${baseStyles.heading} text-slate-900 mb-6`}>{title}</h2>
+                <div className="flex items-center gap-2">
+                    <div className="h-3 w-3 bg-primary-500" />
+                    <div className="h-3 w-3 bg-slate-900" />
+                    <div className="h-3 w-3 bg-primary-500" />
                 </div>
             </header>
         )
     }
 
     return (
-        <header className="group w-full relative p-8 border-2 border-black-pure bg-white-pure overflow-hidden">
-            <div className="relative z-10">
-                <span className={`${baseStyles.subheading} text-primary-500`}>{subtitle}</span>
-                <h1 className={`${baseStyles.heading} mt-2 group-hover:tracking-[0.1em] transition-all duration-500`}>{title}</h1>
-                <div className="mt-4 flex items-center gap-4">
-                    {metadata && <span className="text-[10px] font-black italic">{metadata}</span>}
-                    <div className="h-[2px] flex-1 bg-black-pure" />
-                </div>
+        <header className="w-full p-8 bg-white flex flex-col items-center text-center border-4 border-slate-900 shadow-[8px_8px_0px_0px_rgba(15,23,42,1)]">
+            <div className="bg-secondary-500 border-2 border-slate-900 px-3 py-1 mb-6">
+                <span className="font-bold text-[11px] uppercase text-slate-900">
+                    {subtitle}
+                </span>
             </div>
-            <div className="absolute top-0 right-0 w-16 h-16 bg-secondary-500 translate-x-8 -translate-y-8 rotate-45 group-hover:translate-x-4 group-hover:-translate-y-4 transition-transform" />
+            <h2 className={`${baseStyles.heading} text-slate-900`}>{title}</h2>
+            {metadata && (
+                <div className="mt-8 flex items-center gap-4 w-full max-w-xs">
+                    <div className="h-1 flex-1 bg-slate-900" />
+                    <span className="text-[10px] font-black uppercase text-slate-900 whitespace-nowrap">
+                        {metadata}
+                    </span>
+                    <div className="h-1 flex-1 bg-slate-900" />
+                </div>
+            )}
         </header>
     )
 }

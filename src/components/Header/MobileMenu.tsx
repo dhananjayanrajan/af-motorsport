@@ -88,16 +88,20 @@ export function MobileMenu({
 
   return (
     <Sheet onOpenChange={setIsOpen} open={isOpen}>
-      <SheetTrigger className="flex h-14 w-14 items-center justify-center bg-black-pure text-white-pure transition-colors hover:bg-primary-500 hover:text-black-pure group outline-none border-r border-black-pure">
+      <SheetTrigger className="flex h-14 w-14 items-center justify-center bg-black-pure text-white-pure transition-colors hover:bg-primary-500 hover:text-black-pure group outline-none border-r border-black-pure shadow-none">
         <MenuIcon className="h-5 w-5 transition-transform group-active:scale-90" />
       </SheetTrigger>
 
-      <SheetContent side="left" className="flex flex-col bg-white-pure border-r border-black-pure w-full sm:w-[380px] p-0 gap-0 z-[120]">
+      <SheetContent
+        side="left"
+        className="flex flex-col bg-white-pure border-r border-black-pure w-full sm:w-[380px] p-0 gap-0 z-[120] shadow-none ring-0 outline-none"
+        style={{ boxShadow: 'none' }}
+      >
         <SheetHeader className="p-6 border-b border-black-pure bg-black-pure flex flex-row items-center justify-between text-left">
           <SheetTitle className="text-[10px] font-mono font-black uppercase tracking-widest text-primary-500">
             {labels.navTitle}
           </SheetTitle>
-          <SheetClose className="size-10 flex items-center justify-center bg-white-pure border border-black-pure hover:bg-primary-500 hover:text-black-pure transition-all duration-75 outline-none">
+          <SheetClose className="size-10 flex items-center justify-center bg-white-pure border border-black-pure hover:bg-primary-500 hover:text-black-pure transition-all duration-75 outline-none shadow-none">
             <X className="h-4 w-4" />
           </SheetClose>
         </SheetHeader>
@@ -145,13 +149,13 @@ export function MobileMenu({
               <div className="grid grid-cols-2 gap-2">
                 <Link
                   href="/account"
-                  className="flex items-center justify-center h-12 bg-secondary-500 border border-black-pure text-[10px] font-mono font-black uppercase hover:bg-black-pure hover:text-white-pure transition-all duration-75 outline-none"
+                  className="flex items-center justify-center h-12 bg-secondary-500 border border-black-pure text-[10px] font-mono font-black uppercase hover:bg-black-pure hover:text-white-pure transition-all duration-75 outline-none shadow-none"
                 >
                   {labels.accountLink}
                 </Link>
                 <button
                   onClick={() => logout()}
-                  className="flex items-center justify-center h-12 bg-white-pure border border-black-pure text-[10px] font-mono font-black uppercase hover:bg-primary-500 transition-all duration-75 outline-none"
+                  className="flex items-center justify-center h-12 bg-white-pure border border-black-pure text-[10px] font-mono font-black uppercase hover:bg-primary-500 transition-all duration-75 outline-none shadow-none"
                 >
                   {labels.logoutBtn}
                 </button>
@@ -160,13 +164,13 @@ export function MobileMenu({
               <div className="grid grid-cols-2 gap-2">
                 <Link
                   href="/login"
-                  className="flex items-center justify-center h-12 bg-white-pure border border-black-pure text-[10px] font-mono font-black uppercase hover:bg-primary-500 transition-all duration-75 outline-none"
+                  className="flex items-center justify-center h-12 bg-white-pure border border-black-pure text-[10px] font-mono font-black uppercase hover:bg-primary-500 transition-all duration-75 outline-none shadow-none"
                 >
                   {labels.loginLink}
                 </Link>
                 <Link
                   href="/create-account"
-                  className="flex items-center justify-center h-12 bg-primary-500 border border-black-pure text-[10px] font-mono font-black uppercase hover:bg-black-pure hover:text-white-pure transition-all duration-75 outline-none"
+                  className="flex items-center justify-center h-12 bg-primary-500 border border-black-pure text-[10px] font-mono font-black uppercase hover:bg-black-pure hover:text-white-pure transition-all duration-75 outline-none shadow-none"
                 >
                   {labels.signupLink}
                 </Link>

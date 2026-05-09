@@ -1,6 +1,6 @@
 import CarouselSection from '@/components/Section/Blocks/CarouselSection'
 import TimelineSection from '@/components/Section/Blocks/TimelineSection'
-import { Championship, Media, Race, Timeline } from '@/payload-types'
+import { Championship, Media, Race } from '@/payload-types'
 import configPromise from '@payload-config'
 import { unstable_cache } from 'next/cache'
 import { getPayload } from 'payload'
@@ -26,7 +26,7 @@ const getCalendarData = unstable_cache(
 
         const now = new Date().toISOString()
 
-        const [championships, races, timelines] = await Promise.all([
+        const [championships, races] = await Promise.all([
             payload.find({
                 collection: 'championships',
                 where: {
@@ -92,39 +92,11 @@ const getCalendarData = unstable_cache(
                     },
                 },
             }),
-            payload.find({
-                collection: 'timelines',
-                where: {
-                    'details.status': { equals: 'active' },
-                },
-                limit: 8,
-                sort: 'details.start_date',
-                depth: 1,
-                select: {
-                    id: true,
-                    name: true,
-                    slug: true,
-                    basics: {
-                        description: true,
-                    },
-                    details: {
-                        start_date: true,
-                        end_date: true,
-                        scope: true,
-                        color_scheme: true,
-                    },
-                    assets: {
-                        thumbnail: true,
-                        cover: true,
-                    },
-                },
-            }),
         ])
 
         return {
             championships: championships.docs as Championship[],
             races: races.docs as Race[],
-            timelines: timelines.docs as Timeline[],
         }
     },
     ['calendar-page-data'],
@@ -132,7 +104,7 @@ const getCalendarData = unstable_cache(
 )
 
 export default async function CalendarPage() {
-    const { championships, races, timelines } = await getCalendarData()
+    const { championships, races } = await getCalendarData()
 
     const championshipEvents = championships.map((championship: Championship) => {
         const code = championship.basics?.identifiers?.code || championship.basics?.identifiers?.abbreviation
@@ -189,73 +161,33 @@ export default async function CalendarPage() {
         }
     })
 
-    const timelineEvents = timelines.map((timeline: Timeline) => {
-        const startDate = timeline.details?.start_date
-        const dateStr = startDate
-            ? new Date(startDate).toISOString().split('T')[0]
-            : 'TBD'
-
-        return {
-            id: `timeline-${timeline.id}`,
-            date: dateStr,
-            title: timeline.name,
-            description: timeline.basics?.description || timeline.details?.scope || undefined,
-            status: 'active' as const,
-            slug: `calendar/timelines/${timeline.slug}`,
-            image: resolveAssetUrl(timeline.assets, 'thumbnail', 'cover'),
-        }
-    })
-
     return (
         <main className="w-full">
-            {championshipEvents.length > 0 && (
-                <TimelineSection
-                    id="calendar-championships"
-                    title="CHAMPIONSHIPS"
-                    subtitle="Upcoming season cycles and championship start dates"
-                    events={championshipEvents}
-                    labels={{
-                        statusPrefix: 'STATUS',
-                        eventIndexLabel: 'CHAMPIONSHIP',
-                        deploymentStatus: {
-                            completed: 'CONCLUDED',
-                            active: 'IN PROGRESS',
-                            upcoming: 'UPCOMING',
-                        },
-                    }}
-                    headerVariant={1}
-                    footerVariant={1}
-                />
-            )}
+            <TimelineSection
+                id="calendar-championships"
+                title="CHAMPIONSHIPS"
+                subtitle="Upcoming season cycles and championship start dates"
+                events={championshipEvents}
+                labels={{
+                    statusPrefix: 'STATUS',
+                    eventIndexLabel: 'CHAMPIONSHIP',
+                    deploymentStatus: {
+                        completed: 'CONCLUDED',
+                        active: 'IN PROGRESS',
+                        upcoming: 'UPCOMING',
+                    },
+                }}
+                headerVariant={1}
+                footerVariant={1}
+            />
 
-            {raceSlides.length > 0 && (
-                <CarouselSection
-                    id="calendar-races"
-                    slides={raceSlides}
-                    ctaLabel="ALL RACES"
-                    ctaPath="/calendar/races"
-                />
-            )}
-
-            {timelineEvents.length > 0 && (
-                <TimelineSection
-                    id="calendar-timelines"
-                    title="TIMELINES"
-                    subtitle="Active event timelines and milestones in progress"
-                    events={timelineEvents}
-                    labels={{
-                        statusPrefix: 'STATUS',
-                        eventIndexLabel: 'TIMELINE',
-                        deploymentStatus: {
-                            completed: 'ARCHIVED',
-                            active: 'ACTIVE',
-                            upcoming: 'PLANNED',
-                        },
-                    }}
-                    headerVariant={1}
-                    footerVariant={1}
-                />
-            )}
+            <CarouselSection
+                id="calendar-races"
+                slides={raceSlides}
+                ctaLabel="ALL RACES"
+                ctaPath="/calendar/races"
+                itemsToScroll={2}
+            />
         </main>
     )
 }

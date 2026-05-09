@@ -35,7 +35,10 @@ export function CartModal() {
         <OpenCartButton quantity={totalQuantity} />
       </SheetTrigger>
 
-      <SheetContent className="flex flex-col bg-white-pure border-l border-black-pure p-0 w-full sm:max-w-md z-111">
+      <SheetContent
+        style={{ boxShadow: 'none' }}
+        className="flex flex-col bg-white-pure border-l border-black-pure p-0 w-full sm:max-w-md z-111 shadow-none ring-0 outline-none"
+      >
         <SheetHeader className="p-8 border-b border-black-pure">
           <div className="flex items-center justify-between">
             <div className="space-y-2">
@@ -106,7 +109,7 @@ export function CartModal() {
 
               <button
                 onClick={() => { setIsOpen(false); window.location.href = '/checkout' }}
-                className="w-full h-12 bg-black-pure text-white-pure text-xs font-mono font-black uppercase tracking-widest hover:bg-secondary transition-colors"
+                className="w-full h-12 bg-black-pure text-white-pure text-xs font-mono font-black uppercase tracking-widest hover:bg-secondary transition-colors shadow-none"
               >
                 Checkout
               </button>
