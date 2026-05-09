@@ -14,7 +14,7 @@ const SectionFooter: React.FC<SectionFooterProps> = ({
 
     if (variant === 2) {
         return (
-            <footer className="w-full border-t-8 border-black-pure bg-primary-500 grid grid-cols-1 md:grid-cols-4 group">
+            <footer className="w-full border-t-8 border-black-pure bg-primary-500 grid grid-cols-1 md:grid-cols-4 group z-1">
                 <div className="md:col-span-3 grid grid-cols-2 md:grid-cols-4 border-b md:border-b-0 md:border-r-8 border-black-pure bg-white-pure">
                     {links.map((link, idx) => (
                         <a key={idx} href={link.href} className={`${textStyle} p-8 border-r border-black-pure last:border-r-0 hover:bg-primary-500 hover:text-white-pure transition-all duration-300 flex items-center justify-center text-center text-black-pure`}>
@@ -35,7 +35,7 @@ const SectionFooter: React.FC<SectionFooterProps> = ({
 
     if (variant === 3) {
         return (
-            <footer className="w-full bg-white-pure flex items-stretch min-h-[100px] border-t border-black-pure group">
+            <footer className="w-full bg-white-pure flex items-stretch min-h-[100px] border-t border-black-pure group z-1">
                 <div className="flex-1 p-8 flex items-center bg-white-pure border-r border-black-pure">
                     <div className="flex flex-wrap gap-8">
                         {links.map((link, idx) => (
@@ -46,7 +46,7 @@ const SectionFooter: React.FC<SectionFooterProps> = ({
                         ))}
                     </div>
                 </div>
-                <div className="hidden lg:flex flex-1 items-center px-10 gap-1 bg-white-pure">
+                <div className="hidden lg:flex flex-1 items-center px-10 gap-1 bg-white-pure z-1">
                     {[...Array(12)].map((_, i) => (
                         <div key={i} className="flex-1 h-1 bg-black-pure group-hover:h-8 group-hover:bg-secondary-500 transition-all duration-500" style={{ transitionDelay: `${i * 30}ms` }} />
                     ))}
@@ -60,7 +60,7 @@ const SectionFooter: React.FC<SectionFooterProps> = ({
 
     if (variant === 4) {
         return (
-            <footer className="w-full py-16 px-10 bg-black-pure relative group overflow-hidden">
+            <footer className="w-full py-16 px-10 bg-black-pure relative group overflow-hidden z-1">
                 <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-primary-500 via-secondary-500 to-primary-500" />
                 <div className="relative z-10 flex flex-col md:flex-row justify-between items-center gap-12">
                     <div className="flex flex-wrap justify-center gap-x-12 gap-y-4">
@@ -85,7 +85,7 @@ const SectionFooter: React.FC<SectionFooterProps> = ({
 
     if (variant === 5) {
         return (
-            <footer className="w-full bg-white-pure border-t border-black-pure">
+            <footer className="w-full bg-white-pure border-t border-black-pure z-1">
                 <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2">
                     <div className="p-12 flex items-center justify-center md:justify-start bg-white-pure">
                         <div className="flex flex-wrap gap-10">
@@ -113,7 +113,7 @@ const SectionFooter: React.FC<SectionFooterProps> = ({
     }
 
     return (
-        <footer className="w-full h-24 flex items-stretch border-t-2 border-black-pure bg-white-pure group">
+        <footer className="w-full h-24 flex items-stretch border-t-2 border-black-pure bg-white-pure group z-1">
             <div className="w-24 bg-primary-500 flex items-center justify-center relative overflow-hidden">
                 <div className="w-8 h-8 border-4 border-white-pure border-t-white-pure rotate-45 group-hover:rotate-[225deg] transition-transform duration-700" />
             </div>

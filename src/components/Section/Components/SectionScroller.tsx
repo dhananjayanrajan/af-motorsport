@@ -52,7 +52,7 @@ const SectionScroller: React.FC<SectionScrollerProps> = ({
 
     if (variant === 2) {
         return (
-            <div className="w-full bg-black-pure border-y-4 border-black-pure h-16 flex items-center relative overflow-hidden group">
+            <div className="w-full bg-black-pure border-y-4 border-black-pure h-16 flex items-center relative overflow-hidden group z-1">
                 <div className={`flex items-center whitespace-nowrap ${animationClass} group-hover:scroller-pause`} style={{ animationDuration: `${velocity}s` }}>
                     {[...Array(4)].map((_, idx) => (
                         <div key={idx} className="flex items-center">
@@ -76,7 +76,7 @@ const SectionScroller: React.FC<SectionScrollerProps> = ({
 
     if (variant === 3) {
         return (
-            <div className="w-full bg-secondary-500 border-y-2 border-black-pure h-20 flex items-center relative overflow-hidden group">
+            <div className="w-full bg-secondary-500 border-y-2 border-black-pure h-20 flex items-center relative overflow-hidden group z-1">
                 <div className={`flex items-center whitespace-nowrap relative z-10 ${animationClass} group-hover:scroller-pause`} style={{ animationDuration: `${velocity}s` }}>
                     {[...Array(4)].map((_, idx) => (
                         <div key={idx} className="flex items-center">
@@ -97,7 +97,7 @@ const SectionScroller: React.FC<SectionScrollerProps> = ({
 
     if (variant === 4) {
         return (
-            <div className="w-full bg-white-pure border-y-8 border-black-pure h-16 flex items-center relative overflow-hidden group">
+            <div className="w-full bg-white-pure border-y-8 border-black-pure h-16 flex items-center relative overflow-hidden group z-1">
                 <div className={`flex items-center whitespace-nowrap ${animationClass} group-hover:scroller-pause`} style={{ animationDuration: `${velocity}s` }}>
                     {[...Array(4)].map((_, idx) => (
                         <div key={idx} className="flex items-center">
@@ -119,7 +119,7 @@ const SectionScroller: React.FC<SectionScrollerProps> = ({
 
     if (variant === 5) {
         return (
-            <div className="w-full bg-black-pure border-y-2 border-primary-500 h-24 flex items-center relative overflow-hidden group">
+            <div className="w-full bg-black-pure border-y-2 border-primary-500 h-24 flex items-center relative overflow-hidden group z-1">
                 <div className={`flex items-center whitespace-nowrap ${animationClass} group-hover:scroller-pause`} style={{ animationDuration: `${velocity}s` }}>
                     {[...Array(4)].map((_, idx) => (
                         <div key={idx} className="flex items-center">
@@ -140,7 +140,7 @@ const SectionScroller: React.FC<SectionScrollerProps> = ({
     }
 
     return (
-        <div className="w-full bg-primary-500 border-y-2 border-black-pure h-14 flex items-center relative overflow-hidden group">
+        <div className="w-full bg-primary-500 border-y-2 border-black-pure h-14 flex items-center relative overflow-hidden group z-1">
             <div className={`flex items-center whitespace-nowrap ${animationClass} group-hover:scroller-pause`} style={{ animationDuration: `${velocity}s` }}>
                 {[...Array(4)].map((_, idx) => (
                     <div key={idx} className="flex items-center">

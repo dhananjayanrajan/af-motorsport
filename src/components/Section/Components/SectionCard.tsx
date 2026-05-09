@@ -26,7 +26,7 @@ const SectionCard: React.FC<SectionCardProps> = ({
 
     if (variant === 2) {
         return (
-            <button onClick={onClick} className="w-full group bg-white-pure border-[3px] border-black-pure overflow-visible relative transition-all duration-300 hover:-translate-x-1 hover:-translate-y-1 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:shadow-[16px_16px_0px_0px_var(--secondary-800)]">
+            <button onClick={onClick} className="w-full group bg-white-pure border-[3px] border-black-pure overflow-visible relative transition-all duration-300 hover:-translate-x-1 hover:-translate-y-1 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:shadow-[16px_16px_0px_0px_var(--secondary-800)] z-1">
                 <div className="h-64 relative overflow-hidden bg-zinc-200 border-b-[3px] border-black-pure">
                     <Image src={imageUrl} alt={title} fill className="object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105" />
                     <div className="absolute top-0 right-0 bg-black-pure text-white-pure text-[10px] px-4 py-2 font-black z-20">
@@ -44,7 +44,7 @@ const SectionCard: React.FC<SectionCardProps> = ({
 
     if (variant === 3) {
         return (
-            <button onClick={onClick} className="w-full aspect-[3/4] relative group border-[4px] border-black-pure bg-black-pure overflow-hidden active:scale-[0.98] transition-transform">
+            <button onClick={onClick} className="w-full aspect-[3/4] relative group border-[4px] border-black-pure bg-black-pure overflow-hidden active:scale-[0.98] transition-transform z-1">
                 <Image src={imageUrl} alt={title} fill className="object-cover opacity-60 grayscale group-hover:opacity-30 group-hover:scale-110 transition-all duration-1000" />
                 <div className="absolute inset-0 p-6 flex flex-col justify-between text-left z-10">
                     <div className="flex justify-between items-start">
@@ -68,7 +68,7 @@ const SectionCard: React.FC<SectionCardProps> = ({
 
     if (variant === 4) {
         return (
-            <button onClick={onClick} className="w-full flex flex-col group border-[3px] border-black-pure bg-white-pure shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all">
+            <button onClick={onClick} className="w-full flex flex-col group border-[3px] border-black-pure bg-white-pure shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all z-1">
                 <div className="flex items-center justify-between p-5 border-b-[3px] border-black-pure bg-zinc-50 group-hover:bg-tertiary-50 transition-colors">
                     <div className="text-left overflow-hidden">
                         <span className="text-[10px] font-black text-tertiary-600 block mb-1">{label}</span>
@@ -92,7 +92,7 @@ const SectionCard: React.FC<SectionCardProps> = ({
 
     if (variant === 5) {
         return (
-            <button onClick={onClick} className="w-full group grid grid-cols-1 xs:grid-cols-[140px_1fr] bg-white-pure border-[3px] border-black-pure hover:bg-black-pure transition-colors duration-300 text-left">
+            <button onClick={onClick} className="w-full group grid grid-cols-1 xs:grid-cols-[140px_1fr] bg-white-pure border-[3px] border-black-pure hover:bg-black-pure transition-colors duration-300 text-left z-1">
                 <div className="h-40 xs:h-full relative bg-zinc-200 border-b-[3px] xs:border-b-0 xs:border-r-[3px] border-black-pure overflow-hidden">
                     <Image src={imageUrl} alt={title} fill className="object-cover grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-500" />
                 </div>
@@ -114,7 +114,7 @@ const SectionCard: React.FC<SectionCardProps> = ({
     }
 
     return (
-        <button onClick={onClick} className="w-full p-8 md:p-10 border-[4px] border-black-pure bg-white-pure relative group overflow-hidden transition-all hover:bg-zinc-50">
+        <button onClick={onClick} className="w-full p-8 md:p-10 border-[4px] border-black-pure bg-white-pure relative group overflow-hidden transition-all hover:bg-zinc-50 z-1">
             <div className="absolute top-0 left-0 w-full h-2 bg-black-pure group-hover:h-4 group-hover:bg-primary-500 transition-all" />
             <div className="relative z-10 text-left">
                 <div className="mb-8 flex justify-between items-start">

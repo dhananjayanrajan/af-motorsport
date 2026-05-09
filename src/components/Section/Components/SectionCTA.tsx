@@ -30,7 +30,7 @@ const SectionCTA: React.FC<SectionCTAProps> = ({
 
     if (variant === 2) {
         return (
-            <div className="w-full mt-20 group relative">
+            <div className="w-full mt-20 group relative z-1">
                 <div className="flex items-center justify-between mb-2">
                     <span className="text-[10px] font-black text-black-pure px-2 py-1 border-l-2 border-black-pure bg-white-pure">
                         {directoryLabel} {path}
@@ -61,7 +61,7 @@ const SectionCTA: React.FC<SectionCTAProps> = ({
 
     if (variant === 3) {
         return (
-            <div className="mt-20 border-t-4 border-black-pure pt-12 relative group overflow-hidden bg-white-pure">
+            <div className="mt-20 border-t-4 border-black-pure pt-12 relative group overflow-hidden bg-white-pure z-1">
                 <div className="absolute top-0 right-0 h-full w-1/3 bg-primary-500 -skew-x-12 translate-x-full group-hover:translate-x-1/2 transition-transform duration-1000" />
                 <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-8 relative z-10">
                     <div className="max-w-xl">
@@ -85,7 +85,7 @@ const SectionCTA: React.FC<SectionCTAProps> = ({
 
     if (variant === 4) {
         return (
-            <div className="mt-20 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[1fr_350px] border-4 border-black-pure bg-white-pure gap-1">
+            <div className="mt-20 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[1fr_350px] border-4 border-black-pure bg-white-pure gap-1 z-1">
                 <div className="bg-white-pure p-8 flex flex-col justify-between">
                     <div className="mb-10">
                         <div className="flex items-center gap-1 mb-6">
@@ -118,7 +118,7 @@ const SectionCTA: React.FC<SectionCTAProps> = ({
 
     if (variant === 5) {
         return (
-            <div className="mt-20 flex flex-col items-center bg-white-pure">
+            <div className="mt-20 flex flex-col items-center bg-white-pure z-1">
                 <div className="grid grid-cols-3 gap-1 w-12 mb-6">
                     {[...Array(9)].map((_, i) => (
                         <div key={i} className="w-3 h-3 bg-black-pure group-hover:bg-primary-500 transition-colors" />
@@ -143,7 +143,7 @@ const SectionCTA: React.FC<SectionCTAProps> = ({
     }
 
     return (
-        <div className="mt-20 border-[12px] border-black-pure bg-white-pure group">
+        <div className="mt-20 border-[12px] border-black-pure bg-white-pure group z-1">
             <div className="p-6 md:p-12 flex flex-col md:flex-row items-stretch md:items-center gap-12 border-2 border-black-pure m-2 bg-white-pure">
                 <div className="flex-1 space-y-4">
                     <div className="flex gap-2">

@@ -21,7 +21,7 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({
 
     if (variant === 2) {
         return (
-            <header className="w-full flex flex-col items-center bg-white-pure p-8 border-l-[12px] border-primary-500">
+            <header className="w-full flex flex-col items-center bg-white-pure p-8 border-l-[12px] border-primary-500 z-1">
                 <div className="flex items-center gap-4 mb-4">
                     <div className="h-[2px] w-8 bg-primary-500" />
                     <span className={baseStyles.subheading}>{subtitle}</span>
@@ -39,7 +39,7 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({
 
     if (variant === 3) {
         return (
-            <header className="w-full flex flex-col bg-white-pure border-b-4 border-secondary-500 overflow-hidden">
+            <header className="w-full flex flex-col bg-white-pure border-b-4 border-secondary-500 overflow-hidden z-1">
                 <div className="bg-secondary-500 px-6 py-2 flex justify-between items-center gap-4">
                     <span className="font-bold text-[10px] uppercase text-black-pure">{subtitle}</span>
                     {metadata && (
@@ -58,7 +58,7 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({
 
     if (variant === 4) {
         return (
-            <header className="flex flex-col items-center bg-white-pure p-10 border-2 border-black-pure text-center">
+            <header className="flex flex-col items-center bg-white-pure p-10 border-2 border-black-pure text-center z-1">
                 <div className="w-16 h-1 bg-primary-500 mb-6" />
                 {metadata && (
                     <span className="mb-2 text-black-pure text-[10px] font-bold uppercase tracking-[0.3em]">
@@ -75,7 +75,7 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({
 
     if (variant === 5) {
         return (
-            <header className="w-full py-10 px-6 flex flex-col items-center text-center bg-white-pure border-y-2 border-black-pure">
+            <header className="w-full py-10 px-6 flex flex-col items-center text-center bg-white-pure border-y-2 border-black-pure z-1">
                 <p className={`${baseStyles.subheading} mb-3 text-primary-500`}>{subtitle}</p>
                 <h2 className={`${baseStyles.heading} text-black-pure mb-6`}>{title}</h2>
                 <div className="flex items-center gap-2">
@@ -88,7 +88,7 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({
     }
 
     return (
-        <header className="w-full p-8 bg-white-pure flex flex-col items-center text-center border-4 border-black-pure">
+        <header className="w-full p-8 bg-white-pure flex flex-col items-center text-center border-4 border-black-pure z-1">
             <div className="bg-secondary-500 border-2 border-black-pure px-3 py-1 mb-6">
                 <span className="font-bold text-[11px] uppercase text-black-pure">
                     {subtitle}

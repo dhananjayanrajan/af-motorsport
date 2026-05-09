@@ -20,7 +20,7 @@ const SectionTitle: React.FC<SectionTitleProps> = ({
 
     if (variant === 2) {
         return (
-            <div className="group relative overflow-hidden bg-white-pure border-2 border-black-pure hover:translate-x-1 hover:translate-y-1 transition-all duration-300">
+            <div className="group relative overflow-hidden bg-white-pure border-2 border-black-pure hover:translate-x-1 hover:translate-y-1 transition-all duration-300 z-1">
                 <div className="grid grid-cols-1 md:grid-cols-[1fr_200px]">
                     <div className="p-4 md:p-6 border-b-2 md:border-b-0 md:border-r-2 border-black-pure flex flex-col justify-between min-h-[300px] bg-white-pure">
                         <div className="flex items-start justify-between mb-8">
@@ -52,7 +52,7 @@ const SectionTitle: React.FC<SectionTitleProps> = ({
 
     if (variant === 3) {
         return (
-            <div className="group grid grid-cols-1 md:grid-cols-12 border-2 border-black-pure bg-white-pure">
+            <div className="group grid grid-cols-1 md:grid-cols-12 border-2 border-black-pure bg-white-pure z-1">
                 <div className="md:col-span-1 bg-black-pure flex md:flex-col items-center justify-center p-3 gap-4">
                     <span className="md:[writing-mode:vertical-lr] md:rotate-180 font-black text-white-pure tracking-[0.3em] text-xs uppercase">{label}</span>
                     <div className="hidden md:block h-24 w-[2px] bg-white-pure" />
@@ -74,7 +74,7 @@ const SectionTitle: React.FC<SectionTitleProps> = ({
 
     if (variant === 4) {
         return (
-            <div className="group bg-black-pure p-1 hover:p-0 transition-all duration-500">
+            <div className="group bg-black-pure p-1 hover:p-0 transition-all duration-500 z-1">
                 <div className="bg-white-pure border-2 border-black-pure p-6 md:p-12 relative overflow-hidden">
                     <div className="flex flex-col gap-6">
                         <div className="flex items-center justify-between border-b-2 border-black-pure pb-4">
@@ -101,7 +101,7 @@ const SectionTitle: React.FC<SectionTitleProps> = ({
 
     if (variant === 5) {
         return (
-            <div className="group flex flex-col items-center text-center py-12 md:py-20 px-6 bg-white-pure border-2 border-black-pure relative overflow-hidden">
+            <div className="group flex flex-col items-center text-center py-12 md:py-20 px-6 bg-white-pure border-2 border-black-pure relative overflow-hidden z-1">
                 <div className="absolute top-0 left-0 w-full h-1 bg-black-pure group-hover:h-4 transition-all duration-500" />
                 <span className="mb-8 text-xs font-black tracking-[0.5em] text-black-pure uppercase">{label}</span>
                 <h2 className={`${textBase} flex flex-col items-center gap-2`}>
@@ -128,7 +128,7 @@ const SectionTitle: React.FC<SectionTitleProps> = ({
     }
 
     return (
-        <div className="group relative bg-white-pure p-8 md:p-12 border-2 border-black-pure overflow-hidden">
+        <div className="group relative bg-white-pure p-8 md:p-12 border-2 border-black-pure overflow-hidden z-1">
             <div className="absolute top-0 left-0 w-full h-full bg-primary-500 translate-y-full group-hover:translate-y-[95%] transition-transform duration-700 ease-in-out" />
             <div className="relative z-10">
                 <div className="flex items-center gap-4 mb-10">
