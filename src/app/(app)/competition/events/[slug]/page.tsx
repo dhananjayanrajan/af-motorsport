@@ -113,6 +113,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
             id: 'history',
             title: 'Event History',
             description: 'Background and records for this racing event.',
+            content: event.details.history,
             percentage: 100,
         })
     }
@@ -120,7 +121,8 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
         scrollItems.push({
             id: 'notes',
             title: 'Staff Notes',
-            description: event.details.notes,
+            description: 'Administrative notations.',
+            content: event.details.notes,
             percentage: 75,
         })
     }
