@@ -3,10 +3,57 @@
 import DotGridBackground from '@/components/Section/Backgrounds/DotGridBackground'
 import SectionHeader from '@/components/Section/Components/SectionHeader'
 import { cn } from '@/utilities/cn'
-import { ArrowUpRight, Heart, Instagram, MessageCircle } from 'lucide-react'
+import {
+    ArrowUpRight,
+    ExternalLink,
+    Facebook,
+    Gamepad2,
+    Ghost,
+    Github,
+    Hash,
+    Heart,
+    Instagram,
+    Linkedin,
+    MessageCircle,
+    Music2,
+    Twitter,
+    Youtube
+} from 'lucide-react'
 import { motion } from 'motion/react'
 import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
+
+export interface Social {
+    id: number;
+    accounts?:
+    | {
+        platform:
+        | 'instagram'
+        | 'x'
+        | 'facebook'
+        | 'youtube'
+        | 'linkedin'
+        | 'tiktok'
+        | 'threads'
+        | 'snapchat'
+        | 'pinterest'
+        | 'discord'
+        | 'twitch'
+        | 'whatsapp'
+        | 'telegram'
+        | 'github'
+        | 'spotify'
+        | 'other';
+        label: string;
+        handle?: string | null;
+        url: string;
+        visible?: boolean | null;
+        id?: string | null;
+    }[]
+    | null;
+    updatedAt?: string | null;
+    createdAt?: string | null;
+}
 
 interface InstagramPost {
     id: string
@@ -21,6 +68,24 @@ interface InstagramPost {
 interface SocialGalleryProps {
     initialPosts?: InstagramPost[]
     handle: string
+    socialData?: Social | null
+}
+
+const getPlatformIcon = (platform: string) => {
+    switch (platform) {
+        case 'instagram': return <Instagram className="size-4" />
+        case 'x': return <Twitter className="size-4" />
+        case 'youtube': return <Youtube className="size-4" />
+        case 'facebook': return <Facebook className="size-4" />
+        case 'linkedin': return <Linkedin className="size-4" />
+        case 'tiktok': return <Music2 className="size-4" />
+        case 'snapchat': return <Ghost className="size-4" />
+        case 'threads': return <Hash className="size-4" />
+        case 'discord':
+        case 'twitch': return <Gamepad2 className="size-4" />
+        case 'github': return <Github className="size-4" />
+        default: return <ExternalLink className="size-4" />
+    }
 }
 
 const generatePlaceholderPosts = (count: number, startIndex: number = 0): InstagramPost[] => {
@@ -38,7 +103,7 @@ const generatePlaceholderPosts = (count: number, startIndex: number = 0): Instag
     })
 }
 
-export function SocialGallery({ initialPosts = [], handle }: SocialGalleryProps) {
+export function SocialGallery({ initialPosts = [], handle, socialData }: SocialGalleryProps) {
     const [posts, setPosts] = useState<InstagramPost[]>([])
     const [loading, setLoading] = useState(false)
     const loaderRef = useRef<HTMLDivElement>(null)
@@ -73,6 +138,8 @@ export function SocialGallery({ initialPosts = [], handle }: SocialGalleryProps)
         return () => observer.disconnect()
     }, [loading, posts.length])
 
+    const visibleAccounts = socialData?.accounts?.filter(acc => acc.visible !== false) || []
+
     return (
         <section className="relative w-full bg-white-pure border-t-2 border-black-pure overflow-hidden">
             <DotGridBackground />
@@ -83,6 +150,35 @@ export function SocialGallery({ initialPosts = [], handle }: SocialGalleryProps)
                 variant={1}
                 metadata={String(posts.length).padStart(2, '0')}
             />
+
+            <div className="w-full border-b-2 border-black-pure bg-white-pure relative z-20">
+                <div className="container max-w-full lg:max-w-7xl mx-auto flex flex-wrap divide-x-2 divide-black-pure border-x-2 border-black-pure">
+                    {visibleAccounts.length > 0 ? (
+                        visibleAccounts.map((account, idx) => (
+                            <Link
+                                key={account.id || idx}
+                                href={account.url}
+                                target="_blank"
+                                className="flex-1 min-w-[120px] p-4 flex flex-col items-center justify-center gap-1 group transition-colors hover:bg-primary-500"
+                            >
+                                <span className="text-black-pure">
+                                    {getPlatformIcon(account.platform)}
+                                </span>
+                                <span className="text-[10px] font-black uppercase tracking-tighter">
+                                    {account.label}
+                                </span>
+                                <span className="text-sm font-black tracking-widest">
+                                    -
+                                </span>
+                            </Link>
+                        ))
+                    ) : (
+                        <div className="w-full p-4 flex items-center justify-center text-[10px] font-black uppercase tracking-widest">
+                            No Social Accounts Connected
+                        </div>
+                    )}
+                </div>
+            </div>
 
             <div className="container py-8 sm:py-12 lg:py-16 max-w-full lg:max-w-7xl mx-auto relative z-10">
                 <div className="border-2 border-black-pure bg-white-pure p-6 sm:p-8 lg:p-12 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
