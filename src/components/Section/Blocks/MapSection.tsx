@@ -132,91 +132,94 @@ const MapSection: React.FC<MapSectionProps> = ({
     }
   }, [activeLoc, fetchRoute])
 
-  const displayLocations = locations.slice(0, 8)
-
   return (
-    <section id={id} className="relative w-full bg-white-pure border-t border-black-pure overflow-hidden">
+    <section id={id} className="relative w-full bg-white-pure border-t-2 border-black-pure overflow-hidden">
       <SectionHeader title={title} subtitle={subtitle} variant={headerVariant} metadata={String(locations.length).padStart(2, '0')} />
 
-      <div className="relative w-full h-[500px] sm:h-[600px] md:h-[700px] lg:h-[800px] border-b-2 border-black-pure bg-white-pure">
-        <Map viewport={viewport} onViewportChange={setViewport} theme="light">
-          <MapControls position="bottom-right" showZoom showCompass showLocate showFullscreen />
+      <div className="container py-8 sm:py-12 lg:py-16 max-w-full lg:max-w-7xl mx-auto relative z-10">
+        <div className="border-2 border-black-pure bg-white-pure overflow-hidden relative flex flex-col">
 
-          <AnimatePresence>
-            {showRoutes && route && (
-              <MapRoute coordinates={route.coordinates} color="#000000" width={3} opacity={1} />
-            )}
-          </AnimatePresence>
+          <div className="relative w-full h-[500px] sm:h-[600px] lg:h-[700px] bg-white-pure">
+            <Map viewport={viewport} onViewportChange={setViewport} theme="light">
+              <MapControls position="bottom-right" showZoom showCompass showLocate showFullscreen />
 
-          <MapMarker longitude={hqCoords.lng} latitude={hqCoords.lat}>
-            <MarkerContent className="size-8 sm:size-10 flex items-center justify-center">
-              <div className="absolute inset-0 bg-primary-500 border-2 border-black-pure rotate-45" />
-              <Navigation2 className="size-4 sm:size-5 text-black-pure relative z-10 fill-black-pure" />
-            </MarkerContent>
-            <MarkerLabel position="bottom" className="text-xs font-mono font-black px-2 py-1 mt-3 bg-black-pure text-white-pure uppercase tracking-tighter">
-              {labels.hqLabel}
-            </MarkerLabel>
-          </MapMarker>
+              <AnimatePresence>
+                {showRoutes && route && (
+                  <MapRoute coordinates={route.coordinates} color="#000000" width={3} opacity={1} />
+                )}
+              </AnimatePresence>
 
-          {filtered.slice(0, 8).map((loc) => {
-            const isSelected = activeLoc?.id === loc.id
-            return (
-              <MapMarker key={loc.id} longitude={loc.lng} latitude={loc.lat} onClick={() => { setActiveLoc(loc); setSidebarOpen(true); }}>
-                <MarkerContent className="cursor-pointer">
-                  <div className={`relative flex items-center justify-center transition-all duration-300 ${isSelected ? 'scale-125' : 'hover:scale-110'}`}>
-                    <div className={`size-5 sm:size-6 border-2 border-black-pure rotate-45 transition-colors ${isSelected ? 'bg-black-pure' : 'bg-white-pure'}`} />
-                    <div className={`absolute size-1 sm:size-1.5 ${isSelected ? 'bg-primary-500' : 'bg-black-pure'}`} />
-                  </div>
+              <MapMarker longitude={hqCoords.lng} latitude={hqCoords.lat}>
+                <MarkerContent className="size-8 flex items-center justify-center">
+                  <div className="absolute inset-0 bg-primary-500 border-2 border-black-pure rotate-45" />
+                  <Navigation2 className="size-4 text-black-pure relative z-10 fill-black-pure" />
                 </MarkerContent>
+                <MarkerLabel position="bottom" className="text-[10px] font-mono font-black px-2 py-1 mt-3 bg-black-pure text-white-pure uppercase tracking-widest">
+                  {labels.hqLabel}
+                </MarkerLabel>
               </MapMarker>
-            )
-          })}
-        </Map>
 
-        <AnimatePresence>
-          {showRoutes && route && (
-            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }} className="absolute bottom-4 left-4 sm:bottom-10 sm:left-10 z-20">
-              <div className="bg-black-pure text-white-pure px-4 py-3 sm:px-6 sm:py-4 flex items-center gap-4 sm:gap-8 border-2 border-black-pure">
-                <div className="flex flex-col">
-                  <span className="text-xs font-mono text-white-pure uppercase">Distance</span>
-                  <span className="text-xs sm:text-sm font-black">{(route.distance / 1000).toFixed(1)} km</span>
-                </div>
-                <div className="w-px h-6 bg-white-pure" />
-                <div className="flex flex-col">
-                  <span className="text-xs font-mono text-white-pure uppercase">Time</span>
-                  <span className="text-xs sm:text-sm font-black">{formatDuration(route.duration)}</span>
-                </div>
+              {filtered.slice(0, 8).map((loc) => {
+                const isSelected = activeLoc?.id === loc.id
+                return (
+                  <MapMarker key={loc.id} longitude={loc.lng} latitude={loc.lat} onClick={() => { setActiveLoc(loc); setSidebarOpen(true); }}>
+                    <MarkerContent className="cursor-pointer">
+                      <div className={`relative flex items-center justify-center transition-all duration-300 ${isSelected ? 'scale-125' : 'hover:scale-110'}`}>
+                        <div className={`size-5 border-2 border-black-pure rotate-45 transition-colors ${isSelected ? 'bg-black-pure' : 'bg-white-pure'}`} />
+                        <div className={`absolute size-1.5 ${isSelected ? 'bg-primary-500' : 'bg-black-pure'}`} />
+                      </div>
+                    </MarkerContent>
+                  </MapMarker>
+                )
+              })}
+            </Map>
+
+            <AnimatePresence>
+              {showRoutes && route && (
+                <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }} className="absolute bottom-4 left-4 z-20">
+                  <div className="bg-black-pure text-white-pure px-4 py-3 flex items-center gap-6 border-2 border-black-pure">
+                    <div className="flex flex-col">
+                      <span className="text-[9px] font-mono text-white-pure/50 uppercase">Distance</span>
+                      <span className="text-xs font-black">{(route.distance / 1000).toFixed(1)} km</span>
+                    </div>
+                    <div className="w-px h-6 bg-white-pure/20" />
+                    <div className="flex flex-col">
+                      <span className="text-[9px] font-mono text-white-pure/50 uppercase">Time</span>
+                      <span className="text-xs font-black">{formatDuration(route.duration)}</span>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {isLoading && (
+              <div className="absolute inset-0 flex items-center justify-center bg-white-pure/80 z-[60]">
+                <Loader2 className="size-8 animate-spin text-black-pure" />
               </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {isLoading && (
-          <div className="absolute inset-0 flex items-center justify-center bg-white-pure/80 z-[60]">
-            <Loader2 className="size-6 sm:size-8 animate-spin text-black-pure" />
+            )}
           </div>
-        )}
-      </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 border-b-2 border-black-pure divide-x-2 divide-black-pure">
-        {[
-          { id: 'all', label: labels.filterLabels.all, icon: Activity },
-          { id: 'primary', label: labels.filterLabels.primary, icon: Zap },
-          { id: 'satellite', label: labels.filterLabels.satellite, icon: MapPin },
-          { id: 'routes', label: 'Routes', icon: Navigation2 }
-        ].map((btn) => {
-          const isActive = btn.id === 'routes' ? showRoutes : filter === btn.id;
-          return (
-            <button
-              key={btn.id}
-              onClick={() => btn.id === 'routes' ? setShowRoutes(!showRoutes) : setFilter(btn.id as any)}
-              className={`flex items-center gap-3 sm:gap-4 px-4 py-4 sm:px-8 sm:py-6 transition-all ${isActive ? 'bg-black-pure text-white-pure' : 'bg-white-pure hover:bg-white-pure'}`}
-            >
-              <btn.icon className="size-3.5 sm:size-4 shrink-0" />
-              <span className="text-xs sm:text-xs font-mono font-black uppercase tracking-widest truncate">{btn.label}</span>
-            </button>
-          )
-        })}
+          <div className="grid grid-cols-2 md:grid-cols-4 border-t-2 border-black-pure divide-x-2 divide-black-pure">
+            {[
+              { id: 'all', label: labels.filterLabels.all, icon: Activity },
+              { id: 'primary', label: labels.filterLabels.primary, icon: Zap },
+              { id: 'satellite', label: labels.filterLabels.satellite, icon: MapPin },
+              { id: 'routes', label: 'Routes', icon: Navigation2 }
+            ].map((btn) => {
+              const isActive = btn.id === 'routes' ? showRoutes : filter === btn.id;
+              return (
+                <button
+                  key={btn.id}
+                  onClick={() => btn.id === 'routes' ? setShowRoutes(!showRoutes) : setFilter(btn.id as any)}
+                  className={`flex items-center gap-3 px-6 py-4 transition-all ${isActive ? 'bg-black-pure text-white-pure' : 'bg-white-pure hover:bg-secondary-500'}`}
+                >
+                  <btn.icon className="size-3.5 shrink-0" />
+                  <span className="text-[10px] font-mono font-black uppercase tracking-widest truncate">{btn.label}</span>
+                </button>
+              )
+            })}
+          </div>
+        </div>
       </div>
 
       <AnimatePresence>
@@ -228,45 +231,45 @@ const MapSection: React.FC<MapSectionProps> = ({
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="fixed right-0 top-0 h-full w-full sm:max-w-sm md:max-w-md lg:max-w-md xl:max-w-lg 2xl:max-w-xl z-[999] bg-white-pure border-l-2 border-black-pure flex flex-col"
+              className="fixed right-0 top-0 h-full w-full sm:max-w-md z-[999] bg-white-pure border-l-2 border-black-pure flex flex-col"
             >
-              <div className="p-5 sm:p-6 border-b border-black-pure flex justify-between items-center bg-white-pure shrink-0">
+              <div className="p-5 border-b-2 border-black-pure flex justify-between items-center bg-white-pure shrink-0">
                 <div className="flex items-center gap-2 truncate">
-                  <Terminal className="size-3.5 text-black-pure shrink-0" />
-                  <span className="text-xs font-mono font-black text-black-pure uppercase tracking-widest truncate">Location Details</span>
+                  <Terminal className="size-4 text-black-pure shrink-0" />
+                  <span className="text-[10px] font-mono font-black text-black-pure uppercase tracking-widest truncate">Location Details</span>
                 </div>
                 <button onClick={() => setSidebarOpen(false)} className="hover:rotate-90 transition-transform duration-300 p-1">
-                  <X size={18} />
+                  <X size={20} />
                 </button>
               </div>
 
-              <div className="flex-1 overflow-y-auto p-6 sm:p-8 space-y-6 sm:space-y-10 no-scrollbar">
-                <div className="space-y-2">
-                  <div className="inline-flex items-center gap-2 px-1.5 py-0.5 bg-primary-500 border border-black-pure">
-                    <span className="text-xs font-mono font-black uppercase text-black-pure">Ref: {activeLoc.id}</span>
+              <div className="flex-1 overflow-y-auto p-8 space-y-10 no-scrollbar">
+                <div className="space-y-3">
+                  <div className="inline-flex items-center gap-2 px-2 py-1 bg-primary-500 border-2 border-black-pure">
+                    <span className="text-[10px] font-mono font-black uppercase text-black-pure">Ref: {activeLoc.id}</span>
                   </div>
-                  <h3 className="text-xl sm:text-2xl md:text-3xl font-black uppercase tracking-tighter leading-tight text-black-pure break-words">
+                  <h3 className="text-2xl font-black uppercase tracking-widest leading-tight text-black-pure break-words">
                     {activeLoc.name}
                   </h3>
                 </div>
 
-                <div className="relative p-4 sm:p-6 border-2 border-black-pure bg-white-pure">
-                  <span className="text-xs font-mono font-black text-black-pure uppercase tracking-widest block mb-3">Summary</span>
-                  <p className="text-xs sm:text-xs md:text-sm font-bold text-black-pure leading-snug uppercase break-words">
+                <div className="relative p-6 border-2 border-black-pure bg-white-pure">
+                  <span className="text-[10px] font-mono font-black text-black-pure/50 uppercase tracking-widest block mb-4">Summary</span>
+                  <p className="text-xs font-bold text-black-pure leading-relaxed uppercase break-words">
                     {activeLoc.description || activeLoc.address}
                   </p>
                 </div>
 
-                <div className="space-y-3">
-                  <span className="text-xs font-mono font-black text-black-pure uppercase tracking-widest block">Coordinates</span>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="flex flex-col gap-0.5 border-l-4 border-black-pure pl-3">
-                      <span className="text-xs font-mono font-black text-black-pure uppercase">Latitude</span>
-                      <span className="text-xs sm:text-sm font-mono font-bold">{activeLoc.lat.toFixed(6)}</span>
+                <div className="space-y-4">
+                  <span className="text-[10px] font-mono font-black text-black-pure/50 uppercase tracking-widest block">Coordinates</span>
+                  <div className="grid grid-cols-2 gap-6">
+                    <div className="flex flex-col gap-1 border-l-4 border-black-pure pl-4">
+                      <span className="text-[9px] font-mono font-black text-black-pure/50 uppercase">Latitude</span>
+                      <span className="text-xs font-mono font-black">{activeLoc.lat.toFixed(6)}</span>
                     </div>
-                    <div className="flex flex-col gap-0.5 border-l-4 border-black-pure pl-3">
-                      <span className="text-xs font-mono font-black text-black-pure uppercase">Longitude</span>
-                      <span className="text-xs sm:text-sm font-mono font-bold">{activeLoc.lng.toFixed(6)}</span>
+                    <div className="flex flex-col gap-1 border-l-4 border-black-pure pl-4">
+                      <span className="text-[9px] font-mono font-black text-black-pure/50 uppercase">Longitude</span>
+                      <span className="text-xs font-mono font-black">{activeLoc.lng.toFixed(6)}</span>
                     </div>
                   </div>
                 </div>
@@ -274,14 +277,14 @@ const MapSection: React.FC<MapSectionProps> = ({
 
               <Link
                 href={activeLoc.slug ? (activeLoc.slug.startsWith('/') ? activeLoc.slug : `/${activeLoc.slug}`) : `/${activeLoc.id}`}
-                className="group relative h-16 sm:h-20 bg-black-pure text-white-pure flex items-center justify-between px-6 sm:px-8 overflow-hidden transition-colors hover:bg-primary-500 shrink-0"
+                className="group relative h-20 bg-black-pure text-white-pure flex items-center justify-between px-8 overflow-hidden transition-colors hover:bg-primary-500 shrink-0"
               >
                 <div className="flex flex-col relative z-10 truncate pr-4">
-                  <span className="text-xs font-mono font-black uppercase group-hover:text-black-pure transition-colors">View</span>
-                  <span className="text-sm sm:text-base md:text-lg font-black uppercase tracking-tighter group-hover:text-black-pure transition-colors truncate">Open Profile</span>
+                  <span className="text-[10px] font-mono font-black uppercase group-hover:text-black-pure transition-colors">Navigation</span>
+                  <span className="text-lg font-black uppercase tracking-widest group-hover:text-black-pure transition-colors truncate">Open Profile</span>
                 </div>
-                <div className="size-8 sm:size-10 border border-white-pure shrink-0 flex items-center justify-center group-hover:border-black-pure transition-colors">
-                  <ArrowRight className="size-4 sm:size-5 group-hover:text-black-pure transition-transform group-hover:translate-x-1" />
+                <div className="size-10 border-2 border-white-pure shrink-0 flex items-center justify-center group-hover:border-black-pure transition-colors">
+                  <ArrowRight className="size-5 group-hover:text-black-pure transition-transform group-hover:translate-x-1" />
                 </div>
               </Link>
             </motion.div>

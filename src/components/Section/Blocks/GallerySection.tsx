@@ -43,7 +43,6 @@ const GallerySection: React.FC<GallerySectionProps> = ({
     const [lightboxOpen, setLightboxOpen] = useState(false)
     const [activeIndex, setActiveIndex] = useState(0)
     const [zoomLevel, setZoomLevel] = useState(1)
-    const [hoveredId, setHoveredId] = useState<string | null>(null)
 
     const gridCols = {
         2: 'grid-cols-1 sm:grid-cols-2',
@@ -57,12 +56,16 @@ const GallerySection: React.FC<GallerySectionProps> = ({
         setActiveIndex(index)
         setZoomLevel(1)
         setLightboxOpen(true)
-        document.body.style.overflow = 'hidden'
+        if (typeof window !== 'undefined') {
+            document.body.style.overflow = 'hidden'
+        }
     }
 
     const closeLightbox = () => {
         setLightboxOpen(false)
-        document.body.style.overflow = 'unset'
+        if (typeof window !== 'undefined') {
+            document.body.style.overflow = 'unset'
+        }
     }
 
     const navigate = useCallback((direction: 'prev' | 'next') => {
@@ -109,61 +112,52 @@ const GallerySection: React.FC<GallerySectionProps> = ({
                 metadata={String(items.length).padStart(2, '0')}
             />
 
-            <div className="container py-8 sm:py-12 lg:py-16 z-1">
-                <div className={`grid ${gridCols[columns]} gap-4 sm:gap-6 lg:gap-8`}>
-                    {displayItems.map((item, idx) => (
-                        <motion.button
-                            key={item.id}
-                            onClick={() => openLightbox(idx)}
-                            onMouseEnter={() => setHoveredId(item.id)}
-                            onMouseLeave={() => setHoveredId(null)}
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.4, delay: idx * 0.05 }}
-                            className="group relative aspect-[4/3] overflow-hidden border-2 border-black-pure bg-white-pure focus-visible:ring-2 focus-visible:ring-primary-500 outline-none"
-                        >
-                            <img
-                                src={item.image}
-                                alt={item.title}
-                                className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                            />
+            <div className="container py-8 sm:py-12 lg:py-16 max-w-full lg:max-w-7xl mx-auto relative z-10">
+                <div className="border-2 border-black-pure bg-white-pure p-4 sm:p-6 lg:p-8">
+                    <div className={`grid ${gridCols[columns]} gap-4 sm:gap-6`}>
+                        {displayItems.map((item, idx) => (
+                            <button
+                                key={item.id}
+                                onClick={() => openLightbox(idx)}
+                                className="group relative aspect-square overflow-hidden border-2 border-black-pure bg-white-pure outline-none transition-all duration-500 hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:-translate-x-1 hover:-translate-y-1 active:translate-x-0 active:translate-y-0 active:shadow-none"
+                            >
+                                <img
+                                    src={item.image}
+                                    alt={item.title}
+                                    className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+                                />
 
-                            <div className="absolute inset-0 bg-black-pure/0 group-hover:bg-black-pure/40 transition-colors duration-300 flex items-center justify-center">
-                                <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                    <ZoomIn className="w-10 h-10 text-white-pure" />
-                                </div>
-                            </div>
+                                <div className="absolute inset-0 bg-primary-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
-                            <div className="absolute top-3 left-3 z-10">
-                                <span className="text-xs font-mono font-black bg-black-pure text-white-pure px-2 py-1 uppercase tracking-widest">
-                                    {String(idx + 1).padStart(2, '0')}
-                                </span>
-                            </div>
-
-                            {item.category && (
-                                <div className="absolute bottom-3 right-3 z-10 translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
-                                    <span className="text-xs font-mono font-black bg-white-pure text-black-pure border-2 border-black-pure px-3 py-1 uppercase tracking-widest">
-                                        {item.category}
+                                <div className="absolute top-0 left-0 border-r-2 border-b-2 border-black-pure bg-black-pure px-3 py-1 z-10">
+                                    <span className="text-[10px] font-mono font-black text-primary-500 uppercase tracking-widest">
+                                        {String(idx + 1).padStart(2, '0')}
                                     </span>
                                 </div>
-                            )}
-                        </motion.button>
-                    ))}
-                    {items.length > 9 && (
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            className="group relative aspect-[4/3] overflow-hidden border-2 border-black-pure bg-primary-500 flex items-center justify-center cursor-pointer"
-                        >
-                            <div className="text-center">
-                                <div className="w-16 h-16 border-4 border-black-pure bg-white-pure mx-auto mb-4 flex items-center justify-center group-hover:bg-black-pure transition-colors duration-500">
-                                    <ArrowRight className="w-8 h-8 text-black-pure group-hover:text-white-pure transition-colors duration-500" />
+
+                                <div className="absolute inset-0 flex flex-col justify-end p-4 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 z-20">
+                                    <div className="bg-white-pure border-2 border-black-pure p-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                                        <p className="text-[10px] font-mono font-black text-primary-500 uppercase tracking-[0.2em] mb-1">
+                                            {item.category || 'Asset'}
+                                        </p>
+                                        <h3 className="text-sm font-black text-black-pure uppercase tracking-tighter truncate">
+                                            {item.title}
+                                        </h3>
+                                    </div>
                                 </div>
-                                <span className="text-lg font-black text-black-pure uppercase">View All</span>
-                                <span className="text-sm font-mono font-black text-black-pure block mt-2">{items.length - 9} more</span>
-                            </div>
-                        </motion.div>
-                    )}
+                            </button>
+                        ))}
+
+                        {items.length > 9 && (
+                            <button className="group relative aspect-square overflow-hidden border-2 border-black-pure bg-secondary-500 flex flex-col items-center justify-center transition-all duration-500 hover:bg-primary-500 hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:-translate-x-1 hover:-translate-y-1">
+                                <div className="size-14 border-2 border-black-pure bg-white-pure flex items-center justify-center mb-4 transition-transform group-hover:rotate-90">
+                                    <ArrowRight className="w-8 h-8 text-black-pure" />
+                                </div>
+                                <span className="text-sm font-black text-black-pure uppercase tracking-widest">Archive</span>
+                                <span className="text-[10px] font-mono font-black text-black-pure/60 block mt-1 uppercase">+{items.length - 9} Entries</span>
+                            </button>
+                        )}
+                    </div>
                 </div>
             </div>
 
@@ -173,100 +167,73 @@ const GallerySection: React.FC<GallerySectionProps> = ({
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        transition={{ duration: 0.3 }}
-                        className="fixed inset-0 z-[200] bg-black-pure flex flex-col"
+                        className="fixed inset-0 z-[200] bg-white-pure flex flex-col"
                     >
-                        <div className="flex items-center justify-between p-4 md:p-6 border-b border-white-pure shrink-0">
-                            <div className="flex items-center gap-4 min-w-0">
-                                <span className="text-xs font-mono font-black text-primary-500 uppercase tracking-widest">
-                                    {String(activeIndex + 1).padStart(2, '0')} / {String(displayItems.length).padStart(2, '0')}
-                                </span>
-                                <div className="hidden sm:flex flex-col min-w-0">
-                                    <h3 className="text-sm font-black text-white-pure uppercase tracking-tighter truncate">
+                        <div className="flex items-center justify-between p-4 md:px-8 h-20 border-b-2 border-black-pure bg-white-pure shrink-0">
+                            <div className="flex items-center gap-6">
+                                <div className="flex flex-col">
+                                    <span className="text-[10px] font-mono font-black text-primary-500 uppercase tracking-[0.3em]">
+                                        Ref: {activeItem.id}
+                                    </span>
+                                    <h3 className="text-xl font-black text-black-pure uppercase tracking-tighter truncate max-w-[200px] sm:max-w-md">
                                         {activeItem.title}
                                     </h3>
                                 </div>
                             </div>
 
-                            <div className="flex items-center gap-2">
-                                <button
-                                    onClick={() => setZoomLevel(prev => Math.max(1, prev - 0.5))}
-                                    className="w-10 h-10 border border-white-pure flex items-center justify-center text-white-pure hover:bg-white-pure hover:text-black-pure transition-colors"
-                                >
-                                    <ZoomOut className="w-4 h-4" />
-                                </button>
-                                <button
-                                    onClick={() => setZoomLevel(prev => Math.min(3, prev + 0.5))}
-                                    className="w-10 h-10 border border-white-pure flex items-center justify-center text-white-pure hover:bg-white-pure hover:text-black-pure transition-colors"
-                                >
-                                    <ZoomIn className="w-4 h-4" />
-                                </button>
-                                <button
-                                    onClick={handleDownload}
-                                    className="w-10 h-10 border border-white-pure flex items-center justify-center text-white-pure hover:bg-white-pure hover:text-black-pure transition-colors"
-                                >
-                                    <Download className="w-4 h-4" />
-                                </button>
-                                <button
-                                    onClick={closeLightbox}
-                                    className="w-10 h-10 border border-white-pure flex items-center justify-center text-white-pure hover:bg-white-pure hover:text-black-pure transition-colors"
-                                >
-                                    <X className="w-4 h-4" />
-                                </button>
+                            <div className="flex items-center gap-2 sm:gap-4">
+                                <div className="hidden sm:flex items-center gap-2 border-r-2 border-black-pure pr-4 mr-2">
+                                    <button onClick={() => setZoomLevel(prev => Math.max(1, prev - 0.5))} className="p-2 hover:text-primary-500 transition-colors"><ZoomOut size={20} /></button>
+                                    <span className="text-xs font-mono font-black w-12 text-center">{Math.round(zoomLevel * 100)}%</span>
+                                    <button onClick={() => setZoomLevel(prev => Math.min(3, prev + 0.5))} className="p-2 hover:text-primary-500 transition-colors"><ZoomIn size={20} /></button>
+                                </div>
+                                <button onClick={handleDownload} className="size-10 border-2 border-black-pure flex items-center justify-center hover:bg-primary-500 transition-colors"><Download size={18} /></button>
+                                <button onClick={closeLightbox} className="size-10 border-2 border-black-pure bg-black-pure text-white-pure flex items-center justify-center hover:bg-primary-500 hover:text-black-pure transition-colors"><X size={20} /></button>
                             </div>
                         </div>
 
-                        <div className="flex-1 flex items-center justify-center relative overflow-hidden">
+                        <div className="flex-1 flex items-center justify-center relative bg-secondary-500/10 overflow-hidden">
                             <button
                                 onClick={() => navigate('prev')}
-                                className="absolute left-4 z-30 w-12 h-12 border border-white-pure flex items-center justify-center text-white-pure hover:bg-white-pure hover:text-black-pure transition-colors"
+                                className="absolute left-4 sm:left-8 z-30 size-12 sm:size-16 border-2 border-black-pure bg-white-pure flex items-center justify-center hover:bg-primary-500 transition-all hover:-translate-x-1 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
                             >
-                                <ChevronLeft className="w-6 h-6" />
+                                <ChevronLeft className="w-8 h-8" />
                             </button>
 
                             <motion.div
                                 key={activeIndex}
-                                initial={{ opacity: 0, scale: 0.95 }}
+                                initial={{ opacity: 0, scale: 0.9 }}
                                 animate={{ opacity: 1, scale: 1 }}
-                                exit={{ opacity: 0, scale: 1.05 }}
-                                transition={{ duration: 0.3 }}
-                                className="w-full h-full flex items-center justify-center p-4 md:p-12"
+                                exit={{ opacity: 0, scale: 1.1 }}
+                                transition={{ duration: 0.5, ease: [0.19, 1, 0.22, 1] }}
+                                className="w-full h-full flex items-center justify-center p-8 sm:p-12 lg:p-20"
                                 style={{ overflow: zoomLevel > 1 ? 'auto' : 'hidden' }}
                             >
                                 <motion.img
                                     src={activeItem.image}
                                     alt={activeItem.title}
-                                    className="max-w-full object-contain cursor-grab active:cursor-grabbing"
+                                    className="max-w-full max-h-full object-contain border-2 border-black-pure shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] bg-white-pure"
                                     style={{
                                         transform: `scale(${zoomLevel})`,
-                                        maxHeight: zoomLevel > 1 ? 'none' : '90vh',
-                                        transition: 'transform 0.3s ease-out'
+                                        transition: 'transform 0.3s cubic-bezier(0.19, 1, 0.22, 1)'
                                     }}
-                                    drag={zoomLevel > 1}
-                                    dragConstraints={{
-                                        top: -200 * zoomLevel,
-                                        left: -200 * zoomLevel,
-                                        right: 200 * zoomLevel,
-                                        bottom: 200 * zoomLevel,
-                                    }}
-                                    dragElastic={0.1}
                                 />
                             </motion.div>
 
                             <button
                                 onClick={() => navigate('next')}
-                                className="absolute right-4 z-30 w-12 h-12 border border-white-pure flex items-center justify-center text-white-pure hover:bg-white-pure hover:text-black-pure transition-colors"
+                                className="absolute right-4 sm:right-8 z-30 size-12 sm:size-16 border-2 border-black-pure bg-white-pure flex items-center justify-center hover:bg-primary-500 transition-all hover:translate-x-1 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
                             >
-                                <ChevronRight className="w-6 h-6" />
+                                <ChevronRight className="w-8 h-8" />
                             </button>
                         </div>
 
-                        <div className="flex items-center justify-center gap-1.5 p-4 border-t border-white-pure shrink-0">
+                        <div className="h-16 border-t-2 border-black-pure bg-white-pure flex items-center justify-center gap-3 px-4 shrink-0">
                             {displayItems.map((_, idx) => (
                                 <button
                                     key={idx}
                                     onClick={() => { setActiveIndex(idx); setZoomLevel(1) }}
-                                    className={`h-2 transition-all duration-300 ${idx === activeIndex ? 'w-8 bg-primary-500' : 'w-4 bg-white-pure hover:bg-white-pure/60'
+                                    className={`h-2 transition-all duration-500 border-2 border-black-pure ${idx === activeIndex ? 'w-12 bg-primary-500' : 'w-4 bg-white-pure hover:bg-secondary-500'
                                         }`}
                                 />
                             ))}

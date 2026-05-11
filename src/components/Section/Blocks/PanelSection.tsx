@@ -1,4 +1,5 @@
 "use client"
+
 import { cn } from '@/utilities/cn'
 import { ChevronRight, Minus, Plus } from 'lucide-react'
 import { AnimatePresence, motion } from 'motion/react'
@@ -89,20 +90,20 @@ const PanelSection: React.FC<PanelSectionProps> = ({
                   <button
                     onClick={() => togglePanel(panel.id)}
                     className={cn(
-                      "w-full min-h-[80px] xl:min-h-[100px] flex items-stretch text-left outline-none group cursor-pointer transition-colors duration-300",
+                      "w-full min-h-[70px] xl:min-h-[85px] flex items-stretch text-left outline-none group cursor-pointer transition-colors duration-300",
                       isOpen ? "bg-white-pure" : "bg-white-pure hover:bg-secondary-500"
                     )}
                   >
-                    <div className="relative w-16 md:w-24 border-r-2 border-black-pure flex flex-col items-center justify-center shrink-0 overflow-hidden">
+                    <div className="relative w-14 md:w-20 border-r-2 border-black-pure flex flex-col items-center justify-center shrink-0 overflow-hidden">
                       <div
                         className={cn(
                           "absolute inset-0 bg-black-pure origin-bottom transition-transform duration-500 ease-[cubic-bezier(0.19,1,0.22,1)]",
                           isOpen ? "scale-y-100" : "scale-y-0"
                         )}
                       />
-                      <div className="relative z-10 flex flex-col items-center gap-2">
+                      <div className="relative z-10 flex flex-col items-center gap-1.5">
                         <span className={cn(
-                          "text-sm md:text-lg font-mono font-black tabular-nums transition-colors duration-500",
+                          "text-xs md:text-base font-mono font-black tabular-nums transition-colors duration-500",
                           isOpen ? "text-primary-500" : "text-black-pure"
                         )}>
                           {String(idx + 1).padStart(2, '0')}
@@ -111,40 +112,40 @@ const PanelSection: React.FC<PanelSectionProps> = ({
                           "transition-all duration-500",
                           isOpen ? "text-white-pure rotate-180" : "text-black-pure rotate-0"
                         )}>
-                          {isOpen ? <Minus className="size-4 md:size-6 stroke-[3px]" /> : <Plus className="size-4 md:size-6 stroke-[3px]" />}
+                          {isOpen ? <Minus className="size-3.5 md:size-4.5 stroke-[3px]" /> : <Plus className="size-3.5 md:size-4.5 stroke-[3px]" />}
                         </div>
                       </div>
                     </div>
 
-                    <div className="flex-grow p-5 md:px-10 flex items-center justify-between gap-6">
-                      <div className="flex flex-col gap-1">
+                    <div className="flex-grow p-4 md:px-8 flex items-center justify-between gap-6">
+                      <div className="flex flex-col gap-0.5">
                         <span className={cn(
-                          "text-[10px] xl:text-xs font-black uppercase tracking-[0.2em] transition-colors duration-500",
-                          isOpen ? "text-primary-500" : "text-black-pure"
+                          "text-[9px] xl:text-[10px] font-black uppercase tracking-[0.2em] transition-colors duration-500",
+                          isOpen ? "text-primary-500" : "text-black-pure/50"
                         )}>
                           {isOpen ? labels.expansionState.open : labels.expansionState.closed}
                         </span>
                         <h3 className={cn(
-                          "text-lg md:text-2xl xl:text-4xl font-black uppercase tracking-tighter transition-all duration-500 leading-none",
-                          isOpen ? "text-black-pure translate-x-2" : "text-black-pure group-hover:text-white-pure"
+                          "text-base md:text-xl xl:text-2xl font-black uppercase tracking-widest transition-all duration-500 leading-none",
+                          isOpen ? "text-black-pure translate-x-1" : "text-black-pure group-hover:text-white-pure"
                         )}>
                           {panel.title}
                         </h3>
                       </div>
 
-                      <div className="flex items-center gap-8 xl:gap-16 shrink-0">
+                      <div className="flex items-center gap-6 xl:gap-12 shrink-0">
                         <p className={cn(
-                          "hidden lg:block text-xs xl:text-sm font-bold max-w-[280px] text-right leading-tight uppercase italic transition-colors",
+                          "hidden lg:block text-[11px] xl:text-xs font-bold max-w-[240px] text-right leading-tight uppercase italic transition-colors",
                           isOpen ? "text-black-pure" : "text-black-pure group-hover:text-white-pure"
                         )}>
                           {panel.summary}
                         </p>
                         <div className={cn(
-                          "size-10 xl:size-14 border-2 border-black-pure flex items-center justify-center transition-all duration-500",
-                          isOpen ? "bg-primary-500 -translate-y-2 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]" : "bg-white-pure group-hover:bg-primary-500"
+                          "size-8 xl:size-10 border-2 border-black-pure flex items-center justify-center transition-all duration-500",
+                          isOpen ? "bg-primary-500 -translate-y-1 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]" : "bg-white-pure group-hover:bg-primary-500"
                         )}>
                           <ChevronRight className={cn(
-                            "size-5 xl:size-7 stroke-[3px] transition-transform duration-500",
+                            "size-4 xl:size-5 stroke-[3px] transition-transform duration-500",
                             isOpen ? "rotate-90" : ""
                           )} />
                         </div>
@@ -161,18 +162,18 @@ const PanelSection: React.FC<PanelSectionProps> = ({
                         transition={{ duration: 0.5, ease: [0.19, 1, 0.22, 1] }}
                         className="overflow-hidden border-t-2 border-black-pure bg-white-pure"
                       >
-                        <div className="p-8 md:p-16 lg:pl-40 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20">
+                        <div className="p-6 md:p-12 lg:pl-32 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
                           <div className="lg:col-span-7">
-                            <div className="text-black-pure text-base md:text-lg xl:text-xl font-bold space-y-8 leading-relaxed border-l-4 border-primary-500 pl-8 xl:pl-12">
+                            <div className="text-black-pure text-sm md:text-base xl:text-lg font-bold space-y-6 leading-relaxed border-l-4 border-primary-500 pl-6 xl:pl-8">
                               {panel.content}
                             </div>
                           </div>
 
                           {panel.metadata && (
                             <div className="lg:col-span-5">
-                              <div className="border-2 border-black-pure bg-white-pure shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
-                                <div className="px-6 py-4 border-b-2 border-black-pure bg-black-pure">
-                                  <span className="text-xs xl:text-sm font-black text-primary-500 uppercase tracking-widest">
+                              <div className="border-2 border-black-pure bg-white-pure shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
+                                <div className="px-4 py-3 border-b-2 border-black-pure bg-black-pure">
+                                  <span className="text-[10px] xl:text-xs font-black text-primary-500 uppercase tracking-widest">
                                     {labels.metadataTitle}
                                   </span>
                                 </div>
@@ -180,12 +181,12 @@ const PanelSection: React.FC<PanelSectionProps> = ({
                                   {Object.entries(panel.metadata).map(([key, val]) => (
                                     <div
                                       key={key}
-                                      className="border-b-2 border-black-pure last:border-b-0 p-4 xl:p-6 flex justify-between items-center hover:bg-primary-500 transition-colors duration-200 group/meta"
+                                      className="border-b-2 border-black-pure last:border-b-0 p-3 xl:p-5 flex justify-between items-center hover:bg-primary-500 transition-colors duration-200 group/meta"
                                     >
-                                      <span className="text-[10px] xl:text-xs font-black uppercase tracking-widest text-black-pure group-hover/meta:text-black-pure">
+                                      <span className="text-[9px] xl:text-[10px] font-black uppercase tracking-widest text-black-pure/50 group-hover/meta:text-black-pure">
                                         {key}
                                       </span>
-                                      <p className="text-sm xl:text-lg font-black uppercase text-black-pure">
+                                      <p className="text-xs xl:text-base font-black uppercase text-black-pure">
                                         {val}
                                       </p>
                                     </div>
@@ -203,19 +204,19 @@ const PanelSection: React.FC<PanelSectionProps> = ({
             })}
 
             {panels.length > 6 && (
-              <button className="w-full py-12 flex flex-col items-center justify-center bg-secondary-500 border-t-2 border-black-pure group transition-colors hover:bg-primary-500">
-                <div className="size-14 border-2 border-black-pure bg-white-pure flex items-center justify-center mb-4 transition-transform group-hover:rotate-90 group-hover:scale-110">
-                  <Plus className="size-8 text-black-pure stroke-[3px]" />
+              <button className="w-full py-8 flex flex-col items-center justify-center bg-secondary-500 border-t-2 border-black-pure group transition-colors hover:bg-primary-500">
+                <div className="size-10 border-2 border-black-pure bg-white-pure flex items-center justify-center mb-3 transition-transform group-hover:rotate-90">
+                  <Plus className="size-5 text-black-pure stroke-[3px]" />
                 </div>
-                <span className="text-sm xl:text-base font-black uppercase tracking-[0.3em] text-black-pure">{panels.length - 6} Additional Entries</span>
+                <span className="text-xs xl:text-sm font-black uppercase tracking-[0.2em] text-black-pure">{panels.length - 6} Additional Entries</span>
               </button>
             )}
           </div>
 
           {ctaLabel && ctaPath && (
-            <div className="py-12 xl:py-20 flex justify-center bg-white-pure border-t-2 border-black-pure">
-              <div className="transition-all duration-500 hover:scale-105 active:scale-95 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-1 hover:translate-y-1">
-                <SectionButton label={ctaLabel} href={ctaPath} variant="primary" size="lg" />
+            <div className="py-10 xl:py-16 flex justify-center bg-white-pure border-t-2 border-black-pure">
+              <div className="transition-all duration-500 hover:scale-105 active:scale-95 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-1 hover:translate-y-1">
+                <SectionButton label={ctaLabel} href={ctaPath} variant="primary" />
               </div>
             </div>
           )}

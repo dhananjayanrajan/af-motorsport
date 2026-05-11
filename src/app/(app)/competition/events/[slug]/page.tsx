@@ -166,12 +166,15 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
 
     return (
         <main className="w-full">
-            {videoSlides.length > 0 && (
-                <CarouselSection
-                    id="event-videos"
-                    slides={videoSlides}
-                />
-            )}
+            <HeroSection
+                id="event-cover"
+                title={event.name}
+                subtitle="Race Event"
+                description={event.basics?.description || undefined}
+                backgroundImage={heroBackgroundImage}
+                alignment="center"
+                badge={event.details?.status || 'Live'}
+            />
             <StudySection
                 id="event-details"
                 title="Event Details"
@@ -181,6 +184,12 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
                 headerVariant={1}
                 footerVariant={1}
             />
+            {videoSlides.length > 0 && (
+                <CarouselSection
+                    id="event-videos"
+                    slides={videoSlides}
+                />
+            )}
             {scrollItems.length > 0 && (
                 <ScrollSection
                     id="event-history"
@@ -197,15 +206,6 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
                     footerVariant={1}
                 />
             )}
-            <HeroSection
-                id="event-cover"
-                title={event.name}
-                subtitle="Race Event"
-                description={event.basics?.description || undefined}
-                backgroundImage={heroBackgroundImage}
-                alignment="center"
-                badge={event.details?.status || 'Live'}
-            />
             <GridSection
                 id="event-specifications"
                 title="Information"

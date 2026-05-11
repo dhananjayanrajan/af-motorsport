@@ -67,25 +67,26 @@ const MasonrySection: React.FC<MasonrySectionProps> = ({
   }
 
   return (
-    <section id={id} className="relative w-full bg-white-pure py-12 md:py-20 lg:py-24 flex flex-col items-center">
+    <section id={id} className="relative w-full bg-white-pure border-t-2 border-black-pure flex flex-col overflow-hidden">
       {background}
 
       <DotGridBackground />
 
-      <div className="container relative z-10">
-        <div className="w-full bg-white-pure border-2 border-black-pure z-1 overflow-hidden flex flex-col">
-          <SectionHeader
-            title={title}
-            subtitle={subtitle}
-            variant={headerVariant}
-            metadata={String(items.length).padStart(2, '0')}
-          />
+      <SectionHeader
+        title={title}
+        subtitle={subtitle}
+        variant={headerVariant}
+        metadata={String(items.length).padStart(2, '0')}
+      />
 
-          <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 border-y-2 border-black-pure">
+      <div className="container py-8 sm:py-12 lg:py-16 max-w-full lg:max-w-7xl mx-auto relative z-10 flex-1 flex flex-col">
+        <div className="w-full bg-white-pure border-2 border-black-pure z-1 overflow-hidden flex flex-col">
+
+          <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 border-b-2 border-black-pure">
             {columnItems.map((col, colIdx) => (
               <div
                 key={colIdx}
-                className="flex flex-col border-r-2 border-black-pure last:border-r-0 min-h-[200px]"
+                className="flex flex-col border-r-2 border-black-pure last:border-r-0"
               >
                 {col.length > 0 ? (
                   col.map((item) => (
@@ -93,17 +94,17 @@ const MasonrySection: React.FC<MasonrySectionProps> = ({
                       key={item.id}
                       className="group relative w-full border-b-2 border-black-pure last:border-b-0 bg-white-pure flex flex-col"
                     >
-                      <div className="p-6 sm:p-8 flex flex-col gap-6">
+                      <div className="p-5 sm:p-7 xl:p-8 flex flex-col gap-5">
                         <div className="flex justify-between items-start">
-                          <div className="flex flex-col">
-                            <span className="text-xs font-mono font-black uppercase tracking-tighter text-black-pure">
-                              {labels.idPrefix}{item.id}
+                          <div className="flex flex-col gap-1">
+                            <span className="text-[10px] font-mono font-black uppercase tracking-widest text-black-pure/50">
+                              {labels.idPrefix}{String(item.id).padStart(2, '0')}
                             </span>
-                            <span className="text-xs font-mono font-black uppercase text-primary-500">
+                            <span className="text-[10px] font-mono font-black uppercase tracking-widest text-primary-500">
                               {item.category}
                             </span>
                           </div>
-                          <div className="size-2 bg-black-pure group-hover:bg-primary-500 group-hover:rotate-45 transition-all duration-300" />
+                          <div className="size-2 bg-black-pure group-hover:bg-primary-500 group-hover:rotate-45 transition-all duration-500" />
                         </div>
 
                         <button
@@ -113,29 +114,30 @@ const MasonrySection: React.FC<MasonrySectionProps> = ({
                           <img
                             src={item.image}
                             alt={item.title}
-                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                            className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
                           />
-                          <div className="absolute inset-0 bg-primary-500/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                            <div className="w-10 h-10 bg-white-pure border-2 border-black-pure flex items-center justify-center scale-0 group-hover:scale-100 transition-transform duration-500">
-                              <div className="w-4 h-4 border-2 border-black-pure" />
+                          <div className="absolute inset-0 bg-black-pure/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <div className="px-4 py-2 bg-primary-500 border-2 border-black-pure translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                              <span className="text-[10px] font-mono font-black text-black-pure uppercase tracking-widest">Preview</span>
                             </div>
                           </div>
                         </button>
 
                         <div className="space-y-3">
-                          <h3 className="text-xl font-black uppercase tracking-tighter leading-none text-black-pure group-hover:text-primary-500 transition-colors">
+                          <h3 className="text-lg xl:text-xl font-black uppercase tracking-widest leading-none text-black-pure group-hover:text-primary-500 transition-colors">
                             {item.title}
                           </h3>
-                          <p className="text-xs font-bold text-black-pure leading-tight uppercase line-clamp-2">
+                          <p className="text-xs font-bold text-black-pure leading-relaxed uppercase opacity-80 line-clamp-2">
                             {item.description}
                           </p>
                         </div>
 
                         {item.slug && (
                           <div className="pt-4 border-t-2 border-black-pure flex justify-end">
-                            <Link href={item.slug} className="flex items-center gap-2 group-hover:gap-4 transition-all duration-300">
-                              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" className="text-black-pure group-hover:text-primary-500">
-                                <path d="M3 10H17M17 10L12 5M17 10L12 15" stroke="currentColor" strokeWidth="2" strokeLinecap="square" />
+                            <Link href={item.slug} className="group/link flex items-center gap-3">
+                              <span className="text-[10px] font-mono font-black uppercase tracking-widest opacity-0 group-hover/link:opacity-100 transition-opacity">Launch</span>
+                              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" className="text-black-pure group-hover:text-primary-500 transition-transform group-hover:translate-x-1">
+                                <path d="M5 12H19M19 12L13 6M19 12L13 18" stroke="currentColor" strokeWidth="3" strokeLinecap="square" />
                               </svg>
                             </Link>
                           </div>
@@ -144,8 +146,8 @@ const MasonrySection: React.FC<MasonrySectionProps> = ({
                     </div>
                   ))
                 ) : (
-                  <div className="flex-1 bg-white-pure flex items-center justify-center p-12">
-                    <div className="w-full border-t-2 border-black-pure border-dashed" />
+                  <div className="flex-1 bg-secondary-500/5 flex items-center justify-center min-h-[300px]">
+                    <div className="w-12 h-[2px] bg-black-pure/10" />
                   </div>
                 )}
               </div>
@@ -153,18 +155,16 @@ const MasonrySection: React.FC<MasonrySectionProps> = ({
           </div>
 
           {items.length > 9 && (
-            <div className="w-full py-12 md:py-16 flex items-center justify-center bg-white-pure px-6 border-y-2 border-black-pure">
+            <div className="w-full py-10 md:py-16 flex items-center justify-center bg-white-pure px-6">
               <Link
                 href={ctaPath || '#'}
-                className="group flex flex-col items-center gap-4"
+                className="group flex items-center gap-4 md:gap-8"
               >
-                <div className="flex items-center gap-6 md:gap-12">
-                  <div className="h-1 w-8 md:w-16 bg-primary-500 group-hover:w-24 transition-all duration-500" />
-                  <span className="text-2xl md:text-4xl lg:text-5xl font-black uppercase tracking-tighter text-black-pure group-hover:text-primary-500 transition-colors">
-                    View All
-                  </span>
-                  <div className="h-1 w-8 md:w-16 bg-primary-500 group-hover:w-24 transition-all duration-500" />
-                </div>
+                <div className="h-[2px] w-8 md:w-16 bg-black-pure group-hover:bg-primary-500 group-hover:w-24 transition-all duration-500" />
+                <span className="text-2xl md:text-3xl xl:text-4xl font-black uppercase tracking-widest text-black-pure group-hover:text-primary-500 transition-colors">
+                  {ctaLabel || 'Full Archive'}
+                </span>
+                <div className="h-[2px] w-8 md:w-16 bg-black-pure group-hover:bg-primary-500 group-hover:w-24 transition-all duration-500" />
               </Link>
             </div>
           )}
@@ -181,14 +181,14 @@ const MasonrySection: React.FC<MasonrySectionProps> = ({
         imageUrl={selectedItem?.image || ''}
         idCode={`${labels.idPrefix}${selectedItem?.id || ''}`}
         infoLabel={selectedItem?.category}
-        buttonLabel={selectedItem?.slug ? "View Details" : "Close"}
+        buttonLabel={selectedItem?.slug ? "Open Project" : "Close"}
         onAction={() => {
           if (selectedItem?.slug) window.location.href = selectedItem.slug;
           setModalOpen(false);
         }}
         stats={[
-          { label: "ID", val: selectedItem?.id || '00', color: "bg-primary-500" },
-          { label: "Category", val: selectedItem?.category || 'None', color: "bg-black-pure" }
+          { label: "Ref", val: selectedItem?.id || '00', color: "bg-primary-500" },
+          { label: "Type", val: selectedItem?.category || 'General', color: "bg-black-pure" }
         ]}
       />
     </section>

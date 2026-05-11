@@ -1,4 +1,5 @@
 import CarouselSection from '@/components/Section/Blocks/CarouselSection'
+import { SocialGallery } from '@/components/Section/Blocks/SocialGallerySection'
 import VideoSection from '@/components/Section/Blocks/VideoSection'
 import { Media, Session, Slide } from '@/payload-types'
 import configPromise from '@payload-config'
@@ -95,6 +96,11 @@ export default async function HomePage() {
           itemsToScroll={1}
         />
       )}
+
+      <SocialGallery
+        handle="RACE_OPERATIONS"
+        initialPosts={[]}
+      />
     </main>
   )
 }
