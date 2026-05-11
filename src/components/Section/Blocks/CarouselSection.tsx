@@ -1,5 +1,4 @@
 "use client"
-
 import Autoplay from 'embla-carousel-autoplay'
 import useEmblaCarousel from 'embla-carousel-react'
 import { motion } from 'framer-motion'
@@ -121,67 +120,56 @@ const CarouselSection: React.FC<CarouselSectionProps> = ({
   }
 
   return (
-    <section id={id} className="relative w-full py-12 md:py-20 lg:py-24 bg-white-pure overflow-hidden">
+    <section id={id} className="relative w-full bg-white-pure border-t-2 border-black-pure overflow-hidden">
       <MosaicBackground />
-      <div className="container flex flex-col">
-        <SectionHeader
-          title={currentSlide?.title || "Collection"}
-          subtitle={currentSlide?.meta || "Featured"}
-          variant={1}
-          metadata={`${selectedIndex + 1} / ${slides.length}`}
-        />
-
-        <SectionScroller
-          items={displayedSlides.map(s => s.title)}
-          variant={1}
-        />
-
-        <div className="flex flex-col gap-8 border-2 border-black-pure bg-white-pure">
-          <div className="overflow-hidden cursor-grab active:cursor-grabbing" ref={emblaRef}>
+      <SectionHeader
+        title={currentSlide?.title || "COLLECTION"}
+        subtitle={currentSlide?.meta || "FEATURED"}
+        variant={1}
+        metadata={`${selectedIndex + 1}/${slides.length}`}
+      />
+      <SectionScroller items={displayedSlides.map(s => s.title)} variant={1} />
+      <div className="container py-8 sm:py-12 lg:py-16 max-w-full lg:max-w-7xl mx-auto relative z-10">
+        <div className="flex flex-col border-2 border-black-pure bg-white-pure overflow-hidden">
+          <div className="overflow-hidden cursor-crosshair" ref={emblaRef}>
             <div className="flex touch-pan-y">
               {displayedSlides.map((slide, idx) => (
                 <div
                   key={`${slide.id}-${idx}`}
                   style={{ flex: `0 0 ${100 / itemsPerPage}%` }}
-                  className="group relative flex flex-col border-r border-black-pure last:border-r-0 bg-white-pure transition-colors duration-500 hover:bg-black-pure select-none"
+                  className="group relative flex flex-col border-r-2 border-black-pure last:border-r-0 bg-white-pure transition-colors duration-500 hover:bg-black-pure select-none"
                 >
-                  {slide.ctaHref && (
-                    <Link href={slide.ctaHref} className="absolute inset-0 z-40" aria-label={slide.title} />
-                  )}
-
-                  <div className="relative h-[450px] border-b border-black-pure overflow-hidden pointer-events-none">
-                    <div className="absolute top-4 left-4 z-20 flex flex-col gap-1">
+                  {slide.ctaHref && <Link href={slide.ctaHref} className="absolute inset-0 z-40" aria-label={slide.title} />}
+                  <div className="relative h-[450px] border-b-2 border-black-pure overflow-hidden pointer-events-none">
+                    <div className="absolute top-6 left-6 z-20 flex flex-col gap-2">
                       {slide.meta && (
-                        <span className="text-xs font-mono font-black bg-primary-500 text-black-pure px-2 py-1 self-start uppercase tracking-widest">
+                        <span className="text-[10px] font-black bg-primary-500 text-black-pure px-3 py-1 self-start uppercase tracking-widest">
                           {slide.meta}
                         </span>
                       )}
-                      <span className="text-xs font-mono font-black bg-black-pure text-white-pure px-2 py-1 self-start group-hover:bg-white-pure group-hover:text-black-pure uppercase tracking-widest transition-colors duration-500">
+                      <span className="text-[10px] font-black bg-black-pure text-white-pure px-3 py-1 self-start group-hover:bg-white-pure group-hover:text-black-pure uppercase tracking-widest transition-colors duration-500">
                         {String((idx % slides.length) + 1).padStart(2, '0')}
                       </span>
                     </div>
-
                     <img
                       src={getImageUrl(slide.image, idx)}
                       alt={slide.title}
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                       draggable="false"
                     />
                   </div>
-
-                  <div className="grid grid-rows-[auto_1fr_auto] p-6 flex-grow pointer-events-none gap-6">
-                    <div className="min-h-[48px]">
+                  <div className="grid grid-rows-[auto_1fr_auto] p-8 flex-grow pointer-events-none gap-6">
+                    <div className="min-h-[64px]">
                       {slide.tags && slide.tags.length > 0 && (
-                        <p className="text-xs font-mono font-black text-black-pure group-hover:text-primary-500 transition-colors duration-500 uppercase tracking-widest mb-1 truncate">
-                          {slide.tags.join(' · ')}
+                        <p className="text-[10px] font-black text-black-pure group-hover:text-primary-500 transition-colors duration-500 uppercase tracking-widest mb-2 truncate">
+                          {slide.tags.join(' // ')}
                         </p>
                       )}
-                      <h3 className="text-xl font-black uppercase text-black-pure group-hover:text-white-pure transition-colors duration-500 leading-tight line-clamp-2">
+                      <h3 className="text-xl xl:text-2xl font-black uppercase text-black-pure group-hover:text-white-pure transition-colors duration-500 leading-none line-clamp-2">
                         {slide.title}
                       </h3>
                     </div>
-
-                    <div className="h-6 flex items-center">
+                    <div className="flex items-center">
                       <button
                         onClick={(e) => {
                           e.preventDefault()
@@ -189,68 +177,55 @@ const CarouselSection: React.FC<CarouselSectionProps> = ({
                           setActiveSlide(slide)
                           setSidebarOpen(true)
                         }}
-                        className="flex items-center gap-2 opacity-100 translate-y-0 group-hover:translate-x-1 transition-all duration-300 pointer-events-auto"
+                        className="flex items-center gap-3 pointer-events-auto group/btn"
                       >
-                        <span className="text-xs font-mono font-black uppercase tracking-widest text-black-pure group-hover:text-white-pure">
-                          Details
+                        <span className="text-xs font-black uppercase tracking-widest text-black-pure group-hover:text-white-pure transition-colors">
+                          VIEW PROFILE
                         </span>
-                        <ArrowRight className="h-3 w-3 text-black-pure group-hover:text-white-pure" />
+                        <ArrowRight className="size-4 text-black-pure group-hover:text-white-pure group-hover/btn:translate-x-2 transition-all duration-300 stroke-[3px]" />
                       </button>
                     </div>
                   </div>
-
-                  <div className="h-1.5 w-full bg-black-pure group-hover:bg-primary-500 transition-colors duration-500" />
+                  <div className="h-2 w-full bg-black-pure group-hover:bg-primary-500 transition-colors duration-500" />
                 </div>
               ))}
-
               {slides.length > 8 && (
                 <div
                   style={{ flex: `0 0 ${100 / itemsPerPage}%` }}
-                  className="group relative flex flex-col border-r border-black-pure bg-white-pure transition-colors duration-500 hover:bg-primary-500 select-none"
+                  className="group relative flex flex-col border-r-2 border-black-pure bg-white-pure transition-colors duration-500 hover:bg-secondary-500 select-none"
                 >
-                  <Link href={ctaPath || '#'} className="absolute inset-0 z-40" aria-label="View all" />
-                  <div className="relative h-[450px] border-b border-black-pure overflow-hidden bg-white-pure flex items-center justify-center">
+                  <Link href={ctaPath || '#'} className="absolute inset-0 z-40" />
+                  <div className="relative h-[450px] border-b-2 border-black-pure overflow-hidden bg-white-pure flex items-center justify-center">
                     <div className="text-center p-8">
-                      <div className="w-20 h-20 border-4 border-black-pure bg-white-pure mx-auto mb-6 flex items-center justify-center group-hover:bg-black-pure transition-colors duration-500">
-                        <ArrowRight className="w-10 h-10 text-black-pure group-hover:text-white-pure transition-colors duration-500" />
+                      <div className="size-20 border-4 border-black-pure bg-white-pure mx-auto mb-6 flex items-center justify-center group-hover:bg-black-pure transition-colors duration-500">
+                        <ArrowRight className="size-10 text-black-pure group-hover:text-white-pure transition-colors" />
                       </div>
-                      <span className="text-lg font-black text-black-pure group-hover:text-white-pure uppercase transition-colors duration-500">
-                        View All
-                      </span>
+                      <span className="text-xl font-black text-black-pure uppercase tracking-tighter">VIEW FULL DIRECTORY</span>
                     </div>
                   </div>
-                  <div className="grid grid-rows-[auto_1fr_auto] p-6 flex-grow gap-6">
-                    <div>
-                      <h3 className="text-xl font-black uppercase text-black-pure group-hover:text-white-pure transition-colors duration-500 leading-tight">
-                        More {slides.length - 8} Items
-                      </h3>
-                    </div>
-                    <div className="h-6 flex items-center">
-                      <span className="text-xs font-mono font-black uppercase tracking-widest text-black-pure group-hover:text-white-pure">
-                        Browse All
-                      </span>
-                    </div>
+                  <div className="p-8 flex-grow">
+                    <h3 className="text-2xl font-black uppercase text-black-pure leading-none">
+                      +{slides.length - 8} ENTRIES
+                    </h3>
                   </div>
-                  <div className="h-1.5 w-full bg-black-pure group-hover:bg-white-pure transition-colors duration-500" />
+                  <div className="h-2 w-full bg-black-pure group-hover:bg-white-pure transition-colors" />
                 </div>
               )}
             </div>
           </div>
-
-          <div className="relative z-50 w-full bg-white-pure border-t-2 border-black-pure h-20 flex items-stretch shrink-0">
-            <div className="hidden sm:flex items-stretch border-r-2 border-black-pure bg-white-pure px-6">
+          <div className="relative z-50 w-full bg-white-pure border-t-2 border-black-pure h-20 xl:h-24 flex items-stretch shrink-0">
+            <div className="hidden sm:flex items-stretch border-r-2 border-black-pure bg-white-pure px-10">
               <div className="flex flex-col justify-center">
-                <span className="text-xs font-mono font-black text-black-pure uppercase tracking-widest">Position</span>
-                <span className="text-lg font-mono font-black text-black-pure tabular-nums">
+                <span className="text-[10px] font-black text-black-pure uppercase tracking-widest">POSITION</span>
+                <span className="text-xl font-mono font-black text-black-pure tabular-nums">
                   {String(selectedIndex + 1).padStart(2, '0')}
-                  <span className="text-black-pure mx-1">/</span>
-                  <span className="text-black-pure">{String(displayedSlides.length).padStart(2, '0')}</span>
+                  <span className="mx-1">/</span>
+                  {String(displayedSlides.length).padStart(2, '0')}
                 </span>
               </div>
             </div>
-
-            <div className="flex-grow flex items-center px-4 md:px-8 gap-4 md:gap-8">
-              <div className="flex-grow h-[4px] bg-black-pure relative">
+            <div className="flex-grow flex items-center px-8 md:px-12">
+              <div className="flex-grow h-2 bg-black-pure relative overflow-hidden">
                 <motion.div
                   className="absolute inset-y-0 left-0 bg-primary-500"
                   initial={{ width: '0%' }}
@@ -259,34 +234,29 @@ const CarouselSection: React.FC<CarouselSectionProps> = ({
                 />
               </div>
             </div>
-
             <div className="flex items-stretch border-l-2 border-black-pure">
               <button
                 onClick={scrollPrev}
-                className="w-16 md:w-20 flex items-center justify-center bg-white-pure hover:bg-black-pure hover:text-white-pure transition-colors border-r-2 border-black-pure active:bg-primary-500 active:text-black-pure"
-                aria-label="Previous slide"
+                className="w-20 xl:w-24 flex items-center justify-center bg-white-pure hover:bg-black-pure hover:text-white-pure transition-colors border-r-2 border-black-pure active:bg-primary-500"
               >
-                <ChevronLeft className="h-6 w-6 stroke-[3]" />
+                <ChevronLeft className="size-8 stroke-[3]" />
               </button>
               <button
                 onClick={scrollNext}
-                className="w-16 md:w-20 flex items-center justify-center bg-white-pure hover:bg-black-pure hover:text-white-pure transition-colors active:bg-primary-500 active:text-black-pure"
-                aria-label="Next slide"
+                className="w-20 xl:w-24 flex items-center justify-center bg-white-pure hover:bg-black-pure hover:text-white-pure transition-colors active:bg-primary-500"
               >
-                <ChevronRight className="h-6 w-6 stroke-[3]" />
+                <ChevronRight className="size-8 stroke-[3]" />
               </button>
             </div>
           </div>
         </div>
-
         <SectionCTA
-          label={currentSlide?.ctaLabel || ctaLabel || "Discover More"}
+          label={currentSlide?.ctaLabel || ctaLabel || "DISCOVER MORE"}
           path={currentSlide?.ctaHref || ctaPath || "#"}
           description={currentSlide?.description}
           variant={1}
         />
       </div>
-
       <SectionSidebar
         isOpen={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
@@ -295,10 +265,10 @@ const CarouselSection: React.FC<CarouselSectionProps> = ({
         imageUrl={getImageUrl(activeSlide?.image, selectedIndex)}
         idCode={activeSlide?.id || ''}
         stats={[
-          { label: 'Position', val: String(selectedIndex + 1).padStart(2, '0'), color: 'bg-primary-500' },
-          { label: 'Tags', val: activeSlide?.tags?.join(', ') || 'None', color: 'bg-black-pure' }
+          { label: 'POSITION', val: String(selectedIndex + 1).padStart(2, '0'), color: 'bg-primary-500' },
+          { label: 'CATEGORIES', val: activeSlide?.tags?.join(', ') || 'NONE', color: 'bg-black-pure' }
         ]}
-        buttonLabel={activeSlide?.ctaLabel || 'View Details'}
+        buttonLabel={activeSlide?.ctaLabel || 'VIEW DETAILS'}
         onAction={() => {
           if (activeSlide?.ctaHref) window.location.href = activeSlide.ctaHref
           setSidebarOpen(false)

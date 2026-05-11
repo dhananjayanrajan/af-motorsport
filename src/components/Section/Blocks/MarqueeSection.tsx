@@ -40,13 +40,13 @@ const MarqueeSection: React.FC<MarqueeSectionProps> = ({
     const scrollRef = useRef<HTMLDivElement>(null)
     const animationRef = useRef<number | null>(null)
     const positionRef = useRef(0)
-    const velocityRef = useRef(0.6)
+    const velocityRef = useRef(0.8)
 
     useEffect(() => {
         const scrollContainer = scrollRef.current
         if (!scrollContainer) return
 
-        const totalWidth = scrollContainer.scrollWidth / 2
+        const totalWidth = scrollContainer.scrollWidth / 3
 
         const animate = () => {
             if (!isPaused) {
@@ -84,95 +84,96 @@ const MarqueeSection: React.FC<MarqueeSectionProps> = ({
     const displayCount = Math.min(items.length, 12)
 
     return (
-        <section id={id} className="w-full bg-white-pure py-12 md:py-20 lg:py-24">
-            <div className="max-w-7xl mx-auto border-2 border-black-pure bg-white-pure overflow-hidden">
-                <SectionHeader
-                    title={title}
-                    subtitle={subtitle}
-                    variant={headerVariant}
-                    metadata={String(items.length).padStart(2, '0')}
-                />
+        <section id={id} className="relative w-full bg-white-pure border-t-2 border-black-pure overflow-hidden">
+            <SectionHeader
+                title={title}
+                subtitle={subtitle}
+                variant={headerVariant}
+                metadata={String(items.length).padStart(2, '0')}
+            />
 
-                <div
-                    className="relative w-full py-12 border-y-2 border-black-pure overflow-hidden cursor-grab active:cursor-grabbing"
-                    onMouseEnter={() => setIsPaused(true)}
-                    onMouseLeave={() => setIsPaused(false)}
-                >
+            <div className="container py-8 sm:py-12 lg:py-16 max-w-full lg:max-w-7xl mx-auto relative z-10">
+                <div className="border-2 border-black-pure bg-white-pure overflow-hidden">
                     <div
-                        ref={scrollRef}
-                        className="flex will-change-transform"
-                        style={{ width: 'fit-content' }}
+                        className="relative w-full py-10 xl:py-14 border-b-2 border-black-pure overflow-hidden cursor-crosshair"
+                        onMouseEnter={() => setIsPaused(true)}
+                        onMouseLeave={() => setIsPaused(false)}
                     >
-                        {tripledItems.slice(0, displayCount * 3).map((item, idx) => (
-                            <button
-                                key={`${item.id}-${idx}`}
-                                onClick={() => openModal(item)}
-                                className="relative flex-[0_0_140px] xs:flex-[0_0_150px] sm:flex-[0_0_160px] md:flex-[0_0_180px] lg:flex-[0_0_200px] min-w-0 px-6 group shrink-0"
-                            >
-                                <div className="relative w-full aspect-[3/2] flex items-center justify-center p-4 transition-transform duration-500 group-hover:scale-110">
-                                    <img
-                                        src={item.logo}
-                                        alt={item.name}
-                                        className="max-w-full max-h-full object-contain grayscale group-hover:grayscale-0 transition-all duration-500"
-                                    />
-                                    <div className="absolute bottom-0 right-2 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
-                                        <div className="w-6 h-6 border-2 border-black-pure flex items-center justify-center bg-primary-500">
-                                            <ArrowRight className="w-3 h-3 text-black-pure" />
+                        <div
+                            ref={scrollRef}
+                            className="flex will-change-transform"
+                            style={{ width: 'fit-content' }}
+                        >
+                            {tripledItems.slice(0, displayCount * 3).map((item, idx) => (
+                                <button
+                                    key={`${item.id}-${idx}`}
+                                    onClick={() => openModal(item)}
+                                    className="relative flex-[0_0_150px] xl:flex-[0_0_220px] min-w-0 px-6 xl:px-10 group shrink-0"
+                                >
+                                    <div className="relative w-full aspect-[3/2] flex items-center justify-center p-4 transition-all duration-500 group-hover:scale-105">
+                                        <img
+                                            src={item.logo}
+                                            alt={item.name}
+                                            className="max-w-full max-h-full object-contain grayscale group-hover:grayscale-0 transition-all duration-500"
+                                        />
+                                        <div className="absolute bottom-0 right-0 translate-x-2 translate-y-2 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                                            <div className="size-8 border-2 border-black-pure flex items-center justify-center bg-primary-500">
+                                                <ArrowRight className="size-4 text-black-pure stroke-[3px]" />
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </button>
-                        ))}
+                                </button>
+                            ))}
+                        </div>
+
+                        <div className="absolute left-0 top-0 bottom-0 w-20 bg-white-pure z-10 [mask-image:linear-gradient(to_right,black,transparent)] pointer-events-none" />
+                        <div className="absolute right-0 top-0 bottom-0 w-20 bg-white-pure z-10 [mask-image:linear-gradient(to_left,black,transparent)] pointer-events-none" />
                     </div>
 
-                    <div className="absolute left-0 top-0 bottom-0 w-12 bg-gradient-to-r from-white-pure to-transparent pointer-events-none z-10" />
-                    <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-r from-transparent to-white-pure pointer-events-none z-10" />
+                    <SectionFooter variant={footerVariant} />
                 </div>
-
-                <SectionFooter variant={footerVariant} />
             </div>
 
             <AnimatePresence>
                 {selectedItem && (
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.2 }}
-                        className="fixed inset-0 z-[210] flex items-center justify-center p-4 bg-black-pure/60"
-                        onClick={closeModal}
-                    >
+                    <div className="fixed inset-0 z-[210] flex items-center justify-center p-4">
                         <motion.div
-                            initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                            animate={{ opacity: 1, scale: 1, y: 0 }}
-                            exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                            initial={{ backgroundColor: "rgba(0,0,0,0)" }}
+                            animate={{ backgroundColor: "#000000" }}
+                            exit={{ backgroundColor: "rgba(0,0,0,0)" }}
+                            className="absolute inset-0"
+                            onClick={closeModal}
+                        />
+
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: 20 }}
+                            transition={{ duration: 0.4, ease: [0.19, 1, 0.22, 1] }}
                             onClick={(e) => e.stopPropagation()}
-                            className="w-full max-w-2xl bg-white-pure border-2 border-black-pure flex flex-col overflow-hidden max-h-[90vh]"
+                            className="relative w-full max-w-4xl bg-white-pure border-2 border-black-pure flex flex-col overflow-hidden max-h-[90vh]"
                         >
-                            <div className="flex items-center justify-between p-4 border-b-2 border-black-pure bg-black-pure shrink-0">
-                                <div className="flex items-center gap-3 min-w-0">
-                                    {selectedItem.category && (
-                                        <span className="text-xs font-mono font-black text-primary-500 uppercase tracking-widest truncate">
-                                            {selectedItem.category}
-                                        </span>
-                                    )}
-                                    <div className="w-px h-4 bg-white-pure shrink-0" />
-                                    <span className="text-xs font-mono font-black text-white-pure uppercase tracking-widest truncate">
-                                        {selectedItem.id}
+                            <div className="flex items-center justify-between h-14 xl:h-16 px-6 border-b-2 border-black-pure bg-black-pure shrink-0">
+                                <div className="flex items-center gap-4">
+                                    <span className="text-xs xl:text-sm font-mono font-black text-primary-500 uppercase tracking-widest">
+                                        {selectedItem.category}
+                                    </span>
+                                    <div className="w-0.5 h-4 bg-white-pure" />
+                                    <span className="text-xs xl:text-sm font-mono font-black text-white-pure uppercase tracking-widest">
+                                        ID_{selectedItem.id}
                                     </span>
                                 </div>
                                 <button
                                     onClick={closeModal}
-                                    className="w-10 h-10 border border-white-pure flex items-center justify-center text-white-pure hover:bg-primary-500 hover:text-black-pure hover:border-primary-500 transition-colors shrink-0 ml-4"
+                                    className="size-10 border-2 border-white-pure flex items-center justify-center text-white-pure hover:bg-primary-500 hover:text-black-pure transition-colors"
                                 >
-                                    <X className="w-4 h-4" />
+                                    <X className="size-5 stroke-[3px]" />
                                 </button>
                             </div>
 
-                            <div className="flex-1 flex flex-col lg:flex-row overflow-hidden">
-                                <div className="flex-1 flex items-center justify-center p-6 md:p-10 lg:p-12 bg-white-pure min-h-[200px]">
-                                    <div className="relative w-full max-w-[200px] aspect-square">
+                            <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
+                                <div className="md:w-5/12 flex items-center justify-center p-8 xl:p-12 bg-white-pure border-b-2 md:border-b-0 md:border-r-2 border-black-pure">
+                                    <div className="relative w-full max-w-[240px] aspect-square">
                                         <img
                                             src={selectedItem.logo}
                                             alt={selectedItem.name}
@@ -181,43 +182,35 @@ const MarqueeSection: React.FC<MarqueeSectionProps> = ({
                                     </div>
                                 </div>
 
-                                <div className="flex-1 flex flex-col justify-center p-6 md:p-8 lg:p-10 border-t-2 lg:border-t-0 lg:border-l-2 border-black-pure overflow-y-auto">
-                                    <div className="space-y-5">
-                                        <h3 className="text-xl md:text-2xl font-black text-black-pure uppercase tracking-tighter leading-tight break-words">
+                                <div className="flex-1 flex flex-col p-8 xl:p-12 overflow-y-auto bg-white-pure">
+                                    <div className="space-y-8">
+                                        <h3 className="text-2xl xl:text-4xl font-black text-black-pure uppercase tracking-tighter leading-none">
                                             {selectedItem.name}
                                         </h3>
 
                                         {selectedItem.description && (
-                                            <p className="text-sm font-medium text-black-pure leading-relaxed break-words">
+                                            <p className="text-sm xl:text-base font-bold text-black-pure leading-relaxed border-l-4 border-primary-500 pl-6 uppercase">
                                                 {selectedItem.description}
                                             </p>
                                         )}
 
                                         <div className="grid grid-cols-1 gap-3">
                                             {selectedItem.website && (
-                                                <div className="flex items-center gap-3 p-3 border-2 border-black-pure bg-white-pure min-w-0">
-                                                    <Globe className="w-4 h-4 text-black-pure shrink-0" />
+                                                <div className="flex items-center gap-4 p-4 border-2 border-black-pure bg-white-pure">
+                                                    <Globe className="size-5 text-black-pure shrink-0" />
                                                     <div className="flex flex-col min-w-0">
-                                                        <span className="text-xs font-mono font-black text-black-pure uppercase tracking-widest">
-                                                            Website
-                                                        </span>
-                                                        <span className="text-sm font-bold text-black-pure truncate">
-                                                            {selectedItem.website}
-                                                        </span>
+                                                        <span className="text-[10px] font-black text-black-pure uppercase tracking-widest">URL</span>
+                                                        <span className="text-sm font-black text-black-pure truncate uppercase">{selectedItem.website}</span>
                                                     </div>
                                                 </div>
                                             )}
 
                                             {selectedItem.location && (
-                                                <div className="flex items-center gap-3 p-3 border-2 border-black-pure bg-white-pure min-w-0">
-                                                    <MapPin className="w-4 h-4 text-black-pure shrink-0" />
+                                                <div className="flex items-center gap-4 p-4 border-2 border-black-pure bg-white-pure">
+                                                    <MapPin className="size-5 text-black-pure shrink-0" />
                                                     <div className="flex flex-col min-w-0">
-                                                        <span className="text-xs font-mono font-black text-black-pure uppercase tracking-widest">
-                                                            Location
-                                                        </span>
-                                                        <span className="text-sm font-bold text-black-pure truncate">
-                                                            {selectedItem.location}
-                                                        </span>
+                                                        <span className="text-[10px] font-black text-black-pure uppercase tracking-widest">REGION</span>
+                                                        <span className="text-sm font-black text-black-pure truncate uppercase">{selectedItem.location}</span>
                                                     </div>
                                                 </div>
                                             )}
@@ -226,17 +219,17 @@ const MarqueeSection: React.FC<MarqueeSectionProps> = ({
                                         {selectedItem.slug && (
                                             <Link
                                                 href={`/${selectedItem.slug}`}
-                                                className="inline-flex items-center gap-3 bg-black-pure text-white-pure px-6 py-3 text-xs font-mono font-black uppercase tracking-widest border-2 border-black-pure hover:bg-primary-500 hover:text-black-pure transition-all group/link w-fit"
+                                                className="h-14 inline-flex items-center justify-between bg-black-pure text-white-pure px-8 text-xs font-black uppercase tracking-widest hover:bg-primary-500 hover:text-black-pure transition-colors group/btn w-full"
                                             >
-                                                <span>View Profile</span>
-                                                <ArrowRight className="w-3.5 h-3.5 group-hover/link:translate-x-1 transition-transform" />
+                                                <span>VIEW DETAILS</span>
+                                                <ArrowRight className="size-5 group-hover:translate-x-2 transition-transform stroke-[3px]" />
                                             </Link>
                                         )}
                                     </div>
                                 </div>
                             </div>
                         </motion.div>
-                    </motion.div>
+                    </div>
                 )}
             </AnimatePresence>
         </section>
