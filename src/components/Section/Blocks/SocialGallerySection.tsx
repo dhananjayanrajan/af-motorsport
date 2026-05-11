@@ -21,7 +21,7 @@ import {
 } from 'lucide-react'
 import { motion } from 'motion/react'
 import Link from 'next/link'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 export interface Social {
     id: number;
@@ -105,38 +105,14 @@ const generatePlaceholderPosts = (count: number, startIndex: number = 0): Instag
 
 export function SocialGallery({ initialPosts = [], handle, socialData }: SocialGalleryProps) {
     const [posts, setPosts] = useState<InstagramPost[]>([])
-    const [loading, setLoading] = useState(false)
-    const loaderRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
         if (!initialPosts || initialPosts.length === 0) {
             setPosts(generatePlaceholderPosts(12))
         } else {
-            setPosts(initialPosts)
+            setPosts(initialPosts.slice(0, 12))
         }
     }, [initialPosts])
-
-    const fetchMorePosts = async () => {
-        if (loading) return
-        setLoading(true)
-        await new Promise((res) => setTimeout(res, 1200))
-        const nextSet = generatePlaceholderPosts(8, posts.length)
-        setPosts((prev) => [...prev, ...nextSet])
-        setLoading(false)
-    }
-
-    useEffect(() => {
-        const observer = new IntersectionObserver(
-            (entries) => {
-                if (entries[0].isIntersecting && posts.length > 0) {
-                    fetchMorePosts()
-                }
-            },
-            { threshold: 0.1 }
-        )
-        if (loaderRef.current) observer.observe(loaderRef.current)
-        return () => observer.disconnect()
-    }, [loading, posts.length])
 
     const visibleAccounts = socialData?.accounts?.filter(acc => acc.visible !== false) || []
 
@@ -152,7 +128,7 @@ export function SocialGallery({ initialPosts = [], handle, socialData }: SocialG
             />
 
             <div className="w-full border-b-2 border-black-pure bg-white-pure relative z-20">
-                <div className="container max-w-full lg:max-w-7xl mx-auto flex flex-wrap divide-x-2 divide-black-pure border-x-2 border-black-pure">
+                <div className="container max-w-full lg:max-w-[1600px] mx-auto flex flex-wrap divide-x-2 divide-black-pure border-x-2 border-black-pure">
                     {visibleAccounts.length > 0 ? (
                         visibleAccounts.map((account, idx) => (
                             <Link
@@ -180,10 +156,10 @@ export function SocialGallery({ initialPosts = [], handle, socialData }: SocialG
                 </div>
             </div>
 
-            <div className="container py-8 sm:py-12 lg:py-16 max-w-full lg:max-w-7xl mx-auto relative z-10">
+            <div className="container py-8 sm:py-12 lg:py-16 max-w-full lg:max-w-[1600px] mx-auto relative z-10">
                 <div className="border-2 border-black-pure bg-white-pure p-6 sm:p-8 lg:p-12 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
 
-                    <div className="columns-1 sm:columns-2 lg:columns-3 gap-8 space-y-8">
+                    <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-8 space-y-8">
                         {posts.map((post, idx) => (
                             <motion.div
                                 key={`${post.id}-${idx}`}
@@ -200,7 +176,7 @@ export function SocialGallery({ initialPosts = [], handle, socialData }: SocialG
                                 >
                                     <div className="h-12 px-4 flex items-center justify-between border-b-2 border-black-pure bg-white-pure">
                                         <div className="flex items-center gap-3">
-                                            <Instagram className="size-4 text-black-pure stroke-[2.5px]" />
+                                            <span className="text-black-pure"><Instagram className="size-4 stroke-[2.5px]" /></span>
                                             <span className="text-[10px] font-black uppercase tracking-widest text-black-pure">
                                                 {handle}
                                             </span>
@@ -240,37 +216,6 @@ export function SocialGallery({ initialPosts = [], handle, socialData }: SocialG
                                 </Link>
                             </motion.div>
                         ))}
-                    </div>
-
-                    <div
-                        ref={loaderRef}
-                        className="w-full mt-16 pt-16 border-t-2 border-black-pure flex flex-col items-center justify-center"
-                    >
-                        {loading && (
-                            <div className="flex flex-col items-center gap-6">
-                                <div className="flex gap-2">
-                                    {[0, 1, 2].map((i) => (
-                                        <motion.div
-                                            key={i}
-                                            animate={{
-                                                scaleY: [1, 2, 1],
-                                                backgroundColor: i === 1 ? ['#000', '#FFD700', '#000'] : '#000'
-                                            }}
-                                            transition={{
-                                                repeat: Infinity,
-                                                duration: 0.6,
-                                                delay: i * 0.1,
-                                                ease: "easeInOut"
-                                            }}
-                                            className="w-3 h-6 bg-black-pure border-2 border-black-pure"
-                                        />
-                                    ))}
-                                </div>
-                                <span className="text-[10px] font-black uppercase tracking-[0.5em] text-black-pure">
-                                    Synchronizing
-                                </span>
-                            </div>
-                        )}
                     </div>
                 </div>
             </div>

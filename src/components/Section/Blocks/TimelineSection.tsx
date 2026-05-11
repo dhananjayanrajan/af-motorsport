@@ -139,23 +139,41 @@ const TimelineSection: React.FC<TimelineSectionProps> = ({
               <div className="w-full h-[20%] bg-gradient-to-b from-transparent via-primary-500/10 to-transparent animate-scan" />
             </div>
 
-            <div className="relative flex flex-col items-center">
+            {/* Visual Indicator of Zero Data */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[20rem] font-black text-black-pure opacity-[0.03] select-none pointer-events-none uppercase italic tracking-tighter">
+              00
+            </div>
+
+            <div className="relative flex flex-col items-center z-10">
               <div className="mb-6 flex items-center gap-3">
                 <div className="size-2 bg-black-pure" />
                 <div className="h-px w-12 bg-black-pure" />
                 <div className="size-10 border-2 border-black-pure flex items-center justify-center rotate-45 bg-white-pure">
-                  <div className="size-2 bg-primary-500" />
+                  <div className="size-2 bg-primary-500 animate-pulse" />
                 </div>
                 <div className="h-px w-12 bg-black-pure" />
                 <div className="size-2 bg-black-pure" />
               </div>
 
-              <h3 className="font-mono text-2xl font-black text-black-pure uppercase tracking-tighter mb-2">
+              {/* Status Badge */}
+              <div className="mb-8 px-4 py-1.5 bg-black-pure text-white-pure text-[10px] font-mono font-black uppercase tracking-[0.2em] flex items-center gap-3">
+                <span className="size-1.5 bg-primary-500 rounded-full" />
+                No Content Available
+                <span className="size-1.5 bg-primary-500 rounded-full" />
+              </div>
+
+              <h3 className="font-mono text-3xl font-black text-black-pure uppercase tracking-tighter mb-4 text-center">
                 {title}
               </h3>
-              <p className="font-mono text-xs text-black-pure uppercase tracking-widest bg-white-pure border border-black-pure px-3 py-1">
-                {subtitle}
-              </p>
+
+              <div className="flex flex-col items-center gap-2">
+                <p className="font-mono text-[10px] text-black-pure/40 uppercase tracking-widest font-black">
+                  Directory: {id}
+                </p>
+                <p className="font-mono text-xs text-black-pure uppercase tracking-widest bg-white-pure border-2 border-black-pure px-6 py-2 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                  {subtitle}
+                </p>
+              </div>
             </div>
           </div>
         ) : (
@@ -318,4 +336,4 @@ const TimelineSection: React.FC<TimelineSectionProps> = ({
   )
 }
 
-export default TimelineSection
+export default TimelineSection;

@@ -14,19 +14,18 @@ interface BaseProps {
 const InputWrapper = ({ label, error, isFocused, children, containerClassName }: BaseProps & { isFocused: boolean, children: React.ReactNode }) => (
     <div className={cn('relative w-full flex flex-col', containerClassName)}>
         <div className={cn(
-            "h-6 px-4 inline-flex items-center self-start transition-colors duration-300",
+            "h-5 px-3 inline-flex items-center self-start transition-colors duration-300",
             error ? "bg-secondary-500 text-white-pure" : isFocused ? "bg-primary-500 text-black-pure" : "bg-black-pure text-white-pure"
         )}>
-            <span className="text-[9px] font-mono font-black uppercase tracking-[0.3em]">
+            <span className="text-[8px] font-mono font-black uppercase tracking-[0.2em]">
                 {label}
             </span>
         </div>
         <div className={cn(
-            "relative flex items-stretch border-l-8 transition-all duration-300",
-            error ? "border-secondary-500 bg-white-pure" : isFocused ? "border-primary-500 bg-white-pure" : "border-black-pure bg-white-pure"
+            "relative flex items-stretch border-l-4 transition-all duration-300",
+            error ? "border-secondary-500" : isFocused ? "border-primary-500" : "border-black-pure"
         )}>
             {children}
-            {isFocused && <div className="w-2 bg-black-pure border-y border-r border-black-pure" />}
         </div>
     </div>
 )
@@ -41,7 +40,7 @@ const FormInput = forwardRef<HTMLInputElement, React.InputHTMLAttributes<HTMLInp
                     onFocus={(e) => { setIsFocused(true); onFocus?.(e) }}
                     onBlur={(e) => { setIsFocused(false); onBlur?.(e) }}
                     className={cn(
-                        "flex-1 h-14 bg-white-pure px-6 text-[11px] font-mono font-black uppercase tracking-[0.25em] outline-none border-y border-r border-black-pure text-black-pure placeholder:text-black-pure",
+                        "flex-1 h-10 bg-white-pure px-3 text-[10px] font-mono font-black uppercase tracking-[0.1em] outline-none border-y border-r border-black-pure text-black-pure placeholder:text-black-pure/30",
                         className
                     )}
                     {...props}
@@ -62,7 +61,7 @@ const FormTextArea = forwardRef<HTMLTextAreaElement, React.TextareaHTMLAttribute
                     onFocus={(e) => { setIsFocused(true); onFocus?.(e) }}
                     onBlur={(e) => { setIsFocused(false); onBlur?.(e) }}
                     className={cn(
-                        "flex-1 min-h-[120px] bg-white-pure p-6 text-[11px] font-mono font-black uppercase tracking-[0.25em] outline-none border-y border-r border-black-pure text-black-pure placeholder:text-black-pure resize-none",
+                        "flex-1 min-h-[80px] bg-white-pure p-3 text-[10px] font-mono font-black uppercase tracking-[0.1em] outline-none border-y border-r border-black-pure text-black-pure placeholder:text-black-pure/30 resize-none",
                         className
                     )}
                     {...props}
@@ -78,16 +77,16 @@ const FormCheckbox = forwardRef<HTMLInputElement, React.InputHTMLAttributes<HTML
         const [isFocused, setIsFocused] = useState(false)
         return (
             <InputWrapper label={label} error={error} isFocused={isFocused} containerClassName={containerClassName}>
-                <div className="flex-1 h-14 bg-white-pure px-6 flex items-center border-y border-r border-black-pure">
+                <div className="flex-1 h-10 bg-white-pure px-3 flex items-center border-y border-r border-black-pure">
                     <input
                         ref={ref}
                         type="checkbox"
                         onFocus={() => setIsFocused(true)}
                         onBlur={() => setIsFocused(false)}
-                        className="w-5 h-5 accent-primary-500 border-2 border-black-pure cursor-pointer"
+                        className="size-4 accent-primary-500 border-2 border-black-pure cursor-pointer"
                         {...props}
                     />
-                    <span className="ml-4 text-[10px] font-mono font-black uppercase text-black-pure">Confirm selection</span>
+                    <span className="ml-3 text-[9px] font-mono font-black uppercase text-black-pure">Confirm</span>
                 </div>
             </InputWrapper>
         )
@@ -128,18 +127,18 @@ export const FormRenderer: React.FC<{ form: FormType }> = ({ form }) => {
 
     if (status === 'success') {
         return (
-            <div className="border-l-8 border-primary-500 bg-white-pure p-10">
-                <h3 className="text-2xl font-mono font-black text-primary-500 tracking-tighter uppercase underline decoration-4">Confirmed</h3>
-                <p className="text-black-pure font-mono text-[10px] tracking-[0.2em] mt-4 leading-loose">
-                    Your information has been received. The team will be in touch.
+            <div className="border-l-4 border-primary-500 bg-white-pure p-6">
+                <h3 className="text-xl font-mono font-black text-black-pure uppercase">Confirmed</h3>
+                <p className="text-black-pure font-mono text-[9px] tracking-[0.1em] mt-2 uppercase">
+                    Information received.
                 </p>
             </div>
         )
     }
 
     return (
-        <form onSubmit={handleSubmit} className="flex flex-col gap-10">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-y-10 gap-x-6">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+            <div className="grid grid-cols-1 gap-4">
                 {form.fields?.map((field) => {
                     if (field.blockType === 'message') return null
 
@@ -148,7 +147,7 @@ export const FormRenderer: React.FC<{ form: FormType }> = ({ form }) => {
                         name: field.name,
                         required: !!field.required,
                         placeholder: (field as any).defaultValue || '',
-                        containerClassName: field.width === 50 ? "md:col-span-1" : "md:col-span-2"
+                        containerClassName: "col-span-1"
                     }
 
                     switch (field.blockType) {
@@ -161,19 +160,20 @@ export const FormRenderer: React.FC<{ form: FormType }> = ({ form }) => {
                 })}
             </div>
 
-            <div className="mt-4 self-start">
+            <div className="mt-2">
                 <ClippedButton
                     label={status === 'loading' ? 'Sending' : (form.submitButtonLabel?.toUpperCase() || 'Submit')}
                     variant="primary"
-                    size="lg"
+                    size="sm"
+                    className="w-full"
                     onClick={() => { }}
                 />
             </div>
 
             {status === 'error' && (
-                <div className="bg-secondary-500 border-l-4 border-black-pure p-4">
-                    <span className="text-black-pure font-mono text-[10px] font-black uppercase tracking-widest">
-                        Something went wrong. Please try again.
+                <div className="bg-secondary-500 border-l-2 border-black-pure p-3">
+                    <span className="text-black-pure font-mono text-[8px] font-black uppercase tracking-widest">
+                        Error. Try again.
                     </span>
                 </div>
             )}

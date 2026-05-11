@@ -1,5 +1,4 @@
 import configPromise from '@payload-config'
-import localFont from 'next/font/local'
 import { getPayload } from 'payload'
 import type { ReactNode } from 'react'
 import { Suspense } from 'react'
@@ -13,72 +12,45 @@ import { GeistSans } from 'geist/font/sans'
 
 import { Footer } from '@/components/Footer'
 import { Header } from '@/components/Header'
-import LoadingSection from '@/components/Section/Blocks/LoadingSection'
 import { UtilityStack } from '@/components/Section/Components/UtilityStack'
+import LayoutContent from './LayoutContent'
 import './globals.css'
 
-const brunoAce = localFont({
-  src: '../../fonts/BrunoAce-Regular.ttf',
-  variable: '--font-bruno',
-})
-
-const interBold = localFont({
-  src: '../../fonts/Inter-Bold.ttf',
-  variable: '--font-inter-bold',
-})
-
-const raceSport = localFont({
-  src: '../../fonts/Race-Sport.ttf',
-  variable: '--font-race',
-})
-
-export default async function RootLayout({ children }: { children: ReactNode }) {
+async function AsyncUtilityStack() {
   const payload = await getPayload({ config: configPromise })
   const forms = await payload.find({
     collection: 'forms',
-    where: {
-      title: {
-        equals: 'Contact',
-      },
-    },
+    where: { title: { equals: 'Contact' } },
   })
-
   const contactForm = forms.docs[0]
+  return contactForm ? <UtilityStack form={contactForm} /> : null
+}
 
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html
-      className={[
-        GeistSans.variable,
-        GeistMono.variable,
-        brunoAce.variable,
-        interBold.variable,
-        raceSport.variable,
-      ]
-        .filter(Boolean)
-        .join(' ')}
+      className={`${GeistSans.variable} ${GeistMono.variable} antialiased`}
       lang="en"
       suppressHydrationWarning
     >
       <head>
         <InitTheme />
         <link href="/favicon.ico" rel="icon" sizes="32x32" />
-        <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
       </head>
-      <body className="bg-background text-foreground min-h-screen flex flex-col overflow-x-hidden selection:bg-primary selection:text-primary-foreground">
-        <LoadingSection />
+      <body className="bg-background text-foreground min-h-screen flex flex-col overflow-x-hidden">
         <Providers>
-          <AdminBar />
-          <LivePreviewListener />
-
-          <Header />
-          <main className="flex-grow w-full relative">
-            <Suspense>
-              {children}
+          <LayoutContent>
+            <AdminBar />
+            <LivePreviewListener />
+            <Header />
+            <main className="flex-grow w-full relative">
+              <Suspense>{children}</Suspense>
+            </main>
+            <Footer />
+            <Suspense fallback={null}>
+              <AsyncUtilityStack />
             </Suspense>
-          </main>
-          <Footer />
-
-          {contactForm && <UtilityStack form={contactForm} />}
+          </LayoutContent>
         </Providers>
       </body>
     </html>

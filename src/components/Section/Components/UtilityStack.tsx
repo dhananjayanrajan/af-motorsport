@@ -114,19 +114,12 @@ export const UtilityStack: React.FC<UtilityStackProps> = ({ form }) => {
 
             <div className="fixed bottom-6 right-6 z-[1000] flex flex-col items-end gap-4 font-mono">
                 <style jsx global>{`
-                    .chat-scroll::-webkit-scrollbar {
-                        width: 4px;
+                    .no-scrollbar::-webkit-scrollbar {
+                        display: none;
                     }
-                    .chat-scroll::-webkit-scrollbar-track {
-                        background: transparent;
-                        border-left: 1px solid #000;
-                    }
-                    .chat-scroll::-webkit-scrollbar-thumb {
-                        background: #000;
-                    }
-                    .chat-scroll {
-                        scrollbar-width: thin;
-                        scrollbar-color: #000 transparent;
+                    .no-scrollbar {
+                        -ms-overflow-style: none;
+                        scrollbar-width: none;
                     }
                 `}</style>
 
@@ -137,7 +130,7 @@ export const UtilityStack: React.FC<UtilityStackProps> = ({ form }) => {
                             animate={{ opacity: 1, scale: 1, y: 0, x: 0 }}
                             exit={{ opacity: 0, scale: 0.95, y: 40, x: 20 }}
                             transition={{ type: "spring", damping: 20, stiffness: 300 }}
-                            className="mb-2 w-[calc(100vw-3rem)] sm:w-[350px] h-[70vh] sm:h-[480px] flex flex-col bg-white-pure border-2 border-black-pure shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]"
+                            className="mb-2 w-[calc(100vw-3rem)] sm:w-[400px] max-h-[80vh] flex flex-col bg-white-pure border-2 border-black-pure shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] overflow-hidden"
                             onClick={(e) => e.stopPropagation()}
                         >
                             <div className="bg-black-pure p-3 flex justify-between items-center shrink-0">
@@ -158,21 +151,21 @@ export const UtilityStack: React.FC<UtilityStackProps> = ({ form }) => {
                                 </button>
                             </div>
 
-                            <div className="flex-1 overflow-y-auto chat-scroll p-4 sm:p-6 bg-white-pure">
-                                <div className="relative mb-6 pb-3 border-b border-black-pure/10">
-                                    <span className="absolute -top-1 -left-1 text-[30px] opacity-5 select-none font-black">?</span>
-                                    <p className="text-black-pure text-[11px] font-black uppercase leading-relaxed tracking-wide">
-                                        Please fill out the form below and we will get back to you as soon as possible.
+                            <div className="flex-1 overflow-y-auto no-scrollbar p-6 bg-white-pure">
+                                <div className="relative mb-6 pb-4 border-b-2 border-black-pure">
+                                    <span className="absolute -top-2 -left-2 text-[32px] opacity-10 select-none font-black text-black-pure">?</span>
+                                    <p className="text-black-pure text-[11px] font-black uppercase leading-tight tracking-wide relative z-10">
+                                        Please fill out the form below.
                                     </p>
                                 </div>
-                                <div className="pb-2">
+                                <div className="pb-4">
                                     <FormRenderer form={form} />
                                 </div>
                             </div>
 
-                            <div className="bg-black-pure/5 px-3 py-1.5 border-t border-black-pure flex justify-between items-center shrink-0">
-                                <span className="text-[7px] font-black uppercase opacity-40">Ready to help</span>
-                                <span className="text-[7px] font-black uppercase opacity-40">AF Motorsport</span>
+                            <div className="bg-white-pure px-3 py-2 border-t-2 border-black-pure flex justify-between items-center shrink-0">
+                                <span className="text-[8px] font-black uppercase text-black-pure">Ready to help</span>
+                                <span className="text-[8px] font-black uppercase text-black-pure">AF Motorsport</span>
                             </div>
                         </motion.div>
                     )}
@@ -213,17 +206,16 @@ export const UtilityStack: React.FC<UtilityStackProps> = ({ form }) => {
                     </AnimatePresence>
 
                     <motion.button
-                        whileHover={{ scale: 1.05, translateZ: 0 }}
+                        whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         onClick={() => setIsOpen(!isOpen)}
                         className={cn(
                             "relative size-12 flex items-center justify-center border-2 border-black-pure transition-all duration-500 group",
                             isOpen
-                                ? "bg-black-pure text-white-pure rotate-90 shadow-none"
-                                : "bg-primary-500 text-black-pure shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-none"
+                                ? "bg-black-pure text-white-pure rotate-90"
+                                : "bg-primary-500 text-black-pure shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px]"
                         )}
                     >
-                        <div className="absolute inset-0 border border-white-pure/20 opacity-0 group-hover:opacity-100 transition-opacity" />
                         {isOpen ? (
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                                 <path d="M18 6L6 18M6 6l12 12" />
