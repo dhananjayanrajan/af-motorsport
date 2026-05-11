@@ -132,6 +132,15 @@ export default buildConfig({
   csrf: [PAYLOAD_URL],
   admin: {
     user: Users.slug,
+    meta: {
+      titleSuffix: '- AF Motorsport',
+    },
+    components: {
+      graphics: {
+        Logo: '/assets/logo/af_logo.png',
+        Icon: '/assets/logo/af_logo.png',
+      },
+    },
   },
   collections,
   globals,

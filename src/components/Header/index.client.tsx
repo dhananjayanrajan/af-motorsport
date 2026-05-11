@@ -1,7 +1,6 @@
 'use client'
 
 import { Cart } from '@/components/Cart'
-import { LogoIcon } from '@/components/icons/logo'
 import { useAuth } from '@/providers/Auth'
 import { cn } from '@/utilities/cn'
 import {
@@ -66,8 +65,12 @@ export function HeaderClient({ header, socials }: { header: Header; socials: Soc
   return (
     <header className="sticky top-0 left-0 w-full z-[110] bg-white-pure border-b border-black-pure h-12 flex items-stretch overflow-hidden">
       <div className="w-16 md:w-24 flex items-center justify-center border-r border-black-pure bg-black-pure shrink-0 group transition-colors duration-100 hover:bg-primary-500">
-        <Link href="/" className="flex items-center justify-center w-full h-full outline-none">
-          <LogoIcon className="h-6 w-auto text-white-pure group-hover:text-black-pure transition-transform duration-100 group-hover:scale-110" />
+        <Link href="/" className="flex items-center justify-center w-full h-full outline-none p-2">
+          <img
+            src="/assets/logo/af_logo.png"
+            alt="AF Motorsport"
+            className="h-8 w-auto object-contain transition-transform duration-100 group-hover:scale-110"
+          />
         </Link>
       </div>
 
