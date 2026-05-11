@@ -9,6 +9,26 @@ const getSocials = getCachedGlobal('socials', 1)
 const getQuestions = getCachedGlobal('questions', 1)
 const getAnnouncements = getCachedGlobal('announcements', 1)
 
+const getCachedProducts = unstable_cache(
+  async () => {
+    const payload = await getPayload({ config: configPromise })
+    const result = await payload.find({
+      collection: 'products',
+      limit: 4,
+      depth: 1,
+      sort: '-createdAt',
+      where: {
+        _status: {
+          equals: 'published',
+        },
+      },
+    })
+    return result.docs
+  },
+  ['footer-latest-products'],
+  { tags: ['products'] },
+)
+
 const getCachedOrganizations = unstable_cache(
   async () => {
     const payload = await getPayload({ config: configPromise })
@@ -27,16 +47,17 @@ const getCachedOrganizations = unstable_cache(
     return result.docs
   },
   ['footer-organizations'],
-  { tags: ['organizations'] }
+  { tags: ['organizations'] },
 )
 
 export async function Footer() {
-  const [footer, socials, questions, announcements, organizations] = await Promise.all([
+  const [footer, socials, questions, announcements, organizations, latestProducts] = await Promise.all([
     getFooter(),
     getSocials(),
     getQuestions(),
     getAnnouncements(),
     getCachedOrganizations(),
+    getCachedProducts(),
   ])
 
   return (
@@ -46,6 +67,7 @@ export async function Footer() {
       organizations={organizations}
       questions={questions}
       announcements={announcements}
+      latestProducts={latestProducts}
     />
   )
 }

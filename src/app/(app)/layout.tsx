@@ -65,13 +65,14 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
       </head>
       <body className="bg-background text-foreground min-h-screen flex flex-col overflow-x-hidden selection:bg-primary selection:text-primary-foreground">
+        <LoadingSection />
         <Providers>
           <AdminBar />
           <LivePreviewListener />
 
           <Header />
           <main className="flex-grow w-full relative">
-            <Suspense fallback={<LoadingSection />}>
+            <Suspense>
               {children}
             </Suspense>
           </main>

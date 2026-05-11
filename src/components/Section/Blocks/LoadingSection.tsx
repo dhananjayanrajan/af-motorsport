@@ -1,82 +1,105 @@
 "use client"
 
-import { motion } from 'motion/react'
+import { AnimatePresence, motion } from 'motion/react'
+import { useEffect, useState } from 'react'
 
 const LoadingSection = () => {
+    const [mounted, setMounted] = useState(false)
+    const [isVisible, setIsVisible] = useState(false)
+
+    useEffect(() => {
+        setMounted(true)
+        setIsVisible(true)
+        const timer = setTimeout(() => {
+            setIsVisible(false)
+        }, 2500)
+        return () => clearTimeout(timer)
+    }, [])
+
+    if (!mounted) return null
+
     return (
-        <div className="fixed inset-0 z-[999999] flex flex-col items-center justify-center bg-black-pure pointer-events-auto overflow-hidden">
-            <div className="absolute inset-0 overflow-hidden opacity-20">
-                {[...Array(20)].map((_, i) => (
-                    <motion.div
-                        key={i}
-                        initial={{ x: '-100%', y: `${Math.random() * 100}%` }}
-                        animate={{ x: '200%' }}
-                        transition={{
-                            duration: 0.5 + Math.random() * 0.5,
-                            repeat: Infinity,
-                            ease: "linear",
-                            delay: Math.random() * 2
-                        }}
-                        className="absolute h-[1px] w-64 bg-primary-500"
-                    />
-                ))}
-            </div>
-
-            <div className="relative z-10 flex flex-col items-center gap-12">
-                <div className="flex gap-4 p-4 border-4 border-white-pure/10 bg-black-pure/50 backdrop-blur-md">
-                    {[...Array(5)].map((_, i) => (
-                        <div key={i} className="flex flex-col gap-2">
-                            <motion.div
-                                animate={{
-                                    backgroundColor: i < 5 ? ['#1a1a1a', '#ff0000', '#ff0000'] : '#1a1a1a'
-                                }}
-                                transition={{ delay: i * 0.2, duration: 0.5, repeat: Infinity, repeatDelay: 2 }}
-                                className="size-8 rounded-full border-2 border-black-pure shadow-inner"
-                            />
-                            <motion.div
-                                animate={{
-                                    backgroundColor: i < 5 ? ['#1a1a1a', '#ff0000', '#ff0000'] : '#1a1a1a'
-                                }}
-                                transition={{ delay: i * 0.2, duration: 0.5, repeat: Infinity, repeatDelay: 2 }}
-                                className="size-8 rounded-full border-2 border-black-pure shadow-inner"
-                            />
-                        </div>
-                    ))}
-                </div>
-
-                <div className="flex flex-col items-center">
-                    <div className="flex items-end gap-1 mb-2">
-                        {[...Array(20)].map((_, i) => (
+        <AnimatePresence>
+            {isVisible && (
+                <motion.div
+                    initial={{ opacity: 1 }}
+                    exit={{ y: '-100%' }}
+                    transition={{ duration: 0.9, ease: [0.9, 0, 0.1, 1] }}
+                    className="fixed inset-0 z-[9999999] flex flex-col items-center justify-center bg-[var(--black-pure)] pointer-events-auto"
+                    style={{ height: '100vh', width: '100vw' }}
+                >
+                    <div className="absolute inset-0 overflow-hidden">
+                        {[...Array(30)].map((_, i) => (
                             <motion.div
                                 key={i}
-                                initial={{ height: 4 }}
-                                animate={{
-                                    height: [4, 40, 4],
-                                    backgroundColor: i > 15 ? '#ff0000' : '#f5ff00'
-                                }}
+                                initial={{ x: '-100%', y: `${Math.random() * 100}%` }}
+                                animate={{ x: '200%' }}
                                 transition={{
+                                    duration: 0.2 + Math.random() * 0.3,
                                     repeat: Infinity,
-                                    duration: 0.3,
-                                    delay: i * 0.02,
-                                    ease: "easeInOut"
+                                    ease: "linear",
+                                    delay: Math.random() * 0.5
                                 }}
-                                className="w-2 bg-primary-500"
+                                className="absolute h-[3px] w-[400px] bg-[var(--primary-500)] opacity-40 shadow-[0_0_15px_var(--primary-500)]"
                             />
                         ))}
                     </div>
-                    <span className="font-race text-white-pure text-2xl italic tracking-widest animate-pulse">
-                        WARMING_TIRES...
-                    </span>
-                </div>
-            </div>
 
-            <motion.div
-                initial={{ scaleY: 1 }}
-                animate={{ scaleY: 0 }}
-                transition={{ duration: 0.8, ease: [0.8, 0, 0.1, 1], delay: 2.5 }}
-                className="absolute inset-0 bg-primary-500 z-50 origin-top"
-            />
-        </div>
+                    <div className="relative z-[10] flex flex-col items-center justify-center w-full h-full">
+                        <div className="flex gap-6 mb-24">
+                            {[...Array(5)].map((_, i) => (
+                                <div key={i} className="flex flex-col gap-4">
+                                    <motion.div
+                                        animate={{
+                                            backgroundColor: ['var(--black-400)', 'var(--primary-500)', 'var(--primary-500)', 'var(--black-400)'],
+                                            boxShadow: ['0 0 0px transparent', '0 0 40px var(--primary-500)', '0 0 40px var(--primary-500)', '0 0 0px transparent']
+                                        }}
+                                        transition={{ delay: i * 0.3, duration: 0.6, times: [0, 0.2, 0.8, 1], repeat: Infinity }}
+                                        className="size-16 rounded-full border-4 border-[var(--black-pure)]"
+                                    />
+                                    <motion.div
+                                        animate={{
+                                            backgroundColor: ['var(--black-400)', 'var(--primary-500)', 'var(--primary-500)', 'var(--black-400)'],
+                                            boxShadow: ['0 0 0px transparent', '0 0 40px var(--primary-500)', '0 0 40px var(--primary-500)', '0 0 0px transparent']
+                                        }}
+                                        transition={{ delay: i * 0.3, duration: 0.6, times: [0, 0.2, 0.8, 1], repeat: Infinity }}
+                                        className="size-16 rounded-full border-4 border-[var(--black-pure)]"
+                                    />
+                                </div>
+                            ))}
+                        </div>
+
+                        <div className="w-full max-w-4xl px-12">
+                            <div className="flex items-end gap-2 h-32">
+                                {[...Array(40)].map((_, i) => (
+                                    <motion.div
+                                        key={i}
+                                        initial={{ height: 10 }}
+                                        animate={{
+                                            height: [10, Math.random() * 100 + 20, 10],
+                                            backgroundColor: i > 32 ? 'var(--error)' : i > 24 ? 'var(--warning)' : 'var(--success)'
+                                        }}
+                                        transition={{
+                                            repeat: Infinity,
+                                            duration: 0.12,
+                                            delay: i * 0.008
+                                        }}
+                                        className="flex-grow rounded-t-md"
+                                    />
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: [0, 1, 0] }}
+                        transition={{ delay: 2.3, duration: 0.15 }}
+                        className="absolute inset-0 bg-[var(--white-pure)] z-[99999999] pointer-events-none"
+                    />
+                </motion.div>
+            )}
+        </AnimatePresence>
     )
 }
 

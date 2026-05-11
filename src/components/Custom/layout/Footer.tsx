@@ -2,7 +2,8 @@
 
 import { FAQAccordionBlock } from '@/components/Custom/layout/questions'
 import { CMSLink } from '@/components/Link'
-import type { Announcement as AnnouncementType, Footer, Media, Organization, Question, Social } from '@/payload-types'
+import { ShopCollectionsCTA } from '@/components/Section/Blocks/ShopCollectionCTASection'
+import type { Announcement as AnnouncementType, Footer, Media, Organization, Product, Question, Social } from '@/payload-types'
 import Image from 'next/image'
 import { AnnouncementsSection } from './announcements'
 import { CTA } from './cta'
@@ -13,9 +14,17 @@ interface CustomFooterProps {
   organizations?: Organization[]
   questions?: Question
   announcements?: AnnouncementType
+  latestProducts?: Product[]
 }
 
-export const CustomFooter = ({ footer, socials, organizations = [], questions, announcements }: CustomFooterProps) => {
+export const CustomFooter = ({
+  footer,
+  socials,
+  organizations = [],
+  questions,
+  announcements,
+  latestProducts = []
+}: CustomFooterProps) => {
   if (!footer) return null
 
   const { columns, cta, copyright, brand, legal } = footer
@@ -23,6 +32,8 @@ export const CustomFooter = ({ footer, socials, organizations = [], questions, a
 
   return (
     <div className="flex flex-col">
+      {latestProducts.length > 0 && <ShopCollectionsCTA products={latestProducts} />}
+
       {announcements && <AnnouncementsSection data={announcements} />}
 
       {questions && (
