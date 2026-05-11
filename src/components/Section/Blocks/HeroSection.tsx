@@ -78,13 +78,13 @@ const HeroSection: React.FC<HeroSectionProps> = ({
                   <motion.img
                     src={backgroundImage}
                     alt=""
-                    className="w-full h-full object-cover brightness-[0.5] contrast-125"
+                    className="w-full h-full object-cover brightness-[0.1] contrast-125 bg-black-pure"
                     animate={{
                       x: (mousePos.x - (typeof window !== 'undefined' ? window.innerWidth / 2 : 0)) * 0.01,
                       y: (mousePos.y - (typeof window !== 'undefined' ? window.innerHeight / 2 : 0)) * 0.01,
                     }}
                   />
-                  <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black" />
+                  <div className="absolute inset-0 bg-gradient-to-b from-black via-black/50 to-black" />
                 </motion.div>
               ) : (
                 background

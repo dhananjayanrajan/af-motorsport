@@ -3,7 +3,7 @@
 import { ArrowRight, ChevronLeft, ChevronRight, Plus } from 'lucide-react'
 import { AnimatePresence, motion } from 'motion/react'
 import Link from 'next/link'
-import React, { useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import SectionHeader from '../Components/SectionHeader'
 import SectionSidebar from '../Components/SectionSidebar'
 
@@ -43,9 +43,38 @@ const FeatureSection: React.FC<FeatureSectionProps> = ({
   const [activeIndex, setActiveIndex] = useState(0)
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [activeFeature, setActiveFeature] = useState<Feature | null>(null)
+  const [touchStart, setTouchStart] = useState<number | null>(null)
+  const [touchEnd, setTouchEnd] = useState<number | null>(null)
 
-  const nextSlide = () => setActiveIndex((prev) => (prev + 1) % features.length)
-  const prevSlide = () => setActiveIndex((prev) => (prev - 1 + features.length) % features.length)
+  const nextSlide = useCallback(() => setActiveIndex((prev) => (prev + 1) % features.length), [features.length])
+  const prevSlide = useCallback(() => setActiveIndex((prev) => (prev - 1 + features.length) % features.length), [features.length])
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowLeft') prevSlide()
+      if (e.key === 'ArrowRight') nextSlide()
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [nextSlide, prevSlide])
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(null)
+    setTouchStart(e.targetTouches[0].clientX)
+  }
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX)
+  }
+
+  const handleTouchEnd = () => {
+    if (!touchStart || !touchEnd) return
+    const distance = touchStart - touchEnd
+    const isLeftSwipe = distance > 50
+    const isRightSwipe = distance < -50
+    if (isLeftSwipe) nextSlide()
+    if (isRightSwipe) prevSlide()
+  }
 
   const current = features[activeIndex]
 
@@ -59,7 +88,12 @@ const FeatureSection: React.FC<FeatureSectionProps> = ({
       />
 
       <div className="container py-8 sm:py-12 lg:py-16 max-w-full lg:max-w-7xl mx-auto relative z-10">
-        <div className="relative flex flex-col md:grid md:grid-cols-12 border-2 border-black-pure bg-white-pure overflow-hidden">
+        <div
+          className="relative flex flex-col md:grid md:grid-cols-12 border-2 border-black-pure bg-white-pure overflow-hidden"
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+        >
 
           <div className="md:col-span-6 lg:col-span-7 aspect-square md:aspect-auto md:h-[550px] lg:h-[600px] border-b-2 md:border-b-0 md:border-r-2 border-black-pure relative overflow-hidden">
             <AnimatePresence mode="wait">

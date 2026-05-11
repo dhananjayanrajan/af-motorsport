@@ -2,6 +2,7 @@ import configPromise from '@payload-config'
 import localFont from 'next/font/local'
 import { getPayload } from 'payload'
 import type { ReactNode } from 'react'
+import { Suspense } from 'react'
 
 import { AdminBar } from '@/components/AdminBar'
 import { LivePreviewListener } from '@/components/LivePreviewListener'
@@ -12,6 +13,7 @@ import { GeistSans } from 'geist/font/sans'
 
 import { Footer } from '@/components/Footer'
 import { Header } from '@/components/Header'
+import LoadingSection from '@/components/Section/Blocks/LoadingSection'
 import { UtilityStack } from '@/components/Section/Components/UtilityStack'
 import './globals.css'
 
@@ -68,13 +70,14 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
           <LivePreviewListener />
 
           <Header />
-          <main className="flex-grow w-full">
-            {children}
+          <main className="flex-grow w-full relative">
+            <Suspense fallback={<LoadingSection />}>
+              {children}
+            </Suspense>
           </main>
           <Footer />
 
           {contactForm && <UtilityStack form={contactForm} />}
-
         </Providers>
       </body>
     </html>
