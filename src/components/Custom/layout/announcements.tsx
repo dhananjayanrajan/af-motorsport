@@ -1,9 +1,7 @@
 'use client'
 
 import { Announcement as AnnouncementType } from '@/payload-types'
-import Autoplay from 'embla-carousel-autoplay'
-import useEmblaCarousel from 'embla-carousel-react'
-import { ChevronRight, Radio } from 'lucide-react'
+import { ArrowRight, Radio } from 'lucide-react'
 import Link from 'next/link'
 
 interface AnnouncementsSectionProps {
@@ -20,92 +18,88 @@ export const AnnouncementsSection = ({ data }: AnnouncementsSectionProps) => {
     return true
   })
 
-  const [emblaRef] = useEmblaCarousel({ loop: true, align: 'start' }, [
-    Autoplay({ delay: 4000, stopOnInteraction: false })
-  ])
-
   if (activeItems.length === 0) return null
 
+  const marqueeContent = [...activeItems, ...activeItems, ...activeItems, ...activeItems]
+
   return (
-    <section className="relative w-full bg-white-pure flex flex-col overflow-hidden border-b-2 border-black-pure">
-      <div className="h-14 bg-white-100 flex items-center px-8 border-b-2 border-black-pure justify-between">
-        <div className="flex items-center gap-6">
-          <div className="flex items-center gap-3">
-            <Radio className="size-4 text-primary-500 animate-pulse" />
-            <span className="text-black-pure font-mono text-xs font-black tracking-widest uppercase">
-              LATEST UPDATES
-            </span>
-          </div>
-        </div>
-        <span className="text-xs font-mono font-black text-black-pure uppercase">
-          COUNT: {activeItems.length}
-        </span>
+    <section className="relative w-full bg-white-pure border-y-2 border-black-pure overflow-hidden group/ticker">
+      <div className="absolute left-0 top-0 bottom-0 w-12 md:w-20 bg-white-pure z-30 border-r-2 border-black-pure flex items-center justify-center">
+        <Radio className="size-4 text-primary-500 animate-pulse" />
       </div>
 
-      <div className="overflow-hidden cursor-grab active:cursor-grabbing" ref={emblaRef}>
-        <div className="flex">
-          {activeItems.map((item, index) => {
+      <div className="flex whitespace-nowrap py-0 select-none">
+        <div className="flex animate-marquee group-hover/ticker:[animation-play-state:paused]">
+          {marqueeContent.map((item, index) => {
             const isUrgent = item.type === 'urgent'
-            const accentColor = isUrgent ? 'bg-tertiary-500' : 'bg-primary-500'
+            const hasLink = !!(item.link?.enable && item.link?.url)
+            const accentBg = isUrgent ? 'hover:bg-tertiary-500 focus:bg-tertiary-500' : 'hover:bg-primary-500 focus:bg-primary-500'
+            const baseClass = `flex items-center group/item px-10 md:px-16 border-r-2 border-black-pure last:border-r-0 h-16 md:h-20 transition-all duration-300 ease-in-out outline-none ${hasLink ? `${accentBg} cursor-pointer` : 'cursor-default'}`
+
+            const content = (
+              <div className="flex items-center gap-6">
+                <span className="text-xs font-black tabular-nums text-black-pure transition-colors group-hover/item:text-black-pure">
+                  {(index % activeItems.length + 1).toString().padStart(2, '0')}
+                </span>
+
+                <div className="flex flex-col">
+                  <div className="flex items-center gap-4">
+                    <h4 className="text-sm md:text-lg font-black uppercase tracking-tighter text-black-pure transition-colors group-hover/item:text-black-pure">
+                      {item.title}
+                    </h4>
+                    {isUrgent && (
+                      <span className="bg-black-pure text-tertiary-500 text-[9px] font-black px-2 py-0.5 leading-none transition-colors group-hover/item:bg-white-pure group-hover/item:text-black-pure">
+                        {item.type}
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-[10px] md:text-xs font-bold uppercase text-black-pure transition-colors group-hover/item:text-black-pure">
+                    {item.message}
+                  </p>
+                </div>
+
+                {hasLink && (
+                  <ArrowRight className="size-5 text-black-pure transition-transform duration-300 group-hover/item:translate-x-2" />
+                )}
+              </div>
+            )
+
+            if (hasLink) {
+              return (
+                <Link
+                  key={`${item.id}-${index}`}
+                  href={item.link?.url as string}
+                  className={baseClass}
+                >
+                  {content}
+                </Link>
+              )
+            }
 
             return (
-              <div key={item.id} className="flex-[0_0_100%] md:flex-[0_0_50%] lg:flex-[0_0_33.333%] xl:flex-[0_0_25%] min-w-0">
-                <div className="relative h-[400px] flex flex-col border-r-2 border-black-pure bg-white-pure group transition-all duration-300 hover:bg-white-50">
-                  <div className="h-16 flex items-center px-8 border-b-2 border-black-pure group-hover:bg-black-pure transition-colors duration-300">
-                    <div className="size-8 bg-black-pure flex items-center justify-center group-hover:bg-white-pure transition-colors">
-                      <span className="text-white-pure font-mono text-xs font-black group-hover:text-black-pure">
-                        {index + 1}
-                      </span>
-                    </div>
-                    <div className="ml-4">
-                      <span className={`text-xs font-mono font-black uppercase tracking-widest ${isUrgent ? 'text-tertiary-500' : 'text-black-pure/40'} group-hover:text-white-pure`}>
-                        {item.type || 'NEWS'}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="flex-1 p-8 flex flex-col justify-between relative overflow-hidden">
-                    <div className="space-y-4">
-                      <h4 className="text-2xl font-black uppercase tracking-tighter text-black-pure leading-tight group-hover:translate-x-1 transition-transform">
-                        {item.title}
-                      </h4>
-                      <p className="text-xs font-sans font-bold uppercase leading-normal text-black-pure/60 line-clamp-4">
-                        {item.message}
-                      </p>
-                    </div>
-
-                    <div className="space-y-4">
-                      <div className="grid grid-cols-2 border-2 border-black-pure">
-                        <div className={`h-8 flex items-center justify-center border-r-2 border-black-pure ${accentColor}`}>
-                          <span className="text-[10px] font-mono font-black text-black-pure">TYPE</span>
-                        </div>
-                        <div className="h-8 flex items-center justify-center bg-white-pure">
-                          <span className="text-[10px] font-mono font-black text-black-pure uppercase">
-                            {isUrgent ? 'PRIORITY' : 'STANDARD'}
-                          </span>
-                        </div>
-                      </div>
-
-                      {item.link?.enable && item.link.url && (
-                        <Link
-                          href={item.link.url}
-                          className="w-full h-12 bg-black-pure flex items-center justify-between px-6 group/btn hover:bg-primary-500 transition-all focus-visible:ring-2 focus-visible:ring-primary-500"
-                        >
-                          <span className="text-white-pure font-mono text-xs font-black tracking-widest group-hover/btn:text-black-pure">
-                            VIEW
-                          </span>
-                          <ChevronRight className="size-4 text-primary-500 group-hover/btn:text-black-pure" />
-                        </Link>
-                      )}
-                    </div>
-                    <div className={`absolute bottom-0 left-0 h-1 w-full origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500 ${accentColor}`} />
-                  </div>
-                </div>
+              <div key={`${item.id}-${index}`} className={baseClass}>
+                {content}
               </div>
             )
           })}
         </div>
       </div>
+
+      <div className="absolute right-0 top-0 bottom-0 w-12 md:w-20 bg-white-pure z-30 border-l-2 border-black-pure flex items-center justify-center pointer-events-none">
+        <span className="text-xs font-black text-black-pure tabular-nums">
+          {activeItems.length}
+        </span>
+      </div>
+
+      <style jsx global>{`
+        @keyframes marquee {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+        .animate-marquee {
+          animation: marquee 50s linear infinite;
+        }
+      `}</style>
     </section>
   )
 }

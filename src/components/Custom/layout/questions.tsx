@@ -1,9 +1,11 @@
 'use client'
 
 import { RichText } from '@/components/RichText'
+import DotGridBackground from '@/components/Section/Backgrounds/DotGridBackground'
+import SectionHeader from '@/components/Section/Components/SectionHeader'
 import type { Question } from '@/payload-types'
 import { cn } from '@/utilities/cn'
-import { ArrowUpRight, HelpCircle, Minus, Plus } from 'lucide-react'
+import { ArrowUpRight, Minus, Plus } from 'lucide-react'
 import { AnimatePresence, motion } from 'motion/react'
 import Link from 'next/link'
 import { useState } from 'react'
@@ -20,102 +22,124 @@ export function FAQAccordionBlock({ data }: QuestionsProps) {
   const allVisibleCategories = data.categories.filter((cat) => cat.visible !== false)
 
   return (
-    <section className="relative w-full min-h-[600px] bg-white-pure flex flex-col lg:flex-row border-b-2 border-black-pure">
-      <main className="flex-1 p-12 flex flex-col justify-between border-r-2 border-black-pure">
-        <div className="space-y-8">
-          <div className="flex items-center gap-4">
-            <div className="h-1 w-10 bg-primary-500" />
-            <span className="text-xs font-black text-black-pure tracking-widest uppercase">MEMBER HELP</span>
-          </div>
-          <h2 className="text-4xl md:text-5xl font-black uppercase tracking-tighter leading-tight text-black-pure">
-            FREQUENT<br />QUESTIONS
-          </h2>
-          <div className="grid grid-cols-2 gap-4 max-w-sm">
-            <div className="p-6 border-2 border-black-pure bg-secondary-500 flex flex-col justify-between">
-              <HelpCircle className="size-6 text-black-pure mb-4" />
-              <span className="text-xl font-black text-black-pure uppercase leading-none">
-                {allVisibleCategories.length} TOPICS
-              </span>
-            </div>
-            <div className="p-6 border-2 border-black-pure bg-black-pure text-white-pure flex flex-col justify-between hover:bg-primary-500 hover:text-black-pure transition-colors group">
-              <div className="size-3 bg-white-pure group-hover:bg-black-pure rotate-45 mb-4" />
-              <span className="text-xs font-black uppercase tracking-widest">INFO CENTER</span>
-            </div>
+    <section className="relative w-full bg-white-pure border-t-2 border-black-pure overflow-hidden">
+      <DotGridBackground />
+
+      <SectionHeader
+        title="QUESTIONS"
+        subtitle=""
+        variant={1}
+        metadata={String(allVisibleCategories.length).padStart(2, '0')}
+      />
+
+      <div className="container py-8 sm:py-12 lg:py-16 max-w-full lg:max-w-7xl mx-auto relative z-10">
+        <div className="border-2 border-black-pure bg-white-pure overflow-hidden">
+          <div className="flex flex-col divide-y-2 divide-black-pure">
+            {allVisibleCategories.map((category, catIdx) => {
+              const isCatOpen = openCategory === catIdx
+              return (
+                <div key={catIdx} className="bg-white-pure">
+                  <button
+                    onClick={() => {
+                      setOpenCategory(isCatOpen ? null : catIdx)
+                      setOpenId(null)
+                    }}
+                    className={cn(
+                      "w-full h-14 xl:h-16 px-6 xl:px-8 flex items-center justify-between transition-colors duration-300 outline-none group/cat",
+                      isCatOpen ? "bg-black-pure" : "bg-white-pure hover:bg-primary-500"
+                    )}
+                  >
+                    <div className="flex items-center gap-6">
+                      <span className={cn(
+                        "text-xs xl:text-sm font-mono font-black tabular-nums transition-colors",
+                        isCatOpen ? "text-primary-500" : "text-black-pure"
+                      )}>
+                        {(catIdx + 1).toString().padStart(2, '0')}
+                      </span>
+                      <h4 className={cn(
+                        "text-sm xl:text-md font-black uppercase tracking-widest transition-colors",
+                        isCatOpen ? "text-white-pure" : "text-black-pure"
+                      )}>
+                        {category.label}
+                      </h4>
+                    </div>
+                    <div className={cn(
+                      "size-6 border-2 flex items-center justify-center transition-all duration-300",
+                      isCatOpen ? "border-primary-500 bg-primary-500 rotate-90" : "border-black-pure bg-white-pure"
+                    )}>
+                      <div className={cn("size-1.5", isCatOpen ? "bg-black-pure" : "bg-black-pure")} />
+                    </div>
+                  </button>
+
+                  <AnimatePresence initial={false}>
+                    {isCatOpen && (
+                      <motion.div
+                        initial={{ height: 0 }}
+                        animate={{ height: 'auto' }}
+                        exit={{ height: 0 }}
+                        transition={{ duration: 0.4, ease: [0.19, 1, 0.22, 1] }}
+                        className="overflow-hidden border-t-2 border-black-pure bg-white-pure"
+                      >
+                        <div className="flex flex-col divide-y-2 divide-black-pure/10">
+                          {category.items?.map((item, itemIdx) => {
+                            const uniqueId = `${catIdx}-${itemIdx}`
+                            const isItemOpen = openId === uniqueId
+                            return (
+                              <div key={itemIdx} className="bg-white-pure">
+                                <button
+                                  onClick={() => setOpenId(isItemOpen ? null : uniqueId)}
+                                  className={cn(
+                                    "w-full p-5 xl:p-8 flex items-center justify-between text-left transition-colors duration-200 outline-none",
+                                    isItemOpen ? "bg-secondary-500" : "hover:bg-black-pure hover:text-white-pure group/item"
+                                  )}
+                                >
+                                  <div className="flex flex-col gap-1">
+                                    <span className="text-xs xl:text-sm font-black uppercase tracking-tight">
+                                      {item.question}
+                                    </span>
+                                  </div>
+                                  <div className="shrink-0 transition-transform duration-300">
+                                    {isItemOpen ? <Minus className="size-5 stroke-[3px]" /> : <Plus className="size-5 stroke-[3px]" />}
+                                  </div>
+                                </button>
+                                <AnimatePresence initial={false}>
+                                  {isItemOpen && (
+                                    <motion.div
+                                      initial={{ height: 0, opacity: 0 }}
+                                      animate={{ height: 'auto', opacity: 1 }}
+                                      exit={{ height: 0, opacity: 0 }}
+                                      transition={{ duration: 0.3, ease: 'easeInOut' }}
+                                      className="bg-white-pure border-t-2 border-black-pure"
+                                    >
+                                      <div className="p-6 xl:p-12 xl:px-20 flex flex-col items-start gap-6">
+                                        <div className="text-xs xl:text-sm font-bold uppercase leading-relaxed text-black-pure max-w-4xl">
+                                          <RichText data={item.answer as any} enableGutter={false} />
+                                        </div>
+                                        {item.relatedPage && (
+                                          <Link
+                                            href={item.relatedPage}
+                                            className="h-10 inline-flex items-center gap-3 px-6 bg-black-pure text-white-pure hover:bg-primary-500 hover:text-black-pure transition-colors duration-300 text-[10px] font-black uppercase tracking-widest outline-none"
+                                          >
+                                            VIEW <ArrowUpRight className="size-4 stroke-[3px]" />
+                                          </Link>
+                                        )}
+                                      </div>
+                                    </motion.div>
+                                  )}
+                                </AnimatePresence>
+                              </div>
+                            )
+                          })}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              )
+            })}
           </div>
         </div>
-      </main>
-
-      <aside className="w-full lg:w-[450px] flex flex-col bg-white-100 divide-y-2 divide-black-pure overflow-y-auto">
-        {allVisibleCategories.map((category, catIdx) => {
-          const isCatOpen = openCategory === catIdx
-          return (
-            <div key={catIdx} className="bg-white-pure">
-              <button
-                onClick={() => { setOpenCategory(isCatOpen ? null : catIdx); setOpenId(null); }}
-                className={cn(
-                  "w-full h-20 px-8 flex items-center justify-between transition-all outline-none focus-visible:bg-secondary-500",
-                  isCatOpen ? "bg-primary-500" : "hover:bg-white-200"
-                )}
-              >
-                <div className="flex items-center gap-4">
-                  <span className="font-mono font-black text-base text-black-pure opacity-30">
-                    {catIdx + 1}
-                  </span>
-                  <h4 className="text-lg font-black uppercase tracking-tight text-black-pure">
-                    {category.label}
-                  </h4>
-                </div>
-                <div className={cn("size-8 border-2 border-black-pure flex items-center justify-center bg-black-pure transition-transform duration-500", isCatOpen && "rotate-90")}>
-                  <div className="size-1.5 bg-white-pure" />
-                </div>
-              </button>
-
-              <AnimatePresence>
-                {isCatOpen && (
-                  <motion.div initial={{ height: 0 }} animate={{ height: 'auto' }} exit={{ height: 0 }} className="overflow-hidden border-t-2 border-black-pure bg-white-pure">
-                    <div className="flex flex-col divide-y-2 divide-black-pure/5">
-                      {category.items?.map((item, itemIdx) => {
-                        const uniqueId = `${catIdx}-${itemIdx}`
-                        const isItemOpen = openId === uniqueId
-                        return (
-                          <div key={itemIdx}>
-                            <button
-                              onClick={() => setOpenId(isItemOpen ? null : uniqueId)}
-                              className={cn(
-                                "w-full p-6 flex items-center justify-between text-left transition-colors outline-none focus-visible:ring-2 focus-visible:ring-primary-500",
-                                isItemOpen ? "bg-secondary-500" : "hover:bg-black-pure hover:text-white-pure"
-                              )}
-                            >
-                              <span className="text-xs font-black uppercase leading-tight pr-8">{item.question}</span>
-                              <div className="shrink-0">
-                                {isItemOpen ? <Minus className="size-4" /> : <Plus className="size-4" />}
-                              </div>
-                            </button>
-                            <AnimatePresence>
-                              {isItemOpen && (
-                                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-6 bg-white-50 border-t-2 border-black-pure">
-                                  <div className="text-xs font-sans font-bold uppercase leading-relaxed text-black-pure/70">
-                                    <RichText data={item.answer as any} enableGutter={false} />
-                                  </div>
-                                  {item.relatedPage && (
-                                    <Link href={item.relatedPage} className="mt-6 h-10 inline-flex items-center gap-3 px-6 bg-black-pure text-white-pure hover:bg-tertiary-500 transition-colors text-[10px] font-black uppercase tracking-widest outline-none focus-visible:ring-2 focus-visible:ring-primary-500">
-                                      VIEW MORE <ArrowUpRight className="size-3" />
-                                    </Link>
-                                  )}
-                                </motion.div>
-                              )}
-                            </AnimatePresence>
-                          </div>
-                        )
-                      })}
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          )
-        })}
-      </aside>
+      </div>
     </section>
   )
 }

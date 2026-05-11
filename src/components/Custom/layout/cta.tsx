@@ -1,7 +1,7 @@
 'use client'
 
 import { Organization } from '@/payload-types'
-import { ArrowRight, CheckCircle } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 
 interface CTAProps {
@@ -17,66 +17,41 @@ export function CTA({
   subtext = 'Enter the next phase of motorsport engineering.',
   buttonLabel = 'ENROLL NOW',
   buttonUrl = '/join',
-  organizations = []
 }: CTAProps) {
   return (
-    <section className="relative w-full border-t-2 border-black-pure bg-white-pure overflow-hidden">
-      <div className="flex flex-col lg:flex-row border-b-2 border-black-pure">
-        <main className="flex-1 p-12 md:p-16 flex flex-col justify-center border-r-0 lg:border-r-2 border-black-pure">
-          <div className="space-y-8">
-            <div className="flex items-center gap-3">
-              <CheckCircle className="size-5 text-primary-500" />
-              <span className="text-xs font-black text-black-pure tracking-widest uppercase">RECRUITMENT OPEN</span>
+    <section className="relative w-full bg-white-pure">
+      <div className="container py-8 sm:py-12 lg:py-16 max-w-full lg:max-w-7xl mx-auto">
+        <div className="border-2 border-black-pure bg-white-pure flex flex-col md:flex-row items-center justify-between p-6 md:p-10 gap-8">
+          <div className="flex flex-col gap-3">
+            <div className="flex items-center gap-2">
+              <div className="h-2 w-2 bg-primary-500" />
+              <h2 className="text-xl md:text-2xl font-black uppercase tracking-tighter text-black-pure">
+                {headline}
+              </h2>
             </div>
-            <h2 className="text-4xl md:text-5xl font-black uppercase tracking-tighter text-black-pure leading-tight">
-              {headline}
-            </h2>
-            <p className="text-sm font-sans font-bold uppercase text-black-pure/60 max-w-md leading-relaxed">
+            <p className="text-[10px] md:text-xs font-bold uppercase leading-tight text-black-pure max-w-md">
               {subtext}
             </p>
-            <div className="pt-2">
-              <Link
-                href={buttonUrl || '#'}
-                className="group h-16 px-10 bg-black-pure text-white-pure hover:bg-primary-500 hover:text-black-pure transition-all duration-300 inline-flex items-center gap-4 outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
-              >
-                <span className="text-xs font-black uppercase tracking-widest">{buttonLabel}</span>
-                <ArrowRight className="size-5 transition-transform group-hover:translate-x-1" />
-              </Link>
-            </div>
-          </div>
-        </main>
-
-        <aside className="w-full lg:w-[400px] flex flex-col divide-y-2 divide-black-pure shrink-0 bg-white-100">
-          <div className="p-10 bg-secondary-500 flex flex-col justify-between h-56 group hover:bg-black-pure transition-colors duration-500">
-            <span className="text-xs font-black text-black-pure group-hover:text-white-pure tracking-widest uppercase">AVAILABILITY</span>
-            <div className="space-y-2">
-              <div className="flex justify-between items-end border-b-2 border-black-pure group-hover:border-white-pure pb-2">
-                <span className="text-[10px] font-black text-black-pure/40 group-hover:text-white-pure/40">LEVEL</span>
-                <span className="text-2xl font-black text-black-pure group-hover:text-white-pure">LIMITED</span>
-              </div>
-            </div>
-            <div className="size-6 bg-black-pure group-hover:bg-primary-500 transition-all duration-500" />
           </div>
 
-          <div className="flex-1 p-10 flex flex-col justify-between bg-white-pure">
-            <span className="text-[10px] font-black text-black-pure tracking-widest uppercase mb-6">AFFILIATED GROUPS</span>
-            <div className="grid grid-cols-1 gap-3">
-              {organizations.slice(0, 3).map((org, i) => (
-                <div key={org.id} className="flex items-center gap-4 group">
-                  <span className="text-xs font-mono font-black text-primary-500">{i + 1}</span>
-                  <span className="text-xs font-black uppercase text-black-pure group-hover:translate-x-1 transition-transform">
-                    {org.name}
-                  </span>
-                </div>
+          <div className="flex items-center gap-4 w-full md:w-auto">
+            <div className="hidden lg:flex gap-1">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className="size-1.5 bg-black-pure" />
               ))}
             </div>
-            <div className="mt-8 h-1.5 flex gap-1">
-              <div className="flex-1 bg-primary-500" />
-              <div className="flex-1 bg-secondary-500" />
-              <div className="flex-1 bg-tertiary-500" />
-            </div>
+
+            <Link
+              href={buttonUrl || '#'}
+              className="group flex-1 md:flex-none h-12 px-6 bg-black-pure text-white-pure hover:bg-primary-500 hover:text-black-pure transition-colors duration-200 flex items-center justify-center gap-4 outline-none border-2 border-black-pure"
+            >
+              <span className="text-[10px] font-black uppercase tracking-widest">
+                {buttonLabel}
+              </span>
+              <ArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-1" />
+            </Link>
           </div>
-        </aside>
+        </div>
       </div>
     </section>
   )
