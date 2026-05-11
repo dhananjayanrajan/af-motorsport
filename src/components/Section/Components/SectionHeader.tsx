@@ -14,43 +14,38 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({
     variant = 1,
     metadata
 }) => {
-    const baseStyles = {
-        heading: "font-black tracking-tight uppercase leading-[0.9] text-xl sm:text-2xl md:text-3xl break-words",
-        subheading: "font-bold text-[10px] uppercase tracking-[0.2em] text-primary-500",
-    }
+    const textBase = "font-bold uppercase tracking-tight"
 
     if (variant === 2) {
         return (
-            <header className="w-full flex flex-col items-center bg-white-pure p-8 border-l-[12px] border-primary-500 z-1">
-                <div className="flex items-center gap-4 mb-4">
-                    <div className="h-[2px] w-8 bg-primary-500" />
-                    <span className={baseStyles.subheading}>{subtitle}</span>
-                    <div className="h-[2px] w-8 bg-primary-500" />
+            <header className="w-full grid grid-cols-1 md:grid-cols-[auto_1fr] items-stretch border-2 border-black-pure bg-white-pure z-1 relative">
+                <div className="bg-primary-500 p-4 flex items-center justify-center border-b-2 md:border-b-0 md:border-r-2 border-black-pure z-1 relative">
+                    <span className="[writing-mode:vertical-lr] rotate-180 text-black-pure font-black text-[9px] tracking-widest z-1 relative">
+                        {metadata || "SECTION"}
+                    </span>
                 </div>
-                <h2 className={`${baseStyles.heading} text-black-pure text-center`}>{title}</h2>
-                {metadata && (
-                    <div className="mt-6 bg-black-pure text-white-pure px-4 py-1">
-                        <span className="text-[10px] font-bold uppercase tracking-widest">{metadata}</span>
-                    </div>
-                )}
+                <div className="p-6 md:p-8 bg-white-pure z-1 relative">
+                    <span className="block text-secondary-500 text-[10px] font-black mb-1 z-1 relative">{subtitle}</span>
+                    <h2 className={`${textBase} text-xl md:text-2xl text-black-pure leading-tight z-1 relative`}>{title}</h2>
+                </div>
             </header>
         )
     }
 
     if (variant === 3) {
         return (
-            <header className="w-full flex flex-col bg-white-pure border-b-4 border-secondary-500 overflow-hidden z-1">
-                <div className="bg-secondary-500 px-6 py-2 flex justify-between items-center gap-4">
-                    <span className="font-bold text-[10px] uppercase text-black-pure">{subtitle}</span>
-                    {metadata && (
-                        <span className="bg-black-pure text-secondary-500 text-[9px] px-2 py-0.5 font-black uppercase">
-                            {metadata}
-                        </span>
-                    )}
+            <header className="w-full flex flex-col bg-black-pure border-2 border-black-pure z-1 relative">
+                <div className="bg-white-pure px-4 py-2 border-b-2 border-black-pure flex justify-between items-center z-1 relative">
+                    <span className="text-black-pure font-black text-[9px] z-1 relative">{subtitle}</span>
+                    {metadata && <span className="bg-primary-500 text-black-pure text-[9px] px-2 py-0.5 font-black z-1 relative">{metadata}</span>}
                 </div>
-                <div className="p-8 bg-black-pure">
-                    <h2 className={`${baseStyles.heading} text-white-pure`}>{title}</h2>
-                    <div className="mt-4 h-2 w-24 bg-secondary-500" />
+                <div className="p-6 bg-black-pure z-1 relative">
+                    <h2 className={`${textBase} text-2xl text-white-pure leading-none z-1 relative`}>{title}</h2>
+                    <div className="mt-3 flex gap-1 z-1 relative">
+                        {[...Array(3)].map((_, i) => (
+                            <div key={i} className="h-2 w-2 bg-primary-500 z-1 relative" />
+                        ))}
+                    </div>
                 </div>
             </header>
         )
@@ -58,16 +53,13 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({
 
     if (variant === 4) {
         return (
-            <header className="flex flex-col items-center bg-white-pure p-10 border-2 border-black-pure text-center z-1">
-                <div className="w-16 h-1 bg-primary-500 mb-6" />
-                {metadata && (
-                    <span className="mb-2 text-black-pure text-[10px] font-bold uppercase tracking-[0.3em]">
-                        {metadata}
-                    </span>
-                )}
-                <h2 className={`${baseStyles.heading} text-black-pure mb-4`}>{title}</h2>
-                <div className="px-4 py-1 border border-black-pure">
-                    <span className="text-[9px] font-bold uppercase text-black-pure">{subtitle}</span>
+            <header className="w-full p-1 bg-black-pure z-1 relative">
+                <div className="bg-white-pure p-6 border-2 border-black-pure flex flex-col items-center text-center z-1 relative">
+                    <div className="bg-secondary-500 text-black-pure px-4 py-1 mb-4 border-2 border-black-pure z-1 relative">
+                        <span className="text-[10px] font-black z-1 relative">{metadata || "ID: 00"}</span>
+                    </div>
+                    <h2 className={`${textBase} text-xl text-black-pure mb-2 z-1 relative`}>{title}</h2>
+                    <p className="text-black-pure font-bold text-[11px] tracking-widest z-1 relative">{subtitle}</p>
                 </div>
             </header>
         )
@@ -75,35 +67,36 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({
 
     if (variant === 5) {
         return (
-            <header className="w-full py-10 px-6 flex flex-col items-center text-center bg-white-pure border-y-2 border-black-pure z-1">
-                <p className={`${baseStyles.subheading} mb-3 text-primary-500`}>{subtitle}</p>
-                <h2 className={`${baseStyles.heading} text-black-pure mb-6`}>{title}</h2>
-                <div className="flex items-center gap-2">
-                    <div className="h-3 w-3 bg-primary-500" />
-                    <div className="h-3 w-3 bg-black-pure" />
-                    <div className="h-3 w-3 bg-primary-500" />
+            <header className="w-full bg-neutral-100 border-l-[8px] border-black-pure p-6 md:p-10 z-1 relative">
+                <div className="max-w-4xl z-1 relative">
+                    <div className="flex items-center gap-3 mb-2 z-1 relative">
+                        <span className="text-primary-500 font-black text-[11px] z-1 relative">{subtitle}</span>
+                        <div className="h-[1px] flex-1 bg-black-pure z-1 relative" />
+                    </div>
+                    <h2 className={`${textBase} text-3xl text-black-pure leading-tight mb-4 z-1 relative`}>{title}</h2>
+                    {metadata && (
+                        <div className="inline-block bg-black-pure px-3 py-1 z-1 relative">
+                            <span className="text-white-pure font-bold text-[9px] z-1 relative">{metadata}</span>
+                        </div>
+                    )}
                 </div>
             </header>
         )
     }
 
     return (
-        <header className="w-full p-8 bg-white-pure flex flex-col items-center text-center border-4 border-black-pure z-1">
-            <div className="bg-secondary-500 border-2 border-black-pure px-3 py-1 mb-6">
-                <span className="font-bold text-[11px] uppercase text-black-pure">
-                    {subtitle}
-                </span>
-            </div>
-            <h2 className={`${baseStyles.heading} text-black-pure`}>{title}</h2>
-            {metadata && (
-                <div className="mt-8 flex items-center gap-4 w-full max-w-xs">
-                    <div className="h-1 flex-1 bg-black-pure" />
-                    <span className="text-[10px] font-black uppercase text-black-pure whitespace-nowrap">
-                        {metadata}
-                    </span>
-                    <div className="h-1 flex-1 bg-black-pure" />
+        <header className="w-full bg-white-pure border-2 border-black-pure z-1 relative overflow-hidden">
+            <div className="flex flex-col md:flex-row z-1 relative">
+                <div className="bg-black-pure p-6 md:p-8 flex-1 z-1 relative">
+                    <h2 className={`${textBase} text-2xl text-white-pure mb-1 z-1 relative`}>{title}</h2>
+                    <p className="text-primary-500 font-black text-[10px] z-1 relative">{subtitle}</p>
                 </div>
-            )}
+                {metadata && (
+                    <div className="bg-white-pure p-6 md:w-48 flex items-center justify-center border-t-2 md:border-t-0 md:border-l-2 border-black-pure z-1 relative">
+                        <span className="text-black-pure font-black text-[11px] text-center z-1 relative">{metadata}</span>
+                    </div>
+                )}
+            </div>
         </header>
     )
 }

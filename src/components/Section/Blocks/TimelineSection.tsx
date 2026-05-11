@@ -105,7 +105,7 @@ const TimelineSection: React.FC<TimelineSectionProps> = ({
   }
 
   return (
-    <section id={id} className="relative h-screen bg-white-pure flex flex-col border-b border-black-pure overflow-hidden">
+    <section id={id} className="relative min-h-[800px] md:h-screen bg-white-pure flex flex-col border-b border-black-pure overflow-hidden">
       <style dangerouslySetInnerHTML={{
         __html: `
         .no-scrollbar::-webkit-scrollbar { display: none; }
@@ -193,40 +193,57 @@ const TimelineSection: React.FC<TimelineSectionProps> = ({
                       </span>
                     </div>
 
-                    <div className="absolute inset-x-2 bottom-[140px] md:bottom-[190px] pointer-events-none flex flex-col justify-end items-center">
-                      {activeEvents.map((event) => (
-                        <div key={event.id} className="relative flex flex-col items-center">
-                          <div className="group/card relative pointer-events-auto cursor-pointer"
+                    <div className="absolute inset-x-2 bottom-[140px] md:bottom-[190px] pointer-events-none flex items-end justify-center">
+                      {activeEvents.map((event, eIdx) => (
+                        <div
+                          key={event.id}
+                          className="absolute flex flex-col items-center"
+                          style={{
+                            transform: `translateX(${eIdx * 20}px)`,
+                            zIndex: hoveredEvent === event.id ? 100 : 20 + eIdx
+                          }}
+                        >
+                          <div className="group/dot relative pointer-events-auto cursor-pointer"
                             onClick={() => openModal(event)}
                             onMouseEnter={() => setHoveredEvent(event.id)}
                             onMouseLeave={() => setHoveredEvent(null)}
-                            style={{ zIndex: hoveredEvent === event.id ? 50 : 20 }}
                           >
-                            <div className={`w-64 md:w-80 transition-all duration-500 border-2 border-black-pure overflow-hidden ${hoveredEvent === event.id ? 'bg-primary-500 -translate-y-6' : 'bg-white-pure'}`}>
-                              <div className="flex justify-between items-center p-3 border-b-2 border-black-pure bg-white-pure group-hover/card:bg-primary-500 transition-colors">
-                                <span className="font-mono text-xs font-black text-black-pure px-2 py-0.5 bg-white-pure border border-black-pure uppercase">
+                            <div className={`size-4 md:size-6 border-2 border-black-pure rotate-45 transition-all duration-300 ${hoveredEvent === event.id ? 'bg-primary-500 scale-125' : 'bg-white-pure'}`} />
+
+                            <div className={`absolute bottom-full left-1/2 -translate-x-1/2 mb-4 w-64 md:w-80 transition-all duration-300 border-2 border-black-pure overflow-hidden bg-white-pure shadow-xl ${hoveredEvent === event.id ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'}`}>
+                              <div className="flex justify-between items-center p-3 border-b-2 border-black-pure bg-primary-500">
+                                <span className="font-mono text-[10px] font-black text-black-pure px-2 py-0.5 bg-white-pure border border-black-pure uppercase">
                                   {event.code || labels.eventIndexLabel}
                                 </span>
                                 <div className="flex items-center gap-2">
-                                  <span className="font-mono text-xs font-bold text-black-pure uppercase">
+                                  <span className="font-mono text-[10px] font-bold text-black-pure uppercase">
                                     {event.status ? labels.deploymentStatus[event.status] : ''}
                                   </span>
-                                  <div className={`size-3 rotate-45 border border-black-pure ${event.status === 'active' ? 'bg-primary-500' : 'bg-white-pure'}`} />
+                                  <div className={`size-2 rotate-45 border border-black-pure ${event.status === 'active' ? 'bg-white-pure' : 'bg-black-pure'}`} />
                                 </div>
                               </div>
                               {event.image && (
-                                <div className="relative aspect-video w-full overflow-hidden border-b-2 border-black-pure grayscale group-hover/card:grayscale-0 transition-all">
+                                <div className="relative aspect-video w-full overflow-hidden border-b-2 border-black-pure">
                                   <Image src={event.image} alt={event.title} fill className="object-cover" sizes="320px" />
                                 </div>
                               )}
                               <div className="p-4">
-                                <h3 className="text-sm md:text-base font-black text-black-pure uppercase tracking-tighter leading-none group-hover/card:text-white-pure">
+                                <h3 className="text-sm font-black text-black-pure uppercase tracking-tighter leading-none">
                                   {event.title}
                                 </h3>
+                                {event.description && (
+                                  <p className="mt-2 text-[10px] font-mono text-black-pure uppercase line-clamp-2">
+                                    {event.description}
+                                  </p>
+                                )}
                               </div>
                             </div>
+
+                            <div className={`absolute top-full left-1/2 -translate-x-1/2 mt-2 whitespace-nowrap bg-black-pure text-white-pure px-2 py-1 text-[10px] font-mono uppercase tracking-tighter transition-opacity duration-300 ${hoveredEvent === event.id ? 'opacity-0' : 'opacity-100'}`}>
+                              {event.title.substring(0, 15)}...
+                            </div>
                           </div>
-                          <div className={`w-0.5 transition-all duration-500 bg-black-pure ${hoveredEvent === event.id ? 'h-16 bg-primary-500' : 'h-8'}`} />
+                          <div className={`w-0.5 transition-all duration-500 bg-black-pure ${hoveredEvent === event.id ? 'h-24 bg-primary-500' : 'h-12'}`} />
                         </div>
                       ))}
                     </div>

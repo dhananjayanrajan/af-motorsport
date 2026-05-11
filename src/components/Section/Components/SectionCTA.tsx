@@ -1,9 +1,10 @@
 "use client"
-import React from 'react'
+import { useRouter } from 'next/navigation'
+import React, { useState } from 'react'
 
 interface SectionCTAProps {
     label: string
-    path: string
+    path?: string
     description?: string
     onClick?: () => void
     buttonBgColor?: string
@@ -19,40 +20,62 @@ const SectionCTA: React.FC<SectionCTAProps> = ({
     path,
     description,
     onClick,
-    buttonBgColor = "bg-black-pure",
-    buttonTextColor = "text-white-pure",
     variant = 1,
-    infoLabel = "",
-    directoryLabel = "",
-    proceedLabel = ""
+    infoLabel = "DETAILS",
+    directoryLabel = "PATH",
+    proceedLabel = "CONTINUE"
 }) => {
-    const textBase = "font-black uppercase tracking-tighter"
+    const router = useRouter()
+    const [isLoading, setIsLoading] = useState(false)
+    const textBase = "font-bold uppercase tracking-tight"
+
+    const handleAction = async () => {
+        if (isLoading) return
+
+        setIsLoading(true)
+
+        try {
+            if (onClick) {
+                await onClick()
+            } else if (path) {
+                router.push(path)
+            }
+        } catch (error) {
+            setIsLoading(false)
+        }
+    }
+
+    if (!path && !onClick) return null
+
+    const LoadingOverlay = () => (
+        <div className="absolute inset-0 bg-black-pure flex items-center justify-center z-50">
+            <div className="flex gap-1">
+                <div className="w-2 h-2 bg-white-pure animate-bounce [animation-delay:-0.3s]" />
+                <div className="w-2 h-2 bg-white-pure animate-bounce [animation-delay:-0.15s]" />
+                <div className="w-2 h-2 bg-white-pure animate-bounce" />
+            </div>
+        </div>
+    )
 
     if (variant === 2) {
         return (
-            <div className="w-full mt-20 group relative z-1">
-                <div className="flex items-center justify-between mb-2">
-                    <span className="text-[10px] font-black text-black-pure px-2 py-1 border-l-2 border-black-pure bg-white-pure">
-                        {directoryLabel} {path}
-                    </span>
-                    <div className="flex gap-1">
-                        <div className="w-2 h-2 bg-primary-500" />
-                        <div className="w-2 h-2 bg-secondary-500" />
-                        <div className="w-2 h-2 bg-black-pure" />
-                    </div>
+            <div className="w-full mt-12 bg-white-pure z-1 relative">
+                <div className="flex items-center bg-black-pure px-4 py-2 w-fit border-t-2 border-l-2 border-r-2 border-black-pure z-1 relative">
+                    <span className="text-[10px] font-bold text-white-pure z-1 relative">{directoryLabel}: {path}</span>
                 </div>
                 <button
-                    onClick={onClick}
-                    className="w-full grid grid-cols-1 md:grid-cols-[1fr_120px] items-stretch border-2 border-black-pure hover:shadow-[12px_12px_0px_0px_var(--primary-500)] transition-all duration-300 active:translate-x-1 active:translate-y-1 active:shadow-none"
+                    onClick={handleAction}
+                    disabled={isLoading}
+                    className="w-full grid grid-cols-1 md:grid-cols-[1fr_200px] border-2 border-black-pure bg-white-pure group z-1 relative overflow-hidden cursor-pointer disabled:cursor-wait"
                 >
-                    <div className="bg-white-pure p-6 md:p-8 text-left border-b-2 md:border-b-0 md:border-r-2 border-black-pure">
-                        <h2 className={`${textBase} text-xl text-black-pure mb-3 break-words`}>{label}</h2>
-                        {description && <p className="text-sm font-bold text-black-pure leading-none max-w-2xl break-words">{description}</p>}
+                    {isLoading && <LoadingOverlay />}
+                    <div className="absolute inset-0 bg-primary-500 -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-in-out z-1" />
+                    <div className="p-8 text-left border-b-2 md:border-b-0 md:border-r-2 border-black-pure z-1 relative group-hover:bg-primary-500 transition-colors duration-500">
+                        <h2 className={`${textBase} text-2xl text-black-pure mb-2 z-1 relative`}>{label}</h2>
+                        {description && <p className="text-sm font-medium text-black-pure z-1 relative">{description}</p>}
                     </div>
-                    <div className="bg-black-pure flex items-center justify-center group-hover:bg-primary-500 transition-colors duration-300 py-6 md:py-0">
-                        <svg className="w-12 h-12 text-white-pure group-hover:text-black-pure group-hover:rotate-45 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeWidth={3} d="M7 17L17 7M17 7H7M17 7V17" />
-                        </svg>
+                    <div className="flex items-center justify-center py-6 md:py-0 z-1 relative group-hover:bg-primary-500 transition-colors duration-500">
+                        <span className={`${textBase} text-black-pure z-1 relative font-black`}>{proceedLabel}</span>
                     </div>
                 </button>
             </div>
@@ -61,109 +84,91 @@ const SectionCTA: React.FC<SectionCTAProps> = ({
 
     if (variant === 3) {
         return (
-            <div className="mt-20 border-t-4 border-black-pure pt-12 relative group overflow-hidden bg-white-pure z-1">
-                <div className="absolute top-0 right-0 h-full w-1/3 bg-primary-500 -skew-x-12 translate-x-full group-hover:translate-x-1/2 transition-transform duration-1000" />
-                <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-8 relative z-10">
-                    <div className="max-w-xl">
-                        <div className="inline-flex items-center gap-2 mb-4">
-                            <div className="w-4 h-4 bg-black-pure" />
-                            <span className="text-xs font-black text-primary-500 underline decoration-2">{proceedLabel}</span>
+            <div className="w-full mt-16 p-2 bg-black-pure z-1 relative">
+                <button
+                    onClick={handleAction}
+                    disabled={isLoading}
+                    className="w-full group border-2 border-white-pure bg-white-pure p-1 z-1 relative overflow-hidden cursor-pointer disabled:cursor-wait"
+                >
+                    {isLoading && <LoadingOverlay />}
+                    <div className="absolute inset-0 bg-primary-500 -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-in-out z-1" />
+                    <div className="border-2 border-black-pure p-8 flex flex-col md:flex-row items-center justify-between gap-6 z-1 relative">
+                        <div className="text-left flex-1 z-1 relative">
+                            <h2 className={`${textBase} text-2xl text-black-pure z-1 relative`}>{label}</h2>
+                            <p className="text-sm font-medium text-black-pure z-1 relative">{description}</p>
                         </div>
-                        <p className="text-lg font-black text-black-pure leading-none mb-6 break-words">{description}</p>
+                        <div className="bg-black-pure border-2 border-black-pure px-8 py-3 z-1 relative group-hover:scale-105 transition-transform duration-200">
+                            <span className={`${textBase} text-white-pure z-1 relative`}>{proceedLabel}</span>
+                        </div>
                     </div>
-                    <button
-                        onClick={onClick}
-                        className={`${textBase} text-xl bg-black-pure text-white-pure px-8 py-6 hover:bg-primary-500 hover:text-black-pure transition-all flex items-center gap-6 self-start md:self-end`}
-                    >
-                        {label}
-                        <span className="block w-8 h-[2px] bg-white-pure group-hover:w-16 group-hover:bg-black-pure transition-all duration-500" />
-                    </button>
-                </div>
+                </button>
             </div>
         )
     }
 
     if (variant === 4) {
         return (
-            <div className="mt-20 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[1fr_350px] border-4 border-black-pure bg-white-pure gap-1 z-1">
-                <div className="bg-white-pure p-8 flex flex-col justify-between">
-                    <div className="mb-10">
-                        <div className="flex items-center gap-1 mb-6">
-                            {[...Array(4)].map((_, i) => <div key={i} className="w-1.5 h-6 bg-secondary-500" />)}
-                            <span className="ml-2 text-xs font-black text-black-pure">{infoLabel}</span>
-                        </div>
-                        <p className="text-xl font-black text-black-pure leading-none uppercase break-words">{description}</p>
+            <button
+                onClick={handleAction}
+                disabled={isLoading}
+                className="w-full mt-12 grid grid-cols-1 md:grid-cols-[250px_1fr] border-4 border-black-pure bg-white-pure group text-left z-1 relative overflow-hidden cursor-pointer disabled:cursor-wait active:scale-[0.99] transition-transform duration-100"
+            >
+                {isLoading && <LoadingOverlay />}
+                <div className="absolute inset-0 bg-secondary-500 -translate-x-full group-hover:translate-x-0 transition-transform duration-700 ease-out z-1" />
+                <div className="bg-secondary-500 p-8 flex flex-col justify-between border-b-4 md:border-b-0 md:border-r-4 border-black-pure z-1 relative">
+                    <span className="text-xs font-bold text-black-pure border-b-2 border-black-pure pb-1 z-1 relative">{infoLabel}</span>
+                    <span className="text-xs font-bold text-black-pure mt-4 z-1 relative">{path}</span>
+                </div>
+                <div className="p-8 flex flex-col justify-between z-1 relative">
+                    <div className="z-1 relative">
+                        <h2 className={`${textBase} text-2xl text-black-pure mb-2 z-1 relative`}>{label}</h2>
+                        <p className="text-sm font-medium text-black-pure z-1 relative">{description}</p>
                     </div>
-                    <div className="h-2 w-full bg-white-pure relative overflow-hidden border border-black-pure">
-                        <div className="absolute inset-y-0 left-0 bg-secondary-500 w-1/4 group-hover:w-full transition-all duration-700" />
+                    <div className="mt-8 flex items-center gap-4 z-1 relative">
+                        <div className="h-[2px] flex-1 bg-black-pure z-1 relative group-hover:bg-white-pure transition-colors" />
+                        <span className={`${textBase} text-black-pure z-1 relative group-hover:translate-x-2 transition-transform`}>{proceedLabel}</span>
                     </div>
                 </div>
-                <button
-                    onClick={onClick}
-                    className="bg-secondary-500 p-8 flex flex-col items-start justify-between group/btn hover:bg-primary-500 transition-colors duration-300 min-h-[250px]"
-                >
-                    <span className="text-[10px] font-black bg-black-pure text-white-pure px-2 py-0.5 mb-8">{path}</span>
-                    <div className="w-full">
-                        <h2 className={`${textBase} text-xl text-black-pure mb-4 break-words`}>{label}</h2>
-                        <div className="flex gap-2">
-                            <div className="flex-1 h-10 border-2 border-black-pure flex items-center justify-center group-hover/btn:bg-black-pure group-hover/btn:text-primary-500 transition-colors text-xs font-black">
-                                {label}
-                            </div>
-                        </div>
-                    </div>
-                </button>
-            </div>
+            </button>
         )
     }
 
     if (variant === 5) {
         return (
-            <div className="mt-20 flex flex-col items-center bg-white-pure z-1">
-                <div className="grid grid-cols-3 gap-1 w-12 mb-6">
-                    {[...Array(9)].map((_, i) => (
-                        <div key={i} className="w-3 h-3 bg-black-pure group-hover:bg-primary-500 transition-colors" />
-                    ))}
+            <button
+                onClick={handleAction}
+                disabled={isLoading}
+                className="w-full mt-12 py-12 flex flex-col items-center bg-neutral-100 border-y-4 border-black-pure group z-1 relative overflow-hidden cursor-pointer disabled:cursor-wait"
+            >
+                {isLoading && <LoadingOverlay />}
+                <div className="absolute inset-0 bg-primary-500 -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-in-out z-1" />
+                <div className="text-center max-w-xl px-6 z-1 relative">
+                    <h2 className={`${textBase} text-3xl mb-4 text-black-pure z-1 relative group-hover:tracking-widest transition-all duration-300`}>{label}</h2>
+                    <p className="text-sm font-medium text-black-pure mb-8 z-1 relative">{description}</p>
+                    <div className="inline-flex items-center gap-4 bg-black-pure px-10 py-4 z-1 relative group-hover:bg-white-pure transition-colors duration-200 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] group-hover:shadow-[4px_4px_0px_0px_var(--primary-500)]">
+                        <span className={`${textBase} text-white-pure group-hover:text-black-pure z-1 relative`}>{proceedLabel}</span>
+                    </div>
                 </div>
-                <div className="text-center max-w-lg px-4">
-                    <span className="text-[10px] font-black text-primary-500 mb-2 block tracking-[0.2em]">{path}</span>
-                    <h2 className={`${textBase} text-xl mb-4 text-black-pure border-b-4 border-black-pure inline-block`}>{label}</h2>
-                    <p className="text-sm font-bold text-black-pure mb-10 leading-none break-words">{description}</p>
-                </div>
-                <button
-                    onClick={onClick}
-                    className={`${textBase} text-sm relative px-12 py-5 bg-white-pure border-2 border-black-pure overflow-hidden group/btn hover:translate-x-1 hover:translate-y-1 transition-all`}
-                >
-                    <span className="relative z-10 text-black-pure group-hover/btn:text-white-pure transition-colors">
-                        {label}
-                    </span>
-                    <div className="absolute inset-0 bg-black-pure translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300" />
-                </button>
-            </div>
+            </button>
         )
     }
 
     return (
-        <div className="mt-20 border-[12px] border-black-pure bg-white-pure group z-1">
-            <div className="p-6 md:p-12 flex flex-col md:flex-row items-stretch md:items-center gap-12 border-2 border-black-pure m-2 bg-white-pure">
-                <div className="flex-1 space-y-4">
-                    <div className="flex gap-2">
-                        <div className="w-12 h-2 bg-primary-500" />
-                        <div className="w-4 h-2 bg-black-pure" />
-                    </div>
-                    <h2 className={`${textBase} text-xl md:text-xl text-black-pure leading-none break-words`}>{label}</h2>
-                    <p className="text-sm font-bold text-black-pure max-w-xl break-words uppercase">{description}</p>
-                </div>
-                <button
-                    onClick={onClick}
-                    className="shrink-0 aspect-square w-24 md:w-32 bg-primary-500 border-4 border-black-pure flex items-center justify-center hover:bg-black-pure transition-all duration-300 group/icon"
-                >
-                    <div className="relative w-10 h-10">
-                        <span className="absolute inset-0 border-t-4 border-r-4 border-black-pure group-hover/icon:border-primary-500 transition-colors" />
-                        <span className="absolute bottom-0 left-0 w-full h-1 bg-black-pure group-hover/icon:bg-primary-500 group-hover/icon:translate-y-[-18px] transition-all" />
-                    </div>
-                </button>
+        <button
+            onClick={handleAction}
+            disabled={isLoading}
+            className="w-full mt-12 border-4 border-black-pure bg-white-pure group flex flex-col md:flex-row items-stretch overflow-hidden z-1 relative cursor-pointer disabled:cursor-wait hover:shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] transition-shadow duration-200"
+        >
+            {isLoading && <LoadingOverlay />}
+            <div className="absolute inset-0 bg-primary-500 -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-in-out z-1" />
+            <div className="flex-1 p-8 text-left z-1 relative">
+                <h2 className={`${textBase} text-3xl text-black-pure mb-2 z-1 relative`}>{label}</h2>
+                <p className="text-sm font-medium text-black-pure z-1 relative">{description}</p>
             </div>
-        </div>
+            <div className="bg-black-pure md:w-[250px] flex items-center justify-center p-6 z-1 relative group-hover:translate-x-2 transition-transform duration-300">
+                <span className={`${textBase} text-white-pure z-1 relative`}>{proceedLabel}</span>
+            </div>
+        </button>
     )
 }
 
