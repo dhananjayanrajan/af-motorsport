@@ -5,6 +5,7 @@ import { CMSLink } from '@/components/Link'
 import { ShopCollectionsCTA } from '@/components/Section/Blocks/ShopCollectionCTASection'
 import type { Announcement as AnnouncementType, Footer, Media, Organization, Product, Question, Social } from '@/payload-types'
 import Image from 'next/image'
+import { useState } from 'react'
 import { AnnouncementsSection } from './announcements'
 import { CTA } from './cta'
 
@@ -25,6 +26,41 @@ export const CustomFooter = ({
   announcements,
   latestProducts = []
 }: CustomFooterProps) => {
+  const [email, setEmail] = useState('')
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
+
+  const handleSubscribe = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setStatus('loading')
+
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/form-submissions`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          form: 3,
+          submissionData: [
+            {
+              field: 'email',
+              value: email,
+            },
+          ],
+        }),
+      })
+
+      if (res.ok) {
+        setStatus('success')
+        setEmail('')
+      } else {
+        setStatus('error')
+      }
+    } catch (err) {
+      setStatus('error')
+    }
+  }
+
   if (!footer) return null
 
   const { columns, cta, copyright, brand, legal } = footer
@@ -33,15 +69,12 @@ export const CustomFooter = ({
   return (
     <div className="flex flex-col">
       {latestProducts.length > 0 && <ShopCollectionsCTA products={latestProducts} />}
-
       {announcements && <AnnouncementsSection data={announcements} />}
-
       {questions && (
         <div className="relative border-b-2 border-black-pure">
           <FAQAccordionBlock data={questions} />
         </div>
       )}
-
       {cta?.enable && (
         <CTA
           headline={cta.headline}
@@ -54,7 +87,6 @@ export const CustomFooter = ({
 
       <footer className="relative w-full bg-white-pure flex flex-col">
         <div className="flex flex-col lg:flex-row border-y-2 border-black-pure divide-y-2 lg:divide-y-0 lg:divide-x-2 divide-black-pure">
-
           {brand?.enable && (
             <div className="w-full lg:w-32 bg-primary-500 py-16 px-6 flex lg:flex-col items-center justify-between shrink-0">
               {brand.logo && typeof brand.logo === 'object' && (brand.logo as Media).url ? (
@@ -114,16 +146,29 @@ export const CustomFooter = ({
             </div>
 
             <div className="mt-10">
-              <div className="h-12 flex border-2 border-black-pure">
-                <input
-                  type="email"
-                  placeholder="EMAIL ADDRESS"
-                  className="flex-1 px-4 text-[10px] font-black uppercase bg-transparent outline-none"
-                />
-                <button className="px-6 bg-black-pure text-white-pure text-[10px] font-black hover:bg-primary-500 hover:text-black-pure transition-colors">
-                  JOIN
-                </button>
-              </div>
+              <form onSubmit={handleSubscribe} className="space-y-2">
+                <div className="h-12 flex border-2 border-black-pure focus-within:ring-2 focus-within:ring-primary-500 transition-all">
+                  <input
+                    type="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder={status === 'success' ? "THANK YOU!" : "EMAIL ADDRESS"}
+                    disabled={status === 'loading' || status === 'success'}
+                    className="flex-1 px-4 text-[10px] font-black uppercase bg-transparent outline-none disabled:cursor-not-allowed"
+                  />
+                  <button
+                    type="submit"
+                    disabled={status === 'loading' || status === 'success'}
+                    className="px-6 bg-black-pure text-white-pure text-[10px] font-black hover:bg-primary-500 hover:text-black-pure transition-colors disabled:opacity-50"
+                  >
+                    {status === 'loading' ? '...' : 'JOIN'}
+                  </button>
+                </div>
+                {status === 'error' && (
+                  <p className="text-[8px] font-black text-red-600 uppercase">Error occurred. Try again.</p>
+                )}
+              </form>
             </div>
           </div>
         </div>
@@ -144,12 +189,6 @@ export const CustomFooter = ({
                 className="text-white-pure text-[10px] font-black tracking-widest uppercase hover:text-primary-500 transition-colors whitespace-nowrap"
               />
             ))}
-
-            <div className="flex gap-2 ml-auto">
-              <div className="size-2 bg-primary-500" />
-              <div className="size-2 bg-secondary-500" />
-              <div className="size-2 bg-tertiary-500" />
-            </div>
           </div>
         </div>
       </footer>
