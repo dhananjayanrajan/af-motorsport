@@ -1,11 +1,10 @@
 "use client"
 
-import { motion, useInView, useScroll, useTransform } from 'framer-motion'
+import { motion, useInView } from 'framer-motion'
 import Link from 'next/link'
-import React, { useRef, useState } from 'react'
+import React, { useRef } from 'react'
 import SectionFooter from '../Components/SectionFooter'
 import SectionHeader from '../Components/SectionHeader'
-import SectionModal from '../Components/SectionModal'
 
 export interface Study {
   id: string
@@ -41,15 +40,7 @@ const StudySection: React.FC<StudySectionProps> = ({
   footerVariant = 1,
 }) => {
   const sectionRef = useRef<HTMLDivElement>(null)
-  const isInView = useInView(sectionRef, { amount: 0.2, once: true })
-  const [modalOpen, setModalOpen] = useState(false)
-
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start end", "end start"]
-  })
-
-  const yEffect = useTransform(scrollYProgress, [0, 0.5, 1], [40, 0, -40])
+  const isInView = useInView(sectionRef, { amount: 0.3, once: true })
 
   const study = studies[0]
   if (!study) return null
@@ -59,7 +50,7 @@ const StudySection: React.FC<StudySectionProps> = ({
     <section
       ref={sectionRef}
       id={id}
-      className="relative w-full bg-white-pure border-t-2 border-black-pure flex flex-col items-center overflow-hidden select-none"
+      className="relative w-full bg-white-pure border-t-2 border-black-pure flex flex-col overflow-hidden select-none"
     >
       <SectionHeader
         title={title}
@@ -68,104 +59,106 @@ const StudySection: React.FC<StudySectionProps> = ({
         metadata={String(studies.length).padStart(2, '0')}
       />
 
-      <div className="container z-10 flex flex-col items-center py-16 md:py-24 lg:py-32 px-4">
-        <motion.div
-          style={{ y: yEffect }}
-          className="relative group w-full flex justify-center"
-        >
-          <motion.div
-            initial={{ opacity: 0, scale: 0.98 }}
-            animate={isInView ? { opacity: 1, scale: 1 } : {}}
-            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-            className="relative w-full max-w-[280px] xs:max-w-[320px] sm:max-w-[400px] md:max-w-[480px] lg:max-w-[580px] aspect-[4/5] bg-white-pure p-3 md:p-5 border-2 border-black-pure transition-shadow duration-500"
+      <div className="relative flex flex-col lg:flex-row w-full min-h-[70vh] lg:min-h-[80vh]">
+        <div className="hidden lg:flex w-16 xl:w-20 border-r-2 border-black-pure flex-col items-center justify-between py-10 bg-white-pure">
+          <motion.span
+            initial={{ opacity: 0, y: -10 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ delay: 0.5 }}
+            className="text-[10px] xl:text-xs font-mono font-black uppercase tracking-[0.3em] rotate-180 [writing-mode:vertical-lr]"
           >
-            <div className="relative w-full h-full overflow-hidden border-2 border-black-pure bg-white-pure">
-              <motion.img
-                initial={{ filter: 'grayscale(100%)' }}
-                whileInView={{ filter: 'grayscale(0%)' }}
-                transition={{ duration: 1.5 }}
-                src={study.image && study.image !== "" ? study.image : `https://picsum.photos/seed/${study.id}/1200/1600`}
-                alt={study.title}
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-              />
-              <div className="absolute inset-0 bg-primary-500/10 mix-blend-multiply opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-              <div className="absolute top-0 left-0 bg-black-pure text-white-pure px-3 py-1 font-mono font-black text-xs">
-                {String(study.id).padStart(2, '0')}
-              </div>
-            </div>
-          </motion.div>
-        </motion.div>
+            REFERENCE
+          </motion.span>
+          <motion.span
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={isInView ? { scale: 1, opacity: 1 } : {}}
+            transition={{ delay: 0.7 }}
+            className="text-sm xl:text-md font-mono font-black tabular-nums text-primary-500"
+          >
+            {String(study.id).padStart(2, '0')}
+          </motion.span>
+        </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          className="mt-16 md:mt-24 w-full max-w-4xl flex flex-col items-center text-center px-4"
-        >
-          {study.tags && study.tags.length > 0 && (
-            <div className="flex flex-wrap justify-center gap-2 mb-8">
-              {study.tags.map((tag, idx) => (
-                <span key={idx} className="text-xs font-mono font-black uppercase tracking-widest px-3 py-1 border-2 border-black-pure bg-white-pure break-words max-w-[200px]">
-                  {tag}
+        <div className="relative flex-1 bg-white-pure overflow-hidden border-b-2 lg:border-b-0 border-black-pure group">
+          <motion.div
+            initial={{ scale: 1.15 }}
+            animate={isInView ? { scale: 1 } : {}}
+            transition={{ duration: 1.5, ease: [0.19, 1, 0.22, 1] }}
+            className="absolute inset-0"
+          >
+            <img
+              src={study.image && study.image !== "" ? study.image : `https://picsum.photos/seed/${study.id}/1600/900`}
+              alt={study.title}
+              className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
+            />
+          </motion.div>
+
+          <motion.div
+            initial={{ x: '0%' }}
+            animate={isInView ? { x: '100%' } : {}}
+            transition={{ duration: 1, ease: [0.19, 1, 0.22, 1], delay: 0.2 }}
+            className="absolute inset-0 bg-black-pure z-10"
+          />
+        </div>
+
+        <div className="relative w-full lg:w-[450px] xl:w-[500px] bg-white-pure lg:border-l-2 border-black-pure flex flex-col">
+          <div className="p-6 sm:p-10 xl:p-14 flex-1 flex flex-col justify-center">
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={isInView ? { opacity: 1, x: 0 } : {}}
+              transition={{ delay: 0.5, duration: 0.8 }}
+            >
+              <div className="flex items-center gap-3 mb-8">
+                <span className="text-[10px] xl:text-xs font-mono font-black uppercase tracking-widest text-primary-500">
+                  {study.tags?.[0] || 'FEATURED'}
                 </span>
+                <div className="h-[2px] flex-1 bg-black-pure" />
+              </div>
+
+              <h3 className="text-xl xl:text-2xl font-black uppercase tracking-tighter text-black-pure leading-tight mb-6">
+                {study.title}
+              </h3>
+
+              <p className="text-xs xl:text-sm font-bold text-black-pure leading-relaxed mb-12 opacity-90">
+                {study.description}
+              </p>
+
+              {targetHref && (study.ctaLabel || ctaLabel) && (
+                <Link
+                  href={targetHref}
+                  className="group relative h-14 xl:h-16 w-full bg-black-pure text-white-pure flex items-center justify-between px-6 xl:px-8 text-[10px] xl:text-xs font-mono font-black uppercase tracking-widest transition-colors duration-300 hover:bg-primary-500 hover:text-black-pure"
+                >
+                  <span>{study.ctaLabel || ctaLabel}</span>
+                  <div className="size-2 bg-primary-500 group-hover:bg-black-pure transition-colors duration-300" />
+                </Link>
+              )}
+            </motion.div>
+          </div>
+
+          {study.metrics && study.metrics.length > 0 && (
+            <div className="h-20 xl:h-24 border-t-2 border-black-pure flex divide-x-2 divide-black-pure bg-white-pure">
+              {study.metrics.slice(0, 2).map((metric, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0 }}
+                  animate={isInView ? { opacity: 1 } : {}}
+                  transition={{ delay: 0.8 + (i * 0.1) }}
+                  className="flex-1 flex flex-col items-center justify-center px-4"
+                >
+                  <span className="text-[9px] xl:text-[10px] font-mono font-black uppercase text-black-pure/50 leading-none mb-2">
+                    {metric.label}
+                  </span>
+                  <span className="text-xs xl:text-sm font-mono font-black text-black-pure uppercase tabular-nums">
+                    {metric.value}
+                  </span>
+                </motion.div>
               ))}
             </div>
           )}
-
-          <h3 className="text-xl md:text-2xl font-black uppercase tracking-tighter text-black-pure leading-tight mb-6 break-words">
-            {study.title}
-          </h3>
-
-          <p className="w-full max-w-2xl text-sm md:text-base font-medium text-black-pure leading-relaxed mb-12 break-words whitespace-pre-wrap line-clamp-3">
-            {study.description}
-          </p>
-
-          <button
-            onClick={() => setModalOpen(true)}
-            className="group relative inline-flex items-center gap-4 bg-black-pure text-white-pure px-8 py-4 text-xs font-mono font-black uppercase tracking-widest border-2 border-black-pure transition-all hover:bg-primary-500 hover:text-black-pure mb-12"
-          >
-            <span className="break-words">View Details</span>
-            <motion.div animate={{ x: [0, 4, 0] }} transition={{ repeat: Infinity, duration: 2 }} className="shrink-0">
-              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4">
-                <path d="M5 12h14M12 5l7 7-7 7" />
-              </svg>
-            </motion.div>
-          </button>
-
-          {targetHref && (study.ctaLabel || ctaLabel) && (
-            <motion.div whileHover={{ y: -2 }} whileTap={{ y: 0 }}>
-              <Link
-                href={targetHref}
-                className="group relative inline-flex items-center gap-4 bg-primary-500 text-black-pure px-8 py-4 text-xs font-mono font-black uppercase tracking-widest border-2 border-black-pure transition-all hover:bg-black-pure hover:text-white-pure"
-              >
-                <span className="break-words">{study.ctaLabel || ctaLabel}</span>
-                <motion.div animate={{ x: [0, 4, 0] }} transition={{ repeat: Infinity, duration: 2 }} className="shrink-0">
-                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4">
-                    <path d="M5 12h14M12 5l7 7-7 7" />
-                  </svg>
-                </motion.div>
-              </Link>
-            </motion.div>
-          )}
-        </motion.div>
+        </div>
       </div>
 
       <SectionFooter variant={footerVariant} />
-
-      <SectionModal
-        isOpen={modalOpen}
-        onClose={() => setModalOpen(false)}
-        title={study.title}
-        description={study.description}
-        imageUrl={study.image}
-        idCode={study.id}
-        stats={study.metrics?.map(m => ({ label: m.label, val: m.value, color: 'bg-primary-500' })) || []}
-        buttonLabel={study.ctaLabel || ctaLabel || "Learn More"}
-        onAction={() => {
-          if (targetHref) window.location.href = targetHref;
-          setModalOpen(false);
-        }}
-        infoLabel={study.tags?.join(' · ')}
-      />
     </section>
   )
 }
